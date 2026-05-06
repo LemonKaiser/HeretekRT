@@ -20872,3 +20872,10 @@ Entries:
   id: 2298
   time: '2026-05-06T21:28:35.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3952
+- author: Redrover1760
+  changes:
+    - type: Fix
+      message: Major gun shooting lag optimizations
+  id: 2299
+  time: '2026-05-06T21:33:23.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3959
