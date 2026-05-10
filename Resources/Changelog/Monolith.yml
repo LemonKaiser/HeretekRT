@@ -20958,3 +20958,10 @@ Entries:
   id: 2309
   time: '2026-05-10T18:26:42.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3222
+- author: Mrrpip
+  changes:
+    - type: Fix
+      message: The Draupnir is no longer rife with typos. It's fire instead.
+  id: 2310
+  time: '2026-05-10T18:39:57.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3978
