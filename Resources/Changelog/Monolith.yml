@@ -20965,3 +20965,10 @@ Entries:
   id: 2310
   time: '2026-05-10T18:39:57.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3978
+- author: aScammer-Darkly
+  changes:
+    - type: Add
+      message: Moths eat your spessos
+  id: 2311
+  time: '2026-05-10T18:41:01.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/3958
