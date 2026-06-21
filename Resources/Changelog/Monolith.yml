@@ -21595,3 +21595,12 @@ Entries:
   id: 2380
   time: '2026-06-21T15:33:47.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/4108
+- author: Mrrpip
+  changes:
+    - type: Tweak
+      message: >-
+        The Vipers have set up their own servers for hosting job descriptions.
+        No more USSP descriptions.
+  id: 2381
+  time: '2026-06-21T16:18:18.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4114
