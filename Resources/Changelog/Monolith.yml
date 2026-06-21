@@ -21563,3 +21563,12 @@ Entries:
   id: 2376
   time: '2026-06-18T19:32:54.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/3975
+- author: GOLDMASK990
+  changes:
+    - type: Add
+      message: Minor Faction guidebook entry added
+    - type: Tweak
+      message: Guidebook entry for USSP updated, to clarify that they are not KOS.
+  id: 2377
+  time: '2026-06-21T12:19:04.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4117
