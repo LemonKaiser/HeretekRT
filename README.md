@@ -1,4 +1,6 @@
-<p align="center"> <img alt="Frontier Station 14" width="880" height="300" src="https://raw.githubusercontent.com/Monolith-Station/Monolith/89d435f0d2c54c4b0e6c3b1bf4493c9c908a6ac7/Resources/Textures/_Mono/Logo/logo.png?raw=true" /></p>
+<p align="center">
+  <img alt="Heretek" width="1200" src="https://raw.githubusercontent.com/LemonKaiser/HeretekRT/1a87a4c0328098aa68b2032aa1d334ed31ff3390/Resources/Textures/_WH40K/Logo/logo.svg?raw=true" />
+</p>
 
 Heretek is a fork of [Monolith](https://github.com/Monolith-Station/Monolith) that runs on the [Robust Toolbox](https://github.com/space-wizards/RobustToolbox) engine written in C#.
 
