@@ -15,8 +15,8 @@ RELEASE_DIR = "release"
 # CONFIGURATION PARAMETERS
 # Forks should change these to publish to their own infrastructure.
 #
-ROBUST_CDN_URL = "https://cdn.goobstation.com/"
-FORK_ID = "Monolith"
+ROBUST_CDN_URL = "https://cdn.simplestation.org/"
+FORK_ID = "ebengrad"
 
 def main():
     parser = argparse.ArgumentParser()
