@@ -1,0 +1,18 @@
+- type: npcFaction
+  id: Tyranids
+  defaultHostile: true
+
+- type: npcFaction
+  id: Imperium
+  neutral:
+  - Passive
+  - SimpleNeutral
+  defaultHostile: true
+
+- type: npcFaction
+  id: Necrons
+  defaultHostile: true
+
+- type: npcFaction
+  id: Heretics
+  defaultHostile: true

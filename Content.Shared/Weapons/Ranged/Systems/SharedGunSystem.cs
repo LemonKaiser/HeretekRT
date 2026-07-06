@@ -276,6 +276,9 @@ public abstract partial class SharedGunSystem : EntitySystem
             return true;
         }
 
+        if (TryGetMountedGun(entity, out gunEntity, out gunComp))
+            return true;
+
         // Last resort is check if the entity itself is a gun.
         if (TryComp(entity, out gun))
         {
@@ -285,6 +288,45 @@ public abstract partial class SharedGunSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private bool TryGetMountedGun(EntityUid user, out EntityUid gunEntity, [NotNullWhen(true)] out GunComponent? gunComp)
+    {
+        gunEntity = default;
+        gunComp = null;
+
+        if (!TryComp<BuckleComponent>(user, out var buckle) ||
+            buckle.BuckledTo is not { } strappedTo ||
+            !TryComp<BuckleMountedGunComponent>(strappedTo, out var mountedGun) ||
+            !TryComp<GunComponent>(strappedTo, out var strappedGun) ||
+            !CanUseMountedGun(strappedTo, mountedGun))
+        {
+            return false;
+        }
+
+        gunEntity = strappedTo;
+        gunComp = strappedGun;
+        return true;
+    }
+
+    private bool CanUseMountedGun(EntityUid gunUid, BuckleMountedGunComponent mountedGun)
+    {
+        if (!mountedGun.RequireEnabledStrap)
+            return true;
+
+        return TryComp<StrapComponent>(gunUid, out var strap) && strap.Enabled;
+    }
+
+    private EntityCoordinates GetShotOriginCoordinates(EntityUid user, EntityUid gunUid)
+    {
+        if (TryComp<BuckleComponent>(user, out var buckle) &&
+            buckle.BuckledTo == gunUid &&
+            TryComp<BuckleMountedGunComponent>(gunUid, out var mountedGun))
+        {
+            return new EntityCoordinates(gunUid, mountedGun.ShootOriginOffset);
+        }
+
+        return Transform(user).Coordinates;
     }
 
     private void StopShooting(EntityUid uid, GunComponent gun)
@@ -451,7 +493,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             return;
         }
 
-        var fromCoordinates = Transform(user).Coordinates;
+        var fromCoordinates = GetShotOriginCoordinates(user, gunUid);
         // Remove ammo
         var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user, true); // Frontier: add intent to fire
 

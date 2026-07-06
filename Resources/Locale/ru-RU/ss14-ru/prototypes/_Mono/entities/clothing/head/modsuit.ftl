@@ -1,0 +1,10 @@
+ent-ClothingModsuitHelmetUSSPVaryag = Shlem Varyaga
+    .desc = Герметичный, усиленный, внушительный.
+ent-ClothingModsuitHelmetUSSPZastavnik = Shlem Zastavnik
+    .desc = Усиленный шлем с толстой бронёй и защитой визора. Любим сержантами на передовой.
+ent-ClothingModsuitHelmetRogue = RX-01 modsuit helmet
+    .desc = ИИ-компаньона в комплекте нет — заметка: продавать шлемной ИИ отдельно.
+ent-ClothingModsuitHelmetVolta = Volta Modsuit Helmet
+    .desc = Усиленная сапёрная пластина с камерой получше и армейским фонарём; краше от этого не станешь.
+ent-ClothingModsuitHelmetGalloglass = шлем модкостюма «Галлоглас»
+    .desc = Визор небесно-голубой — враги не поймут, что ты их ещё не положил.

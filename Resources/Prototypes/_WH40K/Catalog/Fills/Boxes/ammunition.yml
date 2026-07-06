@@ -1,0 +1,11 @@
+- type: entity
+  parent: BoxMagazine
+  id: BoxLasgunPowerCell
+  suffix: WH40K
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:EntSelector
+        id: LasgunPowerCell
+        amount: !type:ConstantNumberSelector
+          value: 4

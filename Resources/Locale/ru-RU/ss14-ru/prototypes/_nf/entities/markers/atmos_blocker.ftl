@@ -1,0 +1,11 @@
+ent-AtmosFixShuttleOxygenMarker = маркер кислорода шаттла
+    .desc = Кислород при пониженном давлении
+    .suffix = Shuttle
+ent-AtmosFixShuttleNitrogenMarker = маркер азота шаттла
+    .desc = Азот при пониженном давлении
+    .suffix = Shuttle
+ent-AtmosFixShuttlePlasmaMarker = маркер плазмы шаттла
+    .desc = Плазма при пониженном давлении
+    .suffix = Shuttle
+ent-AtmosFixSaunaMarker = маркер сауны
+    .desc = Сауна

@@ -1,0 +1,304 @@
+- type: entity
+  parent: BasePlushie
+  id: PlushieFull
+  suffix: WH40K, Fullmaster
+  components:
+    - type: Sprite
+      sprite: _WH40K/Objects/Fun/toys.rsi
+      state: Full
+    - type: MeleeWeapon
+      wideAnimationRotation: 180
+      soundHit:
+        path: /Audio/Effects/adminhelp.ogg
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieGGados
+  suffix: WH40K
+  components:
+    - type: Sprite
+      sprite: _WH40K/Objects/Fun/toys.rsi
+      state: GGados
+
+- type: entity
+  parent: BasePlushie
+  id: Plushielondorondondon
+  name: LONDORONDONDON
+  suffix: WH40K, LONDORONDONDON
+  components:
+    - type: Sprite
+      sprite: _WH40K/Objects/Fun/toys.rsi
+      state: lon
+
+- type: entity
+  parent: BaseFigurine
+  id: PlushieIfi07
+  suffix: WH40K, Ifi07
+  components:
+    - type: Sprite
+      sprite: _WH40K/Objects/Fun/toys.rsi
+      layers:
+      - state: ifi
+      - state: ifi-unshaded
+        shader: unshaded
+    - type: SpeakOnTrigger
+      pack: FigurinesIfi07
+
+- type: localizedDataset
+  id: FigurinesIfi07
+  values:
+    prefix: figurines-ifi-
+    count: 4
+
+- type: entity
+  parent: BasePlushie
+  id: StrangeToster
+  suffix: WH40K, точно не endr_animet
+  components:
+    - type: Sprite
+      sprite: _WH40K/Objects/Fun/toys.rsi
+      state: Toster
+    - type: EmitSoundOnUse
+      sound:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+    - type: EmitSoundOnLand
+      sound:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+    - type: EmitSoundOnCollide
+      sound:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+    - type: EmitSoundOnActivate
+      sound:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+    - type: EmitSoundOnTrigger
+      sound:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+    - type: MeleeWeapon
+      wideAnimationRotation: 180
+      soundHit:
+        path: /Audio/_WH40K/Fun/metalpipe.ogg
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieEndrAnimet
+  suffix: WH40K, endr_animet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    layers:
+    - state: endr_animet
+    - state: endr_animet-unshaded
+      shader: unshaded
+    - state: endr_animet-particls
+      shader: unshaded
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieKaiser
+  suffix: WH40K, kaiser
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    layers:
+    - state: kaiser
+    - state: kaiser-unshaded
+      shader: unshaded
+
+- type: entity
+  parent: BaseItem
+  id: PlushieBiomass
+  suffix: WH40K, точно не biomass
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    layers:
+    - state: biomass
+    - state: biomass-unshaded
+      shader: unshaded
+  - type: PointLight
+    radius: 1.2
+    energy: 1
+    color: "#e58952"
+  - type: AmbientSound
+    volume: 2
+    range: 7
+    sound:
+      path: /Audio/_WH40K/Fun/breath.ogg
+
+- type: entity
+  parent: BaseItem
+  id: PlushieLitiy
+  suffix: WH40K, Litiy
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: litiy
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieSolder
+  suffix: WH40K, solder
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: solder
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieAcic
+  suffix: WH40K, acic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    layers:
+    - state: acic
+    - state: acic-unshaded
+      shader: unshaded
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieNecron
+  suffix: WH40K, necron
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: necron
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieCarbon
+  suffix: WH40K, carbon
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: carbon
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieSuslik
+  suffix: WH40K, Suslik
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: suslik
+
+- type: entity
+  parent: BasePlushie
+  id: PlushiePopug
+  suffix: WH40K, AtomicMarker
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: popug
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieOliva
+  suffix: WH40K, Oliva
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/toys.rsi
+    state: oliva
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieFizzo
+  name: FizzoGhoster
+  suffix: WH40K, Fizzo
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/Plushies/fizzo.rsi
+    state: icon
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnCollide
+    sound:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnActivate
+    sound:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnTrigger
+    sound:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+  - type: MeleeWeapon
+    wideAnimationRotation: 180
+    soundHit:
+      path: /Audio/_WH40K/Fun/yarishon-squee.ogg
+      params:
+        volume: -5
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieRad
+  suffix: WH40K, Rad
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/Plushies/rad.rsi
+    state: icon
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnCollide
+    sound:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnActivate
+    sound:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+  - type: EmitSoundOnTrigger
+    sound:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+  - type: MeleeWeapon
+    wideAnimationRotation: 180
+    soundHit:
+      path: /Audio/_WH40K/Fun/pyro_laughlong01.ogg
+      params:
+        volume: -5
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieUddTomsk
+  suffix: WH40K, UddTomsk
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/Plushies/uddtomsk.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Fun/Plushies/uddtomsk.rsi
+
+- type: entity
+  parent: BasePlushie
+  id: PlushieWarpImp
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Fun/Plushies/warp_imp.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Fun/Plushies/warp_imp.rsi

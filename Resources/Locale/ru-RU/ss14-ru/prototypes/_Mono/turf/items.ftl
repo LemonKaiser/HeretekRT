@@ -1,0 +1,12 @@
+ent-FloorTileItemTechmaintSterile = sterile techmaint tile
+ent-FloorTileItemMaintSterile = sterile maint tile
+ent-FloorTileItemMaintMonoSterile = sterile maint mono tile
+ent-FloorTileItemGrid = maintenance grid tile
+ent-FloorTileItemGridDark = dark maintenance grid tile
+ent-FloorTileItemSteelCommercial = commercial steel tile
+ent-FloorTileItemSteelMonoCommercial = commercial mono steel tile
+ent-FloorTileItemDarkSteelCommercial = commercial dark steel tile
+ent-FloorTileItemSteelDarkMonoCommercial = commercial mono dark steel tile
+ent-FloorTileItemTechMaintAlt = mechanical maintenance tile
+ent-FloorTileItemGreySteelCommercial = commercial grey steel tile
+ent-FloorTileItemSteelGreyMonoCommercial = commercial mono grey steel tile

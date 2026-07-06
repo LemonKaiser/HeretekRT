@@ -1,0 +1,34 @@
+- type: entity
+  id: WH40KTacticalFultonBase
+  parent: BaseItem
+  abstract: true
+  name: tactical fulton
+  description: A preserved extraction-pack shell without the old battlefield logic.
+  components:
+  - type: Sprite
+    drawdepth: SmallObjects
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: Icon
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: Item
+    sprite: Objects/Tools/fulton.rsi
+    size: Normal
+    inhandVisuals:
+      left:
+      - state: inhand-left-fulton
+      right:
+      - state: inhand-right-fulton
+
+- type: entity
+  id: WH40KTacticalFultonImperium
+  parent: WH40KTacticalFultonBase
+  name: tactical fulton (Imperium)
+  suffix: WH40K
+
+- type: entity
+  id: WH40KTacticalFultonHeretics
+  parent: WH40KTacticalFultonBase
+  name: tactical fulton (Heretics)
+  suffix: WH40K

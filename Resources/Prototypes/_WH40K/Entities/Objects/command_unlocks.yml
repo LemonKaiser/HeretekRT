@@ -1,0 +1,58 @@
+- type: entity
+  id: WH40KTacticalWhistle
+  parent: WH40KTacticalWhistleBase
+  suffix: WH40K
+
+- type: entity
+  id: WH40KSignalFlare
+  parent: WH40KSignalFlareBase
+  suffix: WH40K
+
+- type: entity
+  id: WH40KIntelDetector
+  parent: WH40KIntelDetectorBase
+  suffix: WH40K
+
+- type: entity
+  id: WH40KTacticalFultonField
+  parent: WH40KTacticalFultonBase
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerRelay
+  parent: WH40KMissionPinpointerBase
+  name: relay mission pinpointer
+  description: A preserved mission pinpointer shell for relay objectives.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerCargo
+  parent: WH40KMissionPinpointerBase
+  name: cargo mission pinpointer
+  description: A preserved mission pinpointer shell for cargo objectives.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerBanner
+  parent: WH40KMissionPinpointerBase
+  name: banner mission pinpointer
+  description: A preserved mission pinpointer shell for banner objectives.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerKit
+  parent: BoxCardboard
+  name: mission pinpointer kit
+  description: A reusable box with preserved mission pinpointer shells.
+  suffix: WH40K
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: WH40KMissionPinpointerRelay
+        - !type:EntSelector
+          id: WH40KMissionPinpointerCargo
+        - !type:EntSelector
+          id: WH40KMissionPinpointerBanner

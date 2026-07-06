@@ -1,0 +1,17 @@
+ent-MobSpawnMonolithicBase = спаунер базовой монолитной сущности
+ent-MobSpawnMonolithicRandomBasic = случайный, базовый
+ent-MobSpawnMonolithicRandomIntermediate = случайный, промежуточный
+ent-MobMonolithicBase = монолитная энергия
+    .desc = Это бог?
+ent-MobSpawnMonolithicGestalt = спаунер
+ent-MobMonolithicGestalt = монолитный гештальт
+    .desc = Аномальная сущность. Похоже, полностью состоит из какого-то нематериального вида энергии, которой она, похоже, стреляет в вас. Осторожно!
+ent-MobSpawnMonolithicGolom = спаунер
+ent-MobMonolithicGolom = монолитный голом
+    .desc = Аномальная сущность. Похоже, полностью состоит из какого-то прочного, кристаллоподобного вида энергии. Также похоже, что она направляется прямо на вас.
+ent-MobSpawnMonolithicHellLocust = спаунер
+ent-MobMonolithicHellLocust = монолитная адская саранча
+    .desc = Аномальная сущность. Похоже, состоит из резко материальной энергии в странно знакомой форме. Также похоже, что она угрожающе бежит на вас. Осторожно!
+ent-MobSpawnMonolithicGolomRanged = спаунер
+ent-MobMonolithicGolomRanged = монолитный голум
+    .desc = Аномальная сущность. Похоже, полностью состоит из какого-то прочного, кристаллоподобного вида энергии, которой она стреляет в вас. Осторожно!

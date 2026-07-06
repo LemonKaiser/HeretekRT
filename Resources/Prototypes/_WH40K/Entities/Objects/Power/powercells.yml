@@ -1,0 +1,293 @@
+- type: entity
+  id: WH40KPowerCell
+  parent: BaseItem
+  abstract: true
+  components:
+  - type: Item
+    storedRotation: -90
+  - type: Battery
+    maxCharge: 2000
+    startingCharge: 2000
+    pricePerJoule: 0.15
+  - type: PowerCell
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 200
+    intensitySlope: 1.5
+  - type: Appearance
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 10
+
+- type: entity
+  id: WH40KPowerCellDefibrillator
+  parent: PowerCellMedium
+  name: sealed defibrillator cell
+  description: A sealed internal cell calibrated for a fixed number of defibrillator shocks.
+  suffix: WH40K
+  components:
+  - type: Battery
+    maxCharge: 500
+    startingCharge: 500
+    pricePerJoule: 0.15
+
+- type: entity
+  id: LasgunPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - LasgunPowerCell
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedMediumLaserLasgun
+    fireCost: 50
+
+- type: entity
+  id: LonglasPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - LonglasPowerCell
+  - type: HitscanBatteryAmmoProvider
+    proto: RedLaserLong
+    fireCost: 150
+  - type: Battery
+    maxCharge: 2250
+    startingCharge: 2250
+    pricePerJoule: 0.15
+
+- type: entity
+  id: PlasmGunPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: plasmagun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - PlasmPowerCellGun
+  - type: Battery
+    maxCharge: 14000
+    startingCharge: 14000
+  - type: ProjectileBatteryAmmoProvider
+    proto: WHBulletPlasmaRifle
+    fireCost: 1000
+
+- type: entity
+  id: PlasmPistolPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: plasmapistol
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - PlasmPowerCellPistol
+  - type: Battery
+    maxCharge: 7000
+    startingCharge: 7000
+  - type: ProjectileBatteryAmmoProvider
+    proto: WHBulletPlasmaPistol
+    fireCost: 1000
+
+- type: entity
+  id: MeltPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: meltagunammo
+  - type: Tag
+    tags:
+    - MeltPowerCell
+  - type: Battery
+    maxCharge: 22500
+    startingCharge: 22500
+  - type: HitscanBatteryAmmoProvider
+    proto: RedMeltaLaser
+    fireCost: 1500
+
+- type: entity
+  id: AccatranPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - AccatranPowerCell
+  - type: Battery
+    maxCharge: 3000
+    startingCharge: 3000
+    pricePerJoule: 0.15
+  - type: HitscanBatteryAmmoProvider
+    proto: RedLaserAccatranLong
+    fireCost: 50
+
+- type: entity
+  parent: [Clothing, ClothingSlotBase]
+  id: ClothingBackpackHellEnergy
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+    - HellBackpackEnergy
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/hellgunbackpack.rsi
+    state: icon
+  - type: Item
+    size: Ginormous
+  - type: Clothing
+    slots: BACK
+    sprite: _WH40K/Objects/Power/hellgunbackpack.rsi
+  - type: Appearance
+  - type: HitscanBatteryAmmoProvider
+    proto: RedLaserHell
+    fireCost: 100
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 10
+  - type: Battery
+    maxCharge: 20000
+    startingCharge: 20000
+    pricePerJoule: 0.15
+
+- type: entity
+  id: LasgunPowerCellLucius
+  parent: LasgunPowerCell
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+    - LasgunPowerCellLucius
+  - type: Battery
+    maxCharge: 2400
+    startingCharge: 2400
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedMediumLaserLasgunLucius
+    fireCost: 60
+
+- type: entity
+  id: PowerCellVoss
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - LasgunPowerCellVoss
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedMediumLaserVoss
+    fireCost: 50
+
+- type: entity
+  id: WH40KAstartesLaserPistolPowerCell
+  parent: WH40KPowerCell
+  suffix: WH40K, Astartes
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - WH40KAstartesLaserPistolPowerCell
+  - type: Battery
+    maxCharge: 2400
+    startingCharge: 2400
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedHeavyLaserAstartesPistol
+    fireCost: 80
+
+- type: entity
+  id: WH40KMagazineLascannon
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - WH40KMagazineLascannon
+  - type: Battery
+    maxCharge: 20000
+    startingCharge: 20000
+  - type: HitscanBatteryAmmoProvider
+    proto: LaserLasCannon
+    fireCost: 200
+
+- type: entity
+  id: WH40KMagazineMultilas
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: lasgun
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - WH40KMagazineMultilas
+  - type: Battery
+    maxCharge: 30000
+    startingCharge: 30000
+  - type: HitscanBatteryAmmoProvider
+    proto: LaserMultilas
+    fireCost: 100
+
+- type: entity
+  id: WH40KMagazineArcPistol
+  parent: WH40KPowerCell
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Power/power_cells.rsi
+    layers:
+    - state: arc_pistol
+    scale: 0.8, 0.8
+  - type: Tag
+    tags:
+    - WH40KMagazineArcPistol
+  - type: Battery
+    maxCharge: 4000
+    startingCharge: 4000
+  - type: HitscanBatteryAmmoProvider
+    proto: LaserArcPistol
+    fireCost: 200
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 1

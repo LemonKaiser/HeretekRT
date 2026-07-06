@@ -1,0 +1,241 @@
+- type: entity
+  id: WH40KWeaponTurretBallisticBase
+  abstract: true
+  parent: BaseWeaponBallisticTurret
+  name: bolter field sentry turret
+  description: A field turret built around a bolter-pattern weapon package.
+  components:
+  - type: Gun
+    fireRate: 3
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/bolter.ogg
+  - type: ProjectileBatteryAmmoProvider
+    proto: CartridgeBolter
+    fireCost: 60
+  - type: BatterySelfRecharger
+    autoRechargeRate: 20
+
+- type: entity
+  id: WH40KWeaponTurretImperium
+  parent: WH40KWeaponTurretBallisticBase
+  suffix: WH40K, Imperium
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulaimp.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Imperium
+
+- type: entity
+  id: WH40KWeaponTurretHeretics
+  parent: WH40KWeaponTurretBallisticBase
+  suffix: WH40K, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulachaos.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Heretics
+
+- type: entity
+  id: WH40KWeaponTurretLaserBase
+  abstract: true
+  parent: BaseWeaponTurret
+  name: multilaser field sentry turret
+  description: A powered field turret armed with a multilaser package.
+  components:
+  - type: Gun
+    projectileSpeed: 15
+    fireRate: 4
+    maxAngle: 15
+    minAngle: 4
+    angleIncrease: -1.2
+    angleDecay: -4
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+  - type: HitscanBatteryAmmoProvider
+    proto: LaserMultilas
+    fireCost: 120
+  - type: Battery
+    maxCharge: 3000
+    startingCharge: 0
+  - type: ApcPowerReceiverBattery
+    idleLoad: 5
+    batteryRechargeRate: 240
+    batteryRechargeEfficiency: 1.225
+  - type: ApcPowerReceiver
+    powerLoad: 5
+  - type: ExtensionCableReceiver
+
+- type: entity
+  id: WH40KWeaponTurretImperiumLaser
+  parent: WH40KWeaponTurretLaserBase
+  suffix: WH40K, Imperium, Laser
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulaimp.rsi
+    drawdepth: Mobs
+    layers:
+    - state: multilas
+  - type: NpcFactionMember
+    factions:
+    - Imperium
+
+- type: entity
+  id: WH40KWeaponTurretHereticsLaser
+  parent: WH40KWeaponTurretLaserBase
+  suffix: WH40K, Heretics, Laser
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulachaos.rsi
+    drawdepth: Mobs
+    layers:
+    - state: multilas
+  - type: NpcFactionMember
+    factions:
+    - Heretics
+
+- type: entity
+  id: WH40KWeaponTurretMiniBase
+  abstract: true
+  parent: WH40KWeaponTurretBallisticBase
+  name: mini field sentry turret
+  description: A compact automatic sentry with a lighter ballistic package.
+  components:
+  - type: Gun
+    fireRate: 5
+    projectileSpeed: 50
+    maxAngle: 12
+    minAngle: 3
+  - type: ProjectileBatteryAmmoProvider
+    proto: CartridgeMinigun
+    fireCost: 20
+
+- type: entity
+  id: WH40KWeaponTurretDmrBase
+  abstract: true
+  parent: WH40KWeaponTurretBallisticBase
+  name: marksman field sentry turret
+  description: A precision sentry variant tuned for long-range anti-materiel fire.
+  components:
+  - type: Gun
+    fireRate: 0.65
+    projectileSpeed: 70
+    maxAngle: 6
+    minAngle: 0
+  - type: ProjectileBatteryAmmoProvider
+    proto: CartridgeAntiMateriel
+    fireCost: 80
+  - type: BatterySelfRecharger
+    autoRechargeRate: 14
+
+- type: entity
+  id: WH40KWeaponTurretShotgunBase
+  abstract: true
+  parent: WH40KWeaponTurretBallisticBase
+  name: shotgun field sentry turret
+  description: A close-range sentry variant with a wide buckshot spread.
+  components:
+  - type: Gun
+    fireRate: 1.2
+    projectileSpeed: 40
+    maxAngle: 20
+    minAngle: 8
+  - type: ProjectileBatteryAmmoProvider
+    proto: ShellShotgun
+    fireCost: 30
+  - type: BatterySelfRecharger
+    autoRechargeRate: 24
+
+- type: entity
+  id: WH40KWeaponTurretImperiumMini
+  parent: WH40KWeaponTurretMiniBase
+  suffix: WH40K, Imperium, Mini
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulaimp.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Imperium
+
+- type: entity
+  id: WH40KWeaponTurretHereticsMini
+  parent: WH40KWeaponTurretMiniBase
+  suffix: WH40K, Heretics, Mini
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulachaos.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Heretics
+
+- type: entity
+  id: WH40KWeaponTurretImperiumDmr
+  parent: WH40KWeaponTurretDmrBase
+  suffix: WH40K, Imperium, DMR
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulaimp.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Imperium
+
+- type: entity
+  id: WH40KWeaponTurretHereticsDmr
+  parent: WH40KWeaponTurretDmrBase
+  suffix: WH40K, Heretics, DMR
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulachaos.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Heretics
+
+- type: entity
+  id: WH40KWeaponTurretImperiumShotgun
+  parent: WH40KWeaponTurretShotgunBase
+  suffix: WH40K, Imperium, Shotgun
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulaimp.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Imperium
+
+- type: entity
+  id: WH40KWeaponTurretHereticsShotgun
+  parent: WH40KWeaponTurretShotgunBase
+  suffix: WH40K, Heretics, Shotgun
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Turrets/tarantulachaos.rsi
+    drawdepth: Mobs
+    layers:
+    - state: base
+  - type: NpcFactionMember
+    factions:
+    - Heretics

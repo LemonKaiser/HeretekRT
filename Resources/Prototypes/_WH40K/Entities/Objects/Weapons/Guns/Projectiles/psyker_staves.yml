@@ -1,0 +1,152 @@
+- type: entity
+  id: WH40KProjectilePsykerWarpfireBolt
+  name: warpfire bolt
+  description: A lance of mind-shaped flame.
+  parent: BaseBulletTrigger
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PointLight
+    color: "#ff7b29"
+    radius: 2.4
+    energy: 3
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: fireball
+      shader: unshaded
+  - type: Projectile
+    damage:
+      types:
+        Heat: 9
+  - type: IgnitionSource
+    temperature: 900
+    ignited: true
+  - type: IgniteOnCollide
+    fireStacks: 1.5
+
+- type: entity
+  id: WH40KProjectilePsykerFireball
+  name: warp fireball
+  description: A concentrated sphere of warpflame.
+  parent: BaseBulletTrigger
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PointLight
+    color: "#ff4500"
+    radius: 3.0
+    energy: 4
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: fireball
+      shader: unshaded
+      color: "#ff4500"
+  - type: Projectile
+    damage:
+      types:
+        Heat: 25
+    soundHit:
+      path: /Audio/Effects/fire.ogg
+    forceSound: true
+  - type: IgnitionSource
+    temperature: 1200
+    ignited: true
+  - type: IgniteOnCollide
+    fireStacks: 3.0
+  - type: ExplodeOnTrigger
+  - type: Explosive
+    explosionType: Default
+    totalIntensity: 30
+    intensitySlope: 3
+    maxIntensity: 10
+    deleteAfterExplosion: true
+
+- type: entity
+  id: WH40KProjectilePsykerBiomanticBolt
+  name: biomantic bolt
+  description: A bolt of concentrated biomantic energy carrying omnizine.
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PointLight
+    color: "#00ff66"
+    radius: 1.8
+    energy: 1.5
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: spell
+      shader: unshaded
+      color: "#00ff66"
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 2
+  - type: Solution
+    solution:
+      maxVol: 10
+      reagents:
+      - ReagentId: Omnizine
+        Quantity: 10
+  - type: SolutionInjectOnProjectileHit
+    transferAmount: 10
+    solution: ammo
+
+- type: entity
+  id: WH40KProjectilePsykerMindBolt
+  name: mind bolt
+  description: A focused shard of warp force.
+  parent: BaseBullet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PointLight
+    color: "#6ea8ff"
+    radius: 2
+    energy: 2
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: magicm_cyan
+      shader: unshaded
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 4
+        Shock: 10
+    soundHit:
+      path: /Audio/Weapons/Guns/Hits/taser_hit.ogg
+    forceSound: true
+  - type: StunOnCollide
+    stunAmount: 0
+    knockdownAmount: 0
+    slowdownAmount: 2
+    walkSpeedMultiplier: 0.85
+    runSpeedMultiplier: 0.85
+
+- type: entity
+  id: WH40KProjectilePsykerTelekineticBolt
+  name: telekinetic bolt
+  description: A compressed impact wave.
+  parent: BaseBulletTrigger
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: PointLight
+    color: "#ffd65c"
+    radius: 1.8
+    energy: 1.6
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    layers:
+    - state: magicm_yellow
+      shader: unshaded
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 7
+  - type: StunOnCollide
+    stunAmount: 0
+    knockdownAmount: 1
+    slowdownAmount: 1
+    walkSpeedMultiplier: 0.8
+    runSpeedMultiplier: 0.8
+

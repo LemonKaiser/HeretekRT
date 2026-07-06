@@ -1,0 +1,27 @@
+- type: entity
+  id: StatueWH
+  parent: BaseStructure
+  suffix: WH40K
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _WH40K/Structures/Decorations/statues.rsi
+    state: statue
+    drawdepth: Mobs
+    offset: "0.0,0.5"
+
+- type: entity
+  id: StatueWH1
+  parent: StatueWH
+  suffix: WH40K
+  components:
+  - type: Sprite
+    state: statue1
+
+- type: entity
+  id: StatueWH1Broken
+  parent: StatueWH
+  suffix: WH40K
+  components:
+  - type: Sprite
+    state: statue1broken

@@ -1,0 +1,11 @@
+ent-SensorOff = сенсоры отключены
+ent-PirateClothingUniformJumpsuitMercenary = пиратский комбинезон наёмника
+ent-PirateClothingUniformJumpskirtMercenary = пиратская юбка-комбинезон наёмника
+ent-PirateClothingUniformJumpsuitPrivateSec = пиратский комбинезон частной охраны
+ent-PirateClothingUniformJumpskirtPrivateSec = пиратская юбка-комбинезон частной охраны
+ent-PirateClothingUniformJumpsuitMilitaryTurtleneckMercenary = пиратская военная водолазка наёмника
+ent-PirateClothingUniformJumpsuitMilitaryTurtleneckMercenaryMedic = пиратская военная водолазка медика-наёмника
+ent-PirateClothingUniformJumpsuitMilitaryTurtleneckMercenaryCaptain = пиратская военная водолазка капитана наёмников
+ent-PirateClothingUniformJumpsuitMilitaryTurtleneckBlueMercenary = пиратская синяя военная водолазка наёмника
+ent-PirateClothingUniformJumpsuitMilitaryTurtleneckBlueMercenaryMedic = пиратская синяя военная водолазка медика-наёмника
+ent-PirateClothingUniformJumpskirtBlackElegantDress = пиратская синяя военная водолазка медика-наёмника

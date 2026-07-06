@@ -93,6 +93,7 @@ namespace Content.Client.Entry
             IoCManager.BuildGraph();
             IoCManager.InjectDependencies(this);
 
+            _configManager.OverrideDefault(CVars.LocCultureName, "ru-RU");
             _contentLoc.Initialize();
             _componentFactory.DoAutoRegistrations();
             _componentFactory.IgnoreMissingComponents();

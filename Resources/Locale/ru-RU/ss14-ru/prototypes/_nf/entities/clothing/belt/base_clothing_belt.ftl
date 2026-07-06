@@ -1,0 +1,2 @@
+ent-NFClothingBeltAmmoProviderBase = NFClothingBeltAmmoProviderBase
+ent-NFClothingBeltStorageBase = NFClothingBeltStorageBase

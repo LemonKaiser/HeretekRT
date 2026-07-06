@@ -1,0 +1,12 @@
+ent-BannerNfsd = знамя ТСФ
+    .desc = Знамя цветов Департамента Службы Безопасности Фронтира.
+ent-FlagNfsd = флаг ТСФ
+    .desc = Флаг с цветами цветов Департамента Службы Безопасности Фронтира.
+ent-BannerGoblin01 = знамя Гоблинов
+    .desc = Знамя со знаком одного из кланов гоблинов.
+ent-BannerFsb = Баннер FSB
+    .desc = Баннер с гербом корпорации «Far Star Biotech».
+ent-BannerTL = знамя TechnicLogistic
+    .desc = Знамя передовой военно-производственной корпорации TechnicLogistic.
+ent-TL_flag = флаг TechnicLogistic
+    .desc = Флаг передовой военно-производственной корпорации TechnicLogistic.

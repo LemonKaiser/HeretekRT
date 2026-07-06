@@ -1,0 +1,17 @@
+- type: entity
+  parent: BaseItem
+  id: Bugle
+  name: bugle
+  description: A preserved field bugle kept as a reusable prop.
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/maggot_horn.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Misc/maggot_horn.rsi
+    quickEquip: false
+    slots:
+    - neck

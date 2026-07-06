@@ -1,0 +1,1 @@
+ent-CFSpawnVehicleMechEmuCargo = Спавнер погрузчика

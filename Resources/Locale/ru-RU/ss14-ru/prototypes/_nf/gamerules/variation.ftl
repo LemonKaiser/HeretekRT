@@ -1,0 +1,1 @@
+ent-BasicDeadDropHintVariationPass = подсказка тайника

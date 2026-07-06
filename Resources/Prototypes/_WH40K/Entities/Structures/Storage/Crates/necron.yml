@@ -1,0 +1,9 @@
+- type: entity
+  id: CrateNecron
+  parent: CrateGenericSteel
+  suffix: WH40K, Некроны
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/necron.rsi
+  - type: Sprite 
+    sprite: _WH40K/Structures/Storage/Crates/necron.rsi

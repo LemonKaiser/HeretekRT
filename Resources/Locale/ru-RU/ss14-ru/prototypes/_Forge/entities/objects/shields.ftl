@@ -1,0 +1,1 @@
+ent-EnergyShieldAdvanced = продвинутый энергощит

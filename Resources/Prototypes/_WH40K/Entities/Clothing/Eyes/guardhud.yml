@@ -1,0 +1,15 @@
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesHudGuard
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Eyes/guardhud.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Eyes/guardhud.rsi
+    clothingVisuals:
+      eyes:
+      - state: equipped-EYES
+  - type: FlashImmunity
+  - type: EyeProtection
+    protectionTime: 5

@@ -1,0 +1,109 @@
+- type: entity
+  parent: BaseShield
+  id: WH40KImperialCombatShield
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/imperial_combat_shield.rsi
+    state: combat-icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Melee/imperial_combat_shield.rsi
+    heldPrefix: combat
+    size: Ginormous
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Melee/imperial_combat_shield.rsi
+    quickEquip: false
+    slots:
+    - Back
+  - type: Blocking
+    passiveBlockModifier:
+      coefficients:
+        Blunt: 0.55
+        Slash: 0.55
+        Piercing: 0.45
+        Heat: 0.65
+    activeBlockModifier:
+      coefficients:
+        Blunt: 0.30
+        Slash: 0.30
+        Piercing: 0.25
+        Heat: 0.40
+      flatReductions:
+        Blunt: 4
+        Slash: 4
+        Piercing: 6
+        Heat: 3
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 320
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel:
+            min: 4
+            max: 6
+          SheetGlass:
+            min: 2
+            max: 4
+  - type: StaticPrice
+    price: 350
+
+- type: entity
+  parent: BaseShield
+  id: WH40KOrkShield
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/ork_shield.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Melee/ork_shield.rsi
+    heldPrefix: riot
+    size: Ginormous
+  - type: Blocking
+    passiveBlockModifier:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+    activeBlockModifier:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+      flatReductions:
+        Blunt: 1
+        Slash: 1
+        Piercing: 1
+        Heat: 1
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 140
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel:
+            min: 2
+            max: 2

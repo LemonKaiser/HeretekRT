@@ -1,0 +1,446 @@
+- type: species
+  id: Tau
+  name: species-name-tau
+  roundStart: true
+  prototype: MobTau
+  sprites: MobTauSprites
+  markingLimits: MobTauMarkingLimits
+  dollPrototype: AppearanceTau
+  defaultSkinTone: "#6e9ac8"
+  skinColoration: Hues
+
+- type: speciesBaseSprites
+  id: MobTauSprites
+  sprites:
+    Head: MobTauHead
+    Hair: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    Chest: MobTauTorso
+    Eyes: MobHumanoidEyes
+    LArm: MobTauLArm
+    RArm: MobTauRArm
+    LHand: MobTauLHand
+    RHand: MobTauRHand
+    LLeg: MobTauLLeg
+    RLeg: MobTauRLeg
+    LFoot: MobTauLFoot
+    RFoot: MobTauRFoot
+
+- type: markingPoints
+  id: MobTauMarkingLimits
+  onlyWhitelisted: true
+  points:
+    Hair:
+      points: 1
+      required: false
+    FacialHair:
+      points: 1
+      required: false
+    HeadTop:
+      points: 0
+      required: false
+    HeadSide:
+      points: 0
+      required: false
+    Snout:
+      points: 0
+      required: false
+    Tail:
+      points: 0
+      required: false
+    Chest:
+      points: 0
+      required: false
+    Legs:
+      points: 0
+      required: false
+    Arms:
+      points: 0
+      required: false
+
+- type: humanoidBaseSprite
+  id: MobTauHead
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobTauHeadMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobTauHeadFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobTauTorso
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobTauTorsoMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobTauTorsoFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobTauLLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobTauLArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobTauLHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobTauLFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobTauRLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobTauRArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobTauRHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobTauRFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: r_foot
+
+- type: species
+  id: Ork
+  name: species-name-ork
+  roundStart: true
+  prototype: MobOrk
+  sprites: MobOrkSprites
+  markingLimits: MobOrkMarkingLimits
+  dollPrototype: AppearanceOrk
+  defaultSkinTone: "#354f2f"
+  skinColoration: Hues
+
+- type: speciesBaseSprites
+  id: MobOrkSprites
+  sprites:
+    Head: MobOrkHead
+    Chest: MobOrkTorso
+    Eyes: MobOrkEyes
+    LArm: MobOrkLArm
+    RArm: MobOrkRArm
+    LHand: MobOrkLHand
+    RHand: MobOrkRHand
+    LLeg: MobOrkLLeg
+    RLeg: MobOrkRLeg
+    LFoot: MobOrkLFoot
+    RFoot: MobOrkRFoot
+
+- type: markingPoints
+  id: MobOrkMarkingLimits
+  onlyWhitelisted: true
+  points:
+    Hair:
+      points: 0
+      required: false
+    FacialHair:
+      points: 0
+      required: false
+    HeadTop:
+      points: 0
+      required: false
+    HeadSide:
+      points: 0
+      required: false
+    Snout:
+      points: 0
+      required: false
+    Tail:
+      points: 0
+      required: false
+    Chest:
+      points: 0
+      required: false
+    Legs:
+      points: 0
+      required: false
+    Arms:
+      points: 0
+      required: false
+
+- type: humanoidBaseSprite
+  id: MobOrkEyes
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: eyes
+
+- type: humanoidBaseSprite
+  id: MobOrkHead
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobOrkHeadMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobOrkHeadFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobOrkTorso
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobOrkTorsoMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobOrkTorsoFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobOrkLLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobOrkLArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobOrkLHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobOrkLFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobOrkRLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobOrkRArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobOrkRHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobOrkRFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: r_foot
+
+- type: species
+  id: Astartes
+  name: species-name-astartes
+  roundStart: true
+  prototype: MobAstartes
+  sprites: MobAstartesSprites
+  markingLimits: MobAstartesMarkingLimits
+  dollPrototype: AppearanceAstartes
+  skinColoration: HumanToned
+  sexes:
+  - Male
+  youngAge: 50
+  oldAge: 200
+  maxAge: 1000
+
+- type: speciesBaseSprites
+  id: MobAstartesSprites
+  sprites:
+    Head: MobAstartesHead
+    Hair: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    HeadTop: MobHumanoidAnyMarking
+    Chest: MobAstartesTorso
+    Eyes: MobAstartesEyes
+    LArm: MobAstartesLArm
+    RArm: MobAstartesRArm
+    LHand: MobAstartesLHand
+    RHand: MobAstartesRHand
+    LLeg: MobAstartesLLeg
+    RLeg: MobAstartesRLeg
+    LFoot: MobAstartesLFoot
+    RFoot: MobAstartesRFoot
+
+- type: markingPoints
+  id: MobAstartesMarkingLimits
+  onlyWhitelisted: true
+  points:
+    Hair:
+      points: 1
+      required: false
+    FacialHair:
+      points: 0
+      required: false
+    HeadTop:
+      points: 1
+      required: false
+    HeadSide:
+      points: 0
+      required: false
+    Snout:
+      points: 0
+      required: false
+    Tail:
+      points: 0
+      required: false
+    Chest:
+      points: 0
+      required: false
+    Legs:
+      points: 0
+      required: false
+    Arms:
+      points: 0
+      required: false
+
+- type: humanoidBaseSprite
+  id: MobAstartesEyes
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/eyes.rsi
+    state: eyes
+
+- type: humanoidBaseSprite
+  id: MobAstartesHead
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobAstartesHeadMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobAstartesHeadFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobAstartesTorso
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobAstartesTorsoMale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobAstartesTorsoFemale
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobAstartesLLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobAstartesLArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobAstartesLHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobAstartesLFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobAstartesRLeg
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobAstartesRArm
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobAstartesRHand
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobAstartesRFoot
+  baseSprite:
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: r_foot

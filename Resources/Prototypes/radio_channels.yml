@@ -8,7 +8,7 @@
 - type: radioChannel
   id: CentCom
   name: chat-radio-centcom
-  keycode: 'y'
+  keycode: 'ц'
   frequency: 1337
   color: "#2681a5"
   longRange: true
@@ -16,56 +16,56 @@
 - type: radioChannel
   id: Command
   name: chat-radio-command
-  keycode: 'c'
+  keycode: 'к'
   frequency: 1353
   color: "#5569ff" # Mono
 
 - type: radioChannel
   id: Engineering
   name: chat-radio-engineering
-  keycode: 'e'
+  keycode: 'и'
   frequency: 1357
   color: "#ff733c"
 
 - type: radioChannel
   id: Medical
   name: chat-radio-medical
-  keycode: 'm'
+  keycode: 'м'
   frequency: 1355
   color: "#57b8f0"
 
 - type: radioChannel
   id: Science
   name: chat-radio-science
-  keycode: 'n'
+  keycode: 'н'
   frequency: 1351
   color: "#cd7ccd"
 
 - type: radioChannel
   id: Security
   name: chat-radio-security
-  keycode: 'g'
+  keycode: 'о'
   frequency: 1359
   color: "#ff4242"
 
 - type: radioChannel
   id: Service
   name: chat-radio-service
-  keycode: 'v'
+  keycode: 'с'
   frequency: 1349
-  color: "#09b96d"
+  color: "#334e6d"
 
 - type: radioChannel
   id: Supply
   name: chat-radio-supply
-  keycode: 'u'
+  keycode: 'г'
   frequency: 1347
   color: "#b48b57"
 
 - type: radioChannel
   id: Syndicate
   name: chat-radio-syndicate
-  keycode: 't'
+  keycode: 'т'
   frequency: 1213
   color: "#8f4a4b"
 #  longRange: true # Frontier - Move to Syndicate Base
@@ -73,6 +73,7 @@
 - type: radioChannel
   id: Handheld
   name: chat-radio-handheld
+  keycode: 'д'
   frequency: 1330
   color: "#967101"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
@@ -94,7 +95,7 @@
 - type: radioChannel
   id: Freelance
   name: chat-radio-freelance
-  keycode: 'f'
+  keycode: 'ф'
   frequency: 1984
   color: "#f6ce64"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
@@ -103,7 +104,7 @@
 - type: radioChannel
   id: VanguardCommand
   name: chat-radio-vanguard-command
-  keycode: 'r'
+  keycode: 'в'
   frequency: 1985
   color: "#BF94E4"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms

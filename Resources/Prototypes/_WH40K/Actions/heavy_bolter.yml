@@ -1,0 +1,19 @@
+- type: entity
+  id: ActionWH40KHeavyBolterRotateLeft
+  name: rotate left
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    event: !type:WH40KHeavyBolterRotateLeftActionEvent
+    checkCanInteract: false
+    useDelay: 0
+
+- type: entity
+  id: ActionWH40KHeavyBolterRotateRight
+  name: rotate right
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    event: !type:WH40KHeavyBolterRotateRightActionEvent
+    checkCanInteract: false
+    useDelay: 0

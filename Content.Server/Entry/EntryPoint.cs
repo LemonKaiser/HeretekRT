@@ -90,6 +90,7 @@ namespace Content.Server.Entry
             factory.GenerateNetIds();
             var configManager = IoCManager.Resolve<IConfigurationManager>();
             var dest = configManager.GetCVar(CCVars.DestinationFile);
+            configManager.OverrideDefault(Robust.Shared.CVars.LocCultureName, "ru-RU");
             IoCManager.Resolve<ContentLocalizationManager>().Initialize();
             if (string.IsNullOrEmpty(dest)) //hacky but it keeps load times for the generator down.
             {

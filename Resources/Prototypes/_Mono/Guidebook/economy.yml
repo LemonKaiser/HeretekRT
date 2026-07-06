@@ -1,6 +1,6 @@
 - type: guideEntry
   id: Economy
-  name: Economy
+  name: guide-entry-monolith-economy
   text: "/ServerInfo/_Mono/Guidebook/Economy/Economy.xml"
   priority: 1
   children:
@@ -8,7 +8,7 @@
 
 - type: guideEntry
   id: EconomyRecipes
-  name: Economy Recipes
+  name: guide-entry-monolith-economy-recipes
   text: "/ServerInfo/_Mono/Guidebook/Economy/EconomyRecipes.xml"
   priority: 2
   children:
@@ -16,6 +16,6 @@
 
 - type: guideEntry
   id: ArcFurnace
-  name: Arc Furnace Recipes
+  name: guide-entry-monolith-arc-furnace-recipes
   text: "/ServerInfo/_Mono/Guidebook/Economy/ArcFurnace.xml"
   priority: 3

@@ -1,0 +1,12 @@
+ent-BaseCarrierComputer = консоль авианосца
+    .desc = Используется на авианосцах для покупки и продажи кораблей без возврата на станцию.
+ent-SellOnlyCarrierComputer = консоль верфи только для продажи
+ent-MiningCarrierComputer = консоль добывающего авианосца
+ent-HiveCarrierComputer = консоль авианосца «Зефир»
+ent-TSFCarrierComputer = консоль авианосца TSF
+ent-LedokolAttatchmentComputer = консоль модулей «Ледокол»
+ent-WindreignCarrierComputer = консоль верфи «Виндрейн»
+ent-JupiterCarrierComputer = консоль верфи «Юпитер»
+    .desc = Облегчённая верфь, использующая внутренние ангары «Юпитера»; не имеет доступа ко всему списку кораблей династии Фаэтон.
+ent-PDVMotleyAnneCarrierComputer = консоль верфи «Мотли Энн»
+ent-RavagerCarrierComputer = консоль верфи «Равагер»

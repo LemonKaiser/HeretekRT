@@ -1,0 +1,172 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadCommissar
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/commissar.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/commissar.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.90
+        Piercing: 0.90
+        Heat: 0.90
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadOfficer
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/officer.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/officer.rsi
+
+- type: entity
+  parent: ClothingHeadOfficer
+  id: ClothingHeadOfficerCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/officer_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/officer_cyan.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadSgt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/sgt.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/sgt.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadVet
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/beret.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/beret.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatValhallanUshanka
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_ushanka.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_ushanka.rsi
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatValhallanCap
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_cap.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_cap.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatValhallanPapakhaSergeant
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_sergeant_papakha.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_sergeant_papakha.rsi
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatValhallanPapakhaCaptain
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_captain_papakha.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/valhallan_captain_papakha.rsi
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCatachanBandana
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_bandana.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_bandana.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCatachanBeret
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_beret.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_beret.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCatachanHeadband
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_headband.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/catachan_red_headband.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatCatachanCap
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/catachan_cap.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/catachan_cap.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadScarfChaos
+  name: головной мешок
+  description: Простой головной мешок, но его ткань пропитана символами Хаоса. Защищает голову, придавая жуткий вид культисту.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/headscarf/Headscrafcult.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/headscarf/Headscrafcult.rsi
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadVet
+  id: ClothingHeadVetInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/beret_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/beret_inquisition.rsi

@@ -1,0 +1,12 @@
+ent-ClothingHelmetAttachmentGogglesCoverOlive = чехол для очков (олива)
+    .desc = Чехол для очков, когда не надеты; носится в слот крепления на шлеме.
+ent-ClothingHelmetAttachmentGogglesCoverTan = чехол для очков (хаки)
+    .desc = Чехол для очков, когда не надеты; носится в слот крепления на шлеме.
+ent-ClothingHelmetAttachmentGogglesCoverBlack = чехол для очков (чёрный)
+    .desc = Чехол для очков, когда не надеты; носится в слот крепления на шлеме.
+ent-ClothingHelmetAttachmentGogglesCoverRedDigital = чехол для очков (красный цифровой)
+    .desc = Чехол для очков, когда не надеты; носится в слот крепления на шлеме.
+ent-ClothingHelmetAttachmentNVGsBasic = базовые очки ночного видения
+    .desc = Базовые оптоэлектронные очки ночного видения с высокой чувствительностью к вспышкам; крепятся на шлем.
+ent-ClothingHelmetAttachmentInfraredBasic = базовые очки тепловизора
+    .desc = Базовые очки тепловизора с высокой чувствительностью к вспышкам; крепятся на шлем.

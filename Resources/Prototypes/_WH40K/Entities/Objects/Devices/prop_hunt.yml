@@ -1,0 +1,17 @@
+- type: entity
+  id: WH40KPropHuntMorphProjector
+  parent: BaseItem
+  name: morph projector
+  description: A preserved projector shell from the old prop-hunt kit.
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/chameleon_projector.rsi
+    state: icon
+  - type: Icon
+    sprite: Objects/Devices/chameleon_projector.rsi
+    state: icon
+  - type: Item
+    sprite: Objects/Devices/chameleon_projector.rsi
+    size: Small

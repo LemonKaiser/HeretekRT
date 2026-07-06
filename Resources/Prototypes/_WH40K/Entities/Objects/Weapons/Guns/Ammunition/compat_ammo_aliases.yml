@@ -1,0 +1,26 @@
+- type: entity
+  id: GrenadeFrag
+  parent: 40mmGrenadeFragmentation
+  name: 40mm fragmentation grenade
+
+- type: entity
+  id: ShellShotgun
+  parent: ShellShotgun12_gaugeBuckshot
+  name: shell (.50 pellet)
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - ShellShotgun
+    - ShellShotgun12_gaugeBuckshot
+
+- type: entity
+  id: CartridgeAntiMateriel
+  parent: Cartridge127x99mm
+  name: cartridge (.60 anti-materiel)
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - CartridgeAntiMateriel
+    - Cartridge127x99mm

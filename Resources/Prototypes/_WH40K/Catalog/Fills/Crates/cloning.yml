@@ -1,0 +1,37 @@
+- type: entity
+  parent: CrateMedical
+  id: WH40KCrateImperiumCloningSuite
+  suffix: WH40K
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: CloningPodMachineCircuitboard
+        - !type:EntSelector
+          id: MedicalScannerMachineCircuitboard
+        - !type:EntSelector
+          id: CloningConsoleComputerCircuitboard
+        - !type:EntSelector
+          id: BiomassReclaimerMachineCircuitboard
+        - !type:EntSelector
+          id: MicroManipulatorStockPart
+          amount: !type:ConstantNumberSelector
+            value: 8
+        - !type:EntSelector
+          id: SheetGlass1
+          amount: !type:ConstantNumberSelector
+            value: 6
+        - !type:EntSelector
+          id: CableApcStack1
+          amount: !type:ConstantNumberSelector
+            value: 2
+        - !type:EntSelector
+          id: SheetSteel1
+          amount: !type:ConstantNumberSelector
+            value: 5
+        - !type:EntSelector
+          id: KitchenKnife
+          amount: !type:ConstantNumberSelector
+            value: 2

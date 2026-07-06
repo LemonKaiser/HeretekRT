@@ -1,0 +1,121 @@
+- type: entity
+  id: MagazineBolter
+  parent: BaseMagazine762x39mm
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - MagazineBolter75
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeBolter
+    capacity: 16
+    whitelist:
+      tags:
+        - CartridgeBolter75
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Bolter/bolter.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+
+- type: entity
+  id: MagazineBolterPistol
+  parent: MagazineBolter
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - MagazineBolterPistol75
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeBolter
+    capacity: 7
+    whitelist:
+      tags:
+        - CartridgeBolter75
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Bolter/pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+
+- type: entity
+  id: WH40KMagazineAstartesBoltPistol
+  parent: BaseMagazine45_magnum
+  suffix: WH40K, Astartes
+  components:
+  - type: Tag
+    tags:
+    - WH40KMagazineAstartesBoltPistol
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: WH40KCartridgeAstartesBoltPistol
+    capacity: 6
+    whitelist:
+      tags:
+      - WH40KCartridgeAstartesBoltPistol
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Bolter/astartes_pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+
+- type: entity
+  id: WH40KMagazineHeavyBolter
+  parent: BaseMagazine8x65mmBox
+  name: heavy bolter magazine
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - WH40KMagazineHeavyBolter
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeHeavyBolter
+    capacity: 100
+    whitelist:
+      tags:
+        - CartridgeHeavyBolter
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Bolter/heavy_bolter.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  id: WH40KMagazineAutocannon
+  parent: BaseMagazine8x65mmBox
+  name: autocannon magazine
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - WH40KMagazineAutocannon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeAutocannon
+    capacity: 50
+    whitelist:
+      tags:
+        - CartridgeAutocannon
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Bolter/heavy_bolter.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+

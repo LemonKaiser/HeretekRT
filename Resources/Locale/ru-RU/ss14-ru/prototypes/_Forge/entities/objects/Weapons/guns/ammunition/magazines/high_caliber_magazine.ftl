@@ -1,0 +1,10 @@
+ent-MagazineAntiMaterielAP = магазин (.60, бронебойные)
+ent-MagazineAntiMateriel = магазин (.60)
+ent-MagazineAntiMaterielRubber = магазин (.60, резиновые)
+ent-MagazineAntiMaterielIncendiary = магазин (.60, зажигательные)
+ent-MagazineAntiMaterielEmpty = магазин (.60, пустой)
+ent-BaseMagazineAntiMateriel = магазин (.60 калибр)
+
+ent-BaseMagazineUllman127x85mm = магазин (12.7x85мм)
+ent-ForgeMagazineUllman127x85mmEmpty = магазин (12.7x85мм, пустой)
+ent-ForgeMagazineUllman127x85mm = магазин (12.7x85мм)

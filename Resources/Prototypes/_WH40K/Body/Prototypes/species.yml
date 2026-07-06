@@ -1,0 +1,152 @@
+- type: body
+  id: Tau
+  name: "tau"
+  root: torso
+  slots:
+    head:
+      part: HeadTau
+      connections:
+      - torso
+      organs:
+        brain: OrganHumanBrain
+        eyes: OrganHumanEyes
+    torso:
+      part: TorsoTau
+      connections:
+      - right arm
+      - left arm
+      - right leg
+      - left leg
+      - head
+      organs:
+        heart: OrganHumanHeart
+        lungs: OrganHumanLungs
+        stomach: OrganHumanStomach
+        liver: OrganHumanLiver
+        kidneys: OrganHumanKidneys
+    right arm:
+      part: RightArmTau
+      connections:
+      - right hand
+    left arm:
+      part: LeftArmTau
+      connections:
+      - left hand
+    right hand:
+      part: RightHandTau
+    left hand:
+      part: LeftHandTau
+    right leg:
+      part: RightLegTau
+      connections:
+      - right foot
+    left leg:
+      part: LeftLegTau
+      connections:
+      - left foot
+    right foot:
+      part: RightFootTau
+    left foot:
+      part: LeftFootTau
+
+- type: body
+  id: Ork
+  name: "ork"
+  root: torso
+  slots:
+    head:
+      part: HeadOrk
+      connections:
+      - torso
+      organs:
+        brain: OrganHumanBrain
+        eyes: OrganOrkEyes
+    torso:
+      part: TorsoOrk
+      connections:
+      - right arm
+      - left arm
+      - right leg
+      - left leg
+      - head
+      organs:
+        heart: OrganHumanHeart
+        lungs: OrganHumanLungs
+        stomach: OrganHumanStomach
+        liver: OrganHumanLiver
+        kidneys: OrganHumanKidneys
+    right arm:
+      part: RightArmOrk
+      connections:
+      - right hand
+    left arm:
+      part: LeftArmOrk
+      connections:
+      - left hand
+    right hand:
+      part: RightHandOrk
+    left hand:
+      part: LeftHandOrk
+    right leg:
+      part: RightLegOrk
+      connections:
+      - right foot
+    left leg:
+      part: LeftLegOrk
+      connections:
+      - left foot
+    right foot:
+      part: RightFootOrk
+    left foot:
+      part: LeftFootOrk
+
+- type: body
+  id: Astartes
+  name: "astartes"
+  root: torso
+  slots:
+    head:
+      part: HeadAstartes
+      connections:
+      - torso
+      organs:
+        brain: OrganAstartesBrain
+        eyes: OrganAstartesEyes
+    torso:
+      part: TorsoAstartes
+      connections:
+      - right arm
+      - left arm
+      - right leg
+      - left leg
+      - head
+      organs:
+        heart: OrganAstartesHeart
+        lungs: OrganAstartesLungs
+        stomach: OrganAstartesStomach
+        liver: OrganAstartesLiver
+        kidneys: OrganAstartesKidneys
+    right arm:
+      part: RightArmAstartes
+      connections:
+      - right hand
+    left arm:
+      part: LeftArmAstartes
+      connections:
+      - left hand
+    right hand:
+      part: RightHandAstartes
+    left hand:
+      part: LeftHandAstartes
+    right leg:
+      part: RightLegAstartes
+      connections:
+      - right foot
+    left leg:
+      part: LeftLegAstartes
+      connections:
+      - left foot
+    right foot:
+      part: RightFootAstartes
+    left foot:
+      part: LeftFootAstartes

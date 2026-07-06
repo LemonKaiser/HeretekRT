@@ -1,0 +1,118 @@
+- type: entity
+  parent: BaseItem
+  categories: [ HideSpawnMenu ]
+  id: DataChip
+  suffix: WH40K
+  components:
+  - type: Sprite
+    scale: 0.8,0.8
+    sprite: _WH40K/Objects/Specific/intelligence.rsi
+    layers:
+    - state: datachip
+      map: ["base"]
+  - type: Item
+    size: Small
+  - type: Stack
+    stackType: DataChip
+    baseLayer: base
+    layerStates:
+    - datachip
+    - datachip_2
+    - datachip_3
+    - datachip_4
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [ 2, 3, 4 ]
+  - type: StackPrice
+    price: 1
+  - type: Appearance
+  - type: PhysicalComposition
+    materialComposition:
+      DataChip: 1
+  - type: Tag
+    tags:
+    - DataChip
+  - type: Material
+
+- type: entity
+  parent: DataChip
+  id: DataChip4
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 4
+
+- type: entity
+  parent: DataChip
+  id: DataChip1
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  parent: BaseItem
+  id: DataChipImp
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Sprite
+    scale: 0.8,0.8
+    sprite: _WH40K/Objects/Specific/intelligence_imp.rsi
+    layers:
+    - state: datachip
+      map: ["base"]
+  - type: Item
+    size: Small
+  - type: Stack
+    stackType: DataChipImp
+    count: 1
+    baseLayer: base
+    layerStates:
+    - datachip
+    - datachip_2
+    - datachip_3
+    - datachip_4
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [ 2, 3, 4 ]
+  - type: StackPrice
+    price: 1
+  - type: Appearance
+
+- type: entity
+  parent: DataChipImp
+  id: DataChipImp2
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 2
+
+- type: entity
+  parent: DataChipImp
+  id: DataChipImp3
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 3
+
+- type: entity
+  parent: DataChipImp
+  id: DataChipImp4
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 4
+
+- type: material
+  id: DataChip
+  stackEntity: DataChip
+  name: materials-datapoint
+  unit: materials-unit-piece
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/intelligence.rsi, state: datachip }
+  color: "#8A9A5B"
+  price: 1

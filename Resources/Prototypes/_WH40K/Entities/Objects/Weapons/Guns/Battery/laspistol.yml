@@ -1,0 +1,62 @@
+- type: entity
+  parent: WeaponLaserWH40KEnergy
+  id: WeaponLaserPistol
+  description:
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol.rsi
+  - type: Gun
+    fireRate: 2
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol.rsi
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+  - type: Tag
+    tags:
+    - Sidearm
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Pistols/viper.rsi
+    slots:
+    - Belt
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      wh40k-weapon-mod-optic: !type:ContainerSlot
+      wh40k-weapon-mod-utility: !type:ContainerSlot
+
+- type: entity
+  parent: WeaponLaserWH40KEnergy
+  id: WeaponLaserPistolCommissar
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol_elite.rsi
+  - type: Gun
+    fireRate: 3
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol_elite.rsi
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+  - type: Tag
+    tags:
+    - Sidearm
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Pistols/viper.rsi
+    slots:
+    - Belt
+

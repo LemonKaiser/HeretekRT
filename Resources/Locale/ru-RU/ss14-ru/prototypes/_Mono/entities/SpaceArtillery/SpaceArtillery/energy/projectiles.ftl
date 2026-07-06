@@ -1,0 +1,12 @@
+ent-ShipMediumPlasmaProjectile = плазменный снаряд
+ent-ShipCerberusPlasma = плазменный снаряд
+ent-CerberusSpread = веер Cerberus
+ent-ShipAutopulserPlasmaProjectile = плазменный снаряд
+ent-ShipPlasmaProjectileScylla = плазменный снаряд
+ent-ShipGlassingBeamPlasmaProjectile = плазменный снаряд
+ent-ShipM25Projectile = снаряд M25
+ent-ShipRubiconProjectile = ЭМИ-снаряд
+ent-ShipDymereProjectile = ионизованный газовый снаряд
+ent-ShipNeutronProjectile = нейтронный снаряд
+ent-ShipIonProjectile = ионный снаряд
+ent-ShipAntiMatterProjectile = антиматерийный снаряд

@@ -1,0 +1,478 @@
+- type: entity
+  id: MapPropCrates
+  parent: BaseStructure
+  suffix: WH40K, Пропы
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.1,0.37,0.1,0.55"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/mapprops.rsi
+    state: map_prop0
+
+- type: entity
+  id: MapPropBlock
+  parent: MapPropCrates
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.16,-0.48,0.16,0.48"
+        density: 150
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Animateable
+  - type: Sprite
+    state: map_prop1
+
+- type: entity
+  id: MapPropBlock3
+  parent: MapPropCrates
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.47,-0.28,0.47,0.16"
+        density: 150
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Climbable
+    vaultable: false
+  - type: Sprite
+    state: map_prop7
+
+- type: entity
+  id: MapPropRock
+  parent: MapPropCrates
+  components:
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures: {}
+  - type: Sprite
+    state: map_prop2
+
+- type: entity
+  id: MapPropBlock1
+  parent: MapPropCrates
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.22,0.25,0.22"
+        density: 150
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: map_prop3
+
+- type: entity
+  id: MapPropBeam
+  parent: MapPropCrates
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0,0.6,-0.03,0"
+        density: 150
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: map_prop4
+
+- type: entity
+  id: MapPropCoil
+  parent: MapPropCrates
+  components:
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures: {}
+  - type: Climbable
+    vaultable: false
+  - type: Sprite
+    state: map_prop5
+
+- type: entity
+  id: MapPropBlock2
+  parent: MapPropCrates
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.30,-0.34,0.30,0.31"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: map_prop6
+
+- type: entity
+  id: ChaosProp
+  parent: BaseStructureDynamic
+  suffix: WH40K, Пропы
+  components:
+  - type: Transform
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/chaos.rsi
+    state: "1"
+
+- type: entity
+  id: ChaosProp2
+  parent: ChaosProp
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: "2"
+
+- type: entity
+  id: ChaosProp3
+  parent: ChaosProp
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: "3"
+
+- type: entity
+  id: ChaosProp4
+  parent: ChaosProp
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: "4"
+
+- type: entity
+  id: ChaosProp5
+  parent: ChaosProp
+  description: Ave Dominus Nox!
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Sprite
+    state: "5"
+
+- type: entity
+  id: MapPropFallout
+  parent: BaseStructure
+  suffix: WH40K, Пропы
+  components:
+  - type: Transform
+    noRot: true
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Pullable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_props.rsi
+    state: trashbags_1
+
+- type: entity
+  id: MapPropFallout2
+  parent: MapPropFallout
+  components:
+  - type: Sprite
+    state: trashbags_2
+
+- type: entity
+  id: MapPropFallout3
+  parent: MapPropFallout
+  components:
+  - type: Sprite
+    state: trashbags_3
+
+- type: entity
+  id: MapPropFallout4
+  parent: MapPropFallout
+  components:
+  - type: Sprite
+    state: trashbags_4
+
+- type: entity
+  id: MapPropFallout5
+  parent: MapPropFallout
+  components:
+  - type: Sprite
+    state: trashbags_5
+
+- type: entity
+  id: MapPropFallout6
+  parent: MapPropFallout
+  components:
+  - type: Sprite
+    state: trashbags_6
+
+- type: entity
+  id: MapPropFallout7
+  parent: BaseStructure
+  suffix: WH40K, Пропы
+  components:
+  - type: Transform
+    noRot: true
+  - type: Pullable
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.125,-0.5,0.125,0.5"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_props.rsi
+    state: mine_sign
+
+- type: entity
+  id: MapPropFallout8
+  parent: BaseStructure
+  suffix: WH40K, Пропы
+  components:
+  - type: Transform
+    noRot: true
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_props.rsi
+    state: skeleton
+
+- type: entity
+  id: WH40KImperialColumn
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.22,-0.45,0.22,0.45"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageModifierSet: Metallic
+  - type: Sprite
+    noRot: true
+    sprite: _WH40K/Structures/Decorations/imperial_props.rsi
+    state: column_1
+    drawdepth: Mobs
+    offset: "0.0,0.5"
+  - type: StaticPrice
+    price: 80
+  - type: RequireProjectileTarget
+
+- type: entity
+  id: WH40KImperialColumn2
+  parent: WH40KImperialColumn
+  suffix: WH40K, Props
+  components:
+  - type: Sprite
+    state: column_2
+
+- type: entity
+  id: WH40KImperialColumn3
+  parent: WH40KImperialColumn
+  suffix: WH40K, Props
+  components:
+  - type: Sprite
+    state: column_3
+
+- type: entity
+  id: WH40KCommissarStatue
+  parent: WH40KImperialColumn
+  suffix: WH40K, Props
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.35,0.25,0.35"
+        density: 300
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: Sprite
+    state: commissar_statue
+  - type: StaticPrice
+    price: 120

@@ -1,0 +1,126 @@
+- type: entity
+  id: WH40KTacticalMapScannerEye
+  parent: BaseItem
+  name: tactical map scanner eye
+  description: A preserved hidden helper shell from the old tactical map system.
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/tablets.rsi
+    state: generic
+  - type: Item
+    sprite: Objects/Devices/tablets.rsi
+    size: Tiny
+
+- type: entity
+  id: WH40KBaseTacticalMapDevice
+  abstract: true
+  name: tactical map device
+  description: A preserved tactical-map shell without the old battlefield UI logic.
+
+- type: entity
+  id: WH40KBaseTacticalMapTablet
+  parent:
+  - WH40KBaseTacticalMapDevice
+  - BaseItem
+  abstract: true
+  name: tactical map tablet
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/tablets.rsi
+    layers:
+    - state: tablet
+    - state: generic
+      shader: unshaded
+  - type: Icon
+    sprite: Objects/Devices/tablets.rsi
+    state: tablet
+  - type: Item
+    sprite: Objects/Devices/tablets.rsi
+    size: Normal
+
+- type: entity
+  id: WH40KBaseTacticalMapConsole
+  parent:
+  - WH40KBaseTacticalMapDevice
+  - BaseStructure
+  abstract: true
+  name: tactical map console
+  components:
+  - type: InteractionOutline
+  - type: Rotatable
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/mapimp.rsi
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/mapimp.rsi
+    state: computer
+
+- type: entity
+  id: WH40KBaseTacticalMapConsolePowered
+  parent: WH40KBaseTacticalMapConsole
+  abstract: true
+
+- type: entity
+  id: WH40KCommandTacticalMapTablet
+  parent: WH40KBaseTacticalMapTablet
+  suffix: WH40K, Handheld, Command
+
+- type: entity
+  id: WH40KStandardTacticalMapTablet
+  parent: WH40KBaseTacticalMapTablet
+  suffix: WH40K, Handheld, Standard
+
+- type: entity
+  id: WH40KCommandTacticalMapConsole
+  parent: WH40KBaseTacticalMapConsole
+  suffix: WH40K, Console, Command
+
+- type: entity
+  id: WH40KStandardTacticalMapConsole
+  parent: WH40KBaseTacticalMapConsolePowered
+  suffix: WH40K, Console, Standard
+
+- type: entity
+  id: WH40KCommandTacticalMapConsoleImperium
+  parent: WH40KCommandTacticalMapConsole
+  suffix: WH40K, Console, Command, Imperium
+
+- type: entity
+  id: WH40KCommandTacticalMapConsoleHeretics
+  parent: WH40KCommandTacticalMapConsole
+  suffix: WH40K, Console, Command, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/mapchaos.rsi
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/mapchaos.rsi
+    state: computer
+
+- type: entity
+  id: WH40KStandardTacticalMapConsoleImperium
+  parent: WH40KStandardTacticalMapConsole
+  suffix: WH40K, Console, Standard, Imperium
+
+- type: entity
+  id: WH40KStandardTacticalMapConsoleHeretics
+  parent: WH40KStandardTacticalMapConsole
+  suffix: WH40K, Console, Standard, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/mapchaos.rsi
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/mapchaos.rsi
+    state: computer

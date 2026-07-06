@@ -1,0 +1,231 @@
+- type: entity
+  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  id: WeaponRocketLauncher
+  description:
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rocketlauncher.rsi
+    layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: mag-0
+        map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rocketlauncher.rsi
+  - type: Gun
+    fireRate: 0.5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+        - CartridgeRocket
+    proto: CartridgeRocketHE
+    capacity: 1
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
+  - type: Appearance
+
+- type: entity
+  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  id: WeaponRocketLauncherImperial
+  suffix: WH40K, Imperium
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_imperial.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_imperial.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_cadia/grenade_cadia.rsi
+    shape:
+    - 0,0,4,2
+  - type: Gun
+    fireRate: 0.5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: AmmoCounter
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeRocket
+    proto: CartridgeRocketHE
+    capacity: 1
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: GunRequiresWield
+
+- type: entity
+  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  id: WeaponRocketLauncherChaos
+  suffix: WH40K, Chaos
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_chaos.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_chaos.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_chs/grenade_chs.rsi
+    shape:
+    - 0,0,4,2
+  - type: Gun
+    fireRate: 0.5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: AmmoCounter
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - CartridgeRocket
+    proto: CartridgeRocketHE
+    capacity: 1
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: GunRequiresWield
+
+- type: entity
+  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  id: WeaponRocketLauncherImperialDisposable
+  suffix: WH40K, Imperium
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_imperial_disposable.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_imperial_disposable.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,2
+  - type: Gun
+    fireRate: 0.5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: AmmoCounter
+  - type: BasicEntityAmmoProvider
+    proto: CartridgeRocketHE
+    capacity: 1
+    count: 1
+  - type: GunRequiresWield
+
+- type: entity
+  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  id: WeaponRocketLauncherChaosDisposable
+  suffix: WH40K, Chaos
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_chaos_disposable.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/rpg_chaos_disposable.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,2
+  - type: Gun
+    fireRate: 0.5
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+  - type: AmmoCounter
+  - type: BasicEntityAmmoProvider
+    proto: CartridgeRocketHE
+    capacity: 1
+    count: 1
+  - type: GunRequiresWield
+
+- type: entity
+  parent: [BaseWeaponRevolver, BaseGunWieldable]
+  id: WeaponLauncherCadia
+  suffix: WH40K, Imperium
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_cadia/grenade_cadia_icon.rsi
+    layers:
+      - state: icon
+        map: ["enum.GunVisualLayers.Base"]
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_cadia/grenade_cadia.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,2
+  - type: RevolverAmmoProvider
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]
+    whitelist:
+      tags:
+        - Grenade
+    proto: GrenadeFrag
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: Gun
+    fireRate: 1
+    projectileSpeed: 25 # Slower than a bullet, same speed as our old projectile limit.
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+  - type: GunRequiresWield
+
+- type: entity
+  parent: [BaseWeaponRevolver, BaseGunWieldable]
+  id: WeaponLauncherChs
+  suffix: WH40K, Chaos
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_chs/grenade_chs_icon.rsi
+    layers:
+      - state: icon
+        map: ["enum.GunVisualLayers.Base"]
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_chs/grenade_chs.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,2
+  - type: RevolverAmmoProvider
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]
+    whitelist:
+      tags:
+        - Grenade
+    proto: GrenadeFrag
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: Gun
+    fireRate: 1
+    projectileSpeed: 25 # Slower than a bullet, same speed as our old projectile limit.
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+  - type: GunRequiresWield

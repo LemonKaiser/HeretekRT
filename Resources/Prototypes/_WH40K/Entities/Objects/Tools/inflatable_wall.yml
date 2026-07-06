@@ -1,0 +1,137 @@
+- type: entity
+  id: WH40KInflatableWallStackImperium
+  parent: [BaseItem, RecyclableItemPlasticSmall]
+  name: imperium inflatable wall pack
+  description: Folded rapid-deploy barrier for front-line engineers.
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: InflatableWall
+    count: 8
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+    state: folded_wall
+  - type: Item
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+    size: Small
+  - type: SpawnAfterInteract
+    prototype: WH40KInflatableWallImperium
+    doAfter: 1
+    removeOnInteract: true
+  - type: Clickable
+  - type: ConstructionMaterials
+
+- type: entity
+  id: WH40KInflatableWallStackImperium1
+  parent: WH40KInflatableWallStackImperium
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  id: WH40KInflatableDoorStackImperium
+  parent: [BaseItem, RecyclableItemPlasticSmall]
+  name: imperium inflatable door pack
+  description: Folded rapid-deploy inflatable hatch for front-line engineers.
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: InflatableDoor
+    count: 4
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+    state: folded_door
+  - type: Item
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+    size: Small
+  - type: SpawnAfterInteract
+    prototype: WH40KInflatableDoorImperium
+    doAfter: 1
+    removeOnInteract: true
+  - type: Clickable
+  - type: ConstructionMaterials
+
+- type: entity
+  id: WH40KInflatableDoorStackImperium1
+  parent: WH40KInflatableDoorStackImperium
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  id: WH40KInflatableWallStackHeretics
+  parent: WH40KInflatableWallStackImperium
+  name: heretics inflatable wall pack
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+    state: folded_wall
+  - type: Item
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+  - type: SpawnAfterInteract
+    prototype: WH40KInflatableWallHeretics
+    doAfter: 1
+    removeOnInteract: true
+
+- type: entity
+  id: WH40KInflatableWallStackHeretics1
+  parent: WH40KInflatableWallStackHeretics
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  id: WH40KInflatableDoorStackHeretics
+  parent: WH40KInflatableDoorStackImperium
+  name: heretics inflatable door pack
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+    state: folded_door
+  - type: Item
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+  - type: SpawnAfterInteract
+    prototype: WH40KInflatableDoorHeretics
+    doAfter: 1
+    removeOnInteract: true
+
+- type: entity
+  id: WH40KInflatableDoorStackHeretics1
+  parent: WH40KInflatableDoorStackHeretics
+  suffix: 1
+  components:
+  - type: Stack
+    count: 1
+
+- type: entity
+  id: WH40KInflatableCoverKitImperium
+  parent: BoxCardboard
+  name: imperium inflatable cover kit
+  description: Engineer field kit with rapid-deploy inflatable walls and a door.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: WH40KInflatableWallStackImperium
+        - !type:EntSelector
+          id: WH40KInflatableDoorStackImperium
+
+- type: entity
+  id: WH40KInflatableCoverKitHeretics
+  parent: BoxCardboard
+  name: heretics inflatable cover kit
+  description: Engineer field kit with rapid-deploy inflatable walls and a door.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: WH40KInflatableWallStackHeretics
+        - !type:EntSelector
+          id: WH40KInflatableDoorStackHeretics

@@ -1,0 +1,485 @@
+- type: entity
+  id: BarricadeWarhammer
+  parent: BaseBarricade
+  suffix: WH40K
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/barricades.rsi
+    state: barricade
+    noRot: false
+  - type: WH40KDirectionalBarricade
+    flipPassSide: true
+    blockedSidePassChance: 0.05
+  - type: Climbable
+    delay: 4
+  - type: Tag
+    tags:
+    - barricade
+  - type: Physics
+  - type: Damageable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.45,0.49,-0.25"
+        mask:
+        - FullTileMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+
+- type: entity
+  id: WH40KShieldBarricade
+  parent: BaseStructure
+  suffix: WH40K
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/shield_barricade.rsi
+    drawdepth: BlastDoors
+    noRot: false
+    layers:
+    - state: shield-barricade
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/shield_barricade.rsi
+    state: shield-barricade
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.45,0.49,-0.25"
+        mask:
+        - FullTileMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+
+- type: entity
+  id: BarricadeSandbags
+  parent: BarricadeWarhammer
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    state: sandbags
+  - type: WH40KDirectionalBarricade
+    passSideMaxDistance: 2
+    blockedSidePassChance: 0
+  - type: Tag
+    tags:
+    - barricade
+  - type: Damageable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+
+- type: entity
+  id: FallotBarbedWire
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: barbedwire_single
+    drawdepth: SmallObjects
+  - type: Tag
+    tags:
+    - barricade
+  - type: Damageable
+    damageModifierSet: Metallic
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: DamageOtherOnHit
+    damage:
+      types:
+        Slash: 1
+  - type: StepTrigger
+    intersectRatio: 0.2
+    requiredTriggeredSpeed: 0
+  - type: PreventableStepTrigger
+  - type: TriggerOnStepTrigger
+  - type: DamageContacts
+    damage:
+      types:
+        Slash: 1
+    ignoreWhitelist:
+      components:
+      - Mech
+  - type: SpeedModifierContacts
+    walkSpeedModifier: 0.08
+    sprintSpeedModifier: 0.08
+    ignoreWhitelist:
+      components:
+      - Mech
+  - type: Fixtures
+    fixtures:
+      slips:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.43,0.49,-0.22"
+        hard: false
+        layer:
+        - LowImpassable
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.43,0.49,-0.22"
+        density: 100
+        mask:
+        - ItemMask
+  - type: CollisionWake
+    enabled: false
+  - type: Slippery
+    slipSound:
+      path: /Audio/Effects/fence_rattle1.ogg
+    slipData:
+      paralyzeTime: 0
+      launchForwardsMultiplier: 0
+
+- type: entity
+  id: FalloutBarricades
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 800
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: iron_barricade
+  - type: Construction
+    graph: WH40KFalloutBarricades
+    node: barricadeIron
+
+- type: entity
+  id: FalloutBarricades3
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: iron_barricadeA
+
+- type: entity
+  id: FalloutBarricades4
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 700
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: iron_barricade2
+  - type: Construction
+    graph: WH40KFalloutBarricades
+    node: barricadeIronWide
+
+- type: entity
+  id: FalloutBarricades5
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: iron_barricade2A
+
+- type: entity
+  id: FalloutBarricades6
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: boarded
+  - type: Construction
+    graph: WH40KFalloutBarricades
+    node: barricadeBoarded
+
+- type: entity
+  id: FalloutBarricades7
+  parent: BaseStructure
+  suffix: WH40K, Props
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Tag
+    tags:
+    - barricade
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 500
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi
+    state: bars
+  - type: Construction
+    graph: WH40KFalloutBarricades
+    node: barricadeBars
+
+- type: entity
+  id: BarricadeWarhammerChaos
+  parent: BaseBarricade
+  suffix: WH40K, Chaos
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/barricadeschaosblack.rsi
+    state: haos_barricade_black_loophole
+    noRot: false
+  - type: WH40KDirectionalBarricade
+    flipPassSide: true
+    blockedSidePassChance: 0.05
+  - type: Climbable
+    delay: 4
+  - type: Tag
+    tags:
+    - barricade
+  - type: Physics
+  - type: Damageable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.45,0.49,-0.25"
+        mask:
+        - FullTileMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+
+- type: entity
+  id: BarricadeWarhammerChaosgreen
+  parent: BaseBarricade
+  suffix: WH40K, Chaos
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/barricadeschaosgreen.rsi
+    state: haos_barricade_green_loophole
+    noRot: false
+  - type: WH40KDirectionalBarricade
+    flipPassSide: true
+    blockedSidePassChance: 0.05
+  - type: Climbable
+    delay: 4
+  - type: Tag
+    tags:
+    - barricade
+  - type: Physics
+  - type: Damageable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.45,0.49,-0.25"
+        mask:
+        - FullTileMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable

@@ -1,0 +1,12 @@
+- type: entity
+  parent: Airlock
+  id: AirlockNecron
+  suffix: WH40K, Некроны
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Doors/Airlocks/necron.rsi
+  - type: Wires
+    layoutId: AirlockSecurity
+    # snapCardinals: false
+  - type: Airlock
+    animatePanel: false

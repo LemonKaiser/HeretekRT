@@ -1,0 +1,198 @@
+- type: entity
+  id: WH40KAmmoBoxAutogun
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge825mmLong
+    capacity: 40
+    whitelist:
+      tags:
+      - Cartridge825mmLong
+  - type: StaticPrice
+    price: 120
+
+- type: entity
+  id: WH40KAmmoBox10mm
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge10mm
+    capacity: 40
+    whitelist:
+      tags:
+      - Cartridge10mm
+  - type: StaticPrice
+    price: 120
+
+- type: entity
+  id: WH40KAmmoBox10mmLong
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge10mmLong
+    capacity: 40
+    whitelist:
+      tags:
+      - Cartridge10mmLong
+  - type: StaticPrice
+    price: 120
+
+- type: entity
+  id: WH40KAmmoBoxHeavyStubPistol
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeHeavyStubPistol
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgeHeavyStubPistol
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxMinigun
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeMinigun
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgeHeavyRifle
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxPhosphor
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/admech_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgePhosphor
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgePhosphor
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxElectricArc
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/admech_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeElectricArc
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgeElectricArc
+
+- type: entity
+  id: WH40KAmmoBoxSerpenta
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/admech_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeSerpenta
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgeSerpenta
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxRadCarabin
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/admech_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeRadCarabin
+    capacity: 40
+    whitelist:
+      tags:
+      - Cartridge308
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxGalvanic
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/admech_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeGalvanic
+    capacity: 40
+    whitelist:
+      tags:
+      - CartridgeGalvanic
+  - type: StaticPrice
+    price: 180
+

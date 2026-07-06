@@ -1,0 +1,242 @@
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumGuardsman
+  name: reinforcement preview imperium guardsman
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: WH40KReinforcementPreviewImperiumGuardsman
+  id: MobHumanWH40KImperiumReinforcement
+  name: imperium reinforcement guardsman
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumVoxScout
+  name: reinforcement preview imperium vox scout
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumMedic
+  name: reinforcement preview imperium medic
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumTitheSupplier
+  name: reinforcement preview imperium tithe supplier
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumMunitorumOfficer
+  name: reinforcement preview imperium munitorum officer
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumLexmechanic
+  name: reinforcement preview imperium lexmechanic
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumSergeant
+  name: reinforcement preview imperium sergeant
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumChaplain
+  name: reinforcement preview imperium chaplain
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumPsyker
+  name: reinforcement preview imperium psyker
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumKasrkin
+  name: reinforcement preview imperium kasrkin
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumLieutenant
+  name: reinforcement preview imperium lieutenant
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumCommissar
+  name: reinforcement preview imperium commissar
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewImperiumAstartes
+  name: reinforcement preview imperium astartes
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Sprite
+    scale: 0.72, 0.72
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsGuardsman
+  name: reinforcement preview heretics guardsman
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: WH40KReinforcementPreviewHereticsGuardsman
+  id: MobHumanWH40KHereticReinforcement
+  name: heretic reinforcement guardsman
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsBandSupplier
+  name: reinforcement preview heretics band supplier
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsLexmechanic
+  name: reinforcement preview heretics lexmechanic
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsSergeant
+  name: reinforcement preview heretics sergeant
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsLieutenant
+  name: reinforcement preview heretics lieutenant
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsHellishForeman
+  name: reinforcement preview heretics hellish foreman
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+
+- type: entity
+  parent: MobHumanDummy
+  id: WH40KReinforcementPreviewHereticsAstartes
+  name: reinforcement preview heretics astartes
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K, Hidden
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Sprite
+    scale: 0.72, 0.72
+
+- type: entity
+  id: SpawnPointWH40KReinforcementImperium
+  parent: MarkerBase
+  name: imperium reinforcement spawn
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Markers/jobs.rsi
+    layers:
+    - state: green
+    - state: guardsman
+
+- type: entity
+  id: SpawnPointWH40KReinforcementHeretics
+  parent: MarkerBase
+  name: heretics reinforcement spawn
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Markers/jobs.rsi
+    layers:
+    - state: green
+    - state: heretic
+    - state: guardsman

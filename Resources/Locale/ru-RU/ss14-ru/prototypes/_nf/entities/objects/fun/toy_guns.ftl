@@ -1,0 +1,1 @@
+ent-WeaponRifleBBEmpty = WeaponRifleBBEmpty

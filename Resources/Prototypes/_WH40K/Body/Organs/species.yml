@@ -1,0 +1,231 @@
+- type: entity
+  id: OrganTau
+  abstract: true
+  parent: BaseItem
+
+- type: entity
+  id: OrganTauExternal
+  abstract: true
+  parent: OrganTau
+
+- type: entity
+  id: OrganTauTorso
+  parent: [ OrganTauExternal, TorsoTau ]
+
+- type: entity
+  id: OrganTauHead
+  parent: [ OrganTauExternal, HeadTau ]
+
+- type: entity
+  id: OrganTauArmLeft
+  parent: [ OrganTauExternal, LeftArmTau ]
+
+- type: entity
+  id: OrganTauArmRight
+  parent: [ OrganTauExternal, RightArmTau ]
+
+- type: entity
+  id: OrganTauHandLeft
+  parent: [ OrganTauExternal, LeftHandTau ]
+
+- type: entity
+  id: OrganTauHandRight
+  parent: [ OrganTauExternal, RightHandTau ]
+
+- type: entity
+  id: OrganTauLegLeft
+  parent: [ OrganTauExternal, LeftLegTau ]
+
+- type: entity
+  id: OrganTauLegRight
+  parent: [ OrganTauExternal, RightLegTau ]
+
+- type: entity
+  id: OrganTauFootLeft
+  parent: [ OrganTauExternal, LeftFootTau ]
+
+- type: entity
+  id: OrganTauFootRight
+  parent: [ OrganTauExternal, RightFootTau ]
+
+- type: entity
+  id: OrganOrk
+  abstract: true
+  parent: BaseItem
+
+- type: entity
+  id: OrganOrkExternal
+  abstract: true
+  parent: OrganOrk
+
+- type: entity
+  id: OrganOrkTorso
+  parent: [ OrganOrkExternal, TorsoOrk ]
+
+- type: entity
+  id: OrganOrkHead
+  parent: [ OrganOrkExternal, HeadOrk ]
+
+- type: entity
+  id: OrganOrkArmLeft
+  parent: [ OrganOrkExternal, LeftArmOrk ]
+
+- type: entity
+  id: OrganOrkArmRight
+  parent: [ OrganOrkExternal, RightArmOrk ]
+
+- type: entity
+  id: OrganOrkHandLeft
+  parent: [ OrganOrkExternal, LeftHandOrk ]
+
+- type: entity
+  id: OrganOrkHandRight
+  parent: [ OrganOrkExternal, RightHandOrk ]
+
+- type: entity
+  id: OrganOrkLegLeft
+  parent: [ OrganOrkExternal, LeftLegOrk ]
+
+- type: entity
+  id: OrganOrkLegRight
+  parent: [ OrganOrkExternal, RightLegOrk ]
+
+- type: entity
+  id: OrganOrkFootLeft
+  parent: [ OrganOrkExternal, LeftFootOrk ]
+
+- type: entity
+  id: OrganOrkFootRight
+  parent: [ OrganOrkExternal, RightFootOrk ]
+
+- type: entity
+  id: OrganOrkEyes
+  parent: [ OrganOrk, OrganHumanEyes ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+
+- type: entity
+  id: OrganAstartes
+  abstract: true
+  parent: BaseItem
+
+- type: entity
+  id: OrganAstartesExternal
+  abstract: true
+  parent: OrganAstartes
+
+- type: entity
+  id: OrganAstartesInternal
+  abstract: true
+  parent: OrganAstartes
+
+- type: entity
+  id: OrganAstartesTorso
+  parent: [ OrganAstartesExternal, TorsoAstartes ]
+
+- type: entity
+  id: OrganAstartesHead
+  parent: [ OrganAstartesExternal, HeadAstartes ]
+
+- type: entity
+  id: OrganAstartesArmLeft
+  parent: [ OrganAstartesExternal, LeftArmAstartes ]
+
+- type: entity
+  id: OrganAstartesArmRight
+  parent: [ OrganAstartesExternal, RightArmAstartes ]
+
+- type: entity
+  id: OrganAstartesHandLeft
+  parent: [ OrganAstartesExternal, LeftHandAstartes ]
+
+- type: entity
+  id: OrganAstartesHandRight
+  parent: [ OrganAstartesExternal, RightHandAstartes ]
+
+- type: entity
+  id: OrganAstartesLegLeft
+  parent: [ OrganAstartesExternal, LeftLegAstartes ]
+
+- type: entity
+  id: OrganAstartesLegRight
+  parent: [ OrganAstartesExternal, RightLegAstartes ]
+
+- type: entity
+  id: OrganAstartesFootLeft
+  parent: [ OrganAstartesExternal, LeftFootAstartes ]
+
+- type: entity
+  id: OrganAstartesFootRight
+  parent: [ OrganAstartesExternal, RightFootAstartes ]
+
+- type: entity
+  id: OrganAstartesBrain
+  parent: [ OrganAstartesInternal, OrganHumanBrain ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesEyes
+  parent: [ OrganAstartesInternal, OrganHumanEyes ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesTongue
+  parent: [ OrganAstartesInternal, OrganHumanTongue ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesAppendix
+  parent: [ OrganAstartesInternal, OrganHumanAppendix ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesEars
+  parent: [ OrganAstartesInternal, OrganHumanEars ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesLungs
+  parent: [ OrganAstartesInternal, OrganHumanLungs ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesHeart
+  parent: [ OrganAstartesInternal, OrganHumanHeart ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesStomach
+  parent: [ OrganAstartesInternal, OrganHumanStomach ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesLiver
+  parent: [ OrganAstartesInternal, OrganHumanLiver ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi
+
+- type: entity
+  id: OrganAstartesKidneys
+  parent: [ OrganAstartesInternal, OrganHumanKidneys ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/organs.rsi

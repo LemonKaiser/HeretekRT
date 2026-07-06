@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "heretek",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "map_prop0"
+    },
+    {
+      "name": "map_prop1"
+    },
+    {
+      "name": "map_prop2"
+    },
+    {
+      "name": "map_prop3"
+    },
+    {
+      "name": "map_prop4"
+    },
+    {
+      "name": "map_prop5"
+    },
+    {
+      "name": "map_prop6"
+    },
+    {
+      "name": "map_prop7"
+    }
+  ]
+}

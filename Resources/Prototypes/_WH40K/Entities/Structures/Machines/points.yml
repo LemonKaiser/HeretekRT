@@ -1,0 +1,45 @@
+- type: entity
+  id: WH40KBasePointLathe
+  parent: WH40KBaseLatheMachine
+  abstract: true
+  suffix: WH40K, decor
+
+- type: entity
+  id: ImpPointLathe
+  parent: WH40KBasePointLathe
+  name: imperium point lathe
+  description: A legacy WH40K data-conversion lathe preserved as decorative machinery.
+  suffix: WH40K, Imperium, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/data_conventer.rsi
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: icon
+    - state: unshaded
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/data_conventer.rsi
+    state: icon
+  - type: SpriteFade
+
+- type: entity
+  id: ChPointLathe
+  parent: WH40KBasePointLathe
+  name: heretic point lathe
+  description: A legacy WH40K data-conversion lathe preserved as decorative machinery.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/data_conventer_ch.rsi
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: icon
+    - state: unshaded
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/data_conventer_ch.rsi
+    state: icon
+  - type: SpriteFade

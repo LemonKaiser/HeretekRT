@@ -1,0 +1,270 @@
+- type: entity
+  save: false
+  name: Urist T'au
+  parent: BaseMobHuman
+  id: BaseMobTau
+  abstract: true
+  components:
+  - type: HumanoidAppearance
+    species: Tau
+    hideLayersOnEquip:
+    - Hair
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: full
+  - type: Body
+    prototype: Tau
+    requiredLegs: 2
+  - type: DamageVisuals
+    thresholds: [ 8, 16, 24, 40, 56, 80 ]
+    targetLayers:
+    - enum.HumanoidVisualLayers.Chest
+    - enum.HumanoidVisualLayers.Head
+    - enum.HumanoidVisualLayers.LArm
+    - enum.HumanoidVisualLayers.LLeg
+    - enum.HumanoidVisualLayers.RArm
+    - enum.HumanoidVisualLayers.RLeg
+    damageOverlayGroups:
+      Brute:
+        sprite: _WH40K/Mobs/Species/Tau/brute_damage.rsi
+        color: "#FF0000"
+      Burn:
+        sprite: _WH40K/Mobs/Species/Tau/burn_damage.rsi
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      48: 0.7
+      64: 0.5
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      80: Critical
+      160: Dead
+  - type: Stamina
+    critThreshold: 80
+  - type: ScaleVisuals
+    scale: 1, 0.95
+  - type: Inventory
+    speciesId: tau
+
+- type: entity
+  parent: BaseSpeciesDummy
+  id: MobTauDummy
+  categories: [ HideSpawnMenu ]
+  description: A dummy tau meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Tau
+    hideLayersOnEquip:
+    - Hair
+  - type: Inventory
+    speciesId: tau
+  - type: Body
+    prototype: Tau
+    requiredLegs: 2
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: full
+
+- type: entity
+  save: false
+  name: Urist Ork
+  parent: BaseMobHuman
+  id: BaseMobOrk
+  abstract: true
+  components:
+  - type: HumanoidAppearance
+    species: Ork
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: full
+  - type: Body
+    prototype: Ork
+    requiredLegs: 2
+  - type: DamageVisuals
+    thresholds: [ 8, 16, 24, 40, 56, 80 ]
+    targetLayers:
+    - enum.HumanoidVisualLayers.Chest
+    - enum.HumanoidVisualLayers.Head
+    - enum.HumanoidVisualLayers.LArm
+    - enum.HumanoidVisualLayers.LLeg
+    - enum.HumanoidVisualLayers.RArm
+    - enum.HumanoidVisualLayers.RLeg
+    damageOverlayGroups:
+      Brute:
+        sprite: _WH40K/Mobs/Species/Ork/brute_damage.rsi
+        color: "#FF0000"
+      Burn:
+        sprite: _WH40K/Mobs/Species/Ork/burn_damage.rsi
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      180: 0.7
+      240: 0.5
+  - type: Bloodstream
+    bleedReductionAmount: 1
+    maxBleedAmount: 30
+    bloodRefreshAmount: 3
+    bleedPuddleThreshold: 3
+    bloodReagent: Blood
+    bloodMaxVolume: 900
+  - type: Stamina
+    critThreshold: 300
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      145: Critical
+      240: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 40
+        Structural: 20
+  - type: PassiveDamage
+    allowedStates:
+    - Alive
+    - Critical
+    damage:
+      types:
+        Heat: -0.35
+        Blunt: -0.25
+        Piercing: -0.25
+        Slash: -0.25
+  - type: Inventory
+    speciesId: ork
+
+- type: entity
+  parent: BaseSpeciesDummy
+  id: MobOrkDummy
+  categories: [ HideSpawnMenu ]
+  description: A dummy ork meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Ork
+  - type: Inventory
+    speciesId: ork
+  - type: Body
+    prototype: Ork
+    requiredLegs: 2
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: full
+
+- type: entity
+  save: false
+  name: Urist McAstartes
+  parent: BaseMobHuman
+  id: BaseMobAstartes
+  abstract: true
+  components:
+  - type: HumanoidAppearance
+    species: Astartes
+    hideLayersOnEquip:
+    - Hair
+    - HeadTop
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: full
+  - type: Body
+    prototype: Astartes
+    requiredLegs: 2
+  - type: Inventory
+    speciesId: astartes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: jumpsuit
+      gloves:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: shoes
+  - type: DamageVisuals
+    thresholds: [ 30, 60, 90, 150, 210, 300 ]
+    targetLayers:
+    - enum.HumanoidVisualLayers.Chest
+    - enum.HumanoidVisualLayers.Head
+    - enum.HumanoidVisualLayers.LArm
+    - enum.HumanoidVisualLayers.LLeg
+    - enum.HumanoidVisualLayers.RArm
+    - enum.HumanoidVisualLayers.RLeg
+    damageOverlayGroups:
+      Brute:
+        sprite: _WH40K/Mobs/Species/Astartes/brute_damage.rsi
+        color: "#FF0000"
+      Burn:
+        sprite: _WH40K/Mobs/Species/Astartes/burn_damage.rsi
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.25
+    baseSprintSpeed: 4.05
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 80
+        Structural: 20
+  - type: ActionGun
+    action: ActionWH40KAstartesToxicSpit
+    gunProto: WH40KAstartesToxicSpitGun
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      450: Critical
+      900: Dead
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      270: 0.7
+      360: 0.5
+  - type: Bloodstream
+    bleedReductionAmount: 1
+    maxBleedAmount: 30
+    bloodRefreshAmount: 3
+    bleedPuddleThreshold: 3
+    bloodReagent: Blood
+    bloodMaxVolume: 900
+  - type: Stamina
+    critThreshold: 300
+  - type: Speech
+    speechSounds: Bass
+    allowedEmotes: [ 'Belch' ]
+  - type: SpeciesItemRequirement
+
+- type: entity
+  parent: BaseSpeciesDummy
+  id: MobAstartesDummy
+  categories: [ HideSpawnMenu ]
+  description: A dummy astartes meant to be used in character setup.
+  components:
+  - type: HumanoidAppearance
+    species: Astartes
+    hideLayersOnEquip:
+    - Hair
+    - HeadTop
+  - type: Inventory
+    speciesId: astartes
+    displacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: jumpsuit
+      gloves:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: hand
+      shoes:
+        sizeMaps:
+          32:
+            sprite: _WH40K/Mobs/Species/Astartes/displacement.rsi
+            state: shoes
+  - type: Body
+    prototype: Astartes
+    requiredLegs: 2
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: full

@@ -1,0 +1,17 @@
+- type: entity
+  parent: MobTauDummy
+  id: AppearanceTau
+  name: tau appearance
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  parent: MobOrkDummy
+  id: AppearanceOrk
+  name: ork appearance
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  parent: MobAstartesDummy
+  id: AppearanceAstartes
+  name: astartes appearance
+  categories: [ HideSpawnMenu ]

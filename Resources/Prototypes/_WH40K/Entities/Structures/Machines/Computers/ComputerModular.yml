@@ -1,0 +1,187 @@
+- type: entity
+  id: WH40KBaseModularComputer
+  parent: BaseStructure
+  abstract: true
+  placement:
+   mode: AlignTileAny
+  components:
+  - type: Animateable
+  - type: InteractionOutline
+  - type: Rotatable
+  - type: Computer
+  - type: ApcPowerReceiver
+    powerLoad: 50
+  - type: ExtensionCableReceiver
+  - type: ActivatableUIRequiresPower
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+      enum.WiresVisuals.MaintenancePanelState:
+        enum.WiresVisualLayers.MaintenancePanel:
+          True: { visible: false }
+          False: { visible: true }
+  - type: LitOnPowered
+  - type: EmitSoundOnUIOpen
+    sound:
+      collection: Keyboard
+      params:
+        volume: -1
+        variation: 0.10
+        pitch: 1.10
+    blacklist:
+      tags:
+      - NoConsoleSound
+  - type: ContainerContainer
+    containers:
+      board: !type:Container
+        ents: []
+  - type: LightningTarget
+    priority: 1
+  - type: RequireProjectileTarget
+  - type: Electrified
+    enabled: false
+    usesApcPower: true
+  - type: WiresPanel
+  - type: WiresVisuals
+  - type: Wires
+    boardName: wires-board-name-computer
+    layoutId: Computer
+
+- type: entity
+  id: ShuttleComputerModular
+  parent: WH40KBaseModularComputer
+  name: терминал управления
+  description: Терминал, используемый для управления кораблём и поддержания связи.
+  suffix: WH40K
+  components:
+  - type: SpriteFade
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/modular_computer.rsi
+    drawdepth: Mobs
+    offset: 0,0.4
+    layers:
+    - state: base
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      visible: false
+    - state: unshaded
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+    - state: inserting
+      visible: false
+      map: ["enum.MaterialStorageVisualLayers.Inserting"]
+  - type: AmbientSound
+    range: 5
+    volume: -10
+    sound:
+      path: /Audio/Ambience/Objects/emf_buzz.ogg
+  - type: PointLight
+    radius: 5
+    energy: 1.6
+    color: "#339b1c"
+  - type: CommunicationsConsole
+    title: comms-console-announcement-title-station
+  - type: DeviceNetwork
+    transmitFrequencyId: ShuttleTimer
+  - type: ActivatableUI
+    key: enum.CommunicationsConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.CommunicationsConsoleUiKey.Key:
+        type: CommunicationsConsoleBoundUserInterface
+  - type: Computer
+    board: CommsComputerCircuitboard
+  - type: MaterialStorage
+    whitelist:
+      tags:
+        - Sheet
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.5,-0.5,1.5,1.4"
+        density: 50
+        mask:
+        - LargeMobMask
+        layer:
+        - WallLayer
+  - type: Repairable
+    fuelCost: 10
+    doAfterDelay: 5
+
+- type: entity
+  id: AdMechComputerModular
+  parent: WH40KBaseModularComputer
+  name: терминал
+  description: Терминал, используемый для технических работ.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/admech_modular_computer.rsi
+    offset: 0.5,0
+    layers:
+    - state: base
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      visible: false
+    - state: unshaded
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+    - state: inserting
+      visible: false
+      map: ["enum.MaterialStorageVisualLayers.Inserting"]
+  - type: SpriteFade
+  - type: AmbientSound
+    range: 5
+    volume: -10
+    sound:
+      path: /Audio/Ambience/Objects/emf_buzz.ogg
+  - type: PointLight
+    radius: 5
+    energy: 1.6
+    color: "#339b1c"
+  - type: ActivatableUIRequiresPower
+  - type: Computer
+    board: PowerComputerCircuitboard
+  - type: PowerMonitoringConsole
+  - type: PowerMonitoringCableNetworks
+  - type: NodeContainer
+    examinable: true
+    nodes:
+      hv:
+        !type:CableDeviceNode
+        nodeGroupID: HVPower
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.PowerMonitoringConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.PowerMonitoringConsoleUiKey.Key:
+        type: PowerMonitoringConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: MaterialStorage
+    whitelist:
+      tags:
+        - Sheet
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.2,1.1,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+          - MachineLayer
+  - type: Repairable
+    fuelCost: 10
+    doAfterDelay: 5

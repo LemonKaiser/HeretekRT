@@ -1,0 +1,115 @@
+- type: entity
+  id: WH40KWeaponPsykerForceStaffBase
+  abstract: true
+  parent: WeaponStaffBase
+  components:
+  - type: Sprite
+    state: icon
+  - type: Item
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Blunt: 8
+
+- type: entity
+  name: biomantic force staff
+  description: A force staff that channels biomantic energy into healing bolts. The projectile injects omnizine on impact rather than instantly healing.
+  parent: WH40KWeaponPsykerForceStaffBase
+  id: WeaponPsykerForceStaffBiomantic
+  suffix: WH40K, Psyker
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/biomantic_force_staff.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/biomantic_force_staff.rsi
+    heldPrefix: biomancy
+  - type: Gun
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/Magic/staff_healing.ogg
+    projectileSpeed: 20
+  - type: BasicEntityAmmoProvider
+    proto: WH40KProjectilePsykerBiomanticBolt
+    capacity: 5
+    count: 5
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 45
+  - type: PacifismAllowedGun
+
+- type: entity
+  name: pyromantic force staff
+  description: A force staff that channels the warp into a continuous stream of searing warpfire.
+  parent: WH40KWeaponPsykerForceStaffBase
+  id: WeaponPsykerForceStaffPyromantic
+  suffix: WH40K, Psyker
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/pyromantic_force_staff.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/pyromantic_force_staff.rsi
+    heldPrefix: pyromancy
+  - type: Gun
+    fireRate: 7
+    minAngle: 0
+    maxAngle: 25
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/flamethrower.ogg
+      params:
+        volume: 2
+    projectileSpeed: 22
+  - type: BasicEntityAmmoProvider
+    proto: WH40KProjectilePsykerWarpfireBolt
+    capacity: 20
+    count: 20
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 25
+
+- type: entity
+  name: psychic force staff
+  description: A force staff for direct warp discharge.
+  parent: WH40KWeaponPsykerForceStaffBase
+  id: WeaponPsykerForceStaffPsychic
+  suffix: WH40K, Psyker
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/psychic_force_staff.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/psychic_force_staff.rsi
+    heldPrefix: psychic
+  - type: Gun
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/Magic/staff_animation.ogg
+    projectileSpeed: 24
+  - type: BasicEntityAmmoProvider
+    proto: WH40KProjectilePsykerMindBolt
+    capacity: 5
+    count: 5
+
+- type: entity
+  name: telekinetic force staff
+  description: A force staff that hurls a kinetic shock.
+  parent: WH40KWeaponPsykerForceStaffBase
+  id: WeaponPsykerForceStaffTelekinetic
+  suffix: WH40K, Psyker
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/telekinetic_force_staff.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Psyker/telekinetic_force_staff.rsi
+    heldPrefix: telekinesis
+  - type: Gun
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/Magic/staff_animation.ogg
+    projectileSpeed: 23
+  - type: BasicEntityAmmoProvider
+    proto: WH40KProjectilePsykerTelekineticBolt
+    capacity: 5
+    count: 5

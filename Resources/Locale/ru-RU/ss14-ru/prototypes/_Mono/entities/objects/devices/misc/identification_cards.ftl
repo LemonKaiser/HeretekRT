@@ -1,0 +1,15 @@
+ent-USSPRiflemanIDCard = ID-карта стрелка СССП
+ent-USSPCorporalIDCard = ID-карта ефрейтора СССП
+ent-USSPMedicIDCard = ID-карта боевого медика СССП
+ent-USSPSergeantIDCard = ID-карта сержанта СССП
+ent-USSPCommissarIDCard = ID-карта комиссара СССП
+ent-MedMedicIDCard = ID-карта экстренного реагирования
+ent-TsfEngiIDCard = ID-карта инженера ВСКМП
+ent-TsfMarsocFTLIDCard = TSFMC MARSOC fire team leader ID card
+ent-TsfMarsocIDCard = TSFMC MARSOC operative ID card
+ent-PDVRakhshanIDCard = ID-карта рахшана ФДА
+ent-PDVDenasvarIDCard = ID-карта Денасвара ФДА
+    .desc = Идентификационная карта одного из ветеранов пехоты среди авангарда династии.
+ent-PDVAsvaranIDCard = ID-карта асварана ФДА
+ent-PDVGrandVizierIDCard = ID-карта великого визиря ФДА
+ent-PDVSpasakaIDCard = хамелеон

@@ -1,0 +1,171 @@
+- type: entity
+  parent: IDCardStandard
+  id: StandardDogTag
+  name: military dog tag
+  description: A metal tag with an embedded chip that can be used to identify you.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/dog_tags.rsi
+    state: icon
+  - type: Item
+    storedRotation: 0
+
+- type: entity
+  parent: StandardDogTag
+  id: GuardsmanDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: VoxScoutDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: ColonelDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: CommissarDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: ChaplainDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: LieutenantDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: MedicDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: SergeantDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: PsykerDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: SpecialistHWSDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: SpecialistSWSDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TitheSupplierDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: MunitorumOfficerDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: EnginseerDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: ExploratorDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: GenetorDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: LexmechanicDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: MagosDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: NoviceDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: AstartesImperiumDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HGuardsmanDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HColonelDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HLieutenantDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HSergeantDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HAstartesDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HSpecialistHWSDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HSpecialistSWSDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HBandSupplierDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HEnginseerDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HExploratorDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HGenetorDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HLexmechanicDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HMagosDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: HNoviceDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauFireWarriorDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauEarthCasteDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauAirCasteDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauWaterCasteDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauOfficerDogTag
+
+- type: entity
+  parent: StandardDogTag
+  id: TauEtherealDogTag

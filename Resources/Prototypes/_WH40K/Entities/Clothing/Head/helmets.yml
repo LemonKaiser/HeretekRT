@@ -1,0 +1,447 @@
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetFlakAdv
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetadv.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetadv.rsi
+  - type: Item
+    size: Normal
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+  - type: BreathMask
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelmetFlakAdvCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetadv_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetadv_cyan.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetFlak
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet.rsi
+  - type: Item
+    size: Normal
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.9
+        Piercing: 0.95
+        Heat: 0.95
+  - type: ExplosionResistance
+    damageCoefficient: 0.95
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetFlakCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_cyan.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetFlakWhiteShield
+  suffix: WH40K, White Shield
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_shield.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_shield.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.975
+        Slash: 0.95
+        Piercing: 0.975
+        Heat: 0.975
+  - type: ExplosionResistance
+    damageCoefficient: 0.975
+
+- type: entity
+  parent: ClothingHeadHelmetFlakWhiteShield
+  id: ClothingHeadHelmetFlakWhiteDented
+  suffix: WH40K, White Shield Dented
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_dented.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_dented.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetBloodPact
+  suffix: WH40K, Бладпакт
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/bloodpact_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/bloodpact_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetrHeresy
+  suffix: WH40K, Еретики
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresy_helmet2.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresy_helmet2.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelmetFlakAdvHeresy
+  suffix: WH40K, Еретики, Адская Бригада
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/hellbrigadhelmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/hellbrigadhelmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadHelmetHeresiarchKhorne
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_khorne_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_khorne_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadHelmetHeresiarchNurgle
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_nurgle_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_nurgle_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadHelmetHeresiarchSlaanesh
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_slaanesh_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_slaanesh_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadHelmetHeresiarchTzeentch
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_tzeentch_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_tzeentch_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadHelmetHeresiarchCardinal
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_cardinal_helmet/hand.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/heresiarch_cardinal_helmet/head.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
+        Heat: 0.85
+  - type: ExplosionResistance
+    damageCoefficient: 0.85
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: ClothingHeadHelmetFlakCandle
+  id: ClothingHeadHelmetFlakResp
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetresp.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetresp.rsi
+  - type: PointLight
+    enabled: false
+    radius: 3
+    energy: 2
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    netsync: false
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetPsyker
+  suffix: WH40K, Псайкер
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/psyhelmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/psyhelmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetFlakCHAOS
+  name: композитный каска культа Хаоса
+  description: Стандартная каска, выкованная из тёмного металла и осквернённая рунами Хаоса. Защищает голову культиста, но внушает ужас своим видом.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flak_helmetchaos.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flak_helmetchaos.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.9
+        Piercing: 0.95
+        Heat: 0.95
+  - type: ExplosionResistance
+    damageCoefficient: 0.95
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+
+- type: entity
+  parent: [ClothingHeadHelmetFlak, ShowMedicalIcons]
+  id: ClothingHeadHelmetFlakMed
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetmed.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetmed.rsi
+  - type: Item
+    size: Normal
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetKrieg
+  suffix: WH40K, Krieg
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/krieg_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/krieg_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetFlakCandle
+  name: flakhelmet with candle
+  description: Is this idiocy, a necessary measure?
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetcandle.rsi
+    layers:
+    - state: icon
+    - state: light-overlay
+      visible: false
+      shader: unshaded
+      map: [ "light" ]
+  - type: HandheldLight
+    addPrefix: false
+    blinkingBehaviourId: blinking
+    radiatingBehaviourId: radiating
+  - type: LightBehaviour
+    behaviours:
+      - !type:FadeBehaviour
+        id: radiating
+        interpolate: Linear
+        maxDuration: 2.0
+        startValue: 3.0
+        endValue: 2.0
+        isLooped: true
+        reverseWhenFinished: true
+      - !type:PulseBehaviour
+        id: blinking
+        interpolate: Nearest
+        maxDuration: 1.0
+        startValue: 0.1
+        endValue: 2.0
+        isLooped: true
+  - type: ToggleableVisuals
+    spriteLayer: light
+    clothingVisuals:
+      head:
+      - state: equipped-head-light
+        shader: unshaded
+  - type: Clothing
+    equippedPrefix: off
+    clothingVisuals:
+      head:
+      - state: equipped-head
+  - type: PointLight
+    enabled: false
+    color: "#e39c40"
+    radius: 2.5
+    power: 10
+    netsync: false
+  - type: Item
+    heldPrefix: off
+    size: Normal
+  - type: ItemTogglePointLight
+  - type: Appearance
+  - type: Battery
+    maxCharge: 600
+    startingCharge: 600
+  - type: BatterySelfRecharger
+    autoRechargeRate: 2
+
+- type: entity
+  parent: ClothingHeadHelmetFlakCandle
+  id: ClothingHeadHelmetFlakCandleChaos
+  suffix: WH40K, Еретики
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetcandlechaos.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetcandlechaos.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelmetFlakAdvVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/vst_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/vst_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelmetFlakAdvSergVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/vst_serg_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/vst_serg_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetValhallan
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/valhallan_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/valhallan_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadMauler
+  suffix: WH40K, Еретики, Маулер
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/mauler.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/mauler.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadKhorne
+  suffix: WH40K, Еретики, Кхорн
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/champion_khorne_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/champion_khorne_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdvHeresy
+  id: ClothingHeadSlaanesh
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/champion_slaanesh_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/champion_slaanesh_helmet.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlak
+  id: ClothingHeadHelmetFlakInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_inquisition.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelmetFlakAdvInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/fullflakhelmet_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/fullflakhelmet_inquisition.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakMed
+  id: ClothingHeadHelmetFlakMedInquisition
+  name: Cyan Chirurgeon Flak Helmet
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/medichelmet_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/medichelmet_inquisition.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakMed
+  id: ClothingHeadHelmetFlakMedCyan
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetmed_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/flakhelmetmed_cyan.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetFlakAdv
+  id: ClothingHeadHelldriverHelmet
+  suffix: WH40K, helldrivers
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/helldiver.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/helldiver.rsi

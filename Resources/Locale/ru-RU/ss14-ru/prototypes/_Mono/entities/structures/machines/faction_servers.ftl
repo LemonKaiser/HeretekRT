@@ -1,0 +1,12 @@
+ent-BaseRdServerFaction = базовый сервер R&D фракции
+    .desc = Содержит совокупные знания фракции.
+ent-ResearchAndDevelopmentServerTSFMC = сервер R&D TSFMC
+    .desc = Содержит совокупные знания TSFMC в этом секторе.
+ent-ResearchAndDevelopmentServerRogues = сервер R&D Rogue
+    .desc = Содержит совокупные знания Рогов в этом секторе.
+ent-ResearchAndDevelopmentServerUssp = сервер R&D USSP
+    .desc = Содержит совокупные знания USSP в этом секторе.
+ent-ResearchAndDevelopmentServerDebug = отладочный сервер R&D
+    .desc = Содержит совокупные знания всех. Да, вообще всех.
+ent-ResearchAndDevelopmentServerMerc = сервер R&D наёмников
+    .desc = Содержит совокупные знания экипажа.

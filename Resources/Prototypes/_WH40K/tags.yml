@@ -1,0 +1,395 @@
+- type: Tag
+  id: WH40KGunGameFinalWeapon
+
+- type: Tag
+  id: LasgunPowerCell
+
+- type: Tag
+  id: LonglasPowerCell
+
+- type: Tag
+  id: PlasmPowerCellGun
+
+- type: Tag
+  id: PlasmPowerCellPistol
+
+- type: Tag
+  id: MeltPowerCell
+
+- type: Tag
+  id: CartridgeFlameThrower
+
+- type: Tag
+  id: MagazineStabLMG
+
+- type: Tag
+  id: Cartridge12mm
+
+- type: Tag
+  id: MagazineCombatShotgun
+
+- type: Tag
+  id: CartridgeBolter75
+
+- type: Tag
+  id: WH40KCartridgeAstartesBoltPistol
+
+- type: Tag
+  id: CartridgeHeavyBolter
+
+- type: Tag
+  id: MagazineBolterPistol75
+
+- type: Tag
+  id: WH40KMagazineAstartesBoltPistol
+
+- type: Tag
+  id: MagazineBolter75
+
+- type: Tag
+  id: WH40KMagazineHeavyBolter
+
+- type: Tag
+  id: Cartridge308
+
+- type: Tag
+  id: MagazineRad
+
+- type: Tag
+  id: FlameThrowerFuelTank
+
+- type: Tag
+  id: BigGunUser
+
+- type: Tag
+  id: MagazineStubLMG
+
+- type: Tag
+  id: MagazineStubMG
+
+- type: Tag
+  id: MagazineStubPistol
+
+- type: Tag
+  id: MagazineStubRifle
+
+- type: Tag
+  id: MagazineStubSMG
+
+- type: Tag
+  id: Cartridge825mmLong
+
+- type: Tag
+  id: Cartridge10mm
+
+- type: Tag
+  id: Cartridge10mmLong
+
+- type: Tag
+  id: CartridgeHeavyStubPistol
+
+- type: Tag
+  id: DataChip
+
+- type: Tag
+  id: WH40KMotorbikeKeys
+
+- type: Tag
+  id: WH40KImperiumMotorbikeKeys
+
+- type: Tag
+  id: WH40KChaosMotorbikeKeys
+
+- type: Tag
+  id: barricade
+
+- type: Tag
+  id: HellBackpackEnergy
+
+- type: Tag
+  id: Hellgun
+
+- type: Tag
+  id: LasgunPowerCellLucius
+
+- type: Tag
+  id: WH40KAstartesLaserPistolPowerCell
+
+- type: Tag
+  id: CartridgePhosphor
+
+- type: Tag
+  id: CartridgeElectricArc
+
+- type: Tag
+  id: MagazineHevStubPistol
+
+- type: Tag
+  id: MagazineHeavyStubPistol
+
+- type: Tag
+  id: MagazineStub3SMG
+
+- type: Tag
+  id: MagazineOgrynRipper
+
+- type: Tag
+  id: MagazineOgrynHeavyStubber
+
+- type: Tag
+  id: MagazineOgrynTwinHeavyStubber
+
+- type: Tag
+  id: MagazineSonicBlaster
+
+- type: Tag
+  id: MagazineScreamerPistol
+
+- type: Tag
+  id: CartridgeSonicBlaster
+
+- type: Tag
+  id: CartridgeScreamerPistol
+
+- type: Tag
+  id: BlastmasterGrenadeAmmo
+
+- type: Tag
+  id: LasgunPowerCellVoss
+
+- type: Tag
+  id: PortableGeneratorJrPacmanMachineBoard
+
+- type: Tag
+  id: SMESMachineBoard
+
+- type: Tag
+  id: SubstationMachineBoard
+
+- type: Tag
+  id: SpeedLoader11mm
+
+- type: Tag
+  id: Cartridge11mm
+
+- type: Tag
+  id: MagazineLondoronMk2
+
+- type: Tag
+  id: CartridgeLondoronMk2
+
+- type: Tag
+  id: CartridgeLondoronMk2Possessed
+
+- type: Tag
+  id: WH40KMagazineAutocannon
+
+- type: Tag
+  id: CartridgeAutocannon
+
+- type: Tag
+  id: WH40KMagazineLascannon
+
+- type: Tag
+  id: WH40KMagazineMultilas
+
+- type: Tag
+  id: CartridgeSerpenta
+
+- type: Tag
+  id: SpeedLoaderSerpenta
+
+- type: Tag
+  id: TauPulseCellRifle
+
+- type: Tag
+  id: TauPulseCellCarbine
+
+- type: Tag
+  id: TauPulseCellBlaster
+
+- type: Tag
+  id: TauPulseCellSniper
+
+- type: Tag
+  id: TauRailgunCell
+
+- type: Tag
+  id: WH40KWeaponModBayonetLasgun
+
+- type: Tag
+  id: WH40KWeaponModStockLasgun
+
+- type: Tag
+  id: WH40KWeaponModUnderbarrelLasgun
+
+- type: Tag
+  id: WH40KWeaponModOpticLasgun
+
+- type: Tag
+  id: WH40KWeaponModUtilityLasgun
+
+- type: Tag
+  id: WH40KWeaponModBarrelLasgun
+
+- type: Tag
+  id: WH40KWeaponModBayonetCombatShotgun
+
+- type: Tag
+  id: WH40KWeaponModOpticCombatShotgun
+
+- type: Tag
+  id: WH40KWeaponModMuzzleCombatShotgun
+
+- type: Tag
+  id: WH40KWeaponModSlingCombatShotgun
+
+- type: Tag
+  id: WH40KWeaponModStockCombatShotgun
+
+- type: Tag
+  id: WH40KWeaponModOpticAccatran
+
+- type: Tag
+  id: WH40KWeaponModUnderbarrelAccatran
+
+- type: Tag
+  id: WH40KWeaponModBarrelAccatran
+
+- type: Tag
+  id: WH40KWeaponModBayonetAccatran
+
+- type: Tag
+  id: WH40KWeaponModOpticKrieg
+
+- type: Tag
+  id: WH40KWeaponModBarrelKrieg
+
+- type: Tag
+  id: WH40KWeaponModSlingKrieg
+
+- type: Tag
+  id: WH40KWeaponModBayonetKrieg
+
+- type: Tag
+  id: WH40KWeaponModOpticVoss
+
+- type: Tag
+  id: WH40KWeaponModStockVoss
+
+- type: Tag
+  id: WH40KWeaponModBayonetVoss
+
+- type: Tag
+  id: WH40KWeaponModOpticLaspistol
+
+- type: Tag
+  id: WH40KWeaponModUtilityLaspistol
+
+- type: Tag
+  id: WH40KWeaponModOpticStubPistol
+
+- type: Tag
+  id: WH40KWeaponModMuzzleStubPistol
+
+- type: Tag
+  id: WH40KWeaponModUtilityStubPistol
+
+- type: Tag
+  id: WH40KWeaponModOpticStubRifle
+
+- type: Tag
+  id: WH40KWeaponModMuzzleStubRifle
+
+- type: Tag
+  id: WH40KWeaponModUnderbarrelStubRifle
+
+- type: Tag
+  id: WH40KWeaponModStockStubRifle
+
+- type: Tag
+  id: WH40KWeaponModBayonetStubRifle
+
+- type: Tag
+  id: WH40KWeaponModOpticStubShotgun
+
+- type: Tag
+  id: WH40KWeaponModMuzzleStubShotgun
+
+- type: Tag
+  id: WH40KWeaponModStockStubShotgun
+
+- type: Tag
+  id: WH40KWeaponModSlingStubShotgun
+
+- type: Tag
+  id: WH40KWeaponModBayonetStubShotgun
+
+- type: Tag
+  id: WH40KWeaponModOpticStubSMG
+
+- type: Tag
+  id: WH40KWeaponModMuzzleStubSMG
+
+- type: Tag
+  id: WH40KWeaponModUtilityStubSMG
+
+- type: Tag
+  id: WH40KWeaponModOpticStubSMG2
+
+- type: Tag
+  id: WH40KWeaponModUnderbarrelStubSMG2
+
+- type: Tag
+  id: WH40KWeaponModUtilityStubSMG2
+
+- type: Tag
+  id: WH40KWeaponModBayonetStubSMG2
+
+- type: Tag
+  id: WH40KWeaponModUnderbarrelStubSMG3
+
+- type: Tag
+  id: WH40KWeaponModMuzzleStubSMG3
+
+- type: Tag
+  id: WH40KWeaponModBayonetStubSMG3
+
+- type: Tag
+  id: SpeedLoaderGalvanic
+
+- type: Tag
+  id: CartridgeGalvanic
+
+- type: Tag
+  id: WH40KMagazineArcPistol
+
+- type: Tag
+  id: SiliconEmotes
+
+- type: Tag
+  id: StunImmune
+
+- type: Tag
+  id: WH40KBible
+
+- type: Tag
+  id: CartridgeHeavyRifle
+
+- type: Tag
+  id: ShellShotgun
+
+- type: Tag
+  id: CartridgeAntiMateriel
+
+- type: Tag
+  id: AccatranPowerCell
+
+- type: Tag
+  id: LaserWeapon
+
+- type: Tag
+  id: CustomSpeedLoaderPhosphor
+
+- type: Tag
+  id: CustomSpeedLoaderElectricArc

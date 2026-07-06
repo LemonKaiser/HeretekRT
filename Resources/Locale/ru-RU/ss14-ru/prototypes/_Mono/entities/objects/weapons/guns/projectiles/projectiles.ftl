@@ -1,0 +1,10 @@
+ent-BulletEnergyGun45_magnum = заряд .45 магнум
+ent-HeavyPulse = Heavy Pulse Bolt
+ent-HeavyPulseExp = Explosive Pulse Bolt
+ent-BulletLaserSlug = energy slug
+ent-BulletLaserPellet = energy
+ent-BulletLaserSpreadMono = energy
+ent-BulletMonolithicGestalt = gestalt bolt
+    .desc = Ззз...ть?
+ent-BulletMonolithicGolomRanged = golum spike
+    .desc = Кристалл из наночастиц, похоже на энергию жёсткого света. Изучение могло бы перевернуть не одну отрасль. К сожалению, он летит прямо в тебя!

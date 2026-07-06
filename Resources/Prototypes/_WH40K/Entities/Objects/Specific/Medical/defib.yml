@@ -1,0 +1,13 @@
+- type: entity
+  id: WH40KDefibrillator
+  parent: Defibrillator
+  suffix: WH40K
+  components:
+  - type: PowerCellSlot
+    fitsInCharger: false
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: WH40KPowerCellDefibrillator
+        disableEject: true

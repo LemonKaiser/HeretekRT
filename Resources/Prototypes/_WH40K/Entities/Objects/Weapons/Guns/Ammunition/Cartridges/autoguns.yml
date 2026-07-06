@@ -1,0 +1,85 @@
+
+- type: entity
+  id: Cartridge12mm
+  parent: BaseCartridge8x65mmSKR
+  suffix: WH40K
+  components:
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: Bullet12mm
+  - type: Tag
+    tags:
+    - Cartridge
+    - Cartridge12mm
+
+- type: entity
+  id: Cartridge10mm
+  parent: BaseCartridge45_magnum
+  suffix: WH40K
+  components:
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: Bullet10mm
+  - type: Tag
+    tags:
+    - Cartridge
+    - Cartridge10mm
+
+- type: entity
+  id: Cartridge825mmLong
+  parent: BaseCartridge762x39mm
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - Cartridge825mmLong
+  - type: CartridgeAmmo
+    proto: Bullet825mmLong
+    deleteOnSpawn: true
+
+- type: entity
+  id: Cartridge10mmLong
+  parent: BaseCartridge45_magnum
+  suffix: WH40K
+  components:
+  - type: CartridgeAmmo
+    deleteOnSpawn: true
+    proto: Bullet10mm
+  - type: Tag
+    tags:
+    - Cartridge
+    - Cartridge10mmLong
+
+- type: entity
+  id: Cartridge11mm
+  parent: BaseCartridge45_magnum
+  suffix: WH40K
+  components:
+  - type: CartridgeAmmo
+    proto: Bullet11mm
+  - type: Tag
+    tags:
+    - Cartridge
+    - Cartridge11mm
+
+- type: entity
+  id: CartridgeHeavyStubPistol
+  parent: BaseCartridge45_magnum
+  suffix: WH40K
+  components:
+  - type: CartridgeAmmo
+    proto: Bullet11mm
+    deleteOnSpawn: true
+  - type: Tag
+    tags:
+    - Cartridge
+    - CartridgeHeavyStubPistol
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Cartridges/heavy_stub_pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+

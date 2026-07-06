@@ -1,0 +1,9 @@
+figurines-ifi-1 = "Must practice, must practice..."
+figurines-ifi-2 = "One day the Omnissiah will appear to me and free me from these crooked hands"
+figurines-ifi-3 = "How was it?... I forgot"
+figurines-ifi-4 = "Write it down, recolor"
+materials-datapoint = raw data
+chat-radio-vox-imperium = imperium vox
+chat-radio-vox-heretics = heretics vox
+ent-EncryptionKeyVoxImperium = imperium vox encryption key
+ent-EncryptionKeyVoxHeretics = heretics vox encryption key

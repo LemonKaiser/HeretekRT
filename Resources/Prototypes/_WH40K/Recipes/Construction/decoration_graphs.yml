@@ -1,0 +1,247 @@
+- type: constructionGraph
+  id: WH40KBanners
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: chaosBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: gvardiaBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: gvardiaBanner2
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: mechanicusBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: medicalBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: tauBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+
+  - node: chaosBanner
+    entity: WHChaosBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: gvardiaBanner
+    entity: WHGvardiaBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: gvardiaBanner2
+    entity: WHGvardiaBanner2
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: mechanicusBanner
+    entity: MechanicusBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: medicalBanner
+    entity: WHMedicalBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: tauBanner
+    entity: WHTauBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+- type: constructionGraph
+  id: WH40KFalloutBarricades
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: barricadeIron
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: MetalRod
+        amount: 4
+        doAfter: 1
+    - to: barricadeIronWide
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: MetalRod
+        amount: 4
+        doAfter: 1
+    - to: barricadeBoarded
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: WoodPlank
+        amount: 4
+        doAfter: 1
+    - to: barricadeBars
+      steps:
+      - material: MetalRod
+        amount: 5
+        doAfter: 1
+
+  - node: barricadeIron
+    entity: FalloutBarricades
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:GivePrototype
+        prototype: PartRodMetal1
+        amount: 4
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Welding
+        doAfter: 2
+
+  - node: barricadeIronWide
+    entity: FalloutBarricades4
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:GivePrototype
+        prototype: PartRodMetal1
+        amount: 4
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Welding
+        doAfter: 2
+
+  - node: barricadeBoarded
+    entity: FalloutBarricades6
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:GivePrototype
+        prototype: MaterialWoodPlank1
+        amount: 4
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Prying
+        doAfter: 2
+
+  - node: barricadeBars
+    entity: FalloutBarricades7
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: PartRodMetal1
+        amount: 5
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Welding
+        doAfter: 2

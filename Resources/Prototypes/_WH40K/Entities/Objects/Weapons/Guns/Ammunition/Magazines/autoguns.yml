@@ -1,0 +1,179 @@
+
+- type: entity
+  id: MagazineStabLMG
+  parent: BaseMagazine762x39mm
+  components:
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/Magazine/7.62x39mm/7.62x39mm_box.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Tag
+    tags:
+      - MagazineStubLMG
+  - type: BallisticAmmoProvider
+    capacity: 50
+    proto: Cartridge825mmLong
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge825mmLong
+
+- type: entity
+  id: MagazineStubMG
+  parent: BaseMagazine762x39mm
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/stub_mg.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Tag
+    tags:
+      - MagazineStubMG
+  - type: BallisticAmmoProvider
+    capacity: 200
+    proto: Cartridge825mmLong
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge825mmLong
+
+- type: entity
+  id: MagazineStubPistol
+  parent: BaseMagazine45_magnum
+  components:
+  - type: Tag
+    tags:
+      - MagazineStubPistol
+  - type: BallisticAmmoProvider
+    capacity: 17
+    proto: Cartridge10mm
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge10mm
+
+- type: entity
+  id: MagazineHevStubPistol
+  parent: BaseMagazine45_magnum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Tag
+    tags:
+      - MagazineHevStubPistol
+  - type: BallisticAmmoProvider
+    capacity: 25
+    proto: Cartridge10mm
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge10mm
+
+- type: entity
+  id: MagazineHeavyStubPistol
+  parent: BaseMagazine45_magnum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/heavy_stub_pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Tag
+    tags:
+      - MagazineHeavyStubPistol
+  - type: BallisticAmmoProvider
+    capacity: 8
+    proto: CartridgeHeavyStubPistol
+    mayTransfer: true
+    whitelist:
+      tags:
+        - CartridgeHeavyStubPistol
+
+- type: entity
+  id: MagazineStubRifle
+  parent: BaseMagazine762x39mm
+  components:
+  - type: Tag
+    tags:
+      - MagazineStubRifle
+  - type: BallisticAmmoProvider
+    capacity: 30
+    proto: Cartridge825mmLong
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge825mmLong
+
+- type: entity
+  id: MagazineStubSMG
+  parent: BaseMagazine45_magnum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/SMG2.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Tag
+    tags:
+      - MagazineStubSMG
+  - type: BallisticAmmoProvider
+    proto: Cartridge10mmLong
+    capacity: 30
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge10mmLong
+
+- type: entity
+  id: MagazineStub3SMG
+  parent: BaseMagazine45_magnum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/SMG3.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 2
+    zeroVisible: false
+  - type: Tag
+    tags:
+      - MagazineStub3SMG
+  - type: BallisticAmmoProvider
+    proto: Cartridge10mmLong
+    capacity: 40
+    mayTransfer: true
+    whitelist:
+      tags:
+        - Cartridge10mmLong
+

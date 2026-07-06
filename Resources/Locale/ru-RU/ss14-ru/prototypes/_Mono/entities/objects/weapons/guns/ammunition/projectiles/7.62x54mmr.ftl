@@ -1,0 +1,8 @@
+﻿ent-Bullet762x54mmRFMJ = пуля (7.62x54ммR FMJ)
+ent-Bullet762x54mmRPractice = пуля (7.62x54ммR учебный)
+ent-Bullet762x54mmRRubber = пуля (7.62x54ммR резиновый)
+ent-Bullet762x54mmRIncendiary = пуля (7.62x54ммR зажигательный)
+ent-Bullet762x54mmRUranium = пуля (7.62x54ммR урановый)
+ent-Bullet762x54mmRHP = пуля (7.62x54ммR экспансивный)
+ent-Bullet762x54mmRRIP = пуля (7.62x54ммR RIP)
+ent-Bullet762x54mmRPlasteelAP = пуля (7.62x54ммR бронебойный)

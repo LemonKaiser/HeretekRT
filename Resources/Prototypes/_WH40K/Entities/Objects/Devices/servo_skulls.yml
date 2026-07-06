@@ -1,0 +1,104 @@
+- type: entity
+  id: WH40KServoSkullChassis
+  parent: BaseItem
+  name: servo skull chassis
+  description: A preserved unfinished servo skull shell.
+  suffix: WH40K, Incomplete
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Devices/servo_skull.rsi
+    state: deactivate
+  - type: Icon
+    sprite: _WH40K/Objects/Devices/servo_skull.rsi
+    state: deactivate
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: WH40KServoSkull
+  parent: BaseItem
+  name: servo skull
+  description: A preserved servo skull shell without the old support-drone logic.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Devices/servo_skull.rsi
+    state: deactivate
+  - type: Icon
+    sprite: _WH40K/Objects/Devices/servo_skull.rsi
+    state: deactivate
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: WH40KServoSkullMelta
+  parent: BaseItem
+  name: melta servo skull
+  description: A preserved melta servo skull shell without the old combat logic.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Devices/servo_skull_melta.rsi
+    state: deactivate
+  - type: Icon
+    sprite: _WH40K/Objects/Devices/servo_skull_melta.rsi
+    state: deactivate
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: WH40KServoSkullMobBase
+  parent:
+  - BaseMob
+  - FlyingMobBase
+  abstract: true
+  name: servo skull
+  description: A preserved floating servo skull shell for later reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KServoSkullMob
+  parent: WH40KServoSkullMobBase
+  name: servo skull
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: false
+    sprite: _WH40K/Objects/Devices/servo_skull.rsi
+    state: icon
+
+- type: entity
+  id: WH40KServoSkullSlaanesh
+  parent: WH40KServoSkull
+  name: slaanesh servo skull
+  suffix: WH40K, Slaanesh
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Devices/servo_skull_slaanesh.rsi
+    state: deactivate
+  - type: Icon
+    sprite: _WH40K/Objects/Devices/servo_skull_slaanesh.rsi
+    state: deactivate
+
+- type: entity
+  id: WH40KServoSkullMobSlaanesh
+  parent: WH40KServoSkullMobBase
+  name: slaanesh servo skull
+  suffix: WH40K, Slaanesh
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: false
+    sprite: _WH40K/Objects/Devices/servo_skull_slaanesh.rsi
+    state: icon
+
+- type: entity
+  id: WH40KServoSkullMeltaMob
+  parent: WH40KServoSkullMobBase
+  name: melta servo skull
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: false
+    sprite: _WH40K/Objects/Devices/servo_skull_melta.rsi
+    state: icon

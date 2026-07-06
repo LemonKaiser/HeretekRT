@@ -1,0 +1,34 @@
+- type: entity
+  parent: [WeaponLaserPlasmaPistol, BaseGunWieldable]
+  id: WeaponLaserPlasmagun
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/plasmagun_in-hands.rsi
+    shape:
+    - 0,0,4,1
+  - type: GunRequiresWield
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/plasmagun.rsi
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/plasmagun_in-hands.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/plasmagun.wav
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: PlasmGunPowerCell
+        whitelist:
+          tags:
+            - PlasmPowerCellGun
+  - type: HeldSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+

@@ -1,0 +1,180 @@
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasTechPriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/breath.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/breath.rsi
+  - type: HideLayerClothing
+    slots:
+    - Snout
+  - type: Armor
+    modifiers:
+      coefficients:
+        Radiation: 0.85
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingMaskPullableBase
+  id: ClothingGasTechPriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/gas.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/gas.rsi
+    clothingVisuals:
+      mask:
+      - state: equipped-MASK
+      - state: equipped-mask-unshaded
+        shader: unshaded
+  - type: BreathMask
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    hideOnToggle: true
+  - type: FlashImmunity
+  - type: EyeProtection
+  - type: Armor
+    modifiers:
+      coefficients:
+        Radiation: 0.8
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasChaosCultist1
+  name: Противогаз Хаоса
+  description: Оно вообще работает? Был обмыт в крови детей.
+  suffix: WH40K, Культ Хаоса
+  components:
+    - type: Item
+      size: Tiny
+    - type: Sprite
+      sprite: _WH40K/Clothing/Mask/gas_mask_cult.rsi
+      state: icon
+    - type: Clothing
+      sprite: _WH40K/Clothing/Mask/gas_mask_cult.rsi
+    - type: HideLayerClothing
+      slots:
+        - Snout
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasChaosCultist2
+  name: противогаз Хаоса
+  description: Оно вообще работает? Сделан из человеческой кожи.
+  suffix: WH40K, Культ Хаоса
+  components:
+    - type: Item
+      size: Tiny
+    - type: Sprite
+      sprite: _WH40K/Clothing/Mask/gas_mask_cult2.rsi
+      state: icon
+    - type: Clothing
+      sprite: _WH40K/Clothing/Mask/gas_mask_cult2.rsi
+    - type: HideLayerClothing
+      slots:
+        - Snout
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasBloodPact
+  suffix: WH40K, Бладпакт
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/bloodpact_mask.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/bloodpact_mask.rsi
+  - type: HideLayerClothing
+    slots:
+    - Snout
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasCultist3
+  name: респиратор культиста
+  description: Зловещий респиратор, украшенный символами Хаоса. Он защищает дыхательные пути и лишь изредка смягчает удары по лицу за счет твердого каркаса.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/respirator_cult.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/respirator_cult.rsi
+  - type: HideLayerClothing
+    slots:
+    - Snout
+  - type: Armor
+    modifiers:
+      coefficients:
+        Radiation: 0.85
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingMaskGas
+  id: ClothingMaskGasGuardsman
+  suffix: WH40K, Гвардия
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/respirator_guard.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/respirator_guard.rsi
+  - type: HideLayerClothing
+    slots:
+    - Snout
+  - type: Armor
+    modifiers:
+      coefficients:
+        Radiation: 0.85
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingMaskGasGuardsman
+  id: ClothingMaskGasKrieg
+  suffix: WH40K, Krieg
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/krieg_gasmask.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/krieg_gasmask.rsi
+- type: entity
+  parent: ClothingMaskGasGuardsman
+  id: ClothingMaskGasVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/vst_gasmask.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/vst_gasmask.rsi
+
+- type: entity
+  parent: ClothingMaskGasGuardsman
+  id: ClothingMaskGasHellishForeman
+  suffix: WH40K, Культ Хаоса, Адская Бригада
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/hellbrigandmask.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/hellbrigandmask.rsi

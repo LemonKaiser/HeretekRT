@@ -1,0 +1,41 @@
+- type: stack
+  id: DataChip
+  name: data-chip-name
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/intelligence.rsi, state: datachip }
+  spawn: DataChip
+  maxCount: 4
+
+- type: stack
+  id: DataChipChaos
+  name: data-chip-ch-name
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/intelligence_ch.rsi, state: datachip }
+  spawn: DataChipChaos
+  maxCount: 4
+
+- type: stack
+  id: DataChipImp
+  name: data-chip-name
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/intelligence_imp.rsi, state: datachip }
+  spawn: DataChipImp
+  maxCount: 4
+
+- type: stack
+  id: WH40KArtifactSquare
+  name: wh40k-artifact-square-stack-name
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/artifact_square.rsi, state: artifact }
+  spawn: WH40KArtifactSquare
+  maxCount: 4
+
+- type: stack
+  id: WH40KArtifactTriangle
+  name: wh40k-artifact-triangle-stack-name
+  icon: { sprite: /Textures/_WH40K/Objects/Specific/artifact_triangle.rsi, state: artifact }
+  spawn: WH40KArtifactTriangle
+  maxCount: 4
+
+- type: stack
+  id: WH40KBarbedWire
+  name: wh40k-stack-barbed-wire
+  icon: { sprite: /Textures/_RMC14/Objects/barbed_wire.rsi, state: barbed_wire }
+  spawn: MaterialWH40KBarbedWire1
+  maxCount: 10

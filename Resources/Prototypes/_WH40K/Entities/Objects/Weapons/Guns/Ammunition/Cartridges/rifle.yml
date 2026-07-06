@@ -1,0 +1,108 @@
+- type: entity
+  id: CartridgeRadCarabin
+  parent: BaseCartridge
+  suffix: WH40K, АдМехи
+  components:
+  - type: Tag
+    tags:
+      - Cartridge308
+  - type: CartridgeAmmo
+    proto: BulletRadCarabin
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: tip
+        map: [ "enum.AmmoVisualLayers.Tip" ]
+        color: "#65fe08"
+  - type: Appearance
+  - type: SpentAmmoVisuals
+  - type: RadiationSource
+    intensity: 0.01
+    slope: 1.5
+
+- type: entity
+  id: CartridgePhosphor
+  parent: BaseCartridge
+  suffix: WH40K, АдМехи
+  components:
+  - type: Tag
+    tags:
+      - CartridgePhosphor
+  - type: CartridgeAmmo
+    proto: BulletPhosphor
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: tip
+        map: [ "enum.AmmoVisualLayers.Tip" ]
+        color: "#ff4300"
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeElectricArc
+  parent: BaseCartridge
+  suffix: WH40K, АдМехи
+  components:
+  - type: Tag
+    tags:
+      - CartridgeElectricArc
+  - type: CartridgeAmmo
+    proto: BulletElectricArc
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: tip
+        map: [ "enum.AmmoVisualLayers.Tip" ]
+        color: "#62f7e6"
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeSerpenta
+  parent: BaseCartridge
+  suffix: WH40K, АдМехи
+  components:
+  - type: Tag
+    tags:
+      - CartridgeSerpenta
+  - type: CartridgeAmmo
+    proto: BulletSerpenta
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: tip
+        map: [ "enum.AmmoVisualLayers.Tip" ]
+        color: "#ff4300"
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeGalvanic
+  parent: BaseCartridge
+  suffix: WH40K, АдМехи
+  components:
+  - type: Tag
+    tags:
+      - CartridgeGalvanic
+  - type: CartridgeAmmo
+    proto: BulletGalvanic
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: tip
+        map: [ "enum.AmmoVisualLayers.Tip" ]
+        color: "#ff4300"
+  - type: Appearance
+  - type: SpentAmmoVisuals
+

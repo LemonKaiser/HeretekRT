@@ -1,0 +1,6 @@
+ent-RecyclableItemClothBasic = RecyclableItemClothBasic
+ent-RecyclableItemClothArmor = RecyclableItemClothArmor
+ent-RecyclableItemClothHardsuit = RecyclableItemClothHardsuit
+ent-RecyclableItemClothSmall = RecyclableItemClothSmall
+ent-RecyclableItemClothDurable = RecyclableItemClothDurable
+ent-RecyclableItemClothDevice = RecyclableItemClothDevice

@@ -1,0 +1,365 @@
+- type: entity
+  id: PartTau
+  parent: [ BaseItem, BasePart ]
+  name: "tau body part"
+  abstract: true
+  components:
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+  - type: BodyPart
+    species: Tau
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 3
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: TorsoTau
+  name: "tau torso"
+  parent: [ PartTau, BaseTorso ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "torso_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 10
+      - ReagentId: Blood
+        Quantity: 20
+
+- type: entity
+  id: HeadTau
+  name: "tau head"
+  parent: [ PartTau, BaseHead ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "head_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 5
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: LeftArmTau
+  name: "left tau arm"
+  parent: [ PartTau, BaseLeftArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "l_arm"
+
+- type: entity
+  id: RightArmTau
+  name: "right tau arm"
+  parent: [ PartTau, BaseRightArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "r_arm"
+
+- type: entity
+  id: LeftHandTau
+  name: "left tau hand"
+  parent: [ PartTau, BaseLeftHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "l_hand"
+
+- type: entity
+  id: RightHandTau
+  name: "right tau hand"
+  parent: [ PartTau, BaseRightHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "r_hand"
+
+- type: entity
+  id: LeftLegTau
+  name: "left tau leg"
+  parent: [ PartTau, BaseLeftLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "l_leg"
+
+- type: entity
+  id: RightLegTau
+  name: "right tau leg"
+  parent: [ PartTau, BaseRightLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "r_leg"
+
+- type: entity
+  id: LeftFootTau
+  name: "left tau foot"
+  parent: [ PartTau, BaseLeftFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "l_foot"
+
+- type: entity
+  id: RightFootTau
+  name: "right tau foot"
+  parent: [ PartTau, BaseRightFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Tau/parts.rsi
+    state: "r_foot"
+
+- type: entity
+  id: PartOrk
+  parent: [ BaseItem, BasePart ]
+  name: "ork body part"
+  abstract: true
+  components:
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+  - type: BodyPart
+    species: Ork
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 3
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: TorsoOrk
+  name: "ork torso"
+  parent: [ PartOrk, BaseTorso ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "torso_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 10
+      - ReagentId: Blood
+        Quantity: 20
+
+- type: entity
+  id: HeadOrk
+  name: "ork head"
+  parent: [ PartOrk, BaseHead ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "head_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 5
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: LeftArmOrk
+  name: "left ork arm"
+  parent: [ PartOrk, BaseLeftArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "l_arm"
+
+- type: entity
+  id: RightArmOrk
+  name: "right ork arm"
+  parent: [ PartOrk, BaseRightArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "r_arm"
+
+- type: entity
+  id: LeftHandOrk
+  name: "left ork hand"
+  parent: [ PartOrk, BaseLeftHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "l_hand"
+
+- type: entity
+  id: RightHandOrk
+  name: "right ork hand"
+  parent: [ PartOrk, BaseRightHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "r_hand"
+
+- type: entity
+  id: LeftLegOrk
+  name: "left ork leg"
+  parent: [ PartOrk, BaseLeftLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "l_leg"
+
+- type: entity
+  id: RightLegOrk
+  name: "right ork leg"
+  parent: [ PartOrk, BaseRightLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "r_leg"
+
+- type: entity
+  id: LeftFootOrk
+  name: "left ork foot"
+  parent: [ PartOrk, BaseLeftFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "l_foot"
+
+- type: entity
+  id: RightFootOrk
+  name: "right ork foot"
+  parent: [ PartOrk, BaseRightFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Ork/parts.rsi
+    state: "r_foot"
+
+- type: entity
+  id: PartAstartes
+  parent: [ BaseItem, BasePart ]
+  name: "astartes body part"
+  abstract: true
+  components:
+  - type: Icon
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+  - type: BodyPart
+    species: Astartes
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 3
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: TorsoAstartes
+  name: "astartes torso"
+  parent: [ PartAstartes, BaseTorso ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "torso_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 10
+      - ReagentId: Blood
+        Quantity: 20
+
+- type: entity
+  id: HeadAstartes
+  name: "astartes head"
+  parent: [ PartAstartes, BaseHead ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "head_m"
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 5
+      - ReagentId: Blood
+        Quantity: 10
+
+- type: entity
+  id: LeftArmAstartes
+  name: "left astartes arm"
+  parent: [ PartAstartes, BaseLeftArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "l_arm"
+
+- type: entity
+  id: RightArmAstartes
+  name: "right astartes arm"
+  parent: [ PartAstartes, BaseRightArm ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "r_arm"
+
+- type: entity
+  id: LeftHandAstartes
+  name: "left astartes hand"
+  parent: [ PartAstartes, BaseLeftHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "l_hand"
+
+- type: entity
+  id: RightHandAstartes
+  name: "right astartes hand"
+  parent: [ PartAstartes, BaseRightHand ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "r_hand"
+
+- type: entity
+  id: LeftLegAstartes
+  name: "left astartes leg"
+  parent: [ PartAstartes, BaseLeftLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "l_leg"
+
+- type: entity
+  id: RightLegAstartes
+  name: "right astartes leg"
+  parent: [ PartAstartes, BaseRightLeg ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "r_leg"
+
+- type: entity
+  id: LeftFootAstartes
+  name: "left astartes foot"
+  parent: [ PartAstartes, BaseLeftFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "l_foot"
+
+- type: entity
+  id: RightFootAstartes
+  name: "right astartes foot"
+  parent: [ PartAstartes, BaseRightFoot ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
+    state: "r_foot"

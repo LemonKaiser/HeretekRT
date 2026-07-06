@@ -1,0 +1,12 @@
+ent-PartSkeletonChimeraBase = часть тела эндоскелета химеры
+ent-TorsoSkeletonChimera = торс эндоскелета химеры
+ent-HeadSkeletonChimera = череп эндоскелета химеры
+    .desc = Увы, бедный Йорик...
+ent-LeftArmSkeletonChimera = левая рука эндоскелета химеры
+ent-RightArmSkeletonChimera = правая рука эндоскелета химеры
+ent-LeftHandSkeletonChimera = левая кисть эндоскелета химеры
+ent-RightHandSkeletonChimera = правая кисть эндоскелета химеры
+ent-LeftLegSkeletonChimera = левая нога эндоскелета химеры
+ent-RightLegSkeletonChimera = правая нога эндоскелета химеры
+ent-LeftFootSkeletonChimera = левая стопа эндоскелета химеры
+ent-RightFootSkeletonChimera = правая стопа эндоскелета химеры

@@ -1,0 +1,11 @@
+ent-StructurePistolRack = { ent-WeaponRackPistolBase }
+    .suffix = Пустой
+    .desc = { ent-WeaponRackPistolBase.desc }
+ent-StructurePistolRackWallmounted = { ent-WeaponRackPistolBase }
+    .suffix = Пустой, Настенный
+    .desc = { ent-WeaponRackPistolBase.desc }
+ent-StructurePistolRackLock = стойка для оружия самообороны
+ent-StructureWeaponRackBase = оружейная стойка
+    .desc = Хранилище для средств быстрого усмирения.
+ent-StructureWeaponRackSlots = стойка для оружия
+ent-StructurePistolRackLockWallmounted = настенная стойка для оружия самообороны

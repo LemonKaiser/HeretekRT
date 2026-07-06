@@ -1,0 +1,5 @@
+ent-NFBaseStationCargo = NFBaseStationCargo
+ent-BaseStationDeadDropHintExempt = BaseStationDeadDropHintExempt
+ent-BaseStationCargoMarket = BaseStationCargoMarket
+ent-BaseStationDeadDrops = BaseStationDeadDrops
+ent-BaseStationRenameHolopads = BaseStationRenameHolopads

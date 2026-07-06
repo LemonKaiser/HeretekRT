@@ -1,0 +1,131 @@
+- type: entity
+  parent: [ClothingBeltBase, ClothingSlotBase]
+  id: WHClothingBeltSheath
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/sheath_for_power_saber.rsi
+    state: sheath
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/sheath_for_power_saber.rsi
+  - type: Item
+    size: Ginormous
+  - type: ItemSlots
+    slots:
+      item:
+        name: Sabre
+        insertVerbText: sheath-insert-verb
+        ejectVerbText: sheath-eject-verb
+        insertSound: /Audio/Items/sheath.ogg
+        ejectSound: /Audio/Items/unsheath.ogg
+        whitelist:
+          tags:
+          - CaptainSabre
+  - type: ItemMapper
+    mapLayers:
+      sheath-sabre:
+        whitelist:
+          tags:
+          - CaptainSabre
+  - type: Appearance
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: chaosbelt
+  name: ритуальная разгрузка Хаоса
+  description: Жуткий пояс, сшитый из неизвестной кожи и пропитанный шёпотом Варпа.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/beltcultchaos.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/beltcultchaos.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: chaosbelt2
+  name: пояс Культа Хаоса
+  description: Жуткий пояс, сшитый из неизвестной кожи и пропитанный кровью.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/beltcultchaos2.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/beltcultchaos2.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: Comibelt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/comissar.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/comissar.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: guardbelt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/guardsman.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/guardsman.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: offbelt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/officer.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/officer.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: psybelt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/psyker.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/psyker.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: colbelt
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/colonel.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/colonel.rsi
+
+- type: entity
+  parent: guardbelt
+  id: ClothingBeltKriegWebbing
+  suffix: WH40K, Krieg
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/krieg_webbing.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/krieg_webbing.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: ClothingBeltChaplain
+  suffix: WH40K, Священник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/chaplain_unloading.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/chaplain_unloading.rsi
+  - type: ItemMapper
+    sprite: &BeltOverlay _WH40K/Clothing/Belt/belt_overlay.rsi
+    mapLayers:
+      bible:
+        whitelist:
+          tags:
+          - WH40KBible

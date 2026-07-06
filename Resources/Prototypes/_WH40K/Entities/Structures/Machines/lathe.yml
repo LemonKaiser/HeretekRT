@@ -1,0 +1,41 @@
+- type: entity
+  parent: Autolathe
+  id: WH40KAutolatheImperium
+  components:
+  - type: Machine
+    board: AutolatheMachineCircuitboardImperium
+
+- type: entity
+  parent: Autolathe
+  id: WH40KAutolatheHeretics
+  components:
+  - type: Machine
+    board: AutolatheMachineCircuitboardHeretics
+
+- type: entity
+  parent: Protolathe
+  id: WH40KProtolatheImperium
+  components:
+  - type: Machine
+    board: ProtolatheMachineCircuitboardImperium
+
+- type: entity
+  parent: Protolathe
+  id: WH40KProtolatheHeretics
+  components:
+  - type: Machine
+    board: ProtolatheMachineCircuitboardHeretics
+
+- type: entity
+  parent: OreProcessor
+  id: WH40KOreProcessorImperium
+  components:
+  - type: Machine
+    board: OreProcessorMachineCircuitboardImperium
+
+- type: entity
+  parent: OreProcessor
+  id: WH40KOreProcessorHeretics
+  components:
+  - type: Machine
+    board: OreProcessorMachineCircuitboardHeretics

@@ -1,0 +1,80 @@
+- type: entity
+  id: CartridgeBolter
+  parent: BaseCartridge
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - CartridgeBolter75
+      - Cartridge
+  - type: CartridgeAmmo
+    proto: BulletBolter
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: WH40KCartridgeAstartesBoltPistol
+  parent: BaseCartridge
+  suffix: WH40K, Astartes
+  components:
+  - type: Tag
+    tags:
+    - WH40KCartridgeAstartesBoltPistol
+    - Cartridge
+  - type: CartridgeAmmo
+    proto: BulletBolter
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Cartridges/Bolter/astartes_pistol.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeHeavyBolter
+  parent: BaseCartridge
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - CartridgeHeavyBolter
+      - Cartridge
+  - type: CartridgeAmmo
+    proto: BulletHeavyBolter
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/large_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeAutocannon
+  parent: BaseCartridge
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - CartridgeAutocannon
+      - Cartridge
+  - type: CartridgeAmmo
+    proto: BulletSentine
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Casings/large_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+

@@ -1,0 +1,15 @@
+ent-RecyclableItemSteelTiny = RecyclableItemSteelTiny
+ent-RecyclableItemWoodMedium = RecyclableItemWoodMedium
+ent-RecyclableItemDeviceComplexNormal = RecyclableItemDeviceComplexNormal
+ent-RecyclableItemDeviceTiny = RecyclableItemDeviceTiny
+ent-RecyclableItemPlasticMedium = RecyclableItemPlasticMedium
+ent-RecyclableItemGlassTiny = RecyclableItemGlassTiny
+ent-RecyclableItemNoMats = RecyclableItemNoMats
+ent-RecyclableItemPlasticSmall = RecyclableItemPlasticSmall
+ent-RecyclableItemCardboard = RecyclableItemCardboard
+ent-RecyclableItemPlasticTiny = RecyclableItemPlasticTiny
+ent-RecyclableItemPaper = RecyclableItemPaper
+ent-RecyclableItemOrganicTiny = RecyclableItemOrganicTiny
+ent-RecyclableItemSteelMedium = RecyclableItemSteelMedium
+ent-RecyclableItemDeviceSmall = RecyclableItemDeviceSmall
+ent-RecyclableItemSteelSmall = RecyclableItemSteelSmall

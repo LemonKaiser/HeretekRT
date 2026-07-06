@@ -1,0 +1,11 @@
+wh40k-stack-barbed-wire = бухта колючей проволоки
+stack-wh40k-barricade-warhammer = стопка имперских наборов баррикад
+stack-wh40k-barricade-sandbags = стопка наборов мешков с песком
+stack-wh40k-barricade-chaos-black = стопка черных хаоситских баррикад
+stack-wh40k-barricade-chaos-green = стопка зеленых хаоситских баррикад
+stack-wh40k-barricade-hedgehog = стопка противотанковых ежей
+stack-wh40k-barricade-hedgehog-a = стопка противотанковых ежей A
+stack-wh40k-barricade-hedgehog-b = стопка противотанковых ежей B
+stack-wh40k-barricade-hedgehog-c = стопка противотанковых ежей C
+stack-wh40k-barricade-boarded = стопка дощатых баррикад
+stack-wh40k-barricade-bars = стопка решетчатых баррикад

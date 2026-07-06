@@ -1,0 +1,16 @@
+- type: explosion
+  id: Plasma
+  damagePerIntensity:
+    types:
+      Heat: 6
+      Blunt: 4
+      Piercing: 4
+      Structural: 12
+  tileBreakChance: [0, 0.25, 0.5]
+  tileBreakIntensity: [0, 8, 20]
+  tileBreakRerollReduction: 20
+  lightColor: Blue
+  fireColor: Blue
+  texturePath: /Textures/Effects/fire_greyscale.rsi
+  fireStates: 3
+  temperature: 1200

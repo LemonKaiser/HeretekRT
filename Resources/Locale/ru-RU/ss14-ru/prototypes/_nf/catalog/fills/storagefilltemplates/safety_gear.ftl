@@ -1,0 +1,4 @@
+ent-StorageFillL3BiohazardSuit = StorageFillL3BiohazardSuit
+ent-StorageFillL4BombSuit = StorageFillL4BombSuit
+ent-StorageFillL1FireSuit = StorageFillL1FireSuit
+ent-StorageFillL2RadiationSuit = StorageFillL2RadiationSuit

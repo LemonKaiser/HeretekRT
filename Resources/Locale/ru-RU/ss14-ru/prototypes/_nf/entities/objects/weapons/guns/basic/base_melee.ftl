@@ -1,0 +1,1 @@
+ent-BaseGunMelee = BaseGunMelee

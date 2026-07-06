@@ -1,0 +1,6 @@
+- type: entity
+  id: WH40KMurderMysterySheriffPinpointer
+  parent: WH40KMissionPinpointerBase
+  name: sheriff revolver pinpointer
+  description: A preserved pinpointer shell from the old murder mystery toolset.
+  suffix: WH40K

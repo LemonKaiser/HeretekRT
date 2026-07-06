@@ -1,0 +1,74 @@
+- type: entity
+  parent: ClothingEyesBase
+  id: ClothingEyesHudTechPriest
+  description: Filler
+  suffix: WH40K, адмехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Eyes/hud.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Eyes/hud.rsi
+    clothingVisuals:
+      eyes:
+      - state: equipped-EYES
+  - type: FlashImmunity
+  - type: EyeProtection
+  - type: Unremoveable
+
+- type: entity
+  parent: ClothingEyesHudTechPriest
+  id: ClothingEyesHudTechPriestMed
+  description: Filler
+  suffix: WH40K, адмехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Eyes/hud_med.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Eyes/hud_med.rsi
+    clothingVisuals:
+      eyes:
+      - state: equipped-EYES
+      - state: equipped-EYES-unshaded
+        shader: unshaded
+  - type: ShowHealthIcons
+  - type: ShowHealthBars
+    damageContainers:
+    - Biological
+    - Inorganic
+    - Silicon
+
+- type: entity
+  parent: ClothingEyesHudTechPriest
+  id: ClothingEyesHudTechPriestAdm
+  description: Filler
+  suffix: WH40K, адмехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Eyes/hud_adm.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Eyes/hud_adm.rsi
+    clothingVisuals:
+      eyes:
+      - state: equipped-EYES
+      - state: equipped-EYES-unshaded
+        shader: unshaded
+  - type: ItemToggle
+    onUse: false
+    soundActivate:
+      path: /Audio/Items/flashlight_on.ogg
+    soundDeactivate:
+      path: /Audio/Items/flashlight_off.ogg
+    soundFailToActivate:
+      path: /Audio/Machines/button.ogg
+  - type: ToggleClothing
+    action: ActionWH40KToggleSpecialistHelmet
+    disableOnUnequip: true
+  - type: ComponentToggler
+    components:
+    - type: ShowJobIcons
+    - type: ShowHealthBars
+    - type: NightVision
+      isEquipment: true
+      isActive: true
+  - type: UseDelay
+    delay: 1

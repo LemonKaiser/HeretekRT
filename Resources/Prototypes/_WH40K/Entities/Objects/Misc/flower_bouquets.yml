@@ -1,0 +1,11 @@
+- type: entity
+  parent: BaseItem
+  id: WH40KFlowerBouquet
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/flower_bouquet.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _WH40K/Objects/Misc/flower_bouquet.rsi

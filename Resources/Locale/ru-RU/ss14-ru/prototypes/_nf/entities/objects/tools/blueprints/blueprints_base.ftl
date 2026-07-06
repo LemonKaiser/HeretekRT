@@ -1,0 +1,10 @@
+ent-NFBaseBlueprintSalvage = NFBaseBlueprintSalvage
+ent-NFBaseBlueprint = NFBaseBlueprint
+ent-NFBaseBlueprintArmory = NFBaseBlueprintArmory
+ent-NFBaseBlueprintChurch = NFBaseBlueprintChurch
+ent-NFBaseBlueprintEngineering = NFBaseBlueprintEngineering
+ent-NFBaseBlueprintScience = NFBaseBlueprintScience
+ent-BaseBlueprintFaxable = BaseBlueprintFaxable
+ent-NFBaseBlueprintService = NFBaseBlueprintService
+ent-NFBaseBlueprintMedical = NFBaseBlueprintMedical
+ent-BaseBlueprintExpedition = BaseBlueprintExpedition

@@ -1,0 +1,48 @@
+- type: entity
+  parent: BaseItem
+  id: WHPowerFist
+  name: power fist
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/power_fist.rsi
+    state: icon
+  - type: Item
+    size: Large
+    sprite: _WH40K/Objects/Weapons/Melee/power_fist.rsi
+  - type: WH40KPowerFist
+  - type: MeleeWeapon
+    attackRate: 0.64
+    range: 1.35
+    angle: 0
+    animation: WeaponArcFist
+    wideAnimationRotation: 70
+    damage:
+      types:
+        Blunt: 20
+        Shock: 20
+    soundHit:
+      collection: MetalThud
+  - type: DisarmMalus
+    malus: 0.7
+  - type: MeleeThrowOnHit
+    stunTime: 0
+    activateOnThrown: false
+    speed: 10
+    distance: 3
+  - type: StaminaDamageOnHit
+    damage: 10
+
+- type: entity
+  parent: WHPowerFist
+  id: WHHereticPowerFist
+  name: heretic power fist
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/heretic_power_fist.rsi
+    state: icon
+  - type: Item
+    size: Large
+    sprite: _WH40K/Objects/Weapons/Melee/heretic_power_fist.rsi
+

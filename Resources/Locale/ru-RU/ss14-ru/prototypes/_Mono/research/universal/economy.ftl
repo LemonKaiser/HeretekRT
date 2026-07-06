@@ -1,0 +1,2 @@
+ent-UraniumProcessingIcon = research-technology-uranium-processing-advanced
+ent-UraniumEnrichedProcessingIcon = UraniumEnrichedProcessingIcon

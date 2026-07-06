@@ -1,0 +1,57 @@
+- type: entity
+  parent: BaseItem
+  id: DataChipChaos
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Sprite
+    scale: 0.8,0.8
+    sprite: _WH40K/Objects/Specific/intelligence_ch.rsi
+    state: datachip
+    layers:
+    - state: datachip
+      map: ["base"]
+  - type: Item
+    size: Small
+  - type: Stack
+    stackType: DataChipChaos
+    count: 1
+    baseLayer: base
+    layerStates:
+    - datachip
+    - datachip_2
+    - datachip_3
+    - datachip_4
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [ 2, 3, 4 ]
+  - type: StackPrice
+    price: 1
+  - type: Appearance
+
+- type: entity
+  parent: DataChipChaos
+  id: DataChipChaos2
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 2
+
+- type: entity
+  parent: DataChipChaos
+  id: DataChipChaos3
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 3
+
+- type: entity
+  parent: DataChipChaos
+  id: DataChipChaos4
+  categories: [ HideSpawnMenu ]
+  suffix: WH40K
+  components:
+  - type: Stack
+    count: 4

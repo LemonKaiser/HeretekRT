@@ -1,0 +1,10 @@
+ent-ClothingModsuitGauntletsUSSPVaryag = Ruki Varyaga
+    .desc = Герметичные ударопрочные рукавицы.
+ent-ClothingModsuitGauntletsUSSPZastavnik = Kuvshiny Zastavnika
+    .desc = Увеличенные рукавицы с усиленными костяшками и встроенными амортизаторами.
+ent-ClothingModsuitGauntletsRogue = RX-01 modsuit gauntlets
+    .desc = Нетокопроводящая сетка, герметичные швы. Удивительно легально. С гордостью произведено в Секторе Ullman Industries.
+ent-ClothingModsuitGauntletsVolta = Volta Modsuit Gauntlets
+    .desc = Замасленные перчатки модульного костюма — удобно жать кнопки на RCD.
+ent-ClothingModsuitGauntletsGalloglass = перчатки модкостюма «Галлоглас»
+    .desc = Накладки на костяшках светятся при герметизации костюма... без видимой причины.

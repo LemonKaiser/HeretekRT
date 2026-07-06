@@ -1,0 +1,1 @@
+ent-SpawnMobArgocyteLeviathingExpeditions = спавнер левиафана

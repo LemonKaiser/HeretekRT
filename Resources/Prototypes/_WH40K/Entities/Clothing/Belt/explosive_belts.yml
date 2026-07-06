@@ -1,0 +1,23 @@
+- type: entity
+  parent: ClothingBeltBase
+  id: ClothingBeltChaosDynamite
+  suffix: WH40K, Chaos
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/chaos_dynamite_belt.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/chaos_dynamite_belt.rsi
+  - type: Item
+    size: Small
+
+- type: entity
+  parent: ClothingBeltBase
+  id: ClothingBeltChaplainMeltaCharge
+  suffix: WH40K, Imperium
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/chaplain_melta_belt.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/chaplain_melta_belt.rsi
+  - type: Item
+    size: Small

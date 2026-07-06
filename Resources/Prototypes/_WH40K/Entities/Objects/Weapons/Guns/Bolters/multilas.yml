@@ -1,0 +1,76 @@
+- type: entity
+  parent: WH40KHeavyBolter
+  id: WH40KMultilas
+  name: multilaser emplacement
+  description: A crew-operated multilaser. Deploy it, take position behind the gun, and rake advancing infantry with sustained beams.
+  suffix: WH40K, стационарное
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    layers:
+    - map: [ "enum.WH40KHeavyBolterVisualLayers.Folded" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/multilas.rsi
+      state: unanchored
+    - map: [ "enum.WH40KHeavyBolterVisualLayers.Deployed" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/multilas_emplacement.rsi
+      state: heavy_bolter
+      visible: false
+    - map: [ "enum.GunVisualLayers.Mag" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/multilas_emplacement.rsi
+      state: mag-0
+      visible: false
+  - type: Icon
+    sprite: _WH40K/Objects/Weapons/Guns/Bolters/multilas.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Bolters/multilas.rsi
+  - type: Gun
+    fireRate: 8
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,-0.28125"
+        density: 1500
+        mask:
+        - FullTileMask
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: WH40KMagazineMultilas
+        priority: 2
+        whitelist:
+          tags:
+          - WH40KMagazineMultilas
+
+- type: entity
+  parent: WH40KMultilas
+  id: WH40KMultilasChs
+  name: multilaser emplacement
+  description: A crew-operated multilaser. Deploy it, take position behind the gun, and rake advancing infantry with sustained beams.
+  suffix: WH40K, еретики, стационарное
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    layers:
+    - map: [ "enum.WH40KHeavyBolterVisualLayers.Folded" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/chaosmultilas.rsi
+      state: unanchored
+    - map: [ "enum.WH40KHeavyBolterVisualLayers.Deployed" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/chaosmultilas_emplacement.rsi
+      state: heavy_bolter
+      visible: false
+    - map: [ "enum.GunVisualLayers.Mag" ]
+      sprite: _WH40K/Objects/Weapons/Guns/Bolters/chaosmultilas_emplacement.rsi
+      state: mag-0
+      visible: false
+  - type: Icon
+    sprite: _WH40K/Objects/Weapons/Guns/Bolters/chaosmultilas.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Bolters/chaosmultilas.rsi
+

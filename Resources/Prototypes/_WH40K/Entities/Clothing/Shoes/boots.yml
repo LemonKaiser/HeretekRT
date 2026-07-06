@@ -1,0 +1,220 @@
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesAnkleBoots
+  suffix: WH40K, войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/combatboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/combatboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsValhallan
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/valhallan_boots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/valhallan_boots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesAnkleBoots
+  id: ClothingShoesAnkleBootsCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/combatboots_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/combatboots_cyan.rsi
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesCommissarBoots
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/commissar.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/commissar.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.4
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesGenBoots
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/genboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/genboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.3
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: ClothingShoesBootsworkTechpriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/workboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/workboots.rsi
+  - type: Matchbox
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesArmoredWorkbootsTechpriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/armored_workboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/armored_workboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.4
+  - type: Armor
+    modifiers:
+      coefficients:
+        Piercing: 0.95
+        Blunt: 0.95
+        Slash: 0.95
+        Heat: 0.99
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingShoesBootsworkTechpriest
+  id: ClothingShoesBootsBloodPact
+  suffix: WH40K, Бладпакт
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/heresyboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/heresyboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesChaosBoots1
+  name: Ботинки культиста хаоса
+  description: Жуткие сапоги, сшитые из неизвестной кожи и пропитанные шёпотом Варпа. Они служат не только защитой, но и символом преданности Хаоса.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/Cultboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/Cultboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesChaosBoots2
+  name: Сапоги культиста хаоса
+  description: Сапоги культиста, сделанные из странно мягкой и нежной кожи, чья гладкость вызывает ужас, словно она ещё хранит тепло своих владельцев.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/Cultboots2.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/Cultboots2.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: ClothingShoesBootsChaplain
+  suffix: WH40K, Священник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/chaplain.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/chaplain.rsi
+  - type: Matchbox
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/vst_boots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/vst_boots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsMauler
+  suffix: WH40K, Культ Хаоса, Маулер
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/mauler.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/mauler.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsKhorne
+  suffix: WH40K, Культ Хаоса, Кхорн
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/khorneboots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/khorneboots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.4
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesBootsSlaanesh
+  suffix: WH40K, Культ Хаоса, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/slaaneshohodi.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/slaaneshohodi.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.4
+
+- type: entity
+  parent: ClothingShoesAnkleBoots
+  id: ClothingShoesAnkleBootsInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/boots_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/boots_inquisition.rsi
+
+- type: entity
+  parent: ClothingShoesAnkleBoots
+  id: ClothingShoesChaosSlaaneshChoisenBoots
+  suffix: WH40K, Культ Хаоса, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/chaos_slaanesh_choisen_boots_.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/chaos_slaanesh_choisen_boots_.rsi
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: ClothingShoesHelldriverBoots
+  suffix: WH40K, helldrivers
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/helldiver.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/helldiver.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5

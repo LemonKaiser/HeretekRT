@@ -1,0 +1,15 @@
+ent-AirlockShuttleNfsdOutpostLocked = { ent-AirlockShuttleNfsdOutpost }
+    .suffix = Аванпост, ТСФ, Стыковочный, Закрыт
+    .desc = { ent-AirlockShuttleNfsdOutpost.desc }
+ent-AirlockGlassShuttleNfsdOutpostLocked = { ent-AirlockGlassShuttleNfsdOutpost }
+    .suffix = Аванпост, ТСФ, Стеклянный, Стыковочный, Закрыт
+    .desc = { ent-AirlockGlassShuttleNfsdOutpost.desc }
+ent-AirlockShuttleNfsdCapitalLocked = { ent-AirlockShuttleNfsdCapital }
+    .suffix = Капитал, ТСФ, Стыковочный, Закрыт
+    .desc = { ent-AirlockShuttleNfsdCapital.desc }
+ent-AirlockGlassShuttleNfsdCapitalLocked = { ent-AirlockGlassShuttleNfsdCapital }
+    .suffix = Капитал, ТСФ, Стеклянный, Стыковочный, Закрыт
+    .desc = { ent-AirlockGlassShuttleNfsdCapital.desc }
+ent-HighSecTSFMCLocked = { ent-HighSecArmoryLocked }
+    .suffix = ТСФ, Закрыт
+    .desc = { ent-HighSecArmoryLocked.desc }

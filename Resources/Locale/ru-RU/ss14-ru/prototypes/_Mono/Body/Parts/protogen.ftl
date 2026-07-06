@@ -1,0 +1,11 @@
+ent-PartProtogen = часть тела протогена
+ent-TorsoProtogen = торс протогена
+ent-HeadProtogen = голова протогена
+ent-LeftArmProtogen = левая рука протогена
+ent-RightArmProtogen = правая рука протогена
+ent-LeftHandProtogen = левая кисть протогена
+ent-RightHandProtogen = правая кисть протогена
+ent-LeftLegProtogen = левая нога протогена
+ent-RightLegProtogen = правая нога протогена
+ent-LeftFootProtogen = левая стопа протогена
+ent-RightFootProtogen = правая стопа протогена

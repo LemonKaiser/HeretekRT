@@ -1,0 +1,10 @@
+ent-ClothingHelmetHardsuitUIEnforcer = U.I. ENFORCER MKI helmet
+    .desc = Защита от вспышек, встроенная система ночного видения и выглядит чертовски хорошо. Кроме того, что порт информационного дисплея сломан, чего ещё можно желать?
+ent-ClothingHelmetHardsuitUIEnforcerMKII = U.I. ENFORCER MKII Combat helmet
+    .desc = Этот топовый шлем поставляется с защитой от вспышек, масс-сканером и встроенной системой медицинской диагностики.
+ent-ClothingHelmetHardsuitUIEngineer = инженерный шлем U.I.
+    .desc = Дешёвый и эффективный шлем скафандра, просто с дополнительным налётом чёрного рынка.
+ent-ClothingHelmetHardsuitUIPilot = шлем пилота U.I.
+    .desc = Шлем пилотов Ullman Industry.
+ent-ClothingHelmetHardsuitUIDirector = экспериментальный шлем U.I. VK-1
+    .desc = Шлем специальной конструкции, разработанный Феликсом Уллманом для Феликса Уллмана.

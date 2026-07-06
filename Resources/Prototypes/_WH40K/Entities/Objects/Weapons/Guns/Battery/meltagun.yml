@@ -1,0 +1,34 @@
+- type: entity
+  parent: [WeaponLaserWH40KEnergy, BaseGunWieldable]
+  id: WeaponLaserMeltagun
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/meltagun.rsi
+  - type: GunRequiresWield
+  - type: Gun
+    fireRate: 0.65
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/meltagun.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MeltPowerCell
+        whitelist:
+          tags:
+            - MeltPowerCell
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/meltagun_in-hands.rsi
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/meltagun_in-hands.rsi
+    slots:
+    - Back
+    - suitStorage
+  - type: HeldSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.9
+

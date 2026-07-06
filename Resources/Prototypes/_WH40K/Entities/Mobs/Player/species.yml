@@ -1,0 +1,20 @@
+- type: entity
+  save: false
+  name: Urist T'au
+  suffix: T'au
+  parent: BaseMobTau
+  id: MobTau
+
+- type: entity
+  save: false
+  name: Urist Ork
+  suffix: Ork
+  parent: BaseMobOrk
+  id: MobOrk
+
+- type: entity
+  save: false
+  name: Urist McAstartes
+  suffix: Astartes
+  parent: BaseMobAstartes
+  id: MobAstartes

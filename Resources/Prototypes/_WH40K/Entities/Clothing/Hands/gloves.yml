@@ -1,0 +1,144 @@
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesCombatVoidsman
+  suffix: WH40K, войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/v_sergeant.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/v_sergeant.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesCombatCommissar
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/commissar.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/commissar.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesTechpriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/techpriest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/techpriest.rsi
+  # - type: GloveHeatResistance
+  #   heatResistance: 1400
+  - type: Fiber
+    fiberMaterial: fibers-durathread
+    fiberColor: fibers-regal-black
+  - type: FingerprintMask
+
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesBloodPact
+  suffix: WH40K, Бладпакт
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/black_heresy.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/black_heresy.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesKrieg
+  suffix: WH40K, Криг
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/krieg.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/krieg.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesCombatColonel
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/colonelshand.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/colonelshand.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesCombatcult
+  name: боевые перчатки
+  description: Боевые перчатки культа.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/gloves_fingerless_cult.rsi
+  - type: Item
+    sprite: Clothing/Hands/Gloves/fingerless.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/gloves_fingerless_cult.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/vst_gloves.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/vst_gloves.rsi
+
+- type: entity
+  parent: ClothingHandsGlovesColorBlack
+  id: ClothingHandsGlovesInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/gloves_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/gloves_inquisition.rsi
+  - type: Insulated
+
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesChirurgeonSaw
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/chirurgeon_glove.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/chirurgeon_glove.rsi
+  - type: Item
+    sprite: _WH40K/Clothing/Hands/Gloves/chirurgeon_glove.rsi
+  - type: Sharp
+  - type: Utensil
+    types:
+    - Knife
+  - type: Tool
+    qualities:
+    - Sawing
+    - Slicing
+    speedModifier: 2.0
+  - type: MeleeWeapon
+    attackRate: 1.5
+    animation: WeaponArcFist
+    damage:
+      types:
+        Slash: 15
+    soundHit:
+      path: /Audio/Items/drill_hit.ogg
+    mustBeEquippedToUse: true
+  - type: Tag
+    tags:
+    - SurgeryTool

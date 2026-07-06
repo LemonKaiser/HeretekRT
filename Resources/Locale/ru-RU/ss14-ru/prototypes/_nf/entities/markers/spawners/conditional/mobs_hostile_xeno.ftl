@@ -1,0 +1,10 @@
+ent-NFSpawnMobXenoRunner = спавнер бегуна-ксено
+ent-NFSpawnMobXenoDrone = спавнер дрона-ксено
+ent-NFSpawnMobXenoQueen = спавнер королевы ксеносов
+ent-NFSpawnMobXenoT1 = спавнер ксено
+ent-NFSpawnMobXenoT3 = NFSpawnMobXenoT3
+ent-NFSpawnMobXenoSpitter = спавнер плевателя-ксено
+ent-NFSpawnMobXenoRavager = спавнер разрушителя-ксено
+ent-NFSpawnMobXenoBurrower = спавнер землекопа-ксено
+ent-NFSpawnMobXenoPraetorian = спавнер преторианца-ксено
+ent-NFSpawnMobXenoT2 = NFSpawnMobXenoT2

@@ -1,0 +1,13 @@
+ent-DefaultStationBeaconUSSPShipyard = маяк верфи СССП
+ent-DefaultStationBeaconUSSPDockAlpha = доки СССП
+ent-DefaultStationBeaconUSSPDockBeta = доки СССП
+ent-DefaultStationBeaconUSSPControl = диспетчерская СССП
+ent-DefaultStationBeaconUSSPReception = приёмная СССП
+ent-DefaultStationBeaconUSSPDorms = общежитие СССП
+ent-DefaultStationBeaconUSSPCommissar = комиссар СССП
+ent-DefaultStationBeaconUSSPArmory = арсенал СССП
+ent-DefaultStationBeaconUSSPCargo = грузовой отсек СССП
+ent-DefaultStationBeaconUSSPBrig = тюрьма СССП
+ent-DefaultStationBeaconUSSPServers = серверы СССП
+ent-DefaultStationBeaconExpedLounge = гостиная экспедиции
+ent-DefaultStationBeaconMailRoom = почтовое отделение

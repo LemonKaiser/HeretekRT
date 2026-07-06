@@ -1,0 +1,9 @@
+- type: soundCollection
+  id: DialogueBlipGenestealer
+  files:
+    - /Audio/_WH40K/Voice/Tyranid/genestealerspeech.ogg
+
+- type: soundCollection
+  id: DialogueBlipZoanthrope
+  files:
+    - /Audio/_WH40K/Voice/Tyranid/zoanthropespeech.ogg

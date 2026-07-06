@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Made for DeltaV-Stray, WH14K    by boctonskuitea, Fullmaster, ifi07, londorondondon, endr_animet",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+        "name": "GGados"
+    },
+    {
+        "name": "Full"
+    },
+    {
+        "name": "Toster"
+    },
+    {
+        "name": "ifi"
+    },
+    {
+        "name": "ifi-unshaded"
+    },
+    {
+        "name": "lon"
+    },
+    {
+        "name": "kaiser"
+    },
+    {
+        "name": "kaiser-unshaded"
+    },
+    {
+        "name": "endr_animet"
+    },
+    {
+        "name": "endr_animet-unshaded"
+    },
+    {
+        "name": "endr_animet-particls",
+      "delays": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ]
+      ]
+    },
+    {
+        "name": "biomass"
+    },
+    {
+        "name": "biomass-unshaded"
+    },
+    {
+        "name": "litiy"
+    },
+    {
+        "name": "solder"
+    },
+    {
+        "name": "acic"
+    },
+    {
+        "name": "acic-unshaded"
+    },
+    {
+        "name": "necron"
+    },
+    {
+        "name": "carbon"
+    },
+    {
+        "name": "suslik"
+    },
+    {
+        "name": "popug"
+    },
+    {
+        "name": "oliva"
+    }
+  ]
+}

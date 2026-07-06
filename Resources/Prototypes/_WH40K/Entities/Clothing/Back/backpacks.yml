@@ -1,0 +1,196 @@
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackSkitarii
+  suffix: WH40K, АдМехи
+  components:
+  - type: Unremoveable
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/skitarii.rsi
+  - type: UseDelay
+    delay: 0.5
+    delays:
+      gasTank:
+        length: 1.0
+  - type: GasTank
+    outputPressure: 101.3
+    air:
+      # Roughly 13 minutes of breathable mixed air at normal output pressure.
+      volume: 10
+      moles:
+        Oxygen: 0.902606782
+        Nitrogen: 3.200151318
+      temperature: 293.15
+    tankLowPressure: 30.0
+  - type: InteractionOutline
+  - type: Eye
+  - type: WirelessNetworkConnection
+    range: 200
+  - type: SurveillanceCameraMicrophone
+    blacklist:
+      components:
+        - SurveillanceCamera
+        - SurveillanceCameraMonitor
+        - RadioSpeaker
+  - type: ActiveListener
+    range: 10
+  - type: DeviceNetwork
+    deviceNetId: Wireless
+    receiveFrequencyId: SurveillanceCameraScience
+    transmitFrequencyId: SurveillanceCamera
+  - type: SurveillanceCamera
+    networkSet: true
+  - type: UserInterface
+    interfaces:
+      enum.SurveillanceCameraSetupUiKey.Camera:
+        type: SurveillanceCameraSetupBoundUi
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: TelecomServer
+  - type: ContainerContainer
+    containers:
+      key_slots: !type:Container
+      storagebase: !type:Container
+        ents: []
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyCommon
+  - type: EncryptionKeyHolder
+    keysExtractionMethod: Prying
+    keySlots: 1
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackTechpriest
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/techpriest.rsi
+  - type: UseDelay
+    delay: 0.5
+    delays:
+      gasTank:
+        length: 1.0
+  - type: GasTank
+    outputPressure: 101.3
+    air:
+      # Roughly 13 minutes of breathable mixed air at normal output pressure.
+      volume: 10
+      moles:
+        Oxygen: 0.902606782
+        Nitrogen: 3.200151318
+      temperature: 293.15
+    tankLowPressure: 30.0
+
+- type: entity
+  parent: ClothingBackpackTechpriest
+  id: ClothingBackpackTechpriestDendrite
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/techpriest_dendrite.rsi
+  - type: Unremoveable
+
+- type: entity
+  parent: ClothingBackpackTechpriestDendrite
+  id: ClothingBackpackTechpriestDendriteSlaanesh
+  suffix: WH40K, ТёмнМехи, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/techpriest_dendrite_slaanesh.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackGuard
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/guardpack.rsi
+
+- type: entity
+  parent: Clothing
+  id: ClothingBackpackVox
+  suffix: WH40K, Гвардия
+  components:
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/guardpackvox.rsi
+    state: icon
+  - type: Storage
+    grid:
+    - 0,0,6,3
+    maxItemSize: Huge
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: Item
+    size: Ginormous
+
+- type: entity
+  parent: Clothing
+  id: ClothingBackpackVoxChaos
+  suffix: WH40K, Heretics
+  components:
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/cultchaospack.rsi
+    state: icon
+  - type: Storage
+    grid:
+    - 0,0,6,3
+    maxItemSize: Huge
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: Item
+    size: Ginormous
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackCULT1
+  name: рюкзак культиста Хаоса
+  description: Рюкзак, сотканный из кожи неведомого происхождения, вмещает припасы, оружие и тайные книги служителей Хаоса.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/cultchaospack.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackCULT2
+  name: рюкзак культиста Хаоса с черепом
+  description: Рюкзак, сотканный из кожи неведомого происхождения и с черепом, вмещает припасы, оружие и тайные книги служителей Хаоса.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/cultchaospak2.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackSatchelChaosWheel
+  name: сумка с колесом Хаоса
+  description: Потёртая сумка культиста, украшенная конструкцией Колеса Хаоса. Символы варпа на её поверхности изредка вспыхивают, внушая страх и даруя странную защиту.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/satchel_cult.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/satchel_cult.rsi
+  - type: PointLight
+    color: red
+    radius: 1.5
+    energy: 0.5

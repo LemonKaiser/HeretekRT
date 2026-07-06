@@ -1,0 +1,30 @@
+- type: entity
+  id: WH40KIntelDetectorBase
+  parent: BaseItem
+  abstract: true
+  name: intel detector
+  description: A preserved field scanner shell kept for later reuse.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/pinpointer.rsi
+    state: pinpointer
+  - type: Icon
+    sprite: Objects/Devices/pinpointer.rsi
+    state: pinpointer
+  - type: Item
+    sprite: Objects/Devices/pinpointer.rsi
+    size: Normal
+
+- type: entity
+  id: WH40KIntelDetectorImperium
+  parent: WH40KIntelDetectorBase
+  name: imperium intel detector
+  description: A preserved field scanner shell marked for Imperium reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KIntelDetectorHeretics
+  parent: WH40KIntelDetectorBase
+  name: heretics intel detector
+  description: A preserved field scanner shell marked for Heretics reuse.
+  suffix: WH40K

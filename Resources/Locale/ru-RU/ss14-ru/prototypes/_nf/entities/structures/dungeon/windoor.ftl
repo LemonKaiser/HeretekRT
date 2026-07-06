@@ -1,0 +1,11 @@
+ent-WindoorSecureSecurityLockedDungeon = WindoorSecureSecurityLockedDungeon
+ent-WindoorSecureMercenaryLockedDungeon = WindoorSecureMercenaryLockedDungeon
+ent-WindoorMurkyDungeon = мутная раздвижная дверь
+    .desc = Раздвижная дверь с мутным стеклом — трудно разглядеть, что по ту сторону.
+ent-WindoorPlasmaDungeon = WindoorPlasmaDungeon
+ent-WindoorDungeon = WindoorDungeon
+ent-WindoorSecureMedicalLockedDungeon = WindoorSecureMedicalLockedDungeon
+ent-WindoorSecureEngineeringLockedDungeon = WindoorSecureEngineeringLockedDungeon
+ent-WindoorSecureBrigLockedDungeon = WindoorSecureBrigLockedDungeon
+ent-WindoorSecureDungeon = WindoorSecureDungeon
+ent-WindoorSecurePlasmaDungeon = WindoorSecurePlasmaDungeon

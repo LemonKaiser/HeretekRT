@@ -1,0 +1,192 @@
+- type: entity
+  id: WH40KStrategicPointDecorBase
+  parent: BaseStructure
+  abstract: true
+  suffix: WH40K, decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 120
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: InteractionOutline
+  - type: RequireProjectileTarget
+  - type: StaticPrice
+    price: 450
+
+- type: entity
+  id: WH40KStrategicPointAnchorResource
+  parent: WH40KStrategicPointDecorBase
+  name: resource anchor
+  description: A visual-only strategic resource anchor.
+  suffix: WH40K, Strategic Point, Resource, T0
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/resource/t0_pit.rsi
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/resource/t0_pit.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointAnchorResearch
+  parent: WH40KStrategicPointDecorBase
+  name: research anchor
+  description: A visual-only strategic research anchor.
+  suffix: WH40K, Strategic Point, Research, T0
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/research/noktolit_chaos.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/research/noktolit_chaos.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointAnchorInfluence
+  parent: WH40KStrategicPointDecorBase
+  name: influence anchor
+  description: A visual-only strategic influence anchor.
+  suffix: WH40K, Strategic Point, Influence, T0
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/flag/t0.rsi
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/flag/t0.rsi
+    state: base
+  - type: WH40KWaveShader
+    speed: 2.2
+    dis: 2.8
+
+- type: entity
+  id: WH40KStrategicPointResourceT1
+  parent: WH40KStrategicPointDecorBase
+  name: resource outpost
+  description: A visual-only strategic resource structure.
+  suffix: WH40K, Strategic Point, Resource, T1
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/resource/imperium/t1.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/resource/imperium/t1.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointResourceT1PreviewHeretics
+  parent: WH40KStrategicPointDecorBase
+  name: heretic resource outpost
+  description: A visual-only strategic resource structure.
+  suffix: WH40K, Strategic Point, Resource, T1, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/resource/chaos/t1.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/resource/chaos/t1.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointResearchT1
+  parent: WH40KStrategicPointDecorBase
+  name: research shrine
+  description: A visual-only strategic research structure.
+  suffix: WH40K, Strategic Point, Research, T1
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/research/t1/imperium.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/research/t1/imperium.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointResearchT1PreviewHeretics
+  parent: WH40KStrategicPointDecorBase
+  name: heretic research shrine
+  description: A visual-only strategic research structure.
+  suffix: WH40K, Strategic Point, Research, T1, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/research/t1/chaos.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/research/t1/chaos.rsi
+    state: base
+
+- type: entity
+  id: WH40KStrategicPointInfluenceT1
+  parent: WH40KStrategicPointDecorBase
+  name: influence standard
+  description: A visual-only strategic influence structure.
+  suffix: WH40K, Strategic Point, Influence, T1
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/flag/imperium/t1.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/flag/imperium/t1.rsi
+    state: base
+  - type: WH40KWaveShader
+    speed: 2.4
+    dis: 3.0
+
+- type: entity
+  id: WH40KStrategicPointInfluenceT1PreviewHeretics
+  parent: WH40KStrategicPointDecorBase
+  name: heretic influence standard
+  description: A visual-only strategic influence structure.
+  suffix: WH40K, Strategic Point, Influence, T1, Heretics
+  components:
+  - type: Sprite
+    sprite: _WH40K/StrategicPoints/flag/chaos/t1.rsi
+    drawdepth: OverMobs
+    offset: 0,0.5
+    noRot: true
+    layers:
+    - state: base
+  - type: Icon
+    sprite: _WH40K/StrategicPoints/flag/chaos/t1.rsi
+    state: base
+  - type: WH40KWaveShader
+    speed: 2.4
+    dis: 3.0

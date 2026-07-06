@@ -1,0 +1,11 @@
+ent-PartAsakim = часть тела асакима
+ent-TorsoAsakim = торс асакима
+ent-HeadAsakim = голова асакима
+ent-LeftArmAsakim = левая рука асакима
+ent-RightArmAsakim = правая рука асакима
+ent-LeftHandAsakim = левая кисть асакима
+ent-RightHandAsakim = правая кисть асакима
+ent-LeftLegAsakim = левая нога асакима
+ent-RightLegAsakim = правая нога асакима
+ent-LeftFootAsakim = левая стопа асакима
+ent-RightFootAsakim = правая стопа асакима

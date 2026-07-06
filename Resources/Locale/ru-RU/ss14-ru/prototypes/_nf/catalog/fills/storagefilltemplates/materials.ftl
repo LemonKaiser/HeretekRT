@@ -1,0 +1,9 @@
+ent-StorageFillMaterialsFuelPlasma2 = StorageFillMaterialsFuelPlasma2
+ent-StorageFillMaterialsBasic = StorageFillMaterialsBasic
+ent-StorageFillMaterialsFuelPlasma = StorageFillMaterialsFuelPlasma
+ent-StorageFillMaterialsFuelUranium2 = StorageFillMaterialsFuelUranium2
+ent-StorageFillMaterialsFuelWelding = StorageFillMaterialsFuelWelding
+ent-StorageFillMaterialsFuelAmeJar = StorageFillMaterialsFuelAmeJar
+ent-StorageFillMaterialsFuelUranium = StorageFillMaterialsFuelUranium
+ent-StorageFillMaterialsFuelBananium = StorageFillMaterialsFuelBananium
+ent-StorageFillMaterialsBasic10 = StorageFillMaterialsBasic10

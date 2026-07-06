@@ -1,0 +1,201 @@
+- type: entity
+  id: WH40KDecorativeConsoleBase
+  parent: BaseStructure
+  abstract: true
+  suffix: WH40K, decor
+  components:
+  - type: Transform
+    anchored: true
+  - type: InteractionOutline
+  - type: RequireProjectileTarget
+  - type: SpriteFade
+  - type: StaticPrice
+    price: 250
+
+- type: entity
+  id: StructureLogisticsConsoleImperiumCmd
+  parent: WH40KDecorativeConsoleBase
+  name: imperium command terminal
+  description: A decorative shell of the imperial command terminal.
+  suffix: WH40K, Imperium, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/Computers/srtimperium.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: computer_on
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/Computers/srtimperium.rsi
+    state: computer
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.2,0.3,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - TabletopMachineLayer
+
+- type: entity
+  id: StructureLogisticsConsoleHereticsCmd
+  parent: WH40KDecorativeConsoleBase
+  name: heretic command terminal
+  description: A decorative shell of the heretic command terminal.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/Computers/srtchaos.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: computer_on
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/Computers/srtchaos.rsi
+    state: computer
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.2,0.3,0.4"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - TabletopMachineLayer
+
+- type: entity
+  id: StructureLogisticsConsoleImperiumReinforcement
+  parent: WH40KDecorativeConsoleBase
+  name: imperium reinforcement terminal
+  description: A decorative shell of the imperial reinforcement terminal.
+  suffix: WH40K, Imperium, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/reinforcementsimp.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/reinforcementsimp.rsi
+    state: computer
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 200
+        mask:
+        - TabletopMachineMask
+        layer:
+        - TabletopMachineLayer
+
+- type: entity
+  id: StructureLogisticsConsoleHereticsReinforcement
+  parent: WH40KDecorativeConsoleBase
+  name: heretic reinforcement terminal
+  description: A decorative shell of the heretic reinforcement terminal.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/reinforcementschaos.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/reinforcementschaos.rsi
+    state: computer
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.25,0.25,0.25"
+        density: 200
+        mask:
+        - TabletopMachineMask
+        layer:
+        - TabletopMachineLayer
+
+- type: entity
+  id: StructureLogisticsConsoleImperiumUpgradeTree
+  parent: WH40KDecorativeConsoleBase
+  name: imperium upgrade tree terminal
+  description: A decorative shell of the imperial upgrade tree terminal.
+  suffix: WH40K, Imperium, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/upgardeimp.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/upgardeimp.rsi
+    state: computer
+
+- type: entity
+  id: StructureLogisticsConsoleHereticsUpgradeTree
+  parent: WH40KDecorativeConsoleBase
+  name: heretic upgrade tree terminal
+  description: A decorative shell of the heretic upgrade tree terminal.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/upgardechaos.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/upgardechaos.rsi
+    state: computer
+
+- type: entity
+  id: StructureLogisticsConsoleImperiumMissionBoard
+  parent: WH40KDecorativeConsoleBase
+  name: imperium mission board terminal
+  description: A decorative shell of the imperial mission board terminal.
+  suffix: WH40K, Imperium, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/taskcomp.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/taskcomp.rsi
+    state: computer
+
+- type: entity
+  id: StructureLogisticsConsoleHereticsMissionBoard
+  parent: WH40KDecorativeConsoleBase
+  name: heretic mission board terminal
+  description: A decorative shell of the heretic mission board terminal.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/taskchaos.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: decorative_monitor
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/taskchaos.rsi
+    state: computer

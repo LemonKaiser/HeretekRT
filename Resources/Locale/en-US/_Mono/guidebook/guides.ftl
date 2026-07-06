@@ -26,6 +26,24 @@ guide-entry-armorexplanation = Armor Mechanics
 
 # Rules
 guide-entry-monolith-rules = Monolith Rules
+guide-entry-monolith-rule-core-zero-age-threshold = Age Requirement
+
+# Monolith Guidebook
+guide-entry-monolith-lore = Lore
+guide-entry-monolith-quick-timeline = Quick Timeline
+guide-entry-monolith-factions = Factions
+guide-entry-monolith-faction-tsfmc = TSFMC
+guide-entry-monolith-faction-pdv = PDV
+guide-entry-monolith-faction-smuggling = Smuggling
+guide-entry-monolith-faction-defusal = Defusal
+guide-entry-monolith-minor-factions = Minor Factions
+guide-entry-monolith-faction-ussp = USSP
+guide-entry-monolith-faction-ussp-sop = S.O.P
+guide-entry-monolith-faction-ussp-overview = Union of Soviet Socialist Planets
+guide-entry-monolith-faction-viper-group = The Viper Group
+guide-entry-monolith-economy = Economy
+guide-entry-monolith-economy-recipes = Economy Recipes
+guide-entry-monolith-arc-furnace-recipes = Arc Furnace Recipes
 
 # Creatures
 guide-entry-creatures = Creatures of the Sector

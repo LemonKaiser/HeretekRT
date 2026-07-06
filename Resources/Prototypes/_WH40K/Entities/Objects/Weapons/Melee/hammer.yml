@@ -1,0 +1,124 @@
+- type: entity
+  parent: BaseItem
+  id: WHHammerImperial
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+    - FireAxe
+  - type: Execution
+    doAfterDuration: 4.0
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/hammer_imperial.rsi
+    state: icon
+  - type: StaminaDamageOnHit
+    damage: 10
+  - type: MeleeWeapon
+    wideAnimationRotation: 135
+    swingLeft: true
+    attackRate: 0.65
+    damage:
+      types:
+        Blunt: 35
+        Structural: 50
+    angle: 100
+    soundHit:
+      collection: MetalThud
+  # - type: DamageOtherOnHit
+  #   meleeDamageMultiplier: 1.5
+  - type: Wieldable
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 40
+        Structural: 50
+  - type: Item
+    size: Ginormous
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Melee/hammer_imperial.rsi
+    quickEquip: false
+    slots:
+    - back
+  - type: UseDelay
+    delay: 1
+  - type: StealTarget
+    stealGroup: FireAxe
+  - type: IgniteOnMeleeHit
+    fireStacks: -4
+  # Shitmed Change
+
+- type: entity
+  parent: WHOmnissianAxe
+  id: WHOmnissianAxeBattle
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/omnissia_axe/omnisiahaxe_battle.rsi
+    state: icon
+  - type: Item
+    size: Ginormous
+    sprite: _WH40K/Objects/Weapons/Melee/omnissia_axe/omnissiahaxe_inhand.rsi
+
+- type: entity
+  parent: BaseItem
+  id: WHOmnissianAxe
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/omnissiah_axe.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: 135
+    swingLeft: true
+    attackRate: 0.8
+    damage:
+      types:
+        Blunt: 20
+        Structural: 30
+    angle: 100
+    soundHit:
+      collection: MetalThud
+  - type: Wieldable
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 20
+        Structural: 80
+        Shock: 20
+  - type: IgniteOnMeleeHit
+    fireStacks: -4
+  - type: Item
+    size: Ginormous
+    sprite: _WH40K/Objects/Weapons/Melee/omnissiah_axe.rsi
+  - type: Tag
+    tags:
+    - Multitool
+    - DoorElectronicsConfigurator
+  - type: Prying
+    enabled: false
+  - type: Tool
+    qualities:
+      - Screwing
+    speedModifier: 3.0 # Omnissiah's blessing makes this the finest tool in the galaxy
+    useSound: /Audio/Items/drill_use.ogg
+  - type: ToolTileCompatible
+
+- type: entity
+  parent: WHHammerImperial
+  id: WHHammerHeretic
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/hammer_gaechnik.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: 135
+    swingLeft: true
+    attackRate: 0.65
+    damage:
+      types:
+        Blunt: 20
+        Shock: 20
+    angle: 100
+    soundHit:
+      collection: MetalThud

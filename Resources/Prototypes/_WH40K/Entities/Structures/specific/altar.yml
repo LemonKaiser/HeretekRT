@@ -1,0 +1,32 @@
+- type: entity
+  parent: BaseStructure
+  id: StructureAltar
+  name: dark gods altar
+  description: A heretic altar preserved as a decorative structure without ritual functionality.
+  suffix: WH40K, Heretics, Decoration
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/altar.rsi
+    state: Altar_Idol1
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/altar.rsi
+    state: Altar_Idol1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 120
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+  - type: InteractionOutline
+  - type: RequireProjectileTarget
+  - type: StaticPrice
+    price: 300

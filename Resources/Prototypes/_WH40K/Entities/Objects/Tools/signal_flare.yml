@@ -1,0 +1,66 @@
+- type: entity
+  id: WH40KSignalFlareBase
+  parent: Flare
+  abstract: true
+  name: signal flare
+  description: A field flare for quick visual signaling and target marking.
+  components:
+  - type: ExpendableLight
+    glowDuration: 180
+    fadeOutDuration: 20
+  - type: Sprite
+    layers:
+    - map: [ enum.ExpendableLightVisualLayers.Base ]
+      state: flare_base
+    - map: [ enum.ExpendableLightVisualLayers.Glow ]
+      state: flare_burn
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+    - map: [ enum.ExpendableLightVisualLayers.Overlay ]
+      state: flare_unlit
+      color: "#8CFF9D"
+  - type: PointLight
+    color: "#8CFF9D"
+
+- type: entity
+  id: WH40KSignalFlareImperium
+  parent: WH40KSignalFlareBase
+  name: imperium signal flare
+  description: A tactical flare calibrated to Imperium signal colors.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ enum.ExpendableLightVisualLayers.Base ]
+      state: flare_base
+    - map: [ enum.ExpendableLightVisualLayers.Glow ]
+      state: flare_burn
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+    - map: [ enum.ExpendableLightVisualLayers.Overlay ]
+      state: flare_unlit
+      color: "#7BA4FF"
+  - type: PointLight
+    color: "#7BA4FF"
+
+- type: entity
+  id: WH40KSignalFlareHeretics
+  parent: WH40KSignalFlareBase
+  name: heretics signal flare
+  description: A tactical flare calibrated to Heretics signal colors.
+  components:
+  - type: Sprite
+    layers:
+    - map: [ enum.ExpendableLightVisualLayers.Base ]
+      state: flare_base
+    - map: [ enum.ExpendableLightVisualLayers.Glow ]
+      state: flare_burn
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+    - map: [ enum.ExpendableLightVisualLayers.Overlay ]
+      state: flare_unlit
+      color: "#FF7A7A"
+  - type: PointLight
+    color: "#FF7A7A"

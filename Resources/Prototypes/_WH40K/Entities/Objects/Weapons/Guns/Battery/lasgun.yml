@@ -1,0 +1,31 @@
+- type: entity
+  parent: [WeaponLaserWH40KEnergy, BaseGunWieldable]
+  id: WeaponLaserLasgun
+  suffix: WH40K
+  components:
+  - type: Gun
+    fireRate: 1.5
+  - type: GunRequiresWield
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      wh40k-weapon-mod-optic: !type:ContainerSlot
+      wh40k-weapon-mod-stock: !type:ContainerSlot
+      wh40k-weapon-mod-barrel: !type:ContainerSlot
+      wh40k-weapon-mod-underbarrel: !type:ContainerSlot
+      wh40k-weapon-mod-laser: !type:ContainerSlot
+      wh40k-weapon-mod-bayonet: !type:ContainerSlot
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Battery/lasgun_standart/lasgun_in-hands.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 6.5
+    energy: 2.3
+    netsync: false
+

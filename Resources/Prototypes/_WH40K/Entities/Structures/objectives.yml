@@ -1,0 +1,68 @@
+- type: entity
+  id: WH40KObjectiveDecorBase
+  parent: BaseStructure
+  abstract: true
+  suffix: WH40K, decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 60
+        mask:
+        - MachineMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: InteractionOutline
+  - type: RequireProjectileTarget
+  - type: StaticPrice
+    price: 800
+
+- type: entity
+  id: WH40KObjectiveBase
+  parent: WH40KObjectiveDecorBase
+  abstract: true
+  name: command throne
+  suffix: WH40K, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/imperium_throne.rsi
+    drawdepth: OverMobs
+    layers:
+    - state: base
+      offset: 0, 0.5
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/imperium_throne.rsi
+    state: base
+
+- type: entity
+  id: WH40KObjectiveImperium
+  parent: WH40KObjectiveBase
+  name: imperium objective throne
+  description: A former WH40K objective structure preserved as a decorative command throne.
+  suffix: WH40K, Imperium, decor
+
+- type: entity
+  id: WH40KObjectiveHeretics
+  parent: WH40KObjectiveBase
+  name: heretic objective throne
+  description: A former WH40K objective structure preserved as a decorative command throne.
+  suffix: WH40K, Heretics, decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Specific/chaos_throne.rsi
+    drawdepth: OverMobs
+    layers:
+    - state: base
+      offset: 0, 0.5
+  - type: Icon
+    sprite: _WH40K/Structures/Specific/chaos_throne.rsi
+    state: base

@@ -1,0 +1,57 @@
+- type: entity
+  parent: BaseItem
+  id: Chainsword
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/chainsword.rsi
+    layers:
+    - state: off-icon
+      map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: MeleeWeapon
+    autoAttack: true
+    angle: 0
+    wideAnimationRotation: -135
+    attackRate: 4
+    range: 1.6
+    damage:
+      types:
+        Blunt: 1
+    soundHit:
+      path: /Audio/Weapons/chainsaw.ogg
+      params:
+        volume: -3
+  - type: ItemToggle
+    soundActivate:
+      path: /Audio/Weapons/chainsawwield.ogg
+      params:
+        volume: -3
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+      params:
+        variation: 0.250
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Slash: 10
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Slash: 18
+    activatedSoundOnHit:
+      path: /Audio/Weapons/chainsaw.ogg
+      params:
+        volume: -3
+  - type: UseDelay
+  - type: Item
+    heldPrefix: off
+    size: Normal
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
+          True: {state: on-icon}
+          False: {state: off-icon}
+
+

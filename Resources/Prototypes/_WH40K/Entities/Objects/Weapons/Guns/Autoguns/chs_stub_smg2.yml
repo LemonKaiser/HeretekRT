@@ -1,0 +1,53 @@
+- type: entity
+  parent: [BaseWeaponSubMachineGun, BaseGunWieldable]
+  id: WeaponChsStubSMG2
+  suffix: WH40K, Хаос
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/chs_stub_smg2.rsi
+    scale: 0.85,0.85
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    size: Huge
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/chs_stub_smg2.rsi
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazineStubSMG
+        insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazineStubSMG
+      gun_chamber:
+        name: Chamber
+        startingItem: Cartridge10mmLong
+        priority: 1
+        whitelist:
+          tags:
+            - Cartridge10mmLong
+  - type: Gun
+    fireRate: 4.5
+    availableModes:
+    - FullAuto
+    selectedMode: FullAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_3.wav
+  - type: HeldSpeedModifier
+    walkModifier: 0.98
+    sprintModifier: 0.98
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 6
+    energy: 2.2
+    netsync: false
+

@@ -1,0 +1,39 @@
+- type: entity
+  parent: [BaseWeaponShotgun, BaseGunWieldable]
+  id: WeaponStubShotgun
+  suffix: WH40K, Общий
+  components:
+  - type: GunRequiresWield
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+        ents: []
+      wh40k-weapon-mod-optic: !type:ContainerSlot
+      wh40k-weapon-mod-muzzle: !type:ContainerSlot
+      wh40k-weapon-mod-stock: !type:ContainerSlot
+      wh40k-weapon-mod-sling: !type:ContainerSlot
+      wh40k-weapon-mod-bayonet: !type:ContainerSlot
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Shotguns/stub_shotgun_inhands.rsi
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Shotguns/stub_shotgun.rsi
+    scale: 0.85,0.85
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Shotguns/stub_shotgun_inhands.rsi
+  - type: Gun
+    fireRate: 1
+    availableModes:
+    - SemiAuto
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+      - ShellShotgun
+    capacity: 5
+    proto: ShellShotgun
+  - type: Appearance
+  - type: ClothingSpeedModifier
+    walkModifier: 0.98
+    sprintModifier: 0.98
+

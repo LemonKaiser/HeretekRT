@@ -1,0 +1,111 @@
+- type: entity
+  id: WHChaosBanner
+  parent: BaseStructureDynamic
+  suffix: WH40K, Хаос
+  components:
+  - type: Transform
+    noRot: true
+  - type: InteractionOutline
+  - type: Anchorable
+    flags:
+    - Anchorable
+  - type: Rotatable
+  - type: Pullable
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - Opaque
+        - MidImpassable
+        - HighImpassable
+        - BulletImpassable
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: chaos_banner
+  - type: WH40KWaveShader
+    speed: 2.4
+    dis: 4.2
+  - type: Construction
+    graph: WH40KBanners
+    node: chaosBanner
+
+- type: entity
+  id: WHGvardiaBanner
+  parent: WHChaosBanner
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: gvardia_banner
+  - type: Construction
+    graph: WH40KBanners
+    node: gvardiaBanner
+
+- type: entity
+  id: WHGvardiaBanner2
+  parent: WHChaosBanner
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: gvardia_banner2
+  - type: Construction
+    graph: WH40KBanners
+    node: gvardiaBanner2
+
+- type: entity
+  id: MechanicusBanner
+  parent: WHChaosBanner
+  suffix: WH40K, АдМехи
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: mechanicus
+  - type: Construction
+    graph: WH40KBanners
+    node: mechanicusBanner
+
+- type: entity
+  id: WHMedicalBanner
+  parent: WHChaosBanner
+  suffix: WH40K, Медикаэ
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: medical_banner
+  - type: Construction
+    graph: WH40KBanners
+    node: medicalBanner
+
+- type: entity
+  id: WHTauBanner
+  parent: WHChaosBanner
+  suffix: WH40K, Tau
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/banners.rsi
+    state: tau_banner
+  - type: Construction
+    graph: WH40KBanners
+    node: tauBanner

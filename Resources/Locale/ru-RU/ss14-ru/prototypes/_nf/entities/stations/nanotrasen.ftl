@@ -1,0 +1,6 @@
+ent-RecordsFrontierOutpostCargo = RecordsFrontierOutpostCargo
+ent-DeadDropFrontierOutpost = DeadDropFrontierOutpost
+ent-RecordsFrontierOutpost = RecordsFrontierOutpost
+ent-StandardFrontierAntagVessel = StandardFrontierAntagVessel
+ent-MarketFrontierOutpost = MarketFrontierOutpost
+ent-DeadDropRecordsFrontierOutpost = DeadDropRecordsFrontierOutpost

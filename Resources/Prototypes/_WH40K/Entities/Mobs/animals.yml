@@ -1,0 +1,75 @@
+- type: entity
+  id: MobQueenChrysalis
+  parent: SimpleSpaceMobBase
+  suffix: WH40K, Ксенос
+  components:
+  - type: TypingIndicator
+    proto: alien
+  - type: Speech
+    speechSounds: Genestealer #заглушка
+  - type: NpcFactionMember
+    factions:
+    - Tyranids
+  - type: Reactive
+    groups:
+      Flammable: [Touch]
+      Extinguish: [Touch]
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _WH40K/Mobs/QueenChrysalis.rsi
+    layers:
+      - map: ["enum.DamageStateVisualLayers.Base", "movement"]
+        state: QueenChrysalis
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: QueenChrysalis
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
+  - type: ProtectedFromStepTriggers
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.5
+    baseSprintSpeed: 6.5
+  - type: CombatMode
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 0.7
+    angle: 0
+    animation: WeaponArcBite
+    soundHit:
+      collection: GenestealerAttack #Заглушка
+    damage:
+      types:
+        Piercing: 35
+  - type: Puller
+    needsHands: false
+  - type: Tag
+    tags:
+      - FootstepSound
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: walking
+    noMovementLayers:
+      movement:
+        state: QueenChrysalis
+
+- type: entity
+  id: MobQueenChrysalisImperium
+  parent:  MobQueenChrysalis
+  suffix: WH40K, Империум
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Imperium

@@ -1,0 +1,111 @@
+- type: entity
+  parent: Gorjet
+  id: Colonelcloak
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/colonelcloak.rsi
+    state: icon
+  - type: WH40KWaveShader
+    speed: 1.6
+    dis: 1.8
+  - type: Clothing
+    sprite: _WH40K/Clothing/Neck/Cloaks/colonelcloak.rsi
+
+- type: entity
+  abstract: true
+  parent: ClothingNeckBase
+  id: WH40KClothingNeckToggleableCloakBase
+  components:
+  - type: ToggleableClothing
+    requiredSlot:
+    - neck
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
+
+- type: entity
+  parent: WH40KClothingNeckToggleableCloakBase
+  id: ClothingNeckCloakRainImp
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/imp_rain.rsi
+  - type: WH40KWaveShader
+    speed: 1.9
+    dis: 2.0
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodRainImp
+
+- type: entity
+  parent: WH40KClothingNeckToggleableCloakBase
+  id: ClothingNeckCloakRainChs
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/chs_rain.rsi
+  - type: WH40KWaveShader
+    speed: 1.9
+    dis: 2.0
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodRainChs
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckInqusition
+  suffix: WH40K, Священник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Misc/inqusition.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Clothing/Neck/Misc/inqusition.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckCloakFlesh
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/flesh.rsi
+  - type: WH40KWaveShader
+    speed: 1.7
+    dis: 2.1
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckHelldriver
+  suffix: WH40K, helldrivers
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/helldiver.rsi
+    state: icon
+  - type: Clothing
+    sprite: _WH40K/Clothing/Neck/Cloaks/helldiver.rsi
+
+# Chameleoline Cloaks
+
+- type: entity
+  parent: WH40KClothingNeckToggleableCloakBase
+  id: ClothingNeckCloakChameleonImp
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/imp_chameleon.rsi
+  - type: WH40KWaveShader
+    speed: 1.9
+    dis: 2.0
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodChameleonImp
+- type: entity
+  parent: WH40KClothingNeckToggleableCloakBase
+  id: ClothingNeckCloakChameleonChs
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/chs_chameleon.rsi
+  - type: WH40KWaveShader
+    speed: 1.9
+    dis: 2.0
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodChameleonChs

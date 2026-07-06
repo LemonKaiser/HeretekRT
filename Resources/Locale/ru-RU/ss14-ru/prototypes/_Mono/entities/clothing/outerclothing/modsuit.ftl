@@ -1,0 +1,10 @@
+ent-ClothingModsuitChestplateUSSPVaryag = Panzerkorps Varyag
+    .desc = Толстые пластины, сплавленные с внутренним контролем атмосферы.
+ent-ClothingModsuitChestplateUSSPZastavnik = Brust Zastavnika
+    .desc = Внушительная бронированная оболочка, разработанная для поглощения ударов и поддержания стабильности под давлением.
+ent-ClothingModsuitChestplateRogue = нагрудная пластина модкостюма RX-01
+    .desc = Нагрудник имеет предупреждающую этикетку внутри о утечках радиации - и записку рядом с ней 'Удалить эту этикетку в финальном продукте - Феликс'
+ent-ClothingModsuitChestplateVolta = Volta Modsuit Chestplate
+    .desc = Усиленная военная модификация сапёрного модкостюма с повышенной пулестойкостью.
+ent-ClothingModsuitChestplateGalloglass = торс модкостюма «Галлоглас»
+    .desc = Лёгкий модкостюм, который жертвует защитой от взрывов и тепла ради энергетического щита и скорости.

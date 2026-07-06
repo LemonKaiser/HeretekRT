@@ -1,0 +1,11 @@
+﻿ent-MechPelletShotgun = дробь (0.5 калибр)
+ent-MechPelletShotgunSpread = pellet (0.5 gauge)
+ent-MechCoilgunSabot = 3cm sabot
+ent-Bullet45_ACPFMJ_Mech = bullet (.45 ACP FMJ)
+ent-60mmMechShell = 60mm shell
+ent-120mmBulletHE = 120mm Shell
+ent-280mmRocket = 280mm "Bazooka" Rocket
+ent-BlanketFlare = Signal Emitter
+ent-SparkFlare = Signal Emitter
+ent-Mech90mmBullet = 90mm снаряд
+ent-MechMediumPlasmaProjectile = plasma projectile

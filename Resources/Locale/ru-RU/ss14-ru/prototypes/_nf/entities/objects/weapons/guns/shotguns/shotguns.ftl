@@ -1,0 +1,10 @@
+ent-WeaponShotgunSawn = обрез
+    .desc = Легальное гражданское оружие. Против всякой шелупони. Использует патроны калибра .50 ружейный.
+ent-WeaponShotgunKammerer = Каммерер
+    .desc = Легальное гражданское оружие. Вот что выходит, когда старый дизайн Ремингтона соединяется с современными материалами. Любимое оружие ополченцев на многих мирах. Использует патроны калибра .50 ружейный.
+ent-WeaponShotgunSawnNonlethal = { ent-WeaponShotgunSawn }
+    .suffix = Травматическое
+    .desc = { ent-WeaponShotgunSawn.desc }
+ent-WeaponShotgunKammererNonlethal = { ent-WeaponShotgunKammerer }
+    .suffix = Травматическое
+    .desc = { ent-WeaponShotgunKammerer.desc }

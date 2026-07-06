@@ -1,0 +1,15 @@
+ent-UnknownShuttleZenithApoc = неизвестный шаттл ИИ
+    .suffix = Zenith, Апокалипсис
+    .desc = { ent-BaseRandomShuttleRule.desc }
+ent-UnknownShuttleZenithEApoc = неизвестный шаттл ИИ
+    .suffix = Zenith E, Апокалипсис
+    .desc = { ent-BaseRandomShuttleRule.desc }
+ent-UnknownShuttleNebulaApoc = неизвестный шаттл ИИ
+    .suffix = Nebula, Апокалипсис
+    .desc = { ent-BaseRandomShuttleRule.desc }
+ent-UnknownShuttleRazorApoc = неизвестный шаттл ИИ
+    .suffix = Razor, Апокалипсис
+    .desc = { ent-BaseRandomShuttleRule.desc }
+ent-UnknownShuttleWyvernApoc = неизвестный шаттл ИИ
+    .suffix = Wyvern, Апокалипсис
+    .desc = { ent-BaseRandomShuttleRule.desc }

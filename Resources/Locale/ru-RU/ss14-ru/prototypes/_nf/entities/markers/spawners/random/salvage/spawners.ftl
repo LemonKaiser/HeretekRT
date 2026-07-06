@@ -1,0 +1,2 @@
+ent-SalvageSpawnerScrapBrass75 = SalvageSpawnerScrapBrass75
+ent-SalvageScrapSpawnerBrass = SalvageScrapSpawnerBrass

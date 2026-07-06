@@ -1,0 +1,34 @@
+- type: entity
+  id: ClothingUniformJumpsuitPsykerSanctioned
+  parent: ClothingUniformJumpsuitCommandUniform
+  name: санкционированное облачение псайкера
+  description: Форменное облачение, выданное имперскому псайкеру для службы под надзором и в строю.
+
+- type: entity
+  id: ClothingBackpackPsykerSatchel
+  parent: ClothingBackpackGuard
+  name: психана-сумка
+  description: Полевая сумка для записей, фокусировочных печатей и расходников санкционированного псайкера.
+
+- type: entity
+  id: ClothingOuterPsykerWardCoat
+  parent: ClothingOuterChaplainRobe
+  name: защитная риза псайкера
+  description: Освящённая риза с защитными швами и слоями, помогающими держать дисциплину под давлением Варпа.
+
+- type: entity
+  id: ClothingOuterPsykerWardCoatPremium
+  parent: ClothingOuterPsykerWardCoat
+  name: форма Схоластики Псайкана
+  description: Униформа выпускника элитной школы Схоластика Псайкана
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Robes/psyker_premium.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Robes/psyker_premium.rsi
+
+- type: entity
+  id: ClothingShoesPsykerBoots
+  parent: ClothingShoesBootsChaplain
+  name: сапоги псайкера
+  description: Тяжёлые сапоги с внутренними печатями, чтобы держать стойку даже под давлением астрала.

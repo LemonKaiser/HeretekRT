@@ -1,0 +1,488 @@
+# Флак-броня
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: ClothingOuterArmorFlakVest
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest.rsi
+  - type: Appearance
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.6
+        Heat: 0.6
+  - type: ExplosionResistance
+    damageCoefficient: 0.6
+  - type: ClothingSpeedModifier
+    walkModifier: 0.95
+    sprintModifier: 0.95
+
+# флак-жилет медика
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakVestMed
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/medflakvest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/medflakvest.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakVestCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_cyan.rsi
+
+# броня бладпакта
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorBloodpact
+  suffix: WH40K, Бладпакт
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/bloodpact_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/bloodpact_armor.rsi
+
+# броня еретика
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakVestHeretic
+  suffix: WH40K, Еретики
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vraks_renegade_carapace_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vraks_renegade_carapace_armor.rsi
+
+# Флак-броня (Облегчённая)
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: ClothingOuterArmorFlakVestLight
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.6
+        Heat: 0.7
+  - type: ExplosionResistance
+    damageCoefficient: 0.7
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorFlakVestLightCyan
+  suffix: WH40K, Guard Cyan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight_cyan.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight_cyan.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorCatachanLight
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_light_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_light_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorCatachanMedium
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_medium_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_medium_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorCatachanVest
+  suffix: WH40K, Катачан
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/catachan_vest.rsi
+
+# Осквернённая бронижелет хаоса
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorChaosVest
+  name: флак-жилет Хаоса
+  description: Полный комплект осквернённой брони хаоса для рядового культиста. Обеспечивает надёжную защиту, но её чуждый металл давит на тело и ограничивает движения.
+  suffix: WH40K, Культ Хаоса
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vraks_renegade_light_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vraks_renegade_light_armor.rsi
+
+# панцирная броня
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: ClothingOuterArmorAdvancedFlakVest
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadv.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadv.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.45
+        Heat: 0.35
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+
+# панцирный нагрудник
+- type: entity
+  parent: ClothingOuterArmorAdvancedFlakVest
+  id: ClothingOuterArmorFlakVestGen
+  suffix: WH40K, Гвардия
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestgen.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestgen.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.35
+        Heat: 0.35
+  - type: ExplosionResistance
+    damageCoefficient: 0.6
+
+# броня адской бригады
+- type: entity
+  parent: ClothingOuterArmorAdvancedFlakVest
+  id: ClothingOuterArmorAdvancedFlakVestHeretic
+  suffix: WH40K, Еретики, Адская Бригада
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadvheresy.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadvheresy.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorMunitorumRig
+  suffix: WH40K, Munitorum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/munitorum_rig.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/munitorum_rig.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorMunitorumVest
+  suffix: WH40K, Munitorum
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/munitorum_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/munitorum_vest.rsi
+
+# броня востроянцев
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakVestVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vst_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vst_armor.rsi
+
+# броня лейтенанта востроянцев
+- type: entity
+  parent: ClothingOuterArmorCommissar
+  id: ClothingOuterArmorFlakVestLietVst
+  suffix: WH40K, Востроянцы
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vst_liet_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/vst_liet_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorValhallanHeavy
+  suffix: WH40K, Valhallan
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/valhallan_heavy_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/valhallan_heavy_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchChaos
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_chaos.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_chaos.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchKhorne
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_khorne.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_khorne.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchNurgle
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_nurgle.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_nurgle.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchSlaanesh
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_slaanesh.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_slaanesh.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchTzeentch
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_tzeentch.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_tzeentch.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestGen
+  id: ClothingOuterArmorHeresiarchCardinal
+  suffix: WH40K, Heresiarch
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_cardinal.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_cardinal.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.30
+        Slash: 0.30
+        Piercing: 0.30
+        Heat: 0.30
+  - type: ExplosionResistance
+    damageCoefficient: 0.55
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorSlaanech
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/slaanesh_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/slaanesh_vest.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorKini
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/armorkini.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/armorkini.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorMauler
+  suffix: WH40K, Еретики, Маулер
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.4
+        Heat: 0.4
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: ClothingSpeedModifier
+    walkModifier: 0.75
+    sprintModifier: 0.75
+
+  #чемпион кхорна
+- type: entity
+  parent: ClothingOuterArmorCommissar
+  id: ClothingOuterArmorKhornechampion
+  suffix: WH40K, Еретики, Кхорн
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/champion_khorne.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/champion_khorne.rsi
+
+- type: entity
+  parent: ClothingOuterArmorCommissar
+  id: ClothingOuterArmorSlaaneshchampion
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/champion_slaanesh.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/champion_slaanesh.rsi
+
+- type: entity
+  parent: ClothingOuterArmorCommissar
+  id: ClothingOuterArmorTzeentchSerg
+  suffix: WH40K, Еретики, Тзинтч
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Robes/tzeentch_robe.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Robes/tzeentch_robe.rsi
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodTzeentchSerg
+    requiredSlot:
+    - outerClothing
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorTzeentchLiet
+  suffix: WH40K, Еретики, Тзинтч
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Robes/tzeentch_robe_liet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Robes/tzeentch_robe_liet.rsi
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHoodTzeentchLiet
+    requiredSlot:
+    - outerClothing
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakarmor_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakarmor_inquisition.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterArmorFlakVestLightInquisition
+  suffix: WH40K, Инквизиция, BOOSTY
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_inquisition.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_inquisition.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlaksmug
+  suffix: WH40K, Контрабандист
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/colchuga.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/colchuga.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterChaosSlaaneshChoisenArmor
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/chaos_slaanesh_choisen_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/chaos_slaanesh_choisen_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterChaosSlaaneshCultistArmor
+  suffix: WH40K, Еретики, Слаанеш
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/chaos_slaanesh_cultist_armor.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/chaos_slaanesh_cultist_armor.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVestLight
+  id: ClothingOuterHelldriverArmor
+  suffix: WH40K, helldrivers
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/helldiver.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/helldiver.rsi
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorFlakVestOld
+  suffix: WH40K, Old Pattern
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_old.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_old.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+  - type: ExplosionResistance
+    damageCoefficient: 0.8

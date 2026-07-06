@@ -1,0 +1,12 @@
+- type: entity
+  id: Crater
+  parent: BaseStructure
+  suffix: WH40K
+  components:
+  - type: Animateable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/craters.rsi
+    state: crater
+  - type: Physics
+    bodyType: Static
+    canCollide: false

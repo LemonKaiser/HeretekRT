@@ -1,0 +1,15 @@
+ent-ClothingBackpackDuffelDrakeIndustries = вещевой мешок Drake Industries
+    .suffix = Drake
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха. Цвета Drake Industries.
+ent-ClothingBackpackDuffelTacticalDuffelTan = тактический вещевой мешок (хаки)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.
+ent-ClothingBackpackDuffelTacticalDuffelOlive = тактический вещевой мешок (олива)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.
+ent-ClothingBackpackDuffelTacticalDuffelBlack = тактический вещевой мешок (чёрный)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.
+ent-ClothingBackpackDuffelTacticalDuffelRangerGreen = тактический вещевой мешок (зелёный рейнджер)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.
+ent-ClothingBackpackDuffelTacticalDuffelCoyoteBrown = тактический вещевой мешок (коёти-коричневый)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.
+ent-ClothingBackpackDuffelTacticalDuffelWhite = тактический вещевой мешок (белый)
+    .desc = Тяжёлый мешок. Пытались облегчить — без особого успеха.

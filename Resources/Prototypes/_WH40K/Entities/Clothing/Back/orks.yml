@@ -1,0 +1,20 @@
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackOrk
+  suffix: WH40K, Орки
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/ork_backpack.rsi
+  - type: SpeciesItemRestriction
+    whitelist:
+    - Ork
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackOrkBoss
+  suffix: WH40K, Орки
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/generic_bosspole.rsi
+  - type: SpeciesItemRestriction
+    whitelist:
+    - Ork

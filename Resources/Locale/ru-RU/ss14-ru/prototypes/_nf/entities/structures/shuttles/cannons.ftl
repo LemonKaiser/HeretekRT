@@ -1,0 +1,2 @@
+ent-ShuttleGunDusterNfsd = ShuttleGunDusterNfsd
+ent-ShuttleGunFriendshipNfsd = ShuttleGunFriendshipNfsd

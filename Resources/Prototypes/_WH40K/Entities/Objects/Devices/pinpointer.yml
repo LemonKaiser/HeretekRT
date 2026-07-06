@@ -1,0 +1,97 @@
+- type: entity
+  id: WH40KMissionPinpointerBase
+  parent: BaseItem
+  abstract: true
+  name: mission pinpointer
+  description: A preserved mission tracker shell without the old frontline objective logic.
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    noRot: true
+    sprite: Objects/Devices/pinpointer.rsi
+    state: pinpointer
+  - type: Icon
+    sprite: Objects/Devices/pinpointer.rsi
+    state: pinpointer
+  - type: Item
+    sprite: Objects/Devices/pinpointer.rsi
+    size: Small
+
+- type: entity
+  id: WH40KMissionPinpointerRelayImperium
+  parent: WH40KMissionPinpointerBase
+  name: imperium relay pinpointer
+  description: A preserved relay mission pinpointer shell marked for Imperium reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerCargoImperium
+  parent: WH40KMissionPinpointerBase
+  name: imperium cargo pinpointer
+  description: A preserved cargo mission pinpointer shell marked for Imperium reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerBannerImperium
+  parent: WH40KMissionPinpointerBase
+  name: imperium banner pinpointer
+  description: A preserved banner mission pinpointer shell marked for Imperium reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerRelayHeretics
+  parent: WH40KMissionPinpointerBase
+  name: heretics relay pinpointer
+  description: A preserved relay mission pinpointer shell marked for Heretics reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerCargoHeretics
+  parent: WH40KMissionPinpointerBase
+  name: heretics cargo pinpointer
+  description: A preserved cargo mission pinpointer shell marked for Heretics reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerBannerHeretics
+  parent: WH40KMissionPinpointerBase
+  name: heretics banner pinpointer
+  description: A preserved banner mission pinpointer shell marked for Heretics reuse.
+  suffix: WH40K
+
+- type: entity
+  id: WH40KMissionPinpointerKitImperium
+  parent: BoxCardboard
+  name: imperium mission pinpointer kit
+  description: A reusable box with preserved Imperium mission pinpointer shells.
+  suffix: WH40K
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: WH40KMissionPinpointerRelayImperium
+        - !type:EntSelector
+          id: WH40KMissionPinpointerCargoImperium
+        - !type:EntSelector
+          id: WH40KMissionPinpointerBannerImperium
+
+- type: entity
+  id: WH40KMissionPinpointerKitHeretics
+  parent: BoxCardboard
+  name: heretics mission pinpointer kit
+  description: A reusable box with preserved Heretics mission pinpointer shells.
+  suffix: WH40K
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - !type:EntSelector
+          id: WH40KMissionPinpointerRelayHeretics
+        - !type:EntSelector
+          id: WH40KMissionPinpointerCargoHeretics
+        - !type:EntSelector
+          id: WH40KMissionPinpointerBannerHeretics

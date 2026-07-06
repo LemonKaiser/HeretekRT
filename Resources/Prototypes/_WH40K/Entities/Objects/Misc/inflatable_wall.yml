@@ -1,0 +1,51 @@
+- type: entity
+  id: WH40KInflatableWallImperium
+  name: imperium inflatable barricade
+  parent: InflatableWall
+  description: An inflated field barrier. Activate to deflate. Do not puncture.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+    state: wall
+  - type: DisassembleOnAltVerb
+    prototype: WH40KInflatableWallStackImperium1
+    doAfter: 3
+
+- type: entity
+  id: WH40KInflatableDoorImperium
+  name: imperium inflatable door
+  parent: InflatableDoor
+  description: An inflated field hatch. Activate to deflate. Do not puncture.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+    state: closed
+  - type: DisassembleOnAltVerb
+    prototype: WH40KInflatableDoorStackImperium1
+    doAfter: 3
+
+- type: entity
+  id: WH40KInflatableWallHeretics
+  name: heretics inflatable barricade
+  parent: InflatableWall
+  description: An inflated field barrier. Activate to deflate. Do not puncture.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_wall.rsi
+    state: wall
+  - type: DisassembleOnAltVerb
+    prototype: WH40KInflatableWallStackHeretics1
+    doAfter: 3
+
+- type: entity
+  id: WH40KInflatableDoorHeretics
+  name: heretics inflatable door
+  parent: InflatableDoor
+  description: An inflated field hatch. Activate to deflate. Do not puncture.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/inflatable_door.rsi
+    state: closed
+  - type: DisassembleOnAltVerb
+    prototype: WH40KInflatableDoorStackHeretics1
+    doAfter: 3

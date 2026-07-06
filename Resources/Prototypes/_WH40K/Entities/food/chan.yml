@@ -1,0 +1,43 @@
+- type: entity
+  parent: FoodBowlBase
+  id: WHSoup
+  name: chan soup
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Food/Chan.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Food/Chan.rsi
+    size: Huge
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 40
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 15
+        - ReagentId: Vitamin
+          Quantity: 15
+        - ReagentId: Allicin
+          Quantity: 3
+        - ReagentId: Water
+          Quantity: 7
+  - type: Tag
+    tags:
+    - Meat
+    - Soup
+  - type: MultiHandedItem
+
+- type: entity
+  parent: WHSoup
+  id: WHSoupNurgl
+  name: nurgl chan soup
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Food/ChanNurgl.rsi
+    state: icon
+  - type: Item
+    sprite: _WH40K/Objects/Food/ChanNurgl.rsi
+    size: Huge

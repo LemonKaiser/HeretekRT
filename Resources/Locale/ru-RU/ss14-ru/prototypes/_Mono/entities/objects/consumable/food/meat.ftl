@@ -1,0 +1,16 @@
+ent-FoodMeatResomi = сырое мясо ресоми
+    .desc = Кусок сырого мяса ресоми. Не забудьте помыть руки!
+ent-FoodMeatResomiBattered = breaded resomi
+    .desc = Филе ресоми в кляре из муки и яиц.
+ent-FoodMeatResomiSteak = cooked resomi steak
+    .desc = Идеально приготовленный стейк ресоми. Удивительно нежный.
+ent-FoodMeatResomiFried = fried resomi
+    .desc = Хрустящее жареное филе ресоми. На вкус как космическая курица.
+ent-FoodMeatResomiCutlet = raw resomi cutlet
+    .desc = Тонкий ломтик сырого мяса ресоми, готов к панировке или жарке.
+ent-FoodMeatResomiCutletCooked = cooked resomi cutlet
+    .desc = Жареный ломтик мяса ресоми, золотистый и сочный.
+ent-FoodMeatResomiBucket = bucket of fried resomi
+    .desc = Ведро с хрустящими жареными кусочками ресоми.
+ent-FoodMeatChickenBucket = bucket of fried chicken
+    .desc = Ведро с хрустящими жареными кусочками курицы.

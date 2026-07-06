@@ -1,0 +1,3 @@
+ent-BaseAmmoProvider = BaseAmmoProvider
+ent-AmmoProvider12_gaugeShotgunShell = AmmoProvider12_gaugeShotgunShell
+ent-AmmoProvider23x75mmShotgunShell = AmmoProvider23x75mmShotgunShell

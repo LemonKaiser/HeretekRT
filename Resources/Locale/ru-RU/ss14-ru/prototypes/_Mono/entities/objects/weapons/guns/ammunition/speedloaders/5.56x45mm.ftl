@@ -1,0 +1,7 @@
+ent-BaseSpeedLoader556x45mm = спидлоадер (5.56x45мм FMJ)
+ent-SpeedLoader556x45mmFMJ = спидлоадер (5.56x45мм FMJ)
+ent-SpeedLoader556x45mmEmpty = спидлоадер (5.56x45мм любые)
+ent-SpeedLoader556x45mmIncendiary = спидлоадер (5.56x45мм зажигательные)
+ent-SpeedLoader556x45mmPractice = спидлоадер (5.56x45мм учебные)
+ent-SpeedLoader556x45mmUranium = спидлоадер (5.56x45мм урановые)
+ent-SpeedLoader556x45mmRubber = спидлоадер (5.56x45мм резиновые)

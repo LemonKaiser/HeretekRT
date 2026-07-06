@@ -1,0 +1,14 @@
+ent-PaperWrittenNfsdWarrant = папка с формами TSFMC
+ent-PaperWrittenNfsdContrabandAmnesty = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-PaperWrittenNfsdContrabandPermit = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-PaperWrittenNfsdContrabandTurnover = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-PaperWrittenNfsdReport = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-PaperWrittenNfsdArrestReport = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-PaperWrittenNfsdAuthorization = папка с формами TSFMC
+    .desc = Папка с шаблонами документов TSFMC.
+ent-FillNfsdForms = FillNfsdForms

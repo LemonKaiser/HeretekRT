@@ -1,0 +1,129 @@
+- type: construction
+  id: WH40KChaosBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: chaosBanner
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: chaos_banner }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KGvardiaBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: gvardiaBanner
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: gvardia_banner }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KGvardiaBanner2
+  graph: WH40KBanners
+  startNode: start
+  targetNode: gvardiaBanner2
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: gvardia_banner2 }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KMechanicusBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: mechanicusBanner
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: mechanicus }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KMedicalBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: medicalBanner
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: medical_banner }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KTauBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: tauBanner
+  icon: { sprite: _WH40K/Structures/Decorations/banners.rsi, state: tau_banner }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KFalloutBarricades
+  graph: WH40KFalloutBarricades
+  startNode: start
+  targetNode: barricadeIron
+  icon: { sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi, state: iron_barricade }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KFalloutBarricades4
+  graph: WH40KFalloutBarricades
+  startNode: start
+  targetNode: barricadeIronWide
+  icon: { sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi, state: iron_barricade2 }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KFalloutBarricades6
+  graph: WH40KFalloutBarricades
+  startNode: start
+  targetNode: barricadeBoarded
+  icon: { sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi, state: boarded }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KFalloutBarricades7
+  graph: WH40KFalloutBarricades
+  startNode: start
+  targetNode: barricadeBars
+  icon: { sprite: _WH40K/Structures/Decorations/Fallout_barricades.rsi, state: bars }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

@@ -1,0 +1,1 @@
+ent-EnergyShieldClothing = EnergyShieldClothing

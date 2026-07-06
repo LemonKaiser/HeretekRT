@@ -1,0 +1,16 @@
+ent-ClothingHandsGlovesMopp = перчатки MOPP
+    .desc = Качественные резиновые перчатки с изоляцией для защиты от РХБ.
+ent-ClothingHandsGlovesTacticalCombatTan = тактические перчатки (хаки)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsGlovesTacticalCombatBlack = тактические перчатки (чёрные)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsGlovesTacticalCombatRangerGreen = тактические перчатки (зелёный рейнджер)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsGlovesTacticalCombatOlive = тактические перчатки (олива)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsGlovesTacticalCombatCoyoteBrown = тактические перчатки (коёти-коричневые)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsGlovesTacticalCombatWhite = тактические перчатки (белые)
+    .desc = Тактические перчатки огнестойкие и ударопрочные.
+ent-ClothingHandsConcussiveGauntlets = ударные рукавицы
+    .desc = Рукавицы для добычи: разряды дробят всё на пути. Дорого и мощно.

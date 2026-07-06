@@ -1,0 +1,24 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitOrk
+  suffix: WH40K, Орки
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/ork.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/ork.rsi
+  - type: SpeciesItemRestriction
+    whitelist:
+    - Ork
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitOrks
+  suffix: WH40K, Орки
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/ork_clothing.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/ork_clothing.rsi
+  - type: SpeciesItemRestriction
+    whitelist:
+    - Ork

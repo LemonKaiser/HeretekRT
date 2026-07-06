@@ -1,0 +1,55 @@
+- type: entity
+  parent: BaseItem
+  id: WH40KRuneSkrizhalBase
+  name: rune tablet
+  description: A preserved rune tablet shell without the old chaos progression mechanics.
+  abstract: true
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Tiny
+
+- type: entity
+  parent: WH40KRuneSkrizhalBase
+  id: WH40KRuneSkrizhalChaos
+  name: chaos rune tablet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Interface/Abilities/skrizhali_runes.rsi
+    state: skrizhal_chaos
+
+- type: entity
+  parent: WH40KRuneSkrizhalBase
+  id: WH40KRuneSkrizhalKhorn
+  name: khorne rune tablet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Interface/Abilities/skrizhali_runes.rsi
+    state: skrizhal_khorn
+
+- type: entity
+  parent: WH40KRuneSkrizhalBase
+  id: WH40KRuneSkrizhalNurgk
+  name: nurgle rune tablet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Interface/Abilities/skrizhali_runes.rsi
+    state: skrizhal_nurgk
+
+- type: entity
+  parent: WH40KRuneSkrizhalBase
+  id: WH40KRuneSkrizhalSlaanesh
+  name: slaanesh rune tablet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Interface/Abilities/skrizhali_runes.rsi
+    state: skrizhal_slaanesh
+
+- type: entity
+  parent: WH40KRuneSkrizhalBase
+  id: WH40KRuneSkrizhalTzinch
+  name: tzeentch rune tablet
+  components:
+  - type: Sprite
+    sprite: _WH40K/Interface/Abilities/skrizhali_runes.rsi
+    state: skrizhal_tzinch

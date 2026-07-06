@@ -25,13 +25,13 @@
 #   - type: Contraband
 #     severity: Minor
 
-# # major contraband, for things like guns or weaponry that don't belong to any department and aren't syndicate specific
-# - type: entity
-#   id: BaseMajorContraband
-#   abstract: true
-#   components:
-#   - type: Contraband
-#     severity: Major
+# major contraband, for things like guns or weaponry that don't belong to any department and aren't syndicate specific
+- type: entity
+  id: BaseMajorContraband
+  abstract: true
+  components:
+  - type: Contraband
+    severity: Major
 
 # # base department restricted contraband, this should only be used as a parent for other contraband prototypes, not the restricted items themselves.
 # - type: entity

@@ -1,0 +1,1 @@
+ent-PockyPackBase = набор покки

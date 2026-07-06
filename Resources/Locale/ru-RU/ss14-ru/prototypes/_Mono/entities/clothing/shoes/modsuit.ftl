@@ -1,0 +1,10 @@
+ent-ClothingModsuitBootsUSSPVaryag = Маршевые Варяг
+    .desc = Тяжёлые ботинки, разработанные для боя и EVA.
+ent-ClothingModsuitBootsUSSPZastavnik = Сапоги Заставника
+    .desc = Толстые усиленные ботинки с магнитными стабилизаторами и амортизацией.
+ent-ClothingModsuitBootsRogue = ботинки модкостюма RX-01
+    .desc = Намагниченные вакуумные ботинки, чтобы помочь вам избежать скольжения, падений и Федов.
+ent-ClothingModsuitBootsVolta = Volta Modsuit Boots
+    .desc = Сделаны, чтобы стать милитаристически маслянистыми.
+ent-ClothingModsuitBootsGalloglass = магнитные сапоги модкостюма «Галлоглас»
+    .desc = Эти ботинки были сделаны для топтания бордюров.

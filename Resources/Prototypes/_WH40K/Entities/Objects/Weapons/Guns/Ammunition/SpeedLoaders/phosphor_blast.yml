@@ -1,0 +1,162 @@
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseSpeedLoaderPhosphor
+  name: "speed loader (Phosphor)"
+  suffix: WH40K
+  components:
+  - type: Tag
+    tags:
+      - CustomSpeedLoaderPhosphor
+  - type: SpeedLoader
+  - type: BallisticAmmoProvider
+    whitelist:
+      tags:
+        - CartridgePhosphor
+    capacity: 6
+  - type: Sprite
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+        ents: []
+
+- type: entity
+  parent: BaseSpeedLoaderPhosphor
+  id: SpeedLoaderPhosphor
+  suffix: WH40K
+  components:
+  - type: BallisticAmmoProvider
+    proto: CartridgePhosphor
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/45_magnum/45_magnum_speed_loader.rsi
+    layers:
+      - state: base
+        map: [ "enum.GunVisualLayers.Base" ]
+      - state: base-6
+        map: [ "enum.GunVisualLayers.Mag" ]
+  - type: MagazineVisuals
+    magState: base
+    steps: 7
+    zeroVisible: false
+  - type: Appearance
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-ammo
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-ammo
+
+- type: entity
+  parent: SpeedLoaderPhosphor
+  id: SpeedLoaderPhosphorEmpty
+  suffix: WH40K, empty
+  components:
+  - type: BallisticAmmoProvider
+    proto: null
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/45_magnum/45_magnum_speed_loader.rsi
+    layers:
+      - state: base
+        map: [ "enum.GunVisualLayers.Base" ]
+      # TODO: This is actually a issue with all the speed loaders:
+      #       You can mix different ammo types, but it will always
+      #       use the one it was printed for.
+      - state: base-6
+        map: [ "enum.GunVisualLayers.Mag" ]
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+
+- type: entity
+  parent: BaseSpeedLoader45_magnum
+  id: SpeedLoader11mm
+  components:
+  - type: Tag
+    tags:
+      - SpeedLoader11mm
+  - type: BallisticAmmoProvider
+    proto: Cartridge11mm
+    whitelist:
+      tags:
+        - Cartridge11mm
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/45_magnum/45_magnum_speed_loader.rsi
+    layers:
+      - state: base
+        map: [ "enum.GunVisualLayers.Base" ]
+      - state: base-6
+        map: [ "enum.GunVisualLayers.Mag" ]
+  - type: MagazineVisuals
+    magState: base
+    steps: 7
+    zeroVisible: false
+  - type: Appearance
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-ammo
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-ammo
+
+- type: entity
+  parent: BaseSpeedLoader45_magnum
+  id: SpeedLoaderSerpenta
+  components:
+  - type: Tag
+    tags:
+      - SpeedLoaderSerpenta
+  - type: BallisticAmmoProvider
+    proto: CartridgeSerpenta
+    whitelist:
+      tags:
+        - CartridgeSerpenta
+    capacity: 5
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/45_magnum/45_magnum_speed_loader.rsi
+    layers:
+      - state: base
+        map: [ "enum.GunVisualLayers.Base" ]
+      - state: base-6
+        map: [ "enum.GunVisualLayers.Mag" ]
+  - type: MagazineVisuals
+    magState: base
+    steps: 7
+    zeroVisible: false
+  - type: Appearance
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      - state: inhand-left-ammo
+      right:
+      - state: inhand-right-mag
+      - state: inhand-right-ammo
+
+- type: entity
+  parent: SpeedLoaderSerpenta
+  id: SpeedLoaderSerpentaEmpty
+  suffix: WH40K, empty
+  components:
+  - type: BallisticAmmoProvider
+    proto: null
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/45_magnum/45_magnum_speed_loader.rsi
+    layers:
+      - state: base
+        map: [ "enum.GunVisualLayers.Base" ]
+      - state: base-6
+        map: [ "enum.GunVisualLayers.Mag" ]
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+

@@ -1,0 +1,12 @@
+ent-ClothingShoesTacticalSwatTan = тактические ботинки SWAT (хаки)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».
+ent-ClothingShoesTacticalSwatOlive = тактические ботинки SWAT (олива)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».
+ent-ClothingShoesTacticalSwatBlack = тактические ботинки SWAT (чёрные)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».
+ent-ClothingShoesTacticalSwatRangerGreen = тактические ботинки SWAT (зелёный рейнджер)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».
+ent-ClothingShoesTacticalSwatCoyoteBrown = тактические ботинки SWAT (коёти-коричневые)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».
+ent-ClothingShoesTacticalSwatWhite = тактические ботинки SWAT (белые)
+    .desc = Тактические ботинки на случай, когда нужно «поддать жару».

@@ -1,0 +1,26 @@
+- type: entity
+  id: WH40KTacticalWhistleBase
+  parent: SyndicateWhistle
+  abstract: true
+  name: tactical whistle
+  description: A compact command whistle for rally calls and squad coordination.
+  components:
+  - type: Clothing
+    sprite: Objects/Fun/whistles.rsi
+    equippedPrefix: trench
+    quickEquip: false
+    slots:
+    - neck
+    - pocket
+
+- type: entity
+  id: WH40KTacticalWhistleImperium
+  parent: WH40KTacticalWhistleBase
+  name: imperium tactical whistle
+  description: A field whistle issued to Imperium squad leaders.
+
+- type: entity
+  id: WH40KTacticalWhistleHeretics
+  parent: WH40KTacticalWhistleBase
+  name: heretics tactical whistle
+  description: A field whistle used by Heretics squad leaders.

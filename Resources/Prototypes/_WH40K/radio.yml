@@ -1,0 +1,31 @@
+- type: radioChannel
+  id: VoxImperium
+  name: chat-radio-vox-imperium
+  keycode: 'w'
+  frequency: 2050
+  color: "#60615b"
+  longRange: true
+
+- type: radioChannel
+  id: VoxImperiumRu
+  name: chat-radio-vox-imperium
+  keycode: 'в'
+  frequency: 2050
+  color: "#60615b"
+  longRange: true
+
+- type: radioChannel
+  id: VoxHeretics
+  name: chat-radio-vox-heretics
+  keycode: 'x'
+  frequency: 2051
+  color: "#8B3A3A"
+  longRange: true
+
+- type: radioChannel
+  id: VoxHereticsRu
+  name: chat-radio-vox-heretics
+  keycode: 'ч'
+  frequency: 2051
+  color: "#8B3A3A"
+  longRange: true

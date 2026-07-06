@@ -1,0 +1,15 @@
+ent-AirlockHatchUSSP = { ent-AirlockHatch }
+    .desc = { ent-AirlockHatch.desc }
+    .suffix = USSP, Закрыт
+ent-AirlockHatchUSSPSecure = { ent-AirlockHatch }
+    .desc = { ent-AirlockHatch.desc }
+    .suffix = охрана USSP, Закрыт
+ent-AirlockHatchUSSPCommand = { ent-AirlockHatch }
+    .desc = { ent-AirlockHatch.desc }
+    .suffix = командование USSP, Закрыт
+ent-AirlockHatchGrandVizierLocked = { ent-AirlockHatch }
+    .desc = { ent-AirlockHatch.desc }
+    .suffix = Великий визирь, Закрыт
+ent-AirlockHatchPDVCommandLocked = { ent-AirlockHatch }
+    .desc = { ent-AirlockHatch.desc }
+    .suffix = командование PDV, Закрыт

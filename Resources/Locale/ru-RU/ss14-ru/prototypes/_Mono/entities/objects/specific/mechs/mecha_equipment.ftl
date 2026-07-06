@@ -1,0 +1,5 @@
+ent-LightMechMountEquipment = лёгкаяMechMountEquipment
+ent-MediumMechMountEquipment = средняяMechMountEquipment
+ent-HeavyMechMountEquipment = HeavyMechMountEquipment
+ent-EWARMechMountEquipment = EWARMechMountEquipment
+ent-IFFMechMountEquipment = IFFMechMountEquipment
