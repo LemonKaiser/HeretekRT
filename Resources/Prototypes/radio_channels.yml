@@ -104,7 +104,7 @@
 - type: radioChannel
   id: VanguardCommand
   name: chat-radio-vanguard-command
-  keycode: 'в'
+  keycode: 'я'
   frequency: 1985
   color: "#BF94E4"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
