@@ -55,13 +55,6 @@
     components:
     - BorgChassis
   chatMessages: ["chat-emote-msg-reptilian-hiss"]
-  chatTriggers:
-    # Frontier: emote consistency
-    - hiss
-    - hisses
-    - hissing
-    - hissed
-    # End Frontier: emote consistency
 
 # hand emotes
 - type: emote

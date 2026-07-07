@@ -69,6 +69,11 @@ humanoid-profile-editor-no-traits = No traits available
 humanoid-profile-editor-traits-default-category = Uncategorized
 
 humanoid-profile-editor-trait-count-hint = Points Available: [{$current}/{$max}]
+humanoid-profile-editor-traits-expand-all = Expand All
+humanoid-profile-editor-traits-collapse-all = Collapse All
+humanoid-profile-editor-company-no-description = No description available
+humanoid-profile-editor-trait-tooltip-excluded-traits = You must not have one of these traits: { $traits }
+humanoid-profile-editor-trait-tooltip-excluded-species = You must not be: { $species }
 
 # Mono
 humanoid-profile-editor-clear-all-traits-button = Clear All Traits

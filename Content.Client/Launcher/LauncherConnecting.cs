@@ -1,7 +1,11 @@
 using System;
+using System.Linq;
+using Content.Client.MainMenu;
 using Robust.Client;
+using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
+using Robust.Shared.Console;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Network;
@@ -20,13 +24,23 @@ namespace Content.Client.Launcher
         [Dependency] private IPrototypeManager _prototypeManager = default!;
         [Dependency] private IConfigurationManager _cfg = default!;
         [Dependency] private IClipboardManager _clipboard = default!;
+        [Dependency] private ILogManager _logManager = default!;
+        [Dependency] private ConnectingTargetManager _connectingTarget = default!;
+        [Dependency] private IStateManager _stateManager = default!;
+        [Dependency] private ExtendedDisconnectInformationManager _extendedDisconnectInformation = default!;
+        [Dependency] private IConsoleHost _console = default!;
 
         private LauncherConnectingGui? _control;
+        private ISawmill _sawmill = default!;
 
         private Page _currentPage;
         private string? _connectFailReason;
 
-        public string? Address => _gameController.LaunchState.Ss14Address ?? _gameController.LaunchState.ConnectAddress;
+        public string? Address => _gameController.LaunchState.Ss14Address
+                                  ?? _gameController.LaunchState.ConnectAddress
+                                  ?? _connectingTarget.Address;
+
+        public bool UsesManualConnectTarget => !_gameController.LaunchState.FromLauncher && _connectingTarget.HasManualTarget;
 
         public string? ConnectFailReason
         {
@@ -59,74 +73,148 @@ namespace Content.Client.Launcher
 
         protected override void Startup()
         {
+            foreach (var staleControl in _userInterfaceManager.StateRoot.Children.OfType<LauncherConnectingGui>().ToArray())
+            {
+                staleControl.Orphan();
+            }
+
+            _sawmill = _logManager.GetSawmill("launcher-ui");
             _control = new LauncherConnectingGui(this, _random, _prototypeManager, _cfg, _clipboard);
 
             _userInterfaceManager.StateRoot.AddChild(_control);
 
             _clientNetManager.ConnectFailed += OnConnectFailed;
+            _clientNetManager.Disconnect += OnDisconnected;
             _clientNetManager.ClientConnectStateChanged += OnConnectStateChanged;
+            _baseClient.PlayerJoinedGame += OnPlayerJoinedGame;
 
             CurrentPage = Page.Connecting;
+            UseCachedConnectionEndIfAlreadyFailed();
         }
 
         protected override void Shutdown()
         {
-            _control?.Dispose();
+            _control?.Orphan();
+            _control = null;
 
             _clientNetManager.ConnectFailed -= OnConnectFailed;
+            _clientNetManager.Disconnect -= OnDisconnected;
             _clientNetManager.ClientConnectStateChanged -= OnConnectStateChanged;
+            _baseClient.PlayerJoinedGame -= OnPlayerJoinedGame;
+            _connectingTarget.Clear();
         }
 
         private void OnConnectFailed(object? _, NetConnectFailArgs args)
+        {
+            HandleConnectFailed(args, allowRedial: true);
+        }
+
+        private void HandleConnectFailed(NetConnectFailArgs args, bool allowRedial)
         {
             if (args.RedialFlag)
             {
                 // We've just *attempted* to connect and we've been told we need to redial, so do it.
                 // Result deliberately discarded.
-                Redial();
+                if (allowRedial)
+                    Redial();
             }
+
             ConnectFailReason = args.Reason;
             CurrentPage = Page.ConnectFailed;
             ConnectFailed?.Invoke(args);
         }
 
+        private void OnDisconnected(object? _, NetDisconnectedArgs args)
+        {
+            if (CurrentPage != Page.Connecting)
+                return;
+
+            HandleDisconnected(args);
+        }
+
+        private void HandleDisconnected(NetDisconnectedArgs args)
+        {
+            ConnectFailReason = null;
+            CurrentPage = Page.Disconnected;
+        }
+
         private void OnConnectStateChanged(ClientConnectionState state)
         {
             ConnectionStateChanged?.Invoke(state);
+
+            if (state == ClientConnectionState.NotConnecting &&
+                CurrentPage == Page.Connecting)
+            {
+                UseCachedConnectionEndIfAlreadyFailed();
+            }
+        }
+
+        private void OnPlayerJoinedGame(object? sender, PlayerEventArgs e)
+        {
+            if (!_connectingTarget.JoinLobbyAfterConnect)
+                return;
+
+            _console.ExecuteCommand("golobby");
+            _connectingTarget.ClearJoinLobbyAfterConnect();
         }
 
         public void RetryConnect()
         {
-            if (_gameController.LaunchState.ConnectEndpoint != null)
+            if (TryGetConnectTarget(out var host, out var port))
             {
-                _baseClient.ConnectToServer(_gameController.LaunchState.ConnectEndpoint);
+                if (_clientNetManager.ClientConnectState != ClientConnectionState.NotConnecting ||
+                    _baseClient.RunLevel == ClientRunLevel.Connecting)
+                {
+                    _baseClient.DisconnectFromServer("Retrying failed connection");
+                }
+
+                ConnectFailReason = null;
+                _baseClient.ConnectToServer(host, port);
                 CurrentPage = Page.Connecting;
+                return;
             }
+
+            _sawmill.Warning("RetryConnect requested, but no reconnect target could be resolved.");
         }
 
         public bool Redial()
         {
             try
             {
-                if (_gameController.LaunchState.Ss14Address != null)
+                var redialAddress = _gameController.LaunchState.Ss14Address;
+                if (redialAddress != null && _gameController.LaunchState.FromLauncher)
                 {
-                    _gameController.Redial(_gameController.LaunchState.Ss14Address);
+                    _gameController.Redial(redialAddress);
+                    return true;
+                }
+                else if (TryGetConnectTarget(out var host, out var port))
+                {
+                    _baseClient.ConnectToServer(host, port);
                     return true;
                 }
                 else
                 {
-                    Logger.InfoS("launcher-ui", $"Redial not possible, no Ss14Address");
+                    _sawmill.Info("Redial not possible, no Ss14Address");
                 }
             }
             catch (Exception ex)
             {
-                Logger.ErrorS("launcher-ui", $"Redial exception: {ex}");
+                _sawmill.Error($"Redial exception: {ex}");
             }
             return false;
         }
 
-        public void Exit()
+        public void Leave()
         {
+            if (UsesManualConnectTarget)
+            {
+                if (_baseClient.RunLevel == ClientRunLevel.Connecting)
+                    _baseClient.DisconnectFromServer("Manual direct-connect cancelled");
+
+                _stateManager.RequestStateChange<MainScreen>();
+                return;
+            }
+
             _gameController.Shutdown("Exit button pressed");
         }
 
@@ -140,6 +228,69 @@ namespace Content.Client.Launcher
             Connecting,
             ConnectFailed,
             Disconnected,
+        }
+
+        private bool TryGetConnectTarget(out string host, out ushort port)
+        {
+            if (_connectingTarget.HasManualTarget && _connectingTarget.Host != null && _connectingTarget.Port != null)
+            {
+                host = _connectingTarget.Host;
+                port = _connectingTarget.Port.Value;
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(_gameController.LaunchState.Ss14Address))
+            {
+                try
+                {
+                    ConnectingAddressParser.ParseAddress(_gameController.LaunchState.Ss14Address, _baseClient.DefaultPort, out host, out port);
+                    return true;
+                }
+                catch (ArgumentException ex)
+                {
+                    _sawmill.Warning($"Unable to parse SS14 address '{_gameController.LaunchState.Ss14Address}' for reconnect: {ex.Message}");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(_gameController.LaunchState.ConnectAddress))
+            {
+                try
+                {
+                    ConnectingAddressParser.ParseAddress(_gameController.LaunchState.ConnectAddress, _baseClient.DefaultPort, out host, out port);
+                    return true;
+                }
+                catch (ArgumentException ex)
+                {
+                    _sawmill.Warning($"Unable to parse connect address '{_gameController.LaunchState.ConnectAddress}' for reconnect: {ex.Message}");
+                }
+            }
+
+            host = string.Empty;
+            port = 0;
+            return false;
+        }
+
+        private bool UseCachedConnectionEndIfAlreadyFailed()
+        {
+            if (_clientNetManager.ClientConnectState != ClientConnectionState.NotConnecting ||
+                _baseClient.RunLevel >= ClientRunLevel.Connecting)
+            {
+                return false;
+            }
+
+            if (_extendedDisconnectInformation.LastNetConnectFailedArgs is { } connectFailed)
+            {
+                HandleConnectFailed(connectFailed, allowRedial: false);
+                return true;
+            }
+
+            if (_extendedDisconnectInformation.LastNetDisconnectedArgs is { } disconnected)
+            {
+                HandleDisconnected(disconnected);
+                return true;
+            }
+
+            return false;
         }
     }
 }

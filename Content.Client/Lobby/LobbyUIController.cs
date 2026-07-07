@@ -229,7 +229,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             PreviewPanel.SetSummaryText(string.Empty);
             PreviewPanel.SetBankBalanceText(string.Empty); // Frontier
             PreviewPanel.SetCompanyText(string.Empty); // Company Display
-            PreviewPanel.SetMonoCoinsText("server-currency-loading"); // MonoCoins Display
+            PreviewPanel.SetMonoCoinsText(Loc.GetString("server-currency-loading")); // MonoCoins Display
             return;
         }
 
@@ -257,11 +257,16 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         var companyId = humanoid.Company;
         if (_prototypeManager.TryIndex<CompanyPrototype>(companyId, out var company))
         {
-            PreviewPanel.SetCompanyText($"[color=white]Company:[/color] [color={company.Color.ToHex()}]{company.Name}[/color]");
+            var companyName = company.ID == "None"
+                ? Loc.GetString("company-none-display-name")
+                : company.Name;
+            var companyLabel = Loc.GetString("lobby-character-preview-panel-company-label");
+            PreviewPanel.SetCompanyText($"[color=white]{companyLabel}[/color] [color={company.Color.ToHex()}]{companyName}[/color]");
         }
         else
         {
-            PreviewPanel.SetCompanyText($"[color=white]Company:[/color] [color=yellow]{companyId}[/color]");
+            var companyLabel = Loc.GetString("lobby-character-preview-panel-company-label");
+            PreviewPanel.SetCompanyText($"[color=white]{companyLabel}[/color] [color=yellow]{companyId}[/color]");
         }
 
         // MonoCoins Display - Request balance from server and update display

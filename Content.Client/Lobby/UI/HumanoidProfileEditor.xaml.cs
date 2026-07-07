@@ -468,7 +468,7 @@ namespace Content.Client.Lobby.UI
             // Add to TSF company dropdown
             for (var i = 0; i < companies.Count; i++)
             {
-                CompanyButton.AddItem(companies[i].Name, i);
+                CompanyButton.AddItem(GetCompanyDisplayName(companies[i]), i);
                 //Logger.Debug($"Added company to dropdown: {i} - {companies[i].ID} - {companies[i].Name}");
             }
 
@@ -480,9 +480,7 @@ namespace Content.Client.Lobby.UI
                     var companyId = companies[args.Id].ID;
 
                     // Description of Company (pointed-to in prototype, defined in Locale)
-                    CompanyDescriptionLabel.SetMessage(!string.IsNullOrEmpty(companies[args.Id].Description)
-                        ? Loc.GetString(companies[args.Id].Description)
-                        : "N/A"); // Only if there's a description. If not, then set to N/A.
+                    CompanyDescriptionLabel.SetMarkup(GetCompanyDescription(companies[args.Id]));
 
                     // Display company image if available
                     if (!string.IsNullOrEmpty(companies[args.Id].Image))
@@ -730,7 +728,8 @@ namespace Content.Client.Lobby.UI
                                     names.Add($"[color=#ADD8E6]{Loc.GetString(exProto.Name)}[/color]");
                             }
                             if (names.Count > 0)
-                                tooltipParts.Add($"You must not have one of these traits: {string.Join(", ", names)}");
+                                tooltipParts.Add(Loc.GetString("humanoid-profile-editor-trait-tooltip-excluded-traits",
+                                    ("traits", string.Join(", ", names))));
                         }
 
                         if (trait.SpeciesBlacklist.Count > 0)
@@ -742,7 +741,8 @@ namespace Content.Client.Lobby.UI
                                     names.Add($"[color=#087209]{Loc.GetString(speciesProto.Name)}[/color]");
                             }
                             if (names.Count > 0)
-                                tooltipParts.Add($"You must not be: {string.Join(", ", names)}");
+                                tooltipParts.Add(Loc.GetString("humanoid-profile-editor-trait-tooltip-excluded-species",
+                                    ("species", string.Join(", ", names))));
                         }
 
                         if (tooltipParts.Count > 0)
@@ -2223,9 +2223,7 @@ namespace Content.Client.Lobby.UI
                 CompanyButton.SelectId(i);
 
                 // Description of Company (pointed-to in prototype, defined in Locale)
-                CompanyDescriptionLabel.SetMessage(!string.IsNullOrEmpty(companies[i].Description)
-                    ? Loc.GetString(companies[i].Description)
-                    : "N/A"); // Only if there's a description. If not, then set to N/A.
+                CompanyDescriptionLabel.SetMarkup(GetCompanyDescription(companies[i]));
 
                 // Display company image if available
                 if (!string.IsNullOrEmpty(companies[i].Image))
@@ -2255,6 +2253,23 @@ namespace Content.Client.Lobby.UI
                     Profile = Profile.WithCompany("None");
                 }
             }
+        }
+
+        private string GetCompanyDisplayName(CompanyPrototype company)
+        {
+            return company.ID == "None"
+                ? Loc.GetString("company-none-display-name")
+                : company.Name;
+        }
+
+        private string GetCompanyDescription(CompanyPrototype company)
+        {
+            if (company.ID == "None")
+                return Loc.GetString("company-none-display-description");
+
+            return !string.IsNullOrEmpty(company.Description)
+                ? Loc.GetString(company.Description)
+                : Loc.GetString("humanoid-profile-editor-company-no-description");
         }
     }
 }

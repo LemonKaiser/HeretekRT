@@ -2,6 +2,7 @@
 
 connecting-title = Space Station 14
 connecting-exit = Выйти
+connecting-back = Назад
 connecting-retry = Повторить
 connecting-reconnect = Переподключиться
 connecting-redial = Перезапустить

@@ -9,6 +9,7 @@ using Content.Shared.Security;
 using Content.Shared.StationRecords;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Content.Shared.Random.Helpers;
 using Content.Server._NF.SectorServices; // Frontier
 
 namespace Content.Server.CriminalRecords.Systems;
@@ -42,10 +43,10 @@ public sealed partial class CriminalRecordsHackerSystem : SharedCriminalRecordsH
             return;
         // End Frontier: sector-wide records
 
-        var reasons = _proto.Index<DatasetPrototype>(ent.Comp.Reasons);
+        var reasons = _proto.Index<LocalizedDatasetPrototype>(ent.Comp.Reasons);
         foreach (var (key, record) in _records.GetRecordsOfType<CriminalRecord>(station))
         {
-            var reason = _random.Pick(reasons.Values);
+            var reason = _random.Pick(reasons);
             _criminalRecords.OverwriteStatus(new StationRecordKey(key, station), record, SecurityStatus.Wanted, reason);
             // no radio message since spam
             // no history since lazy and its easy to remove anyway

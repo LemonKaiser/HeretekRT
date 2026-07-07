@@ -2,6 +2,7 @@
 
 connecting-title = Space Station 14
 connecting-exit = Exit
+connecting-back = Back
 connecting-retry = Retry
 connecting-reconnect = Reconnect
 connecting-copy = Copy Message

@@ -1,57 +1,56 @@
 ## Male, First
 # 陽
-names-oni-last-male-dataset-1 = Киёси
+names-oni-male-dataset-1 = Киёси
 # 明
-names-oni-last-male-dataset-2 = Сатоси
+names-oni-male-dataset-2 = Сатоси
 # 光
-names-oni-last-male-dataset-3 = Теру
-names-oni-last-male-dataset-4 = Хироси
+names-oni-male-dataset-3 = Теру
+names-oni-male-dataset-4 = Хироси
 # 天
-names-oni-last-male-dataset-5 = Такаси
+names-oni-male-dataset-5 = Такаси
 # 永一
-names-oni-last-male-dataset-6 = Эйити
+names-oni-male-dataset-6 = Эйити
 # 永一朗
-names-oni-last-male-dataset-7 = Эйитиро
-names-oni-last-male-dataset-8 = Кёсабуро
-names-oni-last-male-dataset-9 = Цутому
-names-oni-last-male-dataset-10 = Цуёси
-names-oni-last-male-dataset-11 = Кэнси
-names-oni-last-male-dataset-12 = Кэндзи
-names-oni-last-male-dataset-13 = Кэнити
-names-oni-last-male-dataset-14 = Сусуму
-names-oni-last-male-dataset-15 = Кёносукэ
+names-oni-male-dataset-7 = Эйитиро
+names-oni-male-dataset-8 = Кёсабуро
+names-oni-male-dataset-9 = Цутому
+names-oni-male-dataset-10 = Цуёси
+names-oni-male-dataset-11 = Кэнси
+names-oni-male-dataset-12 = Кэндзи
+names-oni-male-dataset-13 = Кэнити
+names-oni-male-dataset-14 = Сусуму
+names-oni-male-dataset-15 = Кёносукэ
 # Mars
-names-oni-last-male-dataset-16 = Суйсэй
+names-oni-male-dataset-16 = Суйсэй
 # Reference
-names-oni-last-male-dataset-17 = Сютэн
+names-oni-male-dataset-17 = Сютэн
 
 ## Female, First
 # 星
-names-oni-last-female-dataset-1 = Акари
-names-oni-last-female-dataset-2 = Кира
-names-oni-last-female-dataset-3 = Кирамэки
+names-oni-female-dataset-1 = Акари
+names-oni-female-dataset-2 = Кира
+names-oni-female-dataset-3 = Кирамэки
 # 陽
-names-oni-last-female-dataset-4 = Аки
-names-oni-last-female-dataset-5 = Акихо
-names-oni-last-female-dataset-6 = Акими
+names-oni-female-dataset-4 = Аки
+names-oni-female-dataset-5 = Акихо
+names-oni-female-dataset-6 = Акими
 # 明
-names-oni-last-female-dataset-7 = Акаси
-names-oni-last-female-dataset-8 = Сая
+names-oni-female-dataset-7 = Акаси
+names-oni-female-dataset-8 = Сая
 # 月
-names-oni-last-female-dataset-9 = Апоро
-names-oni-last-female-dataset-10 = Арутэ
-names-oni-last-female-dataset-11 = Мэгуру
+names-oni-female-dataset-9 = Апоро
+names-oni-female-dataset-10 = Арутэ
+names-oni-female-dataset-11 = Мэгуру
 # 天
-names-oni-last-female-dataset-12 = Тиара
-names-oni-last-female-dataset-13 = Суйсэй
+names-oni-female-dataset-12 = Тиара
+names-oni-female-dataset-13 = Суйсэй
 # 水
-names-oni-last-female-dataset-14 = Ио
-names-oni-last-female-dataset-15 = Аои
-names-oni-last-female-dataset-16 = Мидзу
+names-oni-female-dataset-14 = Ио
+names-oni-female-dataset-15 = Аои
+names-oni-female-dataset-16 = Мидзу
 # epic references
-names-oni-last-female-dataset-17 = Сютэн
-names-oni-last-female-dataset-18 = Суйка
-names-oni-last-female-dataset-19 = Хосико
+names-oni-female-dataset-17 = Сютэн
+names-oni-female-dataset-18 = Суйка
 
 # Location
 names-oni-location-dataset-1 = Амибоси

@@ -53,6 +53,7 @@ namespace Content.Client.IoC
             collection.Register<ISharedAdminLogManager, SharedAdminLogManager>();
             collection.Register<GhostKickManager>();
             collection.Register<ExtendedDisconnectInformationManager>();
+            collection.Register<ConnectingTargetManager>();
             collection.Register<JobRequirementsManager>();
             collection.Register<DocumentParsingManager>();
             collection.Register<ContentReplayPlaybackManager>();

@@ -35,9 +35,6 @@ ent-AutolatheMachineCircuitboardImperium = autolathe machine board
 ent-AxeChaos = хаоситский топор
     .desc = Одноручный топорик хаоситов, чуток ржавый и побитый жизнью, но удар его все так же болезнен.
 
-ent-BaseCartridgePistol = патрон (.35 авто)
-    .desc = { ent-BaseCartridge.desc }
-
 ent-BaseMagazineCombatShotgun = ammo drum (.50 shells)
 
 ent-BaseMagazineOgrynHeavyStubber = ogryn heavy stubber box
@@ -45,9 +42,6 @@ ent-BaseMagazineOgrynHeavyStubber = ogryn heavy stubber box
 ent-BaseMagazineOgrynRipper = ripper gun magazine
 
 ent-BaseMagazineOgrynTwinHeavyStubber = twin heavy stubber box
-
-ent-BaseMagazinePistol = пистолетный магазин (.35 авто)
-    .desc = { ent-BaseItem.desc }
 
 ent-BaseMobAstartes = Urist McAstartes
 
@@ -2903,8 +2897,6 @@ ent-WallMetalImperiumMess = imperium mess wall
 ent-WallMetalImperiumSupply = imperium supply wall
 
 ent-WallNecron = стена некронов
-
-ent-WallRockIndestructible = твердокаменная скала
 
 ent-WallSolidChaosSteel = chaos steel wall
 

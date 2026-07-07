@@ -1,0 +1,12 @@
+marking-DionaLivingNymph = Живые нимфы
+marking-DionaLivingNymph-dionalivingnymph = Живые нимфы
+marking-DionaMossChest = Моховой покров
+marking-DionaMossChest-dionamosschest = Моховой покров
+marking-DionaMoonBloom = Цветок дионы (лунное цветение)
+marking-DionaMoonBloom-dionamoonbloom = Лунное цветение
+marking-DionaBigFirefly = Большие светлячки
+marking-DionaBigFirefly-dionabigfirefly = Большие светлячки
+marking-DionaFirefly = Светлячки
+marking-DionaFirefly-dionafirefly = Светлячки
+marking-DionaPollenDust = Облако пыльцы
+marking-DionaPollenDust-dionapollendust = Облако пыльцы

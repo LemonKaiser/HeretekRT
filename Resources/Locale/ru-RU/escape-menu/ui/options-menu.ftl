@@ -382,3 +382,16 @@ ui-options-combat-music-label = Боевая музыка
 ui-options-combat-music-volume = Громкость боевой музыки:
 ui-options-combat-music-windup = Задержка активации боевой музыки:
 ui-options-combat-music-winddown = Задержка деактивации боевой музыки:
+
+## Lobby menu
+
+ui-options-general-lobby = Лобби
+ui-options-lobby-background-type = Режим фона лобби
+ui-options-lobby-background-type-server = Выбор сервера
+ui-options-lobby-background-type-static = Статичный фон
+ui-options-lobby-background-type-animated = Анимированный фон
+ui-options-lobby-static-background = Статичный фон лобби
+ui-options-lobby-animated-background = Анимированный фон лобби
+ui-options-lobby-background-auto = Авто
+ui-options-lobby-panel-opacity = Прозрачность панелей лобби
+ui-options-ui-window-opacity = Прозрачность фона окон UI

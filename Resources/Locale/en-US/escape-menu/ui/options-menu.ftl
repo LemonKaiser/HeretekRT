@@ -354,3 +354,16 @@ ui-options-admin-enable-overlay-starting-job = Show starting job
 ui-options-admin-overlay-merge-distance = Stack merge distance
 ui-options-admin-overlay-ghost-fade-distance = Ghost overlay fade range from mouse
 ui-options-admin-overlay-ghost-hide-distance = Ghost overlay hide range from mouse
+
+## Lobby menu
+
+ui-options-general-lobby = Lobby
+ui-options-lobby-background-type = Lobby background mode
+ui-options-lobby-background-type-server = Server default
+ui-options-lobby-background-type-static = Static background
+ui-options-lobby-background-type-animated = Animated background
+ui-options-lobby-static-background = Static lobby background
+ui-options-lobby-animated-background = Animated lobby background
+ui-options-lobby-background-auto = Auto
+ui-options-lobby-panel-opacity = Lobby panel background opacity
+ui-options-ui-window-opacity = UI window background opacity

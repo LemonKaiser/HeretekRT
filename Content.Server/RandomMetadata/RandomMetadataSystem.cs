@@ -54,11 +54,8 @@ public sealed partial class RandomMetadataSystem : EntitySystem
             }
             else if (_prototype.TryIndex<DatasetPrototype>(segment, out var proto))
             {
-                var random = _random.Pick(proto.Values);
-                if (Loc.TryGetString(random, out var localizedSegment))
-                    outputSegments.Add(localizedSegment);
-                else
-                    outputSegments.Add(random);
+                var index = _random.Next(proto.Values.Count);
+                outputSegments.Add(DatasetLocalizationHelpers.GetLocalizedValue(proto, index));
             }
             else if (Loc.TryGetString(segment, out var localizedSegment))
                 outputSegments.Add(localizedSegment);

@@ -114,7 +114,6 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("htnPrimitive");
             _prototypeManager.RegisterIgnore("gameMap");
             _prototypeManager.RegisterIgnore("gameMapPool");
-            _prototypeManager.RegisterIgnore("lobbyBackground");
             _prototypeManager.RegisterIgnore("gamePreset");
             _prototypeManager.RegisterIgnore("noiseChannel");
             _prototypeManager.RegisterIgnore("playerConnectionWhitelist");
@@ -186,6 +185,17 @@ namespace Content.Client.Entry
             {
                 if (args.NewLevel == ClientRunLevel.Initialize)
                 {
+                    if (_stateManager.CurrentState is LauncherConnecting launcherConnecting)
+                    {
+                        if (args.OldLevel == ClientRunLevel.Connected ||
+                            args.OldLevel == ClientRunLevel.InGame)
+                        {
+                            launcherConnecting.SetDisconnected();
+                        }
+
+                        return;
+                    }
+
                     SwitchToDefaultState(args.OldLevel == ClientRunLevel.Connected ||
                                          args.OldLevel == ClientRunLevel.InGame);
                 }

@@ -1,14 +1,13 @@
-using System.Text.RegularExpressions;
+using Content.Client.Launcher;
 using Content.Client.MainMenu.UI;
 using Content.Client.UserInterface.Systems.EscapeMenu;
 using Robust.Client;
 using Robust.Client.ResourceManagement;
+using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared;
 using Robust.Shared.Configuration;
-using Robust.Shared.Console;
-using Robust.Shared.Network;
 using Robust.Shared.Utility;
 using UsernameHelpers = Robust.Shared.AuthLib.UsernameHelpers;
 
@@ -21,22 +20,18 @@ namespace Content.Client.MainMenu
     public sealed partial class MainScreen : Robust.Client.State.State
     {
         [Dependency] private IBaseClient _client = default!;
-        [Dependency] private IClientNetManager _netManager = default!;
         [Dependency] private IConfigurationManager _configurationManager = default!;
         [Dependency] private IGameController _controllerProxy = default!;
         [Dependency] private IResourceCache _resourceCache = default!;
         [Dependency] private IUserInterfaceManager _userInterfaceManager = default!;
         [Dependency] private ILogManager _logManager = default!;
-        [Dependency] private IConsoleHost _console = default!;
+        [Dependency] private IStateManager _stateManager = default!;
+        [Dependency] private ConnectingTargetManager _connectingTarget = default!;
 
         private ISawmill _sawmill = default!;
 
         private MainMenuControl _mainMenuControl = default!;
         private bool _isConnecting;
-        private bool _shouldGoLobby;
-
-        // ReSharper disable once InconsistentNaming
-        private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
 
         /// <inheritdoc />
         protected override void Startup()
@@ -45,8 +40,6 @@ namespace Content.Client.MainMenu
 
             _mainMenuControl = new MainMenuControl(_resourceCache, _configurationManager);
             _userInterfaceManager.StateRoot.AddChild(_mainMenuControl);
-
-            _client.PlayerJoinedGame += OnPlayerJoinedGame;
 
             _mainMenuControl.QuitButton.OnPressed += QuitButtonPressed;
             _mainMenuControl.OptionsButton.OnPressed += OptionsButtonPressed;
@@ -58,20 +51,10 @@ namespace Content.Client.MainMenu
             _client.RunLevelChanged += RunLevelChanged;
         }
 
-        private void OnPlayerJoinedGame(object? sender, PlayerEventArgs e)
-        {
-            if (_shouldGoLobby)
-            {
-                _console.ExecuteCommand("golobby");
-                _shouldGoLobby = false;
-            }
-        }
-
         /// <inheritdoc />
         protected override void Shutdown()
         {
             _client.RunLevelChanged -= RunLevelChanged;
-            _netManager.ConnectFailed -= _onConnectFailed;
 
             _mainMenuControl.Dispose();
         }
@@ -100,9 +83,7 @@ namespace Content.Client.MainMenu
         private void LobbyButtonPressed(BaseButton.ButtonEventArgs args)
         {
             var input = _mainMenuControl.AddressBox;
-            TryConnect(input.Text);
-
-            _shouldGoLobby = true;
+            TryConnect(input.Text, true);
         }
 
         private void AddressBoxEntered(LineEdit.LineEditEventArgs args)
@@ -115,7 +96,7 @@ namespace Content.Client.MainMenu
             TryConnect(args.Text);
         }
 
-        private void TryConnect(string address)
+        private void TryConnect(string address, bool joinLobbyAfterConnect = false)
         {
             var inputName = _mainMenuControl.UsernameBox.Text.Trim();
             if (!UsernameHelpers.IsNameValid(inputName, out var reason))
@@ -135,17 +116,19 @@ namespace Content.Client.MainMenu
             }
 
             _setConnectingState(true);
-            _netManager.ConnectFailed += _onConnectFailed;
             try
             {
-                ParseAddress(address, out var ip, out var port);
-                _client.ConnectToServer(ip, port);
+                ConnectingAddressParser.ParseAddress(address, _client.DefaultPort, out var host, out var port);
+                _connectingTarget.SetManualTarget(address, host, port, joinLobbyAfterConnect);
+                _stateManager.RequestStateChange<LauncherConnecting>();
+                if (_stateManager.CurrentState is LauncherConnecting state)
+                    state.RetryConnect();
             }
             catch (ArgumentException e)
             {
                 _userInterfaceManager.Popup($"Unable to connect: {e.Message}", "Connection error.");
                 _sawmill.Warning(e.ToString());
-                _netManager.ConnectFailed -= _onConnectFailed;
+                _connectingTarget.Clear();
                 _setConnectingState(false);
             }
         }
@@ -159,54 +142,8 @@ namespace Content.Client.MainMenu
                     break;
                 case ClientRunLevel.Initialize:
                     _setConnectingState(false);
-                    _netManager.ConnectFailed -= _onConnectFailed;
                     break;
             }
-        }
-
-        private void ParseAddress(string address, out string ip, out ushort port)
-        {
-            var match6 = IPv6Regex.Match(address);
-            if (match6 != Match.Empty)
-            {
-                ip = match6.Groups[1].Value;
-                if (!match6.Groups[2].Success)
-                {
-                    port = _client.DefaultPort;
-                }
-                else if (!ushort.TryParse(match6.Groups[2].Value, out port))
-                {
-                    throw new ArgumentException("Not a valid port.");
-                }
-
-                return;
-            }
-
-            // See if the IP includes a port.
-            var split = address.Split(':');
-            ip = address;
-            port = _client.DefaultPort;
-            if (split.Length > 2)
-            {
-                throw new ArgumentException("Not a valid Address.");
-            }
-
-            // IP:port format.
-            if (split.Length == 2)
-            {
-                ip = split[0];
-                if (!ushort.TryParse(split[1], out port))
-                {
-                    throw new ArgumentException("Not a valid port.");
-                }
-            }
-        }
-
-        private void _onConnectFailed(object? _, NetConnectFailArgs args)
-        {
-            _userInterfaceManager.Popup(Loc.GetString("main-menu-failed-to-connect",("reason", args.Reason)));
-            _netManager.ConnectFailed -= _onConnectFailed;
-            _setConnectingState(false);
         }
 
         private void _setConnectingState(bool state)

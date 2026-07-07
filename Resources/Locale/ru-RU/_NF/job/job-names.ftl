@@ -11,6 +11,8 @@ job-name-pilot = Пилот
 job-name-pirate = Пират
 job-name-pirate-captain = Пиратский Капитан
 job-name-pirate-first-mate = Пиратский Боцман
+job-name-pdv-infiltrator = ПДВ Спасака
+job-name-pdv-denasvar = ПДВ Денасвар
 job-name-sheriff = Командующий офицер
 # Forge
 job-name-security-guard = Офицер Безопасности НТ
@@ -23,9 +25,11 @@ job-name-pal = Представитель ЮД
 JobERTMailCarrier = ОБР почтальон
 JobMercenary = Наёмник
 JobPilot = Пилот
+JobPDVInfiltrator = ПДВ Спасака
 JobPirate = Пират
 JobPirateCaptain = Пиратский Капитан
 JobPirateFirstMate = Пиратский Боцман
+JobPirateBoatswain = ПДВ Денасвар
 # Forge
 JobSecurityGuard = Офицер Безопасности НТ
 # Forge end

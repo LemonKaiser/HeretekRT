@@ -1,0 +1,9 @@
+marking-SpiderMirror = Зеркало
+marking-SpiderMirror-spidermirror = Зеркало
+marking-SpiderGlowEyes = Светящиеся глаза
+marking-SpiderGlowEyes-spidergloweyes = Светящиеся глаза
+marking-SpiderEyesMulti = Многоцветные глаза
+marking-SpiderEyesMulti-spidereyesmulti1 = Верх
+marking-SpiderEyesMulti-spidereyesmulti2 = Верхняя середина
+marking-SpiderEyesMulti-spidereyesmulti3 = Нижняя середина
+marking-SpiderEyesMulti-spidereyesmulti4 = Низ

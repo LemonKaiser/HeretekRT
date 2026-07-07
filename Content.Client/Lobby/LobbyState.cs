@@ -9,10 +9,12 @@ using Content.Client.Voting;
 using Content.Shared.CCVar;
 using Robust.Client;
 using Robust.Client.Console;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using PickerWindow = Content.Client._NF.LateJoin.Windows.PickerWindow;
 
@@ -24,13 +26,16 @@ namespace Content.Client.Lobby
         [Dependency] private IConfigurationManager _cfg = default!;
         [Dependency] private IClientConsoleHost _consoleHost = default!;
         [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private IClyde _clyde = default!;
         [Dependency] private IResourceCache _resourceCache = default!;
         [Dependency] private IUserInterfaceManager _userInterfaceManager = default!;
         [Dependency] private IGameTiming _gameTiming = default!;
         [Dependency] private IVoteManager _voteManager = default!;
+        [Dependency] private IPrototypeManager _protoMan = default!;
 
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
+        private LobbyBackgroundController? _lobbyBackgroundController;
 
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -68,6 +73,14 @@ namespace Content.Client.Lobby
             Lobby.RightSide.SetWidth = width;
 
             UpdateLobbyUi();
+            _lobbyBackgroundController = new LobbyBackgroundController(
+                _cfg,
+                _protoMan,
+                _resourceCache,
+                _clyde,
+                _gameTiming,
+                () => _gameTicker.LobbyBackground?.ToString() ?? string.Empty);
+            _lobbyBackgroundController.Startup(Lobby);
 
             Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
@@ -93,6 +106,8 @@ namespace Content.Client.Lobby
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
 
+            _lobbyBackgroundController?.Shutdown();
+            _lobbyBackgroundController = null;
             Lobby = null;
         }
 
@@ -127,6 +142,8 @@ namespace Content.Client.Lobby
 
         public override void FrameUpdate(FrameEventArgs e)
         {
+            _lobbyBackgroundController?.FrameUpdate(e.DeltaSeconds);
+
             if (_gameTicker.IsGameStarted)
             {
                 Lobby!.StartTime.Text = string.Empty;
@@ -170,7 +187,7 @@ namespace Content.Client.Lobby
 
         private void LobbyStatusUpdated()
         {
-            UpdateLobbyBackground();
+            _lobbyBackgroundController?.RefreshBackground();
             UpdateLobbyUi();
         }
 
@@ -231,19 +248,6 @@ namespace Content.Client.Lobby
 
                 Lobby!.LobbySong.SetMarkup(markup);
             }
-        }
-
-        private void UpdateLobbyBackground()
-        {
-            if (_gameTicker.LobbyBackground != null)
-            {
-                Lobby!.Background.Texture = _resourceCache.GetResource<TextureResource>(_gameTicker.LobbyBackground );
-            }
-            else
-            {
-                Lobby!.Background.Texture = null;
-            }
-
         }
 
         private void SetReady(bool newReady)
