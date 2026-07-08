@@ -22324,3 +22324,12 @@ Entries:
   id: 2467
   time: '2026-07-08T20:53:47.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/4213
+- author: kasature90
+  changes:
+    - type: Add
+      message: >-
+        Added Kortik as a heavily-armored T3 PDV ship, with multiple layers of
+        reinforced plastitanium, but unable to use shields.
+  id: 2468
+  time: '2026-07-08T21:18:33.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4237
