@@ -22273,3 +22273,13 @@ Entries:
   id: 2462
   time: '2026-07-07T19:34:54.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/4229
+- author: kasature90
+  changes:
+    - type: Add
+      message: >-
+        Added Chatranks for CC, MD, VG, USSP, TSF, and PDV. TSF gets selectable
+        chatranks in loadout, others don't because I'm lazy and nobody made full
+        ranks for them yet.
+  id: 2463
+  time: '2026-07-08T13:46:04.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4240
