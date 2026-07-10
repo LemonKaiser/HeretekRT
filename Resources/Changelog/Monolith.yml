@@ -22351,3 +22351,14 @@ Entries:
   id: 2470
   time: '2026-07-10T16:28:42.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/4232
+- author: kasature90
+  changes:
+    - type: Tweak
+      message: Reduced the delay on the toggle NVGs action.
+    - type: Tweak
+      message: >-
+        Buffed radius on basic hardsuit NVGs, buffed NVGs on M82c, CV-32, CV-67,
+        and U.I. engineering suits.
+  id: 2471
+  time: '2026-07-10T19:17:44.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4253
