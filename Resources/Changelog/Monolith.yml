@@ -22394,3 +22394,10 @@ Entries:
   id: 2475
   time: '2026-07-11T16:57:22.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/4259
+- author: Mrrpip
+  changes:
+    - type: Add
+      message: Adds the VG Venom.
+  id: 2476
+  time: '2026-07-11T18:57:16.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/4147
