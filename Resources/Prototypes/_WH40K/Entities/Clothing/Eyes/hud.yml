@@ -68,7 +68,7 @@
     - type: ShowJobIcons
     - type: ShowHealthBars
     - type: NightVision
-      isEquipment: true
-      isActive: true
+      relayOverlay: true
+      enabled: true
   - type: UseDelay
     delay: 1

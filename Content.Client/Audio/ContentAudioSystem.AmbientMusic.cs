@@ -421,6 +421,7 @@ public sealed partial class ContentAudioSystem
     {
         _isCombatMusicPlaying = combatMode;
         FadeOut(_ambientMusicStream);
+        _ambientMusicStoredGain = null;
 
         if (combatMode)
         {
@@ -440,6 +441,7 @@ public sealed partial class ContentAudioSystem
             AudioParams.Default.WithVolume(volume))!;
 
         _ambientMusicStream = strim.Value.Entity; //this plays it immediately, but fadein function later makes it actually fade in.
+        ApplyMusicDuckState();
 
         if (fadein != 0)
             FadeIn(_ambientMusicStream, strim.Value.Component, fadein);
@@ -524,6 +526,7 @@ public sealed partial class ContentAudioSystem
     private void ShutdownAmbientMusic()
     {
         _state.OnStateChanged -= OnStateChange;
+        _ambientMusicStoredGain = null;
         _ambientMusicStream = _audio.Stop(_ambientMusicStream);
     }
 
@@ -557,6 +560,7 @@ public sealed partial class ContentAudioSystem
         {
             return;
         }
+        _ambientMusicStoredGain = null;
         FadeOut(_ambientMusicStream);
         _ambientMusicStream = null;
     }

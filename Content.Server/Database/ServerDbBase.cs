@@ -2039,6 +2039,56 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
 
         #endregion
 
+        #region Dialogue Persistent Memory
+
+        public async Task<DialoguePersistentMemoryData?> GetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.DialoguePersistentMemories.SingleOrDefaultAsync(
+                memory => memory.PlayerUserId == userId.UserId && memory.MemoryKey == memoryKey,
+                cancel);
+
+            return entry == null
+                ? null
+                : JsonSerializer.Deserialize<DialoguePersistentMemoryData>(entry.Data);
+        }
+
+        public async Task SetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            DialoguePersistentMemoryData data,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.DialoguePersistentMemories.SingleOrDefaultAsync(
+                memory => memory.PlayerUserId == userId.UserId && memory.MemoryKey == memoryKey,
+                cancel);
+            var serialized = JsonSerializer.Serialize(data);
+
+            if (entry == null)
+            {
+                db.DbContext.DialoguePersistentMemories.Add(new DialoguePersistentMemory
+                {
+                    PlayerUserId = userId.UserId,
+                    MemoryKey = memoryKey,
+                    Data = serialized,
+                    UpdatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                entry.Data = serialized;
+                entry.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        #endregion
+
         public abstract Task SendNotification(DatabaseNotification notification);
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.

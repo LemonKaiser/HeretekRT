@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
+using Content.Server._WH40K.Dialogue.Components;
 using Content.Server.DoAfter;
 using Content.Server.Gravity;
 using Content.Server.NPC.Components;
@@ -275,13 +276,25 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             return;
 
         // Not every mob has the modifier component so do it as a separate query.
-        var npcs = new (EntityUid, NPCSteeringComponent, InputMoverComponent, TransformComponent)[Count<ActiveNPCComponent>()];
+        var npcs = new (EntityUid, NPCSteeringComponent, InputMoverComponent, TransformComponent)[
+            Count<ActiveNPCComponent>() + Count<DialogueMovementActiveComponent>()];
 
         var query = EntityQueryEnumerator<ActiveNPCComponent, NPCSteeringComponent, InputMoverComponent, TransformComponent>();
         var index = 0;
 
         while (query.MoveNext(out var uid, out _, out var steering, out var mover, out var xform))
         {
+            npcs[index] = (uid, steering, mover, xform);
+            index++;
+        }
+
+        var dialogueQuery = EntityQueryEnumerator<DialogueMovementActiveComponent, NPCSteeringComponent, InputMoverComponent, TransformComponent>();
+
+        while (dialogueQuery.MoveNext(out var uid, out _, out var steering, out var mover, out var xform))
+        {
+            if (HasComp<ActiveNPCComponent>(uid))
+                continue;
+
             npcs[index] = (uid, steering, mover, xform);
             index++;
         }

@@ -200,6 +200,22 @@ public sealed partial class MappingScreen : InGameScreen
         ScreenContainer.ResizeMode = SplitContainer.SplitResizeMode.RespectChildrenMinSize;
     }
 
+    public override void SetHudVisible(bool visible)
+    {
+    }
+
+    public override void AttachDialogueOverlay(Control overlay)
+    {
+        if (overlay.Parent != ViewportContainer)
+        {
+            overlay.Orphan();
+            ViewportContainer.AddChild(overlay);
+            SetAnchorPreset(overlay, LayoutPreset.Wide);
+        }
+
+        overlay.SetPositionInParent(1);
+    }
+
     public void UnPressActionsExcept(Control except)
     {
         Add.Pressed = Add == except;

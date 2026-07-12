@@ -15,4 +15,8 @@ public abstract class InGameScreen : UIScreen
     public abstract ChatBox ChatBox { get; }
 
     public abstract void SetChatSize(Vector2 size);
+
+    public abstract void SetHudVisible(bool visible);
+
+    public abstract void AttachDialogueOverlay(Control overlay);
 }

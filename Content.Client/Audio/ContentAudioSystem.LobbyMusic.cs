@@ -194,6 +194,8 @@ public sealed partial class ContentAudioSystem
 
         var nextTrackOn = _timing.CurTime + audio.AudioStream.Length;
         _lobbySoundtrackInfo = new LobbySoundtrackInfo(soundtrackFilename, nextTrackOn, playResult.Value.Entity);
+        _lobbyMusicStoredGain = null;
+        ApplyMusicDuckState();
 
         var lobbySongChangedEvent = new LobbySoundtrackChangedEvent(soundtrackFilename);
         _lobbySoundtrackChanged?.Invoke(lobbySongChangedEvent);
@@ -206,6 +208,7 @@ public sealed partial class ContentAudioSystem
             return;
         }
 
+        _lobbyMusicStoredGain = null;
         _audio.Stop(_lobbySoundtrackInfo.MusicStreamEntityUid);
         _lobbySoundtrackInfo = null;
         var lobbySongChangedEvent = new LobbySoundtrackChangedEvent();

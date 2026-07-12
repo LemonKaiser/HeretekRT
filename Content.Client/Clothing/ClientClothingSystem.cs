@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Content.Client._WH40K.Dialogue;
 using Content.Client.DisplacementMap;
 using Content.Client.Inventory;
 using Content.Shared.Clothing;
@@ -270,22 +271,27 @@ public sealed partial class ClientClothingSystem : ClothingSystem
         // bookmark to determine where in the list of layers we should insert the clothing layers.
         bool slotLayerExists = sprite.LayerMapTryGet(slot, out var index);
 
-        // Select displacement maps
-        var displacementData = inventory.Displacements.GetValueOrDefault(slot); //Default unsexed map
-
-        var equipeeSex = CompOrNull<HumanoidAppearanceComponent>(equipee)?.Sex;
-        if (equipeeSex != null)
+        DisplacementData? displacementData = null;
+        if (!HasComp<DialoguePreviewMarkerComponent>(equipee))
         {
-            switch (equipeeSex)
+            // Dialogue portrait previews render into isolated UI and do not have the shader context
+            // that humanoid displacement layers expect, so keep them on plain clothing layers.
+            displacementData = inventory.Displacements.GetValueOrDefault(slot); // Default unsexed map
+
+            var equipeeSex = CompOrNull<HumanoidAppearanceComponent>(equipee)?.Sex;
+            if (equipeeSex != null)
             {
-                case Sex.Male:
-                    if (inventory.MaleDisplacements.Count > 0)
-                        displacementData = inventory.MaleDisplacements.GetValueOrDefault(slot);
-                    break;
-                case Sex.Female:
-                    if (inventory.FemaleDisplacements.Count > 0)
-                        displacementData = inventory.FemaleDisplacements.GetValueOrDefault(slot);
-                    break;
+                switch (equipeeSex)
+                {
+                    case Sex.Male:
+                        if (inventory.MaleDisplacements.Count > 0)
+                            displacementData = inventory.MaleDisplacements.GetValueOrDefault(slot);
+                        break;
+                    case Sex.Female:
+                        if (inventory.FemaleDisplacements.Count > 0)
+                            displacementData = inventory.FemaleDisplacements.GetValueOrDefault(slot);
+                        break;
+                }
             }
         }
 

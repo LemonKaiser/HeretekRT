@@ -13,6 +13,10 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
     private readonly Dictionary<EntityUid, (float VolumeChange, float TargetVolume)> _fadingIn = new();
 
     private readonly List<EntityUid> _fadeToRemove = new();
+    private int _musicDuckDepth;
+    private float _musicDuckGain = 0.08f;
+    private float? _ambientMusicStoredGain;
+    private float? _lobbyMusicStoredGain;
 
     private const float MinVolume = -32f;
     private const float DefaultDuration = 2f;
@@ -88,6 +92,24 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
     }
 
     #region Fades
+
+    public void PushMusicDuck(float duckGain = 0.08f)
+    {
+        _musicDuckDepth++;
+        _musicDuckGain = Math.Clamp(duckGain, 0f, 1f);
+        ApplyMusicDuckState();
+    }
+
+    public void PopMusicDuck()
+    {
+        if (_musicDuckDepth <= 0)
+            return;
+
+        _musicDuckDepth--;
+
+        if (_musicDuckDepth == 0)
+            RestoreMusicDuckState();
+    }
 
     public void FadeOut(EntityUid? stream, AudioComponent? component = null, float duration = DefaultDuration)
     {
@@ -166,6 +188,41 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
         {
             _fadingIn.Remove(stream);
         }
+    }
+
+    private void ApplyMusicDuckState()
+    {
+        if (_musicDuckDepth <= 0)
+            return;
+
+        ApplyMusicDuck(_ambientMusicStream, ref _ambientMusicStoredGain);
+        ApplyMusicDuck(_lobbySoundtrackInfo?.MusicStreamEntityUid, ref _lobbyMusicStoredGain);
+    }
+
+    private void RestoreMusicDuckState()
+    {
+        RestoreMusicDuck(_ambientMusicStream, ref _ambientMusicStoredGain);
+        RestoreMusicDuck(_lobbySoundtrackInfo?.MusicStreamEntityUid, ref _lobbyMusicStoredGain);
+    }
+
+    private void ApplyMusicDuck(EntityUid? stream, ref float? storedGain)
+    {
+        if (stream == null || !TryComp(stream.Value, out AudioComponent? component))
+            return;
+
+        storedGain ??= component.Gain;
+        Audio.SetGain(stream.Value, MathF.Min(storedGain.Value, _musicDuckGain), component);
+    }
+
+    private void RestoreMusicDuck(EntityUid? stream, ref float? storedGain)
+    {
+        if (storedGain == null)
+            return;
+
+        if (stream != null && TryComp(stream.Value, out AudioComponent? component))
+            Audio.SetGain(stream.Value, storedGain.Value, component);
+
+        storedGain = null;
     }
 
     #endregion

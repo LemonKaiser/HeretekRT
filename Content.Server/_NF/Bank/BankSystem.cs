@@ -55,6 +55,41 @@ public sealed partial class BankSystem : SharedBankSystem
     }
 
     /// <summary>
+    /// Checks whether a regular bank withdrawal can succeed without changing a character's balance.
+    /// </summary>
+    public bool CanBankWithdraw(EntityUid mobUid, int amount)
+    {
+        if (amount <= 0
+            || !HasComp<BankAccountComponent>(mobUid)
+            || HasComp<IronmanComponent>(mobUid)
+            || !_playerManager.TryGetSessionByEntity(mobUid, out var session)
+            || !_prefsManager.TryGetCachedPreferences(session.UserId, out var prefs)
+            || prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+        {
+            return false;
+        }
+
+        return profile.BankBalance >= amount && prefs.IndexOfCharacter(profile) != -1;
+    }
+
+    /// <summary>
+    /// Checks whether a scripted bank credit can succeed without changing a character's balance.
+    /// </summary>
+    public bool CanBankCredit(EntityUid mobUid, int amount)
+    {
+        if (amount <= 0
+            || !HasComp<BankAccountComponent>(mobUid)
+            || !_playerManager.TryGetSessionByEntity(mobUid, out var session)
+            || !_prefsManager.TryGetCachedPreferences(session.UserId, out var prefs)
+            || prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+        {
+            return false;
+        }
+
+        return prefs.IndexOfCharacter(profile) != -1;
+    }
+
+    /// <summary>
     /// Attempts to remove money from a character's bank account.
     /// This should always be used instead of attempting to modify the BankAccountComponent directly.
     /// When successful, the entity's BankAccountComponent will be updated with their current balance.
@@ -175,6 +210,41 @@ public sealed partial class BankSystem : SharedBankSystem
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Credits an active character's bank account without treating the transfer as a cash deposit.
+    /// Scripted rewards must not depend on the ATM cash-deposit CVar or receive a deposit tax.
+    /// </summary>
+    public bool TryBankCredit(EntityUid mobUid, int amount)
+    {
+        if (amount <= 0)
+        {
+            _log.Info($"TryBankCredit: {amount} is invalid from Uid {mobUid}");
+            return false;
+        }
+
+        if (!TryComp<BankAccountComponent>(mobUid, out var bank))
+        {
+            _log.Info($"TryBankCredit: {mobUid} has no bank account");
+            return false;
+        }
+
+        if (!_playerManager.TryGetSessionByEntity(mobUid, out var session)
+            || !_prefsManager.TryGetCachedPreferences(session.UserId, out var prefs)
+            || prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+        {
+            _log.Info($"TryBankCredit: {mobUid} has no active character preferences");
+            return false;
+        }
+
+        if (!TryBankDeposit(session, prefs, profile, amount, out var newBalance))
+            return false;
+
+        bank.Balance = newBalance.Value;
+        Dirty(mobUid, bank);
+        _log.Info($"{mobUid} received a scripted bank credit of {amount}");
+        return true;
     }
 
     /// <summary>

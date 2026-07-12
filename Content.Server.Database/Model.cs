@@ -47,6 +47,7 @@ namespace Content.Server.Database
         public DbSet<BanTemplate> BanTemplate { get; set; } = null!;
         public DbSet<IPIntelCache> IPIntelCache { get; set; } = null!;
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
+        public DbSet<DialoguePersistentMemory> DialoguePersistentMemories { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1359,6 +1360,21 @@ namespace Content.Server.Database
 
         [Required]
         public string CompanyId { get; set; } = default!;
+    }
+
+    [PrimaryKey(nameof(PlayerUserId), nameof(MemoryKey))]
+    [Table("dialogue_persistent_memory")]
+    public class DialoguePersistentMemory
+    {
+        public Guid PlayerUserId { get; set; }
+
+        [MaxLength(128)]
+        public string MemoryKey { get; set; } = default!;
+
+        [Required]
+        public string Data { get; set; } = default!;
+
+        public DateTime UpdatedAt { get; set; }
     }
     // Mono-End
 }

@@ -1,0 +1,146 @@
+- type: entity
+  id: MobHumanWH40KDialogueDummy
+  parent: MobHuman
+  name: dialogue dummy
+  description: A test NPC for checking the WH40K dialogue scene.
+  suffix: WH40K, Dialogue
+  save: false
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+    hair: HairBald
+  - type: Loadout
+    prototypes:
+    - LimitedPassengerGear
+  - type: DialogueInteractable
+    interactionRange: 3
+    requireLineOfSight: true
+    dialogues:
+      - dialogue: WH40KDemoGreeting
+      - chat: heretek-dialogue-state-locked-chat
+        conditions:
+          - type: CounterAtLeast
+            counter: wh40k_demo_whiskey
+            amount: 2
+      - dialogue: WH40KDemoStateLoop
+        conditions:
+          - type: Flag
+            flag: wh40k_demo_intro_done
+            value: true
+
+- type: entity
+  id: MobQueenChrysalisImperiumDialogueFizzo
+  parent: MobQueenChrysalisImperium
+  name: Физзо
+  description: A poised bartender pony who watches the room like it owes him an honest answer.
+  suffix: WH40K, Dialogue, Bartender
+  save: false
+  components:
+  - type: DialogueDisplayName
+    name: Физзо
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+    blackboard:
+      IdleRange: !type:Single
+        0
+      MinimumIdleTime: !type:Single
+        30
+      MaximumIdleTime: !type:Single
+        30
+  - type: DialogueInteractable
+    interactionRange: 3
+    persistMemory: true
+    persistentMemoryKey: wh40k_fizzo_bartender
+    persistenceMode: Selected
+    persistentFlags:
+      - wh40k_fizzo_intro_done
+    requireLineOfSight: true
+    baseDialogue: WH40KFizzoBase
+    dialogues:
+      - dialogue: WH40KFizzoIntro
+        conditions:
+          - type: Flag
+            flag: wh40k_fizzo_intro_done
+            value: false
+
+- type: entity
+  id: MobHumanWH40KDialogueAutoDummy
+  parent: MobHuman
+  name: dialogue auto trigger dummy
+  description: A test NPC for checking the WH40K dialogue auto trigger and line of sight.
+  suffix: WH40K, Dialogue, Auto
+  save: false
+  components:
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+    hair: HairBald
+  - type: Loadout
+    prototypes:
+    - LimitedPassengerGear
+  - type: DialogueInteractable
+    interactionRange: 3
+    requireLineOfSight: true
+    autoTrigger: true
+    autoTriggerRange: 2.5
+    dialogues:
+      - dialogue: WH40KDemoGreeting
+      - chat: heretek-dialogue-state-locked-chat
+        conditions:
+          - type: CounterAtLeast
+            counter: wh40k_demo_whiskey
+            amount: 2
+      - dialogue: WH40KDemoStateLoop
+        conditions:
+          - type: Flag
+            flag: wh40k_demo_intro_done
+            value: true
+
+- type: entity
+  id: MobHumanWH40KDialogueParallelDummy
+  parent: MobHuman
+  name: parallel dialogue dummy
+  save: false
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: DialogueInteractable
+    interactionRange: 3
+    maxDialogueRange: 12
+    requireLineOfSight: false
+    dialogue: WH40KDialogueParallelTest
+
+- type: entity
+  id: MobHumanWH40KDialogueSharedWorldDummy
+  parent: MobHuman
+  name: shared-world dialogue dummy
+  save: false
+  components:
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: DialogueInteractable
+    interactionRange: 3
+    maxDialogueRange: 12
+    requireLineOfSight: false
+    dialogue: WH40KDialogueSharedWorldTest
+
+- type: entity
+  id: MobHumanWH40KDialogueRequirementFallbackDummy
+  parent: MobHuman
+  name: transaction fallback dialogue dummy
+  save: false
+  components:
+  - type: DialogueInteractable
+    interactionRange: 3
+    maxDialogueRange: 12
+    requireLineOfSight: false
+    dialogue: WH40KDialogueRequirementFallbackTest
+
+- type: entity
+  id: WH40KDialoguePlayerDummy
+  name: dialogue player dummy
+  save: false
+  components:
+  - type: MobState

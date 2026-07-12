@@ -1,0 +1,498 @@
+- type: wh40kDialogue
+  id: WH40KDemoGreeting
+  repeatable: false
+  scene:
+    music:
+      sound:
+        path: /Audio/Machines/Nuke/nuke_alarm.ogg
+        params:
+          volume: -9
+      fadeIn: 1.8
+      fadeOut: 1.4
+  completeActions:
+    - type: SetFlag
+      flag: wh40k_demo_intro_done
+    - type: SendChat
+      message: heretek-dialogue-demo-complete-chat
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-demo-001
+      actions:
+        - type: MoveSpeakerToSpeaker
+          speaker: npc
+          targetSpeaker: initiator
+          offsetX: 1.0
+          offsetY: 0.0
+          range: 0.35
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-demo-002
+    - type: choice
+      speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-demo-003
+      choices:
+        - text: heretek-dialogue-demo-choice-3a
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-3a-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-3a-response
+        - text: heretek-dialogue-demo-choice-3b
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-3b-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-3b-response
+              sound:
+                path: /Audio/Voice/Human/manlaugh1.ogg
+                params:
+                  volume: 0
+        - text: heretek-dialogue-demo-choice-3c
+          nextStep: demo-greeting-end
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-3c-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-3c-response
+    - speaker: npc
+      text: heretek-dialogue-demo-004
+      actions:
+        - type: StopSpeakerMovement
+          speaker: npc
+    - speaker: npc
+      text: heretek-dialogue-demo-004b
+    - speaker: npc
+      lineType: narration
+      text: heretek-dialogue-demo-hidden-001
+      autoAdvanceAfter: 0.2
+      sceneState:
+        showWindow: false
+        showActors: false
+        showDim: false
+      actions:
+        - type: RotateSpeakerRelative
+          speaker: npc
+          degrees: -90
+    - speaker: npc
+      lineType: narration
+      text: heretek-dialogue-demo-hidden-001
+      autoAdvanceAfter: 0.2
+      sceneState:
+        showWindow: false
+        showActors: false
+        showDim: false
+      actions:
+        - type: RotateSpeakerRelative
+          speaker: npc
+          degrees: 180
+    - speaker: npc
+      lineType: narration
+      text: heretek-dialogue-demo-hidden-001
+      autoAdvanceAfter: 0.65
+      sceneState:
+        showWindow: false
+        showActors: false
+        showDim: false
+      actions:
+        - type: FaceSpeaker
+          speaker: npc
+          targetSpeaker: initiator
+      sound:
+        path: /Audio/Voice/Human/manlaugh1.ogg
+        params:
+          volume: 0
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-demo-005
+      choices:
+        - text: heretek-dialogue-demo-choice-2a
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-2a-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-2a-response
+        - text: heretek-dialogue-demo-choice-2b
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-2b-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-2b-response
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-demo-006
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-demo-007
+      choices:
+        - text: heretek-dialogue-demo-choice-1a
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-demo-choice-1a-selected
+            - speaker: npc
+              text: heretek-dialogue-demo-choice-1a-response
+              sound:
+                path: /Audio/Effects/Gasp/gasp_male1.ogg
+                params:
+                  volume: -1
+    - speaker: npc
+      text: heretek-dialogue-demo-008
+    - speaker: npc
+      id: demo-greeting-end
+      text: heretek-dialogue-demo-009
+
+- type: wh40kDialogue
+  id: WH40KDialogueParallelTest
+  interactionMode: Personal
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-parallel-test-line
+
+- type: wh40kDialogue
+  id: WH40KDialogueSharedWorldTest
+  interactionMode: SharedWorld
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-parallel-test-line
+
+- type: wh40kDialogue
+  id: WH40KDialogueRequirementFallbackTest
+  interactionMode: Personal
+  steps:
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-parallel-test-line
+      choices:
+        - text: heretek-dialogue-parallel-test-line
+          actions:
+            - type: TakeItem
+              prototype: SpaceCash10
+              amount: 1
+
+- type: wh40kDialogue
+  id: WH40KDemoStateLoop
+  completeActions:
+    - type: SendChat
+      message: heretek-dialogue-demo-loop-complete-chat
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-state-001
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-state-002
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-state-003
+      choices:
+        - text: heretek-dialogue-state-choice-1
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-state-choice-1-selected
+            - speaker: npc
+              text: heretek-dialogue-state-choice-1-response
+              actions:
+                - type: GiveItem
+                  prototype: DrinkWhiskeyGlass
+                - type: AddCounter
+                  counter: wh40k_demo_whiskey
+                  amount: 1
+                  onlyIfPreviousActionSucceeded: true
+        - text: heretek-dialogue-state-choice-2
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-state-choice-2-selected
+            - speaker: npc
+              text: heretek-dialogue-state-choice-2-response
+        - text: heretek-dialogue-state-choice-3
+          actions:
+            - type: SendChat
+              message: heretek-dialogue-demo-close-chat
+            - type: CloseDialogue
+
+- type: wh40kDialogue
+  id: WH40KDemoStateLocked
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-state-locked-001
+
+- type: wh40kDialogue
+  id: WH40KFizzoIntro
+  interactionMode: Personal
+  repeatable: false
+  startActions:
+    - type: FaceSpeaker
+      speaker: npc
+      targetSpeaker: initiator
+  scene:
+    music:
+      sound:
+        path: /Audio/_WH40K/Dialogue/who_was_i.ogg
+        params:
+          volume: -9
+      fadeIn: 1.8
+      fadeOut: 1.4
+  completeActions:
+    - type: SetFlag
+      flag: wh40k_fizzo_intro_done
+    - type: SendChat
+      message: heretek-dialogue-fizzo-intro-complete-chat
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-001
+      voice:
+        path: /Audio/_WH40K/Dialogue/Voice/begin.ogg
+        params:
+          volume: -5
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-fizzo-intro-002
+    - type: choice
+      speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-fizzo-intro-003
+      choices:
+        - text: heretek-dialogue-fizzo-intro-choice-1
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-intro-choice-1-selected
+            - speaker: npc
+              lineType: narration
+              text: heretek-dialogue-demo-hidden-001
+              autoAdvanceAfter: 0.2
+              sceneState:
+                showWindow: false
+                showActors: false
+                showDim: false
+              actions:
+                - type: RotateSpeakerRelative
+                  speaker: npc
+                  degrees: -90
+            - speaker: npc
+              lineType: narration
+              text: heretek-dialogue-demo-hidden-001
+              autoAdvanceAfter: 0.2
+              sceneState:
+                showWindow: false
+                showActors: false
+                showDim: false
+              actions:
+                - type: RotateSpeakerRelative
+                  speaker: npc
+                  degrees: 180
+            - speaker: npc
+              lineType: narration
+              text: heretek-dialogue-demo-hidden-001
+              autoAdvanceAfter: 0.65
+              sceneState:
+                showWindow: false
+                showActors: false
+                showDim: false
+              actions:
+                - type: FaceSpeaker
+                  speaker: npc
+                  targetSpeaker: initiator
+              sound:
+                path: /Audio/_WH40K/Dialogue/horse_laugh.ogg
+                params:
+                  volume: 0
+            - speaker: npc
+              text: heretek-dialogue-fizzo-intro-choice-1-response
+        - text: heretek-dialogue-fizzo-intro-choice-2
+          responseSteps:
+            - speaker: initiator
+              lineType: thought
+              text: heretek-dialogue-fizzo-intro-choice-2-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-intro-choice-2-response
+        - text: heretek-dialogue-fizzo-intro-choice-3
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-intro-choice-3-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-intro-choice-3-response
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-003b
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-004
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-fizzo-intro-005
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-006
+    - speaker: initiator
+      text: heretek-dialogue-fizzo-intro-007
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-008
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-008b
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-009
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-fizzo-intro-010
+      choices:
+        - text: heretek-dialogue-fizzo-intro-choice-4
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-intro-choice-4-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-intro-choice-4-response
+              actions:
+                - type: GiveItem
+                  prototype: DrinkWhiskeyGlass
+                - type: AddCounter
+                  counter: wh40k_fizzo_whiskey_served
+                  amount: 1
+                  onlyIfPreviousActionSucceeded: true
+    - speaker: npc
+      text: heretek-dialogue-fizzo-intro-011
+
+- type: wh40kDialogue
+  id: WH40KFizzoEncore
+  interactionMode: Personal
+  startActions:
+    - type: FaceSpeaker
+      speaker: npc
+      targetSpeaker: initiator
+  scene:
+    music:
+      sound:
+        path: /Audio/_WH40K/Dialogue/who_was_i.ogg
+        params:
+          volume: -9
+      fadeIn: 1.8
+      fadeOut: 1.4
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-fizzo-encore-001
+    - speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-fizzo-encore-001b
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-fizzo-encore-002
+      choices:
+        - text: heretek-dialogue-fizzo-encore-choice-1
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-encore-choice-1-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-encore-choice-1-response
+              actions:
+                - type: GiveItem
+                  prototype: DrinkWhiskeyGlass
+                - type: AddCounter
+                  counter: wh40k_fizzo_whiskey_served
+                  amount: 1
+                  onlyIfPreviousActionSucceeded: true
+        - text: heretek-dialogue-fizzo-encore-choice-2
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-encore-choice-2-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-encore-choice-2-response
+    - speaker: npc
+      text: heretek-dialogue-fizzo-encore-003
+
+- type: wh40kDialogue
+  id: WH40KFizzoBase
+  interactionMode: Personal
+  startActions:
+    - type: FaceSpeaker
+      speaker: npc
+      targetSpeaker: initiator
+  steps:
+    - type: choice
+      speaker: npc
+      text: heretek-dialogue-fizzo-base-001
+      choices:
+        - text: heretek-dialogue-fizzo-base-choice-store
+          conditions:
+            - type: StoreAvailable
+          actions:
+            - type: OpenStore
+        - text: heretek-dialogue-fizzo-base-choice-whiskey
+          conditions:
+            - type: CounterAtMost
+              counter: wh40k_fizzo_whiskey_served
+              amount: 3
+          nextDialogue: WH40KFizzoEncore
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-base-choice-whiskey-selected
+        - text: heretek-dialogue-fizzo-base-choice-whiskey
+          conditions:
+            - type: CounterAtLeast
+              counter: wh40k_fizzo_whiskey_served
+              amount: 4
+          nextDialogue: WH40KFizzoCutoff
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-base-choice-whiskey-selected
+        - text: heretek-dialogue-fizzo-base-choice-rumors
+          nextDialogue: WH40KFizzoRumors
+        - text: heretek-dialogue-fizzo-base-choice-leave
+          actions:
+            - type: CloseDialogue
+
+- type: wh40kDialogue
+  id: WH40KFizzoRumors
+  interactionMode: Personal
+  startActions:
+    - type: FaceSpeaker
+      speaker: npc
+      targetSpeaker: initiator
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-fizzo-rumors-001
+    - type: choice
+      speaker: initiator
+      lineType: thought
+      text: heretek-dialogue-fizzo-rumors-002
+      choices:
+        - text: heretek-dialogue-fizzo-rumors-choice-1
+          conditions:
+            - type: CounterEquals
+              counter: wh40k_fizzo_courier_stage
+              amount: 0
+          actions:
+            - type: SetCounter
+              counter: wh40k_fizzo_courier_stage
+              amount: 1
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-rumors-choice-1-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-rumors-choice-1-response
+        - text: heretek-dialogue-fizzo-rumors-choice-1-followup
+          conditions:
+            - type: CounterAtLeast
+              counter: wh40k_fizzo_courier_stage
+              amount: 1
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-rumors-choice-1-followup-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-rumors-choice-1-followup-response
+        - text: heretek-dialogue-fizzo-rumors-choice-2
+          responseSteps:
+            - speaker: initiator
+              text: heretek-dialogue-fizzo-rumors-choice-2-selected
+            - speaker: npc
+              text: heretek-dialogue-fizzo-rumors-choice-2-response
+        - text: heretek-dialogue-fizzo-rumors-choice-3
+          actions:
+            - type: CloseDialogue
+    - speaker: npc
+      text: heretek-dialogue-fizzo-rumors-003
+
+- type: wh40kDialogue
+  id: WH40KFizzoCutoff
+  interactionMode: Personal
+  startActions:
+    - type: FaceSpeaker
+      speaker: npc
+      targetSpeaker: initiator
+  steps:
+    - speaker: npc
+      text: heretek-dialogue-fizzo-cutoff-chat

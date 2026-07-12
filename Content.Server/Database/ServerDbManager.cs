@@ -365,6 +365,21 @@ namespace Content.Server.Database
 
         #endregion
 
+        #region Dialogue Persistent Memory
+
+        Task<DialoguePersistentMemoryData?> GetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            CancellationToken cancel = default);
+
+        Task SetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            DialoguePersistentMemoryData data,
+            CancellationToken cancel = default);
+
+        #endregion
+
         #region DB Notifications
 
         void SubscribeToNotifications(Action<DatabaseNotification> handler);
@@ -1146,6 +1161,25 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.RemoveCompanyMember(player, company));
         }
         // Mono-End
+
+        public Task<DialoguePersistentMemoryData?> GetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetDialoguePersistentMemoryAsync(userId, memoryKey, cancel));
+        }
+
+        public Task SetDialoguePersistentMemoryAsync(
+            NetUserId userId,
+            string memoryKey,
+            DialoguePersistentMemoryData data,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetDialoguePersistentMemoryAsync(userId, memoryKey, data, cancel));
+        }
 
         public void SubscribeToNotifications(Action<DatabaseNotification> handler)
         {
