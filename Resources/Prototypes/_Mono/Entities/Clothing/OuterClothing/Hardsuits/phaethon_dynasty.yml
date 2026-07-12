@@ -227,7 +227,7 @@
     highPressureMultiplier: 0.05
     lowPressureMultiplier: 1000
   - type: ExplosionResistance
-    damageCoefficient: 0.5
+    damageCoefficient: 0.3
   - type: FireProtection
     reduction: 0.8
   - type: Armor
@@ -235,7 +235,7 @@
       coefficients:
         Blunt: 0.55
         Slash: 0.45
-        Piercing: 0.45
+        Piercing: 0.375
         Shock: 0.95
         Heat: 0.7
         Poison: 0.825
@@ -257,3 +257,5 @@
     - RogueHardsuit
   - type: StaminaDamageResistance
     coefficient: 0.3
+  - type: ClothingSlowOnDamageModifier # Sorry dude. It's my awesome fucking exosuit.
+    modifier: 0.5
