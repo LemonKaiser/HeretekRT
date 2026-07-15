@@ -1,6 +1,11 @@
+using Content.Server._Mono.GridClaimer;
+using Content.Shared._Mono;
+using Content.Shared._NF.Shipyard.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
+using Content.Shared.Station.Components;
+using Content.Shared.Tiles;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using System.Numerics;
@@ -20,6 +25,12 @@ public sealed partial class CleanupHelperSystem : EntitySystem
     private List<Entity<MapGridComponent>> _gridsFound = new();
 
     private EntityQuery<GhostComponent> _ghostQuery;
+    private EntityQuery<GridGodModeComponent> _gridGodModeQuery;
+    private EntityQuery<ProtectedGridComponent> _protectedGridQuery;
+    private EntityQuery<ShuttleDeedComponent> _shuttleDeedQuery;
+    private EntityQuery<StationMemberComponent> _stationMemberQuery;
+    private EntityQuery<CleanupImmuneComponent> _cleanupImmuneQuery;
+    private EntityQuery<ClaimableGridComponent> _claimableGridQuery;
     private EntityQuery<MindComponent> _mindQuery;
 
     public override void Initialize()
@@ -27,6 +38,12 @@ public sealed partial class CleanupHelperSystem : EntitySystem
         base.Initialize();
 
         _ghostQuery = GetEntityQuery<GhostComponent>();
+        _gridGodModeQuery = GetEntityQuery<GridGodModeComponent>();
+        _protectedGridQuery = GetEntityQuery<ProtectedGridComponent>();
+        _shuttleDeedQuery = GetEntityQuery<ShuttleDeedComponent>();
+        _stationMemberQuery = GetEntityQuery<StationMemberComponent>();
+        _cleanupImmuneQuery = GetEntityQuery<CleanupImmuneComponent>();
+        _claimableGridQuery = GetEntityQuery<ClaimableGridComponent>();
         _mindQuery = GetEntityQuery<MindComponent>();
     }
 
@@ -68,5 +85,18 @@ public sealed partial class CleanupHelperSystem : EntitySystem
         _mapMan.FindGridsIntersecting(mapPos.MapId, new Box2(pos - rangeVec, pos + rangeVec), ref _gridsFound, true);
 
         return _gridsFound.Count > 0;
+    }
+
+    /// <summary>
+    ///     Whether a grid represents authored infrastructure or player property that automatic grid cleanup must never delete.
+    /// </summary>
+    public bool IsGridProtectedFromCleanup(EntityUid grid)
+    {
+        return _cleanupImmuneQuery.HasComp(grid)
+            || _protectedGridQuery.HasComp(grid)
+            || _gridGodModeQuery.HasComp(grid)
+            || _stationMemberQuery.HasComp(grid)
+            || _shuttleDeedQuery.HasComp(grid)
+            || _claimableGridQuery.TryComp(grid, out var claimable) && claimable.Claimed;
     }
 }

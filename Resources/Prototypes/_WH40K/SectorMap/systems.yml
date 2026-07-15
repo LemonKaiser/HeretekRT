@@ -1,0 +1,413 @@
+# The positions are normalized against koronus-expanse-map.png. Replace grid paths here as authored system maps appear.
+- type: koronusSystem
+  id: Footfall
+  sector: KoronusExpanse
+  displayName: Furibundus (Footfall)
+  uiPosition: 0.541, 0.871
+  initialGridSpawnDistance: 3000
+  initialGridDisplayName: Футфол
+  # The round-start Footfall grid is moved to a random angle at this radius from Furibundus.
+  spaceMode: Planetary
+  stellarCenter: 0, 0
+  enabled: true
+  boundaryRadius: 5000
+  pauseWhenEmpty: false
+  # Footfall is the newcomer system: PvP and sabotage are blocked across its whole space map.
+  # Do not add a dynamic zone here, otherwise its green circle would falsely imply that safety
+  # ends outside the station radius.
+  safetyProfile: KoronusFullSafeSystem
+  protectInitialGrid: true
+
+- type: koronusSystem
+  id: Aivorius
+  sector: KoronusExpanse
+  displayName: Aivorius
+  uiPosition: 0.525, 0.817
+  initialGridPath: /Maps/_NF/POI/trade.yml
+  enabled: true
+  initialGridSafetyProfile: KoronusStationSafeZone
+  initialGridSafetyRadius: 100
+  protectInitialGrid: true
+  allowColdUnload: true
+  coldUnloadDelay: 120
+
+- type: koronusSystem
+  id: SottosTomb
+  sector: KoronusExpanse
+  displayName: Sotto's Tomb
+  uiPosition: 0.496, 0.841
+  initialGridPath: /Maps/_Mono/POI/sevastopol.yml
+  enabled: true
+  initialGridSafetyProfile: KoronusStationSafeZone
+  initialGridSafetyRadius: 100
+  protectInitialGrid: true
+  allowColdUnload: true
+  coldUnloadDelay: 120
+
+- type: koronusSystem
+  id: Trinnitos
+  sector: KoronusExpanse
+  displayName: Trinnitos (Foulstone)
+  uiPosition: 0.529, 0.731
+  initialGridPath: /Maps/_NF/POI/trade.yml
+  initialGridSpawnDistance: 3000
+  # Each round the trade station is placed at a random angle 3000 m from the star.
+  spaceMode: Planetary
+  stellarCenter: 0, 4000
+  boundaryRadius: 5000
+  enabled: true
+  initialGridSafetyProfile: KoronusStationSafeZone
+  initialGridSafetyRadius: 100
+  protectInitialGrid: true
+  allowColdUnload: true
+  coldUnloadDelay: 120
+
+- type: koronusSystem
+  id: SystemSpeculum
+  sector: KoronusExpanse
+  displayName: System Speculum
+  uiPosition: 0.506, 0.708
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Omicron
+  sector: KoronusExpanse
+  displayName: Omicron
+  uiPosition: 0.507, 0.758
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: SmaragdusMundos
+  sector: KoronusExpanse
+  displayName: Smaragdus Mundos
+  uiPosition: 0.454, 0.721
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: EmperorsPalm
+  sector: KoronusExpanse
+  displayName: Emperor's Palm (Janus)
+  uiPosition: 0.387, 0.679
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: FrozenPrince
+  sector: KoronusExpanse
+  displayName: Frozen Prince
+  uiPosition: 0.423, 0.668
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: NollaSeptum
+  sector: KoronusExpanse
+  displayName: Nolla Septum
+  uiPosition: 0.340, 0.633
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: TenebrisAquae
+  sector: KoronusExpanse
+  displayName: Tenebris Aquae
+  uiPosition: 0.379, 0.592
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: AdermattII
+  sector: KoronusExpanse
+  displayName: Adermatt II
+  uiPosition: 0.405, 0.499
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: PortaSeptentum
+  sector: KoronusExpanse
+  displayName: Porta Septentum
+  uiPosition: 0.352, 0.436
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: RaethTawi
+  sector: KoronusExpanse
+  displayName: Raeth-Tawi
+  uiPosition: 0.379, 0.361
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: LastChanceOfCyrene
+  sector: KoronusExpanse
+  displayName: Last Chance of Cyrene
+  uiPosition: 0.452, 0.323
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: LapidusMortus
+  sector: KoronusExpanse
+  displayName: Lapidus Mortus
+  uiPosition: 0.456, 0.386
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: LitoribumMaledicta
+  sector: KoronusExpanse
+  displayName: Litoribum Maledicta
+  uiPosition: 0.500, 0.288
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: AtlasianReach
+  sector: KoronusExpanse
+  displayName: Atlasian Reach
+  uiPosition: 0.498, 0.221
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: MortusAcies
+  sector: KoronusExpanse
+  displayName: Mortus Acies (Yheabos VI)
+  uiPosition: 0.560, 0.264
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: GartafalsCalamity
+  sector: KoronusExpanse
+  displayName: Gartafal's Calamity
+  uiPosition: 0.593, 0.218
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: OdaenathusXI
+  sector: KoronusExpanse
+  displayName: Odaenathus XI
+  uiPosition: 0.671, 0.282
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: NarmerIV
+  sector: KoronusExpanse
+  displayName: Narmer IV
+  uiPosition: 0.598, 0.332
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: PeliumSolitas
+  sector: KoronusExpanse
+  displayName: Pelium Solitas
+  uiPosition: 0.569, 0.377
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: MundusValancius
+  sector: KoronusExpanse
+  displayName: Mundus Valancius (Dargonus)
+  uiPosition: 0.573, 0.427
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: MundusNullus
+  sector: KoronusExpanse
+  displayName: Mundus Nullus
+  uiPosition: 0.616, 0.511
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: SilenceOfMerSegrit
+  sector: KoronusExpanse
+  displayName: Silence of Mer-Segrit
+  uiPosition: 0.564, 0.591
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: PulvisPlatinum
+  sector: KoronusExpanse
+  displayName: Pulvis Platinum
+  uiPosition: 0.536, 0.619
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: OrsellinProphecy
+  sector: KoronusExpanse
+  displayName: Orsellin Prophecy
+  uiPosition: 0.492, 0.578
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: AgathusArchides
+  sector: KoronusExpanse
+  displayName: Agathus Archides
+  uiPosition: 0.467, 0.548
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: PillarsOfVidrice
+  sector: KoronusExpanse
+  displayName: Pillars of Vidrice
+  uiPosition: 0.496, 0.509
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: CrossroadsOfAHundredDreams
+  sector: KoronusExpanse
+  displayName: Crossroads of a Hundred Dreams
+  uiPosition: 0.517, 0.544
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: TelikosEpsilon
+  sector: KoronusExpanse
+  displayName: Telikos Epsilon (Janus)
+  uiPosition: 0.550, 0.677
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: CradleOfKhepri
+  sector: KoronusExpanse
+  displayName: Cradle of Khepri
+  uiPosition: 0.584, 0.774
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: PalatinumStellios
+  sector: KoronusExpanse
+  displayName: Palatinum Stellios
+  uiPosition: 0.604, 0.817
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: JagerensBelt
+  sector: KoronusExpanse
+  displayName: Jageren's Belt
+  uiPosition: 0.624, 0.623
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: NamelessStar
+  sector: KoronusExpanse
+  displayName: Nameless Star (Quetza Temern)
+  uiPosition: 0.655, 0.672
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: ForgottenTwins
+  sector: KoronusExpanse
+  displayName: Forgotten Twins
+  uiPosition: 0.638, 0.742
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: JanxIV
+  sector: KoronusExpanse
+  displayName: Janx IV
+  uiPosition: 0.665, 0.756
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Malezial
+  sector: KoronusExpanse
+  displayName: Malezial
+  uiPosition: 0.668, 0.823
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: MuRho79
+  sector: KoronusExpanse
+  displayName: Mu-Rho 79
+  uiPosition: 0.638, 0.561
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: LatotiansPassage
+  sector: KoronusExpanse
+  displayName: Latotian's Passage
+  uiPosition: 0.648, 0.467
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Naduesh
+  sector: KoronusExpanse
+  displayName: Naduesh
+  uiPosition: 0.689, 0.476
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: AubraysAnvil
+  sector: KoronusExpanse
+  displayName: Aubray's Anvil
+  uiPosition: 0.730, 0.604
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Feldarra
+  sector: KoronusExpanse
+  displayName: Feldarra
+  uiPosition: 0.749, 0.636
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Vargouris
+  sector: KoronusExpanse
+  displayName: Vargouris
+  uiPosition: 0.697, 0.376
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Raakata
+  sector: KoronusExpanse
+  displayName: Raakata
+  uiPosition: 0.675, 0.421
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Damaris
+  sector: KoronusExpanse
+  displayName: Damaris
+  uiPosition: 0.407, 0.849
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Rain
+  sector: KoronusExpanse
+  displayName: Rain
+  uiPosition: 0.317, 0.799
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Ritarmoren
+  sector: KoronusExpanse
+  displayName: Ritarmoren
+  uiPosition: 0.292, 0.769
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Grace
+  sector: KoronusExpanse
+  displayName: Grace
+  uiPosition: 0.329, 0.867
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: Illisk
+  sector: KoronusExpanse
+  displayName: Illisk
+  uiPosition: 0.455, 0.188
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: SanctumOfTaaphetus
+  sector: KoronusExpanse
+  displayName: Sanctum of Taaphetus
+  uiPosition: 0.153, 0.288
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: NeosCharoitus
+  sector: KoronusExpanse
+  displayName: Neos Charoitus
+  uiPosition: 0.206, 0.257
+  initialGridPath: /Maps/Test/empty.yml
+
+- type: koronusSystem
+  id: DebrisOfBattaida
+  sector: KoronusExpanse
+  displayName: Debris of Battaida
+  uiPosition: 0.255, 0.253
+  initialGridPath: /Maps/Test/empty.yml

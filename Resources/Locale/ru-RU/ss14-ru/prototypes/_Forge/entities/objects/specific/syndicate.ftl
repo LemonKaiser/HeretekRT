@@ -11,7 +11,7 @@ ent-BoxContractorBundle = коробка
     .suffix = НЕ МАППИТЬ
 
 ent-TechFabInterdyne = Техфаб Interdyne
-    .desc = Торговая точка «Interdyne Pharmaceutics». Обменивает спессо на импланты, стимуляторы и лекарства. Всё официально, если не спрашивать документы. «Ваше здоровье — наш доход»
+    .desc = Торговая точка «Interdyne Pharmaceutics». Обменивает трон гельты на импланты, стимуляторы и лекарства. Всё официально, если не спрашивать документы. «Ваше здоровье — наш доход»
 ent-VendingMachineMedicalSyndicate = СиндиМед
     .desc = Медицинский терминал от «Interdyne Pharmaceutics». Снабжает проверенными боевыми препаратами и “лечебными средствами с расширенным эффектом”. «Мы вылечим даже то, что сами придумали»
 ent-VendingMachineChemicalsSyndicate = СиндиСоки

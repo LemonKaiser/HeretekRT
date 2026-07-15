@@ -233,7 +233,7 @@ public partial class BaseShuttleControl : MapGridControl
         const float cardinalLabelScale = 0.72f;
 
         var origin = MidPointVector;
-        var radius = MathF.Max(8f, SizeFull * 0.5f - ringInset);
+        var radius = MathF.Max(8f, ScaledMinimapRadius - ringInset);
 
         var subtleGray = Color.FromHex("#676767");
         var northAccent = Color.FromHex("#7F7442");
@@ -429,7 +429,7 @@ public partial class BaseShuttleControl : MapGridControl
     {
         var rator = Maps.GetAllTilesEnumerator(grid.Owner, grid.Comp);
         var minimapScale = MinimapScale;
-        var midpoint = new Vector2(MidPoint, MidPoint);
+        var midpoint = MidPointVector;
         var tileSize = grid.Comp.TileSize;
 
         // Check if we even have data

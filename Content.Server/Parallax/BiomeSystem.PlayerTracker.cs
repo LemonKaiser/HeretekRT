@@ -30,12 +30,12 @@ public sealed partial class BiomeSystem
                 CanLoad(pSession.AttachedEntity.Value))
             {
                 var worldPos = _transform.GetWorldPosition(xform);
-                AddChunksInRange(biome, worldPos);
+                AddChunksInRange(xform.MapUid!.Value, biome, worldPos);
 
                 foreach (var layer in biome.MarkerLayers)
                 {
                     var layerProto = ProtoManager.Index(layer);
-                    AddMarkerChunksInRange(biome, worldPos, layerProto);
+                    AddMarkerChunksInRange(xform.MapUid!.Value, biome, worldPos, layerProto);
                 }
             }
 
@@ -51,12 +51,12 @@ public sealed partial class BiomeSystem
                 }
 
                 var worldPos = _transform.GetWorldPosition(xform);
-                AddChunksInRange(biome, worldPos);
+                AddChunksInRange(xform.MapUid!.Value, biome, worldPos);
 
                 foreach (var layer in biome.MarkerLayers)
                 {
                     var layerProto = ProtoManager.Index(layer);
-                    AddMarkerChunksInRange(biome, worldPos, layerProto);
+                    AddMarkerChunksInRange(xform.MapUid!.Value, biome, worldPos, layerProto);
                 }
             }
         }
@@ -67,18 +67,22 @@ public sealed partial class BiomeSystem
         return !_ghostQuery.HasComp(uid) || _tags.HasTag(uid, AllowBiomeLoadingTag);
     }
 
-    private void AddChunksInRange(BiomeComponent biome, Vector2 worldPos)
+    private void AddChunksInRange(EntityUid gridUid, BiomeComponent biome, Vector2 worldPos)
     {
+        var generationBounds = GetGenerationBounds(gridUid);
         var enumerator = new ChunkIndicesEnumerator(_loadArea.Translated(worldPos), ChunkSize);
 
         while (enumerator.MoveNext(out var chunkOrigin))
         {
-            _activeChunks[biome].Add(chunkOrigin.Value * ChunkSize);
+            var chunk = chunkOrigin.Value * ChunkSize;
+            if (ChunkIntersectsGenerationBounds(chunk, ChunkSize, generationBounds))
+                _activeChunks[biome].Add(chunk);
         }
     }
 
-    private void AddMarkerChunksInRange(BiomeComponent biome, Vector2 worldPos, IBiomeMarkerLayer layer)
+    private void AddMarkerChunksInRange(EntityUid gridUid, BiomeComponent biome, Vector2 worldPos, IBiomeMarkerLayer layer)
     {
+        var generationBounds = GetGenerationBounds(gridUid);
         // Offset the load area so it's centralised.
         var loadArea = new Box2(0, 0, layer.Size, layer.Size);
         var halfLayer = new Vector2(layer.Size / 2f);
@@ -87,8 +91,12 @@ public sealed partial class BiomeSystem
 
         while (enumerator.MoveNext(out var chunkOrigin))
         {
+            var chunk = chunkOrigin.Value * layer.Size;
+            if (!ChunkIntersectsGenerationBounds(chunk, layer.Size, generationBounds))
+                continue;
+
             var lay = _markerChunks[biome].GetOrNew(layer.ID);
-            lay.Add(chunkOrigin.Value * layer.Size);
+            lay.Add(chunk);
         }
     }
 }

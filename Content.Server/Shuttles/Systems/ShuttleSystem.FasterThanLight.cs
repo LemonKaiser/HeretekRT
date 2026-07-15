@@ -119,6 +119,7 @@ public sealed partial class ShuttleSystem
     {
         QueueDel(ent.Comp.VisualizerEntity);
         ent.Comp.VisualizerEntity = null;
+        _console.ReleaseKoronusJumpReservation(ent.Owner);
     }
 
     private void OnStationPostInit(ref StationPostInitEvent ev)
@@ -959,6 +960,11 @@ public sealed partial class ShuttleSystem
                     break;
                 case FTLState.Cooldown:
                     UpdateFTLCooldown(entity);
+                    break;
+                // FTLComponent is temporary. It can be attached to a docked shuttle before its FTL state is
+                // initialized, so an Available state simply has no active travel to process.
+                case FTLState.Available:
+                    RemCompDeferred<FTLComponent>(uid);
                     break;
                 default:
                     Log.Error($"Found invalid FTL state {comp.State} for {uid}");

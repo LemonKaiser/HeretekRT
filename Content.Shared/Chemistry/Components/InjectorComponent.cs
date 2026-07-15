@@ -139,3 +139,14 @@ public enum InjectorToggleMode : byte
     /// </summary>
     Draw
 }
+
+/// <summary>
+/// Raised before an injector starts a mob-targeted operation.
+/// </summary>
+[ByRefEvent]
+public record struct InjectorTargetAttemptEvent(EntityUid User, EntityUid Target, InjectorToggleMode Mode)
+{
+    public bool Cancelled;
+
+    public void Cancel() => Cancelled = true;
+}

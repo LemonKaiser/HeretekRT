@@ -389,6 +389,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         var autoShoot = EnsureComp<AutoShootGunComponent>(gunUid);
         if (autoShoot.RemainingTime < duration)
             autoShoot.RemainingTime = duration;
+        autoShoot.Shooter = user;
     }
 
     protected void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun)

@@ -40,4 +40,10 @@ public sealed partial class AutoShootGunComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     public TimeSpan RemainingTime = TimeSpan.FromSeconds(0);
+
+    /// <summary>
+    /// Player or controller that requested the current timed burst. This keeps delayed automatic
+    /// ship fire attributable to the actual actor instead of the gun entity.
+    /// </summary>
+    public EntityUid? Shooter;
 }

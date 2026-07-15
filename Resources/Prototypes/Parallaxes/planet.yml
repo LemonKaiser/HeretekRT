@@ -14,6 +14,21 @@
       scrolling: "0.1, -0.05"
 
 - type: parallax
+  id: AtmosphericTransit
+  layers:
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/Parallaxes/land.png"
+      slowness: 0.55
+      scale: 1,1
+    - texture:
+        !type:ImageParallaxTextureSource
+        path: "/Textures/Parallaxes/noise.png"
+      slowness: 0.2
+      scale: "2, 2"
+      scrolling: "0.3, -0.15"
+
+- type: parallax
   id: Dirt
   layers:
     - texture:

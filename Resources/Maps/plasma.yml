@@ -128209,7 +128209,7 @@ entities:
 
         - Cigarette x500
 
-        Reward: $7
+        Reward: ₮7
 - proto: PaperCNCSheet
   entities:
   - uid: 26067

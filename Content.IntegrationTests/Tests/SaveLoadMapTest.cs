@@ -3,6 +3,7 @@ using Content.Shared.CCVar;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
+using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
@@ -96,6 +97,72 @@ namespace Content.IntegrationTests.Tests
             });
 
             await pair.CleanReturnAsync();
+        }
+
+        [Test]
+        public async Task SaveLoadPausedMapWithSameId()
+        {
+            var mapPath = new ResPath("/Maps/Test/ColdSnapshotMap.yml");
+
+            await using var pair = await PoolManager.GetServerClient();
+            var server = pair.Server;
+            var mapManager = server.ResolveDependency<IMapManager>();
+            var entities = server.ResolveDependency<IEntityManager>();
+            var mapLoader = entities.System<MapLoaderSystem>();
+            var mapSystem = entities.System<SharedMapSystem>();
+            var xformSystem = entities.System<SharedTransformSystem>();
+            var resources = server.ResolveDependency<IResourceManager>();
+            var originalMapId = MapId.Nullspace;
+
+            try
+            {
+                await server.WaitAssertion(() =>
+                {
+                    var mapUid = mapSystem.CreateMap(out originalMapId);
+                    var grid = mapManager.CreateGridEntity(originalMapId);
+                    xformSystem.SetWorldPosition(grid, new Vector2(17, -23));
+                    mapSystem.SetTile(grid, Vector2i.Zero, new Tile(typeId: 1, flags: 1, variant: 42));
+                    mapSystem.SetPaused(mapUid, true);
+
+                    Assert.That(mapLoader.TrySaveMap(originalMapId, mapPath), Is.True);
+                    mapSystem.DeleteMap(originalMapId);
+                    Assert.That(mapSystem.TryGetMap(originalMapId, out _), Is.False);
+                });
+
+                await server.WaitIdleAsync();
+
+                await server.WaitAssertion(() =>
+                {
+                    var options = DeserializationOptions.Default with
+                    {
+                        InitializeMaps = true,
+                        PauseMaps = true,
+                    };
+
+                    Assert.That(
+                        mapLoader.TryLoadMapWithId(originalMapId, mapPath, out var restoredMap, out _, options),
+                        Is.True);
+                    Assert.That(restoredMap!.Value.Comp.MapId, Is.EqualTo(originalMapId));
+                    Assert.That(mapSystem.IsPaused(originalMapId), Is.True);
+                });
+
+                await server.WaitIdleAsync();
+
+                await server.WaitAssertion(() =>
+                {
+                    Assert.That(
+                        mapManager.TryFindGridAt(originalMapId, new Vector2(17, -23), out var gridUid, out var grid),
+                        Is.True);
+                    Assert.That(
+                        mapSystem.GetTileRef(gridUid, grid, Vector2i.Zero).Tile,
+                        Is.EqualTo(new Tile(typeId: 1, flags: 1, variant: 42)));
+                });
+            }
+            finally
+            {
+                resources.UserData.Delete(mapPath);
+                await pair.CleanReturnAsync();
+            }
         }
     }
 }

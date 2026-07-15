@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Server._Mono.AmmoLoader;
 using Content.Server._Mono.FireControl;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Power.Components;
 using Content.Shared.DeviceLinking.Events;
 using Content.Server.DeviceLinking.Systems;
@@ -9,6 +10,7 @@ using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Mono.AmmoLoader;
 using Content.Shared._Mono.ShipGuns;
 using Content.Shared._Mono.SpaceArtillery;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.Camera;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Examine;
@@ -31,6 +33,7 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
     [Dependency] private SharedCameraRecoilSystem _recoilSystem = default!;
     [Dependency] private FireControlSystem _fireControl = default!;
     [Dependency] private AmmoLoaderSystem _ammoLoader = default!;
+    [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
 
     private const float DISTANCE = 100;
     private const float BIG_DAMAGE = 1000;
@@ -108,6 +111,9 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
 
     private void TryFireArtillery(EntityUid uid, TransformComponent xform, SpaceArtilleryComponent component)
     {
+        if (_koronusSafety.HasRule(uid, KoronusSafetyRule.ShipWeapons))
+            return;
+
         if (xform.GridUid == null && !xform.MapUid.HasValue)
         {
             return;

@@ -116,6 +116,11 @@ public sealed partial class InjectorSystem : SharedInjectorSystem
             return;
         }
 
+        var safetyAttempt = new InjectorTargetAttemptEvent(user, target, injector.Comp.ToggleState);
+        RaiseLocalEvent(target, ref safetyAttempt, true);
+        if (safetyAttempt.Cancelled)
+            return;
+
         // Create a pop-up for the user
         if (injector.Comp.ToggleState == InjectorToggleMode.Draw)
         {

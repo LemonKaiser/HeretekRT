@@ -79,11 +79,13 @@ public partial class MapGridControl : LayoutContainer
 
     public Vector2 MaxRadarRangeVector => new Vector2(MaxRadarRange, MaxRadarRange);
 
-    protected Vector2 MidPointVector => new Vector2(MidPoint, MidPoint);
+    protected Vector2 MidPointVector => PixelSize * 0.5f;
 
-    protected int MidPoint => SizeFull / 2;
+    protected int MidPoint => Math.Max(1, (int) (MathF.Min(PixelWidth, PixelHeight) * 0.5f));
     protected int SizeFull => (int)((UIDisplayRadius + MinimapMargin) * 2 * UIScale);
-    protected int ScaledMinimapRadius => (int)(UIDisplayRadius * UIScale);
+    protected int ScaledMinimapRadius => Math.Max(
+        1,
+        (int) (MathF.Min(PixelWidth, PixelHeight) * 0.5f - MinimapMargin * UIScale));
     protected float MinimapScale => WorldRange != 0 ? ScaledMinimapRadius / WorldRange : 0f;
 
     public event Action<float>? WorldRangeChanged;

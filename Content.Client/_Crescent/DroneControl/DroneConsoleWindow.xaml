@@ -4,7 +4,11 @@
                     Title="drone control console"
                     SetSize="1000 600"
                     MinSize="800 500">
-    <GridContainer Columns="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <GridContainer Columns="2"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+                   HorizontalExpand="True"
+                   VerticalExpand="True">
 
         <BoxContainer Orientation="Vertical"
                       MinWidth="250"
@@ -24,7 +28,7 @@
         </BoxContainer>
 
         <!-- Mono - wrap -->
-        <LayoutContainer>
+        <LayoutContainer HorizontalExpand="True" VerticalExpand="True">
             <ui:ShuttleNavControl Name="NavRadar"
                                   HorizontalExpand="True"
                                   VerticalExpand="True"

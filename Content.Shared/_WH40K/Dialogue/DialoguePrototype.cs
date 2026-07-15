@@ -297,7 +297,8 @@ public sealed partial class DialogueActionPrototype
     public List<ProtoId<AccessLevelPrototype>> Accesses = new();
 
     [DataField("message")]
-    public LocId Message = default!;
+    // Most action types do not use a chat message. SendChat validates this field explicitly.
+    public LocId? Message;
 
     [DataField("messageArgs")]
     public List<DialogueLocArgumentPrototype> MessageArgs = new();

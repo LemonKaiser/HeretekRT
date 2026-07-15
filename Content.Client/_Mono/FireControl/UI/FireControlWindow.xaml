@@ -8,7 +8,10 @@
             Title="{Loc 'gunnery-window-title'}"
             SetSize="1000 800"
             MinSize="1000 800">
-    <BoxContainer Name="RootBox" Orientation="Horizontal">
+    <BoxContainer Name="RootBox"
+                  Orientation="Horizontal"
+                  HorizontalExpand="True"
+                  VerticalExpand="True">
         <BoxContainer Orientation="Vertical" MinWidth="300" MaxWidth="300" HorizontalExpand="False" Margin="5 0 5 5">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
@@ -89,9 +92,15 @@
     </BoxContainer>
 
         <!-- Radar Display -->
-        <BoxContainer Name="RadarContainer" Orientation="Horizontal" HorizontalExpand="True" Margin="50 50 50 50">
-            <LayoutContainer>
-                <ui:FireControlNavControl Name="NavRadar" />
+        <BoxContainer Name="RadarContainer"
+                      Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="True"
+                      Margin="8">
+            <LayoutContainer HorizontalExpand="True" VerticalExpand="True">
+                <ui:FireControlNavControl Name="NavRadar"
+                                          HorizontalExpand="True"
+                                          VerticalExpand="True" />
             </LayoutContainer>
         </BoxContainer>
     </BoxContainer>

@@ -1,0 +1,29 @@
+- type: shader
+  id: KoronusBoundary
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_boundary.swsl
+
+- type: shader
+  id: KoronusProceduralSun
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_sun.swsl
+
+- type: shader
+  id: KoronusProceduralSunCorona
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_sun_corona.swsl
+
+- type: shader
+  id: KoronusCelestialTexture
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_celestial_texture.swsl
+
+- type: shader
+  id: KoronusPlanetSurface
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_planet_surface.swsl
+
+- type: shader
+  id: KoronusPlanetAtmosphere
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_planet_atmosphere.swsl

@@ -99,6 +99,8 @@ entities:
       hostileMobKillSound: !type:SoundPathSpecifier
         path: /Audio/Effects/holy.ogg
       preventEmpEvents: True
+      preventExplosions: True
+      preventRCDUse: True
     - type: GridGodMode
       protectedEntities: []
     - type: GridRaider

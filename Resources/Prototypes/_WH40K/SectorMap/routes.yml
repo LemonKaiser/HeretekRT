@@ -1,0 +1,453 @@
+# Fixed Koronus warp topology reconstructed from tochkimap.png. Routes are data, never generated at runtime.
+# The small Sanctum / Neos / Debris cluster is deliberately isolated until its missing bridge is authored.
+
+- type: koronusRoute
+  id: FootfallToAivorius
+  sector: KoronusExpanse
+  from: Footfall
+  to: Aivorius
+  travelTimeMultiplier: 1.85
+
+- type: koronusRoute
+  id: FootfallToSottosTomb
+  sector: KoronusExpanse
+  from: Footfall
+  to: SottosTomb
+  travelTimeMultiplier: 1.85
+
+- type: koronusRoute
+  id: FootfallToTrinnitos
+  sector: KoronusExpanse
+  from: Footfall
+  to: Trinnitos
+  travelTimeMultiplier: 2.70
+
+- type: koronusRoute
+  id: AivoriusToSottosTomb
+  sector: KoronusExpanse
+  from: Aivorius
+  to: SottosTomb
+
+- type: koronusRoute
+  id: AivoriusToTrinnitos
+  sector: KoronusExpanse
+  from: Aivorius
+  to: Trinnitos
+
+- type: koronusRoute
+  id: AivoriusToCradleOfKhepri
+  sector: KoronusExpanse
+  from: Aivorius
+  to: CradleOfKhepri
+
+- type: koronusRoute
+  id: CradleOfKhepriToPalatinumStellios
+  sector: KoronusExpanse
+  from: CradleOfKhepri
+  to: PalatinumStellios
+
+- type: koronusRoute
+  id: CradleOfKhepriToForgottenTwins
+  sector: KoronusExpanse
+  from: CradleOfKhepri
+  to: ForgottenTwins
+
+- type: koronusRoute
+  id: TrinnitosToSystemSpeculum
+  sector: KoronusExpanse
+  from: Trinnitos
+  to: SystemSpeculum
+
+- type: koronusRoute
+  id: TrinnitosToOmicron
+  sector: KoronusExpanse
+  from: Trinnitos
+  to: Omicron
+
+- type: koronusRoute
+  id: TrinnitosToTelikosEpsilon
+  sector: KoronusExpanse
+  from: Trinnitos
+  to: TelikosEpsilon
+
+- type: koronusRoute
+  id: TrinnitosToPulvisPlatinum
+  sector: KoronusExpanse
+  from: Trinnitos
+  to: PulvisPlatinum
+
+- type: koronusRoute
+  id: SystemSpeculumToOmicron
+  sector: KoronusExpanse
+  from: SystemSpeculum
+  to: Omicron
+
+- type: koronusRoute
+  id: SystemSpeculumToFrozenPrince
+  sector: KoronusExpanse
+  from: SystemSpeculum
+  to: FrozenPrince
+
+- type: koronusRoute
+  id: OmicronToTelikosEpsilon
+  sector: KoronusExpanse
+  from: Omicron
+  to: TelikosEpsilon
+
+- type: koronusRoute
+  id: SmaragdusMundosToFrozenPrince
+  sector: KoronusExpanse
+  from: SmaragdusMundos
+  to: FrozenPrince
+
+- type: koronusRoute
+  id: SmaragdusMundosToAivorius
+  sector: KoronusExpanse
+  from: SmaragdusMundos
+  to: Aivorius
+
+- type: koronusRoute
+  id: FrozenPrinceToEmperorsPalm
+  sector: KoronusExpanse
+  from: FrozenPrince
+  to: EmperorsPalm
+
+- type: koronusRoute
+  id: EmperorsPalmToNollaSeptum
+  sector: KoronusExpanse
+  from: EmperorsPalm
+  to: NollaSeptum
+
+- type: koronusRoute
+  id: NollaSeptumToTenebrisAquae
+  sector: KoronusExpanse
+  from: NollaSeptum
+  to: TenebrisAquae
+
+- type: koronusRoute
+  id: NollaSeptumToRitarmoren
+  sector: KoronusExpanse
+  from: NollaSeptum
+  to: Ritarmoren
+
+- type: koronusRoute
+  id: TenebrisAquaeToAdermattII
+  sector: KoronusExpanse
+  from: TenebrisAquae
+  to: AdermattII
+
+- type: koronusRoute
+  id: AdermattIIToPortaSeptentum
+  sector: KoronusExpanse
+  from: AdermattII
+  to: PortaSeptentum
+
+- type: koronusRoute
+  id: AdermattIIToLapidusMortus
+  sector: KoronusExpanse
+  from: AdermattII
+  to: LapidusMortus
+
+- type: koronusRoute
+  id: AdermattIIToAgathusArchides
+  sector: KoronusExpanse
+  from: AdermattII
+  to: AgathusArchides
+
+- type: koronusRoute
+  id: RaethTawiToIllisk
+  sector: KoronusExpanse
+  from: RaethTawi
+  to: Illisk
+
+- type: koronusRoute
+  id: RaethTawiToLastChanceOfCyrene
+  sector: KoronusExpanse
+  from: RaethTawi
+  to: LastChanceOfCyrene
+
+- type: koronusRoute
+  id: RaethTawiToLapidusMortus
+  sector: KoronusExpanse
+  from: RaethTawi
+  to: LapidusMortus
+
+- type: koronusRoute
+  id: LastChanceOfCyreneToLapidusMortus
+  sector: KoronusExpanse
+  from: LastChanceOfCyrene
+  to: LapidusMortus
+
+- type: koronusRoute
+  id: LastChanceOfCyreneToLitoribumMaledicta
+  sector: KoronusExpanse
+  from: LastChanceOfCyrene
+  to: LitoribumMaledicta
+
+- type: koronusRoute
+  id: LapidusMortusToLitoribumMaledicta
+  sector: KoronusExpanse
+  from: LapidusMortus
+  to: LitoribumMaledicta
+
+- type: koronusRoute
+  id: LitoribumMaledictaToAtlasianReach
+  sector: KoronusExpanse
+  from: LitoribumMaledicta
+  to: AtlasianReach
+
+- type: koronusRoute
+  id: LitoribumMaledictaToMortusAcies
+  sector: KoronusExpanse
+  from: LitoribumMaledicta
+  to: MortusAcies
+
+- type: koronusRoute
+  id: LitoribumMaledictaToPeliumSolitas
+  sector: KoronusExpanse
+  from: LitoribumMaledicta
+  to: PeliumSolitas
+
+- type: koronusRoute
+  id: MortusAciesToGartafalsCalamity
+  sector: KoronusExpanse
+  from: MortusAcies
+  to: GartafalsCalamity
+
+- type: koronusRoute
+  id: MortusAciesToNarmerIV
+  sector: KoronusExpanse
+  from: MortusAcies
+  to: NarmerIV
+
+- type: koronusRoute
+  id: GartafalsCalamityToOdaenathusXI
+  sector: KoronusExpanse
+  from: GartafalsCalamity
+  to: OdaenathusXI
+  routeClass: Dangerous
+
+- type: koronusRoute
+  id: OdaenathusXIToVargouris
+  sector: KoronusExpanse
+  from: OdaenathusXI
+  to: Vargouris
+  routeClass: Dangerous
+
+- type: koronusRoute
+  id: VargourisToRaakata
+  sector: KoronusExpanse
+  from: Vargouris
+  to: Raakata
+
+- type: koronusRoute
+  id: RaakataToNaduesh
+  sector: KoronusExpanse
+  from: Raakata
+  to: Naduesh
+
+- type: koronusRoute
+  id: NarmerIVToPeliumSolitas
+  sector: KoronusExpanse
+  from: NarmerIV
+  to: PeliumSolitas
+
+- type: koronusRoute
+  id: NarmerIVToMundusNullus
+  sector: KoronusExpanse
+  from: NarmerIV
+  to: MundusNullus
+
+- type: koronusRoute
+  id: PeliumSolitasToMundusValancius
+  sector: KoronusExpanse
+  from: PeliumSolitas
+  to: MundusValancius
+
+- type: koronusRoute
+  id: MundusValanciusToMundusNullus
+  sector: KoronusExpanse
+  from: MundusValancius
+  to: MundusNullus
+
+- type: koronusRoute
+  id: MundusValanciusToSilenceOfMerSegrit
+  sector: KoronusExpanse
+  from: MundusValancius
+  to: SilenceOfMerSegrit
+
+- type: koronusRoute
+  id: MundusNullusToSilenceOfMerSegrit
+  sector: KoronusExpanse
+  from: MundusNullus
+  to: SilenceOfMerSegrit
+
+- type: koronusRoute
+  id: MundusNullusToJagerensBelt
+  sector: KoronusExpanse
+  from: MundusNullus
+  to: JagerensBelt
+
+- type: koronusRoute
+  id: MundusNullusToMuRho79
+  sector: KoronusExpanse
+  from: MundusNullus
+  to: MuRho79
+
+- type: koronusRoute
+  id: MundusNullusToLatotiansPassage
+  sector: KoronusExpanse
+  from: MundusNullus
+  to: LatotiansPassage
+
+- type: koronusRoute
+  id: SilenceOfMerSegritToPulvisPlatinum
+  sector: KoronusExpanse
+  from: SilenceOfMerSegrit
+  to: PulvisPlatinum
+
+- type: koronusRoute
+  id: SilenceOfMerSegritToTelikosEpsilon
+  sector: KoronusExpanse
+  from: SilenceOfMerSegrit
+  to: TelikosEpsilon
+
+- type: koronusRoute
+  id: SilenceOfMerSegritToJagerensBelt
+  sector: KoronusExpanse
+  from: SilenceOfMerSegrit
+  to: JagerensBelt
+
+- type: koronusRoute
+  id: PulvisPlatinumToTelikosEpsilon
+  sector: KoronusExpanse
+  from: PulvisPlatinum
+  to: TelikosEpsilon
+
+- type: koronusRoute
+  id: PulvisPlatinumToOrsellinProphecy
+  sector: KoronusExpanse
+  from: PulvisPlatinum
+  to: OrsellinProphecy
+
+- type: koronusRoute
+  id: OrsellinProphecyToAgathusArchides
+  sector: KoronusExpanse
+  from: OrsellinProphecy
+  to: AgathusArchides
+
+- type: koronusRoute
+  id: OrsellinProphecyToCrossroadsOfAHundredDreams
+  sector: KoronusExpanse
+  from: OrsellinProphecy
+  to: CrossroadsOfAHundredDreams
+
+- type: koronusRoute
+  id: AgathusArchidesToPillarsOfVidrice
+  sector: KoronusExpanse
+  from: AgathusArchides
+  to: PillarsOfVidrice
+
+- type: koronusRoute
+  id: PillarsOfVidriceToCrossroadsOfAHundredDreams
+  sector: KoronusExpanse
+  from: PillarsOfVidrice
+  to: CrossroadsOfAHundredDreams
+
+- type: koronusRoute
+  id: CrossroadsOfAHundredDreamsToTelikosEpsilon
+  sector: KoronusExpanse
+  from: CrossroadsOfAHundredDreams
+  to: TelikosEpsilon
+
+- type: koronusRoute
+  id: JagerensBeltToMuRho79
+  sector: KoronusExpanse
+  from: JagerensBelt
+  to: MuRho79
+
+- type: koronusRoute
+  id: JagerensBeltToNamelessStar
+  sector: KoronusExpanse
+  from: JagerensBelt
+  to: NamelessStar
+
+- type: koronusRoute
+  id: JagerensBeltToForgottenTwins
+  sector: KoronusExpanse
+  from: JagerensBelt
+  to: ForgottenTwins
+
+- type: koronusRoute
+  id: MuRho79ToLatotiansPassage
+  sector: KoronusExpanse
+  from: MuRho79
+  to: LatotiansPassage
+
+- type: koronusRoute
+  id: LatotiansPassageToNaduesh
+  sector: KoronusExpanse
+  from: LatotiansPassage
+  to: Naduesh
+
+- type: koronusRoute
+  id: MuRho79ToAubraysAnvil
+  sector: KoronusExpanse
+  from: MuRho79
+  to: AubraysAnvil
+
+- type: koronusRoute
+  id: AubraysAnvilToFeldarra
+  sector: KoronusExpanse
+  from: AubraysAnvil
+  to: Feldarra
+
+- type: koronusRoute
+  id: NamelessStarToForgottenTwins
+  sector: KoronusExpanse
+  from: NamelessStar
+  to: ForgottenTwins
+
+- type: koronusRoute
+  id: ForgottenTwinsToJanxIV
+  sector: KoronusExpanse
+  from: ForgottenTwins
+  to: JanxIV
+
+- type: koronusRoute
+  id: JanxIVToMalezial
+  sector: KoronusExpanse
+  from: JanxIV
+  to: Malezial
+
+- type: koronusRoute
+  id: RainToRitarmoren
+  sector: KoronusExpanse
+  from: Rain
+  to: Ritarmoren
+
+- type: koronusRoute
+  id: RainToGrace
+  sector: KoronusExpanse
+  from: Rain
+  to: Grace
+
+- type: koronusRoute
+  id: GraceToDamaris
+  sector: KoronusExpanse
+  from: Grace
+  to: Damaris
+
+- type: koronusRoute
+  id: SanctumOfTaaphetusToNeosCharoitus
+  sector: KoronusExpanse
+  from: SanctumOfTaaphetus
+  to: NeosCharoitus
+  routeClass: Dangerous
+
+- type: koronusRoute
+  id: NeosCharoitusToDebrisOfBattaida
+  sector: KoronusExpanse
+  from: NeosCharoitus
+  to: DebrisOfBattaida
+  routeClass: Dangerous

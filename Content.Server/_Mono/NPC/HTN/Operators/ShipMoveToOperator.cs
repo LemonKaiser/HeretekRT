@@ -51,6 +51,37 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     public bool AlwaysFaceTarget = false;
 
     /// <summary>
+    /// Whether to turn to the current travel course before applying normal travel thrust.
+    /// Emergency collision evasion may still strafe to avoid an imminent collision.
+    /// </summary>
+    [DataField]
+    public bool ForwardFlight = false;
+
+    /// <summary>
+    /// Multiplier for the normal shuttle thrust while this movement order is active.
+    /// </summary>
+    [DataField]
+    public float AutopilotAccelerationMultiplier = 1f;
+
+    /// <summary>
+    /// Heading error in radians below which forward flight begins after a turn.
+    /// </summary>
+    [DataField]
+    public float ForwardFlightEnterAngle = 0.2f;
+
+    /// <summary>
+    /// Heading error in radians above which forward flight returns to turn-and-brake mode.
+    /// </summary>
+    [DataField]
+    public float ForwardFlightExitAngle = 0.35f;
+
+    /// <summary>
+    /// Collision horizon in seconds below which lateral emergency evasion is permitted.
+    /// </summary>
+    [DataField]
+    public float ForwardFlightEmergencyTime = 1.5f;
+
+    /// <summary>
     /// Whether to avoid obstacles.
     /// </summary>
     [DataField]
@@ -81,6 +112,30 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     public int EvasionSectorDepth = 2;
 
     /// <summary>
+    /// Collision horizon in seconds used even while the shuttle is stationary.
+    /// </summary>
+    [DataField]
+    public float BaseEvasionTime = 4f;
+
+    /// <summary>
+    /// Additional collision radius used when choosing an evasion corridor.
+    /// </summary>
+    [DataField]
+    public float EvasionBuffer = 3f;
+
+    /// <summary>
+    /// Maximum speed while following a collision-avoidance vector.
+    /// </summary>
+    [DataField]
+    public float AvoidanceMaxSpeed = float.PositiveInfinity;
+
+    /// <summary>
+    /// Minimum distance to scan in the current and planned travel directions for collision evasion.
+    /// </summary>
+    [DataField]
+    public float MinimumObstacleScanDistance = 0f;
+
+    /// <summary>
     /// Whether to consider the movement finished if we collide with target.
     /// </summary>
     [DataField]
@@ -94,6 +149,25 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     public float? InRangeMaxSpeed = 0.1f;
 
     /// <summary>
+    /// Maximum linear speed requested from the shuttle mover while this task is active.
+    /// Null leaves the shuttle's normal speed unrestricted.
+    /// </summary>
+    [DataField]
+    public float? MaxLinearVelocity = null;
+
+    /// <summary>
+    /// Requested speed at the steering target when a slowdown distance is configured.
+    /// </summary>
+    [DataField]
+    public float? MinLinearVelocity = null;
+
+    /// <summary>
+    /// Distance from the target over which the requested maximum speed is reduced.
+    /// </summary>
+    [DataField]
+    public float SlowdownDistance = 0f;
+
+    /// <summary>
     /// Whether to try to match velocity with target.
     /// </summary>
     [DataField]
@@ -104,6 +178,19 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     /// </summary>
     [DataField]
     public float? MaxRotateRate = null;
+
+    /// <summary>
+    /// Whether to begin aligning to the requested angle before reaching the destination.
+    /// </summary>
+    [DataField]
+    public bool RotateBeforeArrival = false;
+
+    /// <summary>
+    /// Distance from the target at which early arrival-angle alignment may begin.
+    /// A non-positive value keeps the original behaviour of aligning throughout the movement.
+    /// </summary>
+    [DataField]
+    public float RotationAlignmentDistance = 0f;
 
     /// <summary>
     /// What movement behavior to use.
@@ -156,9 +243,7 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     public float TargetRotation = 0f;
 
     private const string MovementCancelToken = "ShipMovementCancelToken";
-
-    // needed so it doesn't do it twice
-    private bool _raisedEvent = false;
+    private const string SteeringDoneKeyPrefix = "ShipSteeringDone:";
 
     public override void Initialize(IEntitySystemManager sysManager)
     {
@@ -185,7 +270,9 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     {
         base.Startup(blackboard);
 
-        _raisedEvent = false;
+        // HTN operators are prototype singletons, so per-order runtime state must live in the
+        // owning NPC blackboard rather than on this operator instance.
+        blackboard.Remove<bool>(SteeringDoneKeyPrefix + TargetKey);
 
         // Need to remove the planning value for execution.
         blackboard.Remove<EntityCoordinates>(NPCBlackboard.OwnerCoordinates);
@@ -201,13 +288,27 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
             return;
 
         comp.AlwaysFaceTarget = AlwaysFaceTarget;
+        comp.ForwardFlight = ForwardFlight;
+        comp.AutopilotAccelerationMultiplier = MathF.Max(AutopilotAccelerationMultiplier, 0f);
+        comp.ForwardFlightEnterAngle = ForwardFlightEnterAngle;
+        comp.ForwardFlightExitAngle = MathF.Max(ForwardFlightExitAngle, ForwardFlightEnterAngle);
+        comp.ForwardFlightEmergencyTime = ForwardFlightEmergencyTime;
+        comp.ForwardFlightAligned = false;
+        comp.AvoidanceWaypoint = null;
         comp.AvoidCollisions = AvoidCollisions;
         comp.AvoidProjectiles = AvoidProjectiles;
         comp.BrakeThreshold = BrakeThreshold;
+        comp.BaseEvasionTime = BaseEvasionTime;
+        comp.EvasionBuffer = EvasionBuffer;
+        comp.AvoidanceMaxSpeed = AvoidanceMaxSpeed;
         comp.EvasionSectorCount = EvasionSectorCount;
         comp.EvasionSectorDepth = EvasionSectorDepth;
+        comp.MinimumObstacleScanDistance = MinimumObstacleScanDistance;
         comp.FinishOnCollide = FinishOnCollide;
         comp.InRangeMaxSpeed = InRangeMaxSpeed;
+        comp.SetMaxVelocity = MaxLinearVelocity;
+        comp.MinLinearVelocity = MinLinearVelocity;
+        comp.SlowdownDistance = SlowdownDistance;
         comp.InRangeRotation = targetAngle;
         comp.LeadingEnabled = LeadingEnabled;
         comp.MaxRotateRate = MaxRotateRate;
@@ -216,6 +317,8 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
         comp.OrbitOffset = Angle.FromDegrees(OrbitOffset);
         comp.Range = Range;
         comp.RangeTolerance = RangeTolerance;
+        comp.RotateBeforeArrival = RotateBeforeArrival;
+        comp.RotationAlignmentDistance = RotationAlignmentDistance;
         comp.TargetRotation = TargetRotation;
     }
 
@@ -275,11 +378,14 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
         }
 
         var uid = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
+        var success = _entManager.TryGetComponent<ShipSteererComponent>(uid, out var steerer) &&
+                      steerer.Status == ShipSteeringStatus.InRange;
         _steering.Stop(uid);
-        if (!_raisedEvent)
+        var steeringDoneKey = SteeringDoneKeyPrefix + TargetKey;
+        if (!blackboard.TryGetValue<bool>(steeringDoneKey, out var raisedEvent, _entManager) || !raisedEvent)
         {
-            _raisedEvent = true;
-            _entManager.EventBus.RaiseLocalEvent(uid, new SteeringDoneEvent(), false);
+            blackboard.SetValue(steeringDoneKey, true);
+            _entManager.EventBus.RaiseLocalEvent(uid, new SteeringDoneEvent(success, TargetKey), false);
         }
     }
 
@@ -291,4 +397,9 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
     }
 }
 
-public record struct SteeringDoneEvent();
+/// <summary>
+/// Reports which blackboard movement order ended. A console can replace a normal autopilot order
+/// with an auto-docking order before the old HTN plan has finished shutting down, so success alone
+/// is not enough to associate this event with the active order.
+/// </summary>
+public record struct SteeringDoneEvent(bool Success, string TargetKey);

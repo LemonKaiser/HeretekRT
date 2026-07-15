@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Worldgen.Components.GC;
 using Content.Server.Worldgen.Prototypes;
 using Content.Shared.CCVar;
+using Content.Shared.GameTicking;
 using JetBrains.Annotations;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
@@ -21,11 +22,12 @@ public sealed partial class GCQueueSystem : EntitySystem
 
     [ViewVariables] private TimeSpan _maximumProcessTime = TimeSpan.Zero;
 
-    [ViewVariables] private readonly Dictionary<string, Queue<EntityUid>> _queues = new();
+    [ViewVariables] private readonly Dictionary<string, GCQueueState> _queues = new();
 
     /// <inheritdoc />
     public override void Initialize()
     {
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         _cfg.OnValueChanged(CCVars.GCMaximumTimeMs, s => _maximumProcessTime = TimeSpan.FromMilliseconds(s),
             true);
     }
@@ -38,28 +40,40 @@ public sealed partial class GCQueueSystem : EntitySystem
         var queues = _queues.ToList();
         _random.Shuffle(queues); // Avert resource starvation by always processing in random order.
         overallWatch.Start();
-        foreach (var (pId, queue) in queues)
+        foreach (var (pId, state) in queues)
         {
             if (overallWatch.Elapsed > _maximumProcessTime)
                 return;
 
             var proto = _proto.Index<GCQueuePrototype>(pId);
-            if (queue.Count < proto.MinDepthToProcess)
+            if (!state.Draining)
+            {
+                if (state.Queue.Count < proto.MinDepthToProcess)
+                    continue;
+
+                state.Draining = true;
+            }
+
+            if (state.Queue.Count == 0)
+            {
+                state.Draining = false;
                 continue;
+            }
 
             queueWatch.Restart();
 
             // Mono Begin - Dynamic Queue Times (Like League of Legends)
-            var entsOverDepth = Math.Max(0, queue.Count - proto.MinDepthToProcess);
+            var entsOverDepth = Math.Max(1, state.Queue.Count - proto.MinDepthToProcess + 1);
             // We get a constant associated with the prototype, and multiply it by the count of objects in that prototype. Dynamic scaling, instead of static constants.
-            TimeSpan maxQueueTickTime = TimeSpan.FromMilliseconds(entsOverDepth * proto.TimeDeletePerObject);
+            var maxQueueTickTime = TimeSpan.FromMilliseconds(Math.Max(0.05, entsOverDepth * proto.TimeDeletePerObject));
 
             // Mono End
 
-            while (queueWatch.Elapsed < maxQueueTickTime && queue.Count >= proto.MinDepthToProcess &&
+            while (queueWatch.Elapsed < maxQueueTickTime && state.Queue.Count != 0 &&
                    overallWatch.Elapsed < _maximumProcessTime)
             {
-                var e = queue.Dequeue();
+                var e = state.Queue.Dequeue();
+                state.Queued.Remove(e);
                 if (!Deleted(e))
                 {
                     var ev = new TryCancelGC();
@@ -69,6 +83,9 @@ public sealed partial class GCQueueSystem : EntitySystem
                         Del(e);
                 }
             }
+
+            if (state.Queue.Count == 0)
+                state.Draining = false;
         }
     }
 
@@ -84,15 +101,19 @@ public sealed partial class GCQueueSystem : EntitySystem
             return;
         }
 
-        if (!_queues.TryGetValue(comp.Queue, out var queue))
+        if (!_queues.TryGetValue(comp.Queue, out var state))
         {
-            queue = new Queue<EntityUid>();
-            _queues[comp.Queue] = queue;
+            state = new GCQueueState();
+            _queues[comp.Queue] = state;
         }
 
+        if (!state.Queued.Add(e))
+            return;
+
         var proto = _proto.Index<GCQueuePrototype>(comp.Queue);
-        if (queue.Count > proto.Depth)
+        if (state.Queue.Count >= proto.Depth)
         {
+            state.Queued.Remove(e);
             QueueDel(e); // whelp, too full.
             return;
         }
@@ -103,12 +124,34 @@ public sealed partial class GCQueueSystem : EntitySystem
             RaiseLocalEvent(e, ref ev);
             if (!ev.Cancelled)
             {
+                state.Queued.Remove(e);
                 QueueDel(e);
                 return;
             }
         }
 
-        queue.Enqueue(e);
+        state.Queue.Enqueue(e);
+    }
+
+    public string GetCleanupStatus()
+    {
+        var queued = 0;
+        foreach (var state in _queues.Values)
+            queued += state.Queue.Count;
+
+        return $"{nameof(GCQueueSystem)}: queues={_queues.Count}, queued={queued}";
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent args)
+    {
+        _queues.Clear();
+    }
+
+    private sealed class GCQueueState
+    {
+        public readonly Queue<EntityUid> Queue = new();
+        public readonly HashSet<EntityUid> Queued = new();
+        public bool Draining;
     }
 }
 

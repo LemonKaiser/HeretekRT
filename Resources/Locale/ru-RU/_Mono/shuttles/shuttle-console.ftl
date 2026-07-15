@@ -1,6 +1,7 @@
 shuttle-console-crewed = Вы не сможете использовать консоль управления и консоль орудий вместе на этом шаттле.. Найдите ещё одного!
 shuttle-console-autopilot-button = Автопилот
 shuttle-console-autopilot-popup-done = Автопилот прибыл
+shuttle-console-autopilot-grid-lock = ЗАХВАТ ЦЕЛИ: { $name }
 shuttle-console-bioscan-button =
     Сканировать на
     наличии биоугрозы

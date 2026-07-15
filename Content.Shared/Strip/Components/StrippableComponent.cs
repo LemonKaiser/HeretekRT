@@ -72,6 +72,17 @@ namespace Content.Shared.Strip.Components
     public sealed class BeforeGettingStrippedEvent(TimeSpan initialTime, bool stealth = false) : BaseBeforeStripEvent(initialTime, stealth);
 
     /// <summary>
+    /// Raised on the stripping target before any inventory or hand transfer is started or completed.
+    /// Unlike the timing events above, this can veto the interaction completely.
+    /// </summary>
+    [ByRefEvent]
+    public sealed class StripAttemptEvent(EntityUid actor, EntityUid target) : CancellableEntityEventArgs
+    {
+        public EntityUid Actor { get; } = actor;
+        public EntityUid Target { get; } = target;
+    }
+
+    /// <summary>
     ///     Organizes the behavior of DoAfters for <see cref="StrippableSystem">.
     /// </summary>
     [Serializable, NetSerializable]

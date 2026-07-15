@@ -56,6 +56,12 @@ namespace Content.Server.Construction
             if (HasComp<NoDeconstructComponent>(uid))
                 return HandleResult.False;
 
+            if (ev is InteractUsingEvent interaction &&
+                _koronusSafety.ShouldBlockGridModification(interaction.User, uid))
+            {
+                return HandleResult.False;
+            }
+
             if (!Resolve(uid, ref construction))
                 return HandleResult.False;
 

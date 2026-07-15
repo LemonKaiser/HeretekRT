@@ -33,6 +33,17 @@ public sealed partial class ConsumeDoAfterEvent : DoAfterEvent
 }
 
 /// <summary>
+/// Raised before one entity starts feeding or forcing a drink onto another.
+/// </summary>
+[ByRefEvent]
+public record struct ForceFeedAttemptEvent(EntityUid User, EntityUid Target)
+{
+    public bool Cancelled;
+
+    public void Cancel() => Cancelled = true;
+}
+
+/// <summary>
 ///     Do after event for vape.
 /// </summary>
 [Serializable, NetSerializable]

@@ -28,6 +28,8 @@ shuttle-console-exclusion = Exclusion Area
 # Buttons
 shuttle-console-strafing = Strafing Mode
 shuttle-console-nav-settings = Settings
+shuttle-console-navigation-mode = Navigation Mode
+shuttle-console-navigation-mode-bss = FTL
 shuttle-console-iff-toggle = Show IFF
 shuttle-console-dock-toggle = Show Docks
 shuttle-console-iffshuttles-toggle = Show Shuttles
@@ -60,6 +62,15 @@ shuttle-console-undock-all = Undock All
 shuttle-console-ftl-lock = FTL Lock
 shuttle-console-ftl-lock-enabled = Enabled
 shuttle-console-ftl-lock-disabled = Disabled
+shuttle-console-auto-dock = Automatic docking
+shuttle-console-auto-dock-enabled = On
+shuttle-console-auto-dock-disabled = Off
+shuttle-console-auto-dock-button = Automatic docking
+shuttle-console-auto-dock-no-target = No station or shuttle was found within 300 m.
+shuttle-console-auto-dock-invalid-ports = Automatic docking requires a free compatible docking port on both grids.
+shuttle-console-auto-dock-off = Automatic docking is disabled.
+shuttle-console-auto-dock-complete = Automatic docking complete.
+shuttle-console-auto-dock-failed = Automatic docking aborted: the shuttle could not complete the manoeuvre.
 shuttle-console-dock = Dock
 shuttle-console-docks-label = Docks
 

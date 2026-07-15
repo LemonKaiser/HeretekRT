@@ -1,0 +1,115 @@
+// Projects a 2:1 equirectangular surface texture onto a shaded, rotating sphere. The second
+// procedural layer is evaluated in 3D so clouds have no longitude seam or polar pinching.
+light_mode unshaded;
+blend_mode normal;
+
+uniform sampler2D SurfaceTexture;
+uniform sampler2D CloudNoiseTexture;
+uniform highp float SurfaceRotationSpeed;
+uniform highp float SurfaceRotationPhase;
+uniform highp float AxialTilt;
+uniform highp float CloudRotationSpeed;
+uniform highp float CloudOpacity;
+uniform highp float CloudScale;
+uniform highp float CloudSeed;
+uniform highp vec4 CloudColor;
+uniform highp vec4 AtmosphereColor;
+uniform highp vec3 LightDirection;
+
+const highp float PI = 3.14159265358979323846;
+const highp float TAU = 6.28318530717958647692;
+
+highp vec3 rotateY(highp vec3 point, highp float angle) {
+    highp float sine = sin(angle);
+    highp float cosine = cos(angle);
+    return vec3(
+        cosine * point.x + sine * point.z,
+        point.y,
+        -sine * point.x + cosine * point.z);
+}
+
+highp vec3 rotateZ(highp vec3 point, highp float angle) {
+    highp float sine = sin(angle);
+    highp float cosine = cos(angle);
+    return vec3(
+        cosine * point.x - sine * point.y,
+        sine * point.x + cosine * point.y,
+        point.z);
+}
+
+// Triplanar projection keeps the cloud texture continuous over the sphere without the longitude
+// seam and polar squeezing of an equirectangular cloud layer. Sampling a texture is also much
+// cheaper here than evaluating many octaves of hash noise for every large background pixel.
+highp float triplanarCloudNoise(highp vec3 point, highp float scale, highp vec3 offset) {
+    highp vec3 weights = pow(abs(point), vec3(4.0));
+    weights /= max(weights.x + weights.y + weights.z, 0.0001);
+
+    highp vec2 sampleX = clamp(vec2(0.5) + point.yz * scale + offset.yz, vec2(0.002), vec2(0.998));
+    highp vec2 sampleY = clamp(vec2(0.5) + point.zx * scale + offset.zx, vec2(0.002), vec2(0.998));
+    highp vec2 sampleZ = clamp(vec2(0.5) + point.xy * scale + offset.xy, vec2(0.002), vec2(0.998));
+    highp vec3 samples = vec3(
+        texture2D(CloudNoiseTexture, sampleX).r,
+        texture2D(CloudNoiseTexture, sampleY).r,
+        texture2D(CloudNoiseTexture, sampleZ).r);
+    return dot(samples, weights);
+}
+
+void fragment() {
+    // The quad is 2.04 planet radii wide so antialiasing is not clipped at the limb.
+    highp vec2 position = (UV - vec2(0.5)) * 2.04;
+    highp float radiusSquared = dot(position, position);
+    if (radiusSquared >= 1.02)
+        discard;
+
+    highp float radius = sqrt(radiusSquared);
+    highp float depth = sqrt(max(1.0 - radiusSquared, 0.0));
+    highp vec3 sphereNormal = normalize(vec3(position.x, -position.y, depth));
+    highp vec3 tiltedNormal = rotateZ(sphereNormal, AxialTilt * PI / 180.0);
+
+    highp float surfaceAngle = (SurfaceRotationPhase + TIME * SurfaceRotationSpeed) * PI / 180.0;
+    highp vec3 surfaceNormal = rotateY(tiltedNormal, surfaceAngle);
+    highp float longitude = atan(surfaceNormal.x, surfaceNormal.z) / TAU + 0.5;
+    highp float latitude = 0.5 - asin(clamp(surfaceNormal.y, -1.0, 1.0)) / PI;
+    highp vec2 surfaceUv = vec2(fract(longitude), clamp(latitude, 0.001, 0.999));
+    highp vec4 surfaceSample = texture2D(SurfaceTexture, surfaceUv);
+
+    highp vec3 lightDirection = normalize(LightDirection);
+    highp float lightAmount = dot(sphereNormal, lightDirection);
+    highp float daylight = smoothstep(-0.24, 0.58, lightAmount);
+    highp float diffuse = 0.16 + daylight * 0.84;
+    highp float limb = 0.66 + 0.34 * pow(depth, 0.36);
+    highp vec3 colour = surfaceSample.rgb * diffuse * limb;
+
+    // Blue-dominant texels receive a compact moving specular highlight, making oceans read as a
+    // different material without requiring a second authored map.
+    highp float water = smoothstep(0.035, 0.19, surfaceSample.b - max(surfaceSample.r, surfaceSample.g * 0.82));
+    highp vec3 halfDirection = normalize(lightDirection + vec3(0.0, 0.0, 1.0));
+    highp float specular = pow(max(dot(sphereNormal, halfDirection), 0.0), 38.0) * water * daylight;
+    colour += vec3(0.46, 0.66, 0.92) * specular * 0.58;
+
+    // Clouds rotate independently from the surface. A slightly displaced sample creates a soft
+    // shadow on the terrain and strengthens the illusion of an elevated shell.
+    highp float cloudAngle = (SurfaceRotationPhase + 18.0 + TIME * CloudRotationSpeed) * PI / 180.0;
+    highp vec3 cloudNormal = rotateY(tiltedNormal, cloudAngle);
+    highp vec3 seedOffset = (fract(vec3(CloudSeed * 0.37, CloudSeed * 0.61, CloudSeed * 0.83)) - 0.5) * 0.08;
+    highp float cloudFrequency = max(CloudScale, 0.1);
+    highp float cloudLarge = triplanarCloudNoise(cloudNormal, clamp(cloudFrequency * 0.075, 0.04, 0.30), seedOffset);
+    highp float cloudDetail = triplanarCloudNoise(cloudNormal, clamp(cloudFrequency * 0.125, 0.08, 0.42), -seedOffset * 0.73);
+    highp float clouds = cloudLarge * 0.72 + cloudDetail * 0.28;
+    highp float cloudMask = smoothstep(0.61, 0.82, clouds) * clamp(CloudOpacity, 0.0, 1.0);
+    highp vec3 shadowNormal = normalize(cloudNormal - lightDirection * 0.035);
+    highp float shadowLarge = triplanarCloudNoise(shadowNormal, clamp(cloudFrequency * 0.075, 0.04, 0.30), seedOffset);
+    highp float shadowDetail = triplanarCloudNoise(shadowNormal, clamp(cloudFrequency * 0.125, 0.08, 0.42), -seedOffset * 0.73);
+    highp float cloudShadow = smoothstep(0.62, 0.83, shadowLarge * 0.72 + shadowDetail * 0.28) * clamp(CloudOpacity, 0.0, 1.0);
+    colour *= 1.0 - cloudShadow * daylight * 0.15;
+    highp float cloudLight = 0.32 + daylight * 0.68;
+    colour = mix(colour, CloudColor.rgb * cloudLight, cloudMask * CloudColor.a);
+
+    // A thin in-disk Rayleigh rim joins the surface to the separately rendered outer atmosphere.
+    highp float atmosphereRim = pow(1.0 - depth, 3.1) * (0.40 + daylight * 0.60);
+    colour += AtmosphereColor.rgb * AtmosphereColor.a * atmosphereRim * 0.28;
+
+    highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
+    highp float alpha = surfaceSample.a * (1.0 - smoothstep(1.0 - antialias, 1.0 + antialias, radius));
+    COLOR = vec4(colour, alpha);
+}

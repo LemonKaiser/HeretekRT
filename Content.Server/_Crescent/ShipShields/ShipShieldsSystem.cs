@@ -21,6 +21,7 @@ namespace Content.Server._Crescent.ShipShields;
 public sealed partial class ShipShieldsSystem : EntitySystem
 {
     private const string ShipShieldPrototype = "ShipShield";
+    private const int ShieldBoundarySegments = 16;
 
     //private const float DeflectionSpread = 25f;
     private const float EmitterUpdateRate = 1.5f;
@@ -261,8 +262,15 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         }
 
         var chain = new ChainShape();
+        var vertices = new Vector2[ShieldBoundarySegments];
+        var angleStep = MathF.Tau / ShieldBoundarySegments;
+        for (var i = 0; i < vertices.Length; i++)
+        {
+            var angle = angleStep * i;
+            vertices[i] = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radius;
+        }
 
-        chain.CreateLoop(Vector2.Zero, radius);
+        chain.CreateLoop(vertices);
 
         for (int i = 0; i < chain.Vertices.Length; i++)
         {
@@ -276,10 +284,32 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             }
         }
 
+        // Client overlays use the named chain as compact visual geometry. With no collision bits it
+        // cannot create contacts; the independent edge fixtures below own the actual shield sensor.
         _fixtureSystem.TryCreateFixture(uid, chain, name,
             hard: false,
-            collisionLayer: (int)CollisionGroup.BulletImpassable, // Mono - Only blocks bullets
+            updates: false,
             body: physics);
+
+        // A ChainShape registers several proxies for one Fixture. A projectile overlapping adjacent
+        // segments can therefore enqueue the same fixture pair twice and corrupt contact tracking.
+        // Preserve the loop geometry, but register every colliding segment as an independent fixture.
+        for (var i = 0; i < chain.Count; i++)
+        {
+            var edge = new EdgeShape();
+            edge.SetOneSided(
+                chain.Vertices[(i - 1 + chain.Count) % chain.Count],
+                chain.Vertices[i],
+                chain.Vertices[(i + 1) % chain.Count],
+                chain.Vertices[(i + 2) % chain.Count]);
+            _fixtureSystem.TryCreateFixture(uid, edge, $"{name}-{i}",
+                hard: false,
+                collisionLayer: (int)CollisionGroup.BulletImpassable, // Mono - Only blocks bullets
+                updates: false,
+                body: physics);
+        }
+
+        _fixtureSystem.FixtureUpdate(uid, body: physics);
 
         return chain;
     }

@@ -1,5 +1,6 @@
 using Content.Server._Mono.Ships.Systems;
 using Content.Server._Mono.Shuttles.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
@@ -28,6 +29,9 @@ using Content.Shared.Construction.Components; // Frontier
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Station.Components;
 using Content.Shared._Mono.FireControl;
+using Content.Shared._Mono.Shuttles;
+using Content.Shared._WH40K.SectorMap.BUI;
+using Content.Shared._WH40K.SectorMap.Events;
 using Content.Shared._Mono.Ships.Components;
 using Content.Shared.Verbs;
 using Robust.Shared.Prototypes;
@@ -52,6 +56,8 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     [Dependency] private StationJobsSystem _stationJobs = default!;
     [Dependency] private ILogManager _log = default!;
     [Dependency] private CrewedShuttleSystem _crewedShuttle = default!;
+    [Dependency] private KoronusSectorRuleSystem _koronusSector = default!;
+    [Dependency] private KoronusPlanetarySystem _koronusPlanetary = default!;
 
     private ISawmill _sawmill = default!;
 
@@ -82,6 +88,9 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         {
             subs.Event<ShuttleConsoleFTLBeaconMessage>(OnBeaconFTLMessage);
             subs.Event<ShuttleConsoleFTLPositionMessage>(OnPositionFTLMessage);
+            subs.Event<KoronusSectorJumpMessage>(OnSectorJumpMessage);
+            subs.Event<ShuttleConsolePlanetaryLandingRequestMessage>(OnPlanetaryLandingRequest);
+            subs.Event<ShuttleConsolePlanetaryLaunchRequestMessage>(OnPlanetaryLaunchRequest);
             subs.Event<ToggleFTLLockRequestMessage>(OnToggleFTLLock);
             subs.Event<BoundUIClosedEvent>(OnConsoleUIClose);
         });
@@ -132,15 +141,13 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     /// </summary>
     public void RefreshShuttleConsoles(EntityUid gridUid)
     {
-        var exclusions = new List<ShuttleExclusionObject>();
-        GetExclusions(ref exclusions);
         _consoles.Clear();
         _lookup.GetChildEntities(gridUid, _consoles);
-        DockingInterfaceState? dockState = null;
+        var docks = GetAllDocks();
 
         foreach (var entity in _consoles)
         {
-            UpdateState(entity, ref dockState);
+            UpdateState(entity, docks);
         }
     }
 
@@ -149,14 +156,12 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     /// </summary>
     public void RefreshShuttleConsoles()
     {
-        var exclusions = new List<ShuttleExclusionObject>();
-        GetExclusions(ref exclusions);
         var query = AllEntityQuery<ShuttleConsoleComponent>();
-        DockingInterfaceState? dockState = null;
+        var docks = GetAllDocks();
 
         while (query.MoveNext(out var uid, out _))
         {
-            UpdateState(uid, ref dockState);
+            UpdateState(uid, docks);
         }
     }
 
@@ -197,14 +202,12 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     private void OnConsoleAnchorChange(EntityUid uid, ShuttleConsoleComponent component,
         ref AnchorStateChangedEvent args)
     {
-        DockingInterfaceState? dockState = null;
-        UpdateState(uid, ref dockState);
+        UpdateState(uid);
     }
 
     private void OnConsolePowerChange(EntityUid uid, ShuttleConsoleComponent component, ref PowerChangedEvent args)
     {
-        DockingInterfaceState? dockState = null;
-        UpdateState(uid, ref dockState);
+        UpdateState(uid);
 
         // Handle job slots when power changes
         HandleJobSlotsOnPowerChange(uid, component, args.Powered);
@@ -385,7 +388,9 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         return result;
     }
 
-    private void UpdateState(EntityUid consoleUid, ref DockingInterfaceState? dockState)
+    private void UpdateState(
+        EntityUid consoleUid,
+        Dictionary<NetEntity, List<DockingPortState>>? docks = null)
     {
         EntityUid? entity = consoleUid;
 
@@ -402,7 +407,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
 
         NavInterfaceState navState;
         ShuttleMapInterfaceState mapState;
-        dockState ??= GetDockState();
+        var dockState = GetDockState(shuttleGridUid, docks);
 
         if (shuttleGridUid != null && entity != null)
         {
@@ -419,9 +424,18 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
                 new List<ShuttleExclusionObject>());
         }
 
+        var sectorState = KoronusSectorInterfaceState.Unavailable();
+        var planetaryState = KoronusPlanetaryInterfaceState.Unavailable();
+        if (shuttleGridUid != null && _ui.HasUi(consoleUid, ShuttleConsoleUiKey.Key))
+        {
+            var shuttleMap = _xformQuery.GetComponent(shuttleGridUid.Value).MapID;
+            sectorState = GetKoronusSectorState(shuttleGridUid.Value, shuttleMap, mapState);
+            planetaryState = _koronusPlanetary.GetInterfaceState(shuttleGridUid.Value);
+        }
+
         if (_ui.HasUi(consoleUid, ShuttleConsoleUiKey.Key))
         {
-            _ui.SetUiState(consoleUid, ShuttleConsoleUiKey.Key, new ShuttleBoundUserInterfaceState(navState, mapState, dockState));
+            _ui.SetUiState(consoleUid, ShuttleConsoleUiKey.Key, new ShuttleBoundUserInterfaceState(navState, mapState, dockState, sectorState, planetaryState));
         }
     }
 
@@ -566,10 +580,15 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     /// Global for all shuttles.
     /// </summary>
     /// <returns></returns>
-    public DockingInterfaceState GetDockState()
+    public DockingInterfaceState GetDockState(
+        EntityUid? shuttleGrid = null,
+        Dictionary<NetEntity, List<DockingPortState>>? docks = null)
     {
-        var docks = GetAllDocks();
-        return new DockingInterfaceState(docks);
+        docks ??= GetAllDocks();
+        var autoDockEnabled = shuttleGrid != null &&
+                              TryComp<AutoDockComponent>(shuttleGrid.Value, out var autoDock) &&
+                              autoDock.Enabled;
+        return new DockingInterfaceState(docks, autoDockEnabled);
     }
 
     /// <summary>

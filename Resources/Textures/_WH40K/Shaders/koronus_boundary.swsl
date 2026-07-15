@@ -1,0 +1,22 @@
+light_mode unshaded;
+
+uniform highp vec2 position;
+uniform highp float minRange;
+uniform highp float maxRange;
+
+void fragment() {
+    highp float distance = length(FRAGCOORD.xy - position);
+
+    if (distance < minRange) {
+        discard;
+    }
+
+    highp float danger = clamp((distance - minRange) / (maxRange - minRange), 0.0, 1.0);
+    highp float alpha = 0.05 + danger * danger * 0.52;
+
+    if (distance > maxRange) {
+        alpha = 0.62;
+    }
+
+    COLOR = vec4(0.95, 0.03, 0.02, alpha);
+}

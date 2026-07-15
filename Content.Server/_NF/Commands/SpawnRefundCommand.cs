@@ -24,7 +24,7 @@ public sealed partial class SpawnRefundCommand : IConsoleCommand
 
     public string Command => "spawnrefund";
 
-    public string Description => "Spawns an exact number of spesos to be given as a refund. You must be a ghost with a free hand.";
+    public string Description => "Spawns an exact number of throne gelt to be given as a refund. You must be a ghost with a free hand.";
 
     public string Help => $"${Command} <amount> [reason]";
 
@@ -63,7 +63,7 @@ public sealed partial class SpawnRefundCommand : IConsoleCommand
         }
         if (amount <= 0)
         {
-            shell.WriteError($"Refund amount must be greater than zero; attempted to spawn {amount} spesos");
+            shell.WriteError($"Refund amount must be greater than zero; attempted to spawn {amount} throne gelt");
             return;
         }
         args.TryGetValue(1, out var reason);
@@ -80,7 +80,7 @@ public sealed partial class SpawnRefundCommand : IConsoleCommand
         }
 
         _adminLog.Add(LogType.AdminRefund, LogImpact.Medium,
-            $"{_entityManager.ToPrettyString(uid)} spawned a refund of {amount} spesos, {_entityManager.ToPrettyString(refund)}. Reason: {reason}");
-        shell.WriteLine($"Spawned a refund of {amount} spesos");
+            $"{_entityManager.ToPrettyString(uid)} spawned a refund of {amount} throne gelt, {_entityManager.ToPrettyString(refund)}. Reason: {reason}");
+        shell.WriteLine($"Spawned a refund of {amount} throne gelt");
     }
 }

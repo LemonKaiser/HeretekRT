@@ -1,0 +1,79 @@
+// Compact atmosphere for the procedural star. It is rendered before the opaque photosphere and
+// combines a radial glow, short streamers and sparse prominence loops.
+light_mode unshaded;
+blend_mode normal;
+
+highp vec2 rotatePoint(highp vec2 point, highp float angle) {
+    highp float sine = sin(angle);
+    highp float cosine = cos(angle);
+    return vec2(cosine * point.x - sine * point.y, sine * point.x + cosine * point.y);
+}
+
+highp vec2 hash22(highp vec2 point) {
+    highp vec2 result = vec2(
+        dot(point, vec2(127.1, 311.7)),
+        dot(point, vec2(269.5, 183.3)));
+    return fract(sin(result) * 43758.5453123);
+}
+
+highp float gradientNoise(highp vec2 point) {
+    highp vec2 cell = floor(point);
+    highp vec2 local = fract(point);
+    highp vec2 blend = local * local * local * (local * (local * 6.0 - 15.0) + 10.0);
+
+    highp vec2 gradient00 = normalize(hash22(cell) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient10 = normalize(hash22(cell + vec2(1.0, 0.0)) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient01 = normalize(hash22(cell + vec2(0.0, 1.0)) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient11 = normalize(hash22(cell + vec2(1.0, 1.0)) * 2.0 - 1.0 + vec2(0.001));
+
+    highp float lower = mix(dot(gradient00, local), dot(gradient10, local - vec2(1.0, 0.0)), blend.x);
+    highp float upper = mix(dot(gradient01, local - vec2(0.0, 1.0)), dot(gradient11, local - vec2(1.0)), blend.x);
+    return clamp(0.5 + mix(lower, upper, blend.y) * 0.78, 0.0, 1.0);
+}
+
+highp float prominence(highp vec2 position, highp float angle, highp float height, highp float phase) {
+    highp vec2 local = rotatePoint(position, -angle);
+    highp float wobble = gradientNoise(local * 8.0 + vec2(phase, -phase)) - 0.5;
+    highp float ringDistance = abs(length(local - vec2(0.79, 0.0)) - height + wobble * 0.025);
+    highp float arc = 1.0 - smoothstep(0.018, 0.060, ringDistance);
+    highp float outsideDisk = smoothstep(0.995, 1.045, length(position));
+    highp float outwardHalf = smoothstep(0.90, 1.03, local.x);
+    return arc * outsideDisk * outwardHalf;
+}
+
+void fragment() {
+    // Radius 1 is the disk and 1.9 is the shared corona limit used by the NAV visualization.
+    highp vec2 position = (UV - vec2(0.5)) * 3.8;
+    highp float radius = length(position);
+    if (radius <= 0.91 || radius >= 1.9)
+        discard;
+
+    highp float time = TIME;
+    highp vec2 direction = position / max(radius, 0.001);
+    highp float angle = atan(direction.y, direction.x);
+    highp float distanceFromLimb = max(radius - 1.0, 0.0);
+
+    highp float texturedBreakup = gradientNoise(
+        rotatePoint(direction, time * 0.004) * 5.2 + vec2(time * 0.011, -time * 0.008));
+    highp float angularWarp = gradientNoise(direction * 4.6 + vec2(time * 0.012, -time * 0.009));
+    highp float broadWave = 0.5 + 0.5 * sin(angle * 9.0 + angularWarp * 5.4 + time * 0.026);
+    highp float fineWave = 0.5 + 0.5 * sin(angle * 23.0 - texturedBreakup * 7.0 - time * 0.017);
+    highp float streamer = pow(broadWave, 4.5) * (0.35 + pow(fineWave, 3.0) * 0.65);
+
+    highp float razorRim = exp(-abs(radius - 1.0) * 27.0) * 0.94;
+    highp float innerHalo = exp(-distanceFromLimb * 7.2) * (0.56 + texturedBreakup * 0.44);
+    highp float turbulentHalo = exp(-distanceFromLimb * 4.0) * (0.08 + streamer * 0.34);
+    highp float outerCorona = exp(-distanceFromLimb * 3.1) * (0.012 + streamer * 0.070);
+
+    highp float loopA = prominence(position, 0.74 + time * 0.0032, 0.40, time * 0.025);
+    highp float loopB = prominence(position, 3.62 + time * 0.0021, 0.54, 11.0 - time * 0.019);
+    highp float prominences = loopA * 0.88 + loopB * 0.68;
+
+    highp float edgeFade = 1.0 - smoothstep(1.56, 1.9, radius);
+    highp float alpha = clamp((razorRim + innerHalo + turbulentHalo + outerCorona + prominences) * edgeFade, 0.0, 0.96);
+    highp vec3 deepCorona = vec3(0.82, 0.008, 0.001);
+    highp vec3 hotCorona = vec3(1.0, 0.31, 0.018);
+    highp vec3 colour = mix(deepCorona, hotCorona, clamp(innerHalo + razorRim + prominences, 0.0, 1.0));
+    colour += vec3(1.0, 0.13, 0.004) * prominences * 0.65;
+    COLOR = vec4(colour, alpha);
+}

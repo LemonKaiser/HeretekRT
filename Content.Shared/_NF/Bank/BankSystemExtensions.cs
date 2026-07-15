@@ -64,7 +64,7 @@ public static class BankSystemExtensions
 
     public static string ToSpesoString(long amount, CultureInfo? culture = null)
     {
-        return ToCurrencyString(amount, culture, symbolOverride: "$", symbolLocation: CurrencySymbolLocation.Prefix);
+        return ToCurrencyString(amount, culture, symbolOverride: "₮", symbolLocation: CurrencySymbolLocation.Prefix);
     }
 
     public static string ToDoubloonString(long amount, CultureInfo? culture = null)

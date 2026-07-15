@@ -110,7 +110,7 @@ stack-cigarette-filter = {$amount ->
 stack-rolling-paper = бумага для самокруток
 
 stack-fulton = фултон
-stack-credit = спесо
+stack-credit = трон гельт
 stack-plasma = плазма
 stack-biomass = биомасса
 stack-pyrotton = пироттон

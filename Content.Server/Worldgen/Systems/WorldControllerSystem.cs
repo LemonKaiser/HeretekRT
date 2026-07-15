@@ -22,6 +22,7 @@ public sealed partial class WorldControllerSystem : EntitySystem
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private ILogManager _logManager = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private MapSystem _maps = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
 
     // <Mono>
@@ -115,7 +116,7 @@ public sealed partial class WorldControllerSystem : EntitySystem
 
         while (loaderEnum.MoveNext(out var uid, out var worldLoader, out var xform))
         {
-            if (worldLoader.Disabled) // Frontier: disable world loading
+            if (worldLoader.Disabled || IsPausedOrInvalidMap(xform.MapID)) // Frontier: disable world loading
                 continue; // Frontier
 
             // Mono edit
@@ -129,7 +130,7 @@ public sealed partial class WorldControllerSystem : EntitySystem
         // Mindful entities get special privilege as they're always a player and we don't want the illusion being broken around them.
         while (mindEnum.MoveNext(out var uid, out var mind, out var xform))
         {
-            if (!mind.HasMind)
+            if (!mind.HasMind || IsPausedOrInvalidMap(xform.MapID))
                 continue;
 
             if (ghostQuery.HasComponent(uid))
@@ -142,6 +143,9 @@ public sealed partial class WorldControllerSystem : EntitySystem
         // Mono edit - Component for loading chunks.
         while (chunkLoaderEnum.MoveNext(out var uid, out var load, out var xform))
         {
+            if (IsPausedOrInvalidMap(xform.MapID))
+                continue;
+
             if (load.RequirePower && TryComp<ApcPowerReceiverComponent>(uid, out var receiver))
             {
                 if (!receiver.Powered)
@@ -200,6 +204,11 @@ public sealed partial class WorldControllerSystem : EntitySystem
             var timeSpan = _gameTiming.RealTime - startTime;
             _sawmill.Debug($"Loaded {count} chunks in {timeSpan.TotalMilliseconds:N2}ms.");
         }
+    }
+
+    private bool IsPausedOrInvalidMap(MapId mapId)
+    {
+        return mapId == MapId.Nullspace || _maps.IsPaused(mapId);
     }
 
     /// <summary>

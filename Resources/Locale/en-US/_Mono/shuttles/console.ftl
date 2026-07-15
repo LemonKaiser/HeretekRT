@@ -1,5 +1,6 @@
 shuttle-console-autopilot-button = Autopilot
 shuttle-console-autopilot-popup-done = Autopilot Arrived
+shuttle-console-autopilot-grid-lock = TARGET LOCK: { $name }
 
 shuttle-console-button-azimuth = Toggle Azimuth Style
 shuttle-console-button-rotation = Toggle View Rotation

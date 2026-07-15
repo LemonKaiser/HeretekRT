@@ -4,6 +4,7 @@ using Content.Server.NPC.HTN;
 using Content.Server.Spreader;
 using Content.Shared._Mono;
 using Content.Shared.Damage.Components;
+using Content.Shared.Damage;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mobs.Components;
@@ -20,12 +21,39 @@ public sealed partial class GridGodModeSystem : EntitySystem
     [Dependency] private GodmodeSystem _godmode = default!;
     [Dependency] private SharedMindSystem _mind = default!;
 
+    // Applying Godmode can raise damage events. Defer protection until the next tick so
+    // entities spawned during map initialization have finished starting all components
+    // (notably MechComponent, which creates its containers in ComponentStartup).
+    private readonly HashSet<EntityUid> _pendingProtection = new();
+
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<GridGodModeComponent, MapInitEvent>(OnGridGodModeMapInit);
+        SubscribeLocalEvent<GridGodModeComponent, ComponentStartup>(OnGridGodModeStartup);
         SubscribeLocalEvent<GridGodModeComponent, ComponentShutdown>(OnGridGodModeShutdown);
+        SubscribeLocalEvent<DamageableComponent, ComponentStartup>(OnDamageableStartup);
+        SubscribeLocalEvent<DamageableComponent, EntParentChangedMessage>(OnDamageableParentChanged);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_pendingProtection.Count == 0)
+            return;
+
+        var pending = _pendingProtection.ToArray();
+        _pendingProtection.Clear();
+
+        foreach (var entity in pending)
+        {
+            if (TerminatingOrDeleted(entity))
+                continue;
+
+            RefreshEntityProtection(entity);
+        }
     }
 
     private void OnGridGodModeMapInit(EntityUid uid, GridGodModeComponent component, MapInitEvent args)
@@ -46,8 +74,57 @@ public sealed partial class GridGodModeSystem : EntitySystem
             if (entity == uid)
                 continue;
 
-            ProcessEntityOnGrid(uid, entity, component);
+            QueueProtection(entity);
         }
+    }
+
+    private void OnGridGodModeStartup(EntityUid uid, GridGodModeComponent component, ComponentStartup args)
+    {
+        if (!HasComp<MapGridComponent>(uid))
+            return;
+
+        // Components added by sector bootstrap run after the grid's MapInit event. A startup pass
+        // makes those facilities just as protected as map-authored ones.
+        foreach (var entity in _lookup.GetEntitiesIntersecting(uid).ToHashSet())
+        {
+            if (entity != uid)
+                QueueProtection(entity);
+        }
+    }
+
+    private void OnDamageableStartup(EntityUid uid, DamageableComponent component, ComponentStartup args)
+    {
+        QueueProtection(uid);
+    }
+
+    private void OnDamageableParentChanged(EntityUid uid, DamageableComponent component, ref EntParentChangedMessage args)
+    {
+        QueueProtection(uid);
+    }
+
+    private void QueueProtection(EntityUid entity)
+    {
+        if (!TerminatingOrDeleted(entity))
+            _pendingProtection.Add(entity);
+    }
+
+    private void RefreshEntityProtection(EntityUid entity)
+    {
+        if (!TryComp<TransformComponent>(entity, out var transform))
+            return;
+
+        var currentGrid = transform.GridUid;
+        var grids = EntityQueryEnumerator<GridGodModeComponent>();
+        while (grids.MoveNext(out var grid, out var component))
+        {
+            if (currentGrid == grid || !component.ProtectedEntities.Remove(entity))
+                continue;
+
+            RemoveGodMode(entity);
+        }
+
+        if (currentGrid is { } protectedGrid && TryComp<GridGodModeComponent>(protectedGrid, out var godMode))
+            ProcessEntityOnGrid(protectedGrid, entity, godMode);
     }
 
     private void OnGridGodModeShutdown(EntityUid uid, GridGodModeComponent component, ComponentShutdown args)
@@ -69,6 +146,11 @@ public sealed partial class GridGodModeSystem : EntitySystem
     /// </summary>
     private void ProcessEntityOnGrid(EntityUid gridUid, EntityUid entityUid, GridGodModeComponent component)
     {
+        // Spatial lookup can include an overlapping shuttle or a neighbouring grid. Protection
+        // belongs only to entities actually parented to this authored facility grid.
+        if (!TryComp<TransformComponent>(entityUid, out var transform) || transform.GridUid != gridUid)
+            return;
+
         // Don't apply GodMode to organic entities, ghosts, npcs, or kudzu
         if (IsOrganic(entityUid) || HasComp<GhostComponent>(entityUid) || HasComp<KudzuComponent>(entityUid))
             return;
@@ -83,6 +165,10 @@ public sealed partial class GridGodModeSystem : EntitySystem
     {
         // Skip if the entity is already protected
         if (component.ProtectedEntities.Contains(entityUid))
+            return;
+
+        // Do not take ownership of a godmode component provided by another system.
+        if (HasComp<GodmodeComponent>(entityUid))
             return;
 
         // Apply GodMode

@@ -1,4 +1,4 @@
-ent-SpaceCash = кредиты
+ent-SpaceCash = трон гельты
     .desc = Нужно иметь деньги.
 ent-SpaceCash10 = { ent-SpaceCash }
     .suffix = 10

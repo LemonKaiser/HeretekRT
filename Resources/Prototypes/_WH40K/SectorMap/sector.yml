@@ -1,0 +1,56 @@
+- type: koronusSector
+  id: KoronusExpanse
+  startGameMap: KoronusFootfall
+  startSystem: Footfall
+  defaultBoundaryRadius: 5000
+  defaultWarningFraction: 0.9
+  defaultCleanupDelay: 10
+  defaultWarningAnnouncementCooldown: 600
+
+- type: gameMapPool
+  id: KoronusExpanseMapPool
+  maps:
+  - KoronusFootfall
+
+# Dedicated Koronus start map. The ordinary Frontier map remains unchanged for other presets.
+- type: gameMap
+  id: KoronusFootfall
+  mapName: 'Футфол'
+  mapPath: /Maps/_WH40K/Footfall.yml
+  minPlayers: 0
+  maxPlayers: 100
+  randomRotation: false
+  maxRandomOffset: 0
+  stations:
+    Frontier:
+      stationProto: StandardFrontierStation
+      gridComponents:
+      - type: VesselMusic
+        ambientMusicPrototype: ColossusCentralMusic
+      - type: VesselInfo
+        description: "The closest thing to civilisation in this sector. You almost feel safe."
+      - type: SpawnPoint
+        spawn_type: LateJoin
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Футфол'
+      - type: ExtraStationInformation
+        icon: /Textures/_Mono/Logo/icon/icon-256x256.png
+        stationSubtext: 'frontier-lobby-frontier-subtext'
+        stationDescription: 'frontier-lobby-frontier-description'
+        lobbySortOrder: 1
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ -1, -1 ]
+          Pilot: [ -1, -1 ]
+          Mercenary: [ -1, -1 ]
+          Borg: [ -1, -1 ]
+          StationRepresentative: [ 1, 1 ]
+          StationTrafficController: [ 2, 2 ]
+          SecurityGuard: [ 3, 3 ]
+          CCServiceWorker: [ 2, 2 ]
+          NFJanitor: [ 2, 2 ]
+          MailCarrier: [ 2, 2 ]
+        tags:
+        - HeadOfPersonnel
+        - HeadOfSecurity

@@ -190,6 +190,11 @@ public sealed partial class DrinkSystem : SharedDrinkSystem
 
         if (forceDrink)
         {
+            var safetyAttempt = new ForceFeedAttemptEvent(user, target);
+            RaiseLocalEvent(target, ref safetyAttempt, true);
+            if (safetyAttempt.Cancelled)
+                return true;
+
             var userName = Identity.Entity(user, EntityManager);
 
             _popup.PopupEntity(Loc.GetString("drink-component-force-feed", ("user", userName)), user, target);

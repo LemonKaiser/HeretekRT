@@ -30,6 +30,26 @@ public sealed partial class PlanetPrototype : IPrototype
     public Color MapLight = Color.FromHex("#D8B059");
 
     /// <summary>
+    /// Whether the map light and sun shadows advance through a day/night cycle.
+    /// Static surfaces such as asteroids can disable this while retaining authored ambient light.
+    /// </summary>
+    [DataField]
+    public bool LightCycleEnabled = true;
+
+    /// <summary>
+    /// Optional length of the illuminated part of the planet's light cycle.
+    /// When paired with <see cref="NightDuration"/>, the map holds a distinct night phase.
+    /// </summary>
+    [DataField]
+    public TimeSpan? DayDuration;
+
+    /// <summary>
+    /// Optional length of the dark part of the planet's light cycle.
+    /// </summary>
+    [DataField]
+    public TimeSpan? NightDuration;
+
+    /// <summary>
     /// Components to add to the map.
     /// </summary>
     [DataField]

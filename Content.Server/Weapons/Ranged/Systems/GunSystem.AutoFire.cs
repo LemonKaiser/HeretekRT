@@ -44,6 +44,7 @@ public sealed partial class GunSystem
             }
             else if (_autoShootGunQuery.TryComp(uid, out var autoShoot))
             {
+                var shooter = uid;
                 // Mono
                 if (autoShoot.RemainingTime <= TimeSpan.Zero)
                 {
@@ -53,9 +54,13 @@ public sealed partial class GunSystem
                 else
                 {
                     autoShoot.RemainingTime -= TimeSpan.FromSeconds(frameTime);
+                    shooter = autoShoot.Shooter ?? uid;
                 }
 
-                AttemptShoot(uid, uid, gun);
+                AttemptShoot(shooter, uid, gun);
+
+                if (autoShoot.RemainingTime <= TimeSpan.Zero)
+                    autoShoot.Shooter = null;
             }
         }
     }

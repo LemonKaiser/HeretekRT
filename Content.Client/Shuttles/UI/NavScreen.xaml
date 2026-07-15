@@ -1,19 +1,90 @@
 <controls:BoxContainer Visible="False"
               HorizontalExpand="True"
+              VerticalExpand="True"
               xmlns:controls="https://spacestation14.io"
               xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
               xmlns:controls1="clr-namespace:Content.Client.UserInterface.Controls"
               xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
                 <!-- Mono - wrap -->
-                <controls:LayoutContainer Margin="5 4 10 5">
+                <controls:LayoutContainer Name="PlanetaryNavigationArea"
+                                          Margin="5 4 10 5"
+                                          HorizontalExpand="True"
+                                          VerticalExpand="True">
                     <ui:ShuttleNavControl Name="NavRadar"
                                      MouseFilter="Stop"
                                      VerticalAlignment="Stretch"
                                      VerticalExpand="True"
                                      HorizontalExpand="True"/>
+                    <controls:Label Name="PlanetaryNoSignal"
+                                    Visible="False"
+                                    Text="{controls:Loc 'koronus-planetary-nav-no-signal'}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontColorOverride="#68756B"/>
+                    <controls:PanelContainer Name="PlanetaryDetailsPanel"
+                                             Visible="False"
+                                             SetWidth="224"
+                                             MouseFilter="Stop">
+                        <controls:PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#747474" BackgroundColor="#030505F2"/>
+                        </controls:PanelContainer.PanelOverride>
+                        <controls:BoxContainer Orientation="Vertical" Margin="7 6 7 7">
+                            <controls:Label Name="PlanetaryBodyName"
+                                            StyleClasses="LabelHeading"
+                                            FontColorOverride="#F1F1F1"
+                                            HorizontalExpand="True"
+                                            ClipText="True"/>
+
+                            <controls:PanelContainer MinHeight="2" Margin="0 3 0 5">
+                                <controls:PanelContainer.PanelOverride>
+                                    <graphics:StyleBoxFlat BackgroundColor="#747474"/>
+                                </controls:PanelContainer.PanelOverride>
+                            </controls:PanelContainer>
+
+                            <controls:Label Name="PlanetaryBodyClimate"
+                                            FontColorOverride="#D6D6D6"
+                                            ClipText="True"/>
+                            <controls:Label Name="PlanetaryBodySize"
+                                            FontColorOverride="#D6D6D6"
+                                            ClipText="True"/>
+
+                            <controls:PanelContainer MinHeight="54" MaxHeight="142" Margin="0 6 0 6">
+                                <controls:PanelContainer.PanelOverride>
+                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#5A5A5A" BackgroundColor="#010101E8"/>
+                                </controls:PanelContainer.PanelOverride>
+                                <controls:ScrollContainer Name="PlanetaryLandingSiteScroll"
+                                                          MinHeight="50"
+                                                          MaxHeight="138"
+                                                          HScrollEnabled="False"
+                                                          HorizontalExpand="True">
+                                    <controls:BoxContainer Name="PlanetaryLandingSites"
+                                                           Orientation="Vertical"
+                                                           SeparationOverride="2"
+                                                           Margin="4 3 4 3"
+                                                           HorizontalExpand="True"/>
+                                </controls:ScrollContainer>
+                            </controls:PanelContainer>
+
+                            <controls:Button Name="PlanetaryLandingButton"
+                                             Text="{controls:Loc 'koronus-planetary-nav-land'}"
+                                             TextAlign="Center"
+                                             StyleClasses="ButtonSquare"
+                                             MinHeight="32"/>
+                            <controls:Button Name="PlanetaryLaunchButton"
+                                             Visible="False"
+                                             Text="{controls:Loc 'koronus-planetary-nav-launch'}"
+                                             TextAlign="Center"
+                                             StyleClasses="ButtonSquare"
+                                             MinHeight="32"/>
+                        </controls:BoxContainer>
+                    </controls:PanelContainer>
                 </controls:LayoutContainer>
                 <!-- Nav controls -->
-                <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
+                <controls:PanelContainer VerticalExpand="True"
+                                         HorizontalExpand="False"
+                                         MinWidth="286"
+                                         MaxWidth="286"
+                                         Margin="4 4 4 4">
                     <controls:PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#525252" BackgroundColor="#3d474d"/>
                     </controls:PanelContainer.PanelOverride>
@@ -21,14 +92,41 @@
                         <controls:PanelContainer.PanelOverride>
                             <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
                         </controls:PanelContainer.PanelOverride>
+                <controls:ScrollContainer VerticalExpand="True"
+                                          HorizontalExpand="True"
+                                          HScrollEnabled="False">
                 <controls:BoxContainer Name="RightDisplayNav"
-                      VerticalAlignment="Top"
+                      VerticalAlignment="Stretch"
                       HorizontalAlignment="Center"
-                      VerticalExpand="True"
+                      VerticalExpand="False"
                       MinWidth="256"
                       MaxWidth="256"
                       Margin="5 5 5 5"
                       Orientation="Vertical">
+                    <controls1:StripeBack MinSize="48 48">
+                        <controls:Label Text="{controls:Loc 'shuttle-console-navigation-mode'}"
+                                        VerticalExpand="True"
+                                        HorizontalAlignment="Center"/>
+                    </controls1:StripeBack>
+                    <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
+                        <controls:PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        </controls:PanelContainer.PanelOverride>
+                        <controls:BoxContainer Orientation="Horizontal" Margin="2 2 2 2">
+                            <controls:Button Name="NavSubModeButton"
+                                             Text="NAV"
+                                             TextAlign="Center"
+                                             StyleClasses="ButtonSquare"
+                                             ToggleMode="True"
+                                             HorizontalExpand="True"/>
+                            <controls:Button Name="BssSubModeButton"
+                                             Text="{controls:Loc 'shuttle-console-navigation-mode-bss'}"
+                                             TextAlign="Center"
+                                             StyleClasses="ButtonSquare"
+                                             ToggleMode="True"
+                                             HorizontalExpand="True"/>
+                        </controls:BoxContainer>
+                    </controls:PanelContainer>
                     <controls1:StripeBack
                         MinSize="48 48">
                         <controls:Label Name="NavDisplayLabel" Text="{controls:Loc 'shuttle-console-display-label'}"
@@ -82,6 +180,9 @@
                     </controls:GridContainer>
                     </controls:PanelContainer>
                     </controls:PanelContainer>
+                    <controls:BoxContainer Name="NavModeControls"
+                                           Orientation="Vertical"
+                                           HorizontalExpand="True">
                     <controls1:StripeBack
                         MinSize="48 48">
                         <controls:Label Name="NavSettingsLabel" Text="{controls:Loc 'shuttle-console-nav-settings'}"
@@ -188,6 +289,29 @@
                         <controls:PanelContainer.PanelOverride>
                             <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
                         </controls:PanelContainer.PanelOverride>
+                        <controls:Button Name="AutoDockButton"
+                                         Text="{controls:Loc 'shuttle-console-auto-dock-button'}"
+                                         TextAlign="Center"
+                                         Margin="4 4 4 4"
+                                         StyleClasses="ButtonSquare"/>
+                    </controls:PanelContainer>
+
+                    <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
+                        <controls:PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        </controls:PanelContainer.PanelOverride>
+                        <controls:Button Name="NavAutopilotButton"
+                                         ToggleMode="True"
+                                         Text="{controls:Loc 'shuttle-console-autopilot-button'}"
+                                         TextAlign="Center"
+                                         Margin="4 4 4 4"
+                                         StyleClasses="ButtonSquare"/>
+                    </controls:PanelContainer>
+
+                    <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
+                        <controls:PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True">
                         <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 6">
                             <controls:PanelContainer.PanelOverride>
@@ -265,6 +389,85 @@
                 </controls:PanelContainer>
                     <!-- End Network Port Buttons -->
                     </controls:BoxContainer>
+
+                    <controls:BoxContainer Name="BssModeControls"
+                                           Visible="False"
+                                           Orientation="Vertical"
+                                           HorizontalExpand="True">
+                        <controls1:StripeBack MinSize="48 48">
+                            <controls:Label Text="{controls:Loc 'shuttle-console-ftl-label'}"
+                                            HorizontalAlignment="Center"/>
+                        </controls1:StripeBack>
+                        <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
+                            <controls:PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            </controls:PanelContainer.PanelOverride>
+                            <controls:BoxContainer Orientation="Vertical" Margin="2 2 2 2">
+                                <controls:Label Name="BssFTLState"
+                                                Text="{controls:Loc 'shuttle-console-ftl-state-Available'}"
+                                                HorizontalAlignment="Center"/>
+                                <controls1:StripeBack Margin="5 5 5 5">
+                                    <controls:PanelContainer HorizontalExpand="True" Margin="2 2 2 2">
+                                        <controls:PanelContainer.PanelOverride>
+                                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                                        </controls:PanelContainer.PanelOverride>
+                                        <controls:ProgressBar Name="BssFTLBar"
+                                                              HorizontalExpand="True"
+                                                              Margin="5"
+                                                              MinValue="0.0"
+                                                              MaxValue="1.0"
+                                                              Value="1.0"/>
+                                    </controls:PanelContainer>
+                                </controls1:StripeBack>
+                            </controls:BoxContainer>
+                        </controls:PanelContainer>
+
+                        <controls1:StripeBack MinSize="48 48">
+                            <controls:Label Text="{controls:Loc 'shuttle-console-map-settings'}"
+                                            HorizontalAlignment="Center"/>
+                        </controls1:StripeBack>
+                        <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
+                            <controls:PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            </controls:PanelContainer.PanelOverride>
+                            <controls:BoxContainer Orientation="Vertical" Margin="2 2 2 2">
+                                <controls:Button Name="BssFTLButton"
+                                                 Text="{controls:Loc 'shuttle-console-ftl-button'}"
+                                                 TextAlign="Center"
+                                                 StyleClasses="ButtonSquare"
+                                                 ToggleMode="True"/>
+                                <controls:Button Name="BssRebuildButton"
+                                                 Text="{controls:Loc 'shuttle-console-map-rebuild'}"
+                                                 TextAlign="Center"
+                                                 StyleClasses="ButtonSquare"/>
+                            </controls:BoxContainer>
+                        </controls:PanelContainer>
+
+                        <controls1:StripeBack MinSize="48 48">
+                            <controls:Label Text="{controls:Loc 'shuttle-console-map-objects'}"
+                                            HorizontalAlignment="Center"/>
+                        </controls1:StripeBack>
+                        <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
+                            <controls:PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            </controls:PanelContainer.PanelOverride>
+                            <controls:PanelContainer HorizontalExpand="True" Margin="2 2 2 2">
+                                <controls:PanelContainer.PanelOverride>
+                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                                </controls:PanelContainer.PanelOverride>
+                                <controls:ScrollContainer HScrollEnabled="False"
+                                                          MinHeight="96"
+                                                          MaxHeight="260"
+                                                          HorizontalExpand="True">
+                                    <controls:BoxContainer Name="BssDestinations"
+                                                           Orientation="Vertical"
+                                                           HorizontalExpand="True"/>
+                                </controls:ScrollContainer>
+                            </controls:PanelContainer>
+                        </controls:PanelContainer>
+                    </controls:BoxContainer>
+                    </controls:BoxContainer>
+                    </controls:ScrollContainer>
                     </controls:PanelContainer>
                 </controls:PanelContainer>
                 </controls:BoxContainer>

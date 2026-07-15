@@ -2,6 +2,7 @@
 using Content.Shared.Parallax.Biomes;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
 using System.Linq;
 
 
@@ -43,6 +44,31 @@ public sealed partial class BiomeSystem
         }
     }
 
+    private Box2? GetGenerationBounds(EntityUid gridUid)
+    {
+        return TryComp<BiomeGenerationBoundsComponent>(gridUid, out var generationBounds)
+            ? generationBounds.Bounds
+            : null;
+    }
+
+    private static bool IsInsideGenerationBounds(Vector2i indices, Box2? generationBounds)
+    {
+        return generationBounds == null ||
+               indices.X >= generationBounds.Value.Left &&
+               indices.X < generationBounds.Value.Right &&
+               indices.Y >= generationBounds.Value.Bottom &&
+               indices.Y < generationBounds.Value.Top;
+    }
+
+    private static bool ChunkIntersectsGenerationBounds(Vector2i chunk, int chunkSize, Box2? generationBounds)
+    {
+        return generationBounds == null ||
+               chunk.X < generationBounds.Value.Right &&
+               chunk.X + chunkSize > generationBounds.Value.Left &&
+               chunk.Y < generationBounds.Value.Top &&
+               chunk.Y + chunkSize > generationBounds.Value.Bottom;
+    }
+
     private bool HasAnchoredEntity(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
     {
         var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
@@ -62,10 +88,11 @@ public sealed partial class BiomeSystem
         component.ModifiedTiles.TryGetValue(chunk, out var modified);
         modified ??= _tilePool.Get();
         _chunkLoaderTiles.Clear();
+        var generationBounds = GetGenerationBounds(gridUid);
 
-        LoadTiles(component, gridUid, grid, chunk, seed, modified);
-        LoadEntities(component, gridUid, grid, chunk, seed, modified);
-        LoadDecals(component, gridUid, grid, chunk, seed, modified);
+        LoadTiles(component, gridUid, grid, chunk, seed, modified, generationBounds);
+        LoadEntities(component, gridUid, grid, chunk, seed, modified, generationBounds);
+        LoadDecals(component, gridUid, grid, chunk, seed, modified, generationBounds);
 
         FinalizeChunk(component, chunk, modified);
     }
@@ -76,12 +103,16 @@ public sealed partial class BiomeSystem
         MapGridComponent grid,
         Vector2i chunk,
         int seed,
-        HashSet<Vector2i> modified)
+        HashSet<Vector2i> modified,
+        Box2? generationBounds)
     {
         _chunkLoaderTiles.Clear();
 
         ForEachTileInChunk(chunk, modified, indices =>
         {
+            if (!IsInsideGenerationBounds(indices, generationBounds))
+                return;
+
             if (_mapSystem.TryGetTileRef(gridUid, grid, indices, out var tileRef) && !tileRef.Tile.IsEmpty)
                 return;
 
@@ -103,13 +134,17 @@ public sealed partial class BiomeSystem
         MapGridComponent grid,
         Vector2i chunk,
         int seed,
-        HashSet<Vector2i> modified)
+        HashSet<Vector2i> modified,
+        Box2? generationBounds)
     {
         var loadedEntities = new Dictionary<EntityUid, Vector2i>();
         component.LoadedEntities.Add(chunk, loadedEntities);
 
         ForEachTileInChunk(chunk, modified, indices =>
         {
+            if (!IsInsideGenerationBounds(indices, generationBounds))
+                return;
+
             if (HasAnchoredEntity(gridUid, grid, indices))
                 return;
 
@@ -133,7 +168,8 @@ public sealed partial class BiomeSystem
         MapGridComponent grid,
         Vector2i chunk,
         int seed,
-        HashSet<Vector2i> modified)
+        HashSet<Vector2i> modified,
+        Box2? generationBounds)
     {
         var loadedDecals = new Dictionary<uint, Vector2i>();
         component.LoadedDecals.Add(chunk, loadedDecals);
@@ -142,6 +178,9 @@ public sealed partial class BiomeSystem
 
         ForEachTileInChunk(chunk, modified, indices =>
         {
+            if (!IsInsideGenerationBounds(indices, generationBounds))
+                return;
+
             if (HasAnchoredEntity(gridUid, grid, indices) || !TryGetDecals(indices, component.Layers, seed, (gridUid, grid), out var decals))
                 return;
 

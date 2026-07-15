@@ -7,6 +7,7 @@ using Content.Server.Shuttles.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Mono.Cleanup;
 
@@ -20,6 +21,7 @@ public sealed partial class GridCleanupSystem : BaseCleanupSystem<MapGridCompone
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private PricingSystem _pricing = default!;
     [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private float _maxDistance;
     private float _maxValue;
@@ -54,29 +56,50 @@ public sealed partial class GridCleanupSystem : BaseCleanupSystem<MapGridCompone
         var parent = xform.ParentUid;
 
         var state = EnsureComp<GridCleanupGridComponent>(uid);
+        var now = _timing.CurTime;
 
         var tiles = body.FixturesMass / ShuttleSystem.TileDensityMultiplier;
-        var scale = MathF.Min(tiles / _aggressiveTiles, 1f);
+        var aggressiveTiles = Math.Max(_aggressiveTiles, 1);
+        var scale = Math.Clamp(tiles / aggressiveTiles, 0.1f, 1f);
 
         if (HasComp<MapComponent>(uid) // if we're a planetmap ignore
             || HasComp<MapGridComponent>(parent) // do not delete anything on planetmaps either
-            || _immuneQuery.HasComp(uid)
+            || _cleanup.IsGridProtectedFromCleanup(uid)
             || !state.IgnoreIFF && TryComp<IFFComponent>(uid, out var iff) && (iff.Flags & IFFFlags.HideLabel) == 0 // delete only if IFF off
             || _cleanup.HasNearbyPlayers(xform.Coordinates, state.DistanceOverride ?? _maxDistance * scale * scale) // square it
             || !state.IgnorePowered && HasPoweredAPC((uid, xform)) // don't delete if it has powered APCs
             || !state.IgnorePrice && _pricing.AppraiseGrid(uid) > _maxValue) // expensive to run, put last
         {
             state.CleanupAccumulator = TimeSpan.FromSeconds(0);
-            return false;
-        }
-        // see if we should update timer or just be deleted
-        else if (state.CleanupAccumulator < _duration)
-        {
-            state.CleanupAccumulator += _cleanupInterval * state.CleanupAcceleration / scale;
+            state.LastEvaluation = now;
+            state.EligibilityActive = false;
             return false;
         }
 
-        return true;
+        if (!state.EligibilityActive)
+        {
+            state.EligibilityActive = true;
+            state.LastEvaluation = now;
+            return state.CleanupAccumulator >= _duration;
+        }
+
+        var elapsed = state.LastEvaluation == TimeSpan.Zero
+            ? TimeSpan.Zero
+            : now - state.LastEvaluation;
+        state.LastEvaluation = now;
+
+        // A server stall or cold restore must not make a cleanup timer jump forward.
+        elapsed = elapsed > _cleanupInterval * 2 ? _cleanupInterval : elapsed;
+        if (elapsed < TimeSpan.Zero)
+            elapsed = TimeSpan.Zero;
+
+        if (state.CleanupAccumulator < _duration)
+        {
+            var acceleration = MathF.Max(state.CleanupAcceleration, 0.01f);
+            state.CleanupAccumulator += TimeSpan.FromSeconds(elapsed.TotalSeconds * acceleration / scale);
+        }
+
+        return state.CleanupAccumulator >= _duration;
     }
 
     bool HasPoweredAPC(Entity<TransformComponent> grid)

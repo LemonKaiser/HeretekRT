@@ -55,6 +55,14 @@ entities:
     - type: Transform
       pos: 0.5,0.5
       parent: invalid
+    - type: ProtectedGrid
+      preventEmpEvents: True
+      preventExplosions: True
+      preventRCDUse: True
+    - type: GridGodMode
+      protectedEntities: []
+    - type: GridRaider
+      protectedEntities: []
     - type: MapGrid
       chunks:
         -1,-1:

@@ -18,6 +18,20 @@ public sealed partial class LightCycleComponent : Component
     [DataField, AutoNetworkedField]
     public TimeSpan Duration = TimeSpan.FromMinutes(30);
 
+    /// <summary>
+    /// Optional duration of the illuminated phase. When this and <see cref="NightDuration"/> are
+    /// configured, the cycle has a held night and a smooth dawn/day/dusk phase instead of the
+    /// legacy symmetric sine wave.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan DayDuration;
+
+    /// <summary>
+    /// Optional duration of the dark phase. See <see cref="DayDuration"/>.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan NightDuration;
+
     [DataField, AutoNetworkedField]
     public TimeSpan Offset;
 

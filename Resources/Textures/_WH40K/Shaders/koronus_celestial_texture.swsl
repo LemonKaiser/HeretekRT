@@ -1,0 +1,13 @@
+// Some inherited parallax textures were authored against a black sky rather than with an alpha
+// channel. Treat only near-black pixels as transparent so they cannot punch black holes through
+// a procedural star behind them.
+light_mode unshaded;
+
+void fragment() {
+    highp vec4 color = zTexture(UV);
+    highp float brightness = max(color.r, max(color.g, color.b));
+    if (color.a <= 0.001 || brightness <= 0.008)
+        discard;
+
+    COLOR = color;
+}

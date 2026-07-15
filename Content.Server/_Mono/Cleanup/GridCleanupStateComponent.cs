@@ -6,8 +6,17 @@ namespace Content.Server._Mono.Cleanup;
 [RegisterComponent]
 public sealed partial class GridCleanupGridComponent : Component
 {
-    [ViewVariables]
+    [ViewVariables, DataField]
     public TimeSpan CleanupAccumulator = TimeSpan.FromSeconds(0);
+
+    /// <summary>
+    ///     Runtime-only timestamp. Keeping it out of snapshots freezes the timer while a map is cold-unloaded.
+    /// </summary>
+    [ViewVariables]
+    public TimeSpan LastEvaluation = TimeSpan.Zero;
+
+    [ViewVariables]
+    public bool EligibilityActive;
 
     /// <summary>
     ///     If set, will make this grid get cleaned up faster or slower. 3x means 3 times less time to get cleaned up.

@@ -374,6 +374,12 @@ public sealed partial class MechSystem : SharedMechSystem
 
         base.UpdateUserInterface(uid, component);
 
+        // Godmode can be applied while an entity is still finishing startup. In that
+        // case MechComponent containers are not available yet; the next regular state
+        // update will rebuild the UI after SharedMechSystem.OnStartup has run.
+        if (component.EquipmentContainer == null)
+            return;
+
         var ev = new MechEquipmentUiStateReadyEvent();
         foreach (var ent in component.EquipmentContainer.ContainedEntities)
         {

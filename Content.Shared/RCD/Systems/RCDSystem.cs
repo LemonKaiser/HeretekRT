@@ -317,6 +317,15 @@ public partial class RCDSystem : EntitySystem
         // Update cached prototype if required
         UpdateCachedPrototype(uid, component);
 
+        if (TryComp<ProtectedGridComponent>(mapGridData.GridUid, out var protectedGrid) &&
+            protectedGrid.PreventRCDUse)
+        {
+            if (popMsgs)
+                _popup.PopupClient(Loc.GetString("koronus-safety-rcd-blocked"), uid, user);
+
+            return false;
+        }
+
         // Check that the RCD has enough ammo to get the job done
         TryComp<LimitedChargesComponent>(uid, out var charges);
 

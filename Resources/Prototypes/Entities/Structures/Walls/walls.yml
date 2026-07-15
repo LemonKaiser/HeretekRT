@@ -649,6 +649,8 @@
     mode: Diagonal
     key: walls
     base: state
+  - type: Occluder
+    enabled: false
   - type: Icon
     sprite: Structures/Walls/shuttle_diagonal.rsi
     state: state0

@@ -1,0 +1,11 @@
+- type: gamePreset
+  id: KoronusExpanse
+  alias:
+  - koronus
+  - koronusexpanse
+  name: koronus-expanse-title
+  description: koronus-expanse-description
+  showInVote: true
+  supportedMaps: KoronusExpanseMapPool
+  rules:
+  - KoronusSectorBootstrap

@@ -4,51 +4,51 @@ ent-PoiTreasury = казна POI
     .desc = Укреплённый сейф у консоли захвата этой точки интереса. Заглянуть внутрь может любой, а забирать предметы — только текущий лидер захвата. Пополняется налогом с продаж и периодическими наградами.
 
 ent-PoiTreasuryDebug = { ent-PoiTreasury }
-    .suffix = спесо, сталь, пласталь
+    .suffix = трон гельт, сталь, пласталь
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryTrade = { ent-PoiTreasury }
-    .suffix = спесо 10/100/1000 (умеренно)
+    .suffix = трон гельт 10/100/1000 (умеренно)
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryCargo = { ent-PoiTreasury }
-    .suffix = спесо, сталь, пласталь, картон
+    .suffix = трон гельт, сталь, пласталь, картон
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryRestStop = { ent-PoiTreasury }
-    .suffix = спесо, ИРП, пиво, сигареты
+    .suffix = трон гельт, ИРП, пиво, сигареты
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryShelter = { ent-PoiTreasury }
-    .suffix = спесо, T2 аптечки, фасоль
+    .suffix = трон гельт, T2 аптечки, фасоль
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryCasino = { ent-PoiTreasury }
-    .suffix = спесо, кости, сигареты
+    .suffix = трон гельт, кости, сигареты
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryCombat = { ent-PoiTreasury }
-    .suffix = спесо, оружие+патроны, T2 мед, ножи
+    .suffix = трон гельт, оружие+патроны, T2 мед, ножи
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryIndustrial = { ent-PoiTreasury }
-    .suffix = спесо, сталь, пласталь, кабель, редкие мат.
+    .suffix = трон гельт, сталь, пласталь, кабель, редкие мат.
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryChapel = { ent-PoiTreasury }
-    .suffix = спесо, свеча, библия
+    .suffix = трон гельт, свеча, библия
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryHighRisk = { ent-PoiTreasury }
-    .suffix = спесо, телекристалл, оружие, T2 мед
+    .suffix = трон гельт, телекристалл, оружие, T2 мед
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryScrap = { ent-PoiTreasury }
-    .suffix = спесо, лом, сталь, сварка, инструменты
+    .suffix = трон гельт, лом, сталь, сварка, инструменты
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryScience = { ent-PoiTreasury }
-    .suffix = спесо, плазма, колба, сканер, анализатор
+    .suffix = трон гельт, плазма, колба, сканер, анализатор
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryMining = { ent-PoiTreasury }
@@ -56,19 +56,19 @@ ent-PoiTreasuryMining = { ent-PoiTreasury }
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryTech = { ent-PoiTreasury }
-    .suffix = спесо, батарея, кабель, сталь, флешка
+    .suffix = трон гельт, батарея, кабель, сталь, флешка
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryDungeonTech = { ent-PoiTreasury }
-    .suffix = диск 5k/10k, пласталь, спесо
+    .suffix = диск 5k/10k, пласталь, трон гельт
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryBio = { ent-PoiTreasury }
-    .suffix = спесо, T2 аптечки, химия
+    .suffix = трон гельт, T2 аптечки, химия
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryFuel = { ent-PoiTreasury }
-    .suffix = сварка, плазма, O2, спесо, сталь
+    .suffix = сварка, плазма, O2, трон гельт, сталь
     .desc = { ent-PoiTreasury.desc }
 
 # --- Варианты под конкретные POI (суффикс = пул наград родителя) ---
@@ -78,7 +78,7 @@ ent-PoiTreasuryTradeMall = { ent-PoiTreasuryTrade }
 ent-PoiTreasuryCargoDepot = { ent-PoiTreasuryCargo }
     .desc = { ent-PoiTreasuryCargo.desc }
 ent-PoiTreasuryGrifty = { ent-PoiTreasuryRestStop }
-    .suffix = спесо, сварка, O2, ИРП, пиво
+    .suffix = трон гельт, сварка, O2, ИРП, пиво
     .desc = { ent-PoiTreasury.desc }
 
 ent-PoiTreasuryCaseysCasino = { ent-PoiTreasuryCasino }

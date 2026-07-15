@@ -1,0 +1,26 @@
+// Outer atmospheric shell for a projected planet. It is drawn before the opaque surface so the
+// inner glow cannot tint transparent parallax targets or cover surface detail.
+light_mode unshaded;
+blend_mode normal;
+
+uniform highp vec4 AtmosphereColor;
+uniform highp float AtmosphereIntensity;
+uniform highp vec3 LightDirection;
+
+void fragment() {
+    // The atmosphere quad is 2.5 planet radii wide: radius 1 is the solid surface and 1.25 is the
+    // outer edge of the allocated rectangle.
+    highp vec2 position = (UV - vec2(0.5)) * 2.5;
+    highp float radius = length(position);
+    if (radius <= 0.88 || radius >= 1.25)
+        discard;
+
+    highp float distanceFromSurface = max(radius - 1.0, 0.0);
+    highp float rim = exp(-abs(radius - 1.0) * 34.0);
+    highp float halo = exp(-distanceFromSurface * 12.0) * (1.0 - smoothstep(1.12, 1.25, radius));
+    highp vec2 radialDirection = normalize(vec2(position.x, -position.y));
+    highp float sunward = 0.68 + 0.32 * max(dot(radialDirection, normalize(LightDirection.xy)), 0.0);
+    highp float alpha = (rim * 0.52 + halo * 0.28) * sunward;
+    alpha *= clamp(AtmosphereIntensity, 0.0, 2.0) * AtmosphereColor.a;
+    COLOR = vec4(AtmosphereColor.rgb, clamp(alpha, 0.0, 0.92));
+}

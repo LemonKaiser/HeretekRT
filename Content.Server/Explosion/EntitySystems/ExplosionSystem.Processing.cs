@@ -467,9 +467,9 @@ public sealed partial class ExplosionSystem
 
                 }
 
-                // TODO EXPLOSIONS turn explosions into entities, and pass the the entity in as the damage origin.
                 _damageableSystem.TryChangeDamage(entity, damage, ignoreResistances: true, ignoreGlobalModifiers: true,
                 // Mono: Explosion flag for plate protection
+                origin: cause,
                 originFlag: DamageableSystem.DamageOriginFlag.Explosion);
 
             }
@@ -860,6 +860,14 @@ sealed class Explosion
                 _mapSystem.TryGetTileRef(currentGrid, currentGrid.Comp, _currentEnumerator.Current, out var tileRef) &&
                 !tileRef.Tile.IsEmpty)
             {
+                if (_system.ShouldBlockExplosionGridDamage(Cause, currentGrid.Owner))
+                {
+                    if (!MoveNext())
+                        break;
+
+                    continue;
+                }
+
                 if (!_tileUpdateDict.TryGetValue(currentGrid, out var tileUpdateList))
                 {
                     tileUpdateList = new();

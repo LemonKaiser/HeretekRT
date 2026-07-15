@@ -75,12 +75,12 @@ stack-dried-shrooms = сушеные грибы
 stack-fungal-whiff-tobacco = грибной табак
 stack-sweet-dreams-tobacco = табак "Сладкие сны"
 stack-nf-credit = {$amount ->
-    [1] кредит
-    *[other] кредитов
+    [1] трон гельт
+    *[other] трон гельтов
 }
 stack-counterfeit-credit = {$amount ->
-    [1] спессо
-    *[other] спессо
+    [1] трон гельт
+    *[other] трон гельтов
 }
 stack-frontier-uplink-coin = монета аплинка {$amount ->
     [1] фронтира

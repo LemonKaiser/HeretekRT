@@ -1,0 +1,185 @@
+# NAV and decorative radii are authored independently. The latter is projected by the same
+# parallax factor as body position, so crossing a body's visual edge stays spatially coherent.
+
+- type: koronusCelestialBody
+  id: TrinnitosStar
+  system: Trinnitos
+  bodyType: Star
+  displayName: Trinnitos
+  description: The star at the centre of the Trinnitos system.
+  navVisualRadius: 400
+  backgroundVisualRadius: 650
+  backgroundParallaxSlowness: 0.82
+
+- type: koronusCelestialBody
+  id: Foulstone
+  system: Trinnitos
+  bodyType: Planet
+  displayName: Foulstone
+  description: A temperate world reachable through controlled atmospheric landings from Trinnitos.
+  climate: koronus-planetary-climate-temperate-forest
+  orbitRadius: 4000
+  orbitPhase: 215
+  # One complete orbit every six hours: 360 degrees / 21600 seconds.
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/planet-grass.png
+  navVisualRadius: 230
+  backgroundVisualRadius: 230
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.6
+  surfaceRotationPhase: 28
+  axialTilt: 12
+  cloudRotationSpeed: 0.9
+  cloudOpacity: 0.48
+  cloudScale: 3.4
+  cloudSeed: 4.7
+  atmosphereColor: "#79C9E8"
+  atmosphereIntensity: 0.9
+  surface: FoulstoneSurface
+
+- type: koronusPlanetSurface
+  id: FoulstoneSurface
+  # A normal planet map: atmosphere, gravity, light cycle and Grasslands biome come from PlanetSystem.
+  # Its central 85 x 85 m clearing is reserved before the biome can place flora or other features.
+  mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
+  planet: FoulstoneForestWorld
+  # Gameplay boundary: a 100 x 100 m square. The biome may extend only 25 tiles further so
+  # the view has no abrupt edge; people and shuttles are still clamped to the inner square.
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  # The surface itself has no space backdrop. land/noise is reserved for the atmospheric transit map.
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  # The transfer deliberately mirrors the three visible phases of a BSS jump.
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: FoulstoneForestWorld
+  biome: Grasslands
+  mapName: koronus-foulstone-forest-map-name
+  mapLight: "#A8C79A"
+  # 15 minutes of daylight, followed by a five-minute night on the surface.
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 293.15
+    moles:
+    - 21.824779
+    - 82.10312
+
+# A static landable body in the ordinary Footfall space map. Its angle is selected once per round;
+# zero angular speeds keep both its map position and visible surface fixed afterward.
+- type: koronusCelestialBody
+  id: FuribundusStar
+  system: Footfall
+  bodyType: Star
+  displayName: Фурибундус
+  description: The immense and violently active star at the centre of the Furibundus system.
+  navVisualRadius: 400
+  backgroundVisualRadius: 650
+  backgroundParallaxSlowness: 0.82
+
+- type: koronusCelestialBody
+  id: FootfallDeadWorld
+  system: Footfall
+  bodyType: Planet
+  displayName: Мертвый мир
+  description: A lifeless volcanic world scorched by Furibundus.
+  climate: koronus-planetary-climate-volcanic
+  orbitRadius: 2000
+  orbitPhase: 180
+  # One complete orbit every six hours.
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/lava-planet.png
+  navVisualRadius: 230
+  backgroundVisualRadius: 230
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.45
+  surfaceRotationPhase: 12
+  axialTilt: 4
+  cloudRotationSpeed: 0
+  cloudOpacity: 0
+  atmosphereIntensity: 0
+  surface: FootfallDeadWorldSurface
+
+- type: koronusPlanetSurface
+  id: FootfallDeadWorldSurface
+  mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
+  planet: FootfallDeadWorldProfile
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: FootfallDeadWorldProfile
+  biome: Lava
+  mapName: koronus-footfall-dead-world-map-name
+  mapLight: "#7A4535"
+  dayDuration: 900
+  nightDuration: 300
+  # No gas moles: the entire surface is vacuum despite using the normal planet generator.
+  atmosphere:
+    volume: 2500
+    temperature: 2.7
+
+- type: koronusCelestialBody
+  id: FootfallAsteroid
+  system: Footfall
+  bodyType: Asteroid
+  displayName: Алтарь-Темплум-Каликсис-Экс-17
+  description: An airless asteroid housing an Adeptus Mechanicus temple and a prepared landing site.
+  climate: koronus-planetary-climate-airless-asteroid
+  orbitRadius: 2500
+  randomizePositionAngle: true
+  texture: /Textures/_WH40K/Celestial/asteroid-texture.png
+  navVisualRadius: 115
+  backgroundVisualRadius: 115
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0
+  cloudRotationSpeed: 0
+  cloudOpacity: 0
+  atmosphereIntensity: 0
+  surface: FootfallAsteroidSurface
+
+- type: koronusPlanetSurface
+  id: FootfallAsteroidSurface
+  mapPath: /Maps/_WH40K/Planets/footfall_asteroid_surface.yml
+  planet: FootfallAsteroidWorld
+  # Half-sized gameplay profile compared with Foulstone, with a small generated scenery margin.
+  playableSize: 50, 50
+  sceneryBuffer: 15
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 350
+  landingClearanceSize: 40, 45
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: FootfallAsteroidWorld
+  biome: Asteroid
+  mapName: koronus-footfall-asteroid-map-name
+  # Dim, permanent ambient light: there is no day/night or moving sun-shadow cycle.
+  mapLight: "#242832"
+  lightCycleEnabled: false
+  atmosphere:
+    volume: 2500
+    temperature: 2.7

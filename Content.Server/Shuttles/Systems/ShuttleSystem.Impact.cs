@@ -26,6 +26,7 @@ using Robust.Shared.Random;
 using System.Numerics;
 
 using Content.Server._Mono.Cleanup;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared._Mono.CCVar;
 
 namespace Content.Server.Shuttles.Systems;
@@ -34,6 +35,7 @@ namespace Content.Server.Shuttles.Systems;
 public sealed partial class ShuttleSystem
 {
     [Dependency] private SpaceCleanupSystem _sweep = default!;
+    [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
 
     private bool _enabled;
     private float _minimumImpactInertia;
@@ -178,7 +180,8 @@ public sealed partial class ShuttleSystem
             // Check if the grids are docked together to prevent impact
             var areGridsDocked = _dockSystem.AreGridsDocked(args.OurEntity, args.OtherEntity);
 
-            if (ourProtected || otherProtected || areGridsDocked)
+            if (ourProtected || otherProtected || areGridsDocked ||
+                _koronusSafety.ShouldBlockPlayerShipCollision(args.OurEntity, args.OtherEntity))
                 continue;
 
             // Convert the collision point directly to tile indices

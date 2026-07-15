@@ -25,6 +25,51 @@ public sealed partial class ShipSteererComponent : Component
     public bool AlwaysFaceTarget = false;
 
     /// <summary>
+    /// Makes the long-range pilot turn to its current course before applying travel thrust.
+    /// Emergency collision evasion may still use lateral thrust when there is no time to turn.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public bool ForwardFlight = false;
+
+    /// <summary>
+    /// Thrust multiplier used by this autonomous steering order. It is applied through the normal
+    /// mover input contract, leaving player and terminal docking controls unaffected.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float AutopilotAccelerationMultiplier = 1f;
+
+    /// <summary>
+    /// Heading error in radians below which forward flight may begin after a turn.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float ForwardFlightEnterAngle = 0.2f;
+
+    /// <summary>
+    /// Heading error in radians above which forward flight returns to turn-and-brake mode.
+    /// It is deliberately larger than <see cref="ForwardFlightEnterAngle"/> to avoid oscillation.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float ForwardFlightExitAngle = 0.35f;
+
+    /// <summary>
+    /// Collision horizon in seconds below which forward flight may use immediate lateral evasion.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float ForwardFlightEmergencyTime = 1.5f;
+
+    /// <summary>
+    /// Runtime hysteresis state for <see cref="ForwardFlight"/>.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public bool ForwardFlightAligned = false;
+
+    /// <summary>
+    /// A short-lived map-space waypoint used to pass a large obstacle on one stable side.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public MapCoordinates? AvoidanceWaypoint = null;
+
+    /// <summary>
     /// Whether to avoid shipgun projectiles.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
@@ -53,6 +98,12 @@ public sealed partial class ShipSteererComponent : Component
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     public float BaseEvasionTime = 4f;
+
+    /// <summary>
+    /// Maximum linear speed while following a collision-avoidance vector.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float AvoidanceMaxSpeed = float.PositiveInfinity;
 
     /// <summary>
     /// Don't use anchor below this velocity.
@@ -109,6 +160,12 @@ public sealed partial class ShipSteererComponent : Component
     public float GridSearchDistanceBuffer = 96f;
 
     /// <summary>
+    /// Minimum distance to scan in the current and planned travel directions for collision evasion.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float MinimumObstacleScanDistance = 0f;
+
+    /// <summary>
     /// How much damage we consider an impacting grid to do, per tile, at 1 m/s.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
@@ -121,10 +178,42 @@ public sealed partial class ShipSteererComponent : Component
     public float? InRangeMaxSpeed = null;
 
     /// <summary>
+    /// Maximum linear speed requested from the shuttle mover while this steering order is active.
+    /// Null leaves the shuttle's normal speed unrestricted.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float? SetMaxVelocity = null;
+
+    /// <summary>
+    /// Requested speed at the steering target when a slowdown distance is configured.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float? MinLinearVelocity = null;
+
+    /// <summary>
+    /// Distance from the target over which the requested maximum speed is reduced.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float SlowdownDistance = 0f;
+
+    /// <summary>
     /// Global angle to rotate to while in range.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     public Angle? InRangeRotation = null;
+
+    /// <summary>
+    /// Whether to begin aligning to InRangeRotation before reaching the destination.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public bool RotateBeforeArrival = false;
+
+    /// <summary>
+    /// Distance from the target at which early arrival-angle alignment may begin.
+    /// A non-positive value keeps alignment active during the whole movement.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float RotationAlignmentDistance = 0f;
 
     /// <summary>
     /// Whether to try to match velocity with target.

@@ -1,5 +1,6 @@
 using Content.Server.Construction.Components;
 using Content.Server.Stack;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Construction;
 using Content.Shared.DoAfter;
 using JetBrains.Annotations;
@@ -21,6 +22,7 @@ namespace Content.Server.Construction
         [Dependency] private ContainerSystem _container = default!;
         [Dependency] private StackSystem _stackSystem = default!;
         [Dependency] private SharedToolSystem _toolSystem = default!;
+        [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
 
         public override void Initialize()
         {

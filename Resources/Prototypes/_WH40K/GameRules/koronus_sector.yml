@@ -1,0 +1,7 @@
+- type: entity
+  id: KoronusSectorBootstrap
+  parent: BaseGameRule
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: KoronusSectorRule
+    sector: KoronusExpanse

@@ -13,6 +13,12 @@ public sealed partial class GridRaiderComponent : Component
     [DataField]
     public HashSet<EntityUid> ProtectedEntities = new();
 
+    [DataField]
+    public HashSet<EntityUid> AddedNoHackEntities = new();
+
+    [DataField]
+    public HashSet<EntityUid> AddedNoDeconstructEntities = new();
+
     /// <summary>
     /// Whether to protect entities with Door components.
     /// </summary>
@@ -24,4 +30,10 @@ public sealed partial class GridRaiderComponent : Component
     /// </summary>
     [DataField]
     public bool ProtectVendingMachines = true;
+
+    /// <summary>
+    /// Protects every constructable machine or structure on an authored facility.
+    /// </summary>
+    [DataField]
+    public bool ProtectConstructables = true;
 }

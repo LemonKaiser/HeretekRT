@@ -1877,7 +1877,7 @@ public sealed class DialogueSystem : EntitySystem
             {
                 var speaker = ResolveSpeakerEntity(initiator, target, action.Speaker);
 
-                if (speaker == null || Deleted(speaker.Value))
+                if (speaker == null || Deleted(speaker.Value) || action.Message is not { } message)
                     return false;
 
                 var messageArguments = dialogue == null
@@ -1888,7 +1888,7 @@ public sealed class DialogueSystem : EntitySystem
 
                 _chat.TrySendInGameICMessage(
                     speaker.Value,
-                    Loc.GetString(action.Message, messageArguments),
+                    Loc.GetString(message, messageArguments),
                     InGameICChatType.Speak,
                     action.HideChat,
                     ignoreActionBlocker: true);

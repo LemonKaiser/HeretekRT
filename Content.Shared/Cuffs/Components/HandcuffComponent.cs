@@ -107,6 +107,17 @@ public record struct UncuffAttemptEvent(EntityUid User, EntityUid Target)
 }
 
 /// <summary>
+/// Event raised on a target before another entity starts cuffing them.
+/// </summary>
+[ByRefEvent]
+public record struct CuffAttemptEvent(EntityUid User, EntityUid Target)
+{
+    public bool Cancelled;
+
+    public void Cancel() => Cancelled = true;
+}
+
+/// <summary>
 /// Event raised on an entity being uncuffed to determine any modifiers to the amount of time it takes to uncuff them.
 /// </summary>
 [ByRefEvent]

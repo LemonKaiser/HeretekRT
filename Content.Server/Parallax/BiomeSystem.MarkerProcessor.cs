@@ -25,6 +25,7 @@ public sealed partial class BiomeSystem
     {
         var markers = _markerChunks[component];
         var loadedMarkers = component.LoadedMarkers;
+        var generationBounds = GetGenerationBounds(gridUid);
         var idx = 0;
 
         foreach (var (layer, chunks) in markers)
@@ -54,7 +55,7 @@ public sealed partial class BiomeSystem
                 count = Math.Min(count, layerProto.MaxCount);
 
                 GetMarkerNodes(gridUid, component, grid, layerProto, forced, bounds, count, rand,
-                    out var spawnSet, out var existing);
+                    out var spawnSet, out var existing, generationBounds: generationBounds);
 
                 // Forcing markers to spawn so delete any that were found to be in the way.
                 if (forced && existing.Count > 0)
@@ -133,7 +134,8 @@ public sealed partial class BiomeSystem
         Random rand,
         out Dictionary<Vector2i, string?> spawnSet,
         out HashSet<EntityUid> existingEnts,
-        bool emptyTiles = true)
+        bool emptyTiles = true,
+        Box2? generationBounds = null)
     {
         DebugTools.Assert(count > 0);
         var remainingTiles = _tilePool.Get();
@@ -149,6 +151,9 @@ public sealed partial class BiomeSystem
             for (var y = bounds.Bottom; y < bounds.Top; y++)
             {
                 var node = new Vector2i(x, y);
+
+                if (!IsInsideGenerationBounds(node, generationBounds))
+                    continue;
 
                 // Empty tile, skip if relevant.
                 if (!emptyTiles && (!_mapSystem.TryGetTile(grid, node, out var tile) || tile.IsEmpty))
@@ -271,6 +276,7 @@ public sealed partial class BiomeSystem
         // loaded chunks.
         component.ModifiedTiles.TryGetValue(chunk, out var modified);
         modified ??= _tilePool.Get();
+        var generationBounds = GetGenerationBounds(gridUid);
 
         foreach (var (layer, nodes) in layers)
         {
@@ -278,7 +284,7 @@ public sealed partial class BiomeSystem
 
             foreach (var node in nodes)
             {
-                if (modified.Contains(node))
+                if (!IsInsideGenerationBounds(node, generationBounds) || modified.Contains(node))
                     continue;
 
                 // Need to ensure the tile under it has loaded for anchoring.

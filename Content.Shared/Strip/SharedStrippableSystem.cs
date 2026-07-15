@@ -119,6 +119,9 @@ public abstract partial class SharedStrippableSystem : EntitySystem
             !Resolve(target, ref targetStrippable))
             return;
 
+        if (!CanStrip(user, target))
+            return;
+
         if (!target.Comp.CanBeStripped)
             return;
 
@@ -150,6 +153,9 @@ public abstract partial class SharedStrippableSystem : EntitySystem
         string slot)
     {
         if (!Resolve(user, ref user.Comp))
+            return false;
+
+        if (!CanStrip(user, target))
             return false;
 
         if (user.Comp.ActiveHand == null)
@@ -255,6 +261,9 @@ public abstract partial class SharedStrippableSystem : EntitySystem
         EntityUid item,
         string slot)
     {
+        if (!CanStrip(user, target))
+            return false;
+
         if (!_inventorySystem.TryGetSlotEntity(target, slot, out var slotItem))
         {
             _popupSystem.PopupCursor(Loc.GetString("strippable-component-item-slot-free-message", ("owner", target)));
@@ -351,6 +360,9 @@ public abstract partial class SharedStrippableSystem : EntitySystem
     {
         if (!Resolve(user, ref user.Comp) ||
             !Resolve(target, ref target.Comp))
+            return false;
+
+        if (!CanStrip(user, target))
             return false;
 
         if (!target.Comp.CanBeStripped)
@@ -454,6 +466,9 @@ public abstract partial class SharedStrippableSystem : EntitySystem
         string handName)
     {
         if (!Resolve(target, ref target.Comp))
+            return false;
+
+        if (!CanStrip(user, target))
             return false;
 
         if (!target.Comp.CanBeStripped)
@@ -603,6 +618,16 @@ public abstract partial class SharedStrippableSystem : EntitySystem
 
         if (TryOpenStrippingUi(args.User, (uid, component)))
             args.Handled = true;
+    }
+
+    private bool CanStrip(EntityUid user, EntityUid target)
+    {
+        if (user == target)
+            return true;
+
+        var attempt = new StripAttemptEvent(user, target);
+        RaiseLocalEvent(target, ref attempt);
+        return !attempt.Cancelled;
     }
 
     /// <summary>

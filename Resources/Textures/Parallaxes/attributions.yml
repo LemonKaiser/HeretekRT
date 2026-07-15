@@ -32,3 +32,8 @@
   license: "CC-BY-NC-SA-3.0"
   copyright: "Made by SlamBamActionman"
   source: "https://github.com/space-wizards/space-station-14/blob/master/Resources/Textures/Parallaxes/space_map3.png"
+
+- files: ["void_tactical_map.png"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Hertek"
+  source: "https://github.com/tgstation/tgstation"

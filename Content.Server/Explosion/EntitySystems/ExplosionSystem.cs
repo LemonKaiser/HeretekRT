@@ -7,6 +7,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Destructible;
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NPC.Pathfinding;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Camera;
 using Content.Shared.CCVar;
@@ -67,6 +68,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private FlammableSystem _flammableSystem = default!;
     [Dependency] private DestructibleSystem _destructibleSystem = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
 
     private EntityQuery<FlammableComponent> _flammableQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -284,7 +286,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             return;
 
         // Mono - MapCoordinates -> EntityCoordinates
-        QueueExplosion(gridPos!.Value, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false);
+        QueueExplosion(gridPos!.Value, typeId, totalIntensity, slope, maxTileIntensity, user ?? uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false);
 
         if (!addLog)
             return;
@@ -486,5 +488,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             if (effect > 0.01f)
                 _recoilSystem.KickCamera(uid, -delta.Normalized() * effect);
         }
+    }
+
+    internal bool ShouldBlockExplosionGridDamage(EntityUid? cause, EntityUid grid)
+    {
+        return _koronusSafety.ShouldBlockExplosionGridDamage(cause, grid);
     }
 }

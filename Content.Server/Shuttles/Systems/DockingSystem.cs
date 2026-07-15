@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Doors.Systems;
 using Content.Server.NPC.Pathfinding;
 using Content.Server.Shuttles.Components;
@@ -64,7 +65,9 @@ namespace Content.Server.Shuttles.Systems
             _dockingSet.Clear();
             _lookup.GetChildEntities(gridUid, _dockingSet);
 
-            foreach (var dock in _dockingSet)
+            // Undock raises events that may query docks again. Those queries reuse _dockingSet,
+            // so iterate a snapshot rather than the mutable shared lookup buffer.
+            foreach (var dock in _dockingSet.ToArray())
             {
                 Undock(dock);
             }
@@ -76,7 +79,8 @@ namespace Content.Server.Shuttles.Systems
             _dockingSet.Clear();
             _lookup.GetChildEntities(gridUid, _dockingSet);
 
-            foreach (var dock in _dockingSet)
+            // Dock may likewise raise handlers which query and clear the shared lookup buffer.
+            foreach (var dock in _dockingSet.ToArray())
             {
                 if (dock.Comp.DockedWith is not { } with || !TryComp<DockingComponent>(with, out var otherDock))
                     continue;
@@ -113,11 +117,6 @@ namespace Content.Server.Shuttles.Systems
             }
 
             var gridUid = Transform(uid).GridUid;
-
-            if (gridUid != null && !Terminating(gridUid.Value))
-            {
-                _console.RefreshShuttleConsoles();
-            }
 
             Cleanup(uid, component);
         }
@@ -211,7 +210,6 @@ namespace Content.Server.Shuttles.Systems
 
             Undock(entity);
             Dock((uid, component), (otherDock.Value, other));
-            _console.RefreshShuttleConsoles();
         }
 
         /// <summary>
@@ -334,7 +332,6 @@ namespace Content.Server.Shuttles.Systems
                 GridBUid = gridB,
             };
 
-            _console.RefreshShuttleConsoles();
             RaiseLocalEvent(dockAUid, msg);
             RaiseLocalEvent(dockBUid, msg);
             RaiseLocalEvent(msg);
@@ -384,7 +381,6 @@ namespace Content.Server.Shuttles.Systems
             OnUndock(dock.Owner);
             OnUndock(dock.Comp.DockedWith.Value);
             Cleanup(dock.Owner, dock);
-            _console.RefreshShuttleConsoles();
 
             // If undocking occurred during FTL travel, we need to update the FTL components
             if (dockedInFTL && ftlSourceShuttle != null && ftlComp != null)

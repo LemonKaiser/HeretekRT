@@ -1,0 +1,140 @@
+// Animated photosphere for a decorative system star. Large-scale structure comes from a
+// repository texture, while layered gradient noise adds flowing plasma and soft granulation.
+// The corona is intentionally a separate normal-alpha shader so the opaque disk cannot wash it
+// out and partially transparent parallax targets cannot create dark additive-blending wedges.
+light_mode unshaded;
+blend_mode normal;
+
+uniform sampler2D NoiseTexture;
+
+highp vec2 rotatePoint(highp vec2 point, highp float angle) {
+    highp float sine = sin(angle);
+    highp float cosine = cos(angle);
+    return vec2(cosine * point.x - sine * point.y, sine * point.x + cosine * point.y);
+}
+
+highp vec2 hash22(highp vec2 point) {
+    highp vec2 result = vec2(
+        dot(point, vec2(127.1, 311.7)),
+        dot(point, vec2(269.5, 183.3)));
+    return fract(sin(result) * 43758.5453123);
+}
+
+// Smooth gradient noise avoids the soft square patches produced by value noise.
+highp float gradientNoise(highp vec2 point) {
+    highp vec2 cell = floor(point);
+    highp vec2 local = fract(point);
+    highp vec2 blend = local * local * local * (local * (local * 6.0 - 15.0) + 10.0);
+
+    highp vec2 gradient00 = normalize(hash22(cell) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient10 = normalize(hash22(cell + vec2(1.0, 0.0)) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient01 = normalize(hash22(cell + vec2(0.0, 1.0)) * 2.0 - 1.0 + vec2(0.001));
+    highp vec2 gradient11 = normalize(hash22(cell + vec2(1.0, 1.0)) * 2.0 - 1.0 + vec2(0.001));
+
+    highp float lower = mix(dot(gradient00, local), dot(gradient10, local - vec2(1.0, 0.0)), blend.x);
+    highp float upper = mix(dot(gradient01, local - vec2(0.0, 1.0)), dot(gradient11, local - vec2(1.0)), blend.x);
+    return clamp(0.5 + mix(lower, upper, blend.y) * 0.78, 0.0, 1.0);
+}
+
+// Samples only the middle of the repository noise texture, avoiding clamp seams. Rotated samples
+// at different scales remove any obvious relationship with the source parallax texture.
+highp float textureNoise(highp vec2 point, highp float scale, highp vec2 offset) {
+    highp vec2 coordinates = vec2(0.5) + point * scale + offset;
+    return texture2D(NoiseTexture, clamp(coordinates, vec2(0.002), vec2(0.998))).r;
+}
+
+// Organic elliptical magnetic region. Several overlapping instances form recognisable sunspot
+// groups; a shared smooth distortion breaks their outlines without producing square thresholds.
+highp vec2 sunspot(
+    highp vec2 point,
+    highp vec2 centre,
+    highp vec2 axes,
+    highp float angle,
+    highp float distortion) {
+    highp vec2 local = rotatePoint(point - centre, -angle) / axes;
+    highp float directionalBreakup = sin(local.x * 3.7 + local.y * 2.1) * 0.035;
+    highp float distance = length(local) + distortion * 0.15 + directionalBreakup;
+    highp float penumbra = 1.0 - smoothstep(0.70, 1.20, distance);
+    highp float core = 1.0 - smoothstep(0.27, 0.68, distance + distortion * 0.08);
+    return vec2(penumbra, core);
+}
+
+highp vec3 solarPalette(highp float heat) {
+    highp vec3 colour = mix(vec3(0.22, 0.004, 0.001), vec3(0.78, 0.035, 0.001), smoothstep(0.02, 0.40, heat));
+    colour = mix(colour, vec3(1.0, 0.24, 0.004), smoothstep(0.30, 0.66, heat));
+    colour = mix(colour, vec3(1.0, 0.72, 0.075), smoothstep(0.58, 0.90, heat));
+    colour = mix(colour, vec3(1.0, 0.97, 0.58), smoothstep(0.86, 1.16, heat));
+    return colour;
+}
+
+void fragment() {
+    // The drawing rectangle is 2.08 solar radii wide, leaving room for antialiasing at the limb.
+    highp vec2 position = (UV - vec2(0.5)) * 2.08;
+    highp float radiusSquared = dot(position, position);
+    highp float radius = sqrt(radiusSquared);
+    if (radius >= 1.02)
+        discard;
+
+    highp float time = TIME;
+    highp float sphereDepth = sqrt(max(1.0 - radiusSquared, 0.0));
+
+    // Slow differential rotation and two gradient-noise fields bend the texture without creating
+    // the central pinwheel that a simple polar distortion produces.
+    highp float rotation = time * (0.0065 - position.y * position.y * 0.0018);
+    highp vec2 rotated = rotatePoint(position, rotation);
+    highp vec2 warp = vec2(
+        gradientNoise(rotated * 2.7 + vec2(time * 0.018, -time * 0.011)),
+        gradientNoise(rotatePoint(rotated, 1.71) * 2.3 + vec2(-time * 0.013, time * 0.016))) - 0.5;
+    highp vec2 surface = rotated + warp * (0.20 + sphereDepth * 0.07);
+
+    highp vec2 driftA = vec2(sin(time * 0.007), cos(time * 0.006)) * 0.035;
+    highp vec2 driftB = vec2(cos(time * 0.005), -sin(time * 0.008)) * 0.028;
+    highp float macroA = textureNoise(surface, 0.30, driftA);
+    highp float macroB = textureNoise(rotatePoint(surface, 1.93), 0.39, driftB);
+    highp float macroField = macroA * 0.62 + macroB * 0.38;
+
+    highp float foldedFlow = 1.0 - abs(gradientNoise(surface * 9.0 + warp * 3.4 + vec2(time * 0.025, 0.0)) * 2.0 - 1.0);
+    highp float brightFilaments = smoothstep(0.58, 0.91, foldedFlow);
+
+    // Two non-cellular frequencies keep detail at close zoom without drawing a Voronoi mesh.
+    highp float fineGranules = gradientNoise(surface * 31.0 + vec2(time * 0.036, -time * 0.024));
+    highp float microGranules = gradientNoise(rotatePoint(surface, 0.83) * 67.0 - vec2(time * 0.047, time * 0.031));
+    highp float microRidges = 1.0 - abs(microGranules * 2.0 - 1.0);
+    highp float granulation = smoothstep(0.24, 0.78, fineGranules * 0.68 + microRidges * 0.32);
+    highp float microVariation = gradientNoise(surface * 37.0 - vec2(time * 0.041, time * 0.029));
+
+    // Explicit overlapping ellipses create smooth penumbrae and dark cores. The texture is no
+    // longer thresholded into spots, which removes the source image's rectangular black islands.
+    highp float spotDistortion = gradientNoise(surface * 14.0 + vec2(time * 0.019, -time * 0.015)) - 0.5;
+    highp vec2 spots = sunspot(surface, vec2(-0.30, 0.19), vec2(0.17, 0.082), 0.28, spotDistortion);
+    spots = max(spots, sunspot(surface, vec2(-0.13, 0.21), vec2(0.070, 0.044), -0.22, -spotDistortion));
+    spots = max(spots, sunspot(surface, vec2(0.31, -0.23), vec2(0.13, 0.067), -0.46, spotDistortion));
+    spots = max(spots, sunspot(surface, vec2(0.45, -0.17), vec2(0.058, 0.038), 0.31, -spotDistortion));
+    highp float activeRegion = spots.x;
+    highp float spotCore = spots.y;
+    highp float plage = clamp(activeRegion - spotCore, 0.0, 1.0) * smoothstep(0.46, 0.86, foldedFlow);
+
+    highp float heat = 0.31;
+    heat += granulation * 0.37;
+    heat += microVariation * 0.13;
+    heat += brightFilaments * 0.18;
+    heat += plage * 0.30;
+    heat += (macroField - 0.58) * 0.11;
+    heat -= activeRegion * 0.15;
+    heat -= spotCore * 0.48;
+
+    // Optical limb darkening gives the procedural disk a spherical volume. A thin chromospheric
+    // line keeps the silhouette hot and distinct against the surrounding corona.
+    highp float limbDarkening = 0.57 + 0.43 * pow(sphereDepth, 0.42);
+    heat *= limbDarkening;
+    highp vec3 colour = solarPalette(heat);
+    colour = mix(colour, vec3(0.13, 0.002, 0.001), spotCore * 0.82);
+    colour += vec3(1.0, 0.30, 0.015) * plage * 0.24;
+
+    highp float chromosphere = smoothstep(0.963, 0.986, radius) * (1.0 - smoothstep(0.986, 1.0, radius));
+    colour += vec3(1.0, 0.19, 0.006) * chromosphere * 0.52;
+
+    highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
+    highp float alpha = 1.0 - smoothstep(1.0 - antialias, 1.0 + antialias, radius);
+    COLOR = vec4(colour, alpha);
+}

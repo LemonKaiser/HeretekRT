@@ -1,5 +1,6 @@
 using Content.Shared.Examine;
 using Content.Shared.Rejuvenate;
+using Content.Shared.Tiles;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
@@ -87,6 +88,14 @@ public abstract partial class SharedEmpSystem : EntitySystem
     /// <returns>If the entity was affected by the EMP.</returns>
     public bool TryEmpEffects(EntityUid uid, float energyConsumption, TimeSpan duration, EntityUid? user = null)
     {
+        if (TryComp<TransformComponent>(uid, out var transform) &&
+            transform.GridUid is { } gridUid &&
+            TryComp<ProtectedGridComponent>(gridUid, out var protectedGrid) &&
+            protectedGrid.PreventEmpEvents)
+        {
+            return false;
+        }
+
         var attemptEv = new EmpAttemptEvent();
         RaiseLocalEvent(uid, ref attemptEv);
         if (attemptEv.Cancelled)

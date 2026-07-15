@@ -396,7 +396,7 @@ public sealed partial class FireControlSystem : EntitySystem
         return true;
     }
 
-    public void FireWeapons(EntityUid server, List<NetEntity> weapons, NetCoordinates coordinates, FireControlServerComponent? component = null)
+    public void FireWeapons(EntityUid server, List<NetEntity> weapons, NetCoordinates coordinates, FireControlServerComponent? component = null, EntityUid? user = null)
     {
         if (!Resolve(server, ref component))
             return;
@@ -414,7 +414,7 @@ public sealed partial class FireControlSystem : EntitySystem
             if (!Exists(localWeapon) || !component.Controlled.Contains(localWeapon))
                 continue;
 
-            var fired = AttemptFire(localWeapon, localWeapon, targetCoords);
+            var fired = AttemptFire(localWeapon, user ?? localWeapon, targetCoords);
 
             artilleryFired |= _artilleryQuery.HasComp(localWeapon) && fired;
         }

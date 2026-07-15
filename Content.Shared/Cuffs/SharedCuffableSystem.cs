@@ -148,6 +148,11 @@ namespace Content.Shared.Cuffs
 
         private void OnRejuvenate(EntityUid uid, CuffableComponent component, RejuvenateEvent args)
         {
+            // Rejuvenate may be raised while the entity is still starting. The cuff
+            // container is created in ComponentInit, so there is nothing to clear yet.
+            if (component.Container == null)
+                return;
+
             _container.EmptyContainer(component.Container, true);
         }
 
@@ -507,6 +512,11 @@ namespace Content.Shared.Cuffs
 
             if (HasComp<DisarmProneComponent>(target))
                 cuffTime = 0.0f; // cuff them instantly.
+
+            var attempt = new CuffAttemptEvent(user, target);
+            RaiseLocalEvent(target, ref attempt, true);
+            if (attempt.Cancelled)
+                return false;
 
             var doAfterEventArgs = new DoAfterArgs(EntityManager, user, cuffTime, new AddCuffDoAfterEvent(), handcuff, target, handcuff)
             {

@@ -64,6 +64,12 @@ namespace Content.Server.Shuttles.Components
         public string AutopilotRotationKey = "TargetRotation";
 
         [DataField]
+        public string AutoDockTargetKey = "AutoDockTarget";
+
+        [DataField]
+        public string AutoDockRotationKey = "AutoDockRotation";
+
+        [DataField]
         public SoundSpecifier? AutopilotDoneSound = new SoundPathSpecifier("/Audio/Effects/Shuttle/radar_ping.ogg");
         // </Mono>
 

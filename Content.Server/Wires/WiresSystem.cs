@@ -13,6 +13,7 @@ using Content.Shared.Power;
 using Content.Shared.Tools.Components;
 using Content.Shared.Wires;
 using Content.Shared._Mono.NoHack;
+using Content.Server._WH40K.SectorMap.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -29,6 +30,7 @@ public sealed partial class WiresSystem : SharedWiresSystem
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ConstructionSystem _construction = default!;
+    [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
 
     // This is where all the wire layouts are stored.
     [ViewVariables] private readonly Dictionary<string, WireLayout> _layouts = new();
@@ -609,6 +611,12 @@ public sealed partial class WiresSystem : SharedWiresSystem
 
     private void TryDoWireAction(EntityUid target, EntityUid user, EntityUid toolEntity, int id, WiresAction action, WiresComponent? wires = null, ToolComponent? tool = null)
     {
+        if (_koronusSafety.ShouldBlockWireModification(user, target))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("koronus-safety-wires-blocked"), user);
+            return;
+        }
+
         if (HasComp<NoHackComponent>(target))
             return;
 

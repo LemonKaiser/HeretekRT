@@ -1,6 +1,7 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Parallax;
 using Content.Shared._DV.Planet;
+using Content.Shared.Light.Components;
 using Content.Shared.Parallax.Biomes;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
@@ -30,6 +31,22 @@ public sealed partial class PlanetSystem : EntitySystem
 
         var map = _map.CreateMap(out _, runMapInit: runMapInit);
         _biome.EnsurePlanet(map, _proto.Index(planet.Biome), mapLight: planet.MapLight);
+
+        var cycle = Comp<LightCycleComponent>(map);
+        if (!planet.LightCycleEnabled)
+        {
+            cycle.Enabled = false;
+            cycle.InitialOffset = false;
+            Dirty(map, cycle);
+            RemComp<SunShadowCycleComponent>(map);
+        }
+        else if (planet.DayDuration is { } dayDuration && planet.NightDuration is { } nightDuration)
+        {
+            cycle.DayDuration = dayDuration;
+            cycle.NightDuration = nightDuration;
+            cycle.Duration = dayDuration + nightDuration;
+            Dirty(map, cycle);
+        }
 
         // add each marker layer
         var biome = Comp<BiomeComponent>(map);

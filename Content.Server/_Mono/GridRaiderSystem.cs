@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Shared._Mono;
 using Content.Shared._Mono.NoHack;
 using Content.Shared._Mono.NoDeconstruct;
+using Content.Server.Construction.Components;
 using Content.Shared.Doors.Components;
 using Content.Shared.VendingMachines;
 using Robust.Shared.Containers;
@@ -10,120 +11,151 @@ using Robust.Shared.Map.Components;
 namespace Content.Server._Mono;
 
 /// <summary>
-/// System that handles the GridRaiderComponent, which applies NoHack and NoDeconstruct to entities with Door and/or VendingMachine components on a grid.
-/// Protection is applied once during initialization and remains until the component is removed.
+/// Keeps authored facility entities protected as they are created, rebuilt or moved onto a grid.
+/// The component is never attached to procedural terrain, so asteroid mining remains available.
 /// </summary>
 public sealed partial class GridRaiderSystem : EntitySystem
 {
+    private const float RefreshInterval = 1f;
+
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedContainerSystem _container = default!;
+
+    private float _refreshAccumulator;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<GridRaiderComponent, MapInitEvent>(OnGridRaiderMapInit);
+        SubscribeLocalEvent<GridRaiderComponent, ComponentStartup>(OnGridRaiderStartup);
         SubscribeLocalEvent<GridRaiderComponent, ComponentShutdown>(OnGridRaiderShutdown);
     }
 
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
 
+        _refreshAccumulator += frameTime;
+        if (_refreshAccumulator < RefreshInterval)
+            return;
+
+        _refreshAccumulator = 0f;
+        var grids = EntityQueryEnumerator<GridRaiderComponent>();
+        while (grids.MoveNext(out var grid, out var component))
+            RefreshGridProtection(grid, component);
+    }
 
     private void OnGridRaiderMapInit(EntityUid uid, GridRaiderComponent component, MapInitEvent args)
     {
-        // Verify this is applied to a grid
         if (!HasComp<MapGridComponent>(uid))
         {
             Log.Warning($"GridRaiderComponent applied to non-grid entity {ToPrettyString(uid)}");
             return;
         }
 
-        // Find all entities on the grid and apply NoHack/NoDeconstruct to doors and vending machines
         ApplyInitialProtection(uid, component);
+    }
+
+    private void OnGridRaiderStartup(EntityUid uid, GridRaiderComponent component, ComponentStartup args)
+    {
+        if (HasComp<MapGridComponent>(uid))
+            ApplyInitialProtection(uid, component);
     }
 
     private void OnGridRaiderShutdown(EntityUid uid, GridRaiderComponent component, ComponentShutdown args)
     {
-        // When the component is removed, remove NoHack/NoDeconstruct from all protected entities
         foreach (var entity in component.ProtectedEntities.ToList())
         {
             if (EntityManager.EntityExists(entity))
-            {
-                RemoveProtection(entity);
-            }
+                RemoveProtection(entity, component);
         }
 
         component.ProtectedEntities.Clear();
+        component.AddedNoHackEntities.Clear();
+        component.AddedNoDeconstructEntities.Clear();
     }
 
-
-
-
-
-    /// <summary>
-    /// Applies initial protection to all eligible entities on the grid during map initialization
-    /// </summary>
-    private void ApplyInitialProtection(EntityUid gridUid, GridRaiderComponent component)
+    private void RefreshGridProtection(EntityUid grid, GridRaiderComponent component)
     {
-        // Get all entities currently on the grid
-        var allEntitiesOnGrid = _lookup.GetEntitiesIntersecting(gridUid).ToHashSet();
+        ApplyInitialProtection(grid, component);
 
-        // Find entities that should be protected based on component settings
-        foreach (var entity in allEntitiesOnGrid)
+        foreach (var entity in component.ProtectedEntities.ToList())
         {
-            // Skip the grid itself and entities inside containers
-            if (entity == gridUid || _container.IsEntityInContainer(entity))
-                continue;
-
-            // Check if this entity should be protected based on current settings
-            var shouldProtect = false;
-            var hackProtect = true;
-
-            if (component.ProtectDoors && HasComp<DoorComponent>(entity))
-                shouldProtect = true;
-
-            if (component.ProtectVendingMachines && HasComp<VendingMachineComponent>(entity))
+            if (!Exists(entity))
             {
-                shouldProtect = true;
-                hackProtect = false; // vendors can be hackable
+                component.ProtectedEntities.Remove(entity);
+                component.AddedNoHackEntities.Remove(entity);
+                component.AddedNoDeconstructEntities.Remove(entity);
+                continue;
             }
 
-            if (shouldProtect)
-                ApplyProtection(entity, component, hackProtect);
+            if (TryComp<TransformComponent>(entity, out var transform) && transform.GridUid == grid)
+                continue;
+
+            component.ProtectedEntities.Remove(entity);
+            RemoveProtection(entity, component);
         }
     }
 
-    /// <summary>
-    /// Applies NoHack and NoDeconstruct to an entity and adds it to the protected entities list
-    /// </summary>
+    private void ApplyInitialProtection(EntityUid gridUid, GridRaiderComponent component)
+    {
+        foreach (var entity in _lookup.GetEntitiesIntersecting(gridUid).ToHashSet())
+            TryProtectEntity(gridUid, entity, component);
+    }
+
+    private void TryProtectEntity(EntityUid gridUid, EntityUid entity, GridRaiderComponent component)
+    {
+        if (entity == gridUid ||
+            _container.IsEntityInContainer(entity) ||
+            !TryComp<TransformComponent>(entity, out var transform) ||
+            transform.GridUid != gridUid)
+            return;
+
+        var shouldProtect = false;
+        var hackProtect = true;
+
+        if (component.ProtectDoors && HasComp<DoorComponent>(entity))
+            shouldProtect = true;
+
+        if (component.ProtectVendingMachines && HasComp<VendingMachineComponent>(entity))
+        {
+            shouldProtect = true;
+            hackProtect = false; // vendors remain hackable, but cannot be deconstructed.
+        }
+
+        if (component.ProtectConstructables && HasComp<ConstructionComponent>(entity))
+            shouldProtect = true;
+
+        if (shouldProtect)
+            ApplyProtection(entity, component, hackProtect);
+    }
+
     private void ApplyProtection(EntityUid entityUid, GridRaiderComponent component, bool hackProtect = true, bool deconProtect = true)
     {
-        // Skip if the entity is already protected
         if (component.ProtectedEntities.Contains(entityUid))
             return;
 
-        // Apply NoHack and NoDeconstruct components
-        if (hackProtect)
+        if (hackProtect && !HasComp<NoHackComponent>(entityUid))
+        {
             EnsureComp<NoHackComponent>(entityUid);
-        if (deconProtect)
+            component.AddedNoHackEntities.Add(entityUid);
+        }
+
+        if (deconProtect && !HasComp<NoDeconstructComponent>(entityUid))
+        {
             EnsureComp<NoDeconstructComponent>(entityUid);
+            component.AddedNoDeconstructEntities.Add(entityUid);
+        }
 
         component.ProtectedEntities.Add(entityUid);
     }
 
-    /// <summary>
-    /// Removes NoHack and NoDeconstruct from an entity
-    /// </summary>
-    private void RemoveProtection(EntityUid entityUid)
+    private void RemoveProtection(EntityUid entityUid, GridRaiderComponent component)
     {
-        if (HasComp<NoHackComponent>(entityUid))
-        {
+        if (component.AddedNoHackEntities.Remove(entityUid) && HasComp<NoHackComponent>(entityUid))
             RemComp<NoHackComponent>(entityUid);
-        }
 
-        if (HasComp<NoDeconstructComponent>(entityUid))
-        {
+        if (component.AddedNoDeconstructEntities.Remove(entityUid) && HasComp<NoDeconstructComponent>(entityUid))
             RemComp<NoDeconstructComponent>(entityUid);
-        }
     }
-
-
 }

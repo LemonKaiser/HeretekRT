@@ -96,6 +96,6 @@ book-text-cargo-outage = Dear User,
 
       Further details are being refined. We appreciate your patience.
 
-      $10 have been retracted from your account for a convenience fee.
+      ₮10 have been retracted from your account for a convenience fee.
 
       This paper will automatically disintegrate after 2 minutes.

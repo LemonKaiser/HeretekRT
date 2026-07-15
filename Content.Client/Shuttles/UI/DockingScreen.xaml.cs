@@ -31,11 +31,13 @@ public sealed partial class DockingScreen : BoxContainer
     private readonly Dictionary<NetEntity, Button> _ourDockButtons = new();
 
     private readonly ButtonGroup _ftlLockButtonGroup = new();
+    private readonly ButtonGroup _autoDockButtonGroup = new();
 
     public event Action<NetEntity, NetEntity>? DockRequest;
     public event Action<NetEntity>? UndockRequest;
     public event Action<List<NetEntity>>? UndockAllRequest;
     public event Action<List<NetEntity>, bool>? ToggleFTLLockRequest;
+    public event Action<bool>? ToggleAutoDockRequest;
 
     public DockingScreen()
     {
@@ -59,6 +61,11 @@ public sealed partial class DockingScreen : BoxContainer
 
         FTLLockEnabledButton.OnPressed += _ => OnFTLLockPressed(true);
         FTLLockDisabledButton.OnPressed += _ => OnFTLLockPressed(false);
+
+        AutoDockEnabledButton.Group = _autoDockButtonGroup;
+        AutoDockDisabledButton.Group = _autoDockButtonGroup;
+        AutoDockEnabledButton.OnPressed += _ => ToggleAutoDockRequest?.Invoke(true);
+        AutoDockDisabledButton.OnPressed += _ => ToggleAutoDockRequest?.Invoke(false);
 
         UndockAllButton.OnPressed += _ => OnUndockAllPressed();
     }
@@ -173,6 +180,8 @@ public sealed partial class DockingScreen : BoxContainer
     public void UpdateState(EntityUid? shuttle, DockingInterfaceState state)
     {
         Docks = state.Docks;
+        AutoDockEnabledButton.Pressed = state.AutoDockEnabled;
+        AutoDockDisabledButton.Pressed = !state.AutoDockEnabled;
         DockingControl.DockState = state;
         DockingControl.GridEntity = shuttle;
         BuildDocks(shuttle);

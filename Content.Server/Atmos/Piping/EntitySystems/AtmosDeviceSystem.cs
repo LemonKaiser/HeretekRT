@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
@@ -131,15 +132,31 @@ namespace Content.Server.Atmos.Piping.EntitySystems
 
             var time = _gameTiming.CurTime;
             var ev = new AtmosDeviceUpdateEvent(_atmosphereSystem.AtmosTime, null, null);
-            foreach (var device in _joinedDevices)
+            // Devices can lose Transform before ComponentShutdown when their map/grid is deleted.
+            // Never let one stale entry abort the whole atmos tick; remove it and continue with the
+            // remaining off-grid devices.
+            foreach (var device in _joinedDevices.ToArray())
             {
-                var deviceGrid = Transform(device).GridUid;
-                if (HasComp<GridAtmosphereComponent>(deviceGrid))
+                if (!Exists(device) ||
+                    !TryComp<AtmosDeviceComponent>(device, out var liveComponent) ||
+                    !TryComp<TransformComponent>(device, out var transform))
                 {
-                    RejoinAtmosphere(device);
+                    _joinedDevices.Remove(device);
+                    continue;
                 }
-                RaiseLocalEvent(device, ref ev);
-                device.Comp.LastProcess = time;
+
+                // Refresh the wrapper in case the component was re-added while the old
+                // entry was still waiting for ComponentShutdown.
+                Entity<AtmosDeviceComponent> liveDevice = (device.Owner, liveComponent);
+                var deviceGrid = transform.GridUid;
+                if (deviceGrid is { } grid && HasComp<GridAtmosphereComponent>(grid))
+                {
+                    RejoinAtmosphere(liveDevice);
+                    continue;
+                }
+
+                RaiseLocalEvent(liveDevice, ref ev);
+                liveComponent.LastProcess = time;
             }
         }
 

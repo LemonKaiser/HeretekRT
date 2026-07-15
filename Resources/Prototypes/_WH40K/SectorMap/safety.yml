@@ -1,0 +1,46 @@
+# Reusable Koronus safety policies. Orbital stations use a dynamic component anchored to their
+# facility grid; planetary surfaces may opt into a map-wide profile without a green orbital ring.
+- type: koronusSafetyProfile
+  id: KoronusFullSafeSystem
+  blockShipWeapons: true
+  blockPlayerDamage: true
+  blockPlayerStaminaDamage: true
+  blockPlayerPulling: true
+  blockOtherPlayerStrip: true
+  blockPlayerExplosions: true
+  protectPlayerShipWires: true
+  protectPlayerShipDeconstruction: true
+  protectStation: true
+  blockForcedBuckle: true
+  blockPlayerHarmfulInteractions: true
+  protectNonHostileMobs: true
+
+- type: koronusSafetyProfile
+  id: KoronusStationSafeZone
+  blockShipWeapons: true
+  blockPlayerDamage: true
+  blockPlayerStaminaDamage: true
+  blockPlayerPulling: true
+  blockOtherPlayerStrip: true
+  blockPlayerExplosions: true
+  protectPlayerShipWires: true
+  protectPlayerShipDeconstruction: true
+  protectStation: true
+  blockForcedBuckle: true
+  blockPlayerHarmfulInteractions: true
+  protectNonHostileMobs: true
+
+- type: koronusSafetyProfile
+  id: KoronusPlanetSafeSurface
+  blockShipWeapons: true
+  blockPlayerDamage: true
+  blockPlayerStaminaDamage: true
+  blockPlayerPulling: true
+  blockOtherPlayerStrip: true
+  blockPlayerExplosions: true
+  protectPlayerShipWires: true
+  protectPlayerShipDeconstruction: true
+  protectStation: true
+  blockForcedBuckle: true
+  blockPlayerHarmfulInteractions: true
+  protectNonHostileMobs: true

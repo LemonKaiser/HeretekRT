@@ -1,0 +1,69 @@
+- type: entity
+  parent: Catwalk
+  id: KoronusLandingPadTile
+  name: landing pad plating
+  description: Reinforced visible plating used to mark a planetary shuttle landing area.
+  components:
+  - type: KoronusLandingPad
+  - type: Appearance
+  - type: KoronusLandingPadVisual
+  - type: IconSmooth
+    key: koronus_landing_pad
+    base: catwalk_
+
+- type: entity
+  parent: BaseComputer
+  id: KoronusLandingPadConsole
+  name: landing pad console
+  description: Configures and monitors an adjacent planetary landing pad.
+  components:
+  - type: KoronusLandingPadConsole
+  - type: ActivatableUI
+    key: enum.KoronusLandingPadUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.KoronusLandingPadUiKey.Key:
+        type: KoronusLandingPadBoundUserInterface
+  - type: Sprite
+    sprite: Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shuttle
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+
+- type: entity
+  parent: BaseMachinePowered
+  id: KoronusPlanetaryTeleporter
+  name: planetary personnel teleporter
+  description: Transfers one authorized person between a planet and an orbital shuttle.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: KoronusPlanetaryTeleporter
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Sprite
+    sprite: Structures/cargo_telepad.rsi
+    drawdepth: HighFloorObjects
+    layers:
+    - state: offline
+    - state: idle
+      shader: unshaded
+  - type: ActivatableUI
+    key: enum.KoronusPlanetaryTeleporterUiKey.Key
+  - type: ActivatableUIRequiresPower
+  - type: UserInterface
+    interfaces:
+      enum.KoronusPlanetaryTeleporterUiKey.Key:
+        type: KoronusPlanetaryTeleporterBoundUserInterface

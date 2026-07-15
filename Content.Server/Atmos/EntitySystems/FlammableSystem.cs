@@ -349,7 +349,7 @@ namespace Content.Server.Atmos.EntitySystems
                 return;
 
             // _Mono: Used to intercept and remove the event on things like Cortical Borers inside hosts.
-            var igniteCheck = new TryIgniteEvent();
+            var igniteCheck = new TryIgniteEvent(ignitionSource, ignitionSourceUser);
             RaiseLocalEvent(uid, ref igniteCheck);
             if (igniteCheck.Cancelled)
             {
@@ -501,5 +501,5 @@ namespace Content.Server.Atmos.EntitySystems
 
     // Mono: Event to see whether the target is immune to heat stacks
     [ByRefEvent]
-    public record struct TryIgniteEvent(bool Cancelled = false);
+    public record struct TryIgniteEvent(EntityUid? Source = null, EntityUid? User = null, bool Cancelled = false);
 }

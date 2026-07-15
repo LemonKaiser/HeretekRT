@@ -60,6 +60,14 @@ public abstract class SharedLightCycleSystem : EntitySystem
     /// </summary>
     public static double CalculateLightLevel(LightCycleComponent comp, float time)
     {
+        if (HasDayNightPhases(comp))
+        {
+            var daylight = CalculateDaylightLevel(comp, time);
+            var dayCrest = MathF.Max(0f, comp.MaxLightLevel);
+            var nightFloor = MathF.Max(0f, comp.MinLightLevel);
+            return Math.Min(comp.ClipLight, nightFloor + (dayCrest - nightFloor) * daylight);
+        }
+
         var waveLength = MathF.Max(1, (float) comp.Duration.TotalSeconds);
         var crest = MathF.Max(0f, comp.MaxLightLevel);
         var shift = MathF.Max(0f, comp.MinLightLevel);
@@ -75,6 +83,15 @@ public abstract class SharedLightCycleSystem : EntitySystem
     /// </summary>
     public static Color CalculateColorLevel(LightCycleComponent comp, float time)
     {
+        if (HasDayNightPhases(comp))
+        {
+            var daylight = CalculateDaylightLevel(comp, time);
+            return new Color(
+                MathF.Min(comp.ClipLevel.R, Lerp(comp.MinLevel.R, comp.MaxLevel.R, daylight)),
+                MathF.Min(comp.ClipLevel.G, Lerp(comp.MinLevel.G, comp.MaxLevel.G, daylight)),
+                MathF.Min(comp.ClipLevel.B, Lerp(comp.MinLevel.B, comp.MaxLevel.B, daylight)));
+        }
+
         var waveLength = MathF.Max(1f, (float) comp.Duration.TotalSeconds);
 
         var red = MathF.Min(comp.ClipLevel.R,
@@ -100,6 +117,49 @@ public abstract class SharedLightCycleSystem : EntitySystem
                 waveLength / 4f));
 
         return new Color(red, green, blue);
+    }
+
+    private static bool HasDayNightPhases(LightCycleComponent comp)
+    {
+        return comp.DayDuration > TimeSpan.Zero && comp.NightDuration > TimeSpan.Zero;
+    }
+
+    /// <summary>
+    /// Gets the daylight strength for a cycle with an explicit day and night length. Dawn and dusk
+    /// each take ten percent of the configured day, so the phase change is visible but the full
+    /// day/night cycle still lasts exactly the configured durations.
+    /// </summary>
+    private static float CalculateDaylightLevel(LightCycleComponent comp, float time)
+    {
+        var daySeconds = (float) comp.DayDuration.TotalSeconds;
+        var nightSeconds = (float) comp.NightDuration.TotalSeconds;
+        var cycleSeconds = daySeconds + nightSeconds;
+        var cycleTime = time % cycleSeconds;
+        if (cycleTime < 0f)
+            cycleTime += cycleSeconds;
+
+        var transition = daySeconds * 0.1f;
+        if (cycleTime < transition)
+            return SmoothStep(cycleTime / transition);
+
+        if (cycleTime < daySeconds - transition)
+            return 1f;
+
+        if (cycleTime < daySeconds)
+            return SmoothStep((daySeconds - cycleTime) / transition);
+
+        return 0f;
+    }
+
+    private static float Lerp(float start, float end, float amount)
+    {
+        return start + (end - start) * amount;
+    }
+
+    private static float SmoothStep(float value)
+    {
+        value = Math.Clamp(value, 0f, 1f);
+        return value * value * (3f - 2f * value);
     }
 
     /// <summary>

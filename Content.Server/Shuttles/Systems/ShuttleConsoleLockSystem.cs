@@ -14,6 +14,8 @@ using Content.Shared._Mono.Shipyard;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Interaction;
 using Content.Shared.PDA;
+using Content.Shared.Access.Systems;
+using Content.Shared.Inventory;
 using Robust.Shared.Audio;
 using Robust.Shared.Map.Components;
 
@@ -28,6 +30,8 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private HandsSystem _handsSystem = default!;
     [Dependency] private ShuttleSystem _shuttleSystem = default!;
+    [Dependency] private InventorySystem _inventorySystem = default!;
+    [Dependency] private SharedIdCardSystem _idCardSystem = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -534,7 +538,7 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
     }
 
     /// <summary>
-    /// Finds all ID cards accessible to a user (in hands or worn)
+    /// Finds all ID cards accessible to a user in their hands or assigned ID inventory slot.
     /// </summary>
     private List<EntityUid> FindAccessibleIdCards(EntityUid user)
     {
@@ -554,7 +558,60 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
                 results.Add(pdaComponent.ContainedId.Value);
         }
 
-        return results;
+        if (_inventorySystem.TryGetSlotEntity(user, "id", out var idSlot))
+        {
+            if (TryComp<IdCardComponent>(idSlot.Value, out _))
+                results.Add(idSlot.Value);
+
+            if (_idCardSystem.TryGetIdCard(idSlot.Value, out var containedId))
+                results.Add(containedId.Owner);
+        }
+
+        return results.Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Checks deed or explicitly granted guest access for an arbitrary interaction with a player-owned grid.
+    /// This is deliberately independent of a particular shuttle console so other security systems can reuse it.
+    /// </summary>
+    public bool HasShipAccess(EntityUid gridUid, EntityUid user, bool includeGuestAccess = true)
+    {
+        if (!TryComp<ShuttleDeedComponent>(gridUid, out var shipDeed))
+            return false;
+
+        if (includeGuestAccess && TryComp<BorgChassisComponent>(user, out _) &&
+            TryComp<ShipGuestAccessComponent>(gridUid, out var cyborgGuests) &&
+            cyborgGuests.GuestCyborgs.Contains(user))
+        {
+            return true;
+        }
+
+        var idCards = FindAccessibleIdCards(user);
+        foreach (var cardUid in idCards)
+        {
+            if (TryComp<ShuttleDeedComponent>(cardUid, out var cardDeed) &&
+                cardDeed.ShuttleUid == shipDeed.ShuttleUid)
+            {
+                return true;
+            }
+
+            if (includeGuestAccess && TryComp<ShipGuestAccessComponent>(gridUid, out var guests) &&
+                guests.GuestIdCards.Contains(cardUid))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Destructive ship operations require the deed holder. Guest access is intended for piloting
+    /// and docking, not for changing wiring, deconstructing or damaging the vessel.
+    /// </summary>
+    public bool HasShipOwnerAccess(EntityUid gridUid, EntityUid user)
+    {
+        return HasShipAccess(gridUid, user, includeGuestAccess: false);
     }
 
     /// <summary>

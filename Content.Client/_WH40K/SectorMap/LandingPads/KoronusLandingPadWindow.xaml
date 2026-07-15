@@ -1,0 +1,35 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      x:Class="Content.Client._WH40K.SectorMap.LandingPads.KoronusLandingPadWindow"
+                      Title="{Loc 'koronus-landing-pad-console-title'}"
+                      MinSize="390 350"
+                      SetSize="390 350">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="6">
+        <Label Name="ConsoleState" StyleClasses="LabelHeading" />
+        <PanelContainer MinHeight="2" />
+
+        <GridContainer Columns="2" HorizontalExpand="True">
+            <Label Text="{Loc 'koronus-landing-pad-name'}" />
+            <LineEdit Name="PadName" HorizontalExpand="True" />
+            <Label Text="{Loc 'koronus-landing-pad-parking-time'}" />
+            <SpinBox Name="ParkingTime" Value="0" HorizontalExpand="True" />
+        </GridContainer>
+
+        <CheckBox Name="PublicAccess" Text="{Loc 'koronus-landing-pad-public-access'}" />
+        <CheckBox Name="PadEnabled" Text="{Loc 'koronus-landing-pad-enabled'}" />
+        <Button Name="Save" Text="{Loc 'koronus-landing-pad-save'}" TextAlign="Center" />
+
+        <PanelContainer MinHeight="2" />
+        <GridContainer Columns="2" HorizontalExpand="True">
+            <Label Text="{Loc 'koronus-landing-pad-occupancy'}" />
+            <Label Name="Occupancy" Align="Right" />
+            <Label Text="{Loc 'koronus-landing-pad-shuttle'}" />
+            <Label Name="Shuttle" Align="Right" ClipText="True" />
+            <Label Text="{Loc 'koronus-landing-pad-owner'}" />
+            <Label Name="Owner" Align="Right" ClipText="True" />
+            <Label Text="{Loc 'koronus-landing-pad-time-left'}" />
+            <Label Name="TimeLeft" Align="Right" />
+        </GridContainer>
+    </BoxContainer>
+</controls:FancyWindow>

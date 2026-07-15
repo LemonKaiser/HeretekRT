@@ -1,6 +1,7 @@
 using Content.Client.Shuttles.UI;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Events;
+using Content.Shared._WH40K.SectorMap.Events;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Shared.Log;
@@ -29,10 +30,16 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         _window.RequestFTL += OnFTLRequest;
         _window.RequestBeaconFTL += OnFTLBeaconRequest;
         _window.RequestAutopilot += OnAutopilotRequest; // Mono
+        _window.RequestAutopilotGrid += OnAutopilotGridRequest;
+        _window.RequestAutoDock += OnAutoDockRequest;
+        _window.RequestSectorJump += OnSectorJumpRequest;
+        _window.RequestPlanetaryLanding += OnPlanetaryLandingRequest;
+        _window.RequestPlanetaryLaunch += OnPlanetaryLaunchRequest;
         _window.DockRequest += OnDockRequest;
         _window.UndockRequest += OnUndockRequest;
         _window.UndockAllRequest += OnUndockAllRequest;
         _window.ToggleFTLLockRequest += OnToggleFTLLockRequest;
+        _window.ToggleAutoDockRequest += OnToggleAutoDockRequest;
         NfOpen(); // Frontier
     }
 
@@ -82,6 +89,31 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         });
     }
 
+    private void OnToggleAutoDockRequest(bool enabled)
+    {
+        SendMessage(new ToggleAutoDockRequestMessage(enabled));
+    }
+
+    private void OnAutoDockRequest()
+    {
+        SendMessage(new ShuttleConsoleAutoDockRequestMessage());
+    }
+
+    private void OnSectorJumpRequest(string targetSystemId)
+    {
+        SendMessage(new KoronusSectorJumpMessage(targetSystemId));
+    }
+
+    private void OnPlanetaryLandingRequest(string bodyId, string siteId)
+    {
+        SendMessage(new ShuttleConsolePlanetaryLandingRequestMessage(bodyId, siteId));
+    }
+
+    private void OnPlanetaryLaunchRequest()
+    {
+        SendMessage(new ShuttleConsolePlanetaryLaunchRequestMessage());
+    }
+
     // Mono
     private void OnAutopilotRequest(MapCoordinates obj, Angle angle)
     {
@@ -89,6 +121,14 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         {
             Coordinates = obj,
             Angle = angle,
+        });
+    }
+
+    private void OnAutopilotGridRequest(NetEntity targetGrid)
+    {
+        SendMessage(new ShuttleConsoleAutopilotGridMessage
+        {
+            TargetGrid = targetGrid,
         });
     }
 

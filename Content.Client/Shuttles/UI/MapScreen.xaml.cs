@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Shuttles.Systems;
 using Content.Shared._Mono.Detection;
+using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._NF.Shuttles.Components;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
@@ -53,6 +54,7 @@ public sealed partial class MapScreen : BoxContainer
 
     // Mono
     private bool _autopilotTargeting = false;
+    private bool _navigationSuppressed;
 
     private float _minMapDequeue = 0.05f;
     private float _maxMapDequeue = 0.25f;
@@ -64,6 +66,7 @@ public sealed partial class MapScreen : BoxContainer
 
     // Mono
     public event Action<MapCoordinates, Angle>? RequestAutopilot;
+    public event Action<NetEntity>? RequestAutopilotGrid;
 
     private readonly Dictionary<MapId, BoxContainer> _mapHeadings = new();
     private readonly Dictionary<MapId, List<IMapObject>> _mapObjects = new();
@@ -100,6 +103,9 @@ public sealed partial class MapScreen : BoxContainer
         // Just pass it on up.
         MapRadar.RequestFTL += (coords, angle) =>
         {
+            if (_navigationSuppressed)
+                return;
+
             if (_autopilotTargeting) // Mono
             {
                 RequestAutopilot?.Invoke(coords, angle);
@@ -113,7 +119,19 @@ public sealed partial class MapScreen : BoxContainer
 
         MapRadar.RequestBeaconFTL += (ent, angle) =>
         {
+            if (_navigationSuppressed)
+                return;
+
             RequestBeaconFTL?.Invoke(ent, angle);
+        };
+
+        MapRadar.RequestAutopilotGrid += targetGrid =>
+        {
+            if (_navigationSuppressed)
+                return;
+
+            RequestAutopilotGrid?.Invoke(targetGrid);
+            SetTargeting(false, true);
         };
 
         MapBeaconsButton.OnToggled += args =>
@@ -124,6 +142,8 @@ public sealed partial class MapScreen : BoxContainer
 
     public void UpdateState(ShuttleMapInterfaceState state)
     {
+        var previousState = _state;
+
         // Only network the accumulator due to ping making the thing fonky.
         // This should work better with predicting network states as they come in.
         _beacons = state.Destinations;
@@ -132,6 +152,12 @@ public sealed partial class MapScreen : BoxContainer
         _ftlTime = state.FTLTime;
         MapRadar.InFtl = true;
         MapFTLState.Text = Loc.GetString($"shuttle-console-ftl-state-{_state.ToString()}");
+
+        if (_navigationSuppressed)
+        {
+            ApplyNavigationSignalState();
+            return;
+        }
 
         //frontier - we only allow pre-approved vessels to FTL
         if (!_entManager.HasComponent<ShuttleFTLComponent>(_shuttleEntity))
@@ -173,6 +199,11 @@ public sealed partial class MapScreen : BoxContainer
 
                 _ftlStyle.BackgroundColor = Color.FromHex("#B02E26");
                 MapRadar.InFtl = false;
+
+                // The drive is still recharging, but the shuttle is back in normal space.
+                // Keep navigation and autopilot operational and repopulate the passive map data.
+                if (previousState != FTLState.Cooldown || _mapObjects.Count == 0)
+                    PopulateMapObjects();
                 break;
             // Fallback in case no FTL state or the likes.
             default:
@@ -185,7 +216,8 @@ public sealed partial class MapScreen : BoxContainer
         if (IsFTLBlocked())
         {
             MapRebuildButton.Disabled = true;
-            ClearMapObjects();
+            if (_state != FTLState.Cooldown)
+                ClearMapObjects();
         }
     }
 
@@ -219,6 +251,17 @@ public sealed partial class MapScreen : BoxContainer
     // Mono
     private void SetTargeting(bool pressed, bool isAutopilot)
     {
+        if (_navigationSuppressed)
+        {
+            MapRadar.AutopilotMode = false;
+            MapRadar.FtlMode = false;
+            MapFTLButton.Pressed = false;
+            MapAutopilotButton.Pressed = false;
+            _autopilotTargeting = false;
+            return;
+        }
+
+        MapRadar.AutopilotMode = pressed && isAutopilot;
         if (pressed)
         {
             MapRadar.FtlMode = true;
@@ -232,6 +275,13 @@ public sealed partial class MapScreen : BoxContainer
         else
         {
             MapRadar.FtlMode = false;
+            MapRadar.AutopilotMode = false;
+            MapRadar.ShowFTLRangeOnly = false;
+            MapRadar.ShowFTLRange = true;
+            MapRadar.NoFTLRange = false;
+            MapFTLButton.Pressed = false;
+            MapAutopilotButton.Pressed = false;
+            _autopilotTargeting = false;
         }
     }
 
@@ -245,6 +295,44 @@ public sealed partial class MapScreen : BoxContainer
     {
         _shuttleEntity = shuttle;
         MapRadar.SetShuttle(shuttle);
+    }
+
+    /// <summary>
+    /// Planetary surfaces and atmospheric transit intentionally have no long-range BSS signal.
+    /// The server supplies this flag as part of the planetary console state.
+    /// </summary>
+    public void UpdatePlanetaryState(KoronusPlanetaryInterfaceState state)
+    {
+        if (_navigationSuppressed == state.NavigationSuppressed)
+            return;
+
+        _navigationSuppressed = state.NavigationSuppressed;
+        ApplyNavigationSignalState();
+
+        if (!_navigationSuppressed && _shuttleEntity != null && _state is FTLState.Available or FTLState.Cooldown)
+            PopulateMapObjects();
+    }
+
+    private void ApplyNavigationSignalState()
+    {
+        MapRadar.Visible = !_navigationSuppressed;
+        MapNoSignal.Visible = _navigationSuppressed;
+        RightDisplayMap.Visible = !_navigationSuppressed;
+
+        if (_navigationSuppressed)
+        {
+            SetTargeting(false, false);
+            ClearMapObjects();
+            MapBeaconsButton.Disabled = true;
+            MapFTLButton.Disabled = true;
+            MapAutopilotButton.Disabled = true;
+            MapRebuildButton.Disabled = true;
+            return;
+        }
+
+        MapBeaconsButton.Disabled = false;
+        MapAutopilotButton.Disabled = IsFTLBlocked();
+        MapRebuildButton.Disabled = IsFTLBlocked();
     }
 
     private void OnVisChange(Control obj)
@@ -265,22 +353,33 @@ public sealed partial class MapScreen : BoxContainer
     /// </summary>
     public void PingMap()
     {
+        if (_navigationSuppressed)
+            return;
+
         if (_console != null)
         {
             _audio.PlayEntity(new SoundPathSpecifier("/Audio/Effects/Shuttle/radar_ping.ogg"), Filter.Local(), _console.Value, true);
         }
 
+        PopulateMapObjects();
+
+        _nextPing = _timing.CurTime + _pingCooldown;
+        MapRebuildButton.Disabled = true;
+    }
+
+    /// <summary>
+    /// Rebuilds the locally visible map immediately without treating it as a new BSS scan.
+    /// </summary>
+    private void PopulateMapObjects()
+    {
         RebuildMapObjects();
 
-        // Immediately add all objects to the map instead of queueing them
         foreach (var mapObj in _pendingMapObjects)
         {
             AddMapObject(mapObj.mapId, mapObj.mapobj);
         }
-        _pendingMapObjects.Clear();
 
-        _nextPing = _timing.CurTime + _pingCooldown;
-        MapRebuildButton.Disabled = true;
+        _pendingMapObjects.Clear();
     }
 
     private void BumpMapDequeue()
@@ -290,6 +389,9 @@ public sealed partial class MapScreen : BoxContainer
 
     private void MapRebuildPressed(BaseButton.ButtonEventArgs obj)
     {
+        if (_navigationSuppressed)
+            return;
+
         MapRadar.ShowFTLRangeOnly = true;
         PingMap();
 
@@ -316,7 +418,7 @@ public sealed partial class MapScreen : BoxContainer
     {
         ClearMapObjects();
 
-        if (_shuttleEntity == null)
+        if (_navigationSuppressed || _shuttleEntity == null)
             return;
 
         var mapComps = _entManager.AllEntityQueryEnumerator<MapComponent, TransformComponent, MetaDataComponent>();
@@ -327,9 +429,14 @@ public sealed partial class MapScreen : BoxContainer
             ourMap = shuttleXform.MapID;
         }
 
+        if (ourMap == MapId.Nullspace)
+            return;
+
         while (mapComps.MoveNext(out var mapUid, out var mapComp, out var mapXform, out var mapMetadata))
         {
-            if (_console != null && !_shuttles.CanFTLTo(_shuttleEntity.Value, mapComp.MapId, _console.Value))
+            // BSS is a local system scanner, not a directory of all preloaded Koronus maps.
+            // One runtime map is one Koronus system, so this also prevents cross-system leakage.
+            if (mapComp.MapId != ourMap)
             {
                 continue;
             }
@@ -489,7 +596,7 @@ public sealed partial class MapScreen : BoxContainer
 
     private void OnMapObjectPress(IMapObject mapObject)
     {
-        if (IsFTLBlocked())
+        if (_state is not (FTLState.Available or FTLState.Cooldown))
             return;
 
         var coordinates = _shuttles.GetMapCoordinates(mapObject);

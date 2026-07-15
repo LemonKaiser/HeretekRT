@@ -679,7 +679,7 @@ public static class DialoguePrototypeValidator
                 case DialogueActionType.AddAccess or DialogueActionType.RemoveAccess:
                     ValidateAccessAction(action, actionPath, prototypeManager, diagnostics);
                     break;
-                case DialogueActionType.SendChat when string.IsNullOrWhiteSpace(action.Message.Id):
+                case DialogueActionType.SendChat when action.Message is not { Id: { Length: > 0 } }:
                     Add(diagnostics, "missing-chat-message", $"{actionPath}.message", "SendChat requires a localization id.");
                     break;
                 case DialogueActionType.SetFlag when string.IsNullOrWhiteSpace(action.Flag):

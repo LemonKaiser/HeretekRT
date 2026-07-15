@@ -356,6 +356,12 @@
   branches:
   - preconditions:
     - !type:KeyExistsPrecondition
+      key: AutoDockTarget
+    tasks:
+    - !type:HTNCompoundTask
+      task: AutoDockMoveCompound
+  - preconditions:
+    - !type:KeyExistsPrecondition
       key: Target
     tasks:
     - !type:HTNCompoundTask
@@ -370,6 +376,9 @@
         shutdownState: TaskFinished
         removeKeyOnFinish: true
         inRangeMaxSpeed: 0.1
+        maxLinearVelocity: 24
+        minLinearVelocity: 0.1
+        slowdownDistance: 180
         range: 40
         leadingEnabled: false
         targetKey: Target
@@ -377,3 +386,42 @@
         maxRotateRate: 0.01
         requireSolo: true
         alwaysFaceTarget: true
+        forwardFlight: true
+        autopilotAccelerationMultiplier: 0.5
+        minimumObstacleScanDistance: 240
+        evasionSectorCount: 36
+        evasionSectorDepth: 3
+        baseEvasionTime: 10
+        evasionBuffer: 16
+        avoidanceMaxSpeed: 10
+
+- type: htnCompound
+  id: AutoDockMoveCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:ShipMoveToOperator
+        shutdownState: TaskFinished
+        removeKeyOnFinish: true
+        inRangeMaxSpeed: 0.1
+        maxLinearVelocity: 24
+        minLinearVelocity: 0.35
+        slowdownDistance: 180
+        range: 1
+        rangeTolerance: 0.5
+        targetKey: AutoDockTarget
+        angleKey: AutoDockRotation
+        maxRotateRate: 0.01
+        rotateBeforeArrival: true
+        rotationAlignmentDistance: 0
+        requireSolo: true
+        alwaysFaceTarget: true
+        forwardFlight: true
+        autopilotAccelerationMultiplier: 0.5
+        minimumObstacleScanDistance: 240
+        evasionSectorCount: 36
+        evasionSectorDepth: 3
+        baseEvasionTime: 10
+        evasionBuffer: 16
+        avoidanceMaxSpeed: 10
+        finishOnCollide: false

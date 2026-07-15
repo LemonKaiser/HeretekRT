@@ -179,6 +179,11 @@ public sealed partial class FoodSystem : EntitySystem
         var forceFeed = user != target;
         if (forceFeed)
         {
+            var safetyAttempt = new ForceFeedAttemptEvent(user, target);
+            RaiseLocalEvent(target, ref safetyAttempt, true);
+            if (safetyAttempt.Cancelled)
+                return (false, true);
+
             var userName = Identity.Entity(user, EntityManager);
             _popup.PopupEntity(Loc.GetString(foodComp.ForceFeedMessage, ("user", userName)), // Frontier - Loc
                 user, target);
