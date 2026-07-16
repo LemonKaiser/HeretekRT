@@ -9,6 +9,7 @@ using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Map.Events;
 
 namespace Content.Server._Mono;
 
@@ -26,6 +27,13 @@ public sealed partial class GridGodModeSystem : EntitySystem
     // (notably MechComponent, which creates its containers in ComponentStartup).
     private readonly HashSet<EntityUid> _pendingProtection = new();
 
+    // Godmode is a runtime effect of GridGodMode, not map-authored state. Temporarily remove
+    // only the components owned by this system while the map serializer walks the entity tree;
+    // otherwise a save taken a few ticks after map init gains thousands of transient components.
+    private readonly Dictionary<EntityUid, GodmodeSaveState> _temporarilyRemovedGodmode = new();
+
+    private readonly record struct GodmodeSaveState(bool WasMovedByPressure, DamageSpecifier? OldDamage);
+
     public override void Initialize()
     {
         base.Initialize();
@@ -35,6 +43,8 @@ public sealed partial class GridGodModeSystem : EntitySystem
         SubscribeLocalEvent<GridGodModeComponent, ComponentShutdown>(OnGridGodModeShutdown);
         SubscribeLocalEvent<DamageableComponent, ComponentStartup>(OnDamageableStartup);
         SubscribeLocalEvent<DamageableComponent, EntParentChangedMessage>(OnDamageableParentChanged);
+        SubscribeLocalEvent<BeforeSerializationEvent>(OnBeforeSerialization);
+        SubscribeLocalEvent<AfterSerializationEvent>(OnAfterSerialization);
     }
 
     public override void Update(float frameTime)
@@ -106,6 +116,51 @@ public sealed partial class GridGodModeSystem : EntitySystem
     {
         if (!TerminatingOrDeleted(entity))
             _pendingProtection.Add(entity);
+    }
+
+    private void OnBeforeSerialization(BeforeSerializationEvent ev)
+    {
+        // Serialization is synchronous, so the matching AfterSerializationEvent restores
+        // the runtime components before the next game tick can observe the temporary state.
+        if (_temporarilyRemovedGodmode.Count != 0)
+            return;
+
+        var grids = EntityQueryEnumerator<GridGodModeComponent>();
+        while (grids.MoveNext(out _, out var component))
+        {
+            foreach (var entity in component.ProtectedEntities)
+            {
+                if (TerminatingOrDeleted(entity) ||
+                    !TryComp<TransformComponent>(entity, out var transform) ||
+                    !ev.MapIds.Contains(transform.MapID) ||
+                    !TryComp<GodmodeComponent>(entity, out var godmode))
+                {
+                    continue;
+                }
+
+                _temporarilyRemovedGodmode[entity] = new(
+                    godmode.WasMovedByPressure,
+                    godmode.OldDamage == null ? null : new DamageSpecifier(godmode.OldDamage));
+                RemComp<GodmodeComponent>(entity);
+            }
+        }
+    }
+
+    private void OnAfterSerialization(AfterSerializationEvent ev)
+    {
+        if (_temporarilyRemovedGodmode.Count == 0)
+            return;
+
+        foreach (var (entity, state) in _temporarilyRemovedGodmode)
+        {
+            if (TerminatingOrDeleted(entity))
+                continue;
+
+            EnsureComp<GodmodeComponent>(entity);
+            _godmode.RestoreGodmodeState(entity, state.WasMovedByPressure, state.OldDamage);
+        }
+
+        _temporarilyRemovedGodmode.Clear();
     }
 
     private void RefreshEntityProtection(EntityUid entity)

@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
 using Content.Server.Afk;
@@ -69,6 +70,10 @@ namespace Content.Server.Administration.Systems
         private Dictionary<NetUserId, string> _oldMessageIds = new();
         private readonly Dictionary<NetUserId, Queue<DiscordRelayedData>> _messageQueues = new();
         private readonly HashSet<NetUserId> _processingChannels = new();
+        private const int MaxDiscordRelayMessagesPerUser = 256;
+        private const int MaxDiscordRelayMessagesGlobal = 4_096;
+        private int _queuedDiscordRelayMessages;
+        private long _droppedDiscordRelayMessages;
         private readonly Dictionary<NetUserId, (TimeSpan Timestamp, bool Typing)> _typingUpdateTimestamps = new();
         private string _overrideClientName = string.Empty;
 
@@ -112,7 +117,11 @@ namespace Content.Server.Administration.Systems
 
             SubscribeLocalEvent<GameRunLevelChangedEvent>(OnGameRunLevelChanged);
             SubscribeNetworkEvent<BwoinkClientTypingUpdated>(OnClientTypingUpdated);
-            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _activeConversations.Clear());
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ =>
+            {
+                _activeConversations.Clear();
+                _typingUpdateTimestamps.Clear();
+            });
 
         	_rateLimit.Register(
                 RateLimitKey,
@@ -165,6 +174,11 @@ namespace Content.Server.Administration.Systems
         {
             if (e.NewStatus == SessionStatus.Disconnected)
             {
+                // Typing throttling is session-local state. Retaining an entry for every
+                // user who ever disconnected makes this dictionary grow for the lifetime of
+                // the server and can also suppress the first update after reconnecting.
+                _typingUpdateTimestamps.Remove(e.Session.UserId);
+
                 if (_activeConversations.TryGetValue(e.Session.UserId, out var lastMessageTime))
                 {
                     var timeSinceLastMessage = DateTime.Now - lastMessageTime;
@@ -280,7 +294,7 @@ namespace Content.Server.Administration.Systems
                 var escapedText = FormattedMessage.EscapeText(message);
                 messageParams.Message = escapedText;
                 var discordMessage = GenerateAHelpMessage(messageParams);
-                queue.Enqueue(discordMessage);
+                EnqueueDiscordRelay(session.UserId, discordMessage, queue);
             }
 
             // Send to Discord chat link (thread-based integration)
@@ -313,7 +327,7 @@ namespace Content.Server.Administration.Systems
             {
                 var id = interaction.Id;
                 if (id == null)
-                    return;
+                    continue;
 
                 _oldMessageIds[user] = id;
             }
@@ -408,6 +422,28 @@ namespace Content.Server.Administration.Systems
 
         private async void ProcessQueue(NetUserId userId, Queue<DiscordRelayedData> messages)
         {
+            try
+            {
+                await ProcessQueueCore(userId, messages);
+            }
+            catch (Exception exception)
+            {
+                // Discord is an auxiliary integration. A transient HTTP/JSON failure must not
+                // escape an async-void callback and take down the server.
+                _sawmill.Error($"Discord relay processing failed for {userId}: {exception}");
+            }
+            finally
+            {
+                _processingChannels.Remove(userId);
+            }
+        }
+
+        private async Task ProcessQueueCore(NetUserId userId, Queue<DiscordRelayedData> messages)
+        {
+            // The queue is no longer owned by _messageQueues while it is being sent. Remove it
+            // from the pressure accounting up front so a slow webhook cannot block new users.
+            Interlocked.Add(ref _queuedDiscordRelayMessages, -messages.Count);
+
             // Whether an embed already exists for this player
             var exists = _relayMessages.TryGetValue(userId, out var existingEmbed);
 
@@ -425,6 +461,7 @@ namespace Content.Server.Administration.Systems
                     _sawmill.Log(LogLevel.Error,
                         $"Unable to find player for NetUserId {userId} when sending discord webhook.");
                     _relayMessages.Remove(userId);
+                    _processingChannels.Remove(userId);
                     return;
                 }
 
@@ -510,6 +547,7 @@ namespace Content.Server.Administration.Systems
                     _sawmill.Log(LogLevel.Error,
                         $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
                     _relayMessages.Remove(userId);
+                    _processingChannels.Remove(userId);
                     return;
                 }
 
@@ -519,6 +557,7 @@ namespace Content.Server.Administration.Systems
                     _sawmill.Log(LogLevel.Error,
                         $"Could not find id in json-content returned from discord webhook: {content}");
                     _relayMessages.Remove(userId);
+                    _processingChannels.Remove(userId);
                     return;
                 }
 
@@ -535,6 +574,7 @@ namespace Content.Server.Administration.Systems
                     _sawmill.Log(LogLevel.Error,
                         $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
                     _relayMessages.Remove(userId);
+                    _processingChannels.Remove(userId);
                     return;
                 }
             }
@@ -812,8 +852,7 @@ namespace Content.Server.Administration.Systems
             var sendsWebhook = _webhookUrl != string.Empty;
             if (sendsWebhook && sendWebhook)
             {
-                if (!_messageQueues.ContainsKey(msg.UserId))
-                    _messageQueues[msg.UserId] = new Queue<DiscordRelayedData>();
+                var queue = _messageQueues.GetOrNew(msg.UserId);
 
                 var str = message.Text;
                 var unameLength = senderName.Length;
@@ -835,7 +874,7 @@ namespace Content.Server.Administration.Systems
                     adminOnly: message.AdminOnly,
                     noReceivers: nonAfkAdmins.Count == 0
                 );
-                _messageQueues[msg.UserId].Enqueue(GenerateAHelpMessage(messageParams));
+                EnqueueDiscordRelay(msg.UserId, GenerateAHelpMessage(messageParams), queue);
             }
 
             // Send to Discord chat link (thread-based integration)
@@ -862,6 +901,23 @@ namespace Content.Server.Administration.Systems
                 var starMuteMsg = new BwoinkTextMessage(message.UserId, SystemUserId, systemText);
                 RaiseNetworkEvent(starMuteMsg, senderChannel);
             }
+        }
+
+        private void EnqueueDiscordRelay(NetUserId userId, DiscordRelayedData message,
+            Queue<DiscordRelayedData> queue)
+        {
+            if (queue.Count >= MaxDiscordRelayMessagesPerUser ||
+                Volatile.Read(ref _queuedDiscordRelayMessages) >= MaxDiscordRelayMessagesGlobal)
+            {
+                // Discord is an auxiliary relay; in-game AHELP has already been delivered.
+                // Drop only the relay item under overload to keep a hostile webhook outage or
+                // spam burst from retaining unbounded strings in server memory.
+                _droppedDiscordRelayMessages++;
+                return;
+            }
+
+            queue.Enqueue(message);
+            Interlocked.Increment(ref _queuedDiscordRelayMessages);
         }
         // End Frontier: webhook text messages
 

@@ -11,6 +11,7 @@ public sealed partial class AdminLogManager
 {
     private const int MaxRoundsCached = 3;
     private const int LogListInitialSize = 30_000;
+    private const int MaxLogsPerRoundCached = 30_000;
 
     private readonly int _logTypes = Enum.GetValues<LogType>().Length;
 
@@ -25,6 +26,10 @@ public sealed partial class AdminLogManager
     private static readonly Gauge CacheLogCount = Metrics.CreateGauge(
         "admin_logs_cache_log_count",
         "How many logs are in cache.");
+
+    private static readonly Counter CacheLogEvictions = Metrics.CreateCounter(
+        "admin_logs_cache_log_evictions_total",
+        "How many oldest cached logs were evicted after the per-round cache cap was reached.");
 
     // TODO ADMIN LOGS cache previous {MaxRoundsCached} rounds on startup
     public void CacheNewRound()
@@ -61,6 +66,7 @@ public sealed partial class AdminLogManager
         // TODO ADMIN LOGS remove redundant data and don't do a dictionary lookup per log
         var cache = _roundsLogCache[_currentRoundId];
         cache.Add(log);
+        TrimCache(cache);
         CacheLogCount.Set(cache.Count);
     }
 
@@ -68,7 +74,20 @@ public sealed partial class AdminLogManager
     {
         var cache = _roundsLogCache[_currentRoundId];
         cache.AddRange(logs);
+        TrimCache(cache);
         CacheLogCount.Set(cache.Count);
+    }
+
+    private static void TrimCache(List<SharedAdminLog> cache)
+    {
+        if (cache.Count <= MaxLogsPerRoundCached)
+            return;
+
+        // Remove in batches for a busy round, while retaining the newest entries for the
+        // admin UI. If a large batch was added, remove enough to reach the hard cap.
+        var removeCount = Math.Max(cache.Count - MaxLogsPerRoundCached, Math.Min(1024, cache.Count));
+        cache.RemoveRange(0, removeCount);
+        CacheLogEvictions.Inc(removeCount);
     }
 
     private bool TryGetCache(int roundId, [NotNullWhen(true)] out List<SharedAdminLog>? cache)

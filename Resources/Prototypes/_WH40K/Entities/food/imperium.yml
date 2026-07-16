@@ -86,6 +86,7 @@
           Quantity: 1
 
 - type: entity
+  categories: [ HideSpawnMenu ]
   parent: FoodPacketTrash
   id: FoodPacketImperialHardtackTrash
   name: hardtack wrapper
@@ -143,6 +144,7 @@
           Quantity: 2
 
 - type: entity
+  categories: [ HideSpawnMenu ]
   parent: FoodPacketTrash
   id: FoodPacketImperialNutriBarTrash
   name: nutri bar wrapper

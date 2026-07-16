@@ -52,7 +52,6 @@ public sealed partial class MobCleanupSystem : BaseCleanupSystem<HTNComponent>
         _mobStateQuery = GetEntityQuery<MobStateComponent>();
         _pullableQuery = GetEntityQuery<PullableComponent>();
 
-        SubscribeLocalEvent<ActorComponent, ComponentStartup>(OnActorStartup);
         SubscribeLocalEvent<MindContainerComponent, MindAddedMessage>(OnMindAdded);
 
         Subs.CVar(_cfg, MonoCVars.MobCleanupDistance, val => _maxDistance = val, true);
@@ -129,11 +128,6 @@ public sealed partial class MobCleanupSystem : BaseCleanupSystem<HTNComponent>
     {
         if (HasComp<MobCleanupStateComponent>(uid))
             RemCompDeferred<MobCleanupStateComponent>(uid);
-    }
-
-    private void OnActorStartup(Entity<ActorComponent> entity, ref ComponentStartup args)
-    {
-        EnsureComp<CleanupPlayerProtectedComponent>(entity);
     }
 
     private void OnMindAdded(Entity<MindContainerComponent> entity, ref MindAddedMessage args)

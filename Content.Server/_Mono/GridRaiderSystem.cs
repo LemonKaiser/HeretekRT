@@ -1,8 +1,8 @@
-using System.Linq;
 using Content.Shared._Mono;
 using Content.Shared._Mono.NoHack;
 using Content.Shared._Mono.NoDeconstruct;
 using Content.Server.Construction.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.Doors.Components;
 using Content.Shared.VendingMachines;
 using Robust.Shared.Containers;
@@ -22,6 +22,15 @@ public sealed partial class GridRaiderSystem : EntitySystem
     [Dependency] private SharedContainerSystem _container = default!;
 
     private float _refreshAccumulator;
+    private readonly Queue<EntityUid> _refreshQueue = new();
+    private readonly HashSet<EntityUid> _queuedGrids = new();
+    private readonly HashSet<EntityUid> _intersectingEntities = new();
+    private readonly List<EntityUid> _staleProtectedEntities = new();
+
+    // Counts only components created by this system. This lets protection transfer safely
+    // between two protected grids without removing a component still owned by the new grid.
+    private readonly Dictionary<EntityUid, int> _noHackOwners = new();
+    private readonly Dictionary<EntityUid, int> _noDeconstructOwners = new();
 
     public override void Initialize()
     {
@@ -29,6 +38,7 @@ public sealed partial class GridRaiderSystem : EntitySystem
         SubscribeLocalEvent<GridRaiderComponent, MapInitEvent>(OnGridRaiderMapInit);
         SubscribeLocalEvent<GridRaiderComponent, ComponentStartup>(OnGridRaiderStartup);
         SubscribeLocalEvent<GridRaiderComponent, ComponentShutdown>(OnGridRaiderShutdown);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => ClearTransientState());
     }
 
     public override void Update(float frameTime)
@@ -36,13 +46,30 @@ public sealed partial class GridRaiderSystem : EntitySystem
         base.Update(frameTime);
 
         _refreshAccumulator += frameTime;
-        if (_refreshAccumulator < RefreshInterval)
+        if (_refreshAccumulator >= RefreshInterval)
+        {
+            _refreshAccumulator -= RefreshInterval;
+            QueueGridRefreshes();
+        }
+
+        // A full authored station lookup can be expensive. Spread the protected grids over
+        // separate ticks instead of combining all lookups into a periodic frame spike.
+        if (!_refreshQueue.TryDequeue(out var grid))
             return;
 
-        _refreshAccumulator = 0f;
-        var grids = EntityQueryEnumerator<GridRaiderComponent>();
-        while (grids.MoveNext(out var grid, out var component))
+        _queuedGrids.Remove(grid);
+        if (TryComp<GridRaiderComponent>(grid, out var component) && HasComp<MapGridComponent>(grid))
             RefreshGridProtection(grid, component);
+    }
+
+    private void QueueGridRefreshes()
+    {
+        var grids = EntityQueryEnumerator<GridRaiderComponent>();
+        while (grids.MoveNext(out var grid, out _))
+        {
+            if (_queuedGrids.Add(grid))
+                _refreshQueue.Enqueue(grid);
+        }
     }
 
     private void OnGridRaiderMapInit(EntityUid uid, GridRaiderComponent component, MapInitEvent args)
@@ -64,10 +91,9 @@ public sealed partial class GridRaiderSystem : EntitySystem
 
     private void OnGridRaiderShutdown(EntityUid uid, GridRaiderComponent component, ComponentShutdown args)
     {
-        foreach (var entity in component.ProtectedEntities.ToList())
+        foreach (var entity in component.ProtectedEntities)
         {
-            if (EntityManager.EntityExists(entity))
-                RemoveProtection(entity, component);
+            RemoveProtection(entity, component, Exists(entity));
         }
 
         component.ProtectedEntities.Clear();
@@ -79,27 +105,34 @@ public sealed partial class GridRaiderSystem : EntitySystem
     {
         ApplyInitialProtection(grid, component);
 
-        foreach (var entity in component.ProtectedEntities.ToList())
+        _staleProtectedEntities.Clear();
+        foreach (var entity in component.ProtectedEntities)
         {
             if (!Exists(entity))
             {
-                component.ProtectedEntities.Remove(entity);
-                component.AddedNoHackEntities.Remove(entity);
-                component.AddedNoDeconstructEntities.Remove(entity);
+                _staleProtectedEntities.Add(entity);
                 continue;
             }
 
             if (TryComp<TransformComponent>(entity, out var transform) && transform.GridUid == grid)
                 continue;
 
+            _staleProtectedEntities.Add(entity);
+        }
+
+        foreach (var entity in _staleProtectedEntities)
+        {
             component.ProtectedEntities.Remove(entity);
-            RemoveProtection(entity, component);
+            RemoveProtection(entity, component, Exists(entity));
         }
     }
 
     private void ApplyInitialProtection(EntityUid gridUid, GridRaiderComponent component)
     {
-        foreach (var entity in _lookup.GetEntitiesIntersecting(gridUid).ToHashSet())
+        _intersectingEntities.Clear();
+        _lookup.GetEntitiesIntersecting(gridUid, _intersectingEntities);
+
+        foreach (var entity in _intersectingEntities)
             TryProtectEntity(gridUid, entity, component);
     }
 
@@ -135,27 +168,76 @@ public sealed partial class GridRaiderSystem : EntitySystem
         if (component.ProtectedEntities.Contains(entityUid))
             return;
 
-        if (hackProtect && !HasComp<NoHackComponent>(entityUid))
+        if (hackProtect)
         {
-            EnsureComp<NoHackComponent>(entityUid);
-            component.AddedNoHackEntities.Add(entityUid);
+            if (_noHackOwners.TryGetValue(entityUid, out var owners))
+            {
+                _noHackOwners[entityUid] = owners + 1;
+                component.AddedNoHackEntities.Add(entityUid);
+            }
+            else if (!HasComp<NoHackComponent>(entityUid))
+            {
+                EnsureComp<NoHackComponent>(entityUid);
+                _noHackOwners[entityUid] = 1;
+                component.AddedNoHackEntities.Add(entityUid);
+            }
         }
 
-        if (deconProtect && !HasComp<NoDeconstructComponent>(entityUid))
+        if (deconProtect)
         {
-            EnsureComp<NoDeconstructComponent>(entityUid);
-            component.AddedNoDeconstructEntities.Add(entityUid);
+            if (_noDeconstructOwners.TryGetValue(entityUid, out var owners))
+            {
+                _noDeconstructOwners[entityUid] = owners + 1;
+                component.AddedNoDeconstructEntities.Add(entityUid);
+            }
+            else if (!HasComp<NoDeconstructComponent>(entityUid))
+            {
+                EnsureComp<NoDeconstructComponent>(entityUid);
+                _noDeconstructOwners[entityUid] = 1;
+                component.AddedNoDeconstructEntities.Add(entityUid);
+            }
         }
 
         component.ProtectedEntities.Add(entityUid);
     }
 
-    private void RemoveProtection(EntityUid entityUid, GridRaiderComponent component)
+    private void RemoveProtection(EntityUid entityUid, GridRaiderComponent component, bool removeComponents)
     {
-        if (component.AddedNoHackEntities.Remove(entityUid) && HasComp<NoHackComponent>(entityUid))
-            RemComp<NoHackComponent>(entityUid);
+        if (component.AddedNoHackEntities.Remove(entityUid))
+            ReleaseProtection<NoHackComponent>(entityUid, _noHackOwners, removeComponents);
 
-        if (component.AddedNoDeconstructEntities.Remove(entityUid) && HasComp<NoDeconstructComponent>(entityUid))
-            RemComp<NoDeconstructComponent>(entityUid);
+        if (component.AddedNoDeconstructEntities.Remove(entityUid))
+            ReleaseProtection<NoDeconstructComponent>(entityUid, _noDeconstructOwners, removeComponents);
+    }
+
+    private void ReleaseProtection<T>(
+        EntityUid entityUid,
+        Dictionary<EntityUid, int> owners,
+        bool removeComponent)
+        where T : Component
+    {
+        if (!owners.TryGetValue(entityUid, out var count))
+            return;
+
+        if (count > 1)
+        {
+            owners[entityUid] = count - 1;
+            return;
+        }
+
+        owners.Remove(entityUid);
+        if (removeComponent && HasComp<T>(entityUid))
+            RemComp<T>(entityUid);
+    }
+
+    private void ClearTransientState()
+    {
+        _refreshAccumulator = 0f;
+        _refreshQueue.Clear();
+        _queuedGrids.Clear();
+        _intersectingEntities.Clear();
+        _staleProtectedEntities.Clear();
+        _noHackOwners.Clear();
+        _noDeconstructOwners.Clear();
     }
 }

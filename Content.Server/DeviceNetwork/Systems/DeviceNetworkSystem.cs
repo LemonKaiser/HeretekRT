@@ -8,6 +8,7 @@ using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.DeviceNetwork.Events;
 using Content.Shared.DeviceNetwork.Systems;
 using Content.Shared.Examine;
+using Content.Shared.GameTicking;
 
 namespace Content.Server.DeviceNetwork.Systems
 {
@@ -28,6 +29,13 @@ namespace Content.Server.DeviceNetwork.Systems
         private readonly Queue<DeviceNetworkPacketEvent> _queueA = new();
         private readonly Queue<DeviceNetworkPacketEvent> _queueB = new();
 
+        // Device traffic is normally tiny, but a faulty device can otherwise enqueue forever
+        // and monopolize a tick. These limits only activate under pathological pressure.
+        private const int MaxQueuedPackets = 50_000;
+        private const int MaxPacketsPerTick = 4_096;
+        private int _queuedPacketCount;
+        private long _droppedPacketCount;
+
         /// <summary>
         /// The queue being processed in the current tick
         /// </summary>
@@ -44,6 +52,7 @@ namespace Content.Server.DeviceNetwork.Systems
             SubscribeLocalEvent<DeviceNetworkComponent, MapInitEvent>(OnMapInit);
             SubscribeLocalEvent<DeviceNetworkComponent, ComponentShutdown>(OnNetworkShutdown);
             SubscribeLocalEvent<DeviceNetworkComponent, ExaminedEvent>(OnExamine);
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => ClearPacketQueues());
 
             _activeQueue = _queueA;
             _nextQueue = _queueB;
@@ -52,12 +61,18 @@ namespace Content.Server.DeviceNetwork.Systems
         public override void Update(float frameTime)
         {
 
-            while (_activeQueue.TryDequeue(out var packet))
+            var processed = 0;
+            while (processed < MaxPacketsPerTick && _activeQueue.TryDequeue(out var packet))
             {
+                _queuedPacketCount--;
                 SendPacket(packet);
+                processed++;
             }
 
-            SwapQueues();
+            // Keep the remainder as the active queue. Packets generated while processing
+            // continue to go to the next queue, preserving the anti-loop double buffering.
+            if (_activeQueue.Count == 0)
+                SwapQueues();
         }
 
         public override bool QueuePacket(EntityUid uid, string? address, NetworkPayload data, uint? frequency = null, int? network = null, DeviceNetworkComponent? device = null)
@@ -75,8 +90,22 @@ namespace Content.Server.DeviceNetwork.Systems
 
             network ??= device.DeviceNetId;
 
+            if (_queuedPacketCount >= MaxQueuedPackets)
+            {
+                _droppedPacketCount++;
+                return false;
+            }
+
             _nextQueue.Enqueue(new DeviceNetworkPacketEvent(network.Value, address, frequency.Value, device.Address, uid, data));
+            _queuedPacketCount++;
             return true;
+        }
+
+        private void ClearPacketQueues()
+        {
+            _queueA.Clear();
+            _queueB.Clear();
+            _queuedPacketCount = 0;
         }
 
         /// <summary>

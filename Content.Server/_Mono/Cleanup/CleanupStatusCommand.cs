@@ -1,5 +1,6 @@
 using Content.Server.Administration;
 using Content.Server.Worldgen.Systems.GC;
+using Content.Server._Mono.LongRun;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
@@ -19,8 +20,10 @@ public sealed partial class CleanupStatusCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
+        shell.WriteLine(_entities.System<LongRunHealthSystem>().GetStatus());
         shell.WriteLine(_entities.System<GarbageCleanupSystem>().GetCleanupStatus());
         shell.WriteLine(_entities.System<SpaceCleanupSystem>().GetCleanupStatus());
+        shell.WriteLine(_entities.System<SpaceCleanupSystem>().GetSweepStatus());
         shell.WriteLine(_entities.System<GridCleanupSystem>().GetCleanupStatus());
         shell.WriteLine(_entities.System<MobCleanupSystem>().GetCleanupStatus());
         shell.WriteLine(_entities.System<DecalCleanupSystem>().GetCleanupStatus());

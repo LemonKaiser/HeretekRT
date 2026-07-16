@@ -53,7 +53,9 @@ public abstract partial class StationEventSystem<T> : GameRuleSystem<T> where T 
             ChatSystem.DispatchFilteredAnnouncement(allPlayersInGame, Loc.GetString(stationEvent.StartAnnouncement), sender: stationEvent.AnnounceSender is { } send ? Loc.GetString(send) : null, playSound: false, colorOverride: stationEvent.StartAnnouncementColor);
 
         // Frontier
-        if (stationEvent.StartRadioAnnouncement != null)
+        // Rules can be added from the host console before the round map exists.
+        // Do not turn a harmless early announcement into a map lookup exception.
+        if (stationEvent.StartRadioAnnouncement != null && MapSystem.MapExists(GameTicker.DefaultMap))
         {
             var message = Loc.GetString(stationEvent.StartRadioAnnouncement);
             var mapUid = MapSystem.GetMap(GameTicker.DefaultMap); // Hack: need a reference to a valid entity on the default map - the map itself works.
@@ -100,7 +102,7 @@ public abstract partial class StationEventSystem<T> : GameRuleSystem<T> where T 
             ChatSystem.DispatchFilteredAnnouncement(allPlayersInGame, Loc.GetString(stationEvent.EndAnnouncement), sender: stationEvent.AnnounceSender is { } send ? Loc.GetString(send) : null, playSound: false, colorOverride: stationEvent.EndAnnouncementColor);
 
         // Frontier: radio announcements
-        if (stationEvent.EndRadioAnnouncement != null)
+        if (stationEvent.EndRadioAnnouncement != null && MapSystem.MapExists(GameTicker.DefaultMap))
         {
             var message = Loc.GetString(stationEvent.EndRadioAnnouncement);
             var mapUid = MapSystem.GetMap(GameTicker.DefaultMap); // Hack: need a reference to a valid entity on the default map - the map itself works.

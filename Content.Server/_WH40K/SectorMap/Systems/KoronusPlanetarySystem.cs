@@ -96,14 +96,24 @@ public sealed class KoronusPlanetarySystem : EntitySystem
 
     private TimeSpan _nextBoundaryUpdate;
     private TimeSpan _nextBoundaryTrackingRefresh;
+    private TimeSpan _nextParkingUpdate;
+    private TimeSpan _nextReservationPrune;
+    private TimeSpan _nextApproachRefresh;
     private static readonly TimeSpan BoundaryUpdateInterval = TimeSpan.FromMilliseconds(200);
     private static readonly TimeSpan BoundaryTrackingRefreshInterval = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan ParkingUpdateInterval = TimeSpan.FromMilliseconds(250);
+    private static readonly TimeSpan ReservationPruneInterval = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan ApproachRefreshInterval = TimeSpan.FromSeconds(1);
     private EntityUid _atmosphericTransitMap = EntityUid.Invalid;
     private float _nextAtmosphericTransitCoordinate;
-    private readonly Dictionary<EntityUid, string> _landingApproachStates = new();
+    private readonly Dictionary<EntityUid, LandingApproachState> _landingApproachStates = new();
     private readonly Dictionary<MapId, SurfaceBoundary> _surfaceBoundaries = new();
     private readonly HashSet<Entity<ShuttleConsoleComponent>> _shuttleConsoles = new();
     private readonly List<EntityUid> _atmosphericTransitMobRemovals = new();
+    private readonly List<KoronusLandingSession> _parkingSessionSnapshot = new();
+    private readonly List<string> _reservationRemovals = new();
+    private readonly HashSet<EntityUid> _activeApproachShuttles = new();
+    private readonly List<EntityUid> _landingApproachRemovals = new();
 
     public override void Initialize()
     {
@@ -120,16 +130,30 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         base.Update(frameTime);
 
         UpdatePlanetaryTransfers();
-        UpdateParkingSessions();
+        if (_timing.CurTime >= _nextParkingUpdate)
+        {
+            _nextParkingUpdate = _timing.CurTime + ParkingUpdateInterval;
+            UpdateParkingSessions();
+        }
 
         if (_timing.CurTime < _nextBoundaryUpdate)
             return;
 
         _nextBoundaryUpdate = _timing.CurTime + BoundaryUpdateInterval;
-        PruneStaleReservations();
         EnforceSurfaceBoundaries();
         RefreshSurfaceBoundaryTracking();
-        RefreshLandingApproachStateChanges();
+
+        if (_timing.CurTime >= _nextReservationPrune)
+        {
+            _nextReservationPrune = _timing.CurTime + ReservationPruneInterval;
+            PruneStaleReservations();
+        }
+
+        if (_timing.CurTime >= _nextApproachRefresh)
+        {
+            _nextApproachRefresh = _timing.CurTime + ApproachRefreshInterval;
+            RefreshLandingApproachStateChanges();
+        }
     }
 
     /// <summary>
@@ -231,7 +255,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             body.Surface == null ||
             !_prototypes.TryIndex(body.Surface.Value, out KoronusPlanetSurfacePrototype? surface) ||
             !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryGetSystemMap(system.ID, out var orbitalMap) ||
+            !_sector.TryEnsureSystemMapLoaded(system.ID, out var orbitalMap) ||
             !_maps.TryGetMap(orbitalMap, out var orbitalMapUid))
         {
             return false;
@@ -981,8 +1005,13 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         if (!TryGetSectorRule(out var rule))
             return;
 
-        foreach (var session in rule.Comp.LandingSessions.Values.ToArray())
+        _parkingSessionSnapshot.Clear();
+        _parkingSessionSnapshot.AddRange(rule.Comp.LandingSessions.Values);
+        foreach (var session in _parkingSessionSnapshot)
         {
+            if (!rule.Comp.LandingSessions.ContainsKey(session.Id))
+                continue;
+
             session.Fragments.RemoveWhere(fragment => TerminatingOrDeleted(fragment));
             if (session.Fragments.Count == 0)
             {
@@ -1015,7 +1044,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             body.Surface == null ||
             !_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(body.Surface.Value, out var surface) ||
             !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryGetSystemMap(system.ID, out var orbitalMap) ||
+            !_sector.TryEnsureSystemMapLoaded(system.ID, out var orbitalMap) ||
             !_maps.TryGetMap(orbitalMap, out var orbitalMapUid))
         {
             return;
@@ -1836,11 +1865,11 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     /// </summary>
     private void RefreshLandingApproachStateChanges()
     {
-        var activeShuttles = new HashSet<EntityUid>();
+        _activeApproachShuttles.Clear();
         var shuttles = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
         while (shuttles.MoveNext(out var shuttleGrid, out _, out var transform))
         {
-            activeShuttles.Add(shuttleGrid);
+            _activeApproachShuttles.Add(shuttleGrid);
             var state = GetLandingApproachState(shuttleGrid, transform);
             if (!_landingApproachStates.TryGetValue(shuttleGrid, out var previousState))
             {
@@ -1855,31 +1884,41 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             EntityManager.System<ShuttleConsoleSystem>().RefreshShuttleConsoles(shuttleGrid);
         }
 
-        foreach (var shuttleGrid in _landingApproachStates.Keys.ToArray())
+        _landingApproachRemovals.Clear();
+        foreach (var shuttleGrid in _landingApproachStates.Keys)
         {
-            if (!activeShuttles.Contains(shuttleGrid))
-                _landingApproachStates.Remove(shuttleGrid);
+            if (!_activeApproachShuttles.Contains(shuttleGrid))
+                _landingApproachRemovals.Add(shuttleGrid);
         }
+
+        foreach (var shuttleGrid in _landingApproachRemovals)
+            _landingApproachStates.Remove(shuttleGrid);
     }
 
-    private string GetLandingApproachState(EntityUid shuttleGrid, TransformComponent transform)
+    private LandingApproachState GetLandingApproachState(EntityUid shuttleGrid, TransformComponent transform)
     {
         if (!_sector.TryGetSystemId(transform.MapID, out var systemId) ||
             !_sector.TryGetSystemPrototype(systemId, out var system) ||
             !HasLandableBodies(system.ID))
         {
-            return string.Empty;
+            return default;
         }
 
-        var bodiesInRange = new List<string>();
+        var count = 0;
+        long hashSum = 0;
+        var hashXor = 0;
         foreach (var body in _prototypes.EnumeratePrototypes<KoronusCelestialBodyPrototype>())
         {
-            if (body.System == system.ID && body.Surface != null && IsWithinLandingApproach(shuttleGrid, system, body))
-                bodiesInRange.Add(body.ID);
+            if (body.System != system.ID || body.Surface == null || !IsWithinLandingApproach(shuttleGrid, system, body))
+                continue;
+
+            var bodyHash = StringComparer.Ordinal.GetHashCode(body.ID);
+            count++;
+            hashSum += bodyHash;
+            hashXor ^= bodyHash;
         }
 
-        bodiesInRange.Sort(StringComparer.Ordinal);
-        return string.Join('|', bodiesInRange);
+        return new LandingApproachState(count, hashSum, hashXor);
     }
 
     private void PruneStaleReservations()
@@ -1887,7 +1926,8 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         if (!TryGetSectorRule(out var rule))
             return;
 
-        foreach (var (key, shuttleGrid) in rule.Comp.LandingReservations.ToArray())
+        _reservationRemovals.Clear();
+        foreach (var (key, shuttleGrid) in rule.Comp.LandingReservations)
         {
             if (!TerminatingOrDeleted(shuttleGrid) &&
                 TryComp<KoronusPlanetaryTransitComponent>(shuttleGrid, out var transit) &&
@@ -1900,20 +1940,36 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             if (TerminatingOrDeleted(shuttleGrid) ||
                 !TryGetSurfaceRuntime(Transform(shuttleGrid).MapID, out _, out var surface))
             {
-                rule.Comp.LandingReservations.Remove(key);
+                _reservationRemovals.Add(key);
                 continue;
             }
 
             // A completed landing session is the authoritative snapshot of the occupied pad.
             // Re-scanning entity pads can temporarily fail while overlapping grids update, and
             // the pad may also be damaged while a shuttle is parked on it.
-            if (rule.Comp.LandingSessions.Values.Any(session =>
-                    session.ReservationKey == key && session.Fragments.Contains(shuttleGrid)))
+            if (HasLandingSessionReservation(rule.Comp, key, shuttleGrid))
                 continue;
 
             if (!SurfaceOwnsReservation(surface.SurfaceId, key))
-                rule.Comp.LandingReservations.Remove(key);
+                _reservationRemovals.Add(key);
         }
+
+        foreach (var key in _reservationRemovals)
+            rule.Comp.LandingReservations.Remove(key);
+    }
+
+    private static bool HasLandingSessionReservation(
+        KoronusSectorRuleComponent rule,
+        string reservationKey,
+        EntityUid shuttleGrid)
+    {
+        foreach (var session in rule.LandingSessions.Values)
+        {
+            if (session.ReservationKey == reservationKey && session.Fragments.Contains(shuttleGrid))
+                return true;
+        }
+
+        return false;
     }
 
     private bool SurfaceOwnsReservation(string surfaceId, string reservationKey)
@@ -1955,9 +2011,16 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         _surfaceBoundaries.Clear();
         _nextBoundaryUpdate = default;
         _nextBoundaryTrackingRefresh = default;
+        _nextParkingUpdate = default;
+        _nextReservationPrune = default;
+        _nextApproachRefresh = default;
         _atmosphericTransitMap = EntityUid.Invalid;
         _nextAtmosphericTransitCoordinate = 0f;
         _landingApproachStates.Clear();
+        _parkingSessionSnapshot.Clear();
+        _reservationRemovals.Clear();
+        _activeApproachShuttles.Clear();
+        _landingApproachRemovals.Clear();
 
         if (!TryGetSectorRule(out var rule))
             return;
@@ -1976,6 +2039,8 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         MapId SurfaceMap,
         EntityUid SurfaceMapUid,
         KoronusPlanetSurfaceMapComponent SurfaceRuntime);
+
+    private readonly record struct LandingApproachState(int Count, long HashSum, int HashXor);
 
     private sealed record ResolvedLandingSite(
         string Id,

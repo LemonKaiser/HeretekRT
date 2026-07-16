@@ -203,8 +203,23 @@ public sealed partial class DungeonSystem
             // TODO: Copy the templated entity as is with serv
             var ent = Spawn(protoId, new EntityCoordinates(gridUid, childPos));
 
+            // Some prototypes can delete or detach themselves during initialization. Do not
+            // try to anchor an entity whose transform has already entered teardown.
+            if (TerminatingOrDeleted(ent))
+                continue;
+
             var childXform = _xformQuery.GetComponent(ent);
             var anchored = templateXform.Anchored;
+
+            // Room entities belong to the generated grid. Reassert the attachment before
+            // anchoring in case prototype startup moved the entity to nullspace; otherwise
+            // AnchorEntity rejects it because GridUid no longer matches the target grid.
+            if (childXform.GridUid != gridUid)
+                _transform.SetCoordinates(ent, childXform, new EntityCoordinates(gridUid, childPos));
+
+            if (TerminatingOrDeleted(ent))
+                continue;
+
             _transform.SetLocalRotation(ent, childRot, childXform);
 
             // If the templated entity was anchored then anchor us too.

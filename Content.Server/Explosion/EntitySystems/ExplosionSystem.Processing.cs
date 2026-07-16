@@ -158,7 +158,8 @@ public sealed partial class ExplosionSystem
 #endif
         }
 
-        Log.Info($"Processed {TilesPerTick - tilesRemaining} tiles in {Stopwatch.Elapsed.TotalMilliseconds}ms");
+        // Do not emit a log line for every explosion tick. Large explosions can span hundreds
+        // of ticks, turning this hot path into avoidable disk I/O and log retention pressure.
 
         // we have finished processing our tiles. Is there still an ongoing explosion?
         if (_activeExplosion != null)

@@ -1,6 +1,7 @@
 using Content.Shared._Mono.CCVar;
 using Content.Shared.GameTicking;
 using Robust.Shared.Configuration;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Mono.Cleanup;
 
@@ -8,6 +9,7 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
     where TComp : IComponent
 {
     [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     protected TimeSpan _cleanupInterval = TimeSpan.FromSeconds(300);
@@ -23,6 +25,7 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
     private readonly Queue<EntityUid> _checkQueue = new();
     private readonly HashSet<EntityUid> _queued = new();
     private readonly HashSet<EntityUid> _tracked = new();
+    private readonly List<EntityUid> _staleTracked = new();
     private readonly System.Diagnostics.Stopwatch _stopwatch = new();
 
     private int _cycleRemaining;
@@ -35,14 +38,15 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
     // used to track when we should be cleaning up the next entry in our queue
     private TimeSpan _cleanupAccumulator = TimeSpan.Zero;
     private TimeSpan _cleanupDeferDuration;
+    private TimeSpan _nextDiscovery;
+    private static readonly TimeSpan DiscoveryInterval = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan DebugDiscoveryInterval = TimeSpan.FromSeconds(5);
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<TComp, ComponentStartup>(OnComponentStartup);
-        SubscribeLocalEvent<TComp, ComponentShutdown>(OnComponentShutdown);
 
         Subs.CVar(_cfg, MonoCVars.CleanupEnabled, val => _cleanupEnabled = val, true);
         Subs.CVar(_cfg, MonoCVars.CleanupDryRun, val => _dryRun = val, true);
@@ -53,10 +57,7 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
         Subs.CVar(_cfg, MonoCVars.CleanupMaximumProcessTimeMs,
             val => _maximumProcessTime = TimeSpan.FromMilliseconds(Math.Max(0.05f, val)), true);
 
-        // Normally systems initialize before map entities. This also makes hot reload and tests deterministic.
-        var query = EntityQueryEnumerator<TComp>();
-        while (query.MoveNext(out var uid, out _))
-            Track(uid);
+        DiscoverEntities();
     }
 
     public override void Update(float frameTime)
@@ -65,8 +66,26 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
 
         if (!_cleanupEnabled)
         {
+            // No cleanup work is allowed while disabled. Drop the bookkeeping as well so
+            // entities created and deleted during a disabled interval are not retained until
+            // the next round (or indefinitely if the CVar stays off).
+            if (_tracked.Count != 0 || _checkQueue.Count != 0)
+            {
+                _checkQueue.Clear();
+                _queued.Clear();
+                _tracked.Clear();
+                _staleTracked.Clear();
+                _nextDiscovery = TimeSpan.Zero;
+            }
+
             _cleanupAccumulator = TimeSpan.Zero;
             return;
+        }
+
+        if (_timing.CurTime >= _nextDiscovery)
+        {
+            DiscoverEntities();
+            _nextDiscovery = _timing.CurTime + (_doDebug ? DebugDiscoveryInterval : DiscoveryInterval);
         }
 
         if (_tracked.Count == 0)
@@ -164,6 +183,28 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
             Enqueue(uid);
     }
 
+    /// <summary>
+    /// Component lifecycle events are exclusive in Robust and are owned by the component's main
+    /// system. A low-frequency query discovers new candidates without stealing those subscriptions.
+    /// Cleanup grace periods are much longer than this bounded discovery interval.
+    /// </summary>
+    private void DiscoverEntities()
+    {
+        _staleTracked.Clear();
+        foreach (var uid in _tracked)
+        {
+            if (TerminatingOrDeleted(uid) || !HasComp<TComp>(uid))
+                _staleTracked.Add(uid);
+        }
+
+        foreach (var uid in _staleTracked)
+            _tracked.Remove(uid);
+
+        var query = EntityQueryEnumerator<TComp>();
+        while (query.MoveNext(out var uid, out _))
+            Track(uid);
+    }
+
     private void Enqueue(EntityUid uid)
     {
         if (_queued.Add(uid))
@@ -204,22 +245,24 @@ public abstract partial class BaseCleanupSystem<TComp> : EntitySystem
         _cycleRemaining = 0;
         _cleanupAccumulator = TimeSpan.Zero;
         _cleanupDeferDuration = TimeSpan.Zero;
+        _nextDiscovery = TimeSpan.Zero;
         _batchChecked = 0;
         _batchEligible = 0;
         _batchDeleted = 0;
         _totalChecked = 0;
         _totalEligible = 0;
         _totalDeleted = 0;
+
+        OnCleanupRoundRestart();
     }
 
-    private void OnComponentStartup(Entity<TComp> entity, ref ComponentStartup args)
+    /// <summary>
+    /// Hook for cleanup systems that own additional queues.  The base system
+    /// already subscribes to <see cref="RoundRestartCleanupEvent"/>, so
+    /// derived systems must not subscribe to it a second time.
+    /// </summary>
+    protected virtual void OnCleanupRoundRestart()
     {
-        Track(entity);
-    }
-
-    private void OnComponentShutdown(Entity<TComp> entity, ref ComponentShutdown args)
-    {
-        _tracked.Remove(entity);
     }
 
     protected abstract bool ShouldEntityCleanup(EntityUid uid);

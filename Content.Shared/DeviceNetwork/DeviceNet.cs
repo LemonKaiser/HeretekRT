@@ -98,7 +98,7 @@ public sealed class DeviceNet
         {
             receiveAll.Remove(device);
             if (receiveAll.Count == 0)
-                ListeningDevices.Remove(freq);
+                ReceiveAllDevices.Remove(freq);
         }
 
         return true;
@@ -160,7 +160,7 @@ public sealed class DeviceNet
             {
                 receiveAll.Remove(device);
                 if (receiveAll.Count == 0)
-                    ListeningDevices.Remove(freq);
+                    ReceiveAllDevices.Remove(freq);
             }
         }
 

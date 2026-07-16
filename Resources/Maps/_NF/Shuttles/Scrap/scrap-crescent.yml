@@ -8175,13 +8175,6 @@ entities:
     - type: Transform
       pos: -9.5,26.5
       parent: 1
-- proto: CrescentMothershipComputer
-  entities:
-  - uid: 3689
-    components:
-    - type: Transform
-      pos: -5.5,38.5
-      parent: 1
 - proto: CrystalSpawner
   entities:
   - uid: 3732

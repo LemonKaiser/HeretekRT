@@ -13,6 +13,7 @@ namespace Content.Server._Mono.Cleanup;
 public sealed partial class DecalCleanupSystem : EntitySystem
 {
     private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(10);
+    private const int MaxPendingDeletes = 16_384;
 
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private DecalSystem _decals = default!;
@@ -20,6 +21,7 @@ public sealed partial class DecalCleanupSystem : EntitySystem
 
     private readonly Queue<EntityUid> _gridScanQueue = new();
     private readonly Queue<(EntityUid Grid, uint Decal)> _deleteQueue = new();
+    private readonly List<uint> _cleanableDecals = new();
     private readonly System.Diagnostics.Stopwatch _stopwatch = new();
 
     private bool _enabled;
@@ -31,6 +33,7 @@ public sealed partial class DecalCleanupSystem : EntitySystem
     private TimeSpan _nextScan;
     private long _totalEligible;
     private long _totalDeleted;
+    private long _deferredDeletes;
     private int _batchEligible;
     private int _batchDeleted;
     private bool _batchActive;
@@ -124,12 +127,14 @@ public sealed partial class DecalCleanupSystem : EntitySystem
     public string GetCleanupStatus()
     {
         return $"{nameof(DecalCleanupSystem)}: grids={_gridScanQueue.Count}, pending={_deleteQueue.Count}, " +
-               $"eligible={_totalEligible}, deleted={_totalDeleted}, enabled={_enabled}, dryRun={_dryRun}";
+               $"eligible={_totalEligible}, deleted={_totalDeleted}, deferred={_deferredDeletes}, " +
+               $"maxPending={MaxPendingDeletes}, enabled={_enabled}, dryRun={_dryRun}";
     }
 
     private void QueueExcessDecals(EntityUid grid, DecalGridComponent component)
     {
-        var cleanable = new List<uint>();
+        var cleanable = _cleanableDecals;
+        cleanable.Clear();
         foreach (var chunk in component.ChunkCollection.ChunkCollection.Values)
         {
             foreach (var (id, decal) in chunk.Decals)
@@ -150,7 +155,10 @@ public sealed partial class DecalCleanupSystem : EntitySystem
         if (_dryRun)
             return;
 
-        for (var i = 0; i < excess; i++)
+        var available = Math.Max(0, MaxPendingDeletes - _deleteQueue.Count);
+        var queued = Math.Min(excess, available);
+        _deferredDeletes += excess - queued;
+        for (var i = 0; i < queued; i++)
             _deleteQueue.Enqueue((grid, cleanable[i]));
     }
 
@@ -181,8 +189,10 @@ public sealed partial class DecalCleanupSystem : EntitySystem
         _nextScan = TimeSpan.Zero;
         _totalEligible = 0;
         _totalDeleted = 0;
+        _deferredDeletes = 0;
         _batchEligible = 0;
         _batchDeleted = 0;
         _batchActive = false;
+        _cleanableDecals.Clear();
     }
 }

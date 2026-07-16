@@ -49,7 +49,7 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
         "Number of times the log queue cap has been reached in a round.");
 
     private static readonly Gauge PreRoundQueueCapReached = Metrics.CreateGauge(
-        "admin_logs_queue_cap_reached",
+        "admin_logs_pre_round_queue_cap_reached",
         "Number of times the pre-round log queue cap has been reached in a round.");
 
     private static readonly Gauge LogsSent = Metrics.CreateGauge(
@@ -80,6 +80,8 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
 
     // 1 when saving, 0 otherwise
     private int _savingLogs;
+    // 1 when the per-tick async update is running, 0 otherwise
+    private int _updateRunning;
     private int _logsDropped;
 
     public void Initialize()
@@ -117,39 +119,56 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
         }
     }
 
-    public async void Update()
+    public void Update()
     {
-        if (_runLevel == GameRunLevel.PreRoundLobby)
-        {
-            await PreRoundUpdate();
+        // Only one database flush may be in flight. This also keeps exceptions from an
+        // async-void callback from escaping into the server tick loop.
+        if (Interlocked.Exchange(ref _updateRunning, 1) == 1)
             return;
-        }
 
-        var count = _logQueue.Count;
-        Queue.Set(count);
+        _ = UpdateAsync();
+    }
 
-        var preRoundCount = _preRoundLogQueue.Count;
-        PreRoundQueue.Set(preRoundCount);
-
-        if (count + preRoundCount == 0)
+    private async Task UpdateAsync()
+    {
+        try
         {
-            return;
-        }
-
-        if (_timing.RealTime >= _nextUpdateTime)
-        {
-            await TrySaveLogs();
-            return;
-        }
-
-        if (count >= _queueMax)
-        {
-            if (_metricsEnabled)
+            if (_runLevel == GameRunLevel.PreRoundLobby)
             {
-                QueueCapReached.Inc();
+                await PreRoundUpdate();
+                return;
             }
 
-            await TrySaveLogs();
+            var count = _logQueue.Count;
+            Queue.Set(count);
+
+            var preRoundCount = _preRoundLogQueue.Count;
+            PreRoundQueue.Set(preRoundCount);
+
+            if (count + preRoundCount == 0)
+                return;
+
+            if (_timing.RealTime >= _nextUpdateTime)
+            {
+                await TrySaveLogs();
+                return;
+            }
+
+            if (count >= _queueMax)
+            {
+                if (_metricsEnabled)
+                    QueueCapReached.Inc();
+
+                await TrySaveLogs();
+            }
+        }
+        catch (Exception exception)
+        {
+            _sawmill.Error($"Admin log queue update failed: {exception}");
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _updateRunning, 0);
         }
     }
 
@@ -192,9 +211,10 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
 
         // TODO ADMIN LOGS array pool
         var copy = new List<AdminLog>(_logQueue.Count + _preRoundLogQueue.Count);
-        copy.AddRange(_logQueue);
+        var inRoundCount = _logQueue.Count;
+        DrainQueue(_logQueue, copy);
 
-        if (_logQueue.Count >= _queueMax)
+        if (inRoundCount >= _queueMax)
         {
             _sawmill.Warning($"In-round cap of {_queueMax} reached for admin logs.");
         }
@@ -205,26 +225,26 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
             _sawmill.Error($"Dropped {dropped} logs. Current max threshold: {_dropThreshold}");
         }
 
-        if (_runLevel == GameRunLevel.PreRoundLobby && !_preRoundLogQueue.IsEmpty)
+        var preRoundCount = _preRoundLogQueue.Count;
+        if (_runLevel == GameRunLevel.PreRoundLobby && preRoundCount > 0)
         {
-            _sawmill.Error($"Dropping {_preRoundLogQueue.Count} pre-round logs. Current cap: {_preRoundQueueMax}");
+            _sawmill.Error($"Dropping {preRoundCount} pre-round logs. Current cap: {_preRoundQueueMax}");
+            DrainQueue(_preRoundLogQueue, null);
         }
         else
         {
-            foreach (var log in _preRoundLogQueue)
+            while (_preRoundLogQueue.TryDequeue(out var log))
             {
                 log.RoundId = _currentRoundId;
                 CacheLog(log);
+                copy.Add(log);
             }
-
-            copy.AddRange(_preRoundLogQueue);
         }
 
-        _logQueue.Clear();
-        Queue.Set(0);
-
-        _preRoundLogQueue.Clear();
-        PreRoundQueue.Set(0);
+        // Do not clear the concurrent queues here: logs added while the database write is
+        // in flight belong to the next batch and must remain queued.
+        Queue.Set(_logQueue.Count);
+        PreRoundQueue.Set(_preRoundLogQueue.Count);
 
         var task = _db.AddAdminLogs(copy);
 
@@ -242,6 +262,12 @@ public sealed partial class AdminLogManager : SharedAdminLogManager, IAdminLogMa
         }
 
         await task;
+    }
+
+    private static void DrainQueue(ConcurrentQueue<AdminLog> queue, List<AdminLog>? destination)
+    {
+        while (queue.TryDequeue(out var log))
+            destination?.Add(log);
     }
 
     public void RoundStarting(int id)

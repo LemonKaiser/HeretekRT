@@ -1,22 +1,30 @@
 namespace Content.Shared._Mono;
 
 /// <summary>
-/// Component that applies NoHack and NoDeconstruct to entities with Door and/or VendingMachine components on a grid.
-/// Protection is applied once during initialization and remains until the component is removed.
+/// Applies and maintains NoHack and NoDeconstruct on selected authored entities of a grid.
+/// Procedural terrain is not included because the component belongs to the facility grid itself.
 /// </summary>
 [RegisterComponent]
 public sealed partial class GridRaiderComponent : Component
 {
     /// <summary>
-    /// The list of entities that have been given NoHack and NoDeconstruct by this component.
+    /// Runtime entities currently tracked by this grid, including entities whose protection predated this component.
+    /// The field remains readable for compatibility with existing maps, but must not be written back to map YAML:
+    /// EntityUid values are runtime bookkeeping and are rebuilt by GridRaiderSystem.
     /// </summary>
-    [DataField]
+    [DataField(readOnly: true)]
     public HashSet<EntityUid> ProtectedEntities = new();
 
-    [DataField]
+    /// <summary>
+    /// Runtime NoHack components created by GridRaiderSystem.
+    /// </summary>
+    [DataField(readOnly: true)]
     public HashSet<EntityUid> AddedNoHackEntities = new();
 
-    [DataField]
+    /// <summary>
+    /// Runtime NoDeconstruct components created by GridRaiderSystem.
+    /// </summary>
+    [DataField(readOnly: true)]
     public HashSet<EntityUid> AddedNoDeconstructEntities = new();
 
     /// <summary>

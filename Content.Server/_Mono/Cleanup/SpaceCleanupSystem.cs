@@ -59,6 +59,8 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
     private readonly Queue<(EntityUid Uid, float Aggression)> _sweepCandidates = new();
     private readonly HashSet<EntityUid> _queuedSweepEntities = new();
     private readonly System.Diagnostics.Stopwatch _sweepStopwatch = new();
+    private const int MaxSweepCandidates = 16_384;
+    private long _droppedSweepCandidates;
 
     public override void Initialize()
     {
@@ -66,8 +68,6 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
 
         // this queries over literally everything with PhysicsComponent so has to have big interval
         _cleanupInterval = TimeSpan.FromSeconds(600);
-
-        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
 
         _actorQuery = GetEntityQuery<ActorComponent>();
         _buckleQuery = GetEntityQuery<BuckleComponent>();
@@ -297,6 +297,14 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
 
             foreach (var (uid, _) in _sweepEnts)
             {
+                if (_queuedSweepEntities.Count >= MaxSweepCandidates)
+                {
+                    // Impact sweeps are optional cleanup work. Do not allow a single
+                    // huge lookup to retain an unbounded candidate list.
+                    _droppedSweepCandidates++;
+                    continue;
+                }
+
                 if (_queuedSweepEntities.Add(uid))
                     _sweepCandidates.Enqueue((uid, aggression));
             }
@@ -322,10 +330,17 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
         }
     }
 
-    private void OnRoundRestart(RoundRestartCleanupEvent args)
+    protected override void OnCleanupRoundRestart()
     {
         _sweepQueue.Clear();
         _sweepCandidates.Clear();
         _queuedSweepEntities.Clear();
+        _droppedSweepCandidates = 0;
+    }
+
+    public string GetSweepStatus()
+    {
+        return $"{nameof(SpaceCleanupSystem)}: sweeps={_sweepQueue.Count}, candidates={_sweepCandidates.Count}, " +
+               $"droppedCandidates={_droppedSweepCandidates}, maxCandidates={MaxSweepCandidates}";
     }
 }

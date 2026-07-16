@@ -8,6 +8,46 @@ namespace Content.Shared._Mono.CCVar;
 [CVarDefs]
 public sealed partial class MonoCVars
 {
+    #region Long-running rounds
+
+    /// <summary>
+    ///     Minimum trend window before slow-growth warnings become active.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunTrendMinimumHours =
+        CVarDef.Create("mono.long_run.trend.minimum_hours", 2f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Managed heap growth in MiB per hour that produces a diagnostic warning. Zero disables it.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunManagedHeapWarningMiBPerHour =
+        CVarDef.Create("mono.long_run.trend.managed_heap_warning_mib_per_hour", 128f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Process working set growth in MiB per hour that produces a diagnostic warning. Zero disables it.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunWorkingSetWarningMiBPerHour =
+        CVarDef.Create("mono.long_run.trend.working_set_warning_mib_per_hour", 256f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Entity growth per hour that produces a diagnostic warning. Zero disables it.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunEntityWarningPerHour =
+        CVarDef.Create("mono.long_run.trend.entity_warning_per_hour", 5000f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     Loaded biome chunk growth per hour that produces a diagnostic warning. Zero disables it.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunBiomeChunkWarningPerHour =
+        CVarDef.Create("mono.long_run.trend.biome_chunk_warning_per_hour", 256f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     World generation chunk growth per hour that produces a diagnostic warning. Zero disables it.
+    /// </summary>
+    public static readonly CVarDef<float> LongRunWorldgenChunkWarningPerHour =
+        CVarDef.Create("mono.long_run.trend.worldgen_chunk_warning_per_hour", 512f, CVar.SERVERONLY);
+
+    #endregion
+
     #region Cleanup
 
     /// <summary>

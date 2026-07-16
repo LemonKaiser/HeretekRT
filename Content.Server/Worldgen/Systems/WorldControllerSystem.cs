@@ -3,6 +3,7 @@ using Content.Server._Mono.Worldgen.Components;
 using Content.Server.Power.Components;
 using Content.Server.Worldgen.Components;
 using Content.Shared.Ghost;
+using Content.Shared.GameTicking;
 using Content.Shared.Mind.Components;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
@@ -30,6 +31,8 @@ public sealed partial class WorldControllerSystem : EntitySystem
     private float _updateInterval = 1f;
     private float _updateAccumulator = 0f;
     private Dictionary<EntityUid, Dictionary<Vector2i, List<EntityUid>>> _chunksToLoad = new();
+    private readonly Stack<Dictionary<Vector2i, List<EntityUid>>> _chunkRequestMapPool = new();
+    private readonly Stack<List<EntityUid>> _loaderListPool = new();
     // </Mono>
 
     private ISawmill _sawmill = default!;
@@ -41,6 +44,7 @@ public sealed partial class WorldControllerSystem : EntitySystem
         SubscribeLocalEvent<LoadedChunkComponent, ComponentStartup>(OnChunkLoadedCore);
         SubscribeLocalEvent<LoadedChunkComponent, ComponentShutdown>(OnChunkUnloadedCore);
         SubscribeLocalEvent<WorldChunkComponent, ComponentShutdown>(OnChunkShutdown);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => ClearRequestPools());
     }
 
     /// <summary>
@@ -100,13 +104,29 @@ public sealed partial class WorldControllerSystem : EntitySystem
             return;
         _updateAccumulator -= _updateInterval; // Mono - Delay between updates
 
-        //there was a to-do here about every frame alloc but it turns out it's a nothing burger here.
+        // Reuse the per-controller request maps and loader lists. Worldgen runs every
+        // second; allocating these structures for every controller/chunk creates steady
+        // Gen0 pressure during long rounds.
+        foreach (var requestMap in _chunksToLoad.Values)
+        {
+            foreach (var loaders in requestMap.Values)
+            {
+                loaders.Clear();
+                _loaderListPool.Push(loaders);
+            }
+
+            requestMap.Clear();
+            _chunkRequestMapPool.Push(requestMap);
+        }
+
         _chunksToLoad.Clear();
 
         var controllerEnum = EntityQueryEnumerator<WorldControllerComponent>();
         while (controllerEnum.MoveNext(out var uid, out _))
         {
-            _chunksToLoad[uid] = new Dictionary<Vector2i, List<EntityUid>>();
+            _chunksToLoad[uid] = _chunkRequestMapPool.Count > 0
+                ? _chunkRequestMapPool.Pop()
+                : new Dictionary<Vector2i, List<EntityUid>>();
         }
 
         if (_chunksToLoad.Count == 0)
@@ -164,7 +184,11 @@ public sealed partial class WorldControllerSystem : EntitySystem
         {
             var coords = chunk.Coordinates;
 
-            if (!_chunksToLoad[chunk.Map].ContainsKey(coords))
+            // A world controller can disappear while one of its loaded chunks is still
+            // pending deletion. Treat that chunk as unloaded instead of indexing a map
+            // that is no longer part of this update pass.
+            if (!_chunksToLoad.TryGetValue(chunk.Map, out var requestedChunks) ||
+                !requestedChunks.ContainsKey(coords))
             {
                 RemCompDeferred<LoadedChunkComponent>(uid);
                 chunksUnloaded++;
@@ -295,11 +319,22 @@ public sealed partial class WorldControllerSystem : EntitySystem
         while (chunks.MoveNext(out var chunk))
         {
             if (!set.TryGetValue(chunk.Value, out _))
-                set[chunk.Value] = new List<EntityUid>(4);
+            {
+                set[chunk.Value] = _loaderListPool.Count > 0
+                    ? _loaderListPool.Pop()
+                    : new List<EntityUid>(4);
+            }
             set[chunk.Value].Add(uid);
         }
 
         return true;
+    }
+
+    private void ClearRequestPools()
+    {
+        _chunksToLoad.Clear();
+        _chunkRequestMapPool.Clear();
+        _loaderListPool.Clear();
     }
 }
 

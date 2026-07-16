@@ -7,8 +7,9 @@ namespace Content.Shared._Mono;
 public sealed partial class GridGodModeComponent : Component
 {
     /// <summary>
-    /// The list of entities that have been given GodMode by this component.
+    /// Runtime list of entities that have been given GodMode by this component.
+    /// EntityUid values are rebuilt by GridGodModeSystem and must not be written to map YAML.
     /// </summary>
-    [DataField]
+    [DataField(readOnly: true)]
     public HashSet<EntityUid> ProtectedEntities = new();
 }

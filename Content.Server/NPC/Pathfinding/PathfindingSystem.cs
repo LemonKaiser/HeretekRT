@@ -10,6 +10,7 @@ using Content.Shared.Access.Components;
 using Content.Shared.Administration;
 using Content.Shared.Climbing.Components;
 using Content.Shared.Doors.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.NPC;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -65,6 +66,11 @@ namespace Content.Server.NPC.Pathfinding
         /// </summary>
         private const int PathTickLimit = 256;
 
+        // A cancelled request is cheap to reject, but an unbounded producer can still retain
+        // every request until the next tick. Keep a generous reserve for normal NPC activity.
+        private const int MaxPendingRequests = PathTickLimit * 16;
+        private long _rejectedRequestCount;
+
         private int _portalIndex;
         private readonly Dictionary<int, PathPortal> _portals = new();
 
@@ -91,6 +97,7 @@ namespace Content.Server.NPC.Pathfinding
             _playerManager.PlayerStatusChanged += OnPlayerChange;
             InitializeGrid();
             SubscribeNetworkEvent<RequestPathfindingDebugMessage>(OnBreadcrumbs);
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => ClearPendingRequests());
         }
 
         public override void Shutdown()
@@ -125,6 +132,14 @@ namespace Content.Server.NPC.Pathfinding
                 }
 
                 var request = _pathRequests[i];
+
+                // Cancellation completes the TCS immediately. Do not spend pathfinding work
+                // on it and do not try to complete it a second time during cleanup.
+                if (request.Task.IsCanceled)
+                {
+                    results[i] = PathResult.NoPath;
+                    return;
+                }
 
                 try
                 {
@@ -168,12 +183,15 @@ namespace Content.Server.NPC.Pathfinding
                     case PathResult.PartialPath:
                     case PathResult.Path:
                     case PathResult.NoPath:
-                        SendDebug(path);
                         // Don't use RemoveSwap because we still want to try and process them in order.
                         _pathRequests.RemoveAt(resultIndex);
                         offset--;
-                        path.Tcs.SetResult(result);
-                        SendRoute(path);
+                        if (!path.Task.IsCanceled)
+                        {
+                            SendDebug(path);
+                            path.Tcs.TrySetResult(result);
+                            SendRoute(path);
+                        }
                         break;
                     default:
                         throw new NotImplementedException();
@@ -485,12 +503,12 @@ namespace Content.Server.NPC.Pathfinding
             {
                 lock (_pathRequests)
                 {
-                    _pathRequests.Add(request);
+                    EnqueueRequest(request);
                 }
             }
             else
             {
-                _pathRequests.Add(request);
+                EnqueueRequest(request);
             }
 
             await request.Task;
@@ -511,6 +529,29 @@ namespace Content.Server.NPC.Pathfinding
 #pragma warning restore RA0004
 
             return ev;
+        }
+
+        private void EnqueueRequest(PathRequest request)
+        {
+            if (request.Task.IsCompleted)
+                return;
+
+            if (_pathRequests.Count >= MaxPendingRequests)
+            {
+                _rejectedRequestCount++;
+                request.Tcs.TrySetCanceled();
+                return;
+            }
+
+            _pathRequests.Add(request);
+        }
+
+        private void ClearPendingRequests()
+        {
+            foreach (var request in _pathRequests)
+                request.Tcs.TrySetCanceled();
+
+            _pathRequests.Clear();
         }
 
         #region Debug handlers

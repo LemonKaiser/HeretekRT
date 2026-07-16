@@ -79,6 +79,12 @@
   - type: PowerSwitch
   - type: ApcPowerReceiver # Frontier
     powerLoad: 250 # Allows us to not use the 1000 baseline
+  # Disposal units emit a ready signal even when they are not upgraded for
+  # full automation.  The shared disposal system invokes this port whenever
+  # pressure reaches the ready state.
+  - type: DeviceLinkSource
+    ports:
+    - DisposalReady
   - type: AutomationSlots # Goobstation
     slots:
     - !type:AutomatedContainer

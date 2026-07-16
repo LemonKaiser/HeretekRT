@@ -31,6 +31,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 {
     private const int AngularPlacementAttempts = 360;
     private const float ObjectPlacementPadding = 300f;
+    private static readonly ResPath ColdSnapshotBase = new("/Koronus/ColdSnapshots");
 
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IMapManager _mapManager = default!;
@@ -45,6 +46,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
     private readonly Dictionary<string, HashSet<string>> _warpAdjacency = new();
     private readonly List<KoronusRoutePrototype> _sectorRoutes = new();
+    private readonly HashSet<string> _coldOperations = new();
     private ResPath _coldSnapshotRoot = CreateColdSnapshotRoot();
 
     public override void Initialize()
@@ -78,14 +80,25 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             return false;
         }
 
+        // A serialization callback must not be able to observe and use a map while its
+        // cold-unload or restore transaction is still changing the authoritative state.
+        if (_coldOperations.Contains(systemId))
+            return false;
+
         if (_maps.TryGetMap(mapId, out _))
+        {
+            ReconcileLiveSystem(rule.Comp, systemId);
             return true;
+        }
 
         if (!rule.Comp.ColdUnloadedSystems.Contains(systemId) ||
             !_prototypes.TryIndex<KoronusSystemPrototype>(systemId, out var system))
         {
             return false;
         }
+
+        if (!_coldOperations.Add(systemId))
+            return false;
 
         var snapshotPath = GetColdSnapshotPath(systemId);
         var options = DeserializationOptions.Default with
@@ -96,23 +109,37 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
         try
         {
+            if (!_resources.UserData.Exists(snapshotPath) ||
+                !_mapLoader.TryReadFile(snapshotPath, out _))
+            {
+                Log.Error($"Cold snapshot for Koronus system {systemId} is missing or invalid: {snapshotPath}.");
+                return false;
+            }
+
             if (!_mapLoader.TryLoadMapWithId(mapId, snapshotPath, out var loadedMap, out _, options))
             {
                 Log.Error($"Failed to restore cold Koronus system {systemId} from {snapshotPath}.");
+                DeletePartialRestore(mapId, systemId);
                 return false;
             }
 
             _metaData.SetEntityName(loadedMap.Value.Owner, system.DisplayName);
             ConfigureSystemMap(loadedMap.Value.Owner, system);
             rule.Comp.ColdUnloadedSystems.Remove(systemId);
-            _resources.UserData.Delete(snapshotPath);
+            DeleteSnapshotBestEffort(snapshotPath, systemId);
+            DeleteSnapshotBestEffort(GetColdSnapshotTempPath(systemId), systemId);
             Log.Info($"Restored cold Koronus system {systemId} on map {mapId}.");
             return true;
         }
         catch (Exception exception)
         {
             Log.Error($"Exception while restoring cold Koronus system {systemId}: {exception}");
+            DeletePartialRestore(mapId, systemId);
             return false;
+        }
+        finally
+        {
+            _coldOperations.Remove(systemId);
         }
     }
 
@@ -135,17 +162,58 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             return false;
         }
 
-        var snapshotPath = GetColdSnapshotPath(systemId);
-        if (!_mapLoader.TrySaveMap(mapId, snapshotPath))
-        {
-            Log.Error($"Cold snapshot failed for Koronus system {systemId}; the live map was kept paused.");
+        if (!_coldOperations.Add(systemId))
             return false;
-        }
 
-        rule.Comp.ColdUnloadedSystems.Add(systemId);
-        _maps.DeleteMap(mapId);
-        Log.Info($"Cold-unloaded Koronus system {systemId} from map {mapId} into {snapshotPath}.");
-        return true;
+        var snapshotPath = GetColdSnapshotPath(systemId);
+        try
+        {
+            // A live map with a cold marker is a recoverable remnant of an interrupted
+            // previous operation. The live map is authoritative until it is deleted.
+            ReconcileLiveSystem(rule.Comp, systemId);
+
+            if (!TryWriteColdSnapshot(mapId, systemId, snapshotPath))
+            {
+                Log.Error($"Cold snapshot failed for Koronus system {systemId}; the live map was kept paused.");
+                return false;
+            }
+
+            rule.Comp.ColdUnloadedSystems.Add(systemId);
+            try
+            {
+                _maps.DeleteMap(mapId);
+            }
+            catch (Exception exception)
+            {
+                // Some deletion events may throw after the map has already gone away. In that
+                // case the committed snapshot is still the only valid authoritative state.
+                if (!_maps.TryGetMap(mapId, out _))
+                {
+                    Log.Warning($"Map deletion for cold Koronus system {systemId} threw after removing map {mapId}: {exception}");
+                    return true;
+                }
+
+                rule.Comp.ColdUnloadedSystems.Remove(systemId);
+                DeleteSnapshotBestEffort(snapshotPath, systemId);
+                Log.Error($"Could not delete live map {mapId} after snapshotting Koronus system {systemId}: {exception}");
+                return false;
+            }
+
+            if (_maps.TryGetMap(mapId, out _))
+            {
+                rule.Comp.ColdUnloadedSystems.Remove(systemId);
+                DeleteSnapshotBestEffort(snapshotPath, systemId);
+                Log.Error($"Live map {mapId} remained after cold-unloading Koronus system {systemId}.");
+                return false;
+            }
+
+            Log.Info($"Cold-unloaded Koronus system {systemId} from map {mapId} into {snapshotPath}.");
+            return true;
+        }
+        finally
+        {
+            _coldOperations.Remove(systemId);
+        }
     }
 
     /// <summary>
@@ -339,6 +407,11 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     {
         if (!TryGetSectorRule(out var rule))
             return;
+
+        // The rule state is rebuilt below, so no snapshot from a previous or crashed round can
+        // still be referenced. Clearing the common base also prevents abandoned GUID roots from
+        // accumulating on disk across week-long server operation and later restarts.
+        ResetColdSnapshotStorage();
 
         var sector = _prototypes.Index(rule.Comp.Sector);
 
@@ -682,15 +755,131 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         return _coldSnapshotRoot / $"{systemId}.yml";
     }
 
+    private ResPath GetColdSnapshotTempPath(string systemId)
+    {
+        return _coldSnapshotRoot / $"{systemId}.tmp.yml";
+    }
+
+    /// <summary>
+    /// Writes and parses a temporary snapshot before replacing the committed file. The live map
+    /// remains authoritative until this entire method succeeds.
+    /// </summary>
+    private bool TryWriteColdSnapshot(MapId mapId, string systemId, ResPath snapshotPath)
+    {
+        var tempPath = GetColdSnapshotTempPath(systemId);
+        if (!TryDeleteSnapshot(tempPath, systemId))
+            return false;
+
+        var committed = false;
+        try
+        {
+            if (!_mapLoader.TrySaveMap(mapId, tempPath))
+                return false;
+
+            if (!_resources.UserData.Exists(tempPath) ||
+                !_mapLoader.TryReadFile(tempPath, out _))
+            {
+                Log.Error($"Temporary cold snapshot for Koronus system {systemId} failed validation: {tempPath}.");
+                return false;
+            }
+
+            if (!TryDeleteSnapshot(snapshotPath, systemId))
+                return false;
+
+            _resources.UserData.Rename(tempPath, snapshotPath);
+            if (!_resources.UserData.Exists(snapshotPath))
+            {
+                Log.Error($"Committed cold snapshot for Koronus system {systemId} is missing after rename: {snapshotPath}.");
+                return false;
+            }
+
+            committed = true;
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Exception while writing cold snapshot for Koronus system {systemId}: {exception}");
+            return false;
+        }
+        finally
+        {
+            if (!committed)
+                DeleteSnapshotBestEffort(tempPath, systemId);
+        }
+    }
+
+    /// <summary>
+    /// Resolves the only safe inconsistent state: a live map accompanied by a stale cold marker.
+    /// The live entity tree always wins because it may contain changes made after the snapshot.
+    /// </summary>
+    private void ReconcileLiveSystem(KoronusSectorRuleComponent rule, string systemId)
+    {
+        if (!rule.ColdUnloadedSystems.Remove(systemId))
+            return;
+
+        DeleteSnapshotBestEffort(GetColdSnapshotPath(systemId), systemId);
+        DeleteSnapshotBestEffort(GetColdSnapshotTempPath(systemId), systemId);
+        Log.Warning($"Removed a stale cold marker for live Koronus system {systemId}.");
+    }
+
+    private void DeletePartialRestore(MapId mapId, string systemId)
+    {
+        if (!_maps.TryGetMap(mapId, out _))
+            return;
+
+        try
+        {
+            _maps.DeleteMap(mapId);
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Failed to remove a partial cold restore of Koronus system {systemId} on map {mapId}: {exception}");
+        }
+    }
+
+    private bool TryDeleteSnapshot(ResPath path, string systemId)
+    {
+        try
+        {
+            _resources.UserData.Delete(path);
+            return !_resources.UserData.Exists(path);
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Failed to delete cold snapshot file {path} for Koronus system {systemId}: {exception}");
+            return false;
+        }
+    }
+
+    private void DeleteSnapshotBestEffort(ResPath path, string systemId)
+    {
+        TryDeleteSnapshot(path, systemId);
+    }
+
+    private void ResetColdSnapshotStorage()
+    {
+        _coldOperations.Clear();
+
+        try
+        {
+            _resources.UserData.Delete(ColdSnapshotBase);
+        }
+        catch (Exception exception)
+        {
+            Log.Warning($"Failed to clear obsolete Koronus cold snapshots under {ColdSnapshotBase}: {exception}");
+        }
+
+        _coldSnapshotRoot = CreateColdSnapshotRoot();
+    }
+
     private static ResPath CreateColdSnapshotRoot()
     {
-        return new ResPath($"/Koronus/ColdSnapshots/{Guid.NewGuid():N}");
+        return ColdSnapshotBase / $"{Guid.NewGuid():N}";
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        _resources.UserData.Delete(_coldSnapshotRoot);
-        _coldSnapshotRoot = CreateColdSnapshotRoot();
+        ResetColdSnapshotStorage();
 
         if (!TryGetSectorRule(out var rule))
             return;

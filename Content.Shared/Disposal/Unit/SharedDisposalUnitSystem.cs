@@ -561,7 +561,11 @@ public abstract partial class SharedDisposalUnitSystem : EntitySystem
         if (state == DisposalsPressureState.Ready)
         {
             component.NextPressurized = TimeSpan.Zero;
-            _device.InvokePort(uid, ReadyPort); // Goobstation
+            // Older/hand-authored entities may not carry the optional signal
+            // component.  Do not make a normal pressure update emit a noisy
+            // Resolve error for those entities.
+            if (TryComp<DeviceLinkSourceComponent>(uid, out var source))
+                _device.InvokePort(uid, ReadyPort, sourceComponent: source); // Goobstation
 
             // Manually engaged
             if (component.Engaged)

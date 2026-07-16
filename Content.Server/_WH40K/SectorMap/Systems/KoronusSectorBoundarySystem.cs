@@ -38,9 +38,13 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
     private readonly Dictionary<EntityUid, TimeSpan> _lastWarning = new();
     private readonly Dictionary<EntityUid, CleanupCandidate> _cleanupCandidates = new();
     private readonly HashSet<MapId> _observedMaps = new();
+    private readonly List<EntityUid> _warningRemovals = new();
+    private readonly List<EntityUid> _cleanupCandidateRemovals = new();
 
     private TimeSpan _nextUpdate;
+    private TimeSpan _nextWarningPrune;
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromMilliseconds(200);
+    private static readonly TimeSpan WarningPruneInterval = TimeSpan.FromMinutes(1);
 
     public override void Update(float frameTime)
     {
@@ -58,6 +62,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         BuildObservedMapIndex();
         ClampBoundaryRoots();
         WarnPlayersNearBoundary();
+        PruneWarningHistory();
         CleanupStillOutOfBoundsEntities();
     }
 
@@ -67,13 +72,21 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
+    public (int WarningHistory, int CleanupCandidates) GetLongRunStatus()
+    {
+        return (_lastWarning.Count, _cleanupCandidates.Count);
+    }
+
     private void OnRoundRestart(RoundRestartCleanupEvent args)
     {
         _boundaries.Clear();
         _lastWarning.Clear();
         _cleanupCandidates.Clear();
         _observedMaps.Clear();
+        _warningRemovals.Clear();
+        _cleanupCandidateRemovals.Clear();
         _nextUpdate = default;
+        _nextWarningPrune = default;
     }
 
     private void BuildBoundaryIndex()
@@ -222,13 +235,14 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
 
     private void CleanupStillOutOfBoundsEntities()
     {
-        foreach (var (uid, candidate) in _cleanupCandidates.ToArray())
+        _cleanupCandidateRemovals.Clear();
+        foreach (var (uid, candidate) in _cleanupCandidates)
         {
             if (TerminatingOrDeleted(uid) ||
                 !TryComp<TransformComponent>(uid, out var transform) ||
                 !_boundaries.TryGetValue(candidate.MapId, out var boundary))
             {
-                _cleanupCandidates.Remove(uid);
+                _cleanupCandidateRemovals.Add(uid);
                 continue;
             }
 
@@ -236,16 +250,44 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
                           boundary.Component.Radius * boundary.Component.Radius;
             if (!outside)
             {
-                _cleanupCandidates.Remove(uid);
+                _cleanupCandidateRemovals.Add(uid);
                 continue;
             }
 
             if (_timing.CurTime >= candidate.DeleteAt)
             {
                 QueueDel(uid);
-                _cleanupCandidates.Remove(uid);
+                _cleanupCandidateRemovals.Add(uid);
             }
         }
+
+        foreach (var uid in _cleanupCandidateRemovals)
+            _cleanupCandidates.Remove(uid);
+    }
+
+    private void PruneWarningHistory()
+    {
+        if (_timing.CurTime < _nextWarningPrune)
+            return;
+
+        _nextWarningPrune = _timing.CurTime + WarningPruneInterval;
+        var maximumCooldown = TimeSpan.Zero;
+        foreach (var boundary in _boundaries.Values)
+        {
+            maximumCooldown = TimeSpan.FromSeconds(Math.Max(
+                maximumCooldown.TotalSeconds,
+                boundary.Component.WarningAnnouncementCooldown));
+        }
+
+        _warningRemovals.Clear();
+        foreach (var (uid, lastWarning) in _lastWarning)
+        {
+            if (TerminatingOrDeleted(uid) || _timing.CurTime - lastWarning >= maximumCooldown)
+                _warningRemovals.Add(uid);
+        }
+
+        foreach (var uid in _warningRemovals)
+            _lastWarning.Remove(uid);
     }
 
     private void StopPhysics(EntityUid uid)
