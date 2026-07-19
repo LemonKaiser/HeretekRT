@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: BikeHorn
   name: bike horn
   description: A horn off of a bicycle.

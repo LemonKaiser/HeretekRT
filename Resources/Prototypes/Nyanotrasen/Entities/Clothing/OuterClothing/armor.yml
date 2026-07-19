@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingOuterBase
+  parent: [BaseDurableArmor, ClothingOuterBase]
   id: ClothingOuterArmorGladiator
   name: gladiator armor
   description: A good old set of boiled leather armor fit with buckles, belts, and a decorated pauldron. Are you not entertained?
@@ -9,6 +9,7 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/OuterClothing/Armor/gladiator.rsi
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -16,7 +17,7 @@
         Piercing: 0.8
 
 - type: entity
-  parent: ClothingOuterBase
+  parent: [BaseDurableArmor, ClothingOuterBase]
   id: ClothingOuterArmorKendoBogu
   name: bogu
   description: A set of armor used in Kendo. It covers the waist, torso, and hands.
@@ -26,6 +27,7 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/OuterClothing/Armor/bogu.rsi
   - type: Armor
+    armorRating: 200
     modifiers:
       coefficients:
         Blunt: 0.75
@@ -35,7 +37,7 @@
     sprintModifier: 0.85
 
 - type: entity
-  parent: ClothingOuterBase
+  parent: [BaseDurableHeavyArmor, ClothingOuterBase]
   id: ClothingOuterArmorTouseiGusoku
   name: tousei-gusoku
   description: A modern replica of a Ni-mai-do Gusoku armor set.
@@ -45,6 +47,7 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/OuterClothing/Armor/touseigusoku.rsi
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
         Blunt: 0.60

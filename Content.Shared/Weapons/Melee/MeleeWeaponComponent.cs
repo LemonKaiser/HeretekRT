@@ -163,6 +163,10 @@ public sealed partial class MeleeWeaponComponent : Component
     public bool MustBeEquippedToUse = false;
 
     // Harmony Start
+    /// <summary>
+    ///     Flat armor points ignored by this attack. Positive values reduce the target's ArmorRating;
+    ///     negative values make the target effectively more resistant.
+    /// </summary>
     [DataField, AutoNetworkedField]
     public float ArmorPenetration;
     // Harmony End

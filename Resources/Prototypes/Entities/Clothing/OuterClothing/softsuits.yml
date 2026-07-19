@@ -93,7 +93,7 @@
 #Paramedic Voidsuit
 #Despite having resistances and looking like a hardsuit, this parents off the EVA suit so it goes here.
 - type: entity
-  parent: [ ClothingOuterEVASuitBase, ClothingOuterBaseToggleable ]
+  parent: [ BaseDurableHeavyArmor, ClothingOuterEVASuitBase, ClothingOuterBaseToggleable ]
   id: ClothingOuterHardsuitVoidParamed
   name: paramedic voidsuit # Goob edit
   description: A voidsuit made for paramedics. # Goob edit
@@ -116,6 +116,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients: # Added Blunt, Slash, and Pierce - Mono
         Blunt: 0.95

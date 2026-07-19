@@ -1,5 +1,5 @@
 - type: entity
-  parent: [BaseItem, BaseGunWieldable]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseItem, BaseGunWieldable]
   id: WeaponOgrynLoyalRipperGun
   suffix: WH40K, Ogryn, Loyal
   components:
@@ -107,7 +107,7 @@
         ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
 
 - type: entity
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponRifle]
   id: WeaponOgrynLoyalHeavyStubber
   suffix: WH40K, Ogryn, Loyal
   components:
@@ -227,7 +227,7 @@
           - Cartridge825mmLong
 
 - type: entity
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponRifle]
   id: WeaponOgrynLoyalTwinHeavyStubber
   suffix: WH40K, Ogryn, Loyal
   components:

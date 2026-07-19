@@ -1,6 +1,6 @@
 - type: entity
   name: fire extinguisher
-  parent: BaseItem
+  parent: [BaseDurableTool, BaseItem]
   id: FireExtinguisher
   description: It extinguishes fires.
   components:

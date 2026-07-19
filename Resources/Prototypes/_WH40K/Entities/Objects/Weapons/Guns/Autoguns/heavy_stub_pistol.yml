@@ -1,6 +1,6 @@
 - type: entity
   id: WeaponHeavyStubPistolBase
-  parent: BaseWeaponPistol
+  parent: [WH40KDurableRangedWeapon, BaseWeaponPistol]
   abstract: true
   suffix: WH40K
   components:

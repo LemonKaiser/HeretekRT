@@ -1,6 +1,6 @@
 - type: entity
   name: hardlight shield
-  parent: BaseItem
+  parent: [BaseDurableEnergyShield, BaseItem]
   id: HardlightShield
   description: Z-22 produced hardlight shield, when folded, can even fit in your pocket. Its more emmitive than reflective, unlike its blue cousins.
   components:

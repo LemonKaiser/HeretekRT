@@ -55,9 +55,7 @@ public abstract partial class SharedCursedMaskSystem : EntitySystem
     private void OnModifyDamage(Entity<CursedMaskComponent> ent, ref InventoryRelayedEvent<DamageModifyEvent> args)
     {
         if (ent.Comp.CurrentState == CursedMaskExpression.Despair)
-            args.Args.Damage = DamageSpecifier.ApplyModifierSet(args.Args.Damage,
-                DamageSpecifier.PenetrateArmor(ent.Comp.DespairDamageModifier,
-                    args.Args.ArmorPenetration)); // Goob edit
+            args.Args.Damage = DamageSpecifier.ApplyModifierSet(args.Args.Damage, ent.Comp.DespairDamageModifier);
     }
 
     protected void RandomizeCursedMask(Entity<CursedMaskComponent> ent, EntityUid wearer)

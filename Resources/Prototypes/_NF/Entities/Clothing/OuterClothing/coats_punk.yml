@@ -2,7 +2,7 @@
 # Acid raincoat
 - type: entity
   id: ClothingOuterCoatAcidRaincoat
-  parent: [ ClothingOuterStorageToggleableBase, RecyclableItemClothDurable ]
+  parent: [ BaseDurableArmor, ClothingOuterStorageToggleableBase, RecyclableItemClothDurable ]
   name: acid raincoat
   description: Mostly transparent raincoat made out of acid resistant polymers. Please, for the love of Space God, do wear undergarments.
   components:
@@ -11,6 +11,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Coats/acid_raincoat.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.4

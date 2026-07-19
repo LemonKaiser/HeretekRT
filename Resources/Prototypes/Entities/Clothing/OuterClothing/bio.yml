@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingOuterBaseLarge
+  parent: [BaseDurableArmor, ClothingOuterBaseLarge]
   id: ClothingOuterBioGeneral
   name: bio suit
   suffix: Generic
@@ -10,6 +10,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Bio/general.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Caustic: 0.2 # Mono - buff from 0.5

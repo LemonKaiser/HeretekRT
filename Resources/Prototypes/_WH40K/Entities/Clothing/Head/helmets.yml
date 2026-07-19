@@ -10,12 +10,19 @@
   - type: Item
     size: Normal
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.9
-        Heat: 0.9
+        Blunt: 0.95
+        Slash: 0.90
+        Piercing: 1.00
+        Heat: 1.05
+  - type: ItemDurability
+    maxDurability: 200
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: BreathMask
@@ -45,12 +52,19 @@
   - type: Item
     size: Normal
   - type: Armor
+    armorRating: 48
     modifiers:
       coefficients:
-        Blunt: 0.95
-        Slash: 0.9
-        Piercing: 0.95
-        Heat: 0.95
+        Blunt: 1.00
+        Slash: 0.95
+        Piercing: 1.05
+        Heat: 1.10
+  - type: ItemDurability
+    maxDurability: 160
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
   - type: ExplosionResistance
     damageCoefficient: 0.95
   - type: HideLayerClothing
@@ -77,12 +91,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_shield.rsi
   - type: Armor
+    armorRating: 24
     modifiers:
       coefficients:
-        Blunt: 0.975
-        Slash: 0.95
-        Piercing: 0.975
-        Heat: 0.975
+        Blunt: 1.00
+        Slash: 0.98
+        Piercing: 1.10
+        Heat: 1.15
   - type: ExplosionResistance
     damageCoefficient: 0.975
 
@@ -176,12 +191,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/heresiarch_cardinal_helmet/head.rsi
   - type: Armor
+    armorRating: 120
     modifiers:
       coefficients:
-        Blunt: 0.85
+        Blunt: 0.90
         Slash: 0.85
-        Piercing: 0.85
-        Heat: 0.85
+        Piercing: 0.95
+        Heat: 1.00
   - type: ExplosionResistance
     damageCoefficient: 0.85
   - type: HideLayerClothing
@@ -216,7 +232,7 @@
     sprite: _WH40K/Clothing/Head/Helmets/psyhelmet.rsi
 
 - type: entity
-  parent: ClothingHeadHelmetBasic
+  parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetFlakCHAOS
   name: композитный каска культа Хаоса
   description: Стандартная каска, выкованная из тёмного металла и осквернённая рунами Хаоса. Защищает голову культиста, но внушает ужас своим видом.
@@ -227,12 +243,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/flak_helmetchaos.rsi
   - type: Armor
+    armorRating: 48
     modifiers:
       coefficients:
-        Blunt: 0.95
-        Slash: 0.9
-        Piercing: 0.95
-        Heat: 0.95
+        Blunt: 1.00
+        Slash: 0.95
+        Piercing: 1.05
+        Heat: 1.10
   - type: ExplosionResistance
     damageCoefficient: 0.95
   - type: HideLayerClothing

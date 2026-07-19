@@ -14,6 +14,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
         Blunt: 0.65
@@ -51,6 +52,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/scaf.rsi
   - type: Armor
+    armorRating: 440
     modifiers:
       coefficients: # Mono - all of these values are changed
         Blunt: 0.5

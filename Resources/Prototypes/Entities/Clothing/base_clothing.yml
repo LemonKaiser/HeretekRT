@@ -61,6 +61,7 @@
   # to show explosion resistance examine
   - type: GroupExamine
   - type: Armor
+    armorRating: 0
     modifiers: {}
 
 # for clothing that can be toggled, like magboots

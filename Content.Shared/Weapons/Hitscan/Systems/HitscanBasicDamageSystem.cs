@@ -1,4 +1,5 @@
 using Content.Shared.Damage;
+using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Hitscan.Events;
 
@@ -22,7 +23,22 @@ public sealed partial class HitscanBasicDamageSystem : EntitySystem
 
         var dmg = ent.Comp.Damage * _damage.UniversalHitscanDamageModifier;
 
-        var damageDealt = _damage.TryChangeDamage(args.HitEntity, dmg, origin: args.Gun, armorPenetration: ent.Comp.ArmorPenetration, ignoreResistances: ent.Comp.IgnoreResistances); // Mono - AP
+        var weaponDamageMultiplier = 1f;
+        var weaponArmorPenetration = 0f;
+        if (TryComp<ItemRarityStatsComponent>(args.Gun, out var rarityStats) && rarityStats.Applied)
+        {
+            weaponDamageMultiplier = rarityStats.EffectiveWeaponDamageMultiplier;
+            weaponArmorPenetration = rarityStats.EffectiveWeaponArmorPenetration;
+        }
+
+        dmg *= weaponDamageMultiplier;
+
+        var damageDealt = _damage.TryChangeDamage(
+            args.HitEntity,
+            dmg,
+            origin: args.Gun,
+            armorPenetration: ent.Comp.ArmorPenetration + weaponArmorPenetration,
+            ignoreResistances: ent.Comp.IgnoreResistances); // Mono - AP
 
         if (damageDealt == null)
             return;

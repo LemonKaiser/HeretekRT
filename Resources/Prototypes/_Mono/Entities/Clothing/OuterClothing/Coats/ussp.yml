@@ -12,6 +12,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95

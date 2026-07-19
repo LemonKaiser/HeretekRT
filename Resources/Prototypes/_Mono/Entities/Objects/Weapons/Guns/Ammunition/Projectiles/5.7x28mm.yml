@@ -8,7 +8,7 @@
     damage:
       types:
         Piercing: 20
-    armorPenetration: 0.075
+    armorPenetration: 15
 
 - type: entity
   id: Bullet57x28mmPractice
@@ -69,7 +69,7 @@
         Shock: 0
 
 # Mono AP syst
-# + 0.05 base AP
+# +10 base armor penetration points
 #anti-flesh:
 - type: entity
   id: Bullet57x28mmHP
@@ -82,7 +82,7 @@
       types:
         Slash: 3
         Piercing: 26
-    armorPenetration: -0.55
+    armorPenetration: -110
 
 - type: entity
   id: Bullet57x28mmRIP
@@ -95,7 +95,7 @@
       types:
         Slash: 5
         Piercing: 32
-    armorPenetration: -0.9
+    armorPenetration: -180
 
 #armor-piercing:
 
@@ -110,4 +110,4 @@
       types:
         Piercing: 7
         Structural: 40
-    armorPenetration: 0.7
+    armorPenetration: 140

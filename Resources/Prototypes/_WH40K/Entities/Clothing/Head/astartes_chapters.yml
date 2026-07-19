@@ -1,8 +1,10 @@
 - type: entity
-  parent: [ClothingHeadHelmetBasic, ShowMedicalIcons]
+  parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic, ShowMedicalIcons]
   id: ClothingHeadHelmetAstartesMk7BlackTemplars
   suffix: WH40K, Astartes, Imperium, Black Templars
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk7_black_templars.rsi
   - type: Clothing
@@ -27,11 +29,12 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.75
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8
@@ -42,10 +45,12 @@
     whitelist:
     - Astartes
 - type: entity
-  parent: [ClothingHeadHelmetBasic, ShowMedicalIcons]
+  parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic, ShowMedicalIcons]
   id: ClothingHeadHelmetAstartesMk7EmperorsChildren
   suffix: WH40K, Astartes, Chaos, Emperor's Children
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk7_emperors_children.rsi
   - type: Clothing
@@ -70,11 +75,12 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.75
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8

@@ -1,0 +1,137 @@
+light_mode unshaded;
+blend_mode add;
+
+// Droplight-inspired procedural loot marker. One shader instance and one
+// local-UV quad belong to exactly one dropped item. The effect is made of a
+// soft floor pool, a thin upward beam and a few bright motes; there is no
+// texture or PointLight dependency.
+uniform highp vec2 auraScale;
+uniform highp float auraBase;
+uniform highp float auraPlume;
+uniform highp float auraTier;
+uniform highp float auraSeed;
+uniform highp float auraMotion;
+uniform highp float auraPower;
+uniform highp float auraOrbCount;
+uniform highp vec4 auraColor;
+uniform highp vec4 auraAccent;
+
+highp float hash12(highp vec2 point)
+{
+    return fract(sin(dot(point, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+highp float lifeBell(highp float life)
+{
+    return smoothstep(0.0, 0.10, life) * (1.0 - smoothstep(0.78, 0.98, life));
+}
+
+void fragment()
+{
+    // DrawRect supplies UV2 from bottom (0) to top (1). auraBase is the
+    // upper part of the quad, so (0, 0) is exactly the item's centre and
+    // positive local Y always points toward the top of the beam.
+    highp float itemV = 1.0 - auraBase;
+    highp vec2 point = vec2(
+        (UV2.x - 0.5) * auraScale.x,
+        (UV2.y - itemV) * auraScale.y);
+
+    highp float tier = clamp((auraTier - 1.0) / 5.0, 0.0, 1.0);
+    highp float animatedTime = TIME * (0.34 + tier * 0.055) + auraSeed;
+    highp float time = mix(auraSeed * 2.173, animatedTime, auraMotion);
+    highp float orbTime = mix(auraSeed * 3.271, TIME + auraSeed, auraMotion);
+    highp float pulse = 1.0 + sin(time * 1.41 + auraSeed) * 0.055 * auraMotion;
+
+    // Kill the quad softly at all four edges. This keeps the procedural
+    // field from exposing a rectangular sprite around the actual glow.
+    highp float upperQuad = auraBase * auraScale.y;
+    highp float lowerQuad = (1.0 - auraBase) * auraScale.y;
+    highp float boundary = (1.0 - smoothstep(0.66, 1.08, abs(point.x)))
+        * (1.0 - smoothstep(upperQuad * 0.70, upperQuad * 1.04, point.y))
+        * (1.0 - smoothstep(lowerQuad * 0.58, lowerQuad * 1.04, -point.y));
+
+    // Keep a transparent tail below the pool. Without this extra fade the
+    // quad edge can read as a hard horizontal cut on dark floors.
+    highp float lowerPosition = clamp((point.y + lowerQuad) / max(lowerQuad, 0.001), 0.0, 1.0);
+    highp float lowerEdgeFade = smoothstep(0.0, 0.34, lowerPosition);
+    boundary *= lowerEdgeFade;
+
+    // The floor glow is concentrated around the item's contact point. Its
+    // elliptical falloff reads as a small pool rather than a square decal.
+    highp vec2 floorPoint = vec2(point.x * 1.04, point.y * 1.75);
+    highp float floorDistance = length(floorPoint);
+    highp float pool = 1.0 - smoothstep(0.0, 1.02, floorDistance);
+    highp float poolCore = 1.0 - smoothstep(0.02, 0.30, floorDistance);
+
+    // A narrow beam starts at the item and tapers toward its top. The halo
+    // is coloured, while the centre line receives the accent colour.
+    highp float aboveItem = step(0.0, point.y);
+    highp float beamProgress = clamp(point.y / max(auraPlume, 0.001), 0.0, 1.0);
+    highp float beamLength = (1.0 - smoothstep(0.76, 1.0, beamProgress)) * aboveItem;
+    highp float beamWidth = mix(0.105, 0.024, beamProgress) * (1.0 + tier * 0.08);
+    highp float beamDistance = abs(point.x);
+    highp float beamHalo = exp(-beamDistance * beamDistance
+        / max(beamWidth * beamWidth * 7.0, 0.000001)) * beamLength;
+    highp float beamCore = exp(-beamDistance * beamDistance
+        / max(beamWidth * beamWidth * 0.80, 0.000001)) * beamLength;
+
+    highp float baseEnergy = auraPower * pulse * (
+        pool * 0.46
+        + poolCore * 0.12
+        + beamHalo * 0.34);
+    highp float accentEnergy = auraPower * pulse * (
+        poolCore * 0.08
+        + beamHalo * 0.10
+        + beamCore * 0.42);
+    highp float whiteEnergy = 0.0;
+
+    // Deterministic rising motes. Their X offsets are intentionally small but
+    // non-zero, so the particles form a sparse column rather than one bright
+    // dotted line. Reduced mode freezes the same arrangement in place.
+    highp float orbHalo = 0.0;
+    highp float orbCore = 0.0;
+
+    for (int i = 0; i < 12; i++)
+    {
+        highp float index = float(i);
+        highp float active = 1.0 - step(auraOrbCount, index + 0.5);
+        highp float randomA = hash12(vec2(index * 13.17, auraSeed + 2.4));
+        highp float randomX = hash12(vec2(index * 71.13, auraSeed + 23.7)) - 0.5;
+        highp float randomC = hash12(vec2(index * 47.11, auraSeed + 14.2));
+        highp float speed = 0.075 + randomC * 0.060;
+        highp float animatedLife = fract(randomA + orbTime * speed);
+        highp float staticLife = fract(randomA + auraSeed * speed);
+        highp float life = mix(staticLife, animatedLife, auraMotion);
+
+        highp float rise = mix(0.045, auraPlume * 0.86, life);
+        highp float lateral = randomX * (0.035 + life * 0.10) * (0.72 + tier * 0.28);
+        highp vec2 difference = point - vec2(lateral, rise);
+        highp float orbRadius = 0.050 + randomC * 0.016 + tier * 0.004;
+        highp float distanceSquared = dot(difference, difference);
+        highp float halo = exp(-distanceSquared / max(orbRadius * orbRadius * 8.0, 0.000001));
+        highp float core = exp(-distanceSquared / max(orbRadius * orbRadius * 0.62, 0.000001));
+        highp float fade = lifeBell(life) * active;
+
+        orbHalo += halo * fade;
+        orbCore += core * fade;
+    }
+
+    baseEnergy += auraPower * orbHalo * (0.16 + tier * 0.035);
+    accentEnergy += auraPower * orbHalo * (0.05 + tier * 0.015);
+    whiteEnergy += auraPower * orbCore * (0.92 + tier * 0.16);
+
+    baseEnergy *= boundary;
+    accentEnergy *= boundary;
+    whiteEnergy *= boundary;
+
+    highp float totalEnergy = baseEnergy + accentEnergy + whiteEnergy;
+    if (totalEnergy <= 0.0001)
+        discard;
+
+    highp vec3 colour = (
+        auraColor.rgb * baseEnergy
+        + auraAccent.rgb * accentEnergy
+        + vec3(1.0) * whiteEnergy) / max(totalEnergy, 0.0001);
+
+    COLOR = vec4(colour, clamp(totalEnergy, 0.0, 0.64));
+}

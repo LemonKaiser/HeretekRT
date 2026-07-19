@@ -9,7 +9,7 @@
       types:
         Piercing: 65
         Structural: 100
-    armorPenetration: 0.4
+    armorPenetration: 80
   - type: Tracer
     color: "#FFFFFFFF"
     length: 3
@@ -26,7 +26,7 @@
         Piercing: 10
         Heat: 8
         Structural: 20
-    armorPenetration: 0.15
+    armorPenetration: 30
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default

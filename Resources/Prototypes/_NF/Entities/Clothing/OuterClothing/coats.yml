@@ -9,6 +9,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Coats/bounty_hunter_coat.rsi
   - type: Armor # ClothingOuterArmorBulletproof stats
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -140,7 +141,7 @@
     sprite: _NF/Clothing/OuterClothing/Misc/pirate_captain.rsi
 
 - type: entity
-  parent: [ ClothingOuterStorageFoldableBase ]
+  parent: [ BaseDurableHeavyArmor, ClothingOuterStorageFoldableBase ]
   id: ClothingOuterCoatArcadiaTrench
   name: arcadia flak trenchcoat
   description: A flak trenchcoat produced by Arcadia Industries, enhanced with a bulletproof alloy for some extra protection.
@@ -150,6 +151,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Coats/arcadia_trench.rsi
   - type: Armor # ClothingOuterArmorBulletproof stats + caustic
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -166,6 +168,7 @@
   name: arcadia flak trenchcoat
   components:
   - type: Armor # Open = less armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.9

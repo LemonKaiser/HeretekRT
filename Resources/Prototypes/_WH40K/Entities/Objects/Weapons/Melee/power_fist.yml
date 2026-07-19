@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseItem]
   id: WHPowerFist
   name: power fist
   suffix: WH40K

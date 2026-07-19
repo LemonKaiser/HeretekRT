@@ -1,5 +1,5 @@
 - type: entity
-  parent: WeaponShotgunDoubleBarreled
+  parent: [WH40KDurableRangedWeapon, WeaponShotgunDoubleBarreled]
   id: WeaponWH40KCyberTozik
   name: cyber-tozik
   description: A rugged cybernetic double-barreled shotgun. Uses .50 shotgun shells.

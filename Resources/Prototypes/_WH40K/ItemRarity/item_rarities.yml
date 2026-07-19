@@ -1,0 +1,59 @@
+- type: itemRarity
+  id: Stamped
+  name: item-rarity-stamped
+  tier: 1
+  color: "#B8BEC7"
+  accentColor: "#69727D"
+  randomWeight: 90
+  bonusMinPercent: 0
+  bonusMaxPercent: 0
+
+- type: itemRarity
+  id: Consecrated
+  name: item-rarity-consecrated
+  tier: 2
+  color: "#4ADE80"
+  accentColor: "#D6F5DF"
+  randomWeight: 8
+  bonusMinPercent: 1
+  bonusMaxPercent: 10
+
+- type: itemRarity
+  id: MasterCrafted
+  name: item-rarity-master-crafted
+  tier: 3
+  color: "#60A5FA"
+  accentColor: "#C7E0FF"
+  randomWeight: 1.8
+  bonusMinPercent: 10
+  bonusMaxPercent: 25
+
+- type: itemRarity
+  id: Relic
+  name: item-rarity-relic
+  tier: 4
+  color: "#C084FC"
+  accentColor: "#F2C14E"
+  randomWeight: 0.17
+  bonusMinPercent: 25
+  bonusMaxPercent: 50
+
+- type: itemRarity
+  id: OmnissiahShrine
+  name: item-rarity-omnissiah-shrine
+  tier: 5
+  color: "#FF9F1C"
+  accentColor: "#FFD166"
+  randomWeight: 0.02
+  bonusMinPercent: 50
+  bonusMaxPercent: 100
+
+- type: itemRarity
+  id: Archeotech
+  name: item-rarity-archeotech
+  tier: 6
+  color: "#D61F2C"
+  accentColor: "#FF5A4F"
+  randomWeight: 0.01
+  bonusMinPercent: 100
+  bonusMaxPercent: 200

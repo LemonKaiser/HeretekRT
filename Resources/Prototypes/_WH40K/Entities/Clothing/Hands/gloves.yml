@@ -111,7 +111,7 @@
   - type: Insulated
 
 - type: entity
-  parent: ClothingHandsBase
+  parent: [WH40KDurableToolMelee, ClothingHandsBase]
   id: ClothingHandsGlovesChirurgeonSaw
   suffix: WH40K
   components:

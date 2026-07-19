@@ -1,6 +1,7 @@
 # Mono - modsuits cleanup - see #3733
 - type: entity
   abstract: true
+  parent: BaseDurableHeavyHelmet
   # Used to put pressureProtection, layers blocker and etc components into ComponentToggler
   id: BaseClothingModsuitHelmet
   name: base modsuit helmet
@@ -107,6 +108,7 @@
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -174,6 +176,7 @@
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
+    armorRating: 120
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -241,6 +244,7 @@
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
+    armorRating: 120
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -291,6 +295,7 @@
   - type: Sprite
     sprite: _Goobstation/Clothing/Head/Modsuits/paramedic.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -341,6 +346,7 @@
   - type: Sprite
     sprite: _Goobstation/Clothing/Head/Modsuits/engineer.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -408,6 +414,7 @@
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -458,6 +465,7 @@
   - type: Sprite
     sprite: _Goobstation/Clothing/Head/Modsuits/researchdirector.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -527,6 +535,7 @@
       head-vulpkanin:
       - state: equipped-HEAD-sealed-vulpkanin
   - type: Armor
+    armorRating: 120
     modifiers:
       coefficients:
         Blunt: 0.85

@@ -1,6 +1,6 @@
 - type: entity
   name: improvised pneumatic cannon
-  parent: BaseStorageItem
+  parent: [BaseDurableRangedWeapon, BaseStorageItem]
   id: WeaponImprovisedPneumaticCannon
   description: Improvised using nothing but a pipe, some zipties, and a pneumatic cannon. Doesn't accept tanks without enough gas.
   components:
@@ -64,7 +64,7 @@
 
 - type: entity
   name: pie cannon
-  parent: BaseStorageItem
+  parent: [BaseDurableRangedWeapon, BaseStorageItem]
   id: LauncherCreamPie
   description: Load cream pie for optimal results.
   components:
@@ -106,7 +106,7 @@
 
 - type: entity
   name: syringe gun
-  parent: BaseStorageItem
+  parent: [BaseDurableRangedWeapon, BaseStorageItem]
   id: LauncherSyringe
   description: Load full of poisoned syringes for optimal fun.
   components:

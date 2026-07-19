@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Shared._WH40K.ItemRarity.Components;
+using Content.Shared.Durability.Components;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -123,10 +125,61 @@ namespace Content.Shared.Stacks
             if (string.IsNullOrEmpty(recipientStack.StackTypeId) || !recipientStack.StackTypeId.Equals(donorStack.StackTypeId))
                 return false;
 
+            if (!CanMergeRarity(donor, recipient))
+                return false;
+
             transferred = Math.Min(donorStack.Count, GetAvailableSpace(recipientStack));
             SetCount(donor, donorStack.Count - transferred, donorStack);
             SetCount(recipient, recipientStack.Count + transferred, recipientStack);
             return transferred > 0;
+        }
+
+        /// <summary>
+        /// Stacks with different rolled rarity are different item lots. They
+        /// must not merge, otherwise the recipient would silently determine
+        /// the rarity and stats of all transferred units.
+        /// </summary>
+        private bool CanMergeRarity(EntityUid donor, EntityUid recipient)
+        {
+            var donorHasRarity = TryComp<ItemRarityComponent>(donor, out var donorRarity);
+            var recipientHasRarity = TryComp<ItemRarityComponent>(recipient, out var recipientRarity);
+            if (donorHasRarity != recipientHasRarity)
+                return false;
+
+            if (!donorHasRarity)
+                return true;
+
+            if (donorRarity!.Rarity != recipientRarity!.Rarity ||
+                donorRarity.BonusPercent != recipientRarity.BonusPercent ||
+                donorRarity.IsRolled != recipientRarity.IsRolled ||
+                donorRarity.WorldEffectSuppressed != recipientRarity.WorldEffectSuppressed)
+            {
+                return false;
+            }
+
+            var donorHasStats = TryComp<ItemRarityStatsComponent>(donor, out var donorStats);
+            var recipientHasStats = TryComp<ItemRarityStatsComponent>(recipient, out var recipientStats);
+            if (donorHasStats != recipientHasStats)
+                return false;
+
+            if (donorHasStats &&
+                (donorStats!.Applied != recipientStats!.Applied ||
+                 donorStats.EffectiveWeaponDamageMultiplier != recipientStats.EffectiveWeaponDamageMultiplier ||
+                 donorStats.EffectiveWeaponArmorPenetration != recipientStats.EffectiveWeaponArmorPenetration))
+            {
+                return false;
+            }
+
+            if (TryComp<ItemDurabilityComponent>(donor, out var donorDurability) !=
+                TryComp<ItemDurabilityComponent>(recipient, out var recipientDurability))
+            {
+                return false;
+            }
+
+            return donorDurability is null ||
+                donorDurability.MaxDurability == recipientDurability!.MaxDurability &&
+                donorDurability.CurrentDurability == recipientDurability.CurrentDurability &&
+                donorDurability.Broken == recipientDurability.Broken;
         }
 
         /// <summary>

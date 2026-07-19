@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using Content.Client._WH40K.ItemRarity;
 using Content.Client.Verbs;
 using Content.Shared.Examine;
 using Content.Shared.IdentityManagement;
@@ -201,7 +202,7 @@ namespace Content.Client.Examine
             // Actually open the tooltip.
             _examineTooltipOpen = new Popup { MaxWidth = 400 };
             _userInterfaceManager.ModalRoot.AddChild(_examineTooltipOpen);
-            var panel = new PanelContainer() { Name = "ExaminePopupPanel" };
+            var panel = new ItemRarityExaminePanel() { Name = "ExaminePopupPanel" };
             panel.AddStyleClass(StyleClassEntityTooltip);
             panel.ModulateSelfOverride = Color.LightGray.WithAlpha(0.90f);
             _examineTooltipOpen.AddChild(panel);
@@ -222,6 +223,10 @@ namespace Content.Client.Examine
             };
 
             vBox.AddChild(hBox);
+
+            var rarityHeader = panel.ApplyRarity(target, knowTarget);
+            if (rarityHeader != null)
+                vBox.AddChild(rarityHeader);
 
             if (EntityManager.HasComponent<SpriteComponent>(target))
             {

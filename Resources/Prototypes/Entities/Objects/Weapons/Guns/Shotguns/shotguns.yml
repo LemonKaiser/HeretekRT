@@ -1,6 +1,6 @@
 - type: entity
   name: BaseWeaponShotgun
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: BaseWeaponShotgun
   description: A rooty tooty point and shooty.
   abstract: true
@@ -79,7 +79,7 @@
 - type: entity
   name: PA M-12 Bulldog (12 gauge)
   # Don't parent to BaseWeaponShotgun because it differs significantly
-  parent: [BaseItem, BaseGunWieldable]
+  parent: [BaseDurableRangedWeapon, BaseItem, BaseGunWieldable]
   id: WeaponShotgunBulldog
   description: An automatic magazine-fed shotgun for close-quarters combat. Kicks like a mule on steroids. Uses 12 gauge shotgun shells.
   components:

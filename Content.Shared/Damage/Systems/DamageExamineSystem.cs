@@ -1,3 +1,4 @@
+using System.Globalization;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Prototypes;
@@ -46,6 +47,35 @@ public sealed partial class DamageExamineSystem : EntitySystem
             message.PushNewline();
         }
         message.AddMessage(markup);
+    }
+
+    /// <summary>
+    /// Adds the flat armor penetration value used by the weapon or ammunition.
+    /// </summary>
+    public void AddArmorPenetrationExamine(FormattedMessage message, float armorPenetration)
+    {
+        if (!message.IsEmpty)
+            message.PushNewline();
+
+        if (!float.IsFinite(armorPenetration))
+            armorPenetration = 0f;
+
+        var rounded = MathF.Round(armorPenetration, 1);
+        var formatted = rounded.ToString("0.#", CultureInfo.InvariantCulture);
+        if (rounded > 0f)
+        {
+            message.AddMarkupOrThrow(Loc.GetString("damage-armor-penetration", ("amount", formatted)));
+            return;
+        }
+
+        if (rounded < 0f)
+        {
+            message.AddMarkupOrThrow(Loc.GetString("damage-armor-penetration-penalty",
+                ("amount", MathF.Abs(rounded).ToString("0.#", CultureInfo.InvariantCulture))));
+            return;
+        }
+
+        message.AddMarkupOrThrow(Loc.GetString("damage-armor-penetration-none"));
     }
 
     /// <summary>

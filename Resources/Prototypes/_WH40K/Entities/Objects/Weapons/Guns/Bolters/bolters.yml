@@ -1,8 +1,10 @@
 - type: entity
   id: WeaponRifleBolter
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRifle]
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 5
   - type: Gun
     fireRate: 1.7
     selectedMode: FullAuto
@@ -47,10 +49,12 @@
   - type: Appearance
 
 - type: entity
-  parent: BaseWeaponPistol
+  parent: [WH40KDurableRangedWeapon, BaseWeaponPistol]
   id: WeaponPistolBolter
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 5
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Guns/Bolters/pistol.rsi
     scale: 0.9,0.9
@@ -100,6 +104,8 @@
   id: WeaponPistolAstartesBolt
   suffix: WH40K, Astartes
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: SpeciesItemRestriction
     whitelist:
     - Astartes

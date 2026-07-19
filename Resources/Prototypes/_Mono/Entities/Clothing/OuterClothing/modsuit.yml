@@ -15,6 +15,7 @@
   - type: StaminaDamageResistance
     coefficient: 0.4
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.5
@@ -43,6 +44,7 @@
   - type: StaminaDamageResistance
     coefficient: 0.4
   - type: Armor
+    armorRating: 560
     modifiers:
       coefficients:
         Blunt: 0.45
@@ -73,6 +75,7 @@
     walkModifier: 0.95
     sprintModifier: 0.95
   - type: Armor
+    armorRating: 440
     modifiers:
       coefficients:
         Blunt: 0.45
@@ -109,6 +112,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.2
   - type: Armor
+    armorRating: 280
     modifiers:
       coefficients:
         Blunt: 0.75
@@ -150,6 +154,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.7 # Mono
   - type: Armor
+    armorRating: 360
     modifiers:
       coefficients:
         Blunt: 0.55

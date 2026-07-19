@@ -222,7 +222,7 @@
 
 #Make a scanner category when these actually function and we get the trayson
 - type: entity
-  parent: ClothingEyesBase
+  parent: [BaseDurableEyewear, ClothingEyesBase]
   id: ClothingEyesGlassesThermal
   name: optical thermal scanner
   description: Thermals in the shape of glasses.
@@ -232,6 +232,7 @@
   - type: Clothing
     sprite: Clothing/Eyes/Glasses/thermal.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95

@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseKnife
+  parent: [WH40KDurableMeleeWeapon, BaseKnife]
   id: WeaponOgrynCombatKnife
   suffix: WH40K, Ogryn
   components:
@@ -27,7 +27,7 @@
     - Belt
 
 - type: entity
-  parent: BaseKnife
+  parent: [WH40KDurableMeleeWeapon, BaseKnife]
   id: WeaponOgrynCleaver
   suffix: WH40K, Ogryn
   components:

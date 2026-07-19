@@ -23,6 +23,13 @@ ui-options-general-discord = Discord
 ui-options-general-cursor = Cursor
 ui-options-general-speech = Speech
 ui-options-general-storage = Storage
+ui-options-durability-bar-visibility = Durability bar:
+ui-options-durability-bar-visibility-always = Always
+ui-options-durability-bar-visibility-held = Held items only
+ui-options-durability-bar-visibility-never = Never
+ui-options-durability-bar-color = Durability bar color:
+ui-options-durability-bar-color-white = White
+ui-options-durability-bar-color-gradient = Green to red
 ui-options-general-accessibility = Accessibility
 
 ## Audio menu
@@ -295,6 +302,10 @@ cmd-options-help = Usage: options [tab]
 ui-options-enable-color-name = Add colors to character names
 ui-options-colorblind-friendly = Colorblind friendly mode
 ui-options-reduced-motion = Reduce motion of visual effects
+ui-options-item-rarity-world-effects = World item rarity effects
+ui-options-item-rarity-world-effects-off = Off
+ui-options-item-rarity-world-effects-reduced = Reduced
+ui-options-item-rarity-world-effects-full = Full
 ui-options-disable-nv-noise = Disable the noise effect on the night vision overlay
 ui-options-screen-shake-intensity = Screen shake intensity
 ui-options-chat-window-opacity = Chat window opacity

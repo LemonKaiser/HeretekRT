@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponRifle]
   id: BaseWeaponSniperLondoronMk2
   abstract: true
   components:
@@ -132,7 +132,7 @@
     sprite: _WH40K/Objects/Weapons/Guns/Snipers/londoron_mk2_bloodpact_in-hands.rsi
 
 - type: entity
-  parent: [BaseWeaponSniper, BaseGunWieldable]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponSniper, BaseGunWieldable]
   id: WeaponSniperLondoronMk2Possessed
   suffix: WH40K, Possessed
   components:
@@ -169,7 +169,7 @@
 
 - type: entity
   name: Kardashev-Mosin
-  parent: [BaseWeaponSniper, BaseGunWieldable]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponSniper, BaseGunWieldable]
   id: WeaponHellDiverCarabin
   suffix: WH40K, helldrivers
   components:

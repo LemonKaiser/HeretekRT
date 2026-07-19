@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  parent: [ WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband ]
   id: WeaponRocketLauncher
   description:
   components:
@@ -31,7 +31,7 @@
   - type: Appearance
 
 - type: entity
-  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  parent: [ WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband ]
   id: WeaponRocketLauncherImperial
   suffix: WH40K, Imperium
   components:
@@ -64,7 +64,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  parent: [ WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband ]
   id: WeaponRocketLauncherChaos
   suffix: WH40K, Chaos
   components:
@@ -97,7 +97,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  parent: [ WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband ]
   id: WeaponRocketLauncherImperialDisposable
   suffix: WH40K, Imperium
   components:
@@ -125,7 +125,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [ BaseWeaponLauncher, BaseMajorContraband ]
+  parent: [ WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband ]
   id: WeaponRocketLauncherChaosDisposable
   suffix: WH40K, Chaos
   components:
@@ -153,7 +153,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [BaseWeaponRevolver, BaseGunWieldable]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponRevolver, BaseGunWieldable]
   id: WeaponLauncherCadia
   suffix: WH40K, Imperium
   components:
@@ -192,7 +192,7 @@
   - type: GunRequiresWield
 
 - type: entity
-  parent: [BaseWeaponRevolver, BaseGunWieldable]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponRevolver, BaseGunWieldable]
   id: WeaponLauncherChs
   suffix: WH40K, Chaos
   components:

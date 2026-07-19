@@ -1,0 +1,139 @@
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableRangedWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 120
+    shotDrain: 0.1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: WH40KDurableRangedWeapon
+  id: WH40KDurableHeavyRangedWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 150
+    requiredWorkbenchTier: 2
+
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableMeleeWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 350
+    meleeDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: WH40KDurableMeleeWeapon
+  id: WH40KDurableHeavyMeleeWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 500
+    requiredWorkbenchTier: 2
+
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableTool
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    toolUseDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: WH40KDurableMeleeWeapon
+  id: WH40KDurableToolMelee
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 400
+    toolUseDrain: 1
+
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableShield
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 300
+    drainOnDamage: true
+    incomingDamageDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 360
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: WH40KDurableArmor
+  id: WH40KDurableHeavyArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 480
+    requiredWorkbenchTier: 2
+
+- type: entity
+  parent: BaseItem
+  id: WH40KDurableHelmet
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 160
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: WH40KDurableHelmet
+  id: WH40KDurableBootArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    protectedBodyParts: Feet
+
+- type: entity
+  parent: WH40KDurableHelmet
+  id: WH40KDurableHeavyHelmet
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 240
+    requiredWorkbenchTier: 2
+
+- type: entity
+  parent: WH40KDurableHelmet
+  id: WH40KDurableAstartesHelmet
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 400
+    requiredWorkbenchTier: 3
+
+- type: entity
+  parent: WH40KDurableArmor
+  id: WH40KDurableAstartesArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 800
+    requiredWorkbenchTier: 3

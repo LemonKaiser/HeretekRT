@@ -17,7 +17,8 @@ public sealed partial class HitscanBasicDamageComponent : Component
 
     // Mono start
     /// <summary>
-    ///     How much of the target's armor to ignore. 0.5 means the damage is affected half as much by armor, I think.
+    ///     Flat armor points ignored by this hitscan attack. Positive values reduce the target's ArmorRating;
+    ///     negative values make the target effectively more resistant.
     /// </summary>
     [DataField]
     public float ArmorPenetration;

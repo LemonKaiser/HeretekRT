@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableRangedWeapon, BaseItem]
   id: WeaponLaserWH40KEnergy
   abstract: true
   components:

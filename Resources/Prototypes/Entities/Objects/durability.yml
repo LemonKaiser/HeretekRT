@@ -1,0 +1,195 @@
+- type: entity
+  id: BaseDurableRangedWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 120
+    shotDrain: 0.1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableRangedWeapon
+  id: BaseDurableHeavyRangedWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 150
+    requiredWorkbenchTier: 2
+
+- type: entity
+  parent: BaseDurableRangedWeapon
+  id: BaseDurableBow
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 50
+    repairMaterial: Cloth
+
+- type: entity
+  parent: BaseDurableHeavyRangedWeapon
+  id: BaseDurableHeavyHybridWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 500
+    meleeDrain: 1
+
+- type: entity
+  id: BaseDurableMeleeWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 350
+    meleeDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableMeleeWeapon
+  id: BaseDurableHeavyMeleeWeapon
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 500
+    requiredWorkbenchTier: 2
+
+- type: entity
+  id: BaseDurableTool
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    toolUseDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableTool
+  id: BaseDurableToolMelee
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 400
+    meleeDrain: 1
+
+- type: entity
+  parent: BaseDurableMeleeWeapon
+  id: BaseDurableMeleeTool
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 400
+    toolUseDrain: 1
+
+- type: entity
+  parent: BaseDurableHeavyMeleeWeapon
+  id: BaseDurableHeavyMeleeTool
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 400
+    toolUseDrain: 1
+
+- type: entity
+  id: BaseDurableShield
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 300
+    drainOnDamage: true
+    incomingDamageDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableShield
+  id: BaseDurableEnergyShield
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    requiredWorkbenchTier: 2
+
+- type: entity
+  id: BaseDurableArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 360
+    protectsWearer: true
+    repairMaterial: Cloth
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableArmor
+  id: BaseDurableHeavyArmor
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 480
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+
+- type: entity
+  id: BaseDurableHelmet
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 160
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  parent: BaseDurableHelmet
+  id: BaseDurableHeavyHelmet
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 240
+    requiredWorkbenchTier: 2
+
+- type: entity
+  id: BaseDurableMask
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Cloth
+    requiredWorkbenchTier: 1
+
+- type: entity
+  id: BaseDurableGloves
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    protectsWearer: true
+    protectedBodyParts: Hands
+    repairMaterial: Cloth
+    requiredWorkbenchTier: 1
+
+- type: entity
+  id: BaseDurableEyewear
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 100
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+
+- type: entity
+  id: BaseDurableUniform
+  abstract: true
+  components:
+  - type: ItemDurability
+    maxDurability: 200
+    protectsWearer: true
+    repairMaterial: Cloth
+    requiredWorkbenchTier: 1

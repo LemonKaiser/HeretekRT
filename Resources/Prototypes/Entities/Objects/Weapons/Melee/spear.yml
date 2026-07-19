@@ -1,9 +1,11 @@
 - type: entity
   name: spear
-  parent: BaseItem
+  parent: [BaseDurableMeleeWeapon, BaseItem]
   id: Spear
   description: Definition of a Classic. Keeping murder affordable since 200,000 BCE.
   components:
+  - type: ItemDurability
+    repairMaterial: Cloth
   - type: EmbeddableProjectile
     offset: -0.15,0.0
   - type: ThrowingAngle

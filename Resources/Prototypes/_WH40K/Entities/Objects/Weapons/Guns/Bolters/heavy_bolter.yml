@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyRangedWeapon, BaseItem]
   id: WH40KHeavyBolter
   name: heavy bolter emplacement
   description: A crew-operated heavy bolter. Deploy it, take position behind the gun, and suppress the lane.

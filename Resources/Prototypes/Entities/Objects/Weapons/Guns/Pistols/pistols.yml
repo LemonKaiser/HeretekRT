@@ -1,6 +1,6 @@
 - type: entity
   name: BasePistol
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: BaseWeaponPistol
   description: A rooty tooty point and shooty.
   abstract: true
@@ -189,7 +189,7 @@
 
 - type: entity
   name: LWC PT-45C echis (9x19mm)
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: WeaponPistolEchis
   description: A viper for use by cyborgs. Creates 9x19mm on the fly from an internal ammo fabricator, which slowly self-charges.
   components:
@@ -224,7 +224,7 @@
 
 - type: entity
   name: LWC mercenary PT-45C echis (9x19mm)
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: WeaponPistolMercenaryEchis
   description: A viper for use by cyborgs, redesigned for mercenary use. Creates 9x19mm on the fly from an internal ammo fabricator, which slowly self-charges.
   components:

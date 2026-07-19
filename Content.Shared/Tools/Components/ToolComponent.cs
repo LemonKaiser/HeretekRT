@@ -48,3 +48,8 @@ public struct ToolUserAttemptUseEvent(EntityUid? target)
     public EntityUid? Target = target;
     public bool Cancelled = false;
 }
+
+/// <summary>
+/// Raised on a tool after its tool DoAfter completed successfully.
+/// </summary>
+public readonly record struct ToolUseCompletedEvent(EntityUid User, EntityUid? Target);

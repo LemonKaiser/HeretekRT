@@ -1,8 +1,10 @@
 - type: entity
-  parent: BaseSword
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseSword]
   id: WHPowerSaberImperial
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 5
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/power_sword_imperial.rsi
     state: icon
@@ -39,11 +41,13 @@
   - type: PirateAccent
 
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseItem]
   id: WHPowerMaceImperial
   description: filler
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 5
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/mace.rsi
     layers:
@@ -116,7 +120,7 @@
 
 - type: entity
   name: клинок избранного
-  parent: BaseSword
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseSword]
   id: WH40KChaosKhorneStealerBlade
   description: Живой геноклинок, сотканный из ярости и голода Кхорна.
   categories: [ HideSpawnMenu ]
@@ -154,6 +158,8 @@
   description: Экзальтированный геноклинок, безумно жаждущий плоти и ответного огня.
   categories: [ HideSpawnMenu ]
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: MeleeWeapon
     attackRate: 2
     range: 1.9
@@ -165,10 +171,12 @@
     spread: 120
 
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseItem]
   id: WH40KAstartesPowerSword
   suffix: WH40K, Astartes
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: SpeciesItemRestriction
     whitelist:
     - Astartes

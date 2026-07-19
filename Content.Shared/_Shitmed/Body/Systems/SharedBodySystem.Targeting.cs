@@ -149,7 +149,22 @@ public partial class SharedBodySystem
             if (targetPart == null)
                 return;
 
-            if (!TryChangePartDamage(ent, args.Damage, args.IgnoreResistances, args.CanSever, args.CanEvade, args.PartMultiplier, targetPart.Value)
+            args.ResolvedTargetPart = targetPart;
+
+            if (damage?.AnyPositive() == true && targetPart.Value != TargetBodyPart.All)
+                targetEnt.LastDamagedPart = targetPart;
+
+            if (!TryChangePartDamage(
+                    ent,
+                    args.Damage,
+                    args.IgnoreResistances,
+                    args.CanSever,
+                    args.CanEvade,
+                    args.PartMultiplier,
+                    targetPart.Value,
+                    args.Origin,
+                    args.ArmorPenetration,
+                    args.Tool)
                 && args.CanEvade)
             {
                 if (_net.IsServer)
@@ -171,6 +186,10 @@ public partial class SharedBodySystem
 
     private void OnPartDamageModify(Entity<BodyPartComponent> partEnt, ref DamageModifyEvent args)
     {
+        // The owning body receives its own DamageModifyEvent for the same incoming hit. Armor must still modify
+        // limb damage here, but durability is spent once by the owning body's event.
+        args.TrackArmorDurability = false;
+
         if (partEnt.Comp.Body != null
             && TryComp(partEnt.Comp.Body.Value, out InventoryComponent? inventory))
             _inventory.RelayEvent((partEnt.Comp.Body.Value, inventory), ref args);
@@ -187,7 +206,10 @@ public partial class SharedBodySystem
         bool canSever,
         bool canEvade,
         float partMultiplier,
-        TargetBodyPart targetParts)
+        TargetBodyPart targetParts,
+        EntityUid? origin,
+        float armorPenetration,
+        EntityUid? tool)
     {
         var landed = false;
         var targets = SharedTargetingSystem.GetValidParts();
@@ -202,7 +224,15 @@ public partial class SharedBodySystem
                 if (canEvade && TryEvadeDamage(entity, GetEvadeChance(targetType)))
                     continue;
 
-                var damageResult = Damageable.TryChangeDamage(part.FirstOrDefault().Id, damage * partMultiplier, ignoreResistances, canSever: canSever);
+                var damageResult = Damageable.TryChangeDamage(
+                    part.FirstOrDefault().Id,
+                    damage * partMultiplier,
+                    ignoreResistances,
+                    origin: origin,
+                    armorPenetration: armorPenetration,
+                    canSever: canSever,
+                    targetPart: target,
+                    tool: tool);
                 if (damageResult != null && damageResult.GetTotal() != 0)
                     landed = true;
             }

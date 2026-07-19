@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableMeleeWeapon, BaseItem]
   id: WeaponMeleeChaosNailBoard
   suffix: WH40K, Хаос
   components:

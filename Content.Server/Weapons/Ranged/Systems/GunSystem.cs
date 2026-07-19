@@ -5,6 +5,7 @@ using Content.Server.Cargo.Systems;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Weapons.Ranged.Components;
 using Content.Shared._Mono.Weapons.Ranged.Components;
+using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
@@ -261,6 +262,8 @@ public sealed partial class GunSystem : SharedGunSystem
         }
 
         projectileComp.Damage *= gun.DamageModifier;
+        if (TryComp<ItemRarityStatsComponent>(gunUid, out var rarityStats) && rarityStats.Applied)
+            projectileComp.ArmorPenetration += rarityStats.EffectiveWeaponArmorPenetration;
         ShootProjectile(uid, mapDirection, gunVelocity, gunUid, user, gun.ProjectileSpeedModified, offset); // Mono - add offset
         // Mono
         if (HasComp<FireControllableComponent>(gunUid))

@@ -83,7 +83,7 @@
 
 - type: entity
   id: BaseAdvancedPen
-  parent: PenEmbeddable
+  parent: [BaseDurableToolMelee, PenEmbeddable]
   abstract: true
   components:
   - type: Tag

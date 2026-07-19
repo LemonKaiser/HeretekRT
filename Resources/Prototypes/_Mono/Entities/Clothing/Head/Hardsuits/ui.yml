@@ -23,6 +23,7 @@
     phosphorColor: "#00FF00"
     lightingColor: "#FFFFFF32"
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -74,6 +75,7 @@
     phosphorColor: "#00FF00"
     lightingColor: "#FFFFFF32"
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -114,6 +116,7 @@
     phosphorColor: "#00FF00"
     lightingColor: "#FFFFFF32"
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -154,6 +157,7 @@
     phosphorColor: "#00FF00"
     lightingColor: "#FFFFFF32"
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -206,6 +210,7 @@
     phosphorColor: "#41D7D9"
     lightingColor: "#FFFFFF32"
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9

@@ -8,7 +8,7 @@
     - Syndicate
 
 - type: entity
-  parent: BaseWeaponBallisticTurret
+  parent: BaseWeaponTurret
   id: WeaponTurretSyndicateDisposable
   name: disposable ballistic turret
   suffix: Syndicate, Disposable
@@ -31,8 +31,16 @@
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
       - !type:TriggerBehavior
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
   - type: Gun
     fireRate: 2
+    projectileSpeed: 55
+    maxAngle: 15 # Mono
+    minAngle: 4 # Mono
+    angleIncrease: -1.2 # Mono
+    angleDecay: -4 # Mono
     selectedMode: FullAuto
     availableModes:
     - FullAuto
@@ -85,7 +93,7 @@
     - HostileUniversally # Mono
 
 - type: entity
-  parent: BaseWeaponBallisticTurret
+  parent: BaseWeaponTurret
   id: WeaponTurretXeno
   name: xeno turret
   suffix: Xeno
@@ -99,12 +107,22 @@
     noRot: true
     layers:
     - state: acid_turret
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
   - type: BallisticAmmoProvider
     proto: BulletAcid
     capacity: 500
   - type: Gun
     fireRate: 1
+    projectileSpeed: 55
+    maxAngle: 15 # Mono
+    minAngle: 4 # Mono
+    angleIncrease: -1.2 # Mono
+    angleDecay: -4 # Mono
     selectedMode: FullAuto
+    availableModes:
+    - FullAuto
     soundGunshot: /Audio/Weapons/Xeno/alien_spitacid.ogg
   - type: HTN
     rootTask:

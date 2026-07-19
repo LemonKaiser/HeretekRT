@@ -21,3 +21,8 @@ public sealed partial class SurgeryToolComponent : Component
 /// </summary>
 [ByRefEvent]
 public record struct SurgeryToolUsedEvent(EntityUid User, EntityUid Target, bool Cancelled = false);
+
+/// <summary>
+/// Raised on each surgical tool that actually completed a surgery step.
+/// </summary>
+public readonly record struct SurgeryToolUseCompletedEvent(EntityUid User, EntityUid Target);

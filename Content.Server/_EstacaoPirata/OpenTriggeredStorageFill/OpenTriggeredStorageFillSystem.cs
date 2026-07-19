@@ -1,5 +1,6 @@
 using Content.Server.Popups;
 using Content.Server.Spawners.Components;
+using Content.Shared.Durability.Events;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Item;
@@ -46,6 +47,7 @@ public sealed partial class OpenTriggeredStorageFillSystem : EntitySystem
             DebugTools.Assert(!_prototype.Index<EntityPrototype>(item)
                 .HasComponent(typeof(RandomSpawnerComponent)));
             var ent = Spawn(item, coordinates);
+            RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
 
             if (!TryComp<ItemComponent>(ent, out var itemComp))
             {

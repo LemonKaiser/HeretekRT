@@ -1,4 +1,5 @@
 ﻿using Content.Server.Worldgen.Components.Debris;
+using Content.Shared.Durability.Events;
 using Content.Shared.Maps;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -43,7 +44,8 @@ public sealed partial class SimpleFloorPlanPopulatorSystem : BaseWorldSystem
                 if (proto is null)
                     continue;
 
-                Spawn(proto, coords);
+                var spawned = Spawn(proto, coords);
+                RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
             }
         }
     }

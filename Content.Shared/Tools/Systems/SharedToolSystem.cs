@@ -59,6 +59,12 @@ public abstract partial class SharedToolSystem : EntitySystem
             RaiseLocalEvent(GetEntity(args.OriginalTarget.Value), (object) ev);
         else
             RaiseLocalEvent((object) ev);
+
+        if (!args.Cancelled)
+        {
+            var target = args.OriginalTarget.HasValue ? GetEntity(args.OriginalTarget.Value) : (EntityUid?) null;
+            RaiseLocalEvent(uid, new ToolUseCompletedEvent(args.User, target));
+        }
             
         if (TryComp(uid, out UseDelayComponent? delay)) // Goobstation
             _delay.TryResetDelay((uid, delay));

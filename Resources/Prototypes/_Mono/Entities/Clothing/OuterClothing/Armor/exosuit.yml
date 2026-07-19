@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing]
   id: ClothingOuterExosuitAurora
   name: M-320X AURORA exosuit
   suffix: SelfUnremovable
@@ -13,6 +13,7 @@
     equipDelay: 5 # to avoid accidentally falling into the trap associated with SelfUnremovableClothing
   - type: SelfUnremovableClothing
   - type: Armor
+    armorRating: 640
     modifiers:
       coefficients:
         Blunt: 0.55 # nanomachines are brittle

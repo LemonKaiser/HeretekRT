@@ -166,7 +166,7 @@
 
 - type: entity
   name: GS-004-A Jack (4 gauge)
-  parent: [BaseItem, BaseGunWieldable]
+  parent: [BaseDurableHeavyRangedWeapon, BaseItem, BaseGunWieldable]
   id: WeaponShotgunJack
   description: An incredibly heavy burst fire 23x75mm shotgun that loads from a belt and a specialized backpack.
   components:

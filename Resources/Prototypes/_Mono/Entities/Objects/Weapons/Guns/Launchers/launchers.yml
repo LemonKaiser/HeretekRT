@@ -80,7 +80,7 @@
 
 - type: entity
   name: MANPAT "Panzero" disposable anti-tank
-  parent: [ BaseItem ] # Frontier: BaseMajorContraband<BaseC3Contraband
+  parent: [ BaseDurableHeavyRangedWeapon, BaseItem ] # Frontier: BaseMajorContraband<BaseC3Contraband
   id: WeaponLauncherPanzero
   description: Based on old designs, the "Panzero" is a (relatively) easy-to-carry disposable anti-tank rocket launcher. Devastating against mechs and walls, not very good at much else.
   components:

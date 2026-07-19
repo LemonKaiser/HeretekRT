@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Humanoid.Components;
 using Content.Server.Spawners.Components;
 using Content.Server.Storage.Components;
+using Content.Shared.Durability.Events;
 using Content.Shared.Item;
 using Content.Shared.Prototypes;
 using Content.Shared.Storage;
@@ -42,11 +43,14 @@ public sealed partial class StorageSystem
         var coordinates = Transform(uid).Coordinates;
 
         var spawnItems = EntitySpawnCollection.GetSpawns(component.Contents, Random);
+        var randomizeDurability = IsRandomizedFill(component);
 
         var items = new List<Entity<ItemComponent>>();
         foreach (var spawnPrototype in spawnItems)
         {
             var ent = Spawn(spawnPrototype, coordinates);
+            if (randomizeDurability)
+                RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
 
             // No, you are not allowed to fill a container with entity spawners.
             DebugTools.Assert(!_prototype.Index<EntityPrototype>(spawnPrototype)
@@ -97,6 +101,7 @@ public sealed partial class StorageSystem
         var coordinates = Transform(uid).Coordinates;
 
         var spawnItems = EntitySpawnCollection.GetSpawns(component.Contents, Random);
+        var randomizeDurability = IsRandomizedFill(component);
         foreach (var item in spawnItems)
         {
             // No, you are not allowed to fill a container with entity spawners.
@@ -111,6 +116,9 @@ public sealed partial class StorageSystem
             }
             // End Frontier
 
+            if (randomizeDurability)
+                RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
+
             // handle depending on storage component, again this should be unified after ECS
             if (entityStorageComp != null && EntityStorage.Insert(ent, uid, entityStorageComp))
                 continue;
@@ -118,5 +126,13 @@ public sealed partial class StorageSystem
             Log.Error($"Tried to StorageFill {item} inside {ToPrettyString(uid)} but can't.");
             Del(ent);
         }
+    }
+
+    private static bool IsRandomizedFill(StorageFillComponent component)
+    {
+        return component.Contents.Any(entry =>
+            entry.SpawnProbability != 1f ||
+            !string.IsNullOrWhiteSpace(entry.GroupId) ||
+            entry.MaxAmount > entry.Amount);
     }
 }

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared.Durability.Events;
 using Content.Shared.EntityTable;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -70,6 +71,7 @@ public sealed partial class ContainerFillSystem : EntitySystem
             foreach (var proto in spawns)
             {
                 var spawn = Spawn(proto, coords);
+                RaiseLocalEvent(spawn, new RandomLootSpawnedEvent());
                 if (!_containerSystem.Insert(spawn, container, containerXform: xform))
                 {
                     Log.Error($"Entity {ToPrettyString(ent)} with a {nameof(EntityTableContainerFillComponent)} failed to insert an entity: {ToPrettyString(spawn)}.");

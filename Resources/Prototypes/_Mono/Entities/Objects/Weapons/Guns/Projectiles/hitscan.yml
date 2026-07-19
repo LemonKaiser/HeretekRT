@@ -82,7 +82,7 @@
       types:
         Piercing: 120
         Structural: 500
-    armorPenetration: 0.8
+    armorPenetration: 160
   - type: HitscanBasicRaycast
     maxDistance: 200
     collisionMask:

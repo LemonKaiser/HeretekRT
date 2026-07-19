@@ -134,7 +134,7 @@
     sprite: Clothing/Head/Hardhats/dark_yellow.rsi
 
 - type: entity
-  parent: ClothingHeadHatHardhatBase
+  parent: [BaseDurableHelmet, ClothingHeadHatHardhatBase]
   id: ClothingHeadHatHardhatArmored
   name: armored hard hat
   description: An armored hard hat. Provides the best of both worlds in both protection & utility - perfect for the engineer on the frontlines.
@@ -144,6 +144,7 @@
   - type: Clothing
     sprite: Clothing/Head/Hardhats/armored.rsi
   - type: Armor #Copied from the sec helmet, as it's hard to give these sane values without locational damage existing.
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.8

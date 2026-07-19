@@ -25,6 +25,11 @@
     - FullAuto
     soundGunshot:
       path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_1.wav
+  - type: ItemDurability
+    maxDurability: 120
+    shotDrain: 0.1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg

@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Worldgen.Components.Debris;
+using Content.Shared.Durability.Events;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -50,7 +51,8 @@ public sealed partial class RandomEntityPopulatorSystem : BaseWorldSystem
                     if (proto is null)
                         continue;
 
-                    Spawn(proto, coords);
+                    var spawned = Spawn(proto, coords);
+                    RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
                 }
                 placeables.Clear();
             }

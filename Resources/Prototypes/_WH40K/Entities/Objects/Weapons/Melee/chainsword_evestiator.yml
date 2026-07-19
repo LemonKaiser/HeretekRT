@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseItem]
   id: ChainswordEvestiator
   suffix: WH40K
   components:

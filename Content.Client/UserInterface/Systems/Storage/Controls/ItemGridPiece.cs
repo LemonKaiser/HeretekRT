@@ -1,11 +1,15 @@
 using System.Numerics;
+using Content.Client._WH40K.ItemRarity;
+using Content.Client.Durability.Controls;
 using Content.Client.Items.Systems;
+using Content.Shared._WH40K.ItemRarity.Systems;
 using Content.Shared.Item;
 using Content.Shared.Storage;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.UserInterface.Systems.Storage.Controls;
 
@@ -13,6 +17,13 @@ public sealed class ItemGridPiece : Control, IEntityControl
 {
     private readonly IEntityManager _entityManager;
     private readonly StorageUIController _storageController;
+    private readonly DurabilityBarControl _durabilityDisplay;
+    private readonly ItemRarityFrameControl _rarityFrame;
+    private readonly List<UIBox2> _durabilityAreas = new();
+
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+
+    private SharedItemRaritySystem ItemRaritySystem => _entityManager.System<SharedItemRaritySystem>();
 
     private readonly List<(Texture, Vector2)> _texturesPositions = new();
 
@@ -63,6 +74,22 @@ public sealed class ItemGridPiece : Control, IEntityControl
 
         TooltipSupplier = SupplyTooltip;
 
+        _durabilityDisplay = new DurabilityBarControl
+        {
+            Visible = false,
+        };
+        _durabilityDisplay.SetEntity(Entity);
+        AddChild(_durabilityDisplay);
+
+        // ItemGridPiece paints its icon in Draw(), so the shared presenter is
+        // invoked manually there to keep the frame below the icon and marks.
+        _rarityFrame = new ItemRarityFrameControl
+        {
+            Visible = false,
+        };
+        _rarityFrame.SetEntity(Entity);
+        AddChild(_rarityFrame);
+
         OnThemeUpdated();
     }
 
@@ -71,9 +98,15 @@ public sealed class ItemGridPiece : Control, IEntityControl
         if (_storageController.IsDragging)
             return null;
 
+        var rarityText = ItemRarityTooltip.GetText(
+            _entityManager,
+            ItemRaritySystem,
+            _prototypeManager,
+            Entity);
+
         return new Tooltip
         {
-            Text = _entityManager.GetComponent<MetaDataComponent>(Entity).EntityName
+            Text = rarityText ?? _entityManager.GetComponent<MetaDataComponent>(Entity).EntityName
         };
     }
 
@@ -159,6 +192,16 @@ public sealed class ItemGridPiece : Control, IEntityControl
                     var swOffset = new Vector2(0, size.Y);
                     handle.DrawTextureRect(swTexture, new UIBox2(topLeft + swOffset, topLeft + swOffset + size), colorModulate);
                 }
+
+                var cellArea = new UIBox2(topLeft, topLeft + size * 2);
+                var position = new Vector2i(x, y);
+                _rarityFrame.DrawStorageCellFrame(
+                    handle,
+                    cellArea,
+                    !adjustedShape.Contains(position - Vector2i.Up),
+                    !adjustedShape.Contains(position - Vector2i.Down),
+                    !adjustedShape.Contains(position + Vector2i.Left),
+                    !adjustedShape.Contains(position + Vector2i.Right));
             }
         }
 
@@ -194,6 +237,42 @@ public sealed class ItemGridPiece : Control, IEntityControl
                 eyeRotation: iconRotation,
                 overrideDirection: Direction.South);
         }
+
+        // Every exposed lower run contributes to one logical durability bar.
+        // The visual can wrap around an empty cell of an L-shaped item, but
+        // its fill is distributed across all runs only once.
+        _durabilityAreas.Clear();
+        for (var y = boundingGrid.Top; y >= boundingGrid.Bottom; y--)
+        {
+            var x = boundingGrid.Left;
+            while (x <= boundingGrid.Right)
+            {
+                var position = new Vector2i(x, y);
+                if (!adjustedShape.Contains(position) || adjustedShape.Contains(position - Vector2i.Down))
+                {
+                    x++;
+                    continue;
+                }
+
+                var runLeft = x;
+                while (x <= boundingGrid.Right)
+                {
+                    position = new Vector2i(x, y);
+                    if (!adjustedShape.Contains(position) || adjustedShape.Contains(position - Vector2i.Down))
+                        break;
+
+                    x++;
+                }
+
+                var runRight = x - 1;
+                var runTopLeft = PixelPosition + size * 2 * new Vector2(runLeft - boundingGrid.Left, y - boundingGrid.Bottom);
+                var runWidth = (runRight - runLeft + 1) * size.X * 2;
+                var runArea = new UIBox2(runTopLeft, runTopLeft + new Vector2(runWidth, size.Y * 2));
+                _durabilityAreas.Add(runArea);
+            }
+        }
+
+        _durabilityDisplay.DrawStorageBars(handle, _durabilityAreas, UIScale);
 
         if (maybeMarkedPos is {} markedPos)
         {

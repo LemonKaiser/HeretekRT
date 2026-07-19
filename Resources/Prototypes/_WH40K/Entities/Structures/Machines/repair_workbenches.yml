@@ -1,0 +1,104 @@
+- type: entity
+  id: WH40KDurabilityRepairWorkbenchT1
+  parent: BaseMachine
+  name: T1 repair workbench
+  description: A basic workbench for restoring the durability of worn equipment.
+  components:
+  - type: Sprite
+    texture: _WH40K/Structures/Machines/repair_workbenches/t1.png
+    drawdepth: SmallObjects
+  - type: Fixtures
+    fixtures:
+      itemcollide:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.3,0.4,0.3"
+        layer:
+        - HighImpassable
+  - type: ItemSlots
+    slots:
+      repair:
+        name: durability-repair-slot-name
+        insertOnInteract: true
+        ejectOnInteract: true
+        swap: false
+        whitelist:
+          components:
+          - ItemDurability
+  - type: DragInsertContainer
+    containerId: repair
+  - type: DurabilityRepairStation
+    tier: 1
+    maxRepairSlots: 1
+    repairPerMaterial: 10
+    repairDurationSeconds: 1
+
+- type: entity
+  id: WH40KDurabilityRepairWorkbenchT2
+  parent: BaseMachine
+  name: T2 repair workbench
+  description: An improved workbench that restores equipment faster.
+  components:
+  - type: Sprite
+    texture: _WH40K/Structures/Machines/repair_workbenches/t2.png
+    drawdepth: SmallObjects
+  - type: Fixtures
+    fixtures:
+      itemcollide:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.3,0.4,0.3"
+        layer:
+        - HighImpassable
+  - type: ItemSlots
+    slots:
+      repair:
+        name: durability-repair-slot-name
+        insertOnInteract: true
+        ejectOnInteract: true
+        swap: false
+        whitelist:
+          components:
+          - ItemDurability
+  - type: DragInsertContainer
+    containerId: repair
+  - type: DurabilityRepairStation
+    tier: 2
+    maxRepairSlots: 1
+    repairPerMaterial: 15
+    repairDurationSeconds: 0.5
+
+- type: entity
+  id: WH40KDurabilityRepairWorkbenchT3
+  parent: BaseMachinePowered
+  name: T3 repair workbench
+  description: An advanced powered workbench for repairing high-tier equipment.
+  components:
+  - type: Sprite
+    texture: _WH40K/Structures/Machines/repair_workbenches/t3.png
+    drawdepth: SmallObjects
+  - type: Fixtures
+    fixtures:
+      itemcollide:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.3,0.4,0.3"
+        layer:
+        - HighImpassable
+  - type: ItemSlots
+    slots:
+      repair:
+        name: durability-repair-slot-name
+        insertOnInteract: true
+        ejectOnInteract: true
+        swap: false
+        whitelist:
+          components:
+          - ItemDurability
+  - type: DragInsertContainer
+    containerId: repair
+  - type: DurabilityRepairStation
+    tier: 3
+    maxRepairSlots: 1
+    repairPerMaterial: 20
+    repairDurationSeconds: 0.25

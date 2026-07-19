@@ -21,6 +21,13 @@ ui-options-general-discord = Discord
 ui-options-general-cursor = Курсор
 ui-options-general-speech = Речь
 ui-options-general-storage = Инвентарь
+ui-options-durability-bar-visibility = Полоса прочности:
+ui-options-durability-bar-visibility-always = Всегда
+ui-options-durability-bar-visibility-held = Только в руках
+ui-options-durability-bar-visibility-never = Никогда
+ui-options-durability-bar-color = Цвет полосы прочности:
+ui-options-durability-bar-color-white = Белый
+ui-options-durability-bar-color-gradient = От зелёного к красному
 ui-options-general-accessibility = Доступность
 
 ## Audio menu
@@ -260,6 +267,10 @@ cmd-options-help = Использование: options [tab]
 ui-options-enable-color-name = Цветные имена персонажей
 ui-options-colorblind-friendly = Режим для дальтоников
 ui-options-reduced-motion = Снижение интенсивности визуальных эффектов
+ui-options-item-rarity-world-effects = Эффекты редкости предметов на земле
+ui-options-item-rarity-world-effects-off = Выключены
+ui-options-item-rarity-world-effects-reduced = Сниженные
+ui-options-item-rarity-world-effects-full = Полные
 ui-options-chat-window-opacity = Прозрачность окна чата
 ui-options-screen-shake-intensity = Интенсивность дрожания экрана
 ui-options-show-offer-mode-indicators = Показывать индикатор передачи предмета

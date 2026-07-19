@@ -21,7 +21,7 @@
     hideOnToggle: true
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasSecurity
   name: security gas mask
   description: A standard issue Security gas mask.
@@ -33,6 +33,7 @@
   - type: Clothing
     sprite: Clothing/Mask/gassecurity.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -41,7 +42,7 @@
         Heat: 0.95
 
 - type: entity
-  parent: [ClothingMaskGas]
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasSyndicate
   name: syndicate gas mask
   description: A close-fitting tactical mask that can be connected to an air supply.
@@ -53,6 +54,7 @@
   # - type: FlashImmunity # Mono
   - type: EyeProtection
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -61,7 +63,7 @@
         Heat: 0.95
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasAtmos
   name: atmospheric gas mask
   description: Improved gas mask utilized by atmospheric technicians. It's flameproof!
@@ -71,6 +73,7 @@
   - type: Clothing
     sprite: Clothing/Mask/gasatmos.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.90 # Frontier 0.80<0.90
@@ -102,7 +105,7 @@
   - type: IngestionBlocker
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasExplorer
   name: explorer gas mask
   description: A military-grade gas mask that can be connected to an air supply.
@@ -112,6 +115,7 @@
   - type: Clothing
     sprite: Clothing/Mask/gasexplorer.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -139,7 +143,7 @@
     - WhitelistChameleon
 
 - type: entity
-  parent: ClothingMaskBreathMedical
+  parent: [BaseDurableMask, ClothingMaskBreathMedical]
   id: ClothingMaskBreathMedicalSecurity
   name: military-style medical mask
   description: A medical mask with a small layer of protection against damage and viruses, similar to the one used in the medical units of the first corporate war.
@@ -151,6 +155,7 @@
   - type: Clothing
     sprite: Clothing/Mask/medicalsecurity.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -234,7 +239,7 @@
     node: mask
 
 - type: entity
-  parent: ClothingMaskClown
+  parent: [BaseDurableMask, ClothingMaskClown]
   id: ClothingMaskClownSecurity
   name: security clown wig and mask
   description: A debatably oxymoronic but protective mask and wig.
@@ -244,6 +249,7 @@
   - type: Clothing
     sprite: Clothing/Mask/clown_security.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -361,7 +367,7 @@
     accent: StutteringAccent
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasSwat
   name: swat gas mask
   description: A elite issue Security gas mask.
@@ -379,6 +385,7 @@
     - Snout
     hideOnToggle: true
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -387,7 +394,7 @@
         Heat: 0.95
 
 - type: entity
-  parent: [ ClothingMaskGas ]
+  parent: [ BaseDurableMask, ClothingMaskGas ]
   id: ClothingMaskGasMercenary # Frontier: Merc to Mercenary
   name: mercenary gas mask
   description: Slightly outdated, but reliable military-style gas mask.
@@ -397,6 +404,7 @@
   - type: Clothing
     sprite: Clothing/Mask/merc.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -407,7 +415,7 @@
     id: ClothingMaskGasMercenary # Frontier
 
 - type: entity
-  parent: ClothingMaskGas
+  parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasERT
   name: ert gas mask
   description: The gas mask of the elite squad of the ERT.
@@ -427,6 +435,7 @@
   - type: FlashImmunity
   - type: EyeProtection
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -445,6 +454,7 @@
   - type: Clothing
     sprite: Clothing/Mask/squadron.rsi
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.80

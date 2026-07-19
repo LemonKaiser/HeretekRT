@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponPistol
+  parent: [WH40KDurableRangedWeapon, BaseWeaponPistol]
   id: WeaponStubSMG
   suffix: WH40K, Хаос
   components:

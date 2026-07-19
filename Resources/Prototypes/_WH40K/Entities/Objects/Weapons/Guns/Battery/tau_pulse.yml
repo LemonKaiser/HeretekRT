@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponBatterySmall
+  parent: [WH40KDurableRangedWeapon, BaseWeaponBatterySmall]
   id: WeaponTauPulsePistol
   suffix: WH40K, Tau
   components:

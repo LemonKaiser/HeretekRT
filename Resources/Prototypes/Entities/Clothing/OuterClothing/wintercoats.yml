@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingOuterStorageBase
+  parent: [BaseDurableArmor, ClothingOuterStorageBase]
   id: ClothingOuterWinterCoat
   name: winter coat
   description: A heavy jacket made from 'synthetic' animal furs.
@@ -14,6 +14,7 @@
   - type: Item
     size: Normal
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -156,6 +157,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatchem.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -177,6 +179,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatcmo.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -222,6 +225,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatgen.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -309,6 +313,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatjani.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -330,6 +335,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatmed.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -379,6 +385,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatparamed.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -415,6 +422,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatrd.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -451,6 +459,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatsci.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -486,6 +495,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatviro.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95

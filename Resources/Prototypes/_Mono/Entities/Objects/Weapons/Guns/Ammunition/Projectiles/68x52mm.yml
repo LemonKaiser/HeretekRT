@@ -8,7 +8,7 @@
     damage:
       types:
         Piercing: 24
-    armorPenetration: 0.075
+    armorPenetration: 15
 
 - type: entity
   id: Bullet68x52mmCaselessPractice
@@ -33,7 +33,7 @@
         Blunt: 3
 
 # Mono AP syst
-# + 0.05 base AP
+# +10 base armor penetration points
 #anti-flesh:
 - type: entity
   id: Bullet68x52mmCaselessHP
@@ -46,7 +46,7 @@
       types:
         Slash: 4
         Piercing: 29
-    armorPenetration: -0.525
+    armorPenetration: -105
 
 - type: entity
   id: Bullet68x52mmCaselessRIP
@@ -59,7 +59,7 @@
       types:
         Slash: 6
         Piercing: 35
-    armorPenetration: -0.8
+    armorPenetration: -160
 
 #armor-piercing:
 
@@ -74,4 +74,4 @@
       types:
         Piercing: 11
         Structural: 35
-    armorPenetration: 0.65
+    armorPenetration: 130

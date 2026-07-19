@@ -1,5 +1,6 @@
 using Content.Shared.Damage;
 using Content.Shared.Inventory;
+using Content.Shared._Shitmed.Targeting;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
@@ -17,6 +18,21 @@ public sealed partial class ArmorComponent : Component
     /// </summary>
     [DataField(required: true), AutoNetworkedField]
     public DamageModifierSet Modifiers = default!;
+
+    /// <summary>
+    /// Numerical protection against physical hits. A value of zero keeps the
+    /// legacy modifier-only behavior.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float ArmorRating;
+
+    /// <summary>
+    /// Body parts covered by this armor. Zero means that the coverage should be
+    /// inferred from the clothing slot or, for legacy durability profiles, from
+    /// <see cref="Durability.Components.ItemDurabilityComponent.ProtectedBodyParts"/>.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TargetBodyPart ProtectedBodyParts;
 
     /// <summary>
     /// A multiplier applied to the calculated point value

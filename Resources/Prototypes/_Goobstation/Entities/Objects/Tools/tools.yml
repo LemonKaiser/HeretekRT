@@ -1,6 +1,6 @@
 ﻿- type: entity
   name: sonic screwdriver
-  parent: BaseItem
+  parent: [BaseDurableTool, BaseItem]
   id: SonicScrewdriver
   description: Wzzzzz....
   components:

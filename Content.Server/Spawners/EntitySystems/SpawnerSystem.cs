@@ -1,4 +1,5 @@
 using Content.Server.Spawners.Components;
+using Content.Shared.Durability.Events;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -49,7 +50,8 @@ public sealed partial class SpawnerSystem : EntitySystem
         for (var i = 0; i < number; i++)
         {
             var entity = _random.Pick(component.Prototypes);
-            SpawnAtPosition(entity, coordinates);
+            var spawned = SpawnAtPosition(entity, coordinates);
+            RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
         }
     }
 }

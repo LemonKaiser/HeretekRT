@@ -1,0 +1,158 @@
+# Test-only prototypes for the rarity roll and Stage 2 stat scaling.
+# They are the only rarity profiles that roll when spawned directly from the menu.
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityTestFlakArmor
+  suffix: WH40K, Rarity Test, Flak Armor
+  components:
+  - type: ItemRarityRandom
+    maxTier: 3
+    randomizeOnDirectSpawn: true
+
+- type: entity
+  parent: WeaponProtoKineticAcceleratorBase
+  id: ItemRarityTestWeapon
+  name: rarity test weapon
+  suffix: WH40K, Rarity Test, 10 Damage
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi
+    layers:
+    - state: icon
+    - state: animation-icon
+      visible: false
+      map: [ "empty-icon" ]
+  - type: ItemRarityRandom
+    maxTier: 6
+    baseWeaponDamageMultiplier: 1
+    baseWeaponArmorPenetration: 5
+    randomizeOnDirectSpawn: true
+  - type: BasicEntityAmmoProvider
+    proto: ItemRarityTestProjectile
+    capacity: 30
+    count: 30
+
+- type: entity
+  parent: BaseBullet
+  id: ItemRarityTestProjectile
+  name: rarity test projectile
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    armorPenetration: 2
+    damage:
+      types:
+        Piercing: 10
+
+# Fixed visual samples. They deliberately keep IsRolled=false, so they show
+# the rarity frame and world aura without applying any gameplay bonus.
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleStamped
+  suffix: WH40K, Rarity Sample I, Stamped
+  components:
+  - type: ItemRarity
+    rarity: Stamped
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleConsecrated
+  suffix: WH40K, Rarity Sample II, Consecrated
+  components:
+  - type: ItemRarity
+    rarity: Consecrated
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleMasterCrafted
+  suffix: WH40K, Rarity Sample III, MasterCrafted
+  components:
+  - type: ItemRarity
+    rarity: MasterCrafted
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleRelic
+  suffix: WH40K, Rarity Sample IV, Relic
+  components:
+  - type: ItemRarity
+    rarity: Relic
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleOmnissiahShrine
+  suffix: WH40K, Rarity Sample V, Omnissiah Shrine
+  components:
+  - type: ItemRarity
+    rarity: OmnissiahShrine
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRaritySampleArcheotech
+  suffix: WH40K, Rarity Sample VI, Archeotech
+  components:
+  - type: ItemRarity
+    rarity: Archeotech
+
+# Fixed stat samples. These use a predetermined rarity and representative
+# bonus, so armor, durability and the world-effect suppression can be tested
+# without waiting for a rare random roll.
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleStamped
+  suffix: WH40K, Rarity Stats Sample I, Stamped
+  components:
+  - type: ItemRarity
+    rarity: Stamped
+    bonusPercent: 0
+    isRolled: true
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleConsecrated
+  suffix: WH40K, Rarity Stats Sample II, Consecrated
+  components:
+  - type: ItemRarity
+    rarity: Consecrated
+    bonusPercent: 5
+    isRolled: true
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleMasterCrafted
+  suffix: WH40K, Rarity Stats Sample III, MasterCrafted
+  components:
+  - type: ItemRarity
+    rarity: MasterCrafted
+    bonusPercent: 15
+    isRolled: true
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleRelic
+  suffix: WH40K, Rarity Stats Sample IV, Relic
+  components:
+  - type: ItemRarity
+    rarity: Relic
+    bonusPercent: 35
+    isRolled: true
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleOmnissiahShrine
+  suffix: WH40K, Rarity Stats Sample V, Omnissiah Shrine
+  components:
+  - type: ItemRarity
+    rarity: OmnissiahShrine
+    bonusPercent: 75
+    isRolled: true
+
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ItemRarityStatsSampleArcheotech
+  suffix: WH40K, Rarity Stats Sample VI, Archeotech
+  components:
+  - type: ItemRarity
+    rarity: Archeotech
+    bonusPercent: 150
+    isRolled: true

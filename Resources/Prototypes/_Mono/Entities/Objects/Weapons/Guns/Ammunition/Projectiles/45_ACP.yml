@@ -9,7 +9,7 @@
       types:
         Piercing: 20
         Structural: 20
-    armorPenetration: 0.2
+    armorPenetration: 40
 
 - type: entity
   id: Bullet45_ACPPractice
@@ -44,7 +44,7 @@
       types:
         Piercing: 8
         Heat: 7
-    armorPenetration: -0.1
+    armorPenetration: -20
 
 - type: entity
   id: Bullet45_ACPUranium
@@ -58,7 +58,7 @@
         Radiation: 9
         Piercing: 15
         Structural: 20
-    armorPenetration: -0.075
+    armorPenetration: -15
 
 # Upstream
 - type: entity
@@ -86,7 +86,7 @@
       types:
         Slash: 4
         Piercing: 32
-    armorPenetration: -0.7
+    armorPenetration: -140
 
 - type: entity
   id: Bullet45_ACPRIP
@@ -99,7 +99,7 @@
       types:
         Slash: 7
         Piercing: 42
-    armorPenetration: -0.95
+    armorPenetration: -190
 
 #armor-piercing:
 
@@ -114,4 +114,4 @@
       types:
         Piercing: 9
         Structural: 30
-    armorPenetration: 0.9
+    armorPenetration: 180

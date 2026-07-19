@@ -10,6 +10,7 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_light.rsi
   - type: Armor
+    armorRating: 440
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -40,6 +41,7 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_medium.rsi
   - type: Armor
+    armorRating: 520
     modifiers:
       coefficients:
         Blunt: 0.8
@@ -72,6 +74,7 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_heavy.rsi
   - type: Armor
+    armorRating: 600
     modifiers:
       coefficients:
         Blunt: 0.3
@@ -105,6 +108,7 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_polyvalent.rsi
   - type: Armor
+    armorRating: 360
     modifiers:
       coefficients:
         Blunt: 0.6
@@ -135,6 +139,7 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_stabproof.rsi
   - type: Armor
+    armorRating: 440
     modifiers:
       coefficients:
         Blunt: 0.65
