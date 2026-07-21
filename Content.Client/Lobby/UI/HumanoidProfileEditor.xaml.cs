@@ -12,6 +12,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Shared._Mono.Company;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
+using Content.Shared.GameTicking;
 using Content.Shared.Guidebook;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
@@ -413,19 +414,15 @@ namespace Content.Client.Lobby.UI
             #region Jobs
 
             TabContainer.SetTabTitle(1, Loc.GetString("humanoid-profile-editor-jobs-tab"));
+            TabContainer.SetTabVisible(1, false);
 
             PreferenceUnavailableButton.AddItem(
                 Loc.GetString("humanoid-profile-editor-preference-unavailable-stay-in-lobby-button"),
                 (int) PreferenceUnavailableMode.StayInLobby);
-            // Frontier: we have more than one overflow job type, so we change this string.
-            // PreferenceUnavailableButton.AddItem(
-            //     Loc.GetString("humanoid-profile-editor-preference-unavailable-spawn-as-overflow-button",
-            //                   ("overflowJob", Loc.GetString(SharedGameTicker.FallbackOverflowJobName))),
-            //     (int) PreferenceUnavailableMode.SpawnAsOverflow);
             PreferenceUnavailableButton.AddItem(
-                Loc.GetString("humanoid-profile-editor-preference-unavailable-spawn-as-overflow-button"),
+                Loc.GetString("humanoid-profile-editor-preference-unavailable-spawn-as-overflow-button",
+                    ("overflowJob", Loc.GetString(SharedGameTicker.FallbackOverflowJobName))),
                 (int) PreferenceUnavailableMode.SpawnAsOverflow);
-            // End Frontier
 
             PreferenceUnavailableButton.OnItemSelected += args =>
             {

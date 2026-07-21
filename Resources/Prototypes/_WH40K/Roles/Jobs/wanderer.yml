@@ -1,0 +1,21 @@
+- type: job
+  id: Wanderer
+  name: job-name-wanderer
+  description: job-description-wanderer
+  playTimeTracker: JobWanderer
+  startingGear: WandererGear
+  icon: JobIconPassenger
+  supervisors: job-supervisors-wanderer
+  displayWeight: 35
+  setPreference: true
+  accessGroups:
+  - GeneralAccess
+
+- type: startingGear
+  id: WandererGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitWanderer
+    outerClothing: ClothingOuterCloakWanderer
+    back: ClothingBackpackSatchelWanderer
+    shoes: ClothingShoesBootsWanderer
+    ears: ClothingHeadsetWanderer

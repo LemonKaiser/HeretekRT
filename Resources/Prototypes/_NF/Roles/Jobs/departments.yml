@@ -23,6 +23,7 @@
   - NFJanitor
   - MailCarrier # nyano
   - SecurityGuard
+  editorHidden: true
 
 - type: department
   id: Antag
@@ -39,3 +40,4 @@
   - PdvBorg # Mono
   - PDVTarkhan
   - Prisoner #nyano
+  editorHidden: true
