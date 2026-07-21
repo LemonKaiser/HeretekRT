@@ -36,6 +36,11 @@ namespace Content.Client.Lobby
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
         private LobbyBackgroundController? _lobbyBackgroundController;
+        private ChatUIController? _chatController;
+        private bool? _lastRoundStarted;
+        private long _lastLobbyClockSecond = long.MinValue;
+        private bool? _lastLobbyClockRoundStarted;
+        private bool? _lastLobbyClockPaused;
 
         protected override Type? LinkedScreenType { get; } = typeof(LobbyGui);
         public LobbyGui? Lobby;
@@ -52,12 +57,12 @@ namespace Content.Client.Lobby
 
             Lobby = (LobbyGui) _userInterfaceManager.ActiveScreen;
 
-            var chatController = _userInterfaceManager.GetUIController<ChatUIController>();
+            _chatController = _userInterfaceManager.GetUIController<ChatUIController>();
             _gameTicker = _entityManager.System<ClientGameTicker>();
             _contentAudioSystem = _entityManager.System<ContentAudioSystem>();
             _contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
 
-            chatController.SetMainChat(true);
+            _chatController.SetMainChat(true);
 
             _voteManager.SetPopupContainer(Lobby.VoteContainer);
             LayoutContainer.SetAnchorPreset(Lobby, LayoutContainer.LayoutPreset.Wide);
@@ -69,10 +74,8 @@ namespace Content.Client.Lobby
                 ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
                 : lobbyNameCvar;
 
-            var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
-            Lobby.RightSide.SetWidth = width;
-
             UpdateLobbyUi();
+            Lobby.BeginPresentation();
             _lobbyBackgroundController = new LobbyBackgroundController(
                 _cfg,
                 _protoMan,
@@ -83,6 +86,7 @@ namespace Content.Client.Lobby
             _lobbyBackgroundController.Startup(Lobby);
 
             Lobby.CharacterPreview.CharacterSetupButton.OnPressed += OnSetupPressed;
+            Lobby.PersonalizationButton.OnPressed += OnSetupPressed;
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
 
@@ -93,8 +97,7 @@ namespace Content.Client.Lobby
 
         protected override void Shutdown()
         {
-            var chatController = _userInterfaceManager.GetUIController<ChatUIController>();
-            chatController.SetMainChat(false);
+            _chatController?.SetMainChat(false);
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
@@ -103,11 +106,14 @@ namespace Content.Client.Lobby
             _voteManager.ClearPopupContainer();
 
             Lobby!.CharacterPreview.CharacterSetupButton.OnPressed -= OnSetupPressed;
+            Lobby!.PersonalizationButton.OnPressed -= OnSetupPressed;
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
 
             _lobbyBackgroundController?.Shutdown();
             _lobbyBackgroundController = null;
+            _chatController = null;
+            _lastRoundStarted = null;
             Lobby = null;
         }
 
@@ -131,6 +137,12 @@ namespace Content.Client.Lobby
             }
             // Frontier to downstream: if you want to skip the first window and go straight to station picker,
             // simply change the enum to station or crew in the PickerWindow constructor.
+            if (_pickerWindow is { IsOpen: true })
+            {
+                _pickerWindow.Close();
+                return;
+            }
+
             _pickerWindow ??= new PickerWindow();
             _pickerWindow.OpenCentered();
         }
@@ -143,19 +155,45 @@ namespace Content.Client.Lobby
         public override void FrameUpdate(FrameEventArgs e)
         {
             _lobbyBackgroundController?.FrameUpdate(e.DeltaSeconds);
+            Lobby?.UpdateChatAnimation(e.DeltaSeconds);
+            Lobby?.UpdateVisualEffects(e.DeltaSeconds);
 
-            if (_gameTicker.IsGameStarted)
+            UpdateLobbyClock();
+        }
+
+        private void UpdateLobbyClock()
+        {
+            var gameStarted = _gameTicker.IsGameStarted;
+            var paused = _gameTicker.Paused;
+            var currentSecond = (long) _gameTiming.CurTime.TotalSeconds;
+            if (_lastLobbyClockSecond == currentSecond
+                && _lastLobbyClockRoundStarted == gameStarted
+                && _lastLobbyClockPaused == paused)
             {
-                Lobby!.StartTime.Text = string.Empty;
-                var roundTime = _gameTiming.CurTime.Subtract(_gameTicker.RoundStartTimeSpan);
-                Lobby!.StationTime.Text = Loc.GetString("lobby-state-player-status-round-time", ("hours", roundTime.Hours), ("minutes", roundTime.Minutes));
                 return;
             }
 
-            Lobby!.StationTime.Text = Loc.GetString("lobby-state-player-status-round-not-started");
+            _lastLobbyClockSecond = currentSecond;
+            _lastLobbyClockRoundStarted = gameStarted;
+            _lastLobbyClockPaused = paused;
+
+            if (gameStarted)
+            {
+                Lobby!.StartTime.Text = string.Empty;
+                Lobby.RoundStatus.Text = Loc.GetString("heretek-lobby-round-active");
+                var roundTime = _gameTiming.CurTime.Subtract(_gameTicker.RoundStartTimeSpan);
+                Lobby.StationTime.Text = Loc.GetString(
+                    "lobby-state-player-status-round-time",
+                    ("hours", roundTime.Hours),
+                    ("minutes", roundTime.Minutes));
+                return;
+            }
+
+            Lobby!.RoundStatus.Text = Loc.GetString("heretek-lobby-round-awaiting");
+            Lobby.StationTime.Text = string.Empty;
             string text;
 
-            if (_gameTicker.Paused)
+            if (paused)
             {
                 text = Loc.GetString("lobby-state-paused");
             }
@@ -185,9 +223,17 @@ namespace Content.Client.Lobby
             Lobby!.StartTime.Text = Loc.GetString("lobby-state-round-start-countdown-text", ("timeLeft", text));
         }
 
+        private void InvalidateLobbyClock()
+        {
+            _lastLobbyClockSecond = long.MinValue;
+            _lastLobbyClockRoundStarted = null;
+            _lastLobbyClockPaused = null;
+        }
+
         private void LobbyStatusUpdated()
         {
             _lobbyBackgroundController?.RefreshBackground();
+            InvalidateLobbyClock();
             UpdateLobbyUi();
         }
 
@@ -198,20 +244,26 @@ namespace Content.Client.Lobby
 
         private void UpdateLobbyUi()
         {
+            InvalidateLobbyClock();
+            UpdateChatRoundState();
+
             if (_gameTicker.IsGameStarted)
             {
                 Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Pressed = false;
+                Lobby.UpdateReadyButtonVisual(ready: false, roundStarted: true);
                 Lobby!.ObserveButton.Disabled = false;
             }
             else
             {
                 Lobby!.StartTime.Text = string.Empty;
-                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "lobby-state-player-status-ready": "lobby-state-player-status-not-ready");
+                var ready = _gameTicker.AreWeReady;
+                Lobby!.ReadyButton.Text = Loc.GetString(ready ? "lobby-state-player-status-ready" : "lobby-state-player-status-not-ready");
                 Lobby!.ReadyButton.ToggleMode = true;
                 Lobby!.ReadyButton.Disabled = false;
-                Lobby!.ReadyButton.Pressed = _gameTicker.AreWeReady;
+                Lobby!.ReadyButton.Pressed = ready;
+                Lobby.UpdateReadyButtonVisual(ready, roundStarted: false);
                 Lobby!.ObserveButton.Disabled = true;
             }
 
@@ -219,6 +271,16 @@ namespace Content.Client.Lobby
             {
                 //Lobby!.ServerInfo.SetInfoBlob(_gameTicker.ServerInfoBlob); // Frontier: ???
             }
+        }
+
+        private void UpdateChatRoundState()
+        {
+            var roundStarted = _gameTicker.IsGameStarted;
+            if (_lastRoundStarted == roundStarted)
+                return;
+
+            _lastRoundStarted = roundStarted;
+            Lobby!.SetChatExpanded(!roundStarted);
         }
 
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)

@@ -23,6 +23,15 @@ public sealed partial class CCVars
         CVarDef.Create("infolinks.github", "", CVar.SERVER | CVar.REPLICATED);
 
     /// <summary>
+    ///     Link to the Space Station 14 Steam page to show in the launcher.
+    /// </summary>
+    public static readonly CVarDef<string> InfoLinksSteam =
+        CVarDef.Create(
+            "infolinks.steam",
+            "https://store.steampowered.com/app/1255460/Space_Station_14/",
+            CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
     ///     Link to website to show in the launcher.
     /// </summary>
     public static readonly CVarDef<string> InfoLinksWebsite =

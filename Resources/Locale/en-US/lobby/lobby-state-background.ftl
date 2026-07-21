@@ -33,3 +33,15 @@ lobby-state-background-janishootout-artist = psychpsyo
 
 lobby-state-background-reclaimernuke-title = Reclaimer Nuke
 lobby-state-background-reclaimernuke-artist = GetOutMarutak
+
+lobby-state-background-wps1-title = Dark Passageway
+lobby-state-background-wps1-artist = Anastasiya Landasseln
+
+lobby-state-background-wps2-title = Rogue Trader
+lobby-state-background-wps2-artist = Anastasiya Landasseln
+
+lobby-state-background-wps3-title = Rogue Trader — Meeting
+lobby-state-background-wps3-artist = Anastasiya Landasseln
+
+lobby-state-background-wps4-title = Rogue Trader Main Menu
+lobby-state-background-wps4-artist = Valeriy Vegera

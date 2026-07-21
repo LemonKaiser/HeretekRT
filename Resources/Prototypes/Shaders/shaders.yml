@@ -82,6 +82,38 @@
   kind: source
   path: "/Textures/Shaders/blurryy.swsl"
 
+- type: shader
+  id: HeretekLobbyDrawerBlur
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-drawer-blur.swsl"
+  params:
+    BlurRadius: 3.0
+
+- type: shader
+  id: HeretekLobbyBackdropShade
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-backdrop-shade.swsl"
+
+- type: shader
+  id: HeretekLobbyDrawerShade
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-drawer-shade.swsl"
+
+- type: shader
+  id: HeretekLobbyDrawerShadow
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-drawer-shadow.swsl"
+
+- type: shader
+  id: HeretekLobbyMenuDivider
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-menu-divider.swsl"
+
+- type: shader
+  id: HeretekLobbyDrawerRule
+  kind: source
+  path: "/Textures/_WH40K/Shaders/lobby-drawer-rule.swsl"
+
 # cloaking distortion effect
 - type: shader
   id: Stealth

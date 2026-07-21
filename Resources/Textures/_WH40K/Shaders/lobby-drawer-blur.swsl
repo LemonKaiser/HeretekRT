@@ -1,0 +1,19 @@
+uniform highp float BlurRadius;
+
+void fragment() {
+    highp vec2 sampleStep = TEXTURE_PIXEL_SIZE * BlurRadius;
+    highp vec4 centre = zTexture(UV);
+    highp vec4 colour = centre * 0.25;
+
+    colour += zTexture(UV + vec2(-sampleStep.x, 0.0)) * 0.125;
+    colour += zTexture(UV + vec2( sampleStep.x, 0.0)) * 0.125;
+    colour += zTexture(UV + vec2(0.0, -sampleStep.y)) * 0.125;
+    colour += zTexture(UV + vec2(0.0,  sampleStep.y)) * 0.125;
+
+    colour += zTexture(UV + vec2(-sampleStep.x, -sampleStep.y)) * 0.0625;
+    colour += zTexture(UV + vec2( sampleStep.x, -sampleStep.y)) * 0.0625;
+    colour += zTexture(UV + vec2(-sampleStep.x,  sampleStep.y)) * 0.0625;
+    colour += zTexture(UV + vec2( sampleStep.x,  sampleStep.y)) * 0.0625;
+
+    COLOR = vec4(colour.rgb, centre.a);
+}

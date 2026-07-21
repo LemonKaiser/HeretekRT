@@ -73,18 +73,26 @@
 - type: lobbyBackground
   id: WPS1
   background: /Textures/_WH40K/LobbyScreens/wps1.png
+  title: lobby-state-background-wps1-title
+  artist: lobby-state-background-wps1-artist
 
 - type: lobbyBackground
   id: WPS2
   background: /Textures/_WH40K/LobbyScreens/wps2.png
+  title: lobby-state-background-wps2-title
+  artist: lobby-state-background-wps2-artist
 
 - type: lobbyBackground
   id: WPS3
   background: /Textures/_WH40K/LobbyScreens/wps3.png
+  title: lobby-state-background-wps3-title
+  artist: lobby-state-background-wps3-artist
 
 - type: lobbyBackground
   id: WPS4
   background: /Textures/_WH40K/LobbyScreens/wps4.png
+  title: lobby-state-background-wps4-title
+  artist: lobby-state-background-wps4-artist
 
 - type: lobbyBackground
   id: WPA1

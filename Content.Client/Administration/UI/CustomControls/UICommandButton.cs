@@ -13,8 +13,21 @@ namespace Content.Client.Administration.UI.CustomControls
         {
             if (WindowType == null)
                 return;
-            _window = (DefaultWindow) IoCManager.Resolve<IDynamicTypeFactory>().CreateInstance(WindowType);
-            _window?.OpenCentered();
+
+            if (_window is { Disposed: false })
+            {
+                if (_window.IsOpen)
+                {
+                    _window.Close();
+                    return;
+                }
+            }
+            else
+            {
+                _window = (DefaultWindow) IoCManager.Resolve<IDynamicTypeFactory>().CreateInstance(WindowType);
+            }
+
+            _window.OpenCentered();
         }
     }
 }

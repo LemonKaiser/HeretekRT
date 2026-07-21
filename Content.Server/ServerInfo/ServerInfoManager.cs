@@ -16,6 +16,7 @@ public sealed partial class ServerInfoManager
         (CCVars.InfoLinksDiscord,  "discord",  "info-link-discord"),
         (CCVars.InfoLinksForum,    "forum",    "info-link-forum"),
         (CCVars.InfoLinksGithub,   "github",   "info-link-github"),
+        (CCVars.InfoLinksSteam,    "steam",    "info-link-steam"),
         (CCVars.InfoLinksWebsite,  "web",      "info-link-website"),
         (CCVars.InfoLinksWiki,     "wiki",     "info-link-wiki"),
         (CCVars.InfoLinksTelegram, "telegram", "info-link-telegram")
