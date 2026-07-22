@@ -5,6 +5,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Standing;
 using Content.Shared.Stunnable;
+using Content.Shared._WH40K.DeathTransition;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Player;
 using Robust.Shared.Serialization;
@@ -41,9 +42,19 @@ public abstract partial class SharedLayingDownSystem : EntitySystem
 
     private void ToggleStanding(ICommonSession? session)
     {
-        if (session?.AttachedEntity == null ||
-            !HasComp<LayingDownComponent>(session.AttachedEntity) ||
-            !CanLieDown(session.AttachedEntity.Value)) // Mono
+        if (session?.AttachedEntity is not { } entity)
+            return;
+
+        // R is normally the lie/stand key. A dead player instead uses it to explicitly
+        // relinquish the character; this must work even for mobs without LayingDownComponent.
+        if (_mobState.IsDead(entity))
+        {
+            RaiseNetworkEvent(new DeathSurrenderEvent());
+            return;
+        }
+
+        if (!HasComp<LayingDownComponent>(entity) ||
+            !CanLieDown(entity)) // Mono
         {
             return;
         }

@@ -1,6 +1,6 @@
 - type: entity
   name: crowbar
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: BaseCrowbar
   abstract: true
   components:

@@ -15,6 +15,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5 # Removed 10%
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients: # Buffed to be more durable
         Blunt: 0.65 #0.75->0.65
@@ -74,6 +75,7 @@
     highPressureMultiplier: 0.5
     lowPressureMultiplier: 1000
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -130,6 +132,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.4 # 10% increase
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
         Blunt: 0.6 # Mono - 0.7 -> 0.6
@@ -194,6 +197,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/tactical_hardsuit.rsi
   - type: Armor # Remains perfectly clean of stains
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -244,6 +248,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.4
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.5

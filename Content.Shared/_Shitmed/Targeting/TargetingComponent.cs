@@ -14,6 +14,13 @@ public sealed partial class TargetingComponent : Component
     public TargetBodyPart Target = TargetBodyPart.Torso;
 
     /// <summary>
+    /// Last concrete body part that received incoming damage. The health analyzer uses this to explain
+    /// which protection coverage was relevant to the most recent hit.
+    /// </summary>
+    [ViewVariables]
+    public TargetBodyPart? LastDamagedPart;
+
+    /// <summary>
     /// What odds does the entity have of targeting each body part?
     /// </summary>
     [DataField]

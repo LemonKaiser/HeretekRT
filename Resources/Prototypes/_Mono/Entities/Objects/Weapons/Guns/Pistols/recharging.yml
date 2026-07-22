@@ -50,7 +50,7 @@
     damage:
       types:
         Piercing: 32
-    armorPenetration: 0.3
+    armorPenetration: 60
 
 - type: entity
   parent: WeaponPistolAnaconda
@@ -109,4 +109,4 @@
     damage:
       types:
         Piercing: 50
-    armorPenetration: 0.20
+    armorPenetration: 40

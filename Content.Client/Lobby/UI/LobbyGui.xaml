@@ -2,125 +2,168 @@
     xmlns="https://spacestation14.io"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:maths="clr-namespace:Robust.Shared.Maths;assembly=Robust.Shared.Maths"
+    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     xmlns:vote="clr-namespace:Content.Client.Voting.UI"
-    xmlns:style="clr-namespace:Content.Client.Stylesheets"
     xmlns:lobbyUi="clr-namespace:Content.Client.Lobby.UI"
-    xmlns:info="clr-namespace:Content.Client.Info"
-    xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Chat.Widgets"
-    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
-    <!-- Background -->
-    <TextureRect Access="Public" VerticalExpand="True" HorizontalExpand="True" Name="Background"
+    xmlns:widgets="clr-namespace:Content.Client.UserInterface.Systems.Chat.Widgets">
+    <TextureRect Name="Background" Access="Public" HorizontalExpand="True" VerticalExpand="True"
                  Stretch="KeepAspectCovered" />
-    <BoxContainer Name="MainContainer" VerticalExpand="True" HorizontalExpand="True" Orientation="Horizontal"
-                  Margin="10 10 10 10" SeparationOverride="2">
-        <SplitContainer State="Auto" ResizeMode="NotResizable" HorizontalExpand="True">
-            <!-- LHS Controls -->
-            <BoxContainer Name="LeftSide" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True">
-                <Control Name="DefaultState" VerticalExpand="True">
-                    <BoxContainer Name="TopLeft" Orientation="Vertical">
-                        <!-- Left Top Panel -->
-                        <PanelContainer StyleClasses="AngleRect" HorizontalAlignment="Left" Name="LeftSideTop"
-                                        VerticalAlignment="Top">
-                            <BoxContainer Orientation="Vertical" HorizontalAlignment="Center" MaxWidth="800">
-                                <info:LinkBanner Name="LinkBanner" VerticalExpand="false" HorizontalAlignment="Center"
-                                                 Margin="3 3 3 3" />
-                                <controls:StripeBack>
-                                    <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="3 3 3 3">
-                                        <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public"
-                                                            Text="{Loc 'ui-lobby-observe-button'}"
-                                                            StyleClasses="ButtonBig"
-                                                            WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
-                                        <Label Name="StartTime"
-                                               Access="Public"
-                                               Align="Left"
-                                               FontColorOverride="{x:Static maths:Color.DarkGray}"
-                                               StyleClasses="LabelBig" HorizontalExpand="True" />
-                                        <Button Name="ReadyButton" Access="Public" ToggleMode="True"
-                                                Text="{Loc 'ui-lobby-ready-up-button'}"
-                                                StyleClasses="ButtonBig" MinWidth="137" />
-                                    </BoxContainer>
-                                </controls:StripeBack>
-                            </BoxContainer>
-                        </PanelContainer>
-                        <!-- Voting Popups -->
-                        <BoxContainer Orientation="Vertical" SeparationOverride="4" Name="VoteContainer"
-                                      Access="Public" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 8" />
-                    </BoxContainer>
-                    <!-- Vertical Padding-->
-                    <Control VerticalExpand="True" />
-                    <!-- Left Bot Panel -->
-                    <BoxContainer Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                        <info:DevInfoBanner Name="DevInfoBanner" VerticalExpand="false" Margin="3 3 3 3" />
-                        <PanelContainer Name="BottomInfoPanel" StyleClasses="AngleRect">
-                            <BoxContainer Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3 3 3 3">
-                                <RichTextLabel Name="LobbySong" Access="Public" HorizontalAlignment="Left" />
-                                <RichTextLabel Name="LobbyBackground" Access="Public" HorizontalAlignment="Left" />
-                            </BoxContainer>
-                        </PanelContainer>
-                    </BoxContainer>
-                </Control>
-                <!-- Character setup state -->
-                <!-- This is injected on startup. Funky! -->
-                <Control Access="Public" Visible="False" Name="CharacterSetupState" VerticalExpand="True" />
-            </BoxContainer>
-            <!-- Right Panel -->
-            <PanelContainer Name="RightSide" Access="Public" StyleClasses="AngleRect" HorizontalAlignment="Right" VerticalExpand="True"
-                            VerticalAlignment="Stretch">
-                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                    <!-- Top row -->
-                    <BoxContainer Orientation="Horizontal" MinSize="0 40" Name="HeaderContainer" Access="Public"
-                                  SeparationOverride="4">
-                        <Label Name="ServerName" Access="Public" StyleClasses="LabelHeadingBigger" VAlign="Center"
-                               HorizontalExpand="True" HorizontalAlignment="Center" />
-                    </BoxContainer>
-                    <!-- Gold line -->
-                    <controls:HLine Color="{x:Static style:StyleNano.NanoGold}" Thickness="2" />
-                    <controls:HSpacer Spacing="10" />
-                    <!-- Voting & misc button bar -->
-                    <BoxContainer Orientation="Horizontal" MinSize="0 40" HorizontalAlignment="Right">
-                        <Button Name="AHelpButton" Access="Public" Text="{Loc 'ui-lobby-ahelp-button'}"
-                                StyleClasses="ButtonBig" />
-                        <vote:VoteCallMenuButton Name="CallVoteButton" StyleClasses="ButtonBig" />
-                        <Button Name="OptionsButton" Access="Public" StyleClasses="ButtonBig"
-                                Text="{Loc 'ui-lobby-options-button'}" />
-                        <Button Name="LeaveButton" Access="Public" StyleClasses="ButtonBig"
-                                Text="{Loc 'ui-lobby-leave-button'}" />
-                    </BoxContainer>
-                    <controls:HSpacer Spacing="10" />
-                    <!-- Server info -->
-                    <controls:NanoHeading Text="{Loc 'ui-lobby-server-info-block'}" />
-                    <!-- Disabled on Frontier, because multistation breaks the UI and its all formed in this specific blob -->
-                    <!-- <info:ServerInfo Name="ServerInfo" Access="Public" MinSize="0 30" VerticalExpand="false"
-                                     Margin="3 3 3 3" MaxWidth="400" HorizontalAlignment="Left" /> -->
-                    <Label Name="StationTime" Access="Public" FontColorOverride="{x:Static maths:Color.LightGray}"
-                           Margin="3 3 3 3" HorizontalAlignment="Left" />
-                    <controls:HSpacer Spacing="5" />
-                    <lobbyUi:LobbyCharacterPreviewPanel Name="CharacterPreview" Access="Public" />
-                    <controls:HSpacer Spacing="5" />
-                    <BoxContainer MinHeight="10" />
-                    <!-- Gold line -->
-                    <controls:HLine Color="{x:Static style:StyleNano.NanoGold}" Thickness="2" Access="Public" />
-                    <controls:HSpacer Spacing="10" />
-                    <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="6 6 6 6">
+
+    <lobbyUi:LobbyBackdropEffects Name="BackdropEffects" Access="Public" MouseFilter="Ignore" />
+
+    <BoxContainer Name="MainContainer" Orientation="Vertical" SetWidth="440" VerticalExpand="True">
+        <BoxContainer Name="LeftSide" Orientation="Vertical" SetWidth="440" HorizontalAlignment="Left">
+            <Control Name="DefaultState">
+                <lobbyUi:LobbyDeckDecoration Name="DeckDecoration" Access="Public" MouseFilter="Ignore" />
+                <BoxContainer Orientation="Vertical">
+                    <PanelContainer Name="LeftSideTop" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
+                            <graphics:StyleBoxFlat BackgroundColor="#00000000" BorderColor="#00000000" BorderThickness="0"
+                                                   ContentMarginLeftOverride="33" ContentMarginRightOverride="0"
+                                                   ContentMarginTopOverride="12" ContentMarginBottomOverride="12" />
                         </PanelContainer.PanelOverride>
-                        <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0">
-                            <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
-                            </PanelContainer.PanelOverride>
-                            <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                            <LayoutContainer HorizontalExpand="True" MinHeight="116">
+                                <lobbyUi:LobbyLogoControl Name="LogoDisplay" Access="Public" HorizontalExpand="True" VerticalExpand="True"
+                                                         Subtitle="{Loc 'heretek-lobby-sector'}" MouseFilter="Ignore" />
+                            </LayoutContainer>
+
+                            <PanelContainer Name="StatusBlock" Access="Public" HorizontalExpand="True" Margin="0 0 0 16">
                                 <PanelContainer.PanelOverride>
-                                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
+                                    <graphics:StyleBoxFlat BackgroundColor="#00000000" BorderColor="#9E86504D" BorderThickness="0 1 0 1"
+                                                           ContentMarginLeftOverride="0" ContentMarginRightOverride="0"
+                                                           ContentMarginTopOverride="10" ContentMarginBottomOverride="10" />
                                 </PanelContainer.PanelOverride>
-                    <widgets:ChatBox Name="Chat" Access="Public" VerticalExpand="True" Margin="3 3 3 3" MinHeight="50" />
+                                <BoxContainer Orientation="Vertical">
+                                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                        <lobbyUi:LobbySignalIndicator Name="RoundIndicator" Access="Public" VerticalAlignment="Center" />
+                                        <Label Name="RoundStatus" Access="Public" FontColorOverride="#DFD7C3" />
+                                    </BoxContainer>
+                                    <Label Name="StartTime" Access="Public" FontColorOverride="#B7AD9B" Margin="18 3 0 0" />
+                                    <Label Name="StationTime" Access="Public" FontColorOverride="#B7AD9B" Margin="18 3 0 0" />
+                                </BoxContainer>
                             </PanelContainer>
-                        </PanelContainer>
+
+                            <BoxContainer Name="MenuBlock" Access="Public" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                                <PanelContainer Name="ReadyRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="ReadyIndex" Text="01" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#FFB080" VerticalAlignment="Center" />
+                                    <Button Name="ReadyButton" Access="Public" ToggleMode="True" HorizontalExpand="True" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                                <PanelContainer Name="PersonalizationRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="PersonalizationIndex" Text="02" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#B69754" VerticalAlignment="Center" />
+                                    <Button Name="PersonalizationButton" Access="Public" Text="{Loc 'heretek-lobby-personalization'}" HorizontalExpand="True" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                                <PanelContainer Name="GuidebookRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="GuidebookIndex" Text="03" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#B69754" VerticalAlignment="Center" />
+                                    <Button Name="GuidebookButton" Access="Public" Text="{Loc 'heretek-lobby-guidebook'}" HorizontalExpand="True" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                                <PanelContainer Name="UpdatesRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="UpdatesIndex" Text="04" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#B69754" VerticalAlignment="Center" />
+                                    <Button Name="UpdatesButton" Access="Public" Text="{Loc 'heretek-lobby-updates'}" HorizontalExpand="True" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                                <PanelContainer Name="ObserveRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="ObserveIndex" Text="05" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#B69754" VerticalAlignment="Center" />
+                                    <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public"
+                                                        Text="{Loc 'heretek-lobby-observe'}" HorizontalExpand="True"
+                                                        WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                                <PanelContainer Name="LeaveRow" Access="Public" HorizontalExpand="True" MinHeight="49">
+                                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="49">
+                                    <Label Name="LeaveIndex" Text="06" Access="Public" Margin="16 0 0 0" SetWidth="30" FontColorOverride="#B69754" VerticalAlignment="Center" />
+                                    <Button Name="LeaveButton" Access="Public" Text="{Loc 'heretek-lobby-leave'}" HorizontalExpand="True" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <controls:HLine Color="#00000000" Thickness="1" />
+                            </BoxContainer>
+                        </BoxContainer>
+                    </PanelContainer>
+
+                    <BoxContainer Name="VoteContainer" Access="Public" Orientation="Vertical" HorizontalExpand="True"
+                                  Margin="0 8 0 0" SeparationOverride="4" />
+                    <PanelContainer Name="BottomInfoPanel" Access="Public" HorizontalExpand="True" Margin="33 14 0 0">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#00000000" BorderColor="#00000000"
+                                                   ContentMarginLeftOverride="0" ContentMarginRightOverride="0"
+                                                   ContentMarginTopOverride="0" ContentMarginBottomOverride="0" />
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="3">
+                            <RichTextLabel Name="LobbySong" Access="Public" />
+                            <RichTextLabel Name="LobbyBackground" Access="Public" />
+                        </BoxContainer>
                     </PanelContainer>
                 </BoxContainer>
-            </PanelContainer>
-        </SplitContainer>
+            </Control>
+
+            <!-- The existing preview remains alive for profile updates, but its old card is no longer part of the lobby view. -->
+            <lobbyUi:LobbyCharacterPreviewPanel Name="CharacterPreview" Access="Public" Visible="False" />
+        </BoxContainer>
+    </BoxContainer>
+
+    <!-- Personalization uses the original full-size SS14 editor rather than the command-deck column. -->
+    <Control Name="CharacterSetupState" Access="Public" Visible="False" HorizontalExpand="True" VerticalExpand="True" />
+
+    <!-- Kept for existing lobby state updates; it is not part of the new composition. -->
+    <Label Name="ServerName" Access="Public" Visible="False" />
+
+    <lobbyUi:LobbyDrawerShadow Name="DrawerShadow" Access="Public" SetWidth="584" Visible="False" MouseFilter="Ignore" />
+    <lobbyUi:LobbyDrawerBlurBackdrop Name="DrawerBlurBackdrop" Access="Public" SetWidth="520" Visible="False" MouseFilter="Ignore" />
+    <PanelContainer Name="RightSide" Access="Public" SetWidth="520" Visible="False" RectClipContent="True">
+        <PanelContainer.PanelOverride>
+            <graphics:StyleBoxFlat BackgroundColor="#0B0A08D9" BorderColor="#9E8760" BorderThickness="1 0 0 0"
+                                   ContentMarginLeftOverride="24" ContentMarginRightOverride="24"
+                                   ContentMarginTopOverride="0" ContentMarginBottomOverride="14" />
+        </PanelContainer.PanelOverride>
+        <BoxContainer Name="ChatContent" Access="Public" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="86">
+                <Label Name="ChatTitle" Access="Public" Text="{Loc 'heretek-lobby-chat-title'}" HorizontalExpand="True" VerticalAlignment="Center" />
+                <!-- The utility bar is overlaid at the top-right and this reserves its place in the header. -->
+                <Control SetWidth="204" />
+            </BoxContainer>
+            <controls:HLine Color="#DAC1813D" Thickness="1" />
+            <BoxContainer Orientation="Horizontal" MinHeight="13" Margin="0 18 0 15" SeparationOverride="8">
+                <Label Name="ChatChannelIndicator" Access="Public" Text="●" FontColorOverride="#E5C879" VerticalAlignment="Center" />
+                <Label Name="ChatChannelState" Access="Public" Text="{Loc 'heretek-lobby-chat-channel'}" FontColorOverride="#B7AD9B" VerticalAlignment="Center" />
+            </BoxContainer>
+            <widgets:ChatBox Name="Chat" Access="Public" VerticalExpand="True" MinHeight="50" Margin="0 0 0 12" />
+            <controls:HLine Color="#DAC18138" Thickness="1" Margin="7 0 7 0" />
+            <BoxContainer Orientation="Horizontal" MinHeight="48" Margin="7 0 7 0">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="7" VerticalAlignment="Center">
+                    <Button Name="DiscordButton" Access="Public" ToolTip="Discord" SetSize="29 29" />
+                    <Button Name="GitHubButton" Access="Public" ToolTip="GitHub" SetSize="29 29" />
+                    <Button Name="SteamButton" Access="Public" ToolTip="Steam" SetSize="29 29" />
+                    <Button Name="WebsiteButton" Access="Public" ToolTip="{Loc 'server-info-website-button'}" SetSize="29 29" />
+                    <Button Name="WikiButton" Access="Public" ToolTip="{Loc 'server-info-wiki-button'}" SetSize="29 29" />
+                    <Button Name="ForumButton" Access="Public" ToolTip="{Loc 'server-info-forum-button'}" SetSize="29 29" />
+                    <Button Name="TelegramButton" Access="Public" ToolTip="{Loc 'server-info-telegram-button'}" SetSize="29 29" />
+                </BoxContainer>
+                <Button Name="AuthorsButton" Access="Public" Text="{Loc 'heretek-lobby-authors'}"
+                        ToolTip="{Loc 'heretek-lobby-authors'}" HorizontalAlignment="Right"
+                        HorizontalExpand="True" VerticalAlignment="Center" />
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+
+    <BoxContainer Name="UtilityBar" Access="Public" Orientation="Horizontal" SeparationOverride="8">
+        <Button Name="AHelpButton" Access="Public" ToolTip="{Loc 'ui-options-function-open-a-help'}" SetSize="44 44" />
+        <vote:VoteCallMenuButton Name="CallVoteButton" Text="☑✕" SetSize="44 44" />
+        <Button Name="OptionsButton" Access="Public" Text="⚙" ToolTip="{Loc 'ui-options-title'}" SetSize="44 44" />
+        <Button Name="ChatToggleButton" Access="Public" Text="▰" ToolTip="{Loc 'heretek-lobby-chat-toggle'}" SetSize="44 44" />
     </BoxContainer>
 </lobbyUi:LobbyGui>

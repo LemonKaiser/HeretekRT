@@ -1,8 +1,10 @@
 - type: entity
-  parent: BaseStorageItem
+  parent: [WH40KDurableMeleeWeapon, BaseStorageItem]
   id: WH40KBible
   suffix: WH40K, Священник
   components:
+  - type: ItemRarityRandom
+    maxTier: 3
   - type: UseDelay
     delay: 10.0
   - type: Bible
@@ -30,6 +32,10 @@
       types:
         Holy: 25
         Blunt: 1
+  - type: ItemDurability
+    maxDurability: 400
+    repairMaterial: Cloth
+    requiredWorkbenchTier: 1
   - type: Prayable
     bibleUserOnly: true
   - type: ReactionMixer

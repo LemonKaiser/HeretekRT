@@ -1,0 +1,6 @@
+light_mode unshaded;
+
+void fragment() {
+    highp float alpha = 0.34 * (1.0 - clamp(UV.x, 0.0, 1.0));
+    COLOR = vec4(0.8549, 0.7569, 0.5059, alpha);
+}

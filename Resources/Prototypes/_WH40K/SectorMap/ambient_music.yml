@@ -1,0 +1,56 @@
+- type: ambientMusic
+  id: FootfallMusic
+  sound:
+    collection: FootfallMusic
+
+- type: soundCollection
+  id: FootfallMusic
+  files:
+  - /Audio/_WH40K/Ambient/Koronus/footfall_1.ogg
+  - /Audio/_WH40K/Ambient/Koronus/footfall_2.ogg
+  - /Audio/_WH40K/Ambient/Koronus/footfall_3.ogg
+  - /Audio/_WH40K/Ambient/Koronus/footfall_4.ogg
+  - /Audio/_WH40K/Ambient/Koronus/footfall_5.ogg
+  - /Audio/_WH40K/Ambient/Koronus/footfall_6.ogg
+
+- type: ambientSpaceBiome
+  id: BiomeKoronusPlanet
+  name: Планета
+  description: Далёкий мир, где каждый шаг оставляет след в чужой истории.
+
+- type: ambientMusic
+  id: BiomeKoronusPlanet
+  sound:
+    collection: BiomeKoronusPlanet
+
+- type: soundCollection
+  id: BiomeKoronusPlanet
+  files:
+  - /Audio/_WH40K/Ambient/Koronus/planet_1.ogg
+  - /Audio/_WH40K/Ambient/Koronus/planet_2.ogg
+  - /Audio/_WH40K/Ambient/Koronus/planet_3.ogg
+
+- type: ambientSpaceBiome
+  id: BiomeKoronusAsteroid
+  name: Астероид
+  description: Камень в пустоте хранит лишь холод, пыль и древнее безмолвие.
+
+- type: ambientMusic
+  id: BiomeKoronusAsteroid
+  sound:
+    collection: BiomeKoronusAsteroid
+
+- type: soundCollection
+  id: BiomeKoronusAsteroid
+  files:
+  - /Audio/_WH40K/Ambient/Koronus/asteroid.ogg
+
+- type: entity
+  id: BiomeSourceKoronusPlanet
+  parent: BaseBiomeSource
+  name: koronus planet biome source
+  components:
+  - type: SpaceBiomeSource
+    id: BiomeKoronusPlanet
+    swapDistance: null
+    priority: 3000

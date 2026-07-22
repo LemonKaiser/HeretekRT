@@ -1,0 +1,12 @@
+light_mode unshaded;
+
+uniform highp vec4 LeftColor;
+uniform highp vec4 MiddleColor;
+uniform highp vec4 RightColor;
+
+void fragment() {
+    highp float position = clamp(UV.x, 0.0, 1.0);
+    highp vec4 colour = mix(LeftColor, MiddleColor, smoothstep(0.0, 0.48, position));
+    colour = mix(colour, RightColor, smoothstep(0.48, 1.0, position));
+    COLOR = colour;
+}

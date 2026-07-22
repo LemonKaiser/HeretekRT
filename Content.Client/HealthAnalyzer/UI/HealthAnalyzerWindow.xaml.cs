@@ -45,6 +45,7 @@ namespace Content.Client.HealthAnalyzer.UI
         private readonly EntProtoId _bodyView = "AlertSpriteView";
 
         private readonly Dictionary<TargetBodyPart, TextureButton> _bodyPartControls;
+        private readonly Dictionary<TargetBodyPart, Texture> _lastHitTextures;
         private EntityUid? _target;
         // Shitmed Change End
 
@@ -72,6 +73,9 @@ namespace Content.Client.HealthAnalyzer.UI
                 { TargetBodyPart.RightLeg, RightLegButton },
                 { TargetBodyPart.RightFoot, RightFootButton },
             };
+            _lastHitTextures = _bodyPartControls.ToDictionary(
+                pair => pair.Key,
+                pair => _cache.GetResource<TextureResource>($"/Textures/_Shitmed/Interface/Targeting/Doll/{GetBodyPartTextureName(pair.Key)}_last_hit.png").Texture);
 
             foreach (var bodyPartButton in _bodyPartControls)
             {
@@ -115,16 +119,21 @@ namespace Content.Client.HealthAnalyzer.UI
             var isPart = part != null;
 
             if (_target == null
-                || !_entityManager.TryGetComponent<DamageableComponent>(isPart ? part : _target, out var damageable))
+                || !_entityManager.TryGetComponent<DamageableComponent>(_target, out var damageable))
             {
                 NoPatientDataText.Visible = true;
                 return;
             }
 
             SetActiveButtons(_entityManager.HasComponent<TargetingComponent>(_target.Value));
+            UpdateLastHitHighlight(msg.LastDamagedPart);
 
             ReturnButton.Visible = isPart;
             PartNameLabel.Visible = isPart;
+            PartHitLabel.Visible = isPart && IsSelectedPartLastHit(msg.SelectedBodyPart, msg.LastDamagedPart);
+            PartHitLabel.Text = PartHitLabel.Visible
+                ? Loc.GetString("health-analyzer-window-last-hit-selected-text")
+                : string.Empty;
 
             if (part != null)
                 PartNameLabel.Text = _entityManager.HasComponent<MetaDataComponent>(part)
@@ -180,7 +189,16 @@ namespace Content.Client.HealthAnalyzer.UI
 
             // Total Damage
 
-            DamageLabel.Text = damageable.TotalDamage.ToString();
+            var displayedDamage = isPart && msg.PartDamage != null
+                ? msg.PartDamage
+                : damageable.Damage;
+            DamageLabel.Text = displayedDamage.GetTotal().ToString();
+
+            var hasLastHit = msg.LastDamagedPart.HasValue;
+            LastHitCaption.Visible = hasLastHit;
+            LastHitLabel.Visible = hasLastHit;
+            if (hasLastHit)
+                LastHitLabel.Text = GetBodyPartText(msg.LastDamagedPart!.Value);
 
             // Alerts
 
@@ -220,11 +238,13 @@ namespace Content.Client.HealthAnalyzer.UI
 
             // Damage Groups
 
+            var displayedDamageGroups = new Dictionary<string, FixedPoint2>();
+            displayedDamage.GetDamagePerGroup(_prototypes, displayedDamageGroups);
             var damageSortedGroups =
-                damageable.DamagePerGroup.OrderByDescending(damage => damage.Value)
+                displayedDamageGroups.OrderByDescending(damage => damage.Value)
                     .ToDictionary(x => x.Key, x => x.Value);
 
-            IReadOnlyDictionary<string, FixedPoint2> damagePerType = damageable.Damage.DamageDict;
+            IReadOnlyDictionary<string, FixedPoint2> damagePerType = displayedDamage.DamageDict;
 
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
         }
@@ -238,6 +258,69 @@ namespace Content.Client.HealthAnalyzer.UI
                 MobState.Dead => Loc.GetString("health-analyzer-window-entity-dead-text"),
                 _ => Loc.GetString("health-analyzer-window-entity-unknown-text"),
             };
+        }
+
+        private static string GetBodyPartText(TargetBodyPart targetPart)
+        {
+            var parts = new List<string>();
+            AddBodyPartText(parts, targetPart, TargetBodyPart.Head, "head");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.Torso, "torso");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.Groin, "groin");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.LeftArm, "left-arm");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.LeftHand, "left-hand");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.RightArm, "right-arm");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.RightHand, "right-hand");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.LeftLeg, "left-leg");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.LeftFoot, "left-foot");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.RightLeg, "right-leg");
+            AddBodyPartText(parts, targetPart, TargetBodyPart.RightFoot, "right-foot");
+
+            return parts.Count == 0
+                ? Loc.GetString("health-analyzer-window-entity-unknown-text")
+                : string.Join(", ", parts);
+        }
+
+        private static bool IsSelectedPartLastHit(
+            TargetBodyPart? selectedBodyPart,
+            TargetBodyPart? lastDamagedPart)
+        {
+            if (selectedBodyPart == null || lastDamagedPart == null)
+                return false;
+
+            return (selectedBodyPart.Value & lastDamagedPart.Value) != 0 ||
+                   selectedBodyPart.Value == TargetBodyPart.Torso && lastDamagedPart.Value == TargetBodyPart.Groin;
+        }
+
+        private void UpdateLastHitHighlight(TargetBodyPart? lastDamagedPart)
+        {
+            foreach (var (bodyPart, button) in _bodyPartControls)
+            {
+                button.TextureNormal = lastDamagedPart != null && IsBodyPartHit(bodyPart, lastDamagedPart.Value)
+                    ? _lastHitTextures[bodyPart]
+                    : null;
+            }
+        }
+
+        private static bool IsBodyPartHit(TargetBodyPart bodyPart, TargetBodyPart lastDamagedPart)
+        {
+            return (bodyPart & lastDamagedPart) != 0 ||
+                   bodyPart == TargetBodyPart.Torso && lastDamagedPart == TargetBodyPart.Groin ||
+                   bodyPart == TargetBodyPart.Groin && lastDamagedPart == TargetBodyPart.Torso;
+        }
+
+        private static string GetBodyPartTextureName(TargetBodyPart bodyPart)
+        {
+            return Enum.GetName(typeof(TargetBodyPart), bodyPart)!.ToLowerInvariant();
+        }
+
+        private static void AddBodyPartText(
+            List<string> parts,
+            TargetBodyPart targetPart,
+            TargetBodyPart part,
+            string locSuffix)
+        {
+            if ((targetPart & part) != 0)
+                parts.Add(Loc.GetString("health-analyzer-window-last-hit-part-" + locSuffix));
         }
 
         private void DrawDiagnosticGroups(

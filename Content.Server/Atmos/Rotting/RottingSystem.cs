@@ -4,6 +4,7 @@ using Content.Server.Temperature.Components;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Rotting;
 using Content.Shared.Damage;
+using Content.Shared.Mobs.Components;
 using Robust.Server.Containers;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
@@ -28,6 +29,10 @@ public sealed partial class RottingSystem : SharedRottingSystem
 
     private void OnGibbed(EntityUid uid, RottingComponent component, BeingGibbedEvent args)
     {
+        // Corpses may still rot and be gibbed, but should not contaminate the atmosphere.
+        if (HasComp<MobStateComponent>(uid))
+            return;
+
         if (!TryComp<PhysicsComponent>(uid, out var physics))
             return;
 
@@ -120,7 +125,8 @@ public sealed partial class RottingSystem : SharedRottingSystem
                 }
             }
 
-            if (!TryComp<PhysicsComponent>(uid, out var physics))
+            // Decaying corpses do not emit miasma. Non-mob perishables retain their existing behavior.
+            if (HasComp<MobStateComponent>(uid) || !TryComp<PhysicsComponent>(uid, out var physics))
                 continue;
             // We need a way to get the mass of the mob alone without armor etc in the future
             // or just remove the mass mechanics altogether because they aren't good.

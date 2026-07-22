@@ -1,7 +1,7 @@
 # CentralCommand
 
 - type: entity
-  parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseMedium, AllowSuitStorageClothing]
   id: ClothingOuterArmourInvisible # I'll be real, this is just invisible armor so it doesn't ruin how fucking AWESOME navy officers look. Bite me.
   name: covert armor
   description: An armored vest that utilizes bluespace technology, bending light and becoming invisible to the naked eye when worn.
@@ -11,6 +11,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Armor/covert_armor.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.50

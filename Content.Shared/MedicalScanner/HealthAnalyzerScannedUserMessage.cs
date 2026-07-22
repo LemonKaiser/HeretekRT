@@ -1,4 +1,5 @@
 using Content.Shared._Shitmed.Targeting; // Shitmed Change
+using Content.Shared.Damage;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.MedicalScanner;
@@ -16,10 +17,13 @@ public sealed class HealthAnalyzerScannedUserMessage : BoundUserInterfaceMessage
     public bool? Bleeding;
     public Dictionary<TargetBodyPart, TargetIntegrity>? Body; // Shitmed Change
     public NetEntity? Part; // Shitmed Change
+    public TargetBodyPart? LastDamagedPart; // Shitmed Change
+    public TargetBodyPart? SelectedBodyPart; // Shitmed Change
+    public DamageSpecifier? PartDamage; // Shitmed Change
     public bool? Unrevivable;
     public bool? Uncloneable; // Frontier
 
-    public HealthAnalyzerScannedUserMessage(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? uncloneable, Dictionary<TargetBodyPart, TargetIntegrity>? body, NetEntity? part = null) // Shitmed Change
+    public HealthAnalyzerScannedUserMessage(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? uncloneable, Dictionary<TargetBodyPart, TargetIntegrity>? body, NetEntity? part = null, TargetBodyPart? lastDamagedPart = null, TargetBodyPart? selectedBodyPart = null, DamageSpecifier? partDamage = null) // Shitmed Change
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -28,6 +32,9 @@ public sealed class HealthAnalyzerScannedUserMessage : BoundUserInterfaceMessage
         Bleeding = bleeding;
         Body = body; // Shitmed Change
         Part = part; // Shitmed Change
+        LastDamagedPart = lastDamagedPart; // Shitmed Change
+        SelectedBodyPart = selectedBodyPart; // Shitmed Change
+        PartDamage = partDamage; // Shitmed Change
         Unrevivable = unrevivable;
         Uncloneable = uncloneable; // Frontier
     }

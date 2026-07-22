@@ -1,5 +1,5 @@
 - type: entity
-  parent: [BaseItem, BaseGunWieldable]
+  parent: [WH40KDurableRangedWeapon, BaseItem, BaseGunWieldable]
   id: WeaponSonicBlaster
   name: sonic blaster
   description: A brutal sound-weapon automatic that turns pressure into lacerating force.
@@ -62,7 +62,7 @@
     price: 900
 
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableRangedWeapon, BaseItem]
   id: WeaponScreamerPistol
   name: screamer pistol
   description: A compact sonic sidearm that tears with concentrated pressure.
@@ -124,7 +124,7 @@
     price: 450
 
 - type: entity
-  parent: [BaseWeaponLauncher, BaseMajorContraband]
+  parent: [WH40KDurableHeavyRangedWeapon, BaseWeaponLauncher, BaseMajorContraband]
   id: WeaponBlastmaster
   name: blastmaster
   description: A sonic grenade launcher that mauls and throws targets back with concussive force.

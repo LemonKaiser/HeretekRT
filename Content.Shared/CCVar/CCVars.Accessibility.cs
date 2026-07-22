@@ -19,6 +19,13 @@ public sealed partial class CCVars
     public static readonly CVarDef<bool> ReducedMotion =
         CVarDef.Create("accessibility.reduced_motion", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    ///     World effects for item rarity: 0 disables them, 1 keeps the static
+    ///     aura and mark, and 2 enables the full pulse, particles and beam.
+    /// </summary>
+    public static readonly CVarDef<int> ItemRarityWorldEffects =
+        CVarDef.Create("accessibility.item_rarity_world_effects", 2, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<bool> ChatEnableColorName =
         CVarDef.Create("accessibility.enable_color_name",
             true,

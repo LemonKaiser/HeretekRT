@@ -5,6 +5,7 @@ using Content.Shared._Shitmed.Medical.Surgery.Effects.Complete;
 using Content.Shared.Body.Systems;
 using Content.Shared._Shitmed.Medical.Surgery.Steps;
 using Content.Shared._Shitmed.Medical.Surgery.Steps.Parts;
+using Content.Shared._Shitmed.Medical.Surgery.Tools;
 //using Content.Shared._RMC14.Xenonids.Parasite;
 using Content.Shared.Body.Part;
 using Content.Shared.Damage;
@@ -92,7 +93,7 @@ public abstract partial class SharedSurgerySystem : EntitySystem
             || args.Target is not { } target
             || !IsSurgeryValid(ent, target, args.Surgery, args.Step, args.User, out var surgery, out var part, out var step)
             || !PreviousStepsComplete(ent, part, surgery, args.Step)
-            || !CanPerformStep(args.User, ent, part, step, false))
+            || !CanPerformStep(args.User, ent, part, step, false, out _, out _, out var validTools))
         {
             Log.Warning($"{ToPrettyString(args.User)} tried to start invalid surgery.");
             return;
@@ -101,6 +102,13 @@ public abstract partial class SharedSurgerySystem : EntitySystem
         args.Repeat = (HasComp<SurgeryRepeatableStepComponent>(step) && !IsStepComplete(ent, part, args.Step, surgery));
         var ev = new SurgeryStepEvent(args.User, ent, part, GetTools(args.User), surgery);
         RaiseLocalEvent(step, ref ev);
+
+        if (validTools != null)
+        {
+            foreach (var tool in validTools.Keys)
+                RaiseLocalEvent(tool, new SurgeryToolUseCompletedEvent(args.User, ent));
+        }
+
         RefreshUI(ent);
     }
 

@@ -112,7 +112,7 @@
     id: ClothingHandsGlovesCaptain # Frontier
 
 - type: entity
-  parent: ClothingHandsBase
+  parent: [BaseDurableGloves, ClothingHandsBase]
   id: ClothingHandsGlovesHop
   name: papercut-proof gloves
   description: Perfect for dealing with paperwork and matters with bureaucracy.
@@ -125,6 +125,7 @@
     fiberMaterial: fibers-durathread
     fiberColor: fibers-black
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95

@@ -25,6 +25,7 @@ public sealed partial class GunSystem
             return;
 
         _damageExamine.AddDamageExamine(args.Message, Damageable.ApplyUniversalAllModifiers(damageSpec), Loc.GetString("damage-projectile"));
+        _damageExamine.AddArmorPenetrationExamine(args.Message, GetProjectileArmorPenetration(component.Prototype));
     }
 
     private DamageSpecifier? GetProjectileDamage(string proto)
@@ -44,6 +45,17 @@ public sealed partial class GunSystem
         }
 
         return null;
+    }
+
+    private float GetProjectileArmorPenetration(string proto)
+    {
+        if (!ProtoManager.TryIndex<EntityPrototype>(proto, out var entityProto) ||
+            !entityProto.Components.TryGetValue(Factory.GetComponentName<ProjectileComponent>(), out var projectile))
+        {
+            return 0f;
+        }
+
+        return ((ProjectileComponent) projectile.Component).ArmorPenetration;
     }
 
     private void OnCartridgeExamine(EntityUid uid, CartridgeAmmoComponent component, ExaminedEvent args)

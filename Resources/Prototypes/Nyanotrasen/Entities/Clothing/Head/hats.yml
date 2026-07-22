@@ -46,6 +46,7 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/Head/Hats/tinfoil.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Radiation: 0.95
@@ -83,6 +84,7 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/Head/Helmets/men.rsi
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.80
@@ -102,6 +104,7 @@
   - type: Item
     size: Small
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.80

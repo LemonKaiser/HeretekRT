@@ -6,6 +6,7 @@ using Content.Server.Cargo.Systems; // Frontier
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.Ghost.Components;
+using Content.Server._WH40K.DeathTransition;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
 using Content.Server.Warps;
@@ -73,6 +74,7 @@ namespace Content.Server.Ghost
         [Dependency] private IAdminManager _admin = default!; // Frontier
         [Dependency] private IServerPreferencesManager _preferencesManager = default!;
         [Dependency] private GhostSpriteStateSystem _ghostState = default!;
+        [Dependency] private GhostPermissionSystem _ghostPermissions = default!;
 
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -632,6 +634,7 @@ namespace Content.Server.Ghost
             if (args.Mind == default)
                 return;
 
+            _ghostPermissions.HandleGhostMindAdded(args);
             ApplyAdminOOCColor(uid, args.Mind);
         }
 

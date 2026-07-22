@@ -1,0 +1,12 @@
+light_mode unshaded;
+
+uniform highp float Center;
+uniform highp float Intensity;
+
+void fragment() {
+    highp float maximumDistance = max(max(Center, 1.0 - Center), 0.0001);
+    highp float normalizedDistance = abs(UV.y - Center) / maximumDistance;
+    highp float centreFade = max(0.0, 1.0 - normalizedDistance * normalizedDistance);
+    highp float alpha = 0.09 + centreFade * Intensity;
+    COLOR = vec4(0.8980, 0.7843, 0.4745, alpha);
+}

@@ -377,6 +377,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Head/Helmets/helmet.rsi
   - type: Armor
+    armorRating: 10
     modifiers:
       coefficients:
         Blunt: 0.95 # worse than a sec helmet
@@ -398,6 +399,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Armor/light_armor.rsi
   - type: Armor
+    armorRating: 40
     modifiers:
       coefficients:
         Blunt: 0.8
@@ -424,6 +426,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Armor/heavy_armor.rsi
   - type: Armor
+    armorRating: 60
     modifiers:
       coefficients:
         Blunt: 0.7

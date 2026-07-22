@@ -1,11 +1,14 @@
 using System.Linq;
 using Content.Client.Administration.Managers;
 using Content.Client.Administration.Systems;
+using Content.Client._WH40K.ItemRarity;
 using Content.Client.UserInterface;
 using Content.Shared.Administration;
 using Content.Shared.IdentityManagement;
+using Content.Shared._WH40K.ItemRarity.Systems;
 using Robust.Client.GameObjects;
 using Robust.Client.Player;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.ContextMenu.UI
 {
@@ -14,8 +17,10 @@ namespace Content.Client.ContextMenu.UI
         [Dependency] private IClientAdminManager _adminManager = default!;
         [Dependency] private IEntityManager _entityManager = default!;
         [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
 
         private AdminSystem _adminSystem;
+        private SharedItemRaritySystem ItemRaritySystem => _entityManager.System<SharedItemRaritySystem>();
 
         /// <summary>
         ///     The entity that can be accessed by interacting with this element.
@@ -78,7 +83,7 @@ namespace Content.Client.ContextMenu.UI
         {
             var representation = _entityManager.ToPrettyString(entity);
 
-            var name = representation.Name;
+            var name = GetNameWithRarity(entity, representation.Name);
             var prototype = representation.Prototype;
             var playerName = representation.Session?.Name ?? SearchPlayerName(entity);
             var deleted = representation.Deleted;
@@ -93,7 +98,20 @@ namespace Content.Client.ContextMenu.UI
                 return GetEntityDescriptionAdmin(entity);
             }
 
-            return Identity.Name(entity, _entityManager, _playerManager.LocalEntity!);
+            var name = Identity.Name(entity, _entityManager, _playerManager.LocalEntity!);
+            return GetNameWithRarity(entity, name);
+        }
+
+        private string GetNameWithRarity(EntityUid entity, string? name)
+        {
+            name ??= string.Empty;
+
+            return ItemRarityTooltip.GetNameWithRarity(
+                       ItemRaritySystem,
+                       _prototypeManager,
+                       entity,
+                       name)
+                   ?? name;
         }
 
         /// <summary>

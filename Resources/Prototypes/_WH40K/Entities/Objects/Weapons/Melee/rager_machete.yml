@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseSword
+  parent: [WH40KDurableMeleeWeapon, BaseSword]
   id: RagerMachete
   suffix: WH40K, Хаос
   components:

@@ -68,7 +68,7 @@
   - type: Matchbox
 
 - type: entity
-  parent: ClothingShoesMilitaryBase
+  parent: [WH40KDurableBootArmor, ClothingShoesMilitaryBase]
   id: ClothingShoesArmoredWorkbootsTechpriest
   suffix: WH40K, АдМехи
   components:
@@ -79,6 +79,7 @@
   - type: ClothingSlowOnDamageModifier
     modifier: 0.4
   - type: Armor
+    armorRating: 20
     modifiers:
       coefficients:
         Piercing: 0.95

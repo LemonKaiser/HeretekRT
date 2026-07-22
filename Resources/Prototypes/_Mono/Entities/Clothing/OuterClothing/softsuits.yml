@@ -53,6 +53,7 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients: # Mono
         Caustic: 0.75

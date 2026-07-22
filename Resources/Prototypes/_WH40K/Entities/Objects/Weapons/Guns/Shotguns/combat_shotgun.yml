@@ -1,5 +1,5 @@
 - type: entity
-  parent: WeaponShotgunBulldog
+  parent: [WH40KDurableRangedWeapon, WeaponShotgunBulldog]
   id: WeaponCombatShotgun
   suffix: WH40K, Общий
   components:

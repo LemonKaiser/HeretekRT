@@ -1,0 +1,6 @@
+- type: entity
+  parent: ClothingShoesBootsNfsdBrownFilled
+  id: ClothingShoesBootsWanderer
+  name: старые ботинки
+  description: Изношенные, но крепкие ботинки для долгой дороги. В потайном отделении спрятан нож на крайний случай.
+  suffix: WH40K, с ножом

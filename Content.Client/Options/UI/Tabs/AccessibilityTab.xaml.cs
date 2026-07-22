@@ -15,6 +15,7 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.ChatEnableColorName, EnableColorNameCheckBox);
         Control.AddOptionCheckBox(CCVars.AccessibilityColorblindFriendly, ColorblindFriendlyCheckBox);
         Control.AddOptionCheckBox(CCVars.ReducedMotion, ReducedMotionCheckBox);
+        Control.AddOptionDropDown(CCVars.ItemRarityWorldEffects, DropDownItemRarityWorldEffects, BuildItemRarityWorldEffectsOptions());
         Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider);
         Control.AddOptionPercentSlider(CCVars.ChatWindowOpacity, ChatWindowOpacitySlider);
         Control.AddOptionPercentSlider(CCVars.SpeechBubbleTextOpacity, SpeechBubbleTextOpacitySlider);
@@ -24,6 +25,16 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionColorSlider(CCVars.ChatHighlightsColor, HighlightsColorSlider);
 
         Control.Initialize();
+    }
+
+    private static IReadOnlyCollection<OptionDropDownCVar<int>.ValueOption> BuildItemRarityWorldEffectsOptions()
+    {
+        return
+        [
+            new(0, Loc.GetString("ui-options-item-rarity-world-effects-off")),
+            new(1, Loc.GetString("ui-options-item-rarity-world-effects-reduced")),
+            new(2, Loc.GetString("ui-options-item-rarity-world-effects-full")),
+        ];
     }
 }
 

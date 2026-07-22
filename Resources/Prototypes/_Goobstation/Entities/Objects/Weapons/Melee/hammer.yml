@@ -1,6 +1,6 @@
 - type: entity
   name: hammer
-  parent: BaseItem
+  parent: [BaseDurableHeavyMeleeTool, BaseItem]
   id: MeleeHammer
   description: 3 steel 2 wood
   components:

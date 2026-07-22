@@ -128,7 +128,7 @@
 
 - type: entity
   abstract: true
-  parent: [RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing, ClothingArmorPlate] # Frontier: added RecyclableItemClothHardsuit # Mono - armor plates.
+  parent: [BaseDurableHeavyArmor, RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing, ClothingArmorPlate] # Frontier: added RecyclableItemClothHardsuit # Mono - armor plates.
   id: ClothingOuterHardsuitBase
   name: base hardsuit
   components:
@@ -145,6 +145,7 @@
   - type: Item
     size: Ginormous
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90

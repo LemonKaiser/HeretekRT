@@ -1,8 +1,14 @@
 using System.Numerics;
 using Content.Client.Cooldown;
+using Content.Client.Durability.Controls;
+using Content.Client._WH40K.ItemRarity;
 using Content.Client.UserInterface.Systems.Inventory.Controls;
+using Content.Shared._WH40K.ItemRarity.Systems;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Prototypes;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.Input;
 
 namespace Content.Client.UserInterface.Controls
@@ -17,8 +23,15 @@ namespace Content.Client.UserInterface.Controls
         public SpriteView HoverSpriteView { get; }
         public TextureButton StorageButton { get; }
         public CooldownGraphic CooldownDisplay { get; }
+        public DurabilityBarControl DurabilityDisplay { get; }
+        public ItemRarityFrameControl RarityFrame { get; }
 
         private SpriteView SpriteView { get; }
+
+        [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
+
+        private SharedItemRaritySystem ItemRaritySystem => _entityManager.System<SharedItemRaritySystem>();
 
         public EntityUid? Entity => SpriteView.Entity;
 
@@ -124,6 +137,9 @@ namespace Content.Client.UserInterface.Controls
                 TextureScale = new Vector2(2, 2),
                 MouseFilter = MouseFilterMode.Stop
             });
+            // Keep the rarity frame below the icon, durability, cooldown and
+            // blocked/active-slot indicators so it never hides useful status.
+            AddChild(RarityFrame = new ItemRarityFrameControl());
             AddChild(HighlightRect = new TextureRect
             {
                 Visible = false,
@@ -147,6 +163,8 @@ namespace Content.Client.UserInterface.Controls
                 SetSize = new Vector2(DefaultButtonSize, DefaultButtonSize),
                 OverrideDirection = Direction.South
             });
+
+            AddChild(DurabilityDisplay = new DurabilityBarControl());
 
             AddChild(StorageButton = new TextureButton
             {
@@ -192,6 +210,7 @@ namespace Content.Client.UserInterface.Controls
 
             HighlightTexturePath = "slot_highlight";
             BlockedTexturePath = "blocked";
+            TooltipSupplier = SupplyTooltip;
         }
 
         public void ClearHover()
@@ -211,7 +230,20 @@ namespace Content.Client.UserInterface.Controls
         public void SetEntity(EntityUid? ent)
         {
             SpriteView.SetEntity(ent);
+            DurabilityDisplay.SetEntity(ent);
+            RarityFrame.SetEntity(ent);
             UpdateButtonTexture();
+        }
+
+        private Control? SupplyTooltip(Control sender)
+        {
+            var text = ItemRarityTooltip.GetText(
+                _entityManager,
+                ItemRaritySystem,
+                _prototypeManager,
+                Entity);
+
+            return text == null ? null : new Tooltip { Text = text };
         }
 
         private void UpdateButtonTexture()

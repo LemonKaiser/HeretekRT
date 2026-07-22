@@ -93,6 +93,8 @@ public sealed partial class ContentAudioSystem
 
     private float _replayAmbientMusicTimer = 0;
     private bool _replayAmbientMusicBool;
+    private float _replayCombatMusicTimer = 0;
+    private bool _replayCombatMusicBool;
     private float _combatWindUpTimer = 0;
     private bool _combatWindUpBool = false;
     private float _combatWindDownTimer = 0;
@@ -108,6 +110,13 @@ public sealed partial class ContentAudioSystem
     private ISawmill _sawmill = default!; //lobbymusic.cs has a sawmill call so i can't remove this????
 
     private ProtoId<SpaceBiomePrototype> _defaultBiomeProto = "BiomeDefault"; //which biome proto is the fallback for null?
+    private const string FtlAmbientMusicId = "BiomeFTL";
+
+    // A BSS jump selects one track on entry. Replays must keep that selection until the jump ends.
+    private string? _ftlAmbientTrack;
+
+    // Combat works the same way: choose a track on entry and keep it until combat mode is disabled.
+    private string? _combatMusicTrack;
 
     public void UpdateAmbientMusic(float frameTime)
     {
@@ -134,6 +143,15 @@ public sealed partial class ContentAudioSystem
             {
                 ReplayAmbientMusic();
                 _replayAmbientMusicTimer = 0;
+            }
+        }
+        if (_replayCombatMusicBool)
+        {
+            _replayCombatMusicTimer += frameTime;
+            if (_replayCombatMusicTimer > _timeUntilNextAmbientTrack)
+            {
+                ReplayCombatMusic();
+                _replayCombatMusicTimer = 0;
             }
         }
         if (_combatWindUpBool)
@@ -221,11 +239,20 @@ public sealed partial class ContentAudioSystem
             _lastBiome = _proto.Index<SpaceBiomePrototype>(_defaultBiomeProto);
         }
 
-        SoundCollectionPrototype soundcol = _proto.Index<SoundCollectionPrototype>(_musicProto.ID);
-
-        string path = _random.Pick(soundcol.PickFiles).ToString(); //picks a random track. if someone really cared we could make it make sure it doesnt play the same track twice
+        string path = PickAmbientTrack(_musicProto);
 
         PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _ambientMusicFadeInTime, false);
+    }
+
+    /// <summary>
+    /// Replays the track selected when the player entered combat mode.
+    /// </summary>
+    private void ReplayCombatMusic()
+    {
+        if (_musicProto == null || _combatMusicTrack == null)
+            return;
+
+        PlayMusicTrack(_combatMusicTrack, _musicProto.Sound.Params.Volume, _combatMusicFadeInTime, true);
     }
 
     private void OnBiomeChange(ref SpaceBiomeSwapMessage ev)
@@ -279,6 +306,9 @@ public sealed partial class ContentAudioSystem
         // 4. biome music
         // therefore we check these top 2 bottom
 
+        if (!IsFtlBiome(newBiome))
+            _ftlAmbientTrack = null;
+
         #region combat music
         if (newCombatState != _lastCombatState) //we switch combat music on or off now
         {
@@ -312,12 +342,16 @@ public sealed partial class ContentAudioSystem
                 _currentlyPlaying = MusicType.Combat;
 
                 SoundCollectionPrototype soundcol = _proto.Index<SoundCollectionPrototype>(_musicProto.ID);
-                string path = _random.Pick(soundcol.PickFiles).ToString();
-                PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _combatMusicFadeInTime, true);
+                _combatMusicTrack = _random.Pick(soundcol.PickFiles).ToString();
+                PlayMusicTrack(_combatMusicTrack, _musicProto.Sound.Params.Volume, _combatMusicFadeInTime, true);
                 return;
             }
             else
             {
+                _combatMusicTrack = null;
+                _replayCombatMusicBool = false;
+                _replayCombatMusicTimer = 0;
+
                 //false = we toggled combat OFF, therefore we should play music from our other data we have in this current request.
                 // the easiest way to do this is to set lastgrid & lastbiome to null.
                 _currentlyPlaying = MusicType.None;
@@ -395,8 +429,7 @@ public sealed partial class ContentAudioSystem
             _lastGrid = newGrid;
             _currentlyPlaying = MusicType.Biome;
 
-            SoundCollectionPrototype soundcol = _proto.Index<SoundCollectionPrototype>(_musicProto.ID);
-            string path = _random.Pick(soundcol.PickFiles).ToString();
+            string path = PickAmbientTrack(_musicProto);
             PlayMusicTrack(path, _musicProto.Sound.Params.Volume, _ambientMusicFadeInTime, false);
             return;
         }
@@ -409,6 +442,22 @@ public sealed partial class ContentAudioSystem
 
         #endregion
     }
+
+    private string PickAmbientTrack(AmbientMusicPrototype music)
+    {
+        var soundCollection = _proto.Index<SoundCollectionPrototype>(music.ID);
+
+        if (music.ID == FtlAmbientMusicId)
+        {
+            _ftlAmbientTrack ??= _random.Pick(soundCollection.PickFiles).ToString();
+            return _ftlAmbientTrack;
+        }
+
+        return _random.Pick(soundCollection.PickFiles).ToString();
+    }
+
+    private static bool IsFtlBiome(ProtoId<SpaceBiomePrototype>? biome)
+        => biome is not null && biome.Value.Id == FtlAmbientMusicId;
 
 
     /// <summary>
@@ -427,11 +476,17 @@ public sealed partial class ContentAudioSystem
         {
             volume += _volumeSliderCombat;
             _replayAmbientMusicBool = false;
+            _replayAmbientMusicTimer = 0;
+            _replayCombatMusicBool = true;
+            _replayCombatMusicTimer = 0;
         }
         else
         {
             volume += _volumeSliderAmbient;
             _replayAmbientMusicBool = true;
+            _replayAmbientMusicTimer = 0;
+            _replayCombatMusicBool = false;
+            _replayCombatMusicTimer = 0;
         }
 
         var strim = _audio.PlayGlobal(

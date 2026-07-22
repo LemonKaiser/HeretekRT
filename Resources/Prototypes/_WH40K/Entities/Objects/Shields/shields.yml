@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseShield
+  parent: [WH40KDurableShield, BaseShield]
   id: WH40KImperialCombatShield
   suffix: WH40K
   components:
@@ -56,7 +56,7 @@
     price: 350
 
 - type: entity
-  parent: BaseShield
+  parent: [WH40KDurableShield, BaseShield]
   id: WH40KOrkShield
   suffix: WH40K
   components:

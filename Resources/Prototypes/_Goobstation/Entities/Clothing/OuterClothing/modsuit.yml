@@ -3,7 +3,7 @@
 
 - type: entity
   abstract: true
-  parent: [ ClothingOuterBase, AllowSuitStorageClothing, GeigerCounterClothing, ClothingArmorPlate ] # Mono - add geiger, armor plates
+  parent: [ BaseDurableHeavyArmor, ClothingOuterBase, AllowSuitStorageClothing, GeigerCounterClothing, ClothingArmorPlate ] # Mono - add geiger, armor plates
   id: ClothingModsuitChestplateBase
   name: modsuit chestplate
   description: A special modular suit spaceproof cover designed for compact folding inside modular suit control.
@@ -66,6 +66,7 @@
   - type: StaminaDamageResistance
     coefficient: 0.9
   - type: Armor
+    armorRating: 120
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -105,6 +106,7 @@
   - type: StaminaDamageResistance
     coefficient: 0.6
   - type: Armor
+    armorRating: 440
     modifiers:
       coefficients:
         Blunt: 0.50
@@ -156,6 +158,7 @@
   - type: StaminaDamageResistance
     coefficient: 0.7
   - type: Armor
+    armorRating: 560
     modifiers:
       coefficients:
         Blunt: 0.45
@@ -205,6 +208,7 @@
   - type: ExplosionResistance
     damageCoefficient: 1
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -246,6 +250,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.25 # Mono
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.8
@@ -287,6 +292,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.6
   - type: Armor
+    armorRating: 160
     modifiers:
       coefficients:
         Blunt: 0.8
@@ -328,6 +334,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.1
   - type: Armor
+    armorRating: 520
     modifiers:
       coefficients:
         Blunt: 0.35
@@ -370,6 +377,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.65

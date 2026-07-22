@@ -1,8 +1,10 @@
 - type: entity
-  parent: [ClothingHeadHelmetBasic, ShowMedicalIcons]
+  parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic, ShowMedicalIcons]
   id: ClothingHeadHelmetAstartesMk7
   suffix: WH40K, Astartes
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk7.rsi
   - type: Clothing
@@ -27,12 +29,19 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.75
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
         Heat: 0.85
+  - type: ItemDurability
+    maxDurability: 400
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 3
   - type: ExplosionResistance
     damageCoefficient: 0.8
   - type: HideLayerClothing
@@ -60,9 +69,11 @@
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk3.rsi
 
 - type: entity
-  parent: [ClothingHeadHelmetBasic, ShowMedicalIcons]
+  parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic, ShowMedicalIcons]
   id: ClothingHeadHelmetAstartesMk4
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk4.rsi
   - type: Clothing
@@ -93,11 +104,12 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.75
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8
@@ -126,10 +138,12 @@
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk6.rsi
 
 - type: entity
-  parent: ClothingHeadHelmetBasic
+  parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetAstartesChaos
   suffix: WH40K, Astartes, Chaos
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/Head/Helmets/astartes_chaos.rsi
   - type: Clothing
@@ -146,11 +160,12 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 320
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.75
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8

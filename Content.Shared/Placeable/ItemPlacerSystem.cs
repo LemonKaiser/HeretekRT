@@ -22,6 +22,34 @@ public sealed partial class ItemPlacerSystem : EntitySystem
         SubscribeLocalEvent<ItemPlacerComponent, EndCollideEvent>(OnEndCollide);
     }
 
+    public bool IsFull(EntityUid uid, ItemPlacerComponent? comp = null)
+    {
+        return Resolve(uid, ref comp, false) && comp.MaxEntities > 0 && comp.PlacedEntities.Count >= comp.MaxEntities;
+    }
+
+    public void SetMaxEntities(EntityUid uid, uint maxEntities, ItemPlacerComponent? comp = null)
+    {
+        if (!Resolve(uid, ref comp, false) || comp.MaxEntities == maxEntities)
+            return;
+
+        comp.MaxEntities = maxEntities;
+        Dirty(uid, comp);
+    }
+
+    public bool IsPlaced(EntityUid uid, EntityUid item, ItemPlacerComponent? comp = null)
+    {
+        return Resolve(uid, ref comp, false) && comp.PlacedEntities.Contains(item);
+    }
+
+    public IEnumerable<EntityUid> EnumeratePlaced(EntityUid uid, ItemPlacerComponent? comp = null)
+    {
+        if (!Resolve(uid, ref comp, false))
+            yield break;
+
+        foreach (var item in comp.PlacedEntities)
+            yield return item;
+    }
+
     private void OnStartCollide(EntityUid uid, ItemPlacerComponent comp, ref StartCollideEvent args)
     {
         if (_whitelistSystem.IsWhitelistFail(comp.Whitelist, args.OtherEntity))

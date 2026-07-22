@@ -21,6 +21,10 @@
       path: /Audio/Weapons/chainsaw.ogg
       params:
         volume: -3
+  - type: ItemDurability
+    maxDurability: 500
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
   - type: ItemToggle
     soundActivate:
       path: /Audio/Weapons/chainsawwield.ogg

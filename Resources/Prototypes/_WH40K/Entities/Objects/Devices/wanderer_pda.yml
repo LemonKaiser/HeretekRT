@@ -1,0 +1,43 @@
+- type: entity
+  parent: BasePDA
+  id: WandererPDA
+  name: wanderer PDA
+  description: A battered personal data assistant that has seen more roads than its owner remembers.
+  suffix: WH40K
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Pda
+    id: WandererIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        on
+  - type: Sprite
+    sprite: _WH40K/Objects/Devices/wanderer_pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: on
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: _WH40K/Objects/Devices/wanderer_pda.rsi
+    state: on
+  - type: PdaBorderColor
+    borderColor: "#717059"
+
+- type: entity
+  parent: PassengerIDCard
+  id: WandererIDCard
+  name: wanderer ID card
+  description: An identification card for a traveler without a fixed destination.
+  suffix: WH40K
+  components:
+  - type: PresetIdCard
+    job: Wanderer

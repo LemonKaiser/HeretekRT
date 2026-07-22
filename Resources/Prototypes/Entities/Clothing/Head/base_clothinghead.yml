@@ -142,6 +142,7 @@
 - type: entity
   abstract: true
   # No parent since we aren't actually an item.
+  parent: BaseDurableHeavyHelmet
   id: ClothingHeadHardsuitBase
   name: base hardsuit helmet
   categories: [ HideSpawnMenu ]
@@ -164,6 +165,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90

@@ -263,8 +263,23 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
 
         // Shitmed Change Start
         Dictionary<TargetBodyPart, TargetIntegrity>? body = null;
-        if (HasComp<TargetingComponent>(target))
+        TargetBodyPart? lastDamagedPart = null;
+        TargetBodyPart? selectedBodyPart = null;
+        DamageSpecifier? partDamage = null;
+        if (TryComp<TargetingComponent>(target, out var targeting))
+        {
             body = _bodySystem.GetBodyPartStatus(target);
+            lastDamagedPart = targeting.LastDamagedPart;
+        }
+
+        if (part is { } partUid &&
+            TryComp<BodyPartComponent>(partUid, out var bodyPart))
+        {
+            selectedBodyPart = _bodySystem.GetTargetBodyPart(bodyPart);
+
+            if (TryComp<DamageableComponent>(partUid, out var partDamageable))
+                partDamage = new DamageSpecifier(partDamageable.Damage);
+        }
         // Shitmed Change End
 
         if (TryComp<UnrevivableComponent>(target, out var unrevivableComp) && unrevivableComp.Analyzable)
@@ -283,7 +298,10 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             uncloneable, // Frontier
             // Shitmed Change
             body,
-            part != null ? GetNetEntity(part) : null
+            part != null ? GetNetEntity(part) : null,
+            lastDamagedPart,
+            selectedBodyPart,
+            partDamage
         ));
     }
 }

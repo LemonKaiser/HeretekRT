@@ -2,8 +2,30 @@
 armor-examinable-verb-text = Броня
 armor-examinable-verb-message = Изучить показатели брони.
 armor-examine = Обеспечивает следующую защиту:
-armor-coefficient-value = - [color=yellow]{ $type }[/color] урон снижается на [color=lightblue]{ $value }%[/color].
-armor-reduction-value = - [color=yellow]{ $type }[/color] урон снижается на [color=lightblue]{ $value }[/color].
+armor-rating-value = - Броня: [color=lightblue]{ $value }[/color] очк.
+armor-rating-protection-value = - Физическая защита (AP 0): [color=lightblue]{ $value }%[/color].
+armor-coverage-summary = - Покрытие: [color=lightblue]{ $parts }[/color].
+armor-resistance-value = - [color=yellow]{ $type }[/color]: −[color=lightblue]{ $value }% урона[/color].
+armor-vulnerability-value = - [color=yellow]{ $type }[/color]: +[color=orange]{ $value }% урона[/color].
+armor-immunity-value = - [color=yellow]{ $type }[/color]: [color=lightblue]иммунитет[/color].
+armor-reduction-value = - [color=yellow]{ $type }[/color]: −[color=lightblue]{ $value } ед. урона[/color].
+armor-coverage-part-all = всё тело
+armor-coverage-part-head = голова
+armor-coverage-part-torso = торс
+armor-coverage-part-groin = пах
+armor-coverage-part-arms = руки
+armor-coverage-part-left-arm = левая рука
+armor-coverage-part-right-arm = правая рука
+armor-coverage-part-hands = кисти
+armor-coverage-part-left-hand = левая кисть
+armor-coverage-part-right-hand = правая кисть
+armor-coverage-part-legs = ноги
+armor-coverage-part-left-leg = левая нога
+armor-coverage-part-right-leg = правая нога
+armor-coverage-part-feet = стопы
+armor-coverage-part-left-foot = левая стопа
+armor-coverage-part-right-foot = правая стопа
+armor-coverage-part-unknown = неуказанные части тела
 armor-damage-type-blunt = Ударный
 armor-damage-type-slash = Режущий
 armor-damage-type-piercing = Колющий

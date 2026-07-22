@@ -1,0 +1,23 @@
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackWanderer
+  name: старый рюкзак
+  description: Вместительный рюкзак, переживший больше переходов, чем его хозяин способен вспомнить. В нём найдётся место для припасов и найденных улик.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/wanderer_backpack.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/wanderer_backpack.rsi
+
+- type: entity
+  parent: ClothingBackpackSatchel
+  id: ClothingBackpackSatchelWanderer
+  name: старая сумка
+  description: Потёртая дорожная сумка, в которой каждая вещь лежит на своём месте — даже если её владелец уже не помнит, откуда она взялась.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/wanderer_satchel.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/wanderer_satchel.rsi

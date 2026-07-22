@@ -1,5 +1,5 @@
 - type: entity
-  parent: CombatKnife
+  parent: [WH40KDurableMeleeWeapon, CombatKnife]
   id: CatachanKnife
   suffix: WH40K, Catachan
   components:
@@ -20,7 +20,7 @@
     storedSprite: null
 
 - type: entity
-  parent: BaseSword
+  parent: [WH40KDurableMeleeWeapon, BaseSword]
   id: CatachanMachete
   suffix: WH40K, Catachan
   components:

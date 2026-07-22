@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingOuterBase
+  id: ClothingOuterCloakWanderer
+  name: старый плащ
+  description: Потёртый плащ, укрывающий от пустотного ветра и лишних вопросов. Его полы помнят больше миров, чем его владелец.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/wanderer.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/wanderer.rsi

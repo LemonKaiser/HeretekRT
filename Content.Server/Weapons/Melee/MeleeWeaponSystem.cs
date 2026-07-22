@@ -54,6 +54,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             return;
 
         _damageExamine.AddDamageExamine(args.Message, Damageable.ApplyUniversalAllModifiers(damageSpec), Loc.GetString("damage-melee"));
+        _damageExamine.AddArmorPenetrationExamine(args.Message, component.ArmorPenetration);
     }
 
     protected override bool ArcRaySuccessful(EntityUid targetUid,

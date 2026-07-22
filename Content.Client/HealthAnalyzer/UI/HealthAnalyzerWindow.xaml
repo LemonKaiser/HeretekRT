@@ -216,6 +216,12 @@
                                VerticalAlignment="Bottom"
                                StyleClasses="LabelSubText"
                                HorizontalAlignment="Left"/>
+                        <Label Name="PartHitLabel"
+                               VerticalAlignment="Bottom"
+                               StyleClasses="LabelSubText"
+                               FontColorOverride="#ff4d4d"
+                               HorizontalAlignment="Left"
+                               Visible="False"/>
                     <Label Margin="0 0 5 0"
                            HorizontalExpand="True"
                            HorizontalAlignment="Right"
@@ -251,6 +257,12 @@
                     <Label Text="{Loc 'health-analyzer-window-entity-damage-total-text'}"/>
                     <Label Name="DamageLabel"
                            FontColorOverride="#ff9100"/>
+                    <Label Name="LastHitCaption"
+                           Text="{Loc 'health-analyzer-window-last-hit-text'}"
+                           Visible="False"/>
+                    <Label Name="LastHitLabel"
+                           FontColorOverride="#ff9100"
+                           Visible="False"/>
                 </GridContainer>
                     </PanelContainer>
                 </PanelContainer>

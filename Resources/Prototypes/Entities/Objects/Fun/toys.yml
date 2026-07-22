@@ -1133,7 +1133,7 @@
 
 - type: entity
   abstract: true
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: FoamWeaponBase
   components:
   - type: Sprite
@@ -1174,7 +1174,7 @@
         ents: []
 
 - type: entity
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   id: ToyGunBase
   name: ToyGunBase
   description: A rooty tooty point and shooty.

@@ -648,6 +648,31 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.ToTable("dialogue_persistent_memory", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.GhostPermission", b =>
+                {
+                    b.Property<Guid>("PlayerUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("player_user_id");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("expires_at");
+
+                    b.Property<int>("RemainingUses")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("remaining_uses");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("PlayerUserId")
+                        .HasName("PK_ghost_permission");
+
+                    b.ToTable("ghost_permission", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {
                     b.Property<int>("Id")

@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableHeavyMeleeWeapon, BaseItem]
   id: WHHammerImperial
   suffix: WH40K
   components:
@@ -45,6 +45,16 @@
     stealGroup: FireAxe
   - type: IgniteOnMeleeHit
     fireStacks: -4
+  - type: Tool
+    qualities:
+    - Hammering
+    useSound:
+      collection: MetalThud
+  - type: ItemDurability
+    toolUseDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+  - type: ToolTileCompatible
   # Shitmed Change
 
 - type: entity
@@ -52,6 +62,8 @@
   id: WHOmnissianAxeBattle
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/omnissia_axe/omnisiahaxe_battle.rsi
     state: icon
@@ -64,6 +76,8 @@
   id: WHOmnissianAxe
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 5
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/omnissiah_axe.rsi
     state: icon
@@ -98,9 +112,14 @@
     enabled: false
   - type: Tool
     qualities:
-      - Screwing
+    - Screwing
     speedModifier: 3.0 # Omnissiah's blessing makes this the finest tool in the galaxy
     useSound: /Audio/Items/drill_use.ogg
+  - type: ItemDurability
+    maxDurability: 400
+    toolUseDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
   - type: ToolTileCompatible
 
 - type: entity

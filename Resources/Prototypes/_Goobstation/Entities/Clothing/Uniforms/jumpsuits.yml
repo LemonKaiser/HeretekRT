@@ -9,6 +9,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/navy_gold.rsi
   - type: Armor
+    armorRating: 240
     modifiers:
       coefficients:
         Blunt: 0.75
@@ -27,6 +28,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/specialoperations.rsi
   - type: Armor
+    armorRating: 280
     modifiers:
       coefficients:
         Blunt: 0.70
@@ -45,6 +47,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/diplomat.rsi
   - type: Armor
+    armorRating: 240
     modifiers:
       coefficients:
         Blunt: 0.75

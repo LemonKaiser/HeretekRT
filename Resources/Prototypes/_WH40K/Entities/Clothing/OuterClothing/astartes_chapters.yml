@@ -1,8 +1,10 @@
 - type: entity
-  parent: ClothingOuterArmorBasic
+  parent: [WH40KDurableAstartesArmor, ClothingOuterArmorBasic]
   id: ClothingOuterArmorAstartesMk7BlackTemplars
   suffix: WH40K, Astartes, Imperium, Black Templars
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk7_black_templars.rsi
   - type: Item
@@ -18,12 +20,13 @@
       outerClothing:
       - state: equipped-OUTERCLOTHING
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.35
-        Heat: 0.45
+        Blunt: 0.70
+        Slash: 0.70
+        Piercing: 0.80
+        Heat: 0.85
   - type: Reflect
     reflectProb: 0.1
   - type: PressureProtection
@@ -41,10 +44,12 @@
     whitelist:
     - Astartes
 - type: entity
-  parent: ClothingOuterArmorBasic
+  parent: [WH40KDurableAstartesArmor, ClothingOuterArmorBasic]
   id: ClothingOuterArmorAstartesMk7EmperorsChildren
   suffix: WH40K, Astartes, Chaos, Emperor's Children
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk7_emperors_children.rsi
   - type: Item
@@ -60,12 +65,13 @@
       outerClothing:
       - state: equipped-OUTERCLOTHING
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.35
-        Heat: 0.45
+        Blunt: 0.70
+        Slash: 0.70
+        Piercing: 0.80
+        Heat: 0.85
   - type: Reflect
     reflectProb: 0.1
   - type: PressureProtection

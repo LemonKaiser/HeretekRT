@@ -17,3 +17,7 @@
   - type: ClaimableGrid # Mono
   - type: DetectedAtRangeMultiplier # Mono
     visualBias: 1024
+  - type: SpaceBiomeSource
+    id: BiomeKoronusAsteroid
+    swapDistance: 40
+    priority: 3000

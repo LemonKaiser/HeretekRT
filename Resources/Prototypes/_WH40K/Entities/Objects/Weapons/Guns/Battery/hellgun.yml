@@ -1,6 +1,6 @@
 - type: entity
   id: WeaponHellgun
-  parent: [BaseItem, BaseGunWieldable]
+  parent: [WH40KDurableRangedWeapon, BaseItem, BaseGunWieldable]
   name: hellgun
   suffix: WH40K
   components:

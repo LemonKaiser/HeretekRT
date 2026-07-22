@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [BaseDurableMeleeTool, BaseItem]
   id: BaseSword
   abstract: true
   components:

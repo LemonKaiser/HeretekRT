@@ -99,6 +99,7 @@ public sealed partial class GunSystem
         };
 
         _damageExamine.AddDamageExamine(args.Message, Damageable.ApplyUniversalAllModifiers(damageSpec), damageType);
+        _damageExamine.AddArmorPenetrationExamine(args.Message, GetArmorPenetration(component));
     }
 
     private DamageSpecifier? GetDamage(BatteryAmmoProviderComponent component)
@@ -129,6 +130,29 @@ public sealed partial class GunSystem
         }
 
         return null;
+    }
+
+    private float GetArmorPenetration(BatteryAmmoProviderComponent component)
+    {
+        if (component is ProjectileBatteryAmmoProviderComponent projectile)
+        {
+            if (!ProtoManager.TryIndex<EntityPrototype>(projectile.Prototype, out var entityProto) ||
+                !entityProto.Components.TryGetValue(Factory.GetComponentName<ProjectileComponent>(), out var projectileRegistration))
+            {
+                return 0f;
+            }
+
+            return ((ProjectileComponent) projectileRegistration.Component).ArmorPenetration;
+        }
+
+        if (component is HitscanBatteryAmmoProviderComponent hitscan &&
+            ProtoManager.TryIndex<EntityPrototype>(hitscan.HitscanEntityProto, out var hitscanProto) &&
+            hitscanProto.TryGetComponent<HitscanBasicDamageComponent>(out var hitscanDamage, Factory))
+        {
+            return hitscanDamage.ArmorPenetration;
+        }
+
+        return 0f;
     }
 
     // Mono Start - Reduce charge in internal battery, reduce in power cell if not available

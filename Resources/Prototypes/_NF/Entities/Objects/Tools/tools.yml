@@ -1,6 +1,6 @@
 - type: entity
   name: maintenance jack
-  parent: BaseItem
+  parent: [BaseDurableHeavyMeleeTool, BaseItem]
   id: MaintenanceJack
   description: A mighty tool for ruling maints. Pries tile and plating, hammers, and can anchor. #Mono
   components:

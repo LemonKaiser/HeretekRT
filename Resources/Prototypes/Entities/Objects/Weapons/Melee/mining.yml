@@ -1,6 +1,6 @@
 - type: entity
   name: pickaxe
-  parent: [ BaseItem, RecyclableItemWoodMedium ] # Frontier: added RecyclableItemWoodMedium
+  parent: [ BaseDurableMeleeWeapon, BaseItem, RecyclableItemWoodMedium ] # Frontier: added RecyclableItemWoodMedium
   id: Pickaxe
   description: Notched to perfection, for jamming it into rocks.
   components:
@@ -42,7 +42,7 @@
 
 - type: entity
   name: mining drill
-  parent: BaseItem
+  parent: [BaseDurableHeavyMeleeWeapon, BaseItem]
   id: MiningDrill
   description: Powerful tool used to quickly drill through rocks.
   components:
@@ -95,7 +95,7 @@
 
 - type: entity
   abstract: true
-  parent: BaseItem
+  parent: [BaseDurableHeavyMeleeWeapon, BaseItem]
   id: BaseWeaponCrusher # Crusher? But I...
   name: crusher
   description: An early design of the proto-kinetic accelerator.
@@ -108,9 +108,15 @@
     radius: 4
 
 - type: entity
-  parent: BaseWeaponCrusher
+  parent: [BaseDurableHeavyHybridWeapon, BaseWeaponCrusher]
   id: WeaponCrusher
   components:
+  - type: ItemDurability
+    maxDurability: 500
+    shotDrain: 0.1
+    meleeDrain: 1
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
   - type: Tag
     tags:
     - Pickaxe

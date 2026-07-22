@@ -1,6 +1,6 @@
 - type: entity
   name: nanite applicator
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: NaniteApplicator
   description: "Advanced tool that uses nanotechnology to repair structures."
   components:

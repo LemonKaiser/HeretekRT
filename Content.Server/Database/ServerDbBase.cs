@@ -2089,6 +2089,68 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
 
         #endregion
 
+        #region Ghost Permissions
+
+        public async Task<GhostPermissionData?> GetGhostPermissionAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.GhostPermissions.SingleOrDefaultAsync(
+                permission => permission.PlayerUserId == userId.UserId,
+                cancel);
+
+            return entry == null
+                ? null
+                : new GhostPermissionData(entry.RemainingUses, entry.ExpiresAt);
+        }
+
+        public async Task SetGhostPermissionAsync(
+            NetUserId userId,
+            GhostPermissionData permission,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.GhostPermissions.SingleOrDefaultAsync(
+                existing => existing.PlayerUserId == userId.UserId,
+                cancel);
+
+            if (entry == null)
+            {
+                db.DbContext.GhostPermissions.Add(new GhostPermission
+                {
+                    PlayerUserId = userId.UserId,
+                    RemainingUses = permission.RemainingUses,
+                    ExpiresAt = permission.ExpiresAt,
+                    UpdatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                entry.RemainingUses = permission.RemainingUses;
+                entry.ExpiresAt = permission.ExpiresAt;
+                entry.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        public async Task RemoveGhostPermissionAsync(NetUserId userId, CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.GhostPermissions.SingleOrDefaultAsync(
+                permission => permission.PlayerUserId == userId.UserId,
+                cancel);
+
+            if (entry == null)
+                return;
+
+            db.DbContext.GhostPermissions.Remove(entry);
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        #endregion
+
         public abstract Task SendNotification(DatabaseNotification notification);
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.

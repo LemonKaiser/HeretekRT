@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingOuterBaseLarge
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge]
   id: ClothingOuterArmorSrCarapace
   name: "overseer's carapace"
   description: "A premium armored chest-piece that provides above average protection for its size. It offers maximum mobility and flexibility thanks to the premium composite materials."
@@ -9,6 +9,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Armor/sr_carapace.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.6
@@ -38,6 +39,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Bio/syndicate.rsi
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
         Slash: 1.2
@@ -53,7 +55,7 @@
     coefficient: 0.6
 
 - type: entity
-  parent: ClothingOuterBaseLarge
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge]
   id: ClothingOuterArmorNfsd
   name: TSFMC armor
   description: Get shot, maybe survive?
@@ -63,6 +65,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Armor/nfsd_armor.rsi
   - type: Armor
+    armorRating: 280
     modifiers:
       coefficients:
         Blunt: 0.7

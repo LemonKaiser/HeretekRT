@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRifle]
   id: WeaponRifleRadCarabin
   suffix: WH40K, АдМехи
   components:
@@ -55,7 +55,7 @@
   # - type: BigGun
 
 - type: entity
-  parent: [BaseWeaponRevolver, BaseGunWieldable]
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRevolver, BaseGunWieldable]
   id: WeaponRifleGalvanic
   suffix: WH40K, АдМехи
   components:

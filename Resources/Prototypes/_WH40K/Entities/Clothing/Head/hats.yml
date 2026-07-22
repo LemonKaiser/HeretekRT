@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingHeadBase
+  parent: [WH40KDurableHelmet, ClothingHeadBase]
   id: ClothingHeadCommissar
   suffix: WH40K
   components:
@@ -8,12 +8,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hats/commissar.rsi
   - type: Armor
+    armorRating: 60
     modifiers:
       coefficients:
-        Blunt: 0.90
+        Blunt: 0.95
         Slash: 0.90
-        Piercing: 0.90
-        Heat: 0.90
+        Piercing: 1.00
+        Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.7
 

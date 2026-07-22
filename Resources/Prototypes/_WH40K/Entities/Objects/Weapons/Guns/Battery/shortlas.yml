@@ -1,5 +1,5 @@
 - type: entity
-  parent: [BaseWeaponBattery, BaseGunWieldable]
+  parent: [WH40KDurableRangedWeapon, BaseWeaponBattery, BaseGunWieldable]
   id: WeaponHereticShortlas
   suffix: WH40K
   components:

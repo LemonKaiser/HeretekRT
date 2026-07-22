@@ -202,6 +202,7 @@
     baseWalkSpeed: 4.5
     baseSprintSpeed: 6
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.8
@@ -296,6 +297,7 @@
       buckleOffset: "0.15, -0.05"
       # maxBuckleDistance: 1 # Umbra - buckling fix
     - type: Armor
+      armorRating: 80
       modifiers:
         coefficients:
           Blunt: 0.8

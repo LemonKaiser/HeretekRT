@@ -11,6 +11,7 @@
   - type: Clothing
     sprite: _NF/Clothing/Head/Hoods/Coat/acid_raincoat.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.9

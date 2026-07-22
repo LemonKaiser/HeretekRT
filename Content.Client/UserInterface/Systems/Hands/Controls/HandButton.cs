@@ -10,6 +10,7 @@ public sealed class HandButton : SlotControl
     public HandButton(string handName, HandLocation handLocation)
     {
         HandLocation = handLocation;
+        DurabilityDisplay.HeldSlot = true;
         Name = "hand_" + handName;
         SlotName = handName;
         SetBackground(handLocation);

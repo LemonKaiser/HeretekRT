@@ -11,6 +11,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using Content.Server._NF.Worldgen.Components.Debris; // Frontier
+using Content.Shared.Durability.Events;
 
 namespace Content.Server.Worldgen.Systems.Debris;
 
@@ -233,6 +234,7 @@ public sealed partial class DebrisFeaturePlacerSystem : BaseWorldSystem
             }
 
             var ent = Spawn(debrisFeatureEv.DebrisProto, coords);
+            RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
             component.OwnedDebris.Add(point, ent);
 
             var owned = EnsureComp<OwnedDebrisComponent>(ent);

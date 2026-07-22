@@ -1,5 +1,5 @@
 - type: entity
-  parent: MiningDrill
+  parent: [WH40KDurableTool, MiningDrill]
   id: WH40KMiningDrillVoidpiercer
   name: Voidpiercer Drill
   description: A custom assault-pattern reskin of a mining drill. It chews through rock fast and sounds like it will eat a bunker next.

@@ -1,5 +1,5 @@
 - type: entity
-  parent: [BaseWeaponShotgun, BaseGunWieldable]
+  parent: [WH40KDurableRangedWeapon, BaseWeaponShotgun, BaseGunWieldable]
   id: WeaponStubShotgun
   suffix: WH40K, Общий
   components:

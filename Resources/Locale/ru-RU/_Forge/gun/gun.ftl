@@ -11,6 +11,12 @@ weapon-details-manufacturer-TechnicLogistic = TechnicLogistic
 gun-examinable-verb-text = Изучить характеристики
 gun-examinable-verb-message = Подробная характеристика
 gun-examine = Характеристики оружия:
+gun-examine-recoil = - [color={$color}]Отдача[/color]: [color=lightblue]{$value}°[/color] за выстрел
+gun-examine-stability = - [color={$color}]Стабилизация[/color]: [color=lightblue]{$value}°[/color] в секунду
+gun-examine-max-angle = - [color={$color}]Максимальный разброс[/color]: [color=lightblue]{$value}°[/color]
+gun-examine-min-angle = - [color={$color}]Минимальный разброс[/color]: [color=lightblue]{$value}°[/color]
+gun-examine-fire-rate = - [color={$color}]Скорострельность[/color]: [color=lightblue]{$value} выстр./с[/color]
+gun-examine-muzzle-velocity = - [color={$color}]Начальная скорость[/color]: [color=lightblue]{$value} м/с[/color]
 weapon-details-class-assault-rifle = Штурмовая винтовка
 weapon-details-class-launcher = Пусковая установка
 weapon-details-class-light-machine-gun = Лёгкий пулемет

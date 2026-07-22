@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponRifle
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRifle]
   id: WeaponStubLMG
   suffix: WH40K, Общий
   components:

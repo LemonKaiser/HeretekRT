@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseSword
+  parent: [WH40KDurableMeleeWeapon, BaseSword]
   id: WeaponMeleePilokosa
   suffix: WH40K
   components:

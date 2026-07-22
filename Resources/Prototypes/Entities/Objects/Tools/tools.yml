@@ -1,6 +1,6 @@
 - type: entity
   name: wirecutter
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: Wirecutter
   description: This kills the wire.
   components:
@@ -69,7 +69,7 @@
 
 - type: entity
   name: screwdriver
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: Screwdriver
   description: Industrial grade torque in a small screwdriving package.
   components:
@@ -130,7 +130,7 @@
 
 - type: entity
   name: wrench
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: Wrench
   description: 'A common tool for assembly and disassembly. Remember: lefty latchy, righty removey.'
   components:
@@ -184,7 +184,7 @@
 
 - type: entity
   name: multitool
-  parent: BaseItem
+  parent: [BaseDurableTool, BaseItem]
   id: Multitool
   description: An advanced tool to copy, store, and send electrical pulses and signals through wires and machines.
   components:
@@ -300,7 +300,7 @@
 #Later on these should switch probably switch damage when changing the tool behavior.
 - type: entity
   name: power drill
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: PowerDrill
   description: A simple powered hand drill.
   components:
@@ -533,7 +533,7 @@
 
 - type: entity
   name: omnitool
-  parent: BaseItem
+  parent: [BaseDurableTool, BaseItem]
   id: Omnitool
   description: A drone's best friend.
   components:
@@ -654,7 +654,7 @@
 #Other
 - type: entity
   name: shovel
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: Shovel
   description: A large tool for digging and moving dirt.
   components:
@@ -689,7 +689,7 @@
   - type: ToolTileCompatible # Frontier
 
 - type: entity
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: RollingPin
   name: rolling pin
   description: A tool used to shape and flatten dough.
@@ -724,3 +724,6 @@
   - type: Construction
     graph: WoodenRollingPin
     node: rollingpin
+  - type: ItemDurability
+    maxDurability: 400
+    repairMaterial: Cloth

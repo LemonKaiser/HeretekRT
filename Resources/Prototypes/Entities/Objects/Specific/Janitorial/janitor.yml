@@ -115,7 +115,7 @@
 - type: entity
   name: wet floor sign
   id: WetFloorSign
-  parent: ClothingOuterBase
+  parent: [BaseDurableArmor, ClothingOuterBase]
   description: Caution! Wet Floor!
   components:
   - type: Sprite
@@ -124,6 +124,7 @@
     sprite: Objects/Specific/Janitorial/wet_floor_sign.rsi
     size: Normal
   - type: Armor
+    armorRating: 10
     modifiers:
       coefficients:
         Blunt: 0.95

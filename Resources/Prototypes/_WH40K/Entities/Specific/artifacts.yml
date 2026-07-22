@@ -3,6 +3,8 @@
   id: WH40KArtifactSquare
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: Sprite
     sprite: _WH40K/Objects/Specific/artifact_square.rsi
     layers:
@@ -55,6 +57,8 @@
   id: WH40KArtifactTriangle
   suffix: WH40K
   components:
+  - type: ItemRarityRandom
+    maxTier: 6
   - type: Sprite
     sprite: _WH40K/Objects/Specific/artifact_triangle.rsi
     layers:

@@ -39,6 +39,7 @@
     equipDelay: 0.3
     unequipDelay: 0.3
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Poison: 0.3
@@ -66,6 +67,7 @@
     equipDelay: 0.3
     unequipDelay: 0.3
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Poison: 0.6

@@ -20,4 +20,4 @@
       types:
         Structural: 100
         Piercing: 45
-    armorPenetration: 0.1
+    armorPenetration: 20

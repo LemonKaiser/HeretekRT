@@ -1,0 +1,39 @@
+- type: job
+  id: Wanderer
+  name: job-name-wanderer
+  description: job-description-wanderer
+  playTimeTracker: JobWanderer
+  startingGear: WandererGear
+  icon: JobIconWanderer
+  supervisors: job-supervisors-wanderer
+  displayWeight: 35
+  setPreference: true
+  accessGroups:
+  - GeneralAccess
+
+- type: startingGear
+  id: WandererGear
+  equipment:
+    id: WandererPDA
+    jumpsuit: ClothingUniformJumpsuitWanderer
+    outerClothing: ClothingOuterCloakWanderer
+    back: ClothingBackpackSatchelWanderer
+    shoes: ClothingShoesBootsWanderer
+    ears: ClothingHeadsetWanderer
+    wallet: ClothingWalletLeatherBrown
+  storage:
+    back:
+    - BoxSurvivalMonoOxygenExtended
+    - FoodSnackImperialHardtack
+    - DrinkWaterBottleFull
+    wallet:
+    - SpaceCash250
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconWanderer
+  icon:
+    sprite: /Textures/_WH40K/Interface/Misc/job_icons.rsi
+    state: Wanderer
+  jobName: job-name-wanderer
+  allowSelection: false

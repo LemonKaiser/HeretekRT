@@ -194,7 +194,7 @@
 
 - type: entity
   name: EL-20 HAMRR
-  parent: BaseItem
+  parent: [BaseDurableHeavyRangedWeapon, BaseItem]
   id: WeaponLaserLMG
   description: A high-tech laser LMG, that draws power from specialized backpack.
   components:

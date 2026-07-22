@@ -3,7 +3,7 @@
 # Base
 
 - type: entity
-  parent: BaseItem
+  parent: [BaseDurableToolMelee, BaseItem]
   id: BaseToolSurgery
   abstract: true
   components:

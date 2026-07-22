@@ -33,6 +33,7 @@
   - type: StaticPrice
     price: 50000
   - type: Armor
+    armorRating: 560
     modifiers:
       coefficients:
         Blunt: 0.35

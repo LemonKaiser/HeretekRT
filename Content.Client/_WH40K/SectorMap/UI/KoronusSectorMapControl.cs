@@ -40,6 +40,7 @@ public sealed class KoronusSectorMapControl : Control
     private readonly Font _font;
     private readonly Font _labelFont;
     private readonly List<Vector2> _thickSegmentVertices = new(6);
+    private readonly KoronusCurrentSystemBeacon _currentSystemBeacon = new();
     private readonly Dictionary<string, KoronusSectorNodeState> _systemsById = new();
     private readonly Dictionary<string, string[]> _systemLabelLines = new();
     private readonly List<KoronusSectorNodeState> _orderedLabelNodes = new();
@@ -325,29 +326,7 @@ public sealed class KoronusSectorMapControl : Control
         Color color,
         float phase)
     {
-        var pulse = (MathF.Sin(phase * 2.7f) + 1f) * 0.5f;
-        var frameRadius = radius + 11f * UIScale;
-        var compassRadius = (frameRadius + 4f * UIScale) * 1.5f;
-        var signalRadius = compassRadius + (2f + pulse * 4f) * UIScale;
-        var compassAngle = GetCompassHeading();
-        var compassDirection = new Vector2(MathF.Cos(compassAngle), MathF.Sin(compassAngle));
-
-        // The selected system reads as a live astrolabe: a fixed four-point frame, a breathing signal ring,
-        // and a double compass needle that slowly settles on a new heading every few seconds.
-        handle.DrawCircle(position, signalRadius, color.WithAlpha((1f - pulse) * 0.16f), filled: false);
-        handle.DrawCircle(position, frameRadius + 4f * UIScale, color.WithAlpha(0.12f + pulse * 0.08f));
-        handle.DrawCircle(position, frameRadius + 2.2f * UIScale, Color.Black.WithAlpha(0.94f));
-        DrawBeaconWings(handle, position, radius + 2f * UIScale, frameRadius + 4f * UIScale, 3.0f * UIScale,
-            color.WithAlpha(0.82f));
-        handle.DrawCircle(position, frameRadius, color.WithAlpha(0.96f), filled: false);
-        DrawBeaconTicks(handle, position, frameRadius, color.WithAlpha(0.80f));
-
-        DrawCompassNeedle(handle, position, compassDirection, compassRadius, color);
-
-        handle.DrawCircle(position, radius + 2.4f * UIScale, Color.Black.WithAlpha(0.96f));
-        handle.DrawCircle(position, radius + 0.8f * UIScale, color.WithAlpha(0.96f), filled: false);
-        handle.DrawCircle(position, radius - 1.05f * UIScale, Color.FromHex("#191605"));
-        handle.DrawCircle(position, MathF.Max(1.55f * UIScale, radius * 0.38f), Color.InterpolateBetween(color, Color.White, 0.74f));
+        _currentSystemBeacon.Draw(handle, position, radius, color, phase, _animationTime, UIScale);
     }
 
     private float GetCurrentBeaconOuterRadius(float radius)
@@ -377,86 +356,6 @@ public sealed class KoronusSectorMapControl : Control
             _thickSegmentVertices.Add(basePoint - normal * halfWidth);
             handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, _thickSegmentVertices, color);
         }
-    }
-
-    private void DrawBeaconTicks(DrawingHandleScreen handle, Vector2 position, float radius, Color color)
-    {
-        for (var i = 0; i < 4; i++)
-        {
-            var angle = i * MathF.PI / 2f;
-            var direction = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
-            DrawThickSegment(
-                handle,
-                position + direction * (radius - 2f * UIScale),
-                position + direction * (radius + 2.5f * UIScale),
-                1.15f * UIScale,
-                color);
-        }
-    }
-
-    private void DrawCompassNeedle(
-        DrawingHandleScreen handle,
-        Vector2 position,
-        Vector2 direction,
-        float radius,
-        Color color)
-    {
-        var normal = new Vector2(-direction.Y, direction.X);
-        var needleLength = radius - 5f * UIScale;
-        DrawCompassNeedleHead(handle, position, direction, normal, needleLength, 3.75f * UIScale, Color.Black.WithAlpha(0.94f));
-        DrawCompassNeedleHead(handle, position, -direction, -normal, needleLength, 3.2f * UIScale, Color.Black.WithAlpha(0.94f));
-        DrawCompassNeedleHead(handle, position, direction, normal, needleLength, 2.48f * UIScale,
-            Color.InterpolateBetween(color, Color.White, 0.54f));
-        DrawCompassNeedleHead(handle, position, -direction, -normal, needleLength, 2.03f * UIScale,
-            color.WithAlpha(0.72f));
-    }
-
-    private void DrawCompassNeedleHead(
-        DrawingHandleScreen handle,
-        Vector2 position,
-        Vector2 direction,
-        Vector2 normal,
-        float length,
-        float halfWidth,
-        Color color)
-    {
-        var baseCenter = position + direction * (1.5f * UIScale);
-
-        _thickSegmentVertices.Clear();
-        _thickSegmentVertices.Add(baseCenter + normal * halfWidth);
-        _thickSegmentVertices.Add(position + direction * length);
-        _thickSegmentVertices.Add(baseCenter - normal * halfWidth);
-        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, _thickSegmentVertices, color);
-    }
-
-    private float GetCompassHeading()
-    {
-        const float headingInterval = 5f;
-        const float turnDuration = 1.25f;
-        var currentInterval = (int) MathF.Floor(_animationTime / headingInterval);
-        var intervalProgress = _animationTime % headingInterval;
-        var turnProgress = Math.Clamp(intervalProgress / turnDuration, 0f, 1f);
-        turnProgress = turnProgress * turnProgress * (3f - 2f * turnProgress);
-        return LerpAngle(GetCompassHeadingForInterval(currentInterval - 1),
-            GetCompassHeadingForInterval(currentInterval), turnProgress);
-    }
-
-    private static float GetCompassHeadingForInterval(int interval)
-    {
-        uint value = unchecked((uint) interval) * 747796405u + 2891336453u;
-        value = (value >> ((int) (value >> 28) + 4)) ^ value;
-        value *= 277803737u;
-        value = (value >> 22) ^ value;
-        return (value & 0xFFFF) / 65535f * MathF.PI * 2f;
-    }
-
-    private static float LerpAngle(float from, float to, float amount)
-    {
-        var delta = (to - from + MathF.PI) % (MathF.PI * 2f);
-        if (delta < 0f)
-            delta += MathF.PI * 2f;
-
-        return from + (delta - MathF.PI) * amount;
     }
 
     private static float GetNodePhase(string id)

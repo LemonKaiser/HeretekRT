@@ -107,6 +107,10 @@ public sealed partial class ProjectileComponent : Component
     public bool NoDamageDelete = true;
 
     // Goobstation Start
+    /// <summary>
+    ///     Flat armor points ignored by this projectile. Positive values reduce the target's ArmorRating;
+    ///     negative values make the target effectively more resistant.
+    /// </summary>
     [DataField]
     public float ArmorPenetration;
     // Goobstation End

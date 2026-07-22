@@ -13,6 +13,7 @@
     highPressureMultiplier: 0.02
     lowPressureMultiplier: 1000
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9

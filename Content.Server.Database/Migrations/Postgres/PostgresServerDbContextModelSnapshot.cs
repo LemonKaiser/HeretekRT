@@ -684,6 +684,31 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("dialogue_persistent_memory", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.GhostPermission", b =>
+                {
+                    b.Property<Guid>("PlayerUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_user_id");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<int>("RemainingUses")
+                        .HasColumnType("integer")
+                        .HasColumnName("remaining_uses");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("PlayerUserId")
+                        .HasName("PK_ghost_permission");
+
+                    b.ToTable("ghost_permission", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {
                     b.Property<int>("Id")

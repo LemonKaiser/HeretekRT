@@ -141,7 +141,7 @@
     - Hair
 
 - type: entity
-  parent: ClothingHeadBase
+  parent: [BaseDurableMask, ClothingHeadBase]
   id: ClothingHeadHatHoodRad
   name: radiation hood
   description: A hood of the hazmat suit, designed for protection from high radioactivity.
@@ -151,6 +151,7 @@
   - type: Clothing
     sprite: Clothing/Head/Hoods/rad.rsi
   - type: Armor
+    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95

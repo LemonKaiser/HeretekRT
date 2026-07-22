@@ -1,7 +1,7 @@
 - type: entity
   id: WH40KWeaponPsykerForceStaffBase
   abstract: true
-  parent: WeaponStaffBase
+  parent: [WH40KDurableHeavyRangedWeapon, WeaponStaffBase]
   components:
   - type: Sprite
     state: icon

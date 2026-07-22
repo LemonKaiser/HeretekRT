@@ -11,6 +11,7 @@ namespace Content.Client.Voting.UI
     public sealed partial class VoteCallMenuButton : Button
     {
         [Dependency] private IVoteManager _voteManager = default!;
+        private VoteCallMenu? _menu;
 
         public VoteCallMenuButton()
         {
@@ -22,8 +23,20 @@ namespace Content.Client.Voting.UI
 
         private void OnOnPressed(ButtonEventArgs obj)
         {
-            var menu = new VoteCallMenu();
-            menu.OpenCentered();
+            if (_menu is { Disposed: false })
+            {
+                if (_menu.IsOpen)
+                {
+                    _menu.Close();
+                    return;
+                }
+            }
+            else
+            {
+                _menu = new VoteCallMenu();
+            }
+
+            _menu.OpenCentered();
         }
 
         protected override void EnteredTree()
@@ -31,7 +44,7 @@ namespace Content.Client.Voting.UI
             base.EnteredTree();
 
             UpdateCanCall(_voteManager.CanCallVote);
-            _voteManager.CanCallVoteChanged += UpdateCanCall;
+            _voteManager.CanCallVoteChanged -= UpdateCanCall;
         }
 
         protected override void ExitedTree()

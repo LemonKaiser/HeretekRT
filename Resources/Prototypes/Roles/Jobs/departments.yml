@@ -30,10 +30,7 @@
   # - Visitor # Frontier
   # - Zookeeper # Frontier
   # - ServiceWorker # Frontier
-  - Contractor # Frontier
-  - Mercenary # Frontier
-  - Pilot # Frontier
-  - Borg # Frontier
+  - Wanderer
 
 - type: department
   id: CentralCommand
@@ -82,6 +79,7 @@
   - DirectorOfCare # Mono
   primary: false
   weight: 100
+  editorHidden: true
 
 - type: department
   id: Engineering
@@ -101,6 +99,7 @@
   roles: # Mono
   - DirectorOfCare # Mono
   - MdMedic # Mono
+  editorHidden: true
 
 - type: department
   id: Security
@@ -127,6 +126,7 @@
   - TsfEngineer # Mono
   - TsfMarsoc # Mono
   - TsfBorg # Mono
+  editorHidden: true
 
 - type: department
   id: Science

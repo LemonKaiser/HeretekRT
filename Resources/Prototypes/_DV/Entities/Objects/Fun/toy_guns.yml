@@ -1,6 +1,6 @@
 - type: entity
   name: BB Gun
-  parent: [BaseItem, BaseGunWieldable] # Frontier
+  parent: [BaseDurableRangedWeapon, BaseItem, BaseGunWieldable] # Frontier
   id: WeaponRifleBB
   description: The classic Red Ryder BB gun. Don't shoot your eye out.
   components:

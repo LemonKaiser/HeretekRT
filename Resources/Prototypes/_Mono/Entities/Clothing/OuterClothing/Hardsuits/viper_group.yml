@@ -16,6 +16,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.67
@@ -63,6 +64,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.75
   - type: Armor
+    armorRating: 528
     modifiers:
       coefficients:
         Blunt: 0.67
@@ -110,6 +112,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.4
   - type: Armor
+    armorRating: 528
     modifiers:
       coefficients:
         Blunt: 0.6
@@ -157,6 +160,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
+    armorRating: 264
     modifiers:
       coefficients:
         Blunt: 0.8

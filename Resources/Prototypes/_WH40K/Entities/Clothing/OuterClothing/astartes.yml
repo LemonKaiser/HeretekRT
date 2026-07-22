@@ -3,6 +3,8 @@
   id: ClothingOuterArmorAstartesMk7
   suffix: WH40K, Astartes
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk7.rsi
   - type: Item
@@ -18,12 +20,18 @@
       outerClothing:
       - state: equipped-OUTERCLOTHING
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.35
-        Heat: 0.45
+        Blunt: 0.70
+        Slash: 0.70
+        Piercing: 0.80
+        Heat: 0.85
+  - type: ItemDurability
+    maxDurability: 800
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 3
   - type: Reflect
     reflectProb: 0.1
   - type: PressureProtection
@@ -59,21 +67,24 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk3.rsi
 
 - type: entity
-  parent: ClothingOuterArmorBasic
+  parent: [WH40KDurableAstartesArmor, ClothingOuterArmorBasic]
   id: ClothingOuterArmorAstartesMk4A
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk4a.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk4a.rsi
     stripDelay: 34
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.35
-        Heat: 0.45
+        Blunt: 0.70
+        Slash: 0.70
+        Piercing: 0.80
+        Heat: 0.85
   - type: Reflect
     reflectProb: 0.1
   - type: PressureProtection
@@ -118,22 +129,25 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk6.rsi
 
 - type: entity
-  parent: ClothingOuterArmorBasic
+  parent: [WH40KDurableAstartesArmor, ClothingOuterArmorBasic]
   id: ClothingOuterArmorAstartesChaos
   suffix: WH40K, Astartes, Chaos
   components:
+  - type: ItemRarityRandom
+    maxTier: 4
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_chaos.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_chaos.rsi
     stripDelay: 34
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.35
-        Heat: 0.45
+        Blunt: 0.70
+        Slash: 0.70
+        Piercing: 0.80
+        Heat: 0.85
   - type: Reflect
     reflectProb: 0.1
   - type: PressureProtection

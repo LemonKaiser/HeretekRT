@@ -16,3 +16,13 @@
     VignetteStrength: 0.22
     FlickerStrength: 0.010
     PhosphorStrength: 0.48
+
+- type: shader
+  id: ItemRarityWorldGlow
+  kind: source
+  path: "/Textures/_WH40K/Shaders/item_rarity_glow.swsl"
+
+- type: shader
+  id: HeretekDeathTransition
+  kind: source
+  path: "/Textures/_WH40K/Shaders/death_transition.swsl"

@@ -3,7 +3,7 @@
 
 #Basic armor vest for inheritance
 - type: entity
-  parent: [RecyclableItemClothArmor, ClothingOuterBaseMedium, AllowSuitStorageClothing] # added RecyclableItemClothArmor
+  parent: [BaseDurableArmor, RecyclableItemClothArmor, ClothingOuterBaseMedium, AllowSuitStorageClothing] # added RecyclableItemClothArmor
   id: ClothingOuterArmorBase
   name: armor vest
   abstract: true
@@ -14,6 +14,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/security.rsi
   - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+    armorRating: 320
     modifiers:
       coefficients:
         Blunt: 0.60 # Mono 0.7>0.6
@@ -49,7 +50,7 @@
     sprite: Clothing/OuterClothing/Armor/security_slim.rsi
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing]
   id: ClothingOuterArmorRiot
   name: riot suit
   description: A suit of semi-flexible polycarbonate body armor with heavy padding to protect against melee attacks. Perfect for fighting delinquents around the station.
@@ -59,6 +60,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/riot.rsi
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.4
@@ -86,6 +88,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/bulletproof.rsi
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -111,6 +114,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/armor_reflec.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -125,7 +129,7 @@
     coefficient: 0.5
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing ]
   id: ClothingOuterArmorRaid
   name: syndicate raid suit
   description: A somewhat flexible and well-armored suit with a powerful shoulder mounted flashlight manufactured in the Gorlex Marauder's iconic blood-red color scheme, it does not protect its wearer from space.
@@ -140,6 +144,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/syndie-raid.rsi
   - type: Armor
+    armorRating: 520
     modifiers:
       coefficients:
         Blunt: 0.35
@@ -208,7 +213,7 @@
     - Kevlar
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing]
   id: ClothingOuterArmorCult
   name: acolyte armor
   description: An evil-looking piece of cult armor, made of bones.
@@ -218,6 +223,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/cult_armour.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.5
@@ -229,7 +235,7 @@
     coefficient: 0.2
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing]
   id: ClothingOuterArmorHeavy
   name: heavy armor suit
   description: A heavily armored suit that protects against excessive damage.
@@ -239,6 +245,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/heavy.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.6
@@ -299,7 +306,7 @@
     sprite: Clothing/OuterClothing/Armor/magusred.rsi
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]
+  parent: [BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing]
   id: ClothingOuterArmorCaptainCarapace
   name: "captain's carapace"
   description: "An armored chestpiece that provides protection whilst still offering maximum mobility and flexibility. Issued only to the captains of luxury vessels." # Frontier
@@ -309,6 +316,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.5
@@ -329,7 +337,7 @@
     - Kevlar
 
 - type: entity
-  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  parent: [ BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing ]
   id: ClothingOuterArmorChangeling
   name: chitinous armor
   description: Inflates the changeling's body into an all-consuming chitinous mass of armor.
@@ -339,6 +347,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.5
@@ -359,7 +368,7 @@
     coefficient: 0.8 # i mean, if the batong is electrical or whatever, and this is just hardened skin, it would probably still go through?
 
 - type: entity
-  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  parent: [ BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing ]
   id: ClothingOuterArmorBone
   name: bone armor
   description: Sits on you like a second skin.
@@ -369,6 +378,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/bone_armor.rsi
   - type: Armor
+    armorRating: 480
     modifiers:
       coefficients:
         Blunt: 0.6
@@ -389,7 +399,7 @@
     coefficient: 0.7
 
 - type: entity
-  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  parent: [ BaseDurableHeavyArmor, ClothingOuterBaseLarge, AllowSuitStorageClothing ]
   id: ClothingOuterArmorPodWars
   name: ironclad II armor
   description: A repurposed suit of ironclad II armor, a relic of the pod wars.
@@ -399,6 +409,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/podwars_armor.rsi
   - type: Armor
+    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.5

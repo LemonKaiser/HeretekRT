@@ -1,0 +1,10 @@
+light_mode unshaded;
+
+void fragment() {
+    // Один непрерывный материал затемняет арт без стыков между UI-прямоугольниками.
+    highp vec2 uv = clamp(UV, vec2(0.0), vec2(1.0));
+    highp float deckShade = 1.0 - smoothstep(0.10, 0.82, uv.x);
+    highp float vignette = smoothstep(0.22, 1.02, length((uv - vec2(0.56, 0.48)) * vec2(0.96, 0.76)));
+    highp float alpha = clamp(0.23 + deckShade * 0.75 + vignette * 0.18, 0.0, 0.92);
+    COLOR = vec4(vec3(0.031, 0.027, 0.020), alpha);
+}

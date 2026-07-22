@@ -43,7 +43,7 @@
 - type: soundCollection
   id: BiomeDefault
   files:
-   - /Audio/_Crescent/Ambient/InnerRing/inner_ring_1.ogg
+   - /Audio/_WH40K/Ambient/Koronus/space.ogg
 
 # HARDCODED - FTL
 - type: ambientMusic
@@ -54,7 +54,8 @@
 - type: soundCollection
   id: BiomeFTL
   files:
-    - /Audio/_Crescent/Ambient/FTL/ftl_1.ogg
+    - /Audio/_WH40K/Ambient/Koronus/ftl_1.ogg
+    - /Audio/_WH40K/Ambient/Koronus/ftl_2.ogg
 
 # HARDCODED - EXPEDITION
 - type: ambientMusic
@@ -79,8 +80,10 @@
 - type: soundCollection
   id: CombatModeDefault
   files:
-    - /Audio/_Crescent/CombatMode/default_1.ogg
-    - /Audio/_Crescent/CombatMode/default_2.ogg
+    - /Audio/_WH40K/Ambient/Koronus/combat_1.ogg
+    - /Audio/_WH40K/Ambient/Koronus/combat_2.ogg
+    - /Audio/_WH40K/Ambient/Koronus/combat_3.ogg
+    - /Audio/_WH40K/Ambient/Koronus/combat_4.ogg
 
 ## FACTION COMBAT MUSIC TRACKS
 ## ID MUST BE "combatmode<FACTION>"!

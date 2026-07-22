@@ -1,7 +1,7 @@
 ﻿- type: entity
   id: WeaponStasisGunBase
   abstract: true
-  parent: BaseItem
+  parent: [BaseDurableRangedWeapon, BaseItem]
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/ChronoLegionnaire/stasisgun.rsi

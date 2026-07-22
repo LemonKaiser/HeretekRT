@@ -1,0 +1,12 @@
+light_mode unshaded;
+
+uniform highp float Opacity;
+uniform highp float ShadowFraction;
+
+void fragment() {
+    highp float fraction = max(ShadowFraction, 0.0001);
+    highp float progress = clamp(UV.x / fraction, 0.0, 1.0);
+    highp float trailingEdge = 1.0 - smoothstep(fraction, min(fraction + 0.002, 1.0), UV.x);
+    highp float alpha = Opacity * 0.38 * progress * progress * trailingEdge;
+    COLOR = vec4(0.0, 0.0, 0.0, alpha);
+}

@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/15/2026 00:00:00
-  entityCount: 303
+  entityCount: 304
 maps: []
 grids:
 - 1
@@ -26,7 +26,7 @@ entities:
     # PlanetSystem deliberately has none of these components and remains fully destructible.
     - type: KoronusSafetyZone
       profile: KoronusStationSafeZone
-      radius: 15
+      radius: 22.5
       showBoundary: true
     - type: ProtectedGrid
       preventFloorRemoval: true
@@ -674,3 +674,10 @@ entities:
       locked: true
     - type: ApcPowerReceiver
       needsPower: false
+- proto: BiomeSourceKoronusPlanet
+  entities:
+  - uid: 304
+    components:
+    - type: Transform
+      pos: 0,0
+      parent: 1

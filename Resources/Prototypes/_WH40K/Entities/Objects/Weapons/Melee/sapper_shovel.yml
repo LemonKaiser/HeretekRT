@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: [WH40KDurableMeleeWeapon, BaseItem]
   id: WHSapperShovel
   name: sapper shovel
   description: A sharpened entrenching shovel meant for trench work, breaching earthworks, and brutal close-quarters fighting.

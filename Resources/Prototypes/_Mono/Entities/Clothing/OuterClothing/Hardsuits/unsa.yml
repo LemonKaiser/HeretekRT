@@ -16,6 +16,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: Armor
+    armorRating: 280
     modifiers:
       coefficients:
         Blunt: 0.9

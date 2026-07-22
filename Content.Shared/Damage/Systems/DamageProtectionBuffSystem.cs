@@ -14,7 +14,6 @@ public sealed class DamageProtectionBuffSystem : EntitySystem
     private void OnDamageModify(EntityUid uid, DamageProtectionBuffComponent component, DamageModifyEvent args)
     {
         foreach (var modifier in component.Modifiers.Values)
-            args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage,
-                DamageSpecifier.PenetrateArmor(modifier, args.ArmorPenetration)); // Goob edit
+            args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modifier);
     }
 }

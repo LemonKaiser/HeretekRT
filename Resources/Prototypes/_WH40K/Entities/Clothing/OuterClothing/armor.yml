@@ -10,12 +10,18 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest.rsi
   - type: Appearance
   - type: Armor
+    armorRating: 100
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.6
-        Heat: 0.6
+        Blunt: 0.95
+        Slash: 0.90
+        Piercing: 1.05
+        Heat: 1.10
+  - type: ItemDurability
+    maxDurability: 360
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
   - type: ExplosionResistance
     damageCoefficient: 0.6
   - type: ClothingSpeedModifier
@@ -75,12 +81,18 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight.rsi
   - type: Armor
+    armorRating: 80
     modifiers:
       coefficients:
-        Blunt: 0.65
-        Slash: 0.65
-        Piercing: 0.6
-        Heat: 0.7
+        Blunt: 1.00
+        Slash: 0.95
+        Piercing: 1.05
+        Heat: 1.15
+  - type: ItemDurability
+    maxDurability: 240
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
   - type: ExplosionResistance
     damageCoefficient: 0.7
 
@@ -148,12 +160,18 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadv.rsi
   - type: Armor
+    armorRating: 240
     modifiers:
       coefficients:
-        Blunt: 0.4
-        Slash: 0.4
-        Piercing: 0.45
-        Heat: 0.35
+        Blunt: 0.90
+        Slash: 0.85
+        Piercing: 0.95
+        Heat: 1.05
+  - type: ItemDurability
+    maxDurability: 480
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
   - type: ExplosionResistance
     damageCoefficient: 0.4
 
@@ -168,12 +186,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestgen.rsi
   - type: Armor
+    armorRating: 280
     modifiers:
       coefficients:
-        Blunt: 0.35
-        Slash: 0.35
-        Piercing: 0.35
-        Heat: 0.35
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
+        Heat: 0.95
   - type: ExplosionResistance
     damageCoefficient: 0.6
 
@@ -300,12 +319,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_cardinal.rsi
   - type: Armor
+    armorRating: 340
     modifiers:
       coefficients:
-        Blunt: 0.30
-        Slash: 0.30
-        Piercing: 0.30
-        Heat: 0.30
+        Blunt: 0.80
+        Slash: 0.80
+        Piercing: 0.85
+        Heat: 0.90
   - type: ExplosionResistance
     damageCoefficient: 0.55
 
@@ -339,12 +359,13 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
   - type: Armor
+    armorRating: 260
     modifiers:
       coefficients:
-        Blunt: 0.4
-        Slash: 0.4
-        Piercing: 0.4
-        Heat: 0.4
+        Blunt: 0.85
+        Slash: 0.80
+        Piercing: 0.90
+        Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.4
   - type: ClothingSpeedModifier
@@ -478,11 +499,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_old.rsi
   - type: Armor
+    armorRating: 48
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.8
-        Piercing: 0.8
-        Heat: 0.8
+        Blunt: 1.00
+        Slash: 0.95
+        Piercing: 1.10
+        Heat: 1.15
   - type: ExplosionResistance
     damageCoefficient: 0.8

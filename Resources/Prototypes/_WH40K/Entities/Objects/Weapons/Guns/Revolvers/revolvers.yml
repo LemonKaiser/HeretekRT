@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseWeaponRevolver
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRevolver]
   id: WeaponRevolverPhosphorBlast
   suffix: WH40K, АдМехи
   components:
@@ -79,7 +79,7 @@
     sprite: _WH40K/Objects/Weapons/Guns/Pistol/electricarc_chs.rsi
 
 - type: entity
-  parent: BaseWeaponRevolver
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRevolver]
   id: WeaponStubRevolver
   suffix: WH40K
   components:
@@ -104,7 +104,7 @@
     proto: Cartridge11mm
 
 - type: entity
-  parent: BaseWeaponRevolver
+  parent: [WH40KDurableRangedWeapon, BaseWeaponRevolver]
   id: WeaponRevolverPhosphorSerpenta
   suffix: WH40K, АдМехи
   components:

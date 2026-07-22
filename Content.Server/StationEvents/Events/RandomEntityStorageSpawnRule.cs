@@ -3,6 +3,7 @@ using Content.Server.StationEvents.Components;
 using Content.Server.Storage.Components;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Durability.Events;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 
@@ -21,6 +22,7 @@ public sealed partial class RandomEntityStorageSpawnRule : StationEventSystem<Ra
 
         var validLockers = new List<(EntityUid, EntityStorageComponent)>();
         var spawn = Spawn(comp.Prototype, MapCoordinates.Nullspace);
+        RaiseLocalEvent(spawn, new RandomLootSpawnedEvent());
 
         var query = EntityQueryEnumerator<EntityStorageComponent, TransformComponent>();
         while (query.MoveNext(out var ent, out var storage, out var xform))

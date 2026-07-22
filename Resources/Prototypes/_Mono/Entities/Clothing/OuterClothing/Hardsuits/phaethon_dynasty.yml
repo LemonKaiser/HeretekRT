@@ -16,6 +16,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.45
   - type: Armor
+    armorRating: 360
     modifiers:
       coefficients:
         Blunt: 0.65
@@ -85,6 +86,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.75
   - type: Armor
+    armorRating: 528
     modifiers:
       coefficients:
         Blunt: 0.67
@@ -159,6 +161,7 @@
   - type: FireProtection
     reduction: 0.8
   - type: Armor # Mono - Armor Value Changes
+    armorRating: 240
     modifiers:
       coefficients:
         Blunt: 0.75
@@ -231,6 +234,7 @@
   - type: FireProtection
     reduction: 0.8
   - type: Armor
+    armorRating: 500
     modifiers:
       coefficients:
         Blunt: 0.55
