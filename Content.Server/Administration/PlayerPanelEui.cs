@@ -3,12 +3,15 @@ using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Notes;
 using Content.Server.Administration.Systems;
+using Content.Server._WH40K.Administration.ScreenCheck;
 using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Shared.Administration;
+using Content.Shared._WH40K.Administration.ScreenCheck;
 using Content.Shared.Database;
 using Content.Shared.Eui;
 using Robust.Server.Player;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 
 namespace Content.Server.Administration;
@@ -22,6 +25,7 @@ public sealed partial class PlayerPanelEui : BaseEui
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private ScreenCheckManager _screenChecks = default!;
 
     private readonly LocatedPlayerData _targetPlayer;
     private int? _notes;
@@ -33,6 +37,8 @@ public sealed partial class PlayerPanelEui : BaseEui
     private bool _frozen;
     private bool _canFreeze;
     private bool _canAhelp;
+    private bool _canScreenCheck;
+    private ScreenCheckTargetSnapshot _screenCheckSnapshot;
 
     public PlayerPanelEui(LocatedPlayerData player)
     {
@@ -44,12 +50,14 @@ public sealed partial class PlayerPanelEui : BaseEui
     {
         base.Opened();
         _admins.OnPermsChanged += OnPermsChanged;
+        _screenChecks.TargetStateChanged += OnScreenCheckStateChanged;
     }
 
     public override void Closed()
     {
         base.Closed();
         _admins.OnPermsChanged -= OnPermsChanged;
+        _screenChecks.TargetStateChanged -= OnScreenCheckStateChanged;
     }
 
     public override EuiStateBase GetNewState()
@@ -64,7 +72,15 @@ public sealed partial class PlayerPanelEui : BaseEui
             _whitelisted,
             _canFreeze,
             _frozen,
-            _canAhelp);
+            _canAhelp,
+            _canScreenCheck,
+            _screenCheckSnapshot.HasActiveRequest,
+            _screenCheckSnapshot.ActiveAdminName ?? string.Empty,
+            _screenCheckSnapshot.ActiveSinceUtc,
+            _screenCheckSnapshot.HasLastResult,
+            _screenCheckSnapshot.LastAdminName ?? string.Empty,
+            _screenCheckSnapshot.LastUpdatedUtc,
+            _screenCheckSnapshot.LastStatus);
     }
 
     private void OnPermsChanged(AdminPermsChangedEventArgs args)
@@ -73,6 +89,15 @@ public sealed partial class PlayerPanelEui : BaseEui
             return;
 
         SetPlayerState();
+    }
+
+    private void OnScreenCheckStateChanged(NetUserId targetUserId)
+    {
+        if (targetUserId != _targetPlayer.UserId)
+            return;
+
+        _screenCheckSnapshot = _screenChecks.GetTargetSnapshot(_targetPlayer.UserId);
+        StateDirty();
     }
 
     public override void HandleMessage(EuiMessageBase msg)
@@ -120,6 +145,13 @@ public sealed partial class PlayerPanelEui : BaseEui
                 _eui.OpenEui(ui, Player);
                 ui.SetLogFilter(search: _targetPlayer.Username);
                 break;
+            case PlayerPanelScreenCheckMessage:
+                if (!_admins.HasAdminFlag(Player, AdminFlags.Moderator) ||
+                    !_player.TryGetSessionById(_targetPlayer.UserId, out session))
+                    return;
+
+                _screenChecks.StartScreenCheck(Player, session);
+                break;
             case PlayerPanelDeleteMessage:
             case PlayerPanelRejuvenationMessage:
                 if (!_admins.HasAdminFlag(Player, AdminFlags.Debug) ||
@@ -151,6 +183,8 @@ public sealed partial class PlayerPanelEui : BaseEui
             Close();
             return;
         }
+
+        _screenCheckSnapshot = _screenChecks.GetTargetSnapshot(_targetPlayer.UserId);
 
         _playtime = (await _db.GetPlayTimes(_targetPlayer.UserId))
             .Where(p => p.Tracker == "Overall")
@@ -190,10 +224,12 @@ public sealed partial class PlayerPanelEui : BaseEui
         {
             _canFreeze = session.AttachedEntity != null;
             _frozen = _entity.HasComponent<AdminFrozenComponent>(session.AttachedEntity);
+            _canScreenCheck = _admins.HasAdminFlag(Player, AdminFlags.Moderator);
         }
         else
         {
             _canFreeze = false;
+            _canScreenCheck = false;
         }
 
         if (_admins.HasAdminFlag(Player, AdminFlags.Adminhelp))

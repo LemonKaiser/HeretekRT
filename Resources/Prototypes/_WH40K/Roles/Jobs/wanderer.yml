@@ -37,3 +37,12 @@
     state: Wanderer
   jobName: job-name-wanderer
   allowSelection: false
+
+- type: entity
+  id: SpawnPointWanderer
+  parent: SpawnPointPassenger
+  name: wanderer
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SpawnPoint
+    job_id: Wanderer

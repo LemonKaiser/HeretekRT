@@ -109,7 +109,12 @@ void fragment() {
     highp float atmosphereRim = pow(1.0 - depth, 3.1) * (0.40 + daylight * 0.60);
     colour += AtmosphereColor.rgb * AtmosphereColor.a * atmosphereRim * 0.28;
 
+#ifdef HAS_DFDX
     highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
+#else
+    // GLES2 has no derivatives without GL_OES_standard_derivatives.
+    highp float antialias = 0.0015;
+#endif
     highp float alpha = surfaceSample.a * (1.0 - smoothstep(1.0 - antialias, 1.0 + antialias, radius));
     COLOR = vec4(colour, alpha);
 }

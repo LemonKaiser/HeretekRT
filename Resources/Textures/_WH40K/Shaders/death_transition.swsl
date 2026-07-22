@@ -5,12 +5,12 @@ uniform highp float progress;
 
 void fragment()
 {
-    highp vec4 source = texture(SCREEN_TEXTURE, UV);
+    highp vec4 source = texture2D(SCREEN_TEXTURE, UV);
     highp vec3 blurred = source.rgb * 0.36;
-    blurred += texture(SCREEN_TEXTURE, UV + vec2(SCREEN_PIXEL_SIZE.x * 2.0, 0.0)).rgb * 0.16;
-    blurred += texture(SCREEN_TEXTURE, UV - vec2(SCREEN_PIXEL_SIZE.x * 2.0, 0.0)).rgb * 0.16;
-    blurred += texture(SCREEN_TEXTURE, UV + vec2(0.0, SCREEN_PIXEL_SIZE.y * 2.0)).rgb * 0.16;
-    blurred += texture(SCREEN_TEXTURE, UV - vec2(0.0, SCREEN_PIXEL_SIZE.y * 2.0)).rgb * 0.16;
+    blurred += texture2D(SCREEN_TEXTURE, UV + vec2(SCREEN_PIXEL_SIZE.x * 2.0, 0.0)).rgb * 0.16;
+    blurred += texture2D(SCREEN_TEXTURE, UV - vec2(SCREEN_PIXEL_SIZE.x * 2.0, 0.0)).rgb * 0.16;
+    blurred += texture2D(SCREEN_TEXTURE, UV + vec2(0.0, SCREEN_PIXEL_SIZE.y * 2.0)).rgb * 0.16;
+    blurred += texture2D(SCREEN_TEXTURE, UV - vec2(0.0, SCREEN_PIXEL_SIZE.y * 2.0)).rgb * 0.16;
 
     highp float blur = smoothstep(0.08, 0.48, progress) * 0.52;
     highp vec3 scene = mix(source.rgb, blurred, blur);

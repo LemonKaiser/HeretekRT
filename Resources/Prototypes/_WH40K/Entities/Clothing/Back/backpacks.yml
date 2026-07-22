@@ -32,7 +32,7 @@
         - SurveillanceCameraMonitor
         - RadioSpeaker
   - type: ActiveListener
-    range: 10
+    range: 6
   - type: DeviceNetwork
     deviceNetId: Wireless
     receiveFrequencyId: SurveillanceCameraScience

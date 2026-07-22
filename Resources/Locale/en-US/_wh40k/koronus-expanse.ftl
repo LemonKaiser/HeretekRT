@@ -1,5 +1,5 @@
-koronus-expanse-title = Koronus Expanse
-koronus-expanse-description = Experimental Koronus sector-map round with Footfall as its starting system.
+rogue-trader-title = Rogue Trader
+rogue-trader-description = A Rogue Trader expedition in the Koronus Expanse. By a Warrant of Trade, chart perilous warp routes, bargain at Footfall, and extend the Imperium's reach.
 koronus-boundary-announcer = SECTOR NAVIGATION
 koronus-boundary-warning = WARNING: OUTER BOUNDARY OF { $system } REACHED. REDUCE SPEED AND RETURN TO THE SYSTEM INTERIOR.
 koronus-boundary-target-denied = The selected target lies beyond this system's hard boundary.
@@ -79,7 +79,7 @@ koronus-planetary-climate-airless-asteroid = Airless asteroid
 koronus-foulstone-forest-map-name = Foulstone forest surface
 koronus-footfall-asteroid-map-name = Altar-Templum-Calixis-Ext-17
 koronus-footfall-dead-world-map-name = Furibundus dead world
-koronus-sector-map-unavailable = THE SECTOR MAP IS ONLY AVAILABLE IN KORONUS EXPANSE.
+rogue-trader-sector-map-unavailable = THE SECTOR MAP IS ONLY AVAILABLE IN ROGUE TRADER MODE.
 koronus-sector-map-ready = SELECT A SYSTEM TO REVIEW WARP DATA. RIGHT MOUSE: PAN. WHEEL: ZOOM.
 koronus-sector-map-ftl-unavailable = WARP DRIVE UNAVAILABLE. MAP IS IN VIEW-ONLY MODE.
 koronus-sector-map-current = CURRENT SYSTEM: { $system }.

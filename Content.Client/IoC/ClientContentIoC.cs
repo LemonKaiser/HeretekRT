@@ -26,6 +26,7 @@ using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
 using Content.Client._Mono.Company; // Mono
 using Content.Client._Mono.MonoCoins; // Mono
+using Content.Client._WH40K.Administration.ScreenCheck;
 
 namespace Content.Client.IoC
 {
@@ -42,6 +43,7 @@ namespace Content.Client.IoC
             collection.Register<IClientPreferencesManager, ClientPreferencesManager>();
             collection.Register<IStylesheetManager, StylesheetManager>();
             collection.Register<IScreenshotHook, ScreenshotHook>();
+            collection.Register<ScreenCheckClientManager>();
             collection.Register<FullscreenHook, FullscreenHook>();
             collection.Register<IClickMapManager, ClickMapManager>();
             collection.Register<IClientAdminManager, ClientAdminManager>();

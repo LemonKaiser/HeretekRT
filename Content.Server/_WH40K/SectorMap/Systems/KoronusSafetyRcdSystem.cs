@@ -1,7 +1,7 @@
-using Content.Server._WH40K.SectorMap.Components;
 using Content.Shared.Interaction;
 using Content.Shared.RCD.Components;
 using Content.Shared.RCD.Systems;
+using Content.Shared._WH40K.SectorMap.Components;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 

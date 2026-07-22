@@ -86,6 +86,8 @@
   id: WH40KDurableHeavyArmor
   abstract: true
   components:
+  - type: Item
+    size: Ginormous
   - type: ItemDurability
     maxDurability: 480
     requiredWorkbenchTier: 2
@@ -134,6 +136,8 @@
   id: WH40KDurableAstartesArmor
   abstract: true
   components:
+  - type: Item
+    size: Huge
   - type: ItemDurability
     maxDurability: 800
     requiredWorkbenchTier: 3

@@ -20,6 +20,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
@@ -348,7 +349,8 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
         _buckle.StrapSetEnabled(bolter, canOperate);
         _appearance.SetData(bolter, WH40KHeavyBolterVisuals.State, canOperate ? WH40KHeavyBolterVisualState.Deployed : WH40KHeavyBolterVisualState.Folded);
 
-        if (_fixture.GetFixtureOrNull(bolter, bolter.Comp.FixtureId) is { } fixture)
+        if (TryComp<FixturesComponent>(bolter, out var fixtures) &&
+            _fixture.GetFixtureOrNull(bolter, bolter.Comp.FixtureId, fixtures) is { } fixture)
             _physics.SetHard(bolter, fixture, canOperate);
 
         if (!canOperate && bolter.Comp.Deployed && !Transform(bolter).Anchored)

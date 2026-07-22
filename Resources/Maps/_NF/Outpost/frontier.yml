@@ -31992,12 +31992,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -52.5,12.5
       parent: 2173
-  - uid: 4485
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -52.5,10.5
-      parent: 2173
 - proto: SpawnPointMailCarrier
   entities:
   - uid: 4842

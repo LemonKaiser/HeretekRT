@@ -1,10 +1,12 @@
 - type: gamePreset
-  id: KoronusExpanse
+  id: RogueTrader
   alias:
+  - rogue-trader
+  - roguetrader
   - koronus
   - koronusexpanse
-  name: koronus-expanse-title
-  description: koronus-expanse-description
+  name: rogue-trader-title
+  description: rogue-trader-description
   showInVote: true
   supportedMaps: KoronusExpanseMapPool
   rules:

@@ -16,19 +16,19 @@ jobs:
   validate_rsis:
     name: Validate RSIs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v7
       - name: Setup Submodule
-        run: git submodule update --init
-      - name: Pull engine updates
-        uses: space-wizards/submodule-dependency@v0.1.5
-      - name: Set up Python 3.10 # Frontier
-        uses: actions/setup-python@v3 # Frontier
-        with: # Frontier
-          python-version: "3.10" # Frontier
+        run: git submodule update --init --recursive
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
       - name: Install Python dependencies
         run: |
-          pip3 install --ignore-installed --user pillow jsonschema
+          python3 -m pip install --disable-pip-version-check pillow jsonschema
       - name: Validate RSIs
         run: |
           python3 RobustToolbox/Schemas/validate_rsis.py Resources/

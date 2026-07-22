@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" />
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
+    <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="prometheus-net" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" />
   </ItemGroup>

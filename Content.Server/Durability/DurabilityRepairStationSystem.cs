@@ -435,7 +435,10 @@ public sealed partial class DurabilityRepairStationSystem : EntitySystem
 
     private void ConfigureRepairSlot(Entity<DurabilityRepairStationComponent> ent)
     {
-        if (!_itemSlots.TryGetSlot(ent, DurabilityRepairStationComponent.RepairSlotId, out var slot) ||
+        if (!TryComp(ent, out ItemSlotsComponent? itemSlots))
+            return;
+
+        if (!_itemSlots.TryGetSlot(ent, DurabilityRepairStationComponent.RepairSlotId, out var slot, itemSlots) ||
             slot.ContainerSlot is not { } container)
         {
             Log.Error($"Entity {ToPrettyString(ent)} has no repair item slot.");

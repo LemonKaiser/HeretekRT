@@ -111,20 +111,20 @@ void fragment() {
         roll_uv = vec2((roll_line * DISTORT_INTENSITY * (1. - UV.x)), 0.0);
 
         // Увеличиваем разброс цветовых каналов для VHS эффекта
-        text.r = texture(SCREEN_TEXTURE, text_uv + roll_uv * 0.8 + vec2(ABERRATION, 0.0) * 0.1).r;
-        text.g = texture(SCREEN_TEXTURE, text_uv + roll_uv * 1.2 - vec2(ABERRATION, 0.0) * 0.1).g;
-        text.b = texture(SCREEN_TEXTURE, text_uv + roll_uv).b;
+        text.r = texture2D(SCREEN_TEXTURE, text_uv + roll_uv * 0.8 + vec2(ABERRATION, 0.0) * 0.1).r;
+        text.g = texture2D(SCREEN_TEXTURE, text_uv + roll_uv * 1.2 - vec2(ABERRATION, 0.0) * 0.1).g;
+        text.b = texture2D(SCREEN_TEXTURE, text_uv + roll_uv).b;
         text.a = 1.0;
     } else {
-        text.r = texture(SCREEN_TEXTURE, text_uv + vec2(ABERRATION, 0.0) * 0.1).r;
-        text.g = texture(SCREEN_TEXTURE, text_uv - vec2(ABERRATION, 0.0) * 0.1).g;
-        text.b = texture(SCREEN_TEXTURE, text_uv).b;
+        text.r = texture2D(SCREEN_TEXTURE, text_uv + vec2(ABERRATION, 0.0) * 0.1).r;
+        text.g = texture2D(SCREEN_TEXTURE, text_uv - vec2(ABERRATION, 0.0) * 0.1).g;
+        text.b = texture2D(SCREEN_TEXTURE, text_uv).b;
         text.a = 1.0;
     }
 
     // Применяем растекание цветов (color bleeding)
     if (BLEEDING > 0.0) {
-        highp vec4 bleed_left = texture(SCREEN_TEXTURE, text_uv - vec2(0.003, 0.0));
+        highp vec4 bleed_left = texture2D(SCREEN_TEXTURE, text_uv - vec2(0.003, 0.0));
         text.r += bleed_left.r * BLEEDING * 0.3;
     }
 

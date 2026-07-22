@@ -4477,8 +4477,6 @@ entities:
       preventEmpEvents: True
       preventRCDUse: True
       preventFloorRemoval: True
-    - type: GridGodMode
-      protectedEntities: []
     - type: GridRaider
       protectedEntities: []
     - type: ShipGridLock

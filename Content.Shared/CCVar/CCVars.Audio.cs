@@ -38,13 +38,13 @@ public sealed partial class CCVars
         ///     Ambience volume.
         /// </summary>
         public static readonly CVarDef<float> AmbienceVolume =
-            CVarDef.Create("ambience.volume", 1.5f, CVar.ARCHIVE | CVar.CLIENTONLY);
+            CVarDef.Create("ambience.volume", 1.2f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
         /// <summary>
         ///     Ambience music volume.
         /// </summary>
         public static readonly CVarDef<float> AmbientMusicVolume =
-            CVarDef.Create("ambience.music_volume", 1.5f, CVar.ARCHIVE | CVar.CLIENTONLY);
+            CVarDef.Create("ambience.music_volume", 0.15f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
         /// <summary>
         ///     Ambience music volume.
@@ -62,12 +62,12 @@ public sealed partial class CCVars
         ///     Lobby / round end music volume.
         /// </summary>
         public static readonly CVarDef<float> LobbyMusicVolume =
-            CVarDef.Create("ambience.lobby_music_volume", 0.50f, CVar.ARCHIVE | CVar.CLIENTONLY);
+            CVarDef.Create("ambience.lobby_music_volume", 0.75f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
         /// <summary>
         ///     UI volume.
         /// </summary>
         public static readonly CVarDef<float> InterfaceVolume =
-            CVarDef.Create("audio.interface_volume", 0.50f, CVar.ARCHIVE | CVar.CLIENTONLY);
+            CVarDef.Create("audio.interface_volume", 1.5f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
 }

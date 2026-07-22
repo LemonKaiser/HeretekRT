@@ -94,7 +94,8 @@ void fragment()
     for (int i = 0; i < 12; i++)
     {
         highp float index = float(i);
-        highp float active = 1.0 - step(auraOrbCount, index + 0.5);
+        // The compatibility renderer reserves the old identifier used here.
+        highp float moteEnabled = 1.0 - step(auraOrbCount, index + 0.5);
         highp float randomA = hash12(vec2(index * 13.17, auraSeed + 2.4));
         highp float randomX = hash12(vec2(index * 71.13, auraSeed + 23.7)) - 0.5;
         highp float randomC = hash12(vec2(index * 47.11, auraSeed + 14.2));
@@ -110,7 +111,7 @@ void fragment()
         highp float distanceSquared = dot(difference, difference);
         highp float halo = exp(-distanceSquared / max(orbRadius * orbRadius * 8.0, 0.000001));
         highp float core = exp(-distanceSquared / max(orbRadius * orbRadius * 0.62, 0.000001));
-        highp float fade = lifeBell(life) * active;
+        highp float fade = lifeBell(life) * moteEnabled;
 
         orbHalo += halo * fade;
         orbCore += core * fade;

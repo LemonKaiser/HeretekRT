@@ -134,7 +134,12 @@ void fragment() {
     highp float chromosphere = smoothstep(0.963, 0.986, radius) * (1.0 - smoothstep(0.986, 1.0, radius));
     colour += vec3(1.0, 0.19, 0.006) * chromosphere * 0.52;
 
+#ifdef HAS_DFDX
     highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
+#else
+    // GLES2 has no derivatives without GL_OES_standard_derivatives.
+    highp float antialias = 0.0015;
+#endif
     highp float alpha = 1.0 - smoothstep(1.0 - antialias, 1.0 + antialias, radius);
     COLOR = vec4(colour, alpha);
 }

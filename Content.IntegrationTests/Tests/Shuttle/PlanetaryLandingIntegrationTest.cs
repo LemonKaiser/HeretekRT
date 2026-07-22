@@ -66,8 +66,12 @@ public sealed class PlanetaryLandingIntegrationTest : ContentUnitTest
           system: PlanetaryLandingTestSystem
           bodyType: Planet
           displayName: Planetary landing integration test body
-          orbitRadius: 2400
-          orbitPhase: 215
+          # This fixture exercises transfer gates and parking behavior. Keep its ordinary setup
+          # positions and the post-launch cooldown position inside the landing approach circle;
+          # Foulstone tests below cover rejection outside the actual approach range.
+          orbitRadius: 120
+          orbitPhase: 0
+          navVisualRadius: 500
           surface: PlanetaryLandingTestSurface
 
         - type: koronusPlanetSurface
@@ -808,7 +812,7 @@ public sealed class PlanetaryLandingIntegrationTest : ContentUnitTest
                 var pads = landingPads.GetPads(runtime.TerrainGrid);
                 Assert.That(pads, Has.Count.EqualTo(1));
                 Assert.That(pads[0].Id, Is.EqualTo(FoulstoneSiteId));
-                Assert.That(pads[0].Size, Is.EqualTo(new Vector2(9f, 5f)));
+                Assert.That(pads[0].Size, Is.EqualTo(new Vector2(15f, 20f)));
                 Assert.That(pads[0].Component.Enabled, Is.True);
                 Assert.That(pads[0].Component.PublicAccess, Is.True);
 
