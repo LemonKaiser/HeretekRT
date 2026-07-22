@@ -1,4 +1,5 @@
 using Content.Server.Chemistry.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -6,6 +7,7 @@ using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
 using Content.Shared.Physics;
 using Content.Shared.Throwing;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.Chemistry.EntitySystems;
 using JetBrains.Annotations;
 using Robust.Shared.Map;
@@ -29,6 +31,7 @@ namespace Content.Server.Chemistry.EntitySystems
         [Dependency] private ThrowingSystem _throwing = default!;
         [Dependency] private ReactiveSystem _reactive = default!;
         [Dependency] private SharedTransformSystem _transformSystem = default!;
+        [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
         private const float ReactTime = 0.125f;
 
@@ -41,6 +44,12 @@ namespace Content.Server.Chemistry.EntitySystems
 
         private void HandleCollide(Entity<VaporComponent> entity, ref StartCollideEvent args)
         {
+            if (_safety.HasRule(args.OtherEntity, KoronusSafetyRule.ChemicalEffects))
+            {
+                QueueDel(entity);
+                return;
+            }
+
             if (!EntityManager.TryGetComponent(entity.Owner, out SolutionContainerManagerComponent? contents)) return;
 
             foreach (var (_, soln) in _solutionContainerSystem.EnumerateSolutions((entity.Owner, contents)))
@@ -108,6 +117,12 @@ namespace Content.Server.Chemistry.EntitySystems
             var (entity, vapor) = ent;
             if (!vapor.Active)
                 return;
+
+            if (_safety.HasRule(entity, KoronusSafetyRule.ChemicalEffects))
+            {
+                QueueDel(entity);
+                return;
+            }
 
             vapor.ReactTimer += frameTime;
 

@@ -81,6 +81,13 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public float InitialGridSafetyRadius;
 
     /// <summary>
+    /// Optional rules attached directly to the authored facility grid. Unlike a circular safety
+    /// zone, these rules never apply to open space or another grid on the same system map.
+    /// </summary>
+    [DataField]
+    public ProtoId<KoronusSafetyProfilePrototype>? InitialGridLocalSafetyProfile;
+
+    /// <summary>
     /// Adds the explicit infrastructure protection components to authored facility grids.
     /// Procedural terrain and asteroid grids never receive these components automatically.
     /// </summary>

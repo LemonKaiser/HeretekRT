@@ -154,10 +154,21 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         if (TryComp<AutoDockComponent>(shuttleGrid.Value, out var setting) && setting.Enabled)
         {
-            // The target grid was chosen explicitly on the navigation map. Use the docking
-            // system's complete best configuration for that grid so every aligned port latches,
-            // rather than reducing it to whichever individual pair is currently closest.
-            var config = _docking.GetDockingConfig(shuttleGrid.Value, targetGrid.Value);
+            // Selecting a station explicitly must still choose a configuration whose approach
+            // corridor and complete hull manoeuvre are clear. GetExpandedDockingConfiguration,
+            // used by this search, restores every port that shares the selected final pose.
+            if (!TryFindNearestDockingConfig(
+                    shuttleGrid.Value,
+                    targetGrid.Value,
+                    float.PositiveInfinity,
+                    out var config,
+                    out _,
+                    out _))
+            {
+                PopupAutoDockError(ent, "shuttle-console-auto-dock-invalid-ports");
+                return;
+            }
+
             BeginAutoDock(ent, shuttleGrid.Value, targetGrid.Value, config);
             return;
         }

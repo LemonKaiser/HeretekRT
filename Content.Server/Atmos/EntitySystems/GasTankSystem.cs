@@ -1,9 +1,11 @@
 using Content.Server.Cargo.Systems;
 using Content.Server.Explosion.EntitySystems;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Examine;
 using Content.Shared.Explosion.Components;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.Atmos.EntitySystems;
 using Content.Shared.Throwing;
 using JetBrains.Annotations;
@@ -26,6 +28,7 @@ namespace Content.Server.Atmos.EntitySystems
         [Dependency] private IRobustRandom _random = default!;
         [Dependency] private ThrowingSystem _throwing = default!;
         [Dependency] private IConfigurationManager _cfg = default!;
+        [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
         private const float TimerDelay = 0.5f;
         private float _timer = 0f;
@@ -79,6 +82,12 @@ namespace Content.Server.Atmos.EntitySystems
             while (query.MoveNext(out var uid, out var comp))
             {
                 var gasTank = (uid, comp);
+                if (comp.IsValveOpen && _safety.HasRule(uid, KoronusSafetyRule.AtmosphericRelease))
+                {
+                    comp.IsValveOpen = false;
+                    Dirty(uid, comp);
+                }
+
                 if (comp.IsValveOpen && !comp.IsLowPressure && comp.OutputPressure > 0)
                 {
                     ReleaseGas(gasTank);

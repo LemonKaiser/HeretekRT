@@ -1,5 +1,6 @@
 using Content.Shared.Administration.Logs;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.Events;
 using Content.Shared.Atmos.Piping.Binary.Components;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Database;
@@ -90,6 +91,11 @@ public abstract partial class SharedGasCanisterSystem : EntitySystem
 
     private void OnCanisterChangeReleaseValve(EntityUid uid, GasCanisterComponent canister, GasCanisterChangeReleaseValveMessage args)
     {
+        var attempt = new GasCanisterValveAttemptEvent(args.Actor, args.Valve);
+        RaiseLocalEvent(uid, attempt);
+        if (attempt.Cancelled)
+            return;
+
         // filling a jetpack with plasma is less important than filling a room with it
         var impact = canister.GasTankSlot.HasItem ? LogImpact.Medium : LogImpact.High;
 
@@ -103,7 +109,7 @@ public abstract partial class SharedGasCanisterSystem : EntitySystem
 
         AdminLogger.Add(LogType.CanisterValve, impact, $"{ToPrettyString(args.Actor):player} set the valve on {ToPrettyString(uid):canister} to {args.Valve:valveState} while it contained [{string.Join(", ", containedGasDict)}]");
 
-        canister.ReleaseValve = args.Valve;
+        canister.ReleaseValve = attempt.Open;
         Dirty(uid, canister);
         DirtyUI(uid, canister);
     }

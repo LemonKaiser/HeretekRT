@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server.Fluids.Components;
 using Content.Server._Mono.SpaceArtillery.Components;
 using Content.Server._Mono.FireControl;
 using Content.Server.Shuttles.Systems;
@@ -8,11 +9,15 @@ using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.Events;
+using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Actions.Events;
+using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.Hypospray.Events;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Cuffs.Components;
+using Content.Shared.Construction.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Flash;
@@ -35,6 +40,13 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Server.Atmos.EntitySystems;
+using Content.Shared.Disposal.Components;
+using Content.Shared.DragDrop;
+using Content.Shared.Fluids;
+using Content.Shared.Interaction.Components;
+using Content.Shared.Popups;
+using Content.Shared.Radiation.Components;
+using Content.Shared.Weapons.Ranged.Systems;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
@@ -51,6 +63,8 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private ShuttleConsoleLockSystem _shipAccess = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedGunSystem _guns = default!;
 
     private EntityQuery<TransformComponent> _transformQuery;
 
@@ -74,12 +88,24 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         SubscribeLocalEvent<DamageableComponent, ForceFeedAttemptEvent>(OnForceFeedAttempt);
         SubscribeLocalEvent<FlammableComponent, TryIgniteEvent>(OnIgniteAttempt);
         SubscribeLocalEvent<GunComponent, ShotAttemptedEvent>(OnShotAttempted);
+        SubscribeLocalEvent<AnchorableComponent, AnchorAttemptEvent>(OnAnchorAttempt);
+        SubscribeLocalEvent<AnchorableComponent, UnanchorAttemptEvent>(OnUnanchorAttempt);
+        SubscribeLocalEvent<HandheldEntityPlacementComponent, HandheldEntityPlacementAttemptEvent>(OnHandheldEntityPlacementAttempt);
+        SubscribeLocalEvent<SprayComponent, SprayAttemptEvent>(OnSprayAttempt);
+        SubscribeLocalEvent<BodyComponent, DragDropDraggedEvent>(OnBodyDragDrop);
+        SubscribeLocalEvent<GasTankComponent, GasTankValveAttemptEvent>(OnGasTankValveAttempt);
+        SubscribeLocalEvent<GasCanisterComponent, GasCanisterValveAttemptEvent>(OnGasCanisterValveAttempt);
     }
 
     /// <summary>
     /// Checks the union of all authored profiles that contain a point.
     /// </summary>
     public bool HasRule(MapId mapId, Vector2 position, KoronusSafetyRule rule)
+    {
+        return (GetAreaRules(mapId, position) & rule) != 0;
+    }
+
+    private KoronusSafetyRule GetAreaRules(MapId mapId, Vector2 position)
     {
         var rules = KoronusSafetyRule.None;
 
@@ -117,7 +143,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
                 rules |= _prototypes.Index(zone.Profile).Rules;
         }
 
-        return (rules & rule) != 0;
+        return rules;
     }
 
     public bool HasRule(EntityUid entity, KoronusSafetyRule rule)
@@ -125,7 +151,16 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (!_transformQuery.TryComp(entity, out var transform))
             return false;
 
-        return HasRule(transform.MapID, _transform.GetWorldPosition(transform), rule);
+        var rules = GetAreaRules(transform.MapID, _transform.GetWorldPosition(transform));
+        if (TryComp<KoronusGridSafetyProfileComponent>(entity, out var ownGridProfile))
+            rules |= _prototypes.Index(ownGridProfile.Profile).Rules;
+        else if (transform.GridUid is { } grid &&
+                 TryComp<KoronusGridSafetyProfileComponent>(grid, out var gridProfile))
+        {
+            rules |= _prototypes.Index(gridProfile.Profile).Rules;
+        }
+
+        return (rules & rule) != 0;
     }
 
     /// <summary>
@@ -277,6 +312,9 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (!TryGetGrid(target, out var grid))
             return false;
 
+        if (HasRuleOnGrid(grid, KoronusSafetyRule.Deconstruction))
+            return true;
+
         if (HasComp<ProtectedGridComponent>(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection))
             return true;
 
@@ -310,6 +348,15 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     private void OnShotAttempted(EntityUid uid, GunComponent component, ref ShotAttemptedEvent args)
     {
+        if (HasRule(uid, KoronusSafetyRule.RadiationMunitions) &&
+            _guns.TryNextShootPrototype((uid, component), out var ammoPrototype) &&
+            _guns.GetBulletPrototype(ammoPrototype).TryGetComponent<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
+        {
+            args.Cancel();
+            _popup.PopupCursor(Loc.GetString("koronus-safety-radiation-ammo-blocked"), args.User);
+            return;
+        }
+
         if (!HasComp<FireControllableComponent>(uid) && !HasComp<SpaceArtilleryComponent>(uid))
             return;
 
@@ -407,6 +454,80 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         var source = args.User ?? args.Source;
         if (ShouldBlockHarmfulInteraction(source, uid))
             args.Cancelled = true;
+    }
+
+    private void OnAnchorAttempt(EntityUid uid, AnchorableComponent component, AnchorAttemptEvent args)
+    {
+        BlockAnchoring(uid, args.User, args);
+    }
+
+    private void OnUnanchorAttempt(EntityUid uid, AnchorableComponent component, UnanchorAttemptEvent args)
+    {
+        BlockAnchoring(uid, args.User, args);
+    }
+
+    private void OnHandheldEntityPlacementAttempt(
+        Entity<HandheldEntityPlacementComponent> entity,
+        ref HandheldEntityPlacementAttemptEvent args)
+    {
+        var grid = _transform.GetGrid(args.Coordinates);
+        if (args.Cancelled || grid == null || !HasRule(grid.Value, KoronusSafetyRule.HandheldEntityPlacement))
+            return;
+
+        args.Cancel();
+        _popup.PopupCursor(Loc.GetString("koronus-safety-deployment-blocked"), args.User);
+    }
+
+    private void OnSprayAttempt(Entity<SprayComponent> entity, ref SprayAttemptEvent args)
+    {
+        if (args.Cancelled || !HasRule(args.User, KoronusSafetyRule.ChemicalEffects))
+            return;
+
+        args.Cancel();
+        _popup.PopupCursor(Loc.GetString("koronus-safety-chemistry-blocked"), args.User);
+    }
+
+    private void OnBodyDragDrop(Entity<BodyComponent> entity, ref DragDropDraggedEvent args)
+    {
+        if (args.Handled ||
+            !IsPlayerCharacter(entity.Owner) ||
+            !HasComp<DisposalUnitComponent>(args.Target) ||
+            !HasRule(args.Target, KoronusSafetyRule.PlayerDisposal))
+        {
+            return;
+        }
+
+        args.Handled = true;
+        _popup.PopupCursor(Loc.GetString("koronus-safety-disposal-blocked"), args.User);
+    }
+
+    private void OnGasTankValveAttempt(Entity<GasTankComponent> entity, ref GasTankValveAttemptEvent args)
+    {
+        if (args.Cancelled || !args.Open || !HasRule(entity.Owner, KoronusSafetyRule.AtmosphericRelease))
+            return;
+
+        args.Cancel();
+        if (args.User is { } user)
+            _popup.PopupCursor(Loc.GetString("koronus-safety-atmospheric-release-blocked"), user);
+    }
+
+    private void OnGasCanisterValveAttempt(Entity<GasCanisterComponent> entity, ref GasCanisterValveAttemptEvent args)
+    {
+        if (args.Cancelled || !args.Open || !HasRule(entity.Owner, KoronusSafetyRule.AtmosphericRelease))
+            return;
+
+        args.Cancel();
+        if (args.User is { } user)
+            _popup.PopupCursor(Loc.GetString("koronus-safety-atmospheric-release-blocked"), user);
+    }
+
+    private void BlockAnchoring(EntityUid target, EntityUid user, BaseAnchoredAttemptEvent args)
+    {
+        if (args.Cancelled || !HasRule(target, KoronusSafetyRule.Anchoring))
+            return;
+
+        args.Cancel();
+        _popup.PopupCursor(Loc.GetString("koronus-safety-anchoring-blocked"), user);
     }
 
     private bool TryGetGrid(EntityUid entity, out EntityUid grid)

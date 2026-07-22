@@ -298,6 +298,22 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         UpdateAppearance(entity, entity.Comp);
     }
 
+    /// <summary>
+    /// Removes every reagent from a floor puddle. The normal solution update path then clears
+    /// flammability and queues the now-empty puddle for deletion.
+    /// </summary>
+    public bool ClearPuddle(Entity<PuddleComponent> puddle)
+    {
+        if (!_solutionContainerSystem.ResolveSolution(puddle.Owner, puddle.Comp.SolutionName,
+                ref puddle.Comp.Solution))
+        {
+            return false;
+        }
+
+        _solutionContainerSystem.RemoveAllSolution(puddle.Comp.Solution.Value);
+        return true;
+    }
+
     private void UpdateAppearance(EntityUid uid, PuddleComponent? puddleComponent = null,
         AppearanceComponent? appearance = null)
     {

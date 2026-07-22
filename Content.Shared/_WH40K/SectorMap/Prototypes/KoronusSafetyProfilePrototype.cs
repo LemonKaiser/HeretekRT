@@ -63,6 +63,73 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
     [DataField]
     public bool BlockForcedUnbuckle;
 
+    /// <summary>
+    /// Removes puddles after a short delay. This is intended for busy public facilities where
+    /// deliberate floor flooding is disruptive, not for an entire orbital system.
+    /// </summary>
+    [DataField]
+    public bool AutoCleanPuddles;
+
+    /// <summary>
+    /// Prevents players from opening maintenance panels with a screwdriver.
+    /// </summary>
+    [DataField]
+    public bool BlockMaintenancePanelScrewdriving;
+
+    /// <summary>
+    /// Prevents manual anchoring and unanchoring through the standard anchoring tool action.
+    /// </summary>
+    [DataField]
+    public bool BlockAnchoring;
+
+    /// <summary>
+    /// Prevents construction-graph deconstruction, independently of broader infrastructure protection.
+    /// </summary>
+    [DataField]
+    public bool BlockDeconstruction;
+
+    /// <summary>
+    /// Prevents deploying entities from hand-held placement items.
+    /// </summary>
+    [DataField]
+    public bool BlockHandheldEntityPlacement;
+
+    /// <summary>
+    /// Prevents sprays and spawned smoke or foam from applying chemical effects.
+    /// </summary>
+    [DataField]
+    public bool BlockChemicalEffects;
+
+    /// <summary>
+    /// Prevents firing ammunition whose projectile creates a radiation source.
+    /// </summary>
+    [DataField]
+    public bool BlockRadiationMunitions;
+
+    /// <summary>
+    /// Removes artifacts after a short grace period.
+    /// </summary>
+    [DataField]
+    public bool AutoCleanupArtifacts;
+
+    /// <summary>
+    /// Removes hostile active NPCs after a short grace period.
+    /// </summary>
+    [DataField]
+    public bool AutoCleanupHostileNpcs;
+
+    /// <summary>
+    /// Prevents a player's body from being dragged into a disposal unit.
+    /// </summary>
+    [DataField]
+    public bool BlockPlayerDisposal;
+
+    /// <summary>
+    /// Prevents portable gas sources from releasing their contents into the station atmosphere.
+    /// </summary>
+    [DataField]
+    public bool BlockAtmosphericRelease;
+
     public KoronusSafetyRule Rules
     {
         get
@@ -94,6 +161,28 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
                 rules |= KoronusSafetyRule.ProtectNonHostileMobs;
             if (BlockForcedUnbuckle)
                 rules |= KoronusSafetyRule.ForcedUnbuckle;
+            if (AutoCleanPuddles)
+                rules |= KoronusSafetyRule.PuddleAutoCleanup;
+            if (BlockMaintenancePanelScrewdriving)
+                rules |= KoronusSafetyRule.MaintenancePanelScrewdriving;
+            if (BlockAnchoring)
+                rules |= KoronusSafetyRule.Anchoring;
+            if (BlockDeconstruction)
+                rules |= KoronusSafetyRule.Deconstruction;
+            if (BlockHandheldEntityPlacement)
+                rules |= KoronusSafetyRule.HandheldEntityPlacement;
+            if (BlockChemicalEffects)
+                rules |= KoronusSafetyRule.ChemicalEffects;
+            if (BlockRadiationMunitions)
+                rules |= KoronusSafetyRule.RadiationMunitions;
+            if (AutoCleanupArtifacts)
+                rules |= KoronusSafetyRule.ArtifactAutoCleanup;
+            if (AutoCleanupHostileNpcs)
+                rules |= KoronusSafetyRule.HostileNpcAutoCleanup;
+            if (BlockPlayerDisposal)
+                rules |= KoronusSafetyRule.PlayerDisposal;
+            if (BlockAtmosphericRelease)
+                rules |= KoronusSafetyRule.AtmosphericRelease;
             return rules;
         }
     }
@@ -116,7 +205,7 @@ public sealed partial class KoronusSafetyZoneDefinition
 }
 
 [Flags]
-public enum KoronusSafetyRule : ushort
+public enum KoronusSafetyRule : uint
 {
     None = 0,
     ShipWeapons = 1 << 0,
@@ -132,4 +221,15 @@ public enum KoronusSafetyRule : ushort
     PlayerHarmfulInteractions = 1 << 10,
     ProtectNonHostileMobs = 1 << 11,
     ForcedUnbuckle = 1 << 12,
+    PuddleAutoCleanup = 1 << 13,
+    MaintenancePanelScrewdriving = 1 << 14,
+    Anchoring = 1 << 15,
+    Deconstruction = 1 << 16,
+    HandheldEntityPlacement = 1 << 17,
+    ChemicalEffects = 1 << 18,
+    RadiationMunitions = 1 << 19,
+    ArtifactAutoCleanup = 1 << 20,
+    HostileNpcAutoCleanup = 1 << 21,
+    PlayerDisposal = 1 << 22,
+    AtmosphericRelease = 1 << 23,
 }

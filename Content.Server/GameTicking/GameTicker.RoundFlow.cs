@@ -132,17 +132,6 @@ namespace Content.Server.GameTicking
                 throw new Exception("invalid config; couldn't select a valid station map!");
             }
 
-            if (CurrentPreset?.MapPool != null &&
-                _prototypeManager.TryIndex<GameMapPoolPrototype>(CurrentPreset.MapPool, out var pool) &&
-                !pool.Maps.Contains(mainStationMap.ID))
-            {
-                var msg = Loc.GetString("game-ticker-start-round-invalid-map",
-                    ("map", mainStationMap.MapName),
-                    ("mode", Loc.GetString(CurrentPreset.ModeTitle)));
-                Log.Debug(msg);
-                SendServerMessage(msg);
-            }
-
             // Let game rules dictate what maps we should load.
             RaiseLocalEvent(new LoadingMapsEvent(maps));
 
@@ -151,6 +140,21 @@ namespace Content.Server.GameTicking
                 _map.CreateMap(out var mapId, runMapInit: false);
                 DefaultMap = mapId;
                 return;
+            }
+
+            // Rules such as KoronusSectorBootstrap can replace a map selected by the normal
+            // rotation. Validate the actual first map, otherwise the lobby receives a stale
+            // warning for the map which will never be loaded.
+            var startingMap = maps[0];
+            if (CurrentPreset?.MapPool != null &&
+                _prototypeManager.TryIndex<GameMapPoolPrototype>(CurrentPreset.MapPool, out var pool) &&
+                !pool.Maps.Contains(startingMap.ID))
+            {
+                var msg = Loc.GetString("game-ticker-start-round-invalid-map",
+                    ("map", startingMap.MapName),
+                    ("mode", Loc.GetString(CurrentPreset.ModeTitle)));
+                Log.Debug(msg);
+                SendServerMessage(msg);
             }
 
             for (var i = 0; i < maps.Count; i++)
@@ -873,7 +877,9 @@ namespace Content.Server.GameTicking
                         // Check if adding this line would exceed field value limit
                         if (currentProfitLength + line.Length + 1 > MaxFieldValueLength - 20 && currentProfitLines.Count > 0)
                         {
-                            var fieldName = profitFieldCount == 0 ? "Colossus Central Bank" : "Colossus Central Bank (continued)";
+                            var fieldName = profitFieldCount == 0
+                                ? Loc.GetString("adventure-webhook-list-start")
+                                : $"{Loc.GetString("adventure-webhook-list-start")} (continued)";
                             var fieldValue = string.Join("\n", currentProfitLines);
                             var fieldCharacterCount = fieldName.Length + fieldValue.Length;
 
@@ -903,7 +909,9 @@ namespace Content.Server.GameTicking
                     // Add remaining profit lines
                     if (currentProfitLines.Count > 0)
                     {
-                        var fieldName = profitFieldCount == 0 ? "Colossus Central Bank" : "Colossus Central Bank (continued)";
+                        var fieldName = profitFieldCount == 0
+                            ? Loc.GetString("adventure-webhook-list-start")
+                            : $"{Loc.GetString("adventure-webhook-list-start")} (continued)";
                         var fieldValue = string.Join("\n", currentProfitLines);
                         var fieldCharacterCount = fieldName.Length + fieldValue.Length;
 

@@ -16,6 +16,8 @@
   # Do not add a dynamic zone here, otherwise its green circle would falsely imply that safety
   # ends outside the station radius.
   safetyProfile: KoronusFullSafeSystem
+  # These extra restrictions are attached to the Footfall grid itself, not the system map.
+  initialGridLocalSafetyProfile: KoronusFootfallStationRestrictions
   protectInitialGrid: true
 
 - type: koronusSystem

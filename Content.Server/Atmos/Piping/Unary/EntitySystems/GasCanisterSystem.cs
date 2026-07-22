@@ -1,5 +1,6 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Cargo.Systems;
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NodeContainer.NodeGroups;
@@ -10,6 +11,7 @@ using Content.Shared.Atmos.Piping.Binary.Components;
 using Content.Shared.Atmos.Piping.Unary.Systems;
 using Content.Shared.Database;
 using Content.Shared.NodeContainer;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using GasCanisterComponent = Content.Shared.Atmos.Piping.Unary.Components.GasCanisterComponent;
 
 namespace Content.Server.Atmos.Piping.Unary.EntitySystems;
@@ -19,6 +21,7 @@ public sealed partial class GasCanisterSystem : SharedGasCanisterSystem
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private NodeContainerSystem _nodeContainer = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     public override void Initialize()
     {
@@ -36,6 +39,14 @@ public sealed partial class GasCanisterSystem : SharedGasCanisterSystem
     {
         if (!Resolve(uid, ref canister, ref transform))
             return;
+
+        if (_safety.HasRule(uid, KoronusSafetyRule.AtmosphericRelease))
+        {
+            AdminLogger.Add(LogType.CanisterPurged, LogImpact.Medium,
+                $"Canister {ToPrettyString(uid):canister} had its contents safely discarded by the Footfall safety policy.");
+            canister.Air.Clear();
+            return;
+        }
 
         var environment = _atmos.GetContainingMixture((uid, transform), false, true);
 
@@ -82,6 +93,13 @@ public sealed partial class GasCanisterSystem : SharedGasCanisterSystem
         if (portNode.NodeGroup is PipeNet {NodeCount: > 1} net)
         {
             MixContainerWithPipeNet(canister.Air, net.Air);
+        }
+
+        if (canister.ReleaseValve && _safety.HasRule(uid, KoronusSafetyRule.AtmosphericRelease))
+        {
+            canister.ReleaseValve = false;
+            Dirty(uid, canister);
+            DirtyUI(uid, canister, nodeContainer);
         }
 
         // Release valve is open, release gas.

@@ -3,6 +3,7 @@ using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.EntityEffects.Effects;
 using Content.Server.Spreader;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -11,6 +12,7 @@ using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Database;
 using Content.Shared.FixedPoint;
 using Content.Shared.Smoking;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
@@ -44,6 +46,7 @@ public sealed partial class SmokeSystem : EntitySystem
     [Dependency] private SharedBroadphaseSystem _broadphase = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     private EntityQuery<SmokeComponent> _smokeQuery;
     private EntityQuery<SmokeAffectedComponent> _smokeAffectedQuery;
@@ -82,6 +85,12 @@ public sealed partial class SmokeSystem : EntitySystem
 
     private void OnStartCollide(Entity<SmokeComponent> entity, ref StartCollideEvent args)
     {
+        if (_safety.HasRule(args.OtherEntity, KoronusSafetyRule.ChemicalEffects))
+        {
+            QueueDel(entity);
+            return;
+        }
+
         if (_smokeAffectedQuery.HasComponent(args.OtherEntity))
             return;
 
@@ -219,6 +228,12 @@ public sealed partial class SmokeSystem : EntitySystem
     /// </summary>
     public void StartSmoke(EntityUid uid, Solution solution, float duration, int spreadAmount, SmokeComponent? component = null)
     {
+        if (_safety.HasRule(uid, KoronusSafetyRule.ChemicalEffects))
+        {
+            QueueDel(uid);
+            return;
+        }
+
         if (!Resolve(uid, ref component))
             return;
 
@@ -251,6 +266,13 @@ public sealed partial class SmokeSystem : EntitySystem
     {
         if (!Resolve(smokeUid, ref component))
             return;
+
+        if (_safety.HasRule(entity, KoronusSafetyRule.ChemicalEffects) ||
+            _safety.HasRule(smokeUid, KoronusSafetyRule.ChemicalEffects))
+        {
+            QueueDel(smokeUid);
+            return;
+        }
 
         if (!_solutionContainerSystem.ResolveSolution(smokeUid, SmokeComponent.SolutionName, ref component.Solution, out var solution) ||
             solution.Contents.Count == 0)

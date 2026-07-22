@@ -1,5 +1,5 @@
 ## UI
-bank-atm-menu-title = Colossus Central Bank
+bank-atm-menu-title = Footfall Bank
 bank-atm-menu-balance-label = Balance:{" "}
 bank-atm-menu-savings-label = Savings:{" "}
 bank-atm-menu-no-bank = No Bank Account!
