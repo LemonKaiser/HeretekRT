@@ -120,6 +120,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<KoronusLandedShuttleFragmentComponent, GridSplitEvent>(OnLandedGridSplit);
+        SubscribeLocalEvent<KoronusLandedShuttleFragmentComponent, EntityTerminatingEvent>(OnLandedShuttleTerminating);
         SubscribeLocalEvent<PhysicsComponent, EntParentChangedMessage>(OnPhysicsParentChanged);
         SubscribeLocalEvent<KoronusSurfaceBoundaryTrackedComponent, MoveEvent>(OnTrackedEntityMoved);
         SubscribeLocalEvent<KoronusPlanetSurfaceMapComponent, ComponentShutdown>(OnSurfaceMapShutdown);
@@ -998,6 +999,26 @@ public sealed class KoronusPlanetarySystem : EntitySystem
                 component.AddedPreventAnchorChanges);
             session.Fragments.Add(grid);
         }
+    }
+
+    private void OnLandedShuttleTerminating(
+        EntityUid uid,
+        KoronusLandedShuttleFragmentComponent component,
+        ref EntityTerminatingEvent args)
+    {
+        if (!TryGetSectorRule(out var rule) ||
+            !rule.Comp.LandingSessions.TryGetValue(component.SessionId, out var session))
+        {
+            return;
+        }
+
+        session.Fragments.Remove(uid);
+        if (session.Fragments.Count != 0)
+            return;
+
+        SetParkingPadCovered(session, false);
+        rule.Comp.LandingReservations.Remove(session.ReservationKey);
+        rule.Comp.LandingSessions.Remove(session.Id);
     }
 
     private void UpdateParkingSessions()

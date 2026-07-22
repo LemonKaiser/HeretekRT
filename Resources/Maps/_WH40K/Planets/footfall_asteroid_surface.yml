@@ -34,10 +34,6 @@ entities:
       preventRCDUse: true
       preventEmpEvents: true
       preventExplosions: true
-    - type: GridGodMode
-      protectedEntities: []
-    - type: GridRaider
-      protectedEntities: []
     - type: Broadphase
     - type: Physics
       canCollide: false

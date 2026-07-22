@@ -7,7 +7,6 @@ using Content.Server._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
-using Content.Shared._Mono;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Maps;
@@ -575,8 +574,6 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         protectedGrid.PreventEmpEvents = true;
         protectedGrid.PreventExplosions = true;
 
-        EnsureComp<GridGodModeComponent>(grid);
-        EnsureComp<GridRaiderComponent>(grid);
     }
 
     private static string GetInitialGridDisplayName(KoronusSystemPrototype system)

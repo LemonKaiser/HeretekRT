@@ -239,19 +239,19 @@ public sealed partial class MonoCVars
     /// HULLROT: Combat mode music volume.
     /// </summary>
     public static readonly CVarDef<float> CombatMusicVolume =
-        CVarDef.Create("mono.combat_music_volume", 1.5f, CVar.ARCHIVE | CVar.CLIENTONLY);
+        CVarDef.Create("mono.combat_music_volume", 0.6f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
     /// <summary>
     /// HULLROT: Time needed with combatmode on to turn on combat music.
     /// </summary>
     public static readonly CVarDef<int> CombatMusicWindUpTime =
-        CVarDef.Create("mono.combat_music_windup_time", 3, CVar.ARCHIVE | CVar.CLIENTONLY);
+        CVarDef.Create("mono.combat_music_windup_time", 2, CVar.ARCHIVE | CVar.CLIENTONLY);
 
     /// <summary>
     /// HULLROT: Time needed with combatmode off to turn off combat music.
     /// </summary>
     public static readonly CVarDef<int> CombatMusicWindDownTime =
-        CVarDef.Create("mono.combat_music_winddown_time", 30, CVar.ARCHIVE | CVar.CLIENTONLY);
+        CVarDef.Create("mono.combat_music_winddown_time", 10, CVar.ARCHIVE | CVar.CLIENTONLY);
 
 
     /// <summary>

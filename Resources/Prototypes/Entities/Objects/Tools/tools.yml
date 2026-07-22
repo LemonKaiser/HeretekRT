@@ -359,6 +359,7 @@
   description: The rapid construction device can be used to quickly place and remove various structures and fixtures. Requires compressed matter to function. Does not require swiping an ID to work.
   components:
   - type: RCD
+  - type: KoronusSafetyRcd
     availablePrototypes:
     - WallSolid
     - FloorSteel

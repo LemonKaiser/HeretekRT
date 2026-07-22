@@ -28,7 +28,7 @@
       - type: VesselMusic
         ambientMusicPrototype: FootfallMusic
       - type: VesselInfo
-        description: "The closest thing to civilisation in this sector. You almost feel safe."
+        description: "Footfall: an Imperial void port in the Cauldron, a wealthy waystation and rare island of stability before the uncharted Koronus Expanse."
       - type: SpawnPoint
         spawn_type: LateJoin
       components:

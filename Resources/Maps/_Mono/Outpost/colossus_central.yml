@@ -62124,6 +62124,8 @@ entities:
     - type: Transform
       pos: 29.5,42.5
       parent: 2
+- proto: SpawnPointWanderer
+  entities:
   - uid: 8351
     components:
     - type: Transform

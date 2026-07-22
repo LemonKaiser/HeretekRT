@@ -100,10 +100,6 @@ entities:
       preventEmpEvents: True
       preventExplosions: True
       preventRCDUse: True
-    - type: GridGodMode
-      protectedEntities: []
-    - type: GridRaider
-      protectedEntities: []
     - type: BecomesStation
       id: Frontier
     - type: InitRepairSnapshot

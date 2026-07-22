@@ -17,6 +17,8 @@
         Slash: 0.90
         Piercing: 1.05
         Heat: 1.10
+  - type: StaticPrice
+    price: 107
   - type: ItemDurability
     maxDurability: 360
     protectsWearer: true
@@ -167,6 +169,8 @@
         Slash: 0.85
         Piercing: 0.95
         Heat: 1.05
+  - type: StaticPrice
+    price: 55
   - type: ItemDurability
     maxDurability: 480
     protectsWearer: true
@@ -428,6 +432,8 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:Container {}
+      storagebase: !type:Container
+        ents: []
 
 - type: entity
   parent: ClothingOuterArmorFlakVest
@@ -506,5 +512,7 @@
         Slash: 0.95
         Piercing: 1.10
         Heat: 1.15
+  - type: StaticPrice
+    price: 150
   - type: ExplosionResistance
     damageCoefficient: 0.8

@@ -1,5 +1,5 @@
-koronus-expanse-title = Пространство Коронус
-koronus-expanse-description = Экспериментальный раунд с секторной картой Коронус и стартовой системой Футфол.
+rogue-trader-title = Rogue Trader
+rogue-trader-description = Экспедиция Вольного Торговца в Простор Коронус. По праву Торгового Патента прокладывайте опасные варп-маршруты, торгуйте на Футфоле и расширяйте влияние Империума.
 koronus-boundary-announcer = НАВИГАЦИОННЫЙ КОНТУР
 koronus-boundary-warning = ВНИМАНИЕ: ДОСТИГНУТА ВНЕШНЯЯ ГРАНИЦА СИСТЕМЫ { $system }. СНИЗЬТЕ СКОРОСТЬ И НЕМЕДЛЕННО ВЕРНИТЕСЬ ВНУТРЬ ПЕРИМЕТРА.
 koronus-boundary-target-denied = Выбранная цель находится за жёсткой границей текущей системы.
@@ -79,7 +79,7 @@ koronus-planetary-climate-airless-asteroid = Безвоздушный астер
 koronus-foulstone-forest-map-name = Лесная поверхность Фоулстоуна
 koronus-footfall-asteroid-map-name = Алтарь-Темплум-Каликсис-Экс-17
 koronus-footfall-dead-world-map-name = Мертвый мир Фурибундуса
-koronus-sector-map-unavailable = СЕКТОРНАЯ КАРТА НЕДОСТУПНА ВНЕ ПРОСТРАНСТВА КОРОНУС.
+rogue-trader-sector-map-unavailable = СЕКТОРНАЯ КАРТА ДОСТУПНА ТОЛЬКО В РЕЖИМЕ ROGUE TRADER.
 koronus-sector-map-ready = ВЫБЕРИТЕ СИСТЕМУ ДЛЯ ПРОСМОТРА ВАРП-ДАННЫХ. ПРАВАЯ КНОПКА МЫШИ: ПЕРЕМЕЩЕНИЕ КАРТЫ. КОЛЕСО: МАСШТАБ.
 koronus-sector-map-ftl-unavailable = ВАРП-ПРИВОД НЕДОСТУПЕН. КАРТА ОСТАЁТСЯ В РЕЖИМЕ ПРОСМОТРА.
 koronus-sector-map-current = ТЕКУЩАЯ СИСТЕМА: { $system }.

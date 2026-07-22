@@ -217,7 +217,7 @@ public sealed class ArmorPenetrationPrototypeTest
                 targetPart: TargetBodyPart.LeftArm);
 
             Assert.That(body.GetBodyPartStatus(target)[TargetBodyPart.LeftArm],
-                Is.EqualTo(TargetIntegrity.ModeratelyWounded),
+                Is.EqualTo(TargetIntegrity.SomewhatWounded),
                 "Анализатор должен получать степень повреждения руки с сервера");
 
             var legDamage = new DamageSpecifier();

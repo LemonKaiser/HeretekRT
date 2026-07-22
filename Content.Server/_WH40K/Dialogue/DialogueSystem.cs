@@ -198,7 +198,8 @@ public sealed class DialogueSystem : EntitySystem
 
         while (query.MoveNext(out _, out var actor))
         {
-            BeginPersistentMemoryLoad(new PersistentDialogueMemoryKey(actor.PlayerSession.UserId, memoryKey));
+            if (actor.PlayerSession is { } session)
+                BeginPersistentMemoryLoad(new PersistentDialogueMemoryKey(session.UserId, memoryKey));
         }
     }
 
@@ -484,18 +485,22 @@ public sealed class DialogueSystem : EntitySystem
 
     private void OnActorMove(EntityUid uid, ActorComponent component, ref MoveEvent args)
     {
-        if (_maxAutoTriggerRange <= 0f || _sessions.ContainsKey(component.PlayerSession))
+        if (component.PlayerSession is not { } session ||
+            _maxAutoTriggerRange <= 0f ||
+            _sessions.ContainsKey(session))
             return;
 
-        UpdateAutoTriggers(uid, component.PlayerSession);
+        UpdateAutoTriggers(uid, session);
     }
 
     private void OnActorStartup(EntityUid uid, ActorComponent component, ComponentStartup args)
     {
-        if (_maxAutoTriggerRange <= 0f || _sessions.ContainsKey(component.PlayerSession))
+        if (component.PlayerSession is not { } session ||
+            _maxAutoTriggerRange <= 0f ||
+            _sessions.ContainsKey(session))
             return;
 
-        UpdateAutoTriggers(uid, component.PlayerSession);
+        UpdateAutoTriggers(uid, session);
     }
 
     private void OnInteractableMove(EntityUid uid, DialogueInteractableComponent component, ref MoveEvent args)
@@ -515,10 +520,12 @@ public sealed class DialogueSystem : EntitySystem
 
         while (query.MoveNext(out var user, out var actor))
         {
-            if (Deleted(user) || _sessions.ContainsKey(actor.PlayerSession))
+            if (Deleted(user) ||
+                actor.PlayerSession is not { } session ||
+                _sessions.ContainsKey(session))
                 continue;
 
-            UpdateAutoTriggers(user, actor.PlayerSession);
+            UpdateAutoTriggers(user, session);
         }
     }
 
@@ -586,10 +593,10 @@ public sealed class DialogueSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (!TryComp(args.User, out ActorComponent? actor))
+        if (!TryComp(args.User, out ActorComponent? actor) || actor.PlayerSession is not { } session)
             return;
 
-        if (!TryStartDialogue(actor.PlayerSession, args.User, uid, component, autoTrigger: false))
+        if (!TryStartDialogue(session, args.User, uid, component, autoTrigger: false))
             return;
 
         args.Handled = true;
@@ -600,10 +607,10 @@ public sealed class DialogueSystem : EntitySystem
         if (args.Handled || !args.Complex)
             return;
 
-        if (!TryComp(args.User, out ActorComponent? actor))
+        if (!TryComp(args.User, out ActorComponent? actor) || actor.PlayerSession is not { } session)
             return;
 
-        if (!TryStartDialogue(actor.PlayerSession, args.User, uid, component, autoTrigger: false))
+        if (!TryStartDialogue(session, args.User, uid, component, autoTrigger: false))
             return;
 
         args.Handled = true;
@@ -614,13 +621,12 @@ public sealed class DialogueSystem : EntitySystem
         if (!args.CanAccess || !args.CanInteract)
             return;
 
-        if (!TryComp(args.User, out ActorComponent? actor))
+        if (!TryComp(args.User, out ActorComponent? actor) || actor.PlayerSession is not { } session)
             return;
 
-        if (_sessions.ContainsKey(actor.PlayerSession))
+        if (_sessions.ContainsKey(session))
             return;
 
-        var session = actor.PlayerSession;
         var user = args.User;
         var resuming = IsResumableSuspendedSession(session, uid);
 
@@ -1472,13 +1478,13 @@ public sealed class DialogueSystem : EntitySystem
         DialogueInteractableComponent component,
         out ResolvedDialogueInteraction interaction)
     {
-        if (!TryComp(initiator, out ActorComponent? actor))
+        if (!TryComp(initiator, out ActorComponent? actor) || actor.PlayerSession is not { } session)
         {
             interaction = default;
             return false;
         }
 
-        return TryResolveInteraction(initiator, actor.PlayerSession.UserId, target, component, out interaction);
+        return TryResolveInteraction(initiator, session.UserId, target, component, out interaction);
     }
 
     private bool TryResolveInteraction(

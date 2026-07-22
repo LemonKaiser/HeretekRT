@@ -216,7 +216,7 @@ public sealed class KoronusSectorMapControl : Control
         handle.DrawRect(PixelSizeBox, Color.Black);
         if (!_state.Available)
         {
-            DrawCentered(handle, Loc.GetString("koronus-sector-map-unavailable"), Color.LightGray);
+            DrawCentered(handle, Loc.GetString("rogue-trader-sector-map-unavailable"), Color.LightGray);
             return;
         }
 

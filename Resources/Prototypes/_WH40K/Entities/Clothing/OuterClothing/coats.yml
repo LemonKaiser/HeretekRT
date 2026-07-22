@@ -149,6 +149,8 @@
         Slash: 0.90
         Piercing: 1.00
         Heat: 1.05
+  - type: StaticPrice
+    price: 85
   - type: Sprite
     sprite: _WH40K/Clothing/OuterClothing/Robes/chaplain_robe.rsi
   - type: Clothing

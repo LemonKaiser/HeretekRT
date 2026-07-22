@@ -122,6 +122,8 @@
     sprite: _WH40K/Clothing/Head/Hardsuits/techpriest.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hardsuits/techpriest.rsi
+  - type: Item
+    heldPrefix: off
   - type: PointLight
     color: "#ffdbad"
   - type: PressureProtection
@@ -161,6 +163,8 @@
     sprite: _WH40K/Clothing/Head/Hoods/hood-magos_mars.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hoods/hood-magos_mars.rsi
+  - type: Item
+    heldPrefix: off
   - type: PointLight
     color: "#ffdbad"
   - type: PressureProtection
@@ -191,6 +195,8 @@
     sprite: _WH40K/Clothing/Head/Hoods/hood-skitarii_mars.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hoods/hood-skitarii_mars.rsi
+  - type: Item
+    heldPrefix: off
   - type: PointLight
     color: "#ffdbad"
   - type: PressureProtection
