@@ -28,8 +28,9 @@ public sealed class TrackingIssueAttribute : PropertyAttribute
         "github.com"
     ];
 
-    private static readonly Regex GithubStyleIssueMatch = new(@"^\/[a-z\-\$\#]*\/[a-z\-\$\#]*\/(issues|pulls)\/\d*$",
-        RegexOptions.Compiled | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase);
+    private static readonly Regex GitHubIssueOrPullPath = new(
+        @"^\/[a-z\d][a-z\d-]*\/[a-z\d_.-]+\/(?:issues|pulls)\/[1-9]\d*$",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.NonBacktracking | RegexOptions.IgnoreCase);
 
     public TrackingIssueAttribute([StringSyntax(StringSyntaxAttribute.Uri)] string url) : base(url)
     {
@@ -37,14 +38,17 @@ public sealed class TrackingIssueAttribute : PropertyAttribute
             throw new ArgumentException($"Expected a valid URL for {nameof(TrackingIssueAttribute)}, got {url}");
 
         // Assert the domain is reasonable.
-        if (!_validDomains.Contains(uri.Host, StringComparer.InvariantCultureIgnoreCase))
+        if (uri.Scheme != Uri.UriSchemeHttps)
+            throw new ArgumentException($"Expected an HTTPS URL for {nameof(TrackingIssueAttribute)}, got {url}");
+
+        if (!_validDomains.Contains(uri.Host, StringComparer.OrdinalIgnoreCase))
         {
             throw new ArgumentException(
                 $"Didn't recognize the domain used for the tracking issue, got {uri.Host}. We support: {string.Join(", ", _validDomains)}");
         }
 
         // Assert that the URL is reasonable.
-        if (!GithubStyleIssueMatch.IsMatch(uri.AbsolutePath))
+        if (!GitHubIssueOrPullPath.IsMatch(uri.AbsolutePath))
         {
             throw new ArgumentException(
                 $"Didn't recognize the provided github link, it should point to a specific pull request or issue. Got {uri.AbsolutePath}");

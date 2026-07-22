@@ -1,4 +1,5 @@
-using Content.Client.Administration.Managers;
+  using Content.Client.Administration.Managers;
+  using Content.Client._WH40K.Administration.ScreenCheck;
 using Content.Client.Changelog;
 using Content.Client.Chat.Managers;
 using Content.Client.DebugMon;
@@ -132,9 +133,10 @@ namespace Content.Client.Entry
             _prototypeManager.RegisterIgnore("pointOfInterest"); // Frontier: worldgen-related, server-only
 
             _componentFactory.GenerateNetIds();
-            _adminManager.Initialize();
-            _screenshotHook.Initialize();
-            _fullscreenHook.Initialize();
+             _adminManager.Initialize();
+             _screenshotHook.Initialize();
+             IoCManager.Resolve<ScreenCheckClientManager>().Initialize();
+             _fullscreenHook.Initialize();
             _changelogManager.Initialize();
             _viewportManager.Initialize();
             _ghostKick.Initialize();

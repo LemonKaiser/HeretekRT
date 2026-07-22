@@ -1,6 +1,7 @@
 using Content.Client.Administration.Managers;
 using Content.Client.Eui;
 using Content.Shared.Administration;
+using Content.Shared._WH40K.Administration.ScreenCheck;
 using Content.Shared.Eui;
 using JetBrains.Annotations;
 using Robust.Client.Console;
@@ -39,6 +40,7 @@ public sealed partial class PlayerPanelEui : BaseEui
         PlayerPanel.OnLogs += () => SendMessage(new PlayerPanelLogsMessage());
         PlayerPanel.OnRejuvenate += () => SendMessage(new PlayerPanelRejuvenationMessage());
         PlayerPanel.OnDelete+= () => SendMessage(new PlayerPanelDeleteMessage());
+        PlayerPanel.OnScreenCheck += () => SendMessage(new PlayerPanelScreenCheckMessage());
         PlayerPanel.OnOpenJobWhitelists += id => _console.ExecuteCommand($"jobwhitelists \"{id}\""); // DeltaV
 
         PlayerPanel.OnClose += () => SendMessage(new CloseEuiMessage());
@@ -69,6 +71,14 @@ public sealed partial class PlayerPanelEui : BaseEui
         PlayerPanel.SetSharedConnections(s.SharedConnections);
         PlayerPanel.SetFrozen(s.CanFreeze, s.Frozen);
         PlayerPanel.SetAhelp(s.CanAhelp);
-        PlayerPanel.SetButtons();
+        PlayerPanel.SetScreenCheckState(
+            s.HasActiveScreenCheck,
+            s.ActiveScreenCheckAdmin,
+            s.ActiveScreenCheckSinceUtc,
+            s.HasLastScreenCheck,
+            s.LastScreenCheckAdmin,
+            s.LastScreenCheckAtUtc,
+            s.LastScreenCheckStatus);
+        PlayerPanel.SetButtons(s.CanScreenCheck);
     }
 }

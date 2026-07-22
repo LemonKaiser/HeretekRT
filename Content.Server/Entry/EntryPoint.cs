@@ -1,6 +1,7 @@
 using Content.Server._Mono.Company; // Mono
 using Content.Server._Mono.MonoCoins; // Mono
-using Content.Server._NF.Auth;
+  using Content.Server._NF.Auth;
+  using Content.Server._WH40K.Administration.ScreenCheck;
 using Content.Server.Acz;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
@@ -111,9 +112,10 @@ namespace Content.Server.Entry
                 _dbManager.Init();
                 IoCManager.Resolve<IServerPreferencesManager>().Init();
                 IoCManager.Resolve<INodeGroupFactory>().Initialize();
-                IoCManager.Resolve<ContentNetworkResourceManager>().Initialize();
-                IoCManager.Resolve<GhostKickManager>().Initialize();
-                IoCManager.Resolve<ServerInfoManager>().Initialize();
+                 IoCManager.Resolve<ContentNetworkResourceManager>().Initialize();
+                 IoCManager.Resolve<GhostKickManager>().Initialize();
+                 IoCManager.Resolve<ScreenCheckManager>().Initialize();
+                 IoCManager.Resolve<ServerInfoManager>().Initialize();
                 IoCManager.Resolve<ServerApi>().Initialize();
                 IoCManager.Resolve<MiniAuthManager>();
 
