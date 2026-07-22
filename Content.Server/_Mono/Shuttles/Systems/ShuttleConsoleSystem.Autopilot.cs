@@ -154,7 +154,11 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         if (TryComp<AutoDockComponent>(shuttleGrid.Value, out var setting) && setting.Enabled)
         {
-            BeginAutoDock(ent, shuttleGrid.Value, targetGrid.Value);
+            // The target grid was chosen explicitly on the navigation map. Use the docking
+            // system's complete best configuration for that grid so every aligned port latches,
+            // rather than reducing it to whichever individual pair is currently closest.
+            var config = _docking.GetDockingConfig(shuttleGrid.Value, targetGrid.Value);
+            BeginAutoDock(ent, shuttleGrid.Value, targetGrid.Value, config);
             return;
         }
 
@@ -408,21 +412,21 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         if (_docking.GetDocks(shuttleGrid).Count <= 1 || _docking.GetDocks(targetGrid).Count <= 1)
             return selectedConfig;
 
-        // The selected pair identifies the closest target grid. Within that grid use the standard
-        // docking-system ranking, which deliberately prefers the configuration that joins the
-        // most compatible ports. Pair-local configurations cannot reliably be merged afterwards:
-        // their origin coordinates differ even when their final hull placement is identical.
-        var fullConfiguration = _docking.GetDockingConfig(shuttleGrid, targetGrid);
-        // The global ranking may describe a completely different side of a large multi-port
-        // shuttle. Substituting it here made every candidate pair reuse that one transform, so a
-        // blocked bow configuration could hide clear stern or side ports. Expand only when the
-        // globally ranked row actually contains the pair currently being evaluated.
-        if (fullConfiguration != null &&
-            fullConfiguration.Docks.Count > selectedConfig.Docks.Count &&
-            fullConfiguration.Docks.Any(pair =>
-                pair.DockAUid == shuttleDockUid && pair.DockBUid == targetDockUid))
+        // Pair-local configurations cannot be merged afterwards: their origin coordinates differ
+        // even when their final hull placement is identical. Ask the docking system for every
+        // compatible port at exactly the selected pose instead of using its globally best pose,
+        // which may belong to another side of a large shuttle.
+        var expandedConfiguration = _docking.GetDockingConfigAt(
+            shuttleGrid,
+            targetGrid,
+            selectedConfig.Coordinates,
+            selectedConfig.Angle,
+            fallback: false);
+        if (expandedConfiguration != null &&
+            expandedConfiguration.Docks.Count > selectedConfig.Docks.Count)
         {
-            return fullConfiguration;
+            expandedConfiguration.TargetGrid = targetGrid;
+            return expandedConfiguration;
         }
 
         selectedConfig.TargetGrid = targetGrid;

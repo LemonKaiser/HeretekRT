@@ -48,6 +48,8 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     private bool _hideHud;
     private bool _duckBackgroundMusic;
     private float _backgroundMusicDuckGain = 0.08f;
+    private DialogueSceneData? _pendingScene;
+    private DialogueLineData? _pendingLine;
     private EntityUid? _musicStream;
     private EntityUid? _voiceStream;
     private ResolvedSoundSpecifier? _currentMusic;
@@ -76,6 +78,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         _overlay.ChoiceSelected += OnChoiceSelected;
         _overlay.CancelPressed += OnCancelPressed;
         ReattachOverlay();
+        PresentPendingDialogue();
     }
 
     public void OnStateExited(GameplayState state)
@@ -162,25 +165,22 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         _hideHud = ev.Scene.HideHud;
         _duckBackgroundMusic = ev.Scene.DuckBackgroundMusic;
         _backgroundMusicDuckGain = ev.Scene.BackgroundMusicDuckGain;
+        _pendingScene = ev.Scene;
+        _pendingLine = ev.Line;
 
         if (_overlay == null)
             return;
 
-        ReattachOverlay();
-        _overlay.ApplyScene(ev.Scene, playEntrance: !preservePresentation);
-
-        ApplyMusicCue(ev.Scene.Music);
-        ApplyLine(ev.Line, playActorEntrance: !preservePresentation);
-        // Build the line, choices and their final layout while the overlay is
-        // still hidden. Showing it earlier allowed an opening frame with the
-        // controls' default positions before the next UI arrange pass.
-        _overlay.Visible = true;
-        UpdateHudVisibility();
+        PresentDialogue(ev.Scene, ev.Line, playEntrance: !preservePresentation);
     }
 
     private void OnDialogueUpdated(DialogueLineUpdateEvent ev, EntitySessionEventArgs args)
     {
-        if (_sessionId != ev.SessionId || _overlay == null)
+        if (_sessionId != ev.SessionId)
+            return;
+
+        _pendingLine = ev.Line;
+        if (_overlay == null)
             return;
 
         ApplyLine(ev.Line);
@@ -192,6 +192,31 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             return;
 
         ResetDialogueState();
+    }
+
+    private void PresentPendingDialogue()
+    {
+        if (_pendingScene == null || _pendingLine == null)
+            return;
+
+        PresentDialogue(_pendingScene, _pendingLine, playEntrance: true);
+    }
+
+    private void PresentDialogue(DialogueSceneData scene, DialogueLineData line, bool playEntrance)
+    {
+        if (_overlay == null)
+            return;
+
+        ReattachOverlay();
+        _overlay.ApplyScene(scene, playEntrance);
+
+        ApplyMusicCue(scene.Music);
+        ApplyLine(line, playActorEntrance: playEntrance);
+        // Build the line, choices and their final layout while the overlay is
+        // still hidden. Showing it earlier allowed an opening frame with the
+        // controls' default positions before the next UI arrange pass.
+        _overlay.Visible = true;
+        UpdateHudVisibility();
     }
 
     private void ApplyLine(DialogueLineData line, bool playActorEntrance = false)
@@ -333,6 +358,8 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         _autoAdvanceAfter = null;
         _autoAdvanceRemaining = 0f;
         _hideHud = false;
+        _pendingScene = null;
+        _pendingLine = null;
         if (_duckBackgroundMusic)
             _contentAudio.PopMusicDuck();
 
