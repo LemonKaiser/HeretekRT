@@ -24,21 +24,36 @@ public sealed partial class DamageOverlayUiController : UIController
 
     public override void Initialize()
     {
+        base.Initialize();
+
         _overlay = new Overlays.DamageOverlay();
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnPlayerAttach);
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnPlayerDetached);
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<MobThresholdChecked>(OnThresholdCheck);
+
+        // A controller may be loaded after the client has already attached to its body
+        // (for example after a content hot reload). In that case there is no second
+        // LocalPlayerAttachedEvent to add the standard damage overlay.
+        if (_playerManager.LocalEntity is { } entity)
+            AttachOverlay(entity);
     }
 
     private void OnPlayerAttach(LocalPlayerAttachedEvent args)
     {
+        AttachOverlay(args.Entity);
+    }
+
+    private void AttachOverlay(EntityUid entity)
+    {
         ClearOverlay();
-        if (!EntityManager.TryGetComponent<MobStateComponent>(args.Entity, out var mobState))
+        if (!EntityManager.TryGetComponent<MobStateComponent>(entity, out var mobState))
             return;
         if (mobState.CurrentState != MobState.Dead)
-            UpdateOverlays(args.Entity, mobState);
-        _overlayManager.AddOverlay(_overlay);
+            UpdateOverlays(entity, mobState);
+
+        if (!_overlayManager.HasOverlay<Overlays.DamageOverlay>())
+            _overlayManager.AddOverlay(_overlay);
     }
 
     private void OnPlayerDetached(LocalPlayerDetachedEvent args)

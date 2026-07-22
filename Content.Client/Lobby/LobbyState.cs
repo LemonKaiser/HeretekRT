@@ -1,4 +1,6 @@
 using Content.Client._NF.LateJoin;
+using Content.Client._WH40K.DeathTransition;
+using Content.Client.Administration.Managers;
 using Content.Client.Audio;
 using Content.Client.Eui;
 using Content.Client.GameTicking.Managers;
@@ -7,6 +9,7 @@ using Content.Client.Message;
 using Content.Client.UserInterface.Systems.Chat;
 using Content.Client.Voting;
 using Content.Shared.CCVar;
+using Content.Shared.Administration;
 using Robust.Client;
 using Robust.Client.Console;
 using Robust.Client.Graphics;
@@ -32,12 +35,15 @@ namespace Content.Client.Lobby
         [Dependency] private IGameTiming _gameTiming = default!;
         [Dependency] private IVoteManager _voteManager = default!;
         [Dependency] private IPrototypeManager _protoMan = default!;
+        [Dependency] private IClientAdminManager _adminManager = default!;
 
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
+        private GhostPermissionStatusSystem _ghostPermissionStatus = default!;
         private LobbyBackgroundController? _lobbyBackgroundController;
         private ChatUIController? _chatController;
         private bool? _lastRoundStarted;
+        private bool? _lastObserveAvailable;
         private long _lastLobbyClockSecond = long.MinValue;
         private bool? _lastLobbyClockRoundStarted;
         private bool? _lastLobbyClockPaused;
@@ -60,6 +66,7 @@ namespace Content.Client.Lobby
             _chatController = _userInterfaceManager.GetUIController<ChatUIController>();
             _gameTicker = _entityManager.System<ClientGameTicker>();
             _contentAudioSystem = _entityManager.System<ContentAudioSystem>();
+            _ghostPermissionStatus = _entityManager.System<GhostPermissionStatusSystem>();
             _contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
 
             _chatController.SetMainChat(true);
@@ -93,6 +100,8 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated += LobbyLateJoinStatusUpdated;
+            _ghostPermissionStatus.StatusUpdated += UpdateLobbyUi;
+            _adminManager.AdminStatusUpdated += UpdateLobbyUi;
         }
 
         protected override void Shutdown()
@@ -101,6 +110,8 @@ namespace Content.Client.Lobby
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
+            _ghostPermissionStatus.StatusUpdated -= UpdateLobbyUi;
+            _adminManager.AdminStatusUpdated -= UpdateLobbyUi;
             _contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
 
             _voteManager.ClearPopupContainer();
@@ -114,6 +125,7 @@ namespace Content.Client.Lobby
             _lobbyBackgroundController = null;
             _chatController = null;
             _lastRoundStarted = null;
+            _lastObserveAvailable = null;
             Lobby = null;
         }
 
@@ -158,6 +170,7 @@ namespace Content.Client.Lobby
             Lobby?.UpdateChatAnimation(e.DeltaSeconds);
             Lobby?.UpdateVisualEffects(e.DeltaSeconds);
 
+            UpdateObserveButton();
             UpdateLobbyClock();
         }
 
@@ -253,7 +266,6 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Pressed = false;
                 Lobby.UpdateReadyButtonVisual(ready: false, roundStarted: true);
-                Lobby!.ObserveButton.Disabled = false;
             }
             else
             {
@@ -264,8 +276,9 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ReadyButton.Pressed = ready;
                 Lobby.UpdateReadyButtonVisual(ready, roundStarted: false);
-                Lobby!.ObserveButton.Disabled = true;
             }
+
+            UpdateObserveButton();
 
             if (_gameTicker.ServerInfoBlob != null)
             {
@@ -281,6 +294,32 @@ namespace Content.Client.Lobby
 
             _lastRoundStarted = roundStarted;
             Lobby!.SetChatExpanded(!roundStarted);
+        }
+
+        private bool CanObserve()
+        {
+            return _ghostPermissionStatus.CanObserve
+                   || (_adminManager.IsActive()
+                       && (_adminManager.HasFlag(AdminFlags.Admin)
+                           || _adminManager.HasFlag(AdminFlags.Moderator)));
+        }
+
+        /// <summary>
+        /// The admin-status packet normally invokes this through <see cref="UpdateLobbyUi"/>.
+        /// The state comparison in the frame loop also covers a status change received while
+        /// the lobby is being recreated, without repeatedly touching the UI.
+        /// </summary>
+        private void UpdateObserveButton()
+        {
+            if (Lobby == null)
+                return;
+
+            var available = _gameTicker.IsGameStarted && CanObserve();
+            if (_lastObserveAvailable == available)
+                return;
+
+            _lastObserveAvailable = available;
+            Lobby.SetObserveAvailable(available);
         }
 
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)

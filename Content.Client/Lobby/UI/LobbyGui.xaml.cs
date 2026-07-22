@@ -334,6 +334,18 @@ public sealed partial class LobbyGui : UIScreen
 
     private void UpdateMenuRowHoverState(MenuRowPresentation presentation)
     {
+        if (presentation.Button.Disabled)
+        {
+            if (!presentation.Hovered && !presentation.Pressed && presentation.HoverAmount == 0f)
+                return;
+
+            presentation.Hovered = false;
+            presentation.Pressed = false;
+            presentation.HoverAmount = 0f;
+            presentation.VisualDirty = true;
+            return;
+        }
+
         var hovered = presentation.Button.IsHovered || UserInterfaceManager.CurrentlyHovered == presentation.Row;
         if (presentation.Hovered == hovered)
             return;
@@ -773,6 +785,30 @@ public sealed partial class LobbyGui : UIScreen
         ApplyReadyButtonVisual(ready, roundStarted, pulse: 0f);
     }
 
+    /// <summary>
+    /// Updates both the input state and the visual state of the observe row.
+    /// This menu has a custom presentation, so the stock disabled-button styling
+    /// is not sufficiently visible on its own.
+    /// </summary>
+    public void SetObserveAvailable(bool available)
+    {
+        ObserveButton.Disabled = !available;
+        ObserveRow.Modulate = Color.White;
+        ObserveIndex.FontColorOverride = available ? Gold : Color.FromHex("#8A806D");
+
+        foreach (var presentation in _menuRows)
+        {
+            if (presentation.Button != ObserveButton)
+                continue;
+
+            presentation.Hovered = false;
+            presentation.Pressed = false;
+            presentation.HoverAmount = 0f;
+            presentation.VisualDirty = true;
+            UpdateMenuRowPresentation(presentation, reducedMotion: true);
+        }
+    }
+
     private void ApplyReadyButtonVisual(bool ready, bool roundStarted, float pulse)
     {
         if (roundStarted)
@@ -967,6 +1003,17 @@ public sealed partial class LobbyGui : UIScreen
 
     private static void UpdateMenuRowPresentation(MenuRowPresentation presentation, bool reducedMotion)
     {
+        if (presentation.Button.Disabled)
+        {
+            presentation.HoverAmount = 0f;
+            presentation.Pressed = false;
+            presentation.Button.Label.Margin = default;
+            presentation.Button.Label.FontColorOverride = Color.FromHex("#8A806D");
+            ApplyStandardRowVisual(presentation.Row, hovered: false);
+            presentation.VisualDirty = false;
+            return;
+        }
+
         if (reducedMotion)
             presentation.HoverAmount = presentation.Hovered ? 1f : 0f;
 

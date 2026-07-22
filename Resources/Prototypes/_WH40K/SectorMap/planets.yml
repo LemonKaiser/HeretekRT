@@ -113,7 +113,7 @@
   id: FootfallDeadWorldSurface
   mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
   planet: FootfallDeadWorldProfile
-  playableSize: 100, 100
+  playableSize: 200, 200
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -160,6 +160,7 @@
   id: FootfallAsteroidSurface
   mapPath: /Maps/_WH40K/Planets/footfall_asteroid_surface.yml
   planet: FootfallAsteroidWorld
+  safetyProfile: KoronusPlanetSafeSurface
   # Half-sized gameplay profile compared with Foulstone, with a small generated scenery margin.
   playableSize: 50, 50
   sceneryBuffer: 15

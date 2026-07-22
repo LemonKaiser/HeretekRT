@@ -21,3 +21,8 @@
   id: ItemRarityWorldGlow
   kind: source
   path: "/Textures/_WH40K/Shaders/item_rarity_glow.swsl"
+
+- type: shader
+  id: HeretekDeathTransition
+  kind: source
+  path: "/Textures/_WH40K/Shaders/death_transition.swsl"

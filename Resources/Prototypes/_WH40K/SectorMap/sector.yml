@@ -26,7 +26,7 @@
       stationProto: StandardFrontierStation
       gridComponents:
       - type: VesselMusic
-        ambientMusicPrototype: ColossusCentralMusic
+        ambientMusicPrototype: FootfallMusic
       - type: VesselInfo
         description: "The closest thing to civilisation in this sector. You almost feel safe."
       - type: SpawnPoint

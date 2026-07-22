@@ -334,6 +334,15 @@ namespace Content.Server.GameTicking
         }
 
         /// <summary>
+        /// Leaves the current character and returns a player to the lobby without touching respawn or cryosleep timers.
+        /// </summary>
+        public void ReturnPlayerToLobby(ICommonSession player)
+        {
+            _mind.WipeMind(player);
+            PlayerJoinLobby(player);
+        }
+
+        /// <summary>
         /// Makes a player join into the game and spawn on a station.
         /// </summary>
         /// <param name="player">The player joining</param>

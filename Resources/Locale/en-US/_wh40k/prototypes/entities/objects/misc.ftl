@@ -45,3 +45,7 @@ ent-WH40KImperialCombatShield = imperial combat shield
     .desc = A reinforced ballistic shield for Imperial line troops.
 ent-WH40KOrkShield = ork shield
     .desc = Crude, heavy and surprisingly durable.
+ent-WandererPDA = wanderer PDA
+    .desc = A battered personal data assistant that has seen more roads than its owner remembers.
+ent-WandererIDCard = wanderer ID card
+    .desc = An identification card for a traveler without a fixed destination.

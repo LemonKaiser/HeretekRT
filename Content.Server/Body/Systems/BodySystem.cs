@@ -1,6 +1,7 @@
 using Content.Server.Body.Components;
 using Content.Server.Ghost;
 using Content.Server.Humanoid;
+using Content.Server._WH40K.DeathTransition;
 using Content.Shared._Shitmed.Body.Part;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Part;
@@ -29,6 +30,7 @@ public sealed partial class BodySystem : SharedBodySystem // Shitmed change: mad
     [Dependency] private SharedAppearanceSystem _appearance = default!; // Shitmed Change
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedMindSystem _mindSystem = default!;
+    [Dependency] private GhostPermissionSystem _ghostPermissions = default!;
 
     public override void Initialize()
     {
@@ -47,7 +49,10 @@ public sealed partial class BodySystem : SharedBodySystem // Shitmed change: mad
             return;
         }
 
-        if (_mobState.IsDead(ent) && _mindSystem.TryGetMind(ent, out var mindId, out var mind))
+        if (_mobState.IsDead(ent)
+            && _mindSystem.TryGetMind(ent, out var mindId, out var mind)
+            && mind.UserId is { } userId
+            && _ghostPermissions.CanObserve(userId))
         {
             // mind.TimeOfDeath ??= _gameTiming.RealTime;
             mind.TimeOfDeath ??= _gameTiming.CurTime; // Frontier - fix returning to body messing with the your TOD

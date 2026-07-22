@@ -1936,6 +1936,9 @@ ent-StatueWH1 = statue
 
 ent-StatueWH1Broken = broken statue
 
+ent-StatueWHCandleBearer = statue of the flame keeper
+    .desc = A stone wanderer cradles a lone flame in his hands. Its light is weak, yet it does not fade.
+
 ent-StatueWH3 = statue
     .desc = One of the great many statues that stand silently for centuries, delighting the eyes of everyone who contemplates them.
 

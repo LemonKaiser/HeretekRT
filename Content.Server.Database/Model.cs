@@ -48,6 +48,7 @@ namespace Content.Server.Database
         public DbSet<IPIntelCache> IPIntelCache { get; set; } = null!;
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
         public DbSet<DialoguePersistentMemory> DialoguePersistentMemories { get; set; } = null!;
+        public DbSet<GhostPermission> GhostPermissions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1373,6 +1374,19 @@ namespace Content.Server.Database
 
         [Required]
         public string Data { get; set; } = default!;
+
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(PlayerUserId))]
+    [Table("ghost_permission")]
+    public class GhostPermission
+    {
+        public Guid PlayerUserId { get; set; }
+
+        public int RemainingUses { get; set; }
+
+        public DateTime? ExpiresAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
     }

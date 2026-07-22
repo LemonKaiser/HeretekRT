@@ -25,3 +25,19 @@
   components:
   - type: Sprite
     state: statue1broken
+
+- type: entity
+  id: StatueWHCandleBearer
+  parent: BaseStructure
+  suffix: WH40K
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _WH40K/Structures/Decorations/candlebearer_statue.rsi
+    state: statue
+    drawdepth: Mobs
+    offset: "0.0,0.5"
+  - type: PointLight
+    radius: 0.8
+    energy: 0.25
+    color: "#ffcb85"

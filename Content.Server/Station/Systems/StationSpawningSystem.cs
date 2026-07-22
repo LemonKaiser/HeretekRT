@@ -275,28 +275,31 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 }
             }
 
-            // Frontier: do not re-equip roleLoadout, make sure we equip job startingGear,
-            // and deduct loadout costs from a bank account if we have one.
-            if (prototype?.StartingGear is not null)
-            {
-                EquipStartingGear(entity.Value, prototype.StartingGear, raiseEvent: false);
-
-                // Add support for IPC encryption keys from job starting gear headsets
-                if (HasComp<EncryptionKeyHolderComponent>(entity.Value) &&
-                    _prototypeManager.TryIndex(prototype.StartingGear, out var startingGearProto))
-                {
-                    _internalEncryption.TryInsertEncryptionKey(entity.Value, startingGearProto);
-                }
-            }
-
-            var bankComp = EnsureComp<BankAccountComponent>(entity.Value);
-
             if (hasBalance)
             {
                 // also spend long-term currency on this
                 _bank.TryBankWithdraw(session!, prefs!, profile!, (int)(initialBankBalance - bankBalance), out var newBalance, true);
             }
             /// End Frontier: overwriting EquipRoleLoadout
+        }
+
+        // A bank account belongs to the character, not to the optional role loadout.
+        // Roles without a RoleLoadout (such as Wanderer) must be able to use banking services too.
+        if (profile != null)
+            EnsureComp<BankAccountComponent>(entity.Value);
+
+        // Job starting gear is mandatory base equipment, not a character loadout.
+        // Roles without a RoleLoadout must receive it as well.
+        if (prototype?.StartingGear is not null)
+        {
+            EquipStartingGear(entity.Value, prototype.StartingGear, raiseEvent: false);
+
+            // Add support for IPC encryption keys from job starting gear headsets.
+            if (HasComp<EncryptionKeyHolderComponent>(entity.Value) &&
+                _prototypeManager.TryIndex(prototype.StartingGear, out var startingGearProto))
+            {
+                _internalEncryption.TryInsertEncryptionKey(entity.Value, startingGearProto);
+            }
         }
 
         var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);

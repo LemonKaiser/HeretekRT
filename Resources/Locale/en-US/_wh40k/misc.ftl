@@ -7,3 +7,5 @@ chat-radio-vox-imperium = imperium vox
 chat-radio-vox-heretics = heretics vox
 ent-EncryptionKeyVoxImperium = imperium vox encryption key
 ent-EncryptionKeyVoxHeretics = heretics vox encryption key
+heretek-death-transition-title = YOU ARE DEAD
+heretek-death-surrender-hint = Your body can still be revived. If you choose not to wait for help, press R to surrender and leave this world.

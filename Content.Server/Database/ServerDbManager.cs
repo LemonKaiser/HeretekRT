@@ -380,6 +380,14 @@ namespace Content.Server.Database
 
         #endregion
 
+        #region Ghost Permissions
+
+        Task<GhostPermissionData?> GetGhostPermissionAsync(NetUserId userId, CancellationToken cancel = default);
+        Task SetGhostPermissionAsync(NetUserId userId, GhostPermissionData permission, CancellationToken cancel = default);
+        Task RemoveGhostPermissionAsync(NetUserId userId, CancellationToken cancel = default);
+
+        #endregion
+
         #region DB Notifications
 
         void SubscribeToNotifications(Action<DatabaseNotification> handler);
@@ -1179,6 +1187,27 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.SetDialoguePersistentMemoryAsync(userId, memoryKey, data, cancel));
+        }
+
+        public Task<GhostPermissionData?> GetGhostPermissionAsync(NetUserId userId, CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetGhostPermissionAsync(userId, cancel));
+        }
+
+        public Task SetGhostPermissionAsync(
+            NetUserId userId,
+            GhostPermissionData permission,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetGhostPermissionAsync(userId, permission, cancel));
+        }
+
+        public Task RemoveGhostPermissionAsync(NetUserId userId, CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.RemoveGhostPermissionAsync(userId, cancel));
         }
 
         public void SubscribeToNotifications(Action<DatabaseNotification> handler)
