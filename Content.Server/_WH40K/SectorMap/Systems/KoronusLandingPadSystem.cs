@@ -285,7 +285,10 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         component.Enabled = enabled;
         if (!string.IsNullOrWhiteSpace(stableId))
             component.PadId = stableId;
-        Dirty(console, component);
+
+        // The console component is server-only. Its configuration is sent to clients through the
+        // bound UI state in UpdateUi, so trying to dirty it would violate the networked-component
+        // contract and fail in DebugOpt integration tests.
         return true;
     }
 
