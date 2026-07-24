@@ -1,6 +1,8 @@
 using Content.Server.Atmos.EntitySystems;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Explosion.Components.OnTrigger;
 using Content.Shared.Explosion.EntitySystems;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Shared.Timing;
 using Content.Shared.Tag; //Mono
 
@@ -17,6 +19,7 @@ public sealed partial class ReleaseGasOnTriggerSystem : SharedReleaseGasOnTrigge
     [Dependency] private AtmosphereSystem _atmosphereSystem = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private TagSystem _tagSystem = default!; //Mono
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     public override void Initialize()
     {
@@ -30,6 +33,12 @@ public sealed partial class ReleaseGasOnTriggerSystem : SharedReleaseGasOnTrigge
     /// </summary>
     private void OnTrigger(Entity<ReleaseGasOnTriggerComponent> ent, ref TriggerEvent args)
     {
+        if (_safety.HasRule(ent.Owner, KoronusSafetyRule.AtmosphericRelease))
+        {
+            QueueDel(ent);
+            return;
+        }
+
         ent.Comp.Active = true;
         ent.Comp.NextReleaseTime = _timing.CurTime;
         ent.Comp.StartingTotalMoles = ent.Comp.Air.TotalMoles;
@@ -47,6 +56,12 @@ public sealed partial class ReleaseGasOnTriggerSystem : SharedReleaseGasOnTrigge
         {
             if (!comp.Active || comp.NextReleaseTime > curTime)
                 continue;
+
+            if (_safety.HasRule(uid, KoronusSafetyRule.AtmosphericRelease))
+            {
+                QueueDel(uid);
+                continue;
+            }
 
             var giverGasMix = comp.Air.Remove(comp.StartingTotalMoles * comp.RemoveFraction);
             var environment = _atmosphereSystem.GetContainingMixture(uid, false, true);

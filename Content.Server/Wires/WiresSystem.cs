@@ -12,6 +12,7 @@ using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Tools.Components;
 using Content.Shared.Wires;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._Mono.NoHack;
 using Content.Server._WH40K.SectorMap.Systems;
 using Robust.Server.GameObjects;
@@ -53,6 +54,7 @@ public sealed partial class WiresSystem : SharedWiresSystem
         SubscribeLocalEvent<WiresComponent, PowerChangedEvent>(OnWiresPowered);
         SubscribeLocalEvent<WiresComponent, WireDoAfterEvent>(OnDoAfter);
         SubscribeLocalEvent<WiresPanelSecurityComponent, WiresPanelSecurityEvent>(SetWiresPanelSecurity);
+        SubscribeLocalEvent<WiresPanelComponent, AttemptChangePanelEvent>(OnAttemptChangePanel);
     }
 
     private void SetOrCreateWireLayout(EntityUid uid, WiresComponent? wires = null)
@@ -455,6 +457,19 @@ public sealed partial class WiresSystem : SharedWiresSystem
                 args.Handled = true;
             }
         }
+    }
+
+    private void OnAttemptChangePanel(EntityUid uid, WiresPanelComponent component, ref AttemptChangePanelEvent args)
+    {
+        if (args.Cancelled ||
+            !_koronusSafety.HasRule(uid, KoronusSafetyRule.MaintenancePanelScrewdriving))
+        {
+            return;
+        }
+
+        args.Cancelled = true;
+        if (args.User != null)
+            _popupSystem.PopupCursor(Loc.GetString("koronus-safety-panels-blocked"), args.User.Value);
     }
 
     private void OnPanelChanged(Entity<WiresComponent> ent, ref PanelChangedEvent args)

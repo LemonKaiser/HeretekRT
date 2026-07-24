@@ -1,5 +1,6 @@
 using Content.Shared.Actions;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.Events;
 using Content.Shared.Body.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Timing;
@@ -102,7 +103,12 @@ public abstract partial class SharedGasTankSystem : EntitySystem
             Text = component.IsValveOpen ? Loc.GetString("comp-gas-tank-close-valve") : Loc.GetString("comp-gas-tank-open-valve"),
             Act = () =>
             {
-                component.IsValveOpen = !component.IsValveOpen;
+                var attempt = new GasTankValveAttemptEvent(args.User, !component.IsValveOpen);
+                RaiseLocalEvent(uid, attempt);
+                if (attempt.Cancelled)
+                    return;
+
+                component.IsValveOpen = attempt.Open;
                 _audio.PlayPredicted(component.ValveSound, uid, args.User);
                 Dirty(uid, component);
             },

@@ -1,6 +1,9 @@
 ﻿using Content.Server.Radiation.Components;
 using Content.Shared.Radiation.Components;
 using Content.Shared.Radiation.Events;
+using Content.Server._WH40K.SectorMap.Systems;
+using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared.Projectiles;
 using Content.Shared.Stacks;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
@@ -15,6 +18,7 @@ public sealed partial class RadiationSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedMapSystem _maps = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     private EntityQuery<RadiationBlockingContainerComponent> _blockerQuery;
     private EntityQuery<RadiationGridResistanceComponent> _resistanceQuery;

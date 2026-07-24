@@ -1,6 +1,8 @@
 using System.Numerics;
 using Content.Server.Radiation.Components;
 using Content.Server.Radiation.Events;
+using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared.Projectiles;
 using Content.Shared.Radiation.Components;
 using Content.Shared.Radiation.Systems;
 using Robust.Shared.Collections;
@@ -42,7 +44,8 @@ public partial class RadiationSystem
 
         while (sources.MoveNext(out var uid, out var source, out var xform))
         {
-            if (!source.Enabled)
+            if (!source.Enabled ||
+                HasComp<ProjectileComponent>(uid) && _safety.HasRule(uid, KoronusSafetyRule.RadiationMunitions))
                 continue;
 
             var worldPos = _transform.GetWorldPosition(xform);

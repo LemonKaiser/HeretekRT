@@ -555,6 +555,15 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     private void ConfigureInitialGrid(EntityUid grid, KoronusSystemPrototype system)
     {
+        if (system.InitialGridLocalSafetyProfile is { } localProfile)
+        {
+            var localSafety = EnsureComp<KoronusGridSafetyProfileComponent>(grid);
+            localSafety.Profile = localProfile;
+
+            // This local safety policy stays server-only. The networked safety zone below is
+            // dirtied separately when a client-visible boundary is configured.
+        }
+
         if (system.InitialGridSafetyProfile is { } profile && system.InitialGridSafetyRadius > 0f)
         {
             var zone = EnsureComp<KoronusSafetyZoneComponent>(grid);

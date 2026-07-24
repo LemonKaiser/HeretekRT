@@ -31,6 +31,20 @@
   protectNonHostileMobs: true
 
 - type: koronusSafetyProfile
+  id: KoronusFootfallStationRestrictions
+  autoCleanPuddles: true
+  blockMaintenancePanelScrewdriving: true
+  blockAnchoring: true
+  blockDeconstruction: true
+  blockHandheldEntityPlacement: true
+  blockChemicalEffects: true
+  blockRadiationMunitions: true
+  autoCleanupArtifacts: true
+  autoCleanupHostileNpcs: true
+  blockPlayerDisposal: true
+  blockAtmosphericRelease: true
+
+- type: koronusSafetyProfile
   id: KoronusPlanetSafeSurface
   blockShipWeapons: true
   blockPlayerDamage: true
