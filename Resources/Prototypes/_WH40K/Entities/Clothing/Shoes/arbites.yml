@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingShoesBootsworkTechpriest
+  id: ClothingShoesBootsArbites
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/shared/boots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/shared/boots.rsi
+  - type: ClothingSlowOnDamageModifier
+    modifier: 0.5

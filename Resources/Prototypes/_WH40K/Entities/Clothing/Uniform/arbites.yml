@@ -1,0 +1,9 @@
+- type: entity
+  parent: UnsensoredClothingUniformBase
+  id: ClothingUniformJumpsuitArbites
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/shared/uniform.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/shared/uniform.rsi

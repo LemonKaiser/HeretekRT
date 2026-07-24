@@ -1,0 +1,194 @@
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetArbiteMinoris
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/minoris/helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/minoris/helmet.rsi
+  - type: Item
+    size: Normal
+  - type: Armor
+    armorRating: 150
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.80
+        Piercing: 0.80
+        Heat: 0.80
+  - type: ItemDurability
+    maxDurability: 500
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+  - type: ItemToggle
+    onUse: false
+    soundActivate:
+      path: /Audio/Items/flashlight_on.ogg
+    soundDeactivate:
+      path: /Audio/Items/flashlight_off.ogg
+    soundFailToActivate:
+      path: /Audio/Machines/button.ogg
+  - type: ToggleClothing
+    action: ActionWH40KToggleSpecialistHelmet
+    disableOnUnequip: true
+  - type: ComponentToggler
+    components:
+    - type: ShowHealthBars
+    - type: ShowHealthIcons
+    - type: WH40KNightVision
+  - type: UseDelay
+    delay: 1
+
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetArbiteMedius
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/medius/helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/medius/helmet.rsi
+  - type: Item
+    size: Normal
+  - type: Armor
+    armorRating: 165
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.75
+  - type: ItemDurability
+    maxDurability: 500
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+  - type: ItemToggle
+    onUse: false
+    soundActivate:
+      path: /Audio/Items/flashlight_on.ogg
+    soundDeactivate:
+      path: /Audio/Items/flashlight_off.ogg
+    soundFailToActivate:
+      path: /Audio/Machines/button.ogg
+  - type: ToggleClothing
+    action: ActionWH40KToggleSpecialistHelmet
+    disableOnUnequip: true
+  - type: ComponentToggler
+    components:
+    - type: ShowHealthBars
+    - type: ShowHealthIcons
+    - type: WH40KNightVision
+  - type: UseDelay
+    delay: 1
+#   type: UserInterface
+#    interfaces:
+#      enum.StoreUiKey.Key:
+#        type: WH40KVoxStoreBoundUserInterface
+#  - type: ActivatableUI
+#    key: enum.StoreUiKey.Key
+#  - type: WH40KVoxSupplyDropStore
+#    account: WH40KImperium
+#    teamId: Imperium
+#    fundsCurrency: WH40KFactionFunds
+#    dropDelaySeconds: 10
+#    cooldownSeconds: 60
+#    markerPrototype: WH40KSupplyDropParachuteCrateVisual
+#    deliveryCratePrototype: WH40KVoxSupplyDropCrate
+#    listingDropAmounts:
+#      ArbiteBulkDropWHSoup: 5
+#      ArbiteBulkDropMagazineStubRifle: 25
+#      ArbiteBulkDropAutogunAmmoBox: 5
+#      ArbiteBulkDropCombatMedkit: 5
+#    listings:
+#    - ArbiteBulkDropWHSoup
+#    - ArbiteBulkDropMagazineStubRifle
+#    - ArbiteBulkDropAutogunAmmoBox
+#    - ArbiteBulkDropCombatMedkit
+
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetArbiteMajoris
+  suffix: WH40K, Арбитры, Arbites, Admin
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/majoris/helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/majoris/helmet.rsi
+  - type: Item
+    size: Normal
+  - type: Armor
+    armorRating: 180
+    modifiers:
+      coefficients:
+        Blunt: 0.80
+        Slash: 0.70
+        Piercing: 0.70
+        Heat: 0.70
+  - type: ItemDurability
+    maxDurability: 750
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+  - type: ItemToggle
+    onUse: false
+    soundActivate:
+      path: /Audio/Items/flashlight_on.ogg
+    soundDeactivate:
+      path: /Audio/Items/flashlight_off.ogg
+    soundFailToActivate:
+      path: /Audio/Machines/button.ogg
+  - type: ToggleClothing
+    action: ActionWH40KToggleSpecialistHelmet
+    disableOnUnequip: true
+  - type: ComponentToggler
+    components:
+    - type: ShowHealthBars
+    - type: ShowHealthIcons
+    - type: WH40KNightVision
+  - type: UseDelay
+    delay: 1
+#   type: UserInterface
+#    interfaces:
+#      enum.StoreUiKey.Key:
+#        type: WH40KVoxStoreBoundUserInterface
+#  - type: ActivatableUI
+#    key: enum.StoreUiKey.Key
+#  - type: WH40KVoxSupplyDropStore
+#    account: WH40KImperium
+#    teamId: Imperium
+#    fundsCurrency: WH40KFactionFunds
+#    dropDelaySeconds: 10
+#    cooldownSeconds: 30
+#    markerPrototype: WH40KSupplyDropParachuteCrateVisual
+#    deliveryCratePrototype: WH40KVoxSupplyDropCrate
+#    listingDropAmounts:
+#      ArbiteBulkDropWHSoup: 5
+#      ArbiteBulkDropMagazineStubRifle: 25
+#      ArbiteBulkDropAutogunAmmoBox: 5
+#      ArbiteBulkDropCombatMedkit: 5
+#    listings:
+#    - ArbiteBulkDropWHSoup
+#    - ArbiteBulkDropMagazineStubRifle
+#    - ArbiteBulkDropAutogunAmmoBox
+#    - ArbiteBulkDropCombatMedkit
