@@ -43,18 +43,11 @@
     components:
     - type: ShowHealthBars
     - type: ShowHealthIcons
+    - type: NightVision
+      relayOverlay: true
+      enabled: true
   - type: UseDelay
     delay: 1
-  - type: NightVision
-    action: ActionToggleNightVision
-    viewCircleRadius: 400
-    viewCircleCount: 4
-    viewCircleSpacing: 260
-    phosphorColor: "#41D7D9"
-  - type: ThermalVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-    toggleAction: ToggleThermalVision
 
 - type: entity
   parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
@@ -101,18 +94,11 @@
     components:
     - type: ShowHealthBars
     - type: ShowHealthIcons
+    - type: NightVision
+      relayOverlay: true
+      enabled: true
   - type: UseDelay
     delay: 1
-  - type: NightVision
-    action: ActionToggleNightVision
-    viewCircleRadius: 400
-    viewCircleCount: 4
-    viewCircleSpacing: 260
-    phosphorColor: "#41D7D9"
-  - type: ThermalVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-    toggleAction: ToggleThermalVision
 #   type: UserInterface
 #    interfaces:
 #      enum.StoreUiKey.Key:
@@ -183,18 +169,11 @@
     components:
     - type: ShowHealthBars
     - type: ShowHealthIcons
+    - type: NightVision
+      relayOverlay: true
+      enabled: true
   - type: UseDelay
     delay: 1
-  - type: NightVision
-    action: ActionToggleNightVision
-    viewCircleRadius: 400
-    viewCircleCount: 4
-    viewCircleSpacing: 260
-    phosphorColor: "#41D7D9"
-  - type: ThermalVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-    toggleAction: ToggleThermalVision
 #   type: UserInterface
 #    interfaces:
 #      enum.StoreUiKey.Key:
