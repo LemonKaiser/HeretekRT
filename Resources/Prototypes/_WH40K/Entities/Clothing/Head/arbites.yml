@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingHeadHelmetBasic
+  parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMinoris
   suffix: WH40K, Арбитры, Arbites
   components:
@@ -48,7 +48,7 @@
     delay: 1
 
 - type: entity
-  parent: ClothingHeadHelmetBasic
+  parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMedius
   suffix: WH40K, Арбитры, Arbites
   components:
@@ -121,7 +121,7 @@
 #    - ArbiteBulkDropCombatMedkit
 
 - type: entity
-  parent: ClothingHeadHelmetBasic
+  parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMajoris
   suffix: WH40K, Арбитры, Arbites, Admin
   components:
