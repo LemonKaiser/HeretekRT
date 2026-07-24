@@ -101,7 +101,6 @@
     components:
     - type: ShowHealthBars
     - type: ShowHealthIcons
-    - type: WH40KNightVision
   - type: UseDelay
     delay: 1
   - type: NightVision
@@ -184,7 +183,6 @@
     components:
     - type: ShowHealthBars
     - type: ShowHealthIcons
-    - type: WH40KNightVision
   - type: UseDelay
     delay: 1
   - type: NightVision
