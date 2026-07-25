@@ -10,20 +10,20 @@
     noRot: false
     sprite: _WH40K/Objects/Devices/spore_mine.rsi
     state: icon
-  - type: WH40KServoSkullMob
-    triggerOnHostile: true
-    followSpeed: 4.5
-    chargeSpeed: 8.5
-    hostileDetectionRange: 7
-    scanInterval: 0.15
   - type: NpcFactionMember
     factions:
     - Tyranids
-  - type: TimerTrigger
-    delay: 3
-  - type: ExplodeOnTrigger
-    keysIn:
-    - timer
+#  - type: WH40KServoSkullMob
+#    triggerOnHostile: true
+#    followSpeed: 4.5
+#    chargeSpeed: 8.5
+#    hostileDetectionRange: 7
+#    scanInterval: 0.15
+#  - type: TimerTrigger
+#    delay: 3
+#  - type: ExplodeOnTrigger
+#    keysIn:
+#    - timer
   - type: Explosive
     explosionType: SporeBomb
     totalIntensity: 90
