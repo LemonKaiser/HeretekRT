@@ -1,0 +1,86 @@
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: ClothingOuterArmorArbiteMinoris
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/minoris/suit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/minoris/suit.rsi
+  - type: Armor
+    armorRating: 250
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.80
+        Piercing: 0.80
+        Heat: 0.80
+  - type: ItemDurability
+    maxDurability: 500
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: ClothingOuterArmorArbiteMedius
+  suffix: WH40K, Арбитры, Arbites
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/medius/suit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/medius/suit.rsi
+  - type: Armor
+    armorRating: 275
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.75
+  - type: ItemDurability
+    maxDurability: 500
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: Battery
+    maxCharge: 750
+    startingCharge: 750
+    pricePerJoule: 0.15
+  - type: BatterySelfRecharger
+    autoRechargeRate: 10
+
+- type: entity
+  parent: ClothingOuterArmorArbiteMedius
+  id: ClothingOuterArmorArbiteMajoris
+  suffix: WH40K, Арбитры, Arbites, Admin
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/arbites/majoris/suit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/arbites/majoris/suit.rsi
+  - type: Armor
+    armorRating: 300
+    modifiers:
+      coefficients:
+        Blunt: 0.80
+        Slash: 0.70
+        Piercing: 0.70
+        Heat: 0.70
+  - type: ItemDurability
+    maxDurability: 750
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.4
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+    pricePerJoule: 0.15
+  - type: BatterySelfRecharger
+    autoRechargeRate: 20
