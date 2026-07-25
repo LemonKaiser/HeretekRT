@@ -29,17 +29,17 @@
       types:
         Caustic: 5
         Toxin: 5
-#  - type: WH40KServoSkullMob
-#    triggerOnHostile: true
-#    followSpeed: 4.5
-#    chargeSpeed: 8.5
-#    hostileDetectionRange: 7
-#    scanInterval: 0.15
-#  - type: TimerTrigger
-#    delay: 3
-#  - type: ExplodeOnTrigger
-#    keysIn:
-#    - timer
+  - type: TriggerOnProximity
+    enabled: true
+    cooldown: 5
+    shape:
+      !type:PhysShapeCircle
+      radius: 1
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Dead
+  - type: ExplodeOnTrigger
+  - type: GibOnTrigger
   - type: Explosive
     explosionType: SporeBomb
     totalIntensity: 90
