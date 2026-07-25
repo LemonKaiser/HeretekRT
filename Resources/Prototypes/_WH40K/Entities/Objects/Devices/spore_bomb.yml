@@ -1,7 +1,7 @@
 
 - type: entity
   id: WH40KTyranidSporeMine
-  parent: WH40KServoSkullMobBase
+  parent: [SimpleSpaceMobBase, FlyingMobBase]
   name: spore mine
   description: A floating biological bomb with animal-level intelligence and numerous sensory tentacles. It is full of toxic and corrosive chemicals, and will explode violently if it gets close to you.
   components:
@@ -27,14 +27,11 @@
       collection: GenestealerAttack
     damage:
       types:
-        Caustic: 5
-        Toxin: 5
-  - type: TriggerOnProximity
-    enabled: true
-    cooldown: 5
-    shape:
-      !type:PhysShapeCircle
-      radius: 1
+        Caustic: 1
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      25: Dead
   - type: TriggerOnMobstateChange
     mobState:
     - Dead
