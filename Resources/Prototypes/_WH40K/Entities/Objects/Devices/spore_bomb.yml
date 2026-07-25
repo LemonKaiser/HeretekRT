@@ -13,6 +13,22 @@
   - type: NpcFactionMember
     factions:
     - Tyranids
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: CombatMode
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 1.7
+    angle: 0
+    animation: WeaponArcBite
+    soundHit:
+      collection: GenestealerAttack
+    damage:
+      types:
+        Caustic: 5
+        Toxin: 5
 #  - type: WH40KServoSkullMob
 #    triggerOnHostile: true
 #    followSpeed: 4.5
