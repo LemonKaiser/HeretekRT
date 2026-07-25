@@ -2,6 +2,7 @@
 - type: entity
   id: WH40KTyranidSporeMine
   parent: [SimpleSpaceMobBase, FlyingMobBase]
+  tags: WH40K, Тираниды
   name: spore mine
   description: A floating biological bomb with animal-level intelligence and numerous sensory tentacles. It is full of toxic and corrosive chemicals, and will explode violently if it gets close to you.
   components:
