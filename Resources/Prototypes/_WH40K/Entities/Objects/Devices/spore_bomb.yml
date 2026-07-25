@@ -9,7 +9,7 @@
   - type: Sprite
     drawdepth: Mobs
     noRot: false
-    sprite: _WH40K/Objects/Devices/spore_mine.rsi
+    sprite: _WH40K/Mobs/spore_mine.rsi
     state: icon
   - type: NpcFactionMember
     factions:
