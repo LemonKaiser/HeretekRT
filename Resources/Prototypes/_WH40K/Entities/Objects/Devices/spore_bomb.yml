@@ -16,6 +16,9 @@
     chargeSpeed: 8.5
     hostileDetectionRange: 7
     scanInterval: 0.15
+  - type: NpcFactionMember
+    factions:
+    - Tyranids
   - type: TimerTrigger
     delay: 3
   - type: ExplodeOnTrigger
