@@ -48,6 +48,9 @@
       enabled: true
   - type: UseDelay
     delay: 1
+  - type: ThermalVision
+    isEquipment: true
+    lightRadius: 15
 
 - type: entity
   parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
