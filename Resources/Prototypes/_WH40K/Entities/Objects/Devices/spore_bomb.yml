@@ -10,7 +10,7 @@
     drawdepth: Mobs
     noRot: false
     sprite: _WH40K/Mobs/spore_mine.rsi
-    state: icon
+    state: base
   - type: NpcFactionMember
     factions:
     - Tyranids
