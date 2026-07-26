@@ -993,6 +993,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("species");
 
+                    b.Property<JsonDocument>("Wh40kBuild")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("wh40k_build");
+
                     b.Property<float>("Width")
                         .HasColumnType("real")
                         .HasColumnName("width");
@@ -1498,6 +1502,398 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasName("PK_uploaded_resource_log");
 
                     b.ToTable("uploaded_resource_log", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountAttributePurchase", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Characteristic")
+                        .HasColumnType("integer")
+                        .HasColumnName("characteristic");
+
+                    b.Property<DateTime>("FirstPurchasedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("first_purchased_at");
+
+                    b.Property<int>("PurchasedPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("purchased_points");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId", "Characteristic")
+                        .HasName("PK_wh40k_account_attribute_purchase");
+
+                    b.ToTable("wh40k_account_attribute_purchase", null, t =>
+                        {
+                            t.HasCheckConstraint("PurchasedPointsNonNegative", "purchased_points >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgFoundation", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("ClassId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("class_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("HomeworldId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("homeworld_id");
+
+                    b.Property<JsonDocument>("InitialCharacteristicPoints")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("initial_characteristic_points");
+
+                    b.Property<string>("InitialPortraitId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("initial_portrait_id");
+
+                    b.Property<string>("OriginId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("origin_id");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("source");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_account_rpg_foundation");
+
+                    b.ToTable("wh40k_account_rpg_foundation", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgProgress", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<long>("ExperienceTenths")
+                        .HasColumnType("bigint")
+                        .HasColumnName("experience_tenths");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer")
+                        .HasColumnName("level");
+
+                    b.Property<long>("Revision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("revision");
+
+                    b.Property<int>("SchemaVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("schema_version");
+
+                    b.Property<int>("UnspentDevelopmentPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("unspent_development_points");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_account_rpg_progress");
+
+                    b.ToTable("wh40k_account_rpg_progress", null, t =>
+                        {
+                            t.HasCheckConstraint("DevelopmentPointsNonNegative", "unspent_development_points >= 0");
+
+                            t.HasCheckConstraint("ExperienceTenthsNonNegative", "experience_tenths >= 0");
+
+                            t.HasCheckConstraint("RpgLevelRange", "level >= 1 AND level <= 100");
+
+                            t.HasCheckConstraint("RpgRevisionNonNegative", "revision >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kExperienceLedger", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("wh40k_experience_ledger_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AmountTenths")
+                        .HasColumnType("bigint")
+                        .HasColumnName("amount_tenths");
+
+                    b.Property<DateTime>("AwardedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("awarded_at");
+
+                    b.Property<int>("BalanceVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("balance_version");
+
+                    b.Property<JsonDocument>("ContextJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("context_json");
+
+                    b.Property<string>("IssuerEntity")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("issuer_entity");
+
+                    b.Property<string>("RewardId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("reward_id");
+
+                    b.Property<int?>("RoundId")
+                        .HasColumnType("integer")
+                        .HasColumnName("round_id");
+
+                    b.Property<string>("SourceType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("source_type");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_wh40k_experience_ledger");
+
+                    b.HasIndex("UserId", "AwardedAt")
+                        .HasDatabaseName("IX_wh40k_experience_ledger_user_id_awarded_at");
+
+                    b.HasIndex("UserId", "RewardId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_experience_ledger_user_id_reward_id");
+
+                    b.ToTable("wh40k_experience_ledger", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kParty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("wh40k_party_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("LeaderUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("leader_user_id");
+
+                    b.Property<long>("Revision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("revision");
+
+                    b.HasKey("Id")
+                        .HasName("PK_wh40k_party");
+
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("IX_wh40k_party_expires_at");
+
+                    b.HasIndex("LeaderUserId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_party_leader_user_id");
+
+                    b.ToTable("wh40k_party", null, t =>
+                        {
+                            t.HasCheckConstraint("PartyExpirationAfterCreation", "expires_at > created_at");
+
+                            t.HasCheckConstraint("PartyRevisionNonNegative", "revision >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPartyMember", b =>
+                {
+                    b.Property<Guid>("PartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("party_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("joined_at");
+
+                    b.HasKey("PartyId", "UserId")
+                        .HasName("PK_wh40k_party_member");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_party_member_user_id");
+
+                    b.ToTable("wh40k_party_member", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPartyPreference", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<bool>("AllowInvites")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("allow_invites");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_party_preference");
+
+                    b.ToTable("wh40k_party_preference", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPlayerProgress", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("ActStage")
+                        .HasColumnType("integer")
+                        .HasColumnName("act_stage");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("OnboardingProfileSlot")
+                        .HasColumnType("integer")
+                        .HasColumnName("onboarding_profile_slot");
+
+                    b.Property<int>("OnboardingStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("onboarding_status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_player_progress");
+
+                    b.ToTable("wh40k_player_progress", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kRewardDelivery", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("wh40k_reward_delivery_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("amount");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_count");
+
+                    b.Property<JsonDocument>("ContextJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("context_json");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delivered_at");
+
+                    b.Property<string>("EntryId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("entry_id");
+
+                    b.Property<DateTime?>("LastAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_attempt_at");
+
+                    b.Property<string>("PrototypeId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("prototype_id");
+
+                    b.Property<string>("RewardId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("reward_id");
+
+                    b.Property<string>("RewardType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("reward_type");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_wh40k_reward_delivery");
+
+                    b.HasIndex("UserId", "Status")
+                        .HasDatabaseName("IX_wh40k_reward_delivery_user_id_status");
+
+                    b.HasIndex("UserId", "RewardId", "EntryId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_reward_delivery_user_id_reward_id_entry_id");
+
+                    b.ToTable("wh40k_reward_delivery", null, t =>
+                        {
+                            t.HasCheckConstraint("RewardAmountPositive", "amount > 0");
+
+                            t.HasCheckConstraint("RewardAttemptCountNonNegative", "attempt_count >= 0");
+                        });
                 });
 
             modelBuilder.Entity("Content.Server.Database.Whitelist", b =>
@@ -2087,6 +2483,94 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasConstraintName("FK_trait_profile_profile_id");
 
                     b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountAttributePurchase", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_attribute_purchase_wh40k_account_rpg_foundati~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgFoundation", b =>
+                {
+                    b.HasOne("Content.Server.Database.Player", null)
+                        .WithOne()
+                        .HasForeignKey("Content.Server.Database.Wh40kAccountRpgFoundation", "UserId")
+                        .HasPrincipalKey("Content.Server.Database.Player", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_rpg_foundation_player_player_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgProgress", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithOne()
+                        .HasForeignKey("Content.Server.Database.Wh40kAccountRpgProgress", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_rpg_progress_wh40k_account_rpg_foundation_wh4~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kExperienceLedger", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_experience_ledger_wh40k_account_rpg_foundation_wh40k_~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kParty", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("LeaderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_party_wh40k_account_rpg_foundation_wh40k_account_rpg_~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPartyMember", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kParty", null)
+                        .WithMany()
+                        .HasForeignKey("PartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_party_member_wh40k_party_wh40k_party_id");
+
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_party_member_wh40k_account_rpg_foundation_user_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPartyPreference", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithOne()
+                        .HasForeignKey("Content.Server.Database.Wh40kPartyPreference", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_party_preference_wh40k_account_rpg_foundation_wh40k_a~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kRewardDelivery", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_reward_delivery_wh40k_account_rpg_foundation_wh40k_ac~");
                 });
 
             modelBuilder.Entity("PlayerRound", b =>

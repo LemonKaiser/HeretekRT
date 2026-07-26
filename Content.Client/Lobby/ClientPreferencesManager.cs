@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared._Mono.Company;
+using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.Preferences;
 using Robust.Client;
 using Robust.Client.Player;
@@ -21,9 +22,13 @@ namespace Content.Client.Lobby
         [Dependency] private IPlayerManager _playerManager = default!;
 
         public event Action? OnServerDataLoaded;
+        public event Action? OnWh40kProgressChanged;
+        public event Action<Wh40kOnboardingCompletionStatus>? OnWh40kOnboardingCompletionFinished;
 
         public GameSettings Settings { get; private set; } = default!;
         public PlayerPreferences Preferences { get; private set; } = default!;
+        public Wh40kPlayerProgressSnapshot Wh40kProgress { get; private set; } = Wh40kPlayerProgressSnapshot.Unknown;
+        public bool Wh40kOnboardingCompletionPending { get; private set; }
 
         public void Initialize()
         {
@@ -31,6 +36,8 @@ namespace Content.Client.Lobby
             _netManager.RegisterNetMessage<MsgUpdateCharacter>();
             _netManager.RegisterNetMessage<MsgSelectCharacter>();
             _netManager.RegisterNetMessage<MsgDeleteCharacter>();
+            _netManager.RegisterNetMessage<MsgCompleteWh40kOnboarding>();
+            _netManager.RegisterNetMessage<MsgWh40kOnboardingCompleted>(HandleWh40kOnboardingCompleted);
 
             _baseClient.RunLevelChanged += BaseClientOnRunLevelChanged;
         }
@@ -41,6 +48,8 @@ namespace Content.Client.Lobby
             {
                 Settings = default!;
                 Preferences = default!;
+                Wh40kProgress = Wh40kPlayerProgressSnapshot.Unknown;
+                Wh40kOnboardingCompletionPending = false;
             }
         }
 
@@ -51,6 +60,12 @@ namespace Content.Client.Lobby
 
         public void SelectCharacter(int slot)
         {
+            if (!Wh40kProgress.CanUseLegacyPersonalization &&
+                slot != Wh40kProgress.OnboardingProfileSlot)
+            {
+                return;
+            }
+
             Preferences = new PlayerPreferences(Preferences.Characters, slot, Preferences.AdminOOCColor);
             var msg = new MsgSelectCharacter
             {
@@ -61,6 +76,9 @@ namespace Content.Client.Lobby
 
         public void UpdateCharacter(ICharacterProfile profile, int slot)
         {
+            if (!Wh40kProgress.CanUseLegacyPersonalization)
+                return;
+
             var collection = IoCManager.Instance!;
 
             // Verify company exists if this is a humanoid profile
@@ -86,8 +104,25 @@ namespace Content.Client.Lobby
             _netManager.ClientSendMessage(msg);
         }
 
+        public bool CompleteWh40kOnboarding(HumanoidCharacterProfile profile)
+        {
+            if (Wh40kOnboardingCompletionPending ||
+                !Wh40kProgress.IsKnown ||
+                Wh40kProgress.OnboardingStatus != Wh40kOnboardingStatus.Required)
+            {
+                return false;
+            }
+
+            Wh40kOnboardingCompletionPending = true;
+            _netManager.ClientSendMessage(new MsgCompleteWh40kOnboarding { Profile = profile });
+            return true;
+        }
+
         public void CreateCharacter(ICharacterProfile profile)
         {
+            if (!Wh40kProgress.CanUseLegacyPersonalization)
+                return;
+
             var characters = new Dictionary<int, ICharacterProfile>(Preferences.Characters);
             var lowest = Enumerable.Range(0, Settings.MaxCharacterSlots)
                 .Except(characters.Keys)
@@ -112,6 +147,9 @@ namespace Content.Client.Lobby
 
         public void DeleteCharacter(int slot)
         {
+            if (!Wh40kProgress.CanUseLegacyPersonalization)
+                return;
+
             var characters = Preferences.Characters.Where(p => p.Key != slot);
             Preferences = new PlayerPreferences(characters, Preferences.SelectedCharacterIndex, Preferences.AdminOOCColor);
             var msg = new MsgDeleteCharacter
@@ -125,6 +163,7 @@ namespace Content.Client.Lobby
         {
             Preferences = message.Preferences;
             Settings = message.Settings;
+            Wh40kProgress = message.Wh40kProgress;
 
             // Check if any character profiles have invalid companies and fix them
             if (Preferences != null)
@@ -149,7 +188,7 @@ namespace Content.Client.Lobby
                     characters[slot] = updatedProfile;
                 }
 
-                if (needsUpdate)
+                if (needsUpdate && Wh40kProgress.CanUseLegacyPersonalization)
                 {
                     Preferences = new PlayerPreferences(characters, Preferences.SelectedCharacterIndex, Preferences.AdminOOCColor);
 
@@ -167,7 +206,29 @@ namespace Content.Client.Lobby
                 }
             }
 
+            OnWh40kProgressChanged?.Invoke();
             OnServerDataLoaded?.Invoke();
+        }
+
+        private void HandleWh40kOnboardingCompleted(MsgWh40kOnboardingCompleted message)
+        {
+            Wh40kOnboardingCompletionPending = false;
+
+            if (message.Status == Wh40kOnboardingCompletionStatus.Success &&
+                message.Profile != null &&
+                message.ProfileSlot >= 0 &&
+                Preferences != null)
+            {
+                var characters = new Dictionary<int, ICharacterProfile>(Preferences.Characters)
+                {
+                    [message.ProfileSlot] = message.Profile,
+                };
+                Preferences = new PlayerPreferences(characters, message.ProfileSlot, Preferences.AdminOOCColor);
+                Wh40kProgress = message.Progress;
+                OnWh40kProgressChanged?.Invoke();
+            }
+
+            OnWh40kOnboardingCompletionFinished?.Invoke(message.Status);
         }
     }
 }

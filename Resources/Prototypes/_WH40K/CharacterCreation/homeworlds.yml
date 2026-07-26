@@ -1,0 +1,84 @@
+- type: wh40kHomeworld
+  id: death-world
+  order: 0
+  name: heretek-homeworld-death-name
+  description: heretek-homeworld-death-description
+  loreNote: heretek-homeworld-death-lore-note
+  featureName: heretek-homeworld-death-feature-name
+  featureDescription: heretek-homeworld-death-feature-description
+  characteristicModifiers:
+    Melee: 4
+    Endurance: 3
+    Agility: 3
+    Intelligence: -5
+  futureTalents: heretek-homeworld-death-talents
+
+- type: wh40kHomeworld
+  id: voidborn
+  order: 1
+  name: heretek-homeworld-voidborn-name
+  description: heretek-homeworld-voidborn-description
+  loreNote: heretek-homeworld-voidborn-lore-note
+  featureName: heretek-homeworld-voidborn-feature-name
+  featureDescription: heretek-homeworld-voidborn-feature-description
+  characteristicModifiers:
+    Intelligence: 6
+    Agility: 4
+    Melee: -5
+  futureTalents: heretek-homeworld-voidborn-talents
+
+- type: wh40kHomeworld
+  id: hive-world
+  order: 2
+  name: heretek-homeworld-hive-name
+  description: heretek-homeworld-hive-description
+  loreNote: heretek-homeworld-hive-lore-note
+  featureName: heretek-homeworld-hive-feature-name
+  featureDescription: heretek-homeworld-hive-feature-description
+  characteristicModifiers:
+    Ranged: 7
+    Agility: 3
+    Endurance: -5
+  futureTalents: heretek-homeworld-hive-talents
+
+- type: wh40kHomeworld
+  id: forge-world
+  order: 3
+  name: heretek-homeworld-forge-name
+  description: heretek-homeworld-forge-description
+  loreNote: heretek-homeworld-forge-lore-note
+  featureName: heretek-homeworld-forge-feature-name
+  featureDescription: heretek-homeworld-forge-feature-description
+  characteristicModifiers:
+    Intelligence: 4
+    Endurance: 6
+    Agility: -5
+  futureTalents: heretek-homeworld-forge-talents
+
+- type: wh40kHomeworld
+  id: imperial-world
+  order: 4
+  name: heretek-homeworld-imperial-name
+  description: heretek-homeworld-imperial-description
+  loreNote: heretek-homeworld-imperial-lore-note
+  featureName: heretek-homeworld-imperial-feature-name
+  featureDescription: heretek-homeworld-imperial-feature-description
+  characteristicModifiers:
+    Melee: 6
+    Ranged: 4
+    Agility: -5
+  futureTalents: heretek-homeworld-imperial-talents
+
+- type: wh40kHomeworld
+  id: fortress-world
+  order: 5
+  name: heretek-homeworld-fortress-name
+  description: heretek-homeworld-fortress-description
+  loreNote: heretek-homeworld-fortress-lore-note
+  featureName: heretek-homeworld-fortress-feature-name
+  featureDescription: heretek-homeworld-fortress-feature-description
+  characteristicModifiers:
+    Ranged: 6
+    Endurance: 4
+    Intelligence: -5
+  futureTalents: heretek-homeworld-fortress-talents

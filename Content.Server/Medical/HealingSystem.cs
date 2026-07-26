@@ -4,6 +4,7 @@ using Content.Server.Body.Systems;
 using Content.Server.Medical.Components;
 using Content.Server.Popups;
 using Content.Server.Stack;
+using Content.Server._WH40K.Progression;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Database;
@@ -129,6 +130,14 @@ public sealed partial class HealingSystem : EntitySystem
         if (!args.Repeat && !dontRepeat)
             _popupSystem.PopupEntity(Loc.GetString("medical-item-finished-using", ("item", args.Used)), entity.Owner, args.User);
         args.Handled = true;
+
+        if (entity.Owner != args.User && total != FixedPoint2.Zero)
+        {
+            RaiseLocalEvent(new Wh40kUsefulHealingCompletedEvent(
+                args.User,
+                entity.Owner,
+                MathF.Abs(total.Float())));
+        }
     }
 
     private bool HasDamage(DamageableComponent component, HealingComponent healing)

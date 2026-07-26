@@ -1,0 +1,11 @@
+light_mode unshaded;
+
+uniform highp vec4 LeftColor;
+uniform highp vec4 RightColor;
+uniform highp float FadeStop;
+
+void fragment() {
+    highp float stop = max(FadeStop, 0.0001);
+    highp float progress = clamp(UV.x / stop, 0.0, 1.0);
+    COLOR = mix(LeftColor, RightColor, progress);
+}

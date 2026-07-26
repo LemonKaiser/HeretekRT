@@ -1,0 +1,72 @@
+# The initial HeretekRT set is intentionally limited to five onboarding classes.
+# Their characteristic modifiers affect only character-creation totals; ability text is descriptive until gameplay systems exist.
+
+- type: wh40kCharacterClass
+  id: soldier
+  order: 0
+  name: heretek-class-soldier-name
+  description: heretek-class-soldier-description
+  loreNote: heretek-class-soldier-lore-note
+  characteristicModifiers:
+    Ranged: 18
+    Endurance: 12
+    Melee: -15
+  navigationDescription: heretek-class-soldier-navigation-description
+  activeAbility: heretek-class-soldier-active-ability
+  passiveAbility: heretek-class-soldier-passive-ability
+
+- type: wh40kCharacterClass
+  id: assassin
+  order: 1
+  name: heretek-class-assassin-name
+  description: heretek-class-assassin-description
+  loreNote: heretek-class-assassin-lore-note
+  characteristicModifiers:
+    Melee: 16
+    Agility: 14
+    Endurance: -15
+  navigationDescription: heretek-class-assassin-navigation-description
+  activeAbility: heretek-class-assassin-active-ability
+  passiveAbility: heretek-class-assassin-passive-ability
+
+- type: wh40kCharacterClass
+  id: overseer
+  order: 2
+  name: heretek-class-overseer-name
+  description: heretek-class-overseer-description
+  loreNote: heretek-class-overseer-lore-note
+  characteristicModifiers:
+    Intelligence: 17
+    Ranged: 13
+    Melee: -15
+  navigationDescription: heretek-class-overseer-navigation-description
+  activeAbility: heretek-class-overseer-active-ability
+  passiveAbility: heretek-class-overseer-passive-ability
+
+- type: wh40kCharacterClass
+  id: warrior
+  order: 3
+  name: heretek-class-warrior-name
+  description: heretek-class-warrior-description
+  loreNote: heretek-class-warrior-lore-note
+  characteristicModifiers:
+    Melee: 19
+    Endurance: 11
+    Intelligence: -15
+  navigationDescription: heretek-class-warrior-navigation-description
+  activeAbility: heretek-class-warrior-active-ability
+  passiveAbility: heretek-class-warrior-passive-ability
+
+- type: wh40kCharacterClass
+  id: operative
+  order: 4
+  name: heretek-class-operative-name
+  description: heretek-class-operative-description
+  loreNote: heretek-class-operative-lore-note
+  characteristicModifiers:
+    Intelligence: 14
+    Agility: 16
+    Endurance: -15
+  navigationDescription: heretek-class-operative-navigation-description
+  activeAbility: heretek-class-operative-active-ability
+  passiveAbility: heretek-class-operative-passive-ability

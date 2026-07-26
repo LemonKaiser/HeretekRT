@@ -8,6 +8,7 @@ using Content.Client.Silicons.Laws.SiliconLawEditUi;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Controls.FancyTree;
 using Content.Client.Verbs.UI;
+using Content.Client._WH40K.CharacterCreation;
 using Content.Shared.Verbs;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -93,6 +94,16 @@ namespace Content.Client.Stylesheets
         public const string StyleClassChatFilterOptionButton = "chatFilterOptionButton";
         public const string StyleClassStorageButton = "storageButton";
         public const string StyleClassInset = "Inset";
+        public const string StyleClassWh40kOnboardingSectionTitle = "Wh40kOnboardingSectionTitle";
+        public const string StyleClassWh40kOnboardingDisplaySmall = "Wh40kOnboardingDisplaySmall";
+        public const string StyleClassWh40kOnboardingBodyText = "Wh40kOnboardingBodyText";
+        public const string StyleClassWh40kOnboardingBodyCompact = "Wh40kOnboardingBodyCompact";
+        public const string StyleClassWh40kOnboardingBodySmall = "Wh40kOnboardingBodySmall";
+        public const string StyleClassWh40kOnboardingBodyStrong = "Wh40kOnboardingBodyStrong";
+        public const string StyleClassWh40kOnboardingTechnicalText = "Wh40kOnboardingTechnicalText";
+        public const string StyleClassWh40kOnboardingTechnicalLarge = "Wh40kOnboardingTechnicalLarge";
+        public const string StyleClassWh40kOnboardingTechnicalValue = "Wh40kOnboardingTechnicalValue";
+        public const string StyleClassWh40kOnboardingNameInput = "Wh40kOnboardingNameInput";
 
         public const string StyleClassSliderRed = "Red";
         public const string StyleClassSliderGreen = "Green";
@@ -207,6 +218,16 @@ namespace Content.Client.Stylesheets
             var notoSansBold18 = resCache.NotoStack(variation: "Bold", size: 18);
             var notoSansBold20 = resCache.NotoStack(variation: "Bold", size: 20);
             var notoSansMono = resCache.NotoStack2ElectricBoogaloo("/EngineFonts/NotoSans/NotoSansMono-Regular.ttf", size: 12); // Goobstation - ZH text support
+            var onboardingDisplaySmall = Wh40kOnboardingTypography.Display(resCache, Wh40kOnboardingTypography.DisplaySmallSize);
+            var onboardingSectionTitle = Wh40kOnboardingTypography.Display(resCache, Wh40kOnboardingTypography.SectionTitleSize);
+            var onboardingNameInput = Wh40kOnboardingTypography.Display(resCache, Wh40kOnboardingTypography.NameInputSize);
+            var onboardingBody = Wh40kOnboardingTypography.Text(resCache, Wh40kOnboardingTypography.BodySize);
+            var onboardingBodyCompact = Wh40kOnboardingTypography.Text(resCache, Wh40kOnboardingTypography.BodyCompactSize);
+            var onboardingBodySmall = Wh40kOnboardingTypography.Text(resCache, Wh40kOnboardingTypography.BodySmallSize);
+            var onboardingBodyStrong = Wh40kOnboardingTypography.TextBold(resCache, Wh40kOnboardingTypography.NavigationTitleSize);
+            var onboardingTechnical = Wh40kOnboardingTypography.Technical(resCache, Wh40kOnboardingTypography.TechnicalSmallSize);
+            var onboardingTechnicalLarge = Wh40kOnboardingTypography.Technical(resCache, Wh40kOnboardingTypography.TechnicalLargeSize);
+            var onboardingTechnicalValue = Wh40kOnboardingTypography.Technical(resCache, Wh40kOnboardingTypography.TechnicalValueSize);
             var windowHeaderTex = resCache.GetTexture("/Textures/Interface/Nano/window_header.png");
             var windowHeader = new StyleBoxTexture
             {
@@ -569,6 +590,29 @@ namespace Content.Client.Stylesheets
             {
                 Element().Class("monospace")
                     .Prop("font", notoSansMono),
+                // Scoped typography for the WH40K character-creation flow.  RichTextLabel
+                // receives its font through styles, while ordinary labels can use the same
+                // classes without coupling the onboarding pages to the global Nano defaults.
+                Element().Class(StyleClassWh40kOnboardingSectionTitle)
+                    .Prop("font", onboardingSectionTitle),
+                Element().Class(StyleClassWh40kOnboardingDisplaySmall)
+                    .Prop("font", onboardingDisplaySmall),
+                Element().Class(StyleClassWh40kOnboardingBodyText)
+                    .Prop("font", onboardingBody),
+                Element().Class(StyleClassWh40kOnboardingBodyCompact)
+                    .Prop("font", onboardingBodyCompact),
+                Element().Class(StyleClassWh40kOnboardingBodySmall)
+                    .Prop("font", onboardingBodySmall),
+                Element().Class(StyleClassWh40kOnboardingBodyStrong)
+                    .Prop("font", onboardingBodyStrong),
+                Element().Class(StyleClassWh40kOnboardingTechnicalText)
+                    .Prop("font", onboardingTechnical),
+                Element().Class(StyleClassWh40kOnboardingTechnicalLarge)
+                    .Prop("font", onboardingTechnicalLarge),
+                Element().Class(StyleClassWh40kOnboardingTechnicalValue)
+                    .Prop("font", onboardingTechnicalValue),
+                Element<LineEdit>().Class(StyleClassWh40kOnboardingNameInput)
+                    .Prop("font", onboardingNameInput),
                 // Window title.
                 new StyleRule(
                     new SelectorElement(typeof(Label), new[] {DefaultWindow.StyleClassWindowTitle}, null, null),
@@ -1641,7 +1685,10 @@ namespace Content.Client.Stylesheets
                 Element<PdaProgramItem>().Pseudo(ContainerButton.StylePseudoClassPressed)
                     .Prop(PdaProgramItem.StylePropertyBgColor, Color.FromHex(PdaProgramItem.HoverColor)),
 
-                //PDA - Text
+                Element<Label>().Class("PdaGadOsAppLabel")
+                    .Prop(Label.StylePropertyFont, notoSans10)
+                    .Prop(Label.StylePropertyAlignMode, Label.AlignMode.Center),
+
                 Element<Label>().Class("PdaContentFooterText")
                     .Prop(Label.StylePropertyFont, notoSans10)
                     .Prop(Label.StylePropertyFontColor, Color.FromHex("#757575")),

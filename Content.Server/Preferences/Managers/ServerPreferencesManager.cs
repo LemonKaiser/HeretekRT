@@ -3,8 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Database;
+using Content.Server._WH40K.CharacterCreation;
+using Content.Server._WH40K.Progression;
 using Content.Shared.CCVar;
+using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Preferences;
+using Content.Shared.Traits;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Network;
@@ -29,10 +34,19 @@ namespace Content.Server.Preferences.Managers
         [Dependency] private ILogManager _log = default!;
         [Dependency] private UserDbDataManager _userDb = default!;
         [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private Wh40kPlayerProgressManager _wh40kOnboarding = default!;
+        [Dependency] private Wh40kAccountRpgManager _wh40kRpg = default!;
+        [Dependency] private Wh40kProgressManager _wh40kRpgProgress = default!;
+        [Dependency] private Wh40kPartyManager _wh40kParties = default!;
 
         // Cache player prefs on the server so we don't need as much async hell related to them.
         private readonly Dictionary<NetUserId, PlayerPrefData> _cachedPlayerPrefs =
             new();
+
+        // Completing onboarding writes both the profile and progress row. Keep one request per account in
+        // flight so a duplicated or delayed client message cannot race the same temporary slot.
+        private readonly HashSet<NetUserId> _wh40kOnboardingCompletions = new();
+        private readonly object _wh40kOnboardingCompletionsLock = new();
 
         private ISawmill _sawmill = default!;
 
@@ -44,6 +58,8 @@ namespace Content.Server.Preferences.Managers
             _netManager.RegisterNetMessage<MsgSelectCharacter>(HandleSelectCharacterMessage);
             _netManager.RegisterNetMessage<MsgUpdateCharacter>(HandleUpdateCharacterMessage);
             _netManager.RegisterNetMessage<MsgDeleteCharacter>(HandleDeleteCharacterMessage);
+            _netManager.RegisterNetMessage<MsgCompleteWh40kOnboarding>(HandleCompleteWh40kOnboardingMessage);
+            _netManager.RegisterNetMessage<MsgWh40kOnboardingCompleted>();
             _sawmill = _log.GetSawmill("prefs");
         }
 
@@ -65,6 +81,14 @@ namespace Content.Server.Preferences.Managers
 
             var curPrefs = prefsData.Prefs!;
 
+            var progress = _wh40kOnboarding.Get(userId);
+            if (!progress.CanUseLegacyPersonalization &&
+                index != progress.OnboardingProfileSlot)
+            {
+                _sawmill.Warning($"User {userId} tried to select character slot {index} before completing WH40K onboarding.");
+                return;
+            }
+
             if (!curPrefs.Characters.ContainsKey(index))
             {
                 // Non-existent slot.
@@ -83,11 +107,217 @@ namespace Content.Server.Preferences.Managers
         {
             var userId = message.MsgChannel.UserId;
 
+            if (IsWh40kOnboardingRequired(userId))
+            {
+                _sawmill.Warning($"User {userId} tried to update character slot {message.Slot} before completing WH40K onboarding.");
+                return;
+            }
+
             // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (message.Profile == null)
                 _sawmill.Error($"User {userId} sent a {nameof(MsgUpdateCharacter)} with a null profile in slot {message.Slot}.");
             else
                 await SetProfile(userId, message.Slot, message.Profile, false);
+        }
+
+        private async void HandleCompleteWh40kOnboardingMessage(MsgCompleteWh40kOnboarding message)
+        {
+            var userId = message.MsgChannel.UserId;
+            var result = new Wh40kOnboardingCompletionResult(
+                Wh40kOnboardingCompletionStatus.NotAllowed,
+                _wh40kOnboarding.Get(userId),
+                -1);
+            HumanoidCharacterProfile? confirmedProfile = null;
+
+            lock (_wh40kOnboardingCompletionsLock)
+            {
+                if (!_wh40kOnboardingCompletions.Add(userId))
+                {
+                    _sawmill.Warning($"User {userId} sent a duplicate WH40K onboarding completion while the previous save is still running.");
+                    SendWh40kOnboardingCompletion(message.MsgChannel, result, null);
+                    return;
+                }
+            }
+
+            try
+            {
+                if (!_cachedPlayerPrefs.TryGetValue(userId, out var prefsData) ||
+                    !prefsData.PrefsLoaded ||
+                    !ShouldStorePrefs(message.MsgChannel.AuthType))
+                {
+                    SendWh40kOnboardingCompletion(message.MsgChannel, result, null);
+                    return;
+                }
+
+                var progress = _wh40kOnboarding.Get(userId);
+                if (progress.ActStage != Wh40kActStage.Act1NotStarted ||
+                    progress.OnboardingStatus != Wh40kOnboardingStatus.Required ||
+                    !prefsData.Prefs!.Characters.TryGetValue(progress.OnboardingProfileSlot, out var existing) ||
+                    existing is not HumanoidCharacterProfile existingHumanoid)
+                {
+                    SendWh40kOnboardingCompletion(message.MsgChannel, result, null);
+                    return;
+                }
+
+                if (message.Profile is null)
+                {
+                    result = new Wh40kOnboardingCompletionResult(
+                        Wh40kOnboardingCompletionStatus.InvalidBuild,
+                        progress,
+                        -1);
+                    SendWh40kOnboardingCompletion(message.MsgChannel, result, null);
+                    return;
+                }
+
+                if (!TryPrepareWh40kOnboardingProfile(message.Profile, existingHumanoid, out var preparedProfile, out var status))
+                {
+                    result = new Wh40kOnboardingCompletionResult(status, progress, -1);
+                    SendWh40kOnboardingCompletion(message.MsgChannel, result, null);
+                    return;
+                }
+
+                preparedProfile.EnsureValid(_playerManager.GetSessionById(userId), _dependencies);
+                result = await _db.CompleteWh40kOnboardingAsync(userId, preparedProfile);
+                if (result.IsSuccess)
+                {
+                    _wh40kRpg.CacheCompletedOnboarding(userId, preparedProfile.Wh40kBuild);
+                    await _wh40kRpgProgress.LoadAsync(userId);
+                    var profiles = new Dictionary<int, ICharacterProfile>(prefsData.Prefs.Characters)
+                    {
+                        [result.ProfileSlot] = preparedProfile,
+                    };
+                    prefsData.Prefs = new PlayerPreferences(profiles, result.ProfileSlot, prefsData.Prefs.AdminOOCColor);
+                    _wh40kOnboarding.SetTransient(userId, result.Progress);
+                    confirmedProfile = preparedProfile;
+                }
+            }
+            catch (Exception exception)
+            {
+                _sawmill.Error($"Failed to complete WH40K onboarding for {userId}: {exception}");
+                result = new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.PersistenceFailed,
+                    _wh40kOnboarding.Get(userId),
+                    -1);
+            }
+            finally
+            {
+                lock (_wh40kOnboardingCompletionsLock)
+                {
+                    _wh40kOnboardingCompletions.Remove(userId);
+                }
+            }
+
+            SendWh40kOnboardingCompletion(message.MsgChannel, result, confirmedProfile);
+        }
+
+        private bool TryPrepareWh40kOnboardingProfile(
+            HumanoidCharacterProfile submitted,
+            HumanoidCharacterProfile existing,
+            out HumanoidCharacterProfile prepared,
+            out Wh40kOnboardingCompletionStatus status)
+        {
+            var submittedBuild = submitted.Wh40kBuild;
+            var build = submittedBuild.Validated();
+            if (!build.Equals(submittedBuild) ||
+                !build.IsCompleteFoundation ||
+                build.HomeworldId is null ||
+                build.OriginId is null ||
+                build.ClassId is null ||
+                build.PortraitId is null ||
+                !_protos.TryIndex<Wh40kHomeworldPrototype>(build.HomeworldId, out _) ||
+                !_protos.TryIndex<Wh40kOriginPrototype>(build.OriginId, out _) ||
+                !_protos.TryIndex<Wh40kCharacterClassPrototype>(build.ClassId, out _) ||
+                !_protos.TryIndex<Wh40kPortraitPrototype>(build.PortraitId, out _))
+            {
+                prepared = default!;
+                status = Wh40kOnboardingCompletionStatus.InvalidBuild;
+                return false;
+            }
+
+            if (!ValidateWh40kOnboardingTraits(submitted.TraitPreferences, submitted.Species))
+            {
+                prepared = default!;
+                status = Wh40kOnboardingCompletionStatus.InvalidBuild;
+                return false;
+            }
+
+            prepared = existing
+                .WithName(submitted.Name)
+                .WithFlavorText(submitted.FlavorText)
+                .WithAge(submitted.Age)
+                .WithSex(submitted.Sex)
+                .WithGender(submitted.Gender)
+                .WithSpecies(submitted.Species)
+                .WithCharacterAppearance(submitted.Appearance.Clone())
+                .WithSpawnPriorityPreference(submitted.SpawnPriority)
+                .WithTraitPreferences(submitted.TraitPreferences)
+                .WithWh40kCharacterBuild(build);
+            status = Wh40kOnboardingCompletionStatus.Success;
+            return true;
+        }
+
+        /// <summary>
+        /// The onboarding only exposes Physical traits. The normal profile sanitizer deliberately preserves a
+        /// wider set of preferences, so this separate check is required at the untrusted network boundary.
+        /// </summary>
+        private bool ValidateWh40kOnboardingTraits(
+            IReadOnlySet<ProtoId<TraitPrototype>> traits,
+            ProtoId<SpeciesPrototype> species)
+        {
+            const string physicalCategory = "Physical";
+            var selected = new List<TraitPrototype>(traits.Count);
+            TraitCategoryPrototype? category = null;
+
+            foreach (var traitId in traits)
+            {
+                if (!_protos.TryIndex<TraitPrototype>(traitId, out var trait) ||
+                    trait.Category is not { } traitCategoryId ||
+                    traitCategoryId.Id != physicalCategory ||
+                    trait.Cost == 0 ||
+                    trait.SpeciesBlacklist.Contains(species))
+                {
+                    return false;
+                }
+
+                if (!_protos.TryIndex<TraitCategoryPrototype>(traitCategoryId, out category) ||
+                    category.MaxTraitPoints is null || category.MaxTraitPoints < 0)
+                {
+                    return false;
+                }
+
+                selected.Add(trait);
+            }
+
+            if (category is not null && selected.Sum(trait => trait.Cost) > category.MaxTraitPoints)
+                return false;
+
+            for (var current = 0; current < selected.Count; current++)
+            {
+                for (var other = current + 1; other < selected.Count; other++)
+                {
+                    if (selected[current].MutuallyExclusiveTraits.Contains(selected[other].ID) ||
+                        selected[other].MutuallyExclusiveTraits.Contains(selected[current].ID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private void SendWh40kOnboardingCompletion(
+            INetChannel channel,
+            Wh40kOnboardingCompletionResult result,
+            HumanoidCharacterProfile? profile)
+        {
+            _netManager.ServerSendMessage(new MsgWh40kOnboardingCompleted
+            {
+                Status = result.Status,
+                Progress = result.Progress,
+                ProfileSlot = result.ProfileSlot,
+                Profile = profile,
+            }, channel);
         }
 
         public async Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile,
@@ -110,9 +340,23 @@ namespace Content.Server.Preferences.Managers
             if (!authoritative && profile is HumanoidCharacterProfile humanoid)
             {
                 if (curPrefs.Characters.TryGetValue(slot, out var oldProfile) && oldProfile is HumanoidCharacterProfile oldHumanoid)
-                    profile = humanoid.WithBankBalance(oldHumanoid.BankBalance);
+                {
+                    profile = humanoid
+                        .WithBankBalance(oldHumanoid.BankBalance)
+                        .WithWh40kCharacterBuild(oldHumanoid.Wh40kBuild);
+                }
                 else
-                    profile = humanoid.WithBankBalance(HumanoidCharacterProfile.DefaultBalance);
+                {
+                    profile = humanoid
+                        .WithBankBalance(HumanoidCharacterProfile.DefaultBalance)
+                        .WithWh40kCharacterBuild(new Wh40kCharacterBuild());
+                }
+            }
+
+            if (profile is HumanoidCharacterProfile foundationProfile &&
+                _wh40kRpg.TryGetFoundationBuild(userId, out var foundationBuild))
+            {
+                profile = foundationProfile.WithWh40kCharacterBuild(foundationBuild);
             }
 
             var profiles = new Dictionary<int, ICharacterProfile>(curPrefs.Characters)
@@ -144,6 +388,12 @@ namespace Content.Server.Preferences.Managers
             }
 
             var curPrefs = prefsData.Prefs!;
+
+            if (IsWh40kOnboardingRequired(userId))
+            {
+                _sawmill.Warning($"User {userId} tried to delete character slot {slot} before completing WH40K onboarding.");
+                return;
+            }
 
             // If they try to delete the slot they have selected then we switch to another one.
             // Of course, that's only if they HAVE another slot.
@@ -194,6 +444,8 @@ namespace Content.Server.Preferences.Managers
                 };
 
                 _cachedPlayerPrefs[session.UserId] = prefsData;
+                _wh40kOnboarding.SetTransient(session.UserId, Wh40kPlayerProgressSnapshot.LegacyCompleted);
+                _wh40kRpgProgress.Cache(_wh40kRpg.CreateTransientLegacyAccount(session.UserId));
             }
             else
             {
@@ -207,6 +459,13 @@ namespace Content.Server.Preferences.Managers
                 {
                     var prefs = await GetOrCreatePreferencesAsync(session.UserId, cancel);
                     prefsData.Prefs = prefs;
+                    var onboarding = await _wh40kOnboarding.LoadForExistingPreferencesAsync(session.UserId, cancel);
+                    var account = await _wh40kRpg.LoadForExistingPreferencesAsync(session.UserId, onboarding, cancel);
+                    if (account != null)
+                    {
+                        _wh40kRpgProgress.Cache(account);
+                        await _wh40kParties.LoadAsync(session.UserId, cancel);
+                    }
                 }
             }
         }
@@ -224,6 +483,7 @@ namespace Content.Server.Preferences.Managers
 
             var msg = new MsgPreferencesAndSettings();
             msg.Preferences = prefsData.Prefs;
+            msg.Wh40kProgress = _wh40kOnboarding.Get(session.UserId);
             msg.Settings = new GameSettings
             {
                 MaxCharacterSlots = MaxCharacterSlots
@@ -238,6 +498,21 @@ namespace Content.Server.Preferences.Managers
         public void OnClientDisconnected(ICommonSession session)
         {
             _cachedPlayerPrefs.Remove(session.UserId);
+            _wh40kOnboarding.Remove(session.UserId);
+            _wh40kRpg.Remove(session.UserId);
+            _wh40kRpgProgress.Remove(session.UserId);
+            _wh40kParties.OnDisconnected(session.UserId);
+            lock (_wh40kOnboardingCompletionsLock)
+            {
+                _wh40kOnboardingCompletions.Remove(session.UserId);
+            }
+        }
+
+        public bool IsWh40kOnboardingRequired(NetUserId userId)
+        {
+            // A row is loaded before a persistent player can enter the lobby. If it is missing, corrupt, or
+            // not loaded yet, fail closed instead of allowing a half-created account into a round.
+            return !_wh40kOnboarding.Get(userId).CanUseLegacyPersonalization;
         }
 
         public bool HavePreferencesLoaded(ICommonSession session)
@@ -322,10 +597,18 @@ namespace Content.Server.Preferences.Managers
                 {
                     prefsData.Prefs = prefs;
                     prefsData.PrefsLoaded = true;
+                    var onboarding = await _wh40kOnboarding.LoadForExistingPreferencesAsync(session.UserId, cancel);
+                    var account = await _wh40kRpg.LoadForExistingPreferencesAsync(session.UserId, onboarding, cancel);
+                    if (account != null)
+                    {
+                        _wh40kRpgProgress.Cache(account);
+                        await _wh40kParties.LoadAsync(session.UserId, cancel);
+                    }
 
                     var msg = new MsgPreferencesAndSettings
                     {
                         Preferences = prefs,
+                        Wh40kProgress = _wh40kOnboarding.Get(session.UserId),
                         Settings = new GameSettings
                         {
                             MaxCharacterSlots = MaxCharacterSlots

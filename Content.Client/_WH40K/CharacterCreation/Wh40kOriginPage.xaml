@@ -1,0 +1,66 @@
+<characterCreation:Wh40kOriginPage
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:characterCreation="clr-namespace:Content.Client._WH40K.CharacterCreation"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:lobbyUi="clr-namespace:Content.Client.Lobby.UI"
+    HorizontalExpand="True" VerticalExpand="True">
+    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                          VerticalAlignment="Center" SeparationOverride="8">
+                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+                <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                             Modulate="#B69754A8"
+                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                <Label Name="OriginTitle" Access="Public" FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                       StyleClasses="Wh40kOnboardingSectionTitle" />
+                <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                        MouseFilter="Ignore" Modulate="#B69754A8"
+                                                        TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+            </BoxContainer>
+            <Label Name="OriginKicker" Access="Public" FontColorOverride="#B69754"
+                   HorizontalAlignment="Center" StyleClasses="Wh40kOnboardingTechnicalText" />
+            <RichTextLabel Name="OriginDescription" HorizontalAlignment="Center" MaxWidth="540"
+                           StyleClasses="Wh40kOnboardingBodyText" />
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0" Margin="0 7 0 0">
+                <controls:HLine Color="#B6975438" Thickness="1" />
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="52" SeparationOverride="18">
+                    <Label Text="{Loc 'heretek-onboarding-origin-focus-title'}" SetWidth="154" ClipText="True"
+                           FontColorOverride="#B69754" VerticalAlignment="Top" Margin="0 13 0 0"
+                           StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <RichTextLabel Name="FocusDescription" HorizontalExpand="True" Margin="0 12 0 12"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                </BoxContainer>
+                <controls:HLine Color="#B6975438" Thickness="1" />
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="52" SeparationOverride="18">
+                    <Label Text="{Loc 'heretek-onboarding-origin-modifiers-title'}" SetWidth="154" ClipText="True"
+                           FontColorOverride="#B69754" VerticalAlignment="Top" Margin="0 13 0 0"
+                           StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <RichTextLabel Name="Modifiers" HorizontalExpand="True" Margin="0 12 0 12"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                </BoxContainer>
+                <controls:HLine Color="#B6975438" Thickness="1" />
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="52" SeparationOverride="18">
+                    <Label Text="{Loc 'heretek-onboarding-origin-lore-title'}" SetWidth="154" ClipText="True"
+                           FontColorOverride="#B69754" VerticalAlignment="Top" Margin="0 13 0 0"
+                           StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <RichTextLabel Name="LoreNote" HorizontalExpand="True" Margin="0 12 0 12"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                </BoxContainer>
+                <controls:HLine Color="#B6975438" Thickness="1" />
+            </BoxContainer>
+            <Control VerticalExpand="True" />
+        </BoxContainer>
+    </ScrollContainer>
+</characterCreation:Wh40kOriginPage>

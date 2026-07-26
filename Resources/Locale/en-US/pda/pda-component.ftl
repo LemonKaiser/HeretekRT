@@ -27,6 +27,15 @@ pda-bound-user-interface-lock-uplink-description = Prevent anyone from accessing
 comp-pda-ui-menu-title = PDA
 
 comp-pda-ui-footer = Personal Digital Assistant
+comp-pda-ui-gados-terminal = FIELD TERMINAL
+comp-pda-ui-gados-easter-egg = GadOS // MACHINE SPIRIT ONLINE
+comp-pda-ui-gados-status = TERMINAL LINK // ONLINE
+comp-pda-ui-service-channel = SERVICE CHANNEL
+comp-pda-ui-gados-ringtone-sequence = SIGNAL SEQUENCE // USE A-G AND # FOR SHARP
+comp-pda-ui-gados-notes = NOTES // LOCAL CACHE
+comp-pda-ui-program-status-cartridge = EXTERNAL CARTRIDGE
+comp-pda-ui-program-status-installed = INSTALLED
+comp-pda-ui-program-status-readonly = READ ONLY
 
 # Mono
 # comp-pda-ui-station = Station: [color=white]{$station}[/color]

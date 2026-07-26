@@ -25,6 +25,13 @@ jobs:
         team: "content-maintainers,junior-maintainers"
         GITHUB_TOKEN: ${{ secrets.LABELER_PAT }}
     - if: ${{ steps.checkUserMember.outputs.isTeamMember == 'true' }}
-      uses: actions-ecosystem/action-add-labels@v1
+      name: Mark PR as approved
+      uses: actions/github-script@v8
       with:
-        labels: "S: Approved"
+        script: |
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number,
+            labels: ['S: Approved'],
+          });

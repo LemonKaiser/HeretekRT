@@ -6,6 +6,7 @@ using Content.Server._Mono.Shuttles.Components;
 using Content.Server.NPC.HTN;
 using Content.Server.Parallax;
 using Content.Server._NF.Shuttles.Components;
+using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
@@ -1263,6 +1264,14 @@ public sealed class KoronusPlanetarySystem : EntitySystem
                         transit.AddedPreventPilot);
                     // The parking lock now owns the component installed for descent.
                     transit.AddedPreventPilot = false;
+
+                    if (landingBody.ExplorationRewardSource is { } rewardSource)
+                    {
+                        RaiseLocalEvent(new Wh40kPlanetaryLandingCompletedEvent(
+                            landingBody.ID,
+                            rewardSource,
+                            transit.TargetMap));
+                    }
                 }
                 else if (!transit.Landing)
                 {

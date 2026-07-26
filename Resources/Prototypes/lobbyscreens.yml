@@ -97,3 +97,23 @@
 - type: lobbyBackground
   id: WPA1
   backgroundGif: /Textures/LobbyScreens/Animated/wpa1.gif
+
+- type: lobbyBackground
+  id: WPA2
+  backgroundGif: /Textures/LobbyScreens/Animated/wpa2.gif
+
+- type: lobbyBackground
+  id: WPA3
+  backgroundGif: /Textures/LobbyScreens/Animated/wpa3.gif
+
+- type: lobbyBackground
+  id: WPA4
+  backgroundGif: /Textures/LobbyScreens/Animated/wpa4.gif
+
+- type: lobbyBackground
+  id: WPA5
+  backgroundGif: /Textures/LobbyScreens/Animated/wpa5.gif
+
+- type: lobbyBackground
+  id: WPA6
+  backgroundGif: /Textures/LobbyScreens/Animated/wpa6.gif

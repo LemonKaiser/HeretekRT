@@ -49,6 +49,15 @@ namespace Content.Server.Database
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
         public DbSet<DialoguePersistentMemory> DialoguePersistentMemories { get; set; } = null!;
         public DbSet<GhostPermission> GhostPermissions { get; set; } = null!;
+        public DbSet<Wh40kPlayerProgress> Wh40kPlayerProgresses { get; set; } = null!;
+        public DbSet<Wh40kAccountRpgFoundation> Wh40kAccountRpgFoundations { get; set; } = null!;
+        public DbSet<Wh40kAccountRpgProgress> Wh40kAccountRpgProgresses { get; set; } = null!;
+        public DbSet<Wh40kAccountAttributePurchase> Wh40kAccountAttributePurchases { get; set; } = null!;
+        public DbSet<Wh40kExperienceLedger> Wh40kExperienceLedgers { get; set; } = null!;
+        public DbSet<Wh40kRewardDelivery> Wh40kRewardDeliveries { get; set; } = null!;
+        public DbSet<Wh40kParty> Wh40kParties { get; set; } = null!;
+        public DbSet<Wh40kPartyMember> Wh40kPartyMembers { get; set; } = null!;
+        public DbSet<Wh40kPartyPreference> Wh40kPartyPreferences { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -382,6 +391,92 @@ namespace Content.Server.Database
                 .HasForeignKey(w => w.PlayerUserId)
                 .HasPrincipalKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountRpgFoundation>()
+                .HasOne<Player>()
+                .WithOne()
+                .HasForeignKey<Wh40kAccountRpgFoundation>(foundation => foundation.UserId)
+                .HasPrincipalKey<Player>(player => player.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountRpgProgress>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithOne()
+                .HasForeignKey<Wh40kAccountRpgProgress>(progress => progress.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountRpgProgress>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("ExperienceTenthsNonNegative", "experience_tenths >= 0");
+                    table.HasCheckConstraint("RpgLevelRange", "level >= 1 AND level <= 100");
+                    table.HasCheckConstraint("DevelopmentPointsNonNegative", "unspent_development_points >= 0");
+                    table.HasCheckConstraint("RpgRevisionNonNegative", "revision >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kAccountAttributePurchase>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(purchase => purchase.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountAttributePurchase>()
+                .ToTable(table =>
+                    table.HasCheckConstraint("PurchasedPointsNonNegative", "purchased_points >= 0"));
+
+            modelBuilder.Entity<Wh40kExperienceLedger>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(ledger => ledger.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kRewardDelivery>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(delivery => delivery.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kRewardDelivery>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("RewardAmountPositive", "amount > 0");
+                    table.HasCheckConstraint("RewardAttemptCountNonNegative", "attempt_count >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kParty>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(party => party.LeaderUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kParty>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("PartyExpirationAfterCreation", "expires_at > created_at");
+                    table.HasCheckConstraint("PartyRevisionNonNegative", "revision >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kPartyMember>()
+                .HasOne<Wh40kParty>()
+                .WithMany()
+                .HasForeignKey(member => member.PartyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPartyMember>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(member => member.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPartyPreference>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithOne()
+                .HasForeignKey<Wh40kPartyPreference>(preference => preference.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPartyPreference>()
+                .Property(preference => preference.AllowInvites)
+                .HasDefaultValue(true);
         }
 
         public virtual IQueryable<AdminLog> SearchLogs(IQueryable<AdminLog> query, string searchText)
@@ -419,6 +514,7 @@ namespace Content.Server.Database
         public string Gender { get; set; } = null!;
         public string Species { get; set; } = null!;
         [Column(TypeName = "jsonb")] public JsonDocument? Markings { get; set; } = null!;
+        [Column(TypeName = "jsonb")] public JsonDocument? Wh40kBuild { get; set; }
         public string HairName { get; set; } = null!;
         public string HairColor { get; set; } = null!;
         public string FacialHairName { get; set; } = null!;
@@ -1389,6 +1485,193 @@ namespace Content.Server.Database
         public DateTime? ExpiresAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_player_progress")]
+    public class Wh40kPlayerProgress
+    {
+        public Guid UserId { get; set; }
+
+        public int ActStage { get; set; }
+
+        public int OnboardingStatus { get; set; }
+
+        public int OnboardingProfileSlot { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_account_rpg_foundation")]
+    public class Wh40kAccountRpgFoundation
+    {
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(64)]
+        public string HomeworldId { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string OriginId { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string ClassId { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string InitialPortraitId { get; set; } = default!;
+
+        [Required, Column(TypeName = "jsonb")]
+        public JsonDocument InitialCharacteristicPoints { get; set; } = default!;
+
+        [Required, MaxLength(32)]
+        public string Source { get; set; } = default!;
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_account_rpg_progress")]
+    public class Wh40kAccountRpgProgress
+    {
+        public Guid UserId { get; set; }
+
+        public int SchemaVersion { get; set; }
+
+        public long ExperienceTenths { get; set; }
+
+        public int Level { get; set; }
+
+        public int UnspentDevelopmentPoints { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public long Revision { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId), nameof(Characteristic))]
+    [Table("wh40k_account_attribute_purchase")]
+    public class Wh40kAccountAttributePurchase
+    {
+        public Guid UserId { get; set; }
+
+        public int Characteristic { get; set; }
+
+        public int PurchasedPoints { get; set; }
+
+        public DateTime FirstPurchasedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [Index(nameof(UserId), nameof(RewardId), IsUnique = true)]
+    [Index(nameof(UserId), nameof(AwardedAt))]
+    [Table("wh40k_experience_ledger")]
+    public class Wh40kExperienceLedger
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(128)]
+        public string RewardId { get; set; } = default!;
+
+        [Required, MaxLength(32)]
+        public string SourceType { get; set; } = default!;
+
+        public long AmountTenths { get; set; }
+
+        public int? RoundId { get; set; }
+
+        [MaxLength(128)]
+        public string? IssuerEntity { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public JsonDocument? ContextJson { get; set; }
+
+        public DateTime AwardedAt { get; set; }
+
+        public int BalanceVersion { get; set; }
+    }
+
+    [Index(nameof(UserId), nameof(RewardId), nameof(EntryId), IsUnique = true)]
+    [Index(nameof(UserId), nameof(Status))]
+    [Table("wh40k_reward_delivery")]
+    public class Wh40kRewardDelivery
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(128)]
+        public string RewardId { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string EntryId { get; set; } = default!;
+
+        [Required, MaxLength(32)]
+        public string RewardType { get; set; } = default!;
+
+        [MaxLength(128)]
+        public string? PrototypeId { get; set; }
+
+        public long Amount { get; set; }
+
+        [Column(TypeName = "jsonb")]
+        public JsonDocument? ContextJson { get; set; }
+
+        public int Status { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? DeliveredAt { get; set; }
+
+        public int AttemptCount { get; set; }
+
+        public DateTime? LastAttemptAt { get; set; }
+    }
+
+    [Index(nameof(LeaderUserId), IsUnique = true)]
+    [Index(nameof(ExpiresAt))]
+    [Table("wh40k_party")]
+    public class Wh40kParty
+    {
+        [Key]
+        public Guid Id { get; set; }
+
+        public Guid LeaderUserId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime ExpiresAt { get; set; }
+
+        public long Revision { get; set; }
+    }
+
+    [PrimaryKey(nameof(PartyId), nameof(UserId))]
+    [Index(nameof(UserId), IsUnique = true)]
+    [Table("wh40k_party_member")]
+    public class Wh40kPartyMember
+    {
+        public Guid PartyId { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public DateTime JoinedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_party_preference")]
+    public class Wh40kPartyPreference
+    {
+        public Guid UserId { get; set; }
+
+        public bool AllowInvites { get; set; } = true;
     }
     // Mono-End
 }

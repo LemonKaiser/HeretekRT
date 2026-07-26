@@ -18,6 +18,17 @@
     PhosphorStrength: 0.48
 
 - type: shader
+  id: GadOsPdaCrt
+  kind: source
+  path: "/Textures/_WH40K/Shaders/gados_pda_crt.swsl"
+  params:
+    Curvature: 0.018
+    ScanlineStrength: 0.160
+    PixelGridStrength: 0.350
+    VignetteStrength: 0.180
+    FlickerStrength: 0.007
+
+- type: shader
   id: ItemRarityWorldGlow
   kind: source
   path: "/Textures/_WH40K/Shaders/item_rarity_glow.swsl"
@@ -26,3 +37,13 @@
   id: HeretekDeathTransition
   kind: source
   path: "/Textures/_WH40K/Shaders/death_transition.swsl"
+
+- type: shader
+  id: WH40KPhantomAfterimage
+  kind: source
+  path: "/Textures/_WH40K/Shaders/phantom_afterimage.swsl"
+  params:
+    Tint: 0.709, 0.956, 1.0
+    EdgeStrength: 1.2
+    Smear: 0.02
+    Phase: 0.0

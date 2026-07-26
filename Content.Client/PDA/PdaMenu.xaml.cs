@@ -47,6 +47,7 @@ namespace Content.Client.PDA
             IoCManager.InjectDependencies(this);
             _gameTicker = _entitySystem.GetEntitySystem<ClientGameTicker>();
             RobustXamlLoader.Load(this);
+            ConfigureTerminalChrome();
 
             ViewContainer.OnChildAdded += control => control.Visible = false;
 
@@ -239,6 +240,7 @@ namespace Content.Client.PDA
                 ProgramList.AddChild(new Label()
                 {
                     Text = Loc.GetString("comp-pda-io-no-programs-available"),
+                    FontColorOverride = PdaTerminalPalette.SecondaryText,
                     HorizontalAlignment = HAlignment.Center,
                     VerticalAlignment = VAlignment.Center,
                     VerticalExpand = true
@@ -247,50 +249,36 @@ namespace Content.Client.PDA
                 return;
             }
 
-            var row = CreateProgramListRow();
-            var itemCount = 1;
-            ProgramList.AddChild(row);
-
             foreach (var (uid, component) in programs)
             {
-                //Create a new row every second program item starting from the first
-                if (itemCount % 2 != 0)
-                {
-                    row = CreateProgramListRow();
-                    ProgramList.AddChild(row);
-                }
-
                 var item = new PdaProgramItem();
 
                 if (component.Icon is not null)
                     item.Icon.SetFromSpriteSpecifier(component.Icon);
 
                 item.OnPressed += _ => OnProgramItemPressed?.Invoke(uid);
+                var programName = Loc.GetString(component.ProgramName);
+                item.ProgramName.Text = CompactProgramName(programName);
+                item.ToolTip = programName;
 
                 switch (component.InstallationStatus)
                 {
                     case InstallationStatus.Cartridge:
                         item.InstallButton.Visible = true;
-                        item.InstallButton.Text = Loc.GetString("cartridge-bound-user-interface-install-button");
+                        item.InstallButton.Text = "+";
+                        item.InstallButton.ToolTip = Loc.GetString("cartridge-bound-user-interface-install-button");
                         item.InstallButton.OnPressed += _ => OnInstallButtonPressed?.Invoke(uid);
                         break;
                     case InstallationStatus.Installed:
                         item.InstallButton.Visible = true;
-                        item.InstallButton.Text = Loc.GetString("cartridge-bound-user-interface-uninstall-button");
+                        item.InstallButton.Text = "−";
+                        item.InstallButton.ToolTip = Loc.GetString("cartridge-bound-user-interface-uninstall-button");
                         item.InstallButton.OnPressed += _ => OnUninstallButtonPressed?.Invoke(uid);
                         break;
                 }
 
-                item.ProgramName.Text = Loc.GetString(component.ProgramName);
-                item.SetHeight = 20;
-                row.AddChild(item);
-
-                itemCount++;
+                ProgramList.AddChild(item);
             }
-
-            //Add a filler item to the last row when it only contains one item
-            if (itemCount % 2 == 0)
-                row.AddChild(new Control() { HorizontalExpand = true });
         }
 
         /// <summary>
@@ -351,13 +339,49 @@ namespace Content.Client.PDA
             _currentView = view;
         }
 
-        private static BoxContainer CreateProgramListRow()
+        private static string CompactProgramName(string programName)
         {
-            return new BoxContainer()
-            {
-                Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                HorizontalExpand = true
-            };
+            // Keep the visible beginning and ellipsis inside a four-column tile,
+            // then centre the already-compacted title rather than clipping it at either side.
+            const int maxLength = 11;
+            return programName.Length <= maxLength
+                ? programName
+                : $"{programName[..(maxLength - 1)]}…";
+        }
+
+        private void ConfigureTerminalChrome()
+        {
+            NavigationFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.ScreenPanel,
+                PdaTerminalPalette.Rail,
+                new Thickness(1));
+            HomeScreenFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.Screen,
+                PdaTerminalPalette.Screen);
+            ProgramListFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.Screen,
+                PdaTerminalPalette.Rail,
+                new Thickness(1));
+            SettingsFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.Screen,
+                PdaTerminalPalette.Rail,
+                new Thickness(1));
+            ProgramHostFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.Screen,
+                PdaTerminalPalette.Rail,
+                new Thickness(1));
+            HomeStatusFrame.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.RaisedPanel,
+                PdaTerminalPalette.Rail,
+                new Thickness(1));
+            HomeDivider.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.AccentMuted,
+                PdaTerminalPalette.AccentMuted,
+                new Thickness(0));
+            HomeFooterDivider.PanelOverride = PdaTerminalPalette.CreatePanel(
+                PdaTerminalPalette.Rail,
+                PdaTerminalPalette.Rail,
+                new Thickness(0));
         }
 
         private void HideAllViews()

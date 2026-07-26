@@ -1,6 +1,9 @@
 using Content.Server._Mono.Company; // Mono
 using Content.Server._Mono.MonoCoins; // Mono
-using Content.Server._WH40K.Administration.ScreenCheck;
+  using Content.Server._WH40K.Administration.ScreenCheck;
+  using Content.Server._WH40K.Administration;
+using Content.Server._WH40K.CharacterCreation;
+using Content.Server._WH40K.Progression;
 using Content.Server._NF.Auth;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
@@ -62,6 +65,14 @@ namespace Content.Server.IoC
             IoCManager.Register<IAdminNotesManager, AdminNotesManager>();
             IoCManager.Register<GhostKickManager>();
             IoCManager.Register<ScreenCheckManager>();
+            IoCManager.Register<Wh40kPlayerProgressManager>();
+            IoCManager.Register<Wh40kAccountRpgManager>();
+            IoCManager.Register<Wh40kProgressManager>();
+            IoCManager.Register<Wh40kPartyManager>();
+            IoCManager.Register<Wh40kExperienceService>();
+            IoCManager.Register<Wh40kLevelRewardCatalog>();
+            IoCManager.Register<Wh40kRpgAdminService>();
+            IoCManager.Register<Wh40kCharacterStatResolver>();
             IoCManager.Register<ISharedAdminLogManager, AdminLogManager>();
             IoCManager.Register<IAdminLogManager, AdminLogManager>();
             IoCManager.Register<PlayTimeTrackingManager>();

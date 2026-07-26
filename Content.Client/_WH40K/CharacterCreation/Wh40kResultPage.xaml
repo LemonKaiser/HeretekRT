@@ -1,0 +1,146 @@
+<characterCreation:Wh40kResultPage
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:characterCreation="clr-namespace:Content.Client._WH40K.CharacterCreation"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:lobbyUi="clr-namespace:Content.Client.Lobby.UI"
+    HorizontalExpand="True" VerticalExpand="True">
+    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                          VerticalAlignment="Center" SeparationOverride="8">
+                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+                <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                             Modulate="#B69754A8"
+                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                <Label Name="ResultTitle" Access="Public" Text="{Loc 'heretek-onboarding-result-summary-title'}"
+                       FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                       StyleClasses="Wh40kOnboardingSectionTitle" />
+                <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                        MouseFilter="Ignore" Modulate="#B69754A8"
+                                                        TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+            </BoxContainer>
+            <Label Text="{Loc 'heretek-onboarding-result'}" FontColorOverride="#B69754" HorizontalAlignment="Center"
+                   StyleClasses="Wh40kOnboardingTechnicalText" />
+
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="26" Margin="0 6 0 0">
+                <BoxContainer Orientation="Vertical" SetWidth="286" SeparationOverride="9">
+                    <Label Text="{Loc 'heretek-onboarding-result-name-title'}" FontColorOverride="#B69754"
+                           StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="7">
+                        <LineEdit Name="NameEdit" Access="Public" HorizontalExpand="True" StyleClasses="Wh40kOnboardingNameInput" />
+                        <PanelContainer Name="GenerateNameButtonFrame" Access="Public" SetSize="60 60">
+                            <lobbyUi:OnboardingDiceButton Name="GenerateNameButton" Access="Public" HorizontalExpand="True" VerticalExpand="True"
+                                                           Margin="2" ToolTip="{Loc 'heretek-onboarding-result-generate-name'}"
+                                                           />
+                        </PanelContainer>
+                    </BoxContainer>
+                    <RichTextLabel Text="{Loc 'humanoid-profile-editor-naming-rules-warning'}" HorizontalExpand="True" MaxWidth="286"
+                                   StyleClasses="Wh40kOnboardingBodySmall" />
+                    <Label Text="{Loc 'heretek-onboarding-result-characteristics-title'}" FontColorOverride="#B69754"
+                           StyleClasses="Wh40kOnboardingTechnicalText" Margin="0 8 0 0" />
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="30">
+                        <Label Text="{Loc 'heretek-characteristic-melee-name'}" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <Label Name="ResultMeleePoints" Access="Public" SetWidth="34" Align="Right" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingTechnicalValue" />
+                    </BoxContainer>
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="30">
+                        <Label Text="{Loc 'heretek-characteristic-ranged-name'}" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <Label Name="ResultRangedPoints" Access="Public" SetWidth="34" Align="Right" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingTechnicalValue" />
+                    </BoxContainer>
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="30">
+                        <Label Text="{Loc 'heretek-characteristic-endurance-name'}" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <Label Name="ResultEndurancePoints" Access="Public" SetWidth="34" Align="Right" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingTechnicalValue" />
+                    </BoxContainer>
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="30">
+                        <Label Text="{Loc 'heretek-characteristic-intelligence-name'}" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <Label Name="ResultIntelligencePoints" Access="Public" SetWidth="34" Align="Right" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingTechnicalValue" />
+                    </BoxContainer>
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="30">
+                        <Label Text="{Loc 'heretek-characteristic-agility-name'}" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <Label Name="ResultAgilityPoints" Access="Public" SetWidth="34" Align="Right" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingTechnicalValue" />
+                    </BoxContainer>
+                    <controls:HLine Color="#B6975438" Thickness="1" />
+                </BoxContainer>
+
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="14">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                        <Label Text="{Loc 'heretek-onboarding-result-background-title'}" FontColorOverride="#B69754"
+                               StyleClasses="Wh40kOnboardingTechnicalText" />
+                        <controls:HLine Color="#B6975438" Thickness="1" Margin="0 8 0 0" />
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="34" SeparationOverride="18">
+                            <Label Text="{Loc 'heretek-onboarding-homeworld'}" SetWidth="176" ClipText="True" FontColorOverride="#B7AD9B"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                            <RichTextLabel Name="ResultHomeworld" Access="Public" HorizontalExpand="True"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                        </BoxContainer>
+                        <controls:HLine Color="#B6975438" Thickness="1" />
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="34" SeparationOverride="18">
+                            <Label Text="{Loc 'heretek-onboarding-origin'}" SetWidth="176" ClipText="True" FontColorOverride="#B7AD9B"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                            <RichTextLabel Name="ResultOrigin" Access="Public" HorizontalExpand="True"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                        </BoxContainer>
+                        <controls:HLine Color="#B6975438" Thickness="1" />
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="34" SeparationOverride="18">
+                            <Label Text="{Loc 'heretek-onboarding-classes'}" SetWidth="176" ClipText="True" FontColorOverride="#B7AD9B"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                            <RichTextLabel Name="ResultClass" Access="Public" HorizontalExpand="True"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                        </BoxContainer>
+                        <controls:HLine Color="#B6975438" Thickness="1" />
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="34" SeparationOverride="18">
+                            <Label Text="{Loc 'heretek-onboarding-result-traits-title'}" SetWidth="176" ClipText="True" FontColorOverride="#B7AD9B"
+                                   StyleClasses="Wh40kOnboardingBodyText" />
+                            <RichTextLabel Name="ResultTraits" Access="Public" HorizontalExpand="True"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                        </BoxContainer>
+                        <controls:HLine Color="#B6975438" Thickness="1" />
+                    </BoxContainer>
+                    <lobbyUi:OnboardingEqualColumns HorizontalExpand="True" Separation="24">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                            <Label Text="{Loc 'heretek-onboarding-result-active-abilities-title'}" FontColorOverride="#B69754"
+                                   StyleClasses="Wh40kOnboardingTechnicalText" />
+                            <controls:HLine Color="#B6975438" Thickness="1" Margin="0 8 0 0" />
+                            <RichTextLabel Name="ResultActiveAbility" Access="Public" HorizontalExpand="True" Margin="0 9 0 9"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                            <controls:HLine Color="#B6975438" Thickness="1" />
+                        </BoxContainer>
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                            <Label Text="{Loc 'heretek-onboarding-result-passive-abilities-title'}" FontColorOverride="#B69754"
+                                   StyleClasses="Wh40kOnboardingTechnicalText" />
+                            <controls:HLine Color="#B6975438" Thickness="1" Margin="0 8 0 0" />
+                            <RichTextLabel Name="ResultPassiveAbility" Access="Public" HorizontalExpand="True" Margin="0 9 0 9"
+                                           StyleClasses="Wh40kOnboardingBodyText" />
+                            <controls:HLine Color="#B6975438" Thickness="1" />
+                        </BoxContainer>
+                    </lobbyUi:OnboardingEqualColumns>
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </ScrollContainer>
+</characterCreation:Wh40kResultPage>

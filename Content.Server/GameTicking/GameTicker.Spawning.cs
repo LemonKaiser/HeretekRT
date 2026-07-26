@@ -357,6 +357,9 @@ namespace Content.Server.GameTicking
             if (!_userDb.IsLoadComplete(player))
                 return;
 
+            if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
+                return;
+
             SpawnPlayer(player, station, jobId, silent: silent);
         }
 

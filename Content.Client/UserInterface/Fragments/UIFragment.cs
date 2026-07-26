@@ -22,4 +22,11 @@ public abstract partial class UIFragment
 
     public abstract void UpdateState(BoundUserInterfaceState state);
 
+    /// <summary>
+    /// Receives an addressable server-to-actor BUI message for the active fragment.
+    /// Private per-session data must use this path instead of entity-replicated UI state.
+    /// </summary>
+    public virtual void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+    }
 }

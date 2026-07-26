@@ -12,9 +12,27 @@ concurrency:
 
 jobs:
   add_label:
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions-ecosystem/action-add-labels@v1
-      if: join(github.event.issue.labels) == ''
+    - name: Mark unlabeled issue or PR as untriaged
+      uses: actions/github-script@v8
       with:
-        labels: "S: Untriaged"
+        script: |
+          const issueNumber = context.issue.number;
+          const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issueNumber,
+          });
+
+          if (labels.length === 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              labels: ['S: Untriaged'],
+            });
+          }

@@ -1,0 +1,688 @@
+# Portrait definitions are data-driven. The first temporary entry is preserved for compatibility;
+# every subsequent entry has an exact small `portrait` and large `half` source pair.
+
+- type: wh40kPortrait
+  id: test-portrait-01
+  order: 0
+  smallSprite: /Textures/_WH40K/CharacterCreation/Portraits/Small.png
+  largeSprite: /Textures/_WH40K/CharacterCreation/Portraits/Medium.png
+
+- type: wh40kPortrait
+  id: wh40k-portrait-abel
+  order: 1
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Abel
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Abel
+
+- type: wh40kPortrait
+  id: wh40k-portrait-adeptusministorum-female
+  order: 2
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: AdeptusMinistorum_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: AdeptusMinistorum_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-adeptusministorum-male
+  order: 3
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: AdeptusMinistorum_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: AdeptusMinistorum_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-arbites-female
+  order: 4
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Arbites_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Arbites_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-arbites-male
+  order: 5
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Arbites_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Arbites_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-arbiteshelmet-female
+  order: 6
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: ArbitesHelmet_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: ArbitesHelmet_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-arbiteshelmet-male
+  order: 7
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: ArbitesHelmet_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: ArbitesHelmet_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-astramilitarum-female
+  order: 8
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: AstraMilitarum_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: AstraMilitarum_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-calligos
+  order: 9
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Calligos
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Calligos
+
+- type: wh40kPortrait
+  id: wh40k-portrait-cassia
+  order: 10
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Cassia
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Cassia
+
+- type: wh40kPortrait
+  id: wh40k-portrait-clementia
+  order: 11
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Clementia
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Clementia
+
+- type: wh40kPortrait
+  id: wh40k-portrait-comissar-female
+  order: 12
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Comissar_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Comissar_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-comissar-male
+  order: 13
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Comissar_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Comissar_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-commorraghcommissar-male
+  order: 14
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: CommorraghCommissar_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: CommorraghCommissar_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-criminal-female
+  order: 15
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Criminal_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Criminal_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-criminal-male
+  order: 16
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Criminal_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Criminal_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-ferrenc
+  order: 17
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Ferrenc
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Ferrenc
+
+- type: wh40kPortrait
+  id: wh40k-portrait-hieronymus
+  order: 18
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Hieronymus
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Hieronymus
+
+- type: wh40kPortrait
+  id: wh40k-portrait-idira
+  order: 19
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Idira
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Idira
+
+- type: wh40kPortrait
+  id: wh40k-portrait-idirachanged
+  order: 20
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: IdiraChanged
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: IdiraChanged
+
+- type: wh40kPortrait
+  id: wh40k-portrait-izhdrigbatoshski
+  order: 22
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: IzhdrigBatoshski
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: IzhdrigBatoshski
+
+- type: wh40kPortrait
+  id: wh40k-portrait-jae
+  order: 23
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Jae
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Jae
+
+- type: wh40kPortrait
+  id: wh40k-portrait-jaechanged
+  order: 24
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: JaeChanged
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: JaeChanged
+
+- type: wh40kPortrait
+  id: wh40k-portrait-jocastasauerback
+  order: 25
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: JocastaSauerback
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: JocastaSauerback
+
+- type: wh40kPortrait
+  id: wh40k-portrait-kibellah
+  order: 26
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Kibellah
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Kibellah
+
+- type: wh40kPortrait
+  id: wh40k-portrait-kibellahmask
+  order: 27
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: KibellahMask
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: KibellahMask
+
+- type: wh40kPortrait
+  id: wh40k-portrait-maive
+  order: 28
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Maive
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Maive
+
+- type: wh40kPortrait
+  id: wh40k-portrait-manipulus
+  order: 29
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Manipulus
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Manipulus
+
+- type: wh40kPortrait
+  id: wh40k-portrait-marshal
+  order: 30
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Marshal
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Marshal
+
+- type: wh40kPortrait
+  id: wh40k-portrait-martinax
+  order: 31
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Martinax
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Martinax
+
+- type: wh40kPortrait
+  id: wh40k-portrait-navigatormercenary
+  order: 32
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: NavigatorMercenary
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: NavigatorMercenary
+
+- type: wh40kPortrait
+  id: wh40k-portrait-navy-female
+  order: 33
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Navy_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Navy_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-navy-male
+  order: 34
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Navy_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Navy_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral1-female
+  order: 35
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral1_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral1_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral1-male
+  order: 36
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral1_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral1_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral2-female
+  order: 37
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral2_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral2_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral2-male
+  order: 38
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral2_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral2_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral3-female
+  order: 39
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral3_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral3_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral4-female
+  order: 40
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral4_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral4_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutral5-male
+  order: 41
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Neutral5_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Neutral5_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-neutralbaker-male
+  order: 42
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: NeutralBaker_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: NeutralBaker_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-nobility-female
+  order: 43
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Nobility_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Nobility_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-nobility-male
+  order: 44
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Nobility_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Nobility_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-nobilitydecadent-female
+  order: 45
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: NobilityDecadent_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: NobilityDecadent_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-nobilitydecadent-male
+  order: 46
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: NobilityDecadent_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: NobilityDecadent_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-nuncius
+  order: 47
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Nuncius
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Nuncius
+
+- type: wh40kPortrait
+  id: wh40k-portrait-opticon
+  order: 48
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Opticon
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Opticon
+
+- type: wh40kPortrait
+  id: wh40k-portrait-prefect
+  order: 49
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Prefect
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Prefect
+
+- type: wh40kPortrait
+  id: wh40k-portrait-prefectonly
+  order: 50
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: PrefectOnly
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: PrefectOnly
+
+- type: wh40kPortrait
+  id: wh40k-portrait-psyker-female
+  order: 51
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Psyker_Female
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Psyker_Female
+
+- type: wh40kPortrait
+  id: wh40k-portrait-psyker-male
+  order: 52
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Psyker_Male
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Psyker_Male
+
+- type: wh40kPortrait
+  id: wh40k-portrait-ravor
+  order: 53
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Ravor
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Ravor
+
+- type: wh40kPortrait
+  id: wh40k-portrait-rizza
+  order: 54
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Rizza
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Rizza
+
+- type: wh40kPortrait
+  id: wh40k-portrait-ruoldo
+  order: 55
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Ruoldo
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Ruoldo
+
+- type: wh40kPortrait
+  id: wh40k-portrait-seberian
+  order: 56
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Seberian
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Seberian
+
+- type: wh40kPortrait
+  id: wh40k-portrait-seberianbionics
+  order: 57
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: SeberianBionics
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: SeberianBionics
+
+- type: wh40kPortrait
+  id: wh40k-portrait-seneschal
+  order: 58
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Seneschal
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Seneschal
+
+- type: wh40kPortrait
+  id: wh40k-portrait-sisterargenta
+  order: 59
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: SisterArgenta
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: SisterArgenta
+
+- type: wh40kPortrait
+  id: wh40k-portrait-solomorneanthar
+  order: 60
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: SolomorneAnthar
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: SolomorneAnthar
+
+- type: wh40kPortrait
+  id: wh40k-portrait-spacevendor
+  order: 61
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: SpaceVendor
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: SpaceVendor
+
+- type: wh40kPortrait
+  id: wh40k-portrait-techpriestcompanion
+  order: 62
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: TechPriestCompanion
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: TechPriestCompanion
+
+- type: wh40kPortrait
+  id: wh40k-portrait-theodora
+  order: 63
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Theodora
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Theodora
+
+- type: wh40kPortrait
+  id: wh40k-portrait-trazyn
+  order: 64
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Trazyn
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Trazyn
+
+- type: wh40kPortrait
+  id: wh40k-portrait-vancalox
+  order: 65
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: VanCalox
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: VanCalox
+
+- type: wh40kPortrait
+  id: wh40k-portrait-vladaim
+  order: 66
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: Vladaim
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: Vladaim
+
+- type: wh40kPortrait
+  id: wh40k-portrait-xaviercalcazar
+  order: 67
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: XavierCalcazar
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: XavierCalcazar
+
+- type: wh40kPortrait
+  id: wh40k-portrait-yanrisdanrock
+  order: 68
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: YanrisDanrock
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: YanrisDanrock
+
+- type: wh40kPortrait
+  id: wh40k-portrait-zaccharyweisz
+  order: 69
+  smallSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Portraits.rsi
+    state: ZaccharyWeisz
+  largeSprite:
+    sprite: /Textures/_WH40K/CharacterCreation/Halves.rsi
+    state: ZaccharyWeisz

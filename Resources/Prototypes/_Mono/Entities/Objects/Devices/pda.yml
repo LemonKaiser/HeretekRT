@@ -7,6 +7,8 @@
   - type: Pda
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -121,6 +123,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -143,6 +147,8 @@
   components:
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -204,6 +210,8 @@
     attachedToSuit: true # Mono
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - LedgerCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
@@ -232,6 +240,8 @@
     attachedToSuit: true # Mono
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - LedgerCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
@@ -311,6 +321,8 @@
   components:
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge

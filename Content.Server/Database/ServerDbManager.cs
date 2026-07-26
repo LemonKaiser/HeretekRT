@@ -23,6 +23,9 @@ using Robust.Shared.Prototypes;
 using LogLevel = Robust.Shared.Log.LogLevel;
 using MSLogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Content.Shared._Mono.Company;
+using Content.Server._WH40K.Progression;
+using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.Progression;
 using Content.Server._Mono.Company; // Mono
 
 namespace Content.Server.Database
@@ -48,6 +51,92 @@ namespace Content.Server.Database
         // Single method for two operations for transaction.
         Task DeleteSlotAndSetSelectedIndex(NetUserId userId, int deleteSlot, int newSlot);
         Task<PlayerPreferences?> GetPlayerPreferencesAsync(NetUserId userId, CancellationToken cancel);
+        #endregion
+
+        #region WH40K character creation
+        Task<Wh40kPlayerProgressSnapshot?> GetWh40kPlayerProgressAsync(NetUserId userId, CancellationToken cancel = default);
+        Task<Wh40kPlayerProgressSnapshot> GetOrCreateWh40kPlayerProgressAsync(
+            NetUserId userId,
+            Wh40kPlayerProgressSnapshot fallback,
+            CancellationToken cancel = default);
+        Task<Wh40kOnboardingCompletionResult> CompleteWh40kOnboardingAsync(
+            NetUserId userId,
+            HumanoidCharacterProfile profile,
+            CancellationToken cancel = default);
+        Task<Wh40kAccountRpgRecord?> GetWh40kAccountRpgAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<Wh40kAccountRpgRecord> GetOrCreateWh40kAccountRpgAsync(
+            NetUserId userId,
+            Wh40kRpgFoundationDraft foundation,
+            CancellationToken cancel = default);
+        Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(
+            NetUserId userId,
+            Wh40kXpAwardRequest request,
+            CancellationToken cancel = default);
+        Task<Wh40kDevelopmentPointGrantResult> GrantWh40kDevelopmentPointsAsync(
+            NetUserId userId,
+            int amount,
+            Wh40kXpAwardRequest audit,
+            CancellationToken cancel = default);
+        Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kCharacteristic characteristic,
+            int count,
+            CancellationToken cancel = default);
+        Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicsAsync(
+            NetUserId userId,
+            long expectedRevision,
+            IReadOnlyList<Wh40kCharacteristicAllocation> allocations,
+            CancellationToken cancel = default);
+        Task<Wh40kExperienceLedgerRecord?> GetWh40kExperienceLedgerEntryAsync(
+            NetUserId userId,
+            string rewardId,
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> GetPendingWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> EnqueueWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            IReadOnlyList<Wh40kRewardDeliveryDraft> deliveries,
+            CancellationToken cancel = default);
+        Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+            NetUserId userId,
+            long deliveryId,
+            bool delivered,
+            CancellationToken cancel = default);
+        Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<Wh40kPartyMutationResult> CreateWh40kPartyAsync(
+            NetUserId leaderUserId,
+            CancellationToken cancel = default);
+        Task<Wh40kPartyMutationResult> AddWh40kPartyMemberAsync(
+            Guid partyId,
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default);
+        Task<Wh40kPartyMutationResult> LeaveWh40kPartyAsync(
+            NetUserId userId,
+            long expectedRevision,
+            CancellationToken cancel = default);
+        Task<Wh40kPartyMutationResult> KickWh40kPartyMemberAsync(
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default);
+        Task<int> DeleteExpiredWh40kPartiesAsync(
+            DateTime now,
+            CancellationToken cancel = default);
+        Task<bool> GetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task SetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            bool allowInvites,
+            CancellationToken cancel = default);
         #endregion
 
         #region MonoCoins
@@ -539,6 +628,206 @@ namespace Content.Server.Database
         {
             DbReadOpsMetric.Inc();
             return RunDbCommand(() => _db.GetPlayerPreferencesAsync(userId, cancel));
+        }
+
+        public Task<Wh40kPlayerProgressSnapshot?> GetWh40kPlayerProgressAsync(NetUserId userId, CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kPlayerProgressAsync(userId, cancel));
+        }
+
+        public Task<Wh40kPlayerProgressSnapshot> GetOrCreateWh40kPlayerProgressAsync(
+            NetUserId userId,
+            Wh40kPlayerProgressSnapshot fallback,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetOrCreateWh40kPlayerProgressAsync(userId, fallback, cancel));
+        }
+
+        public Task<Wh40kOnboardingCompletionResult> CompleteWh40kOnboardingAsync(
+            NetUserId userId,
+            HumanoidCharacterProfile profile,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.CompleteWh40kOnboardingAsync(userId, profile, cancel));
+        }
+
+        public Task<Wh40kAccountRpgRecord?> GetWh40kAccountRpgAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kAccountRpgAsync(userId, cancel));
+        }
+
+        public Task<Wh40kAccountRpgRecord> GetOrCreateWh40kAccountRpgAsync(
+            NetUserId userId,
+            Wh40kRpgFoundationDraft foundation,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetOrCreateWh40kAccountRpgAsync(userId, foundation, cancel));
+        }
+
+        public Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(
+            NetUserId userId,
+            Wh40kXpAwardRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.AwardWh40kExperienceAsync(userId, request, cancel));
+        }
+
+        public Task<Wh40kDevelopmentPointGrantResult> GrantWh40kDevelopmentPointsAsync(
+            NetUserId userId,
+            int amount,
+            Wh40kXpAwardRequest audit,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.GrantWh40kDevelopmentPointsAsync(userId, amount, audit, cancel));
+        }
+
+        public Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kCharacteristic characteristic,
+            int count,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() =>
+                _db.SpendWh40kCharacteristicAsync(userId, expectedRevision, characteristic, count, cancel));
+        }
+
+        public Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicsAsync(
+            NetUserId userId,
+            long expectedRevision,
+            IReadOnlyList<Wh40kCharacteristicAllocation> allocations,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() =>
+                _db.SpendWh40kCharacteristicsAsync(userId, expectedRevision, allocations, cancel));
+        }
+
+        public Task<Wh40kExperienceLedgerRecord?> GetWh40kExperienceLedgerEntryAsync(
+            NetUserId userId,
+            string rewardId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kExperienceLedgerEntryAsync(userId, rewardId, cancel));
+        }
+
+        public Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> GetPendingWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPendingWh40kRewardDeliveriesAsync(userId, cancel));
+        }
+
+        public Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> EnqueueWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            IReadOnlyList<Wh40kRewardDeliveryDraft> deliveries,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.EnqueueWh40kRewardDeliveriesAsync(userId, deliveries, cancel));
+        }
+
+        public Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+            NetUserId userId,
+            long deliveryId,
+            bool delivered,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() =>
+                _db.RecordWh40kRewardDeliveryAttemptAsync(userId, deliveryId, delivered, cancel));
+        }
+
+        public Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kPartyAsync(userId, cancel));
+        }
+
+        public Task<Wh40kPartyMutationResult> CreateWh40kPartyAsync(
+            NetUserId leaderUserId,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.CreateWh40kPartyAsync(leaderUserId, cancel));
+        }
+
+        public Task<Wh40kPartyMutationResult> AddWh40kPartyMemberAsync(
+            Guid partyId,
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.AddWh40kPartyMemberAsync(
+                partyId,
+                leaderUserId,
+                memberUserId,
+                expectedRevision,
+                cancel));
+        }
+
+        public Task<Wh40kPartyMutationResult> LeaveWh40kPartyAsync(
+            NetUserId userId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.LeaveWh40kPartyAsync(userId, expectedRevision, cancel));
+        }
+
+        public Task<Wh40kPartyMutationResult> KickWh40kPartyMemberAsync(
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.KickWh40kPartyMemberAsync(
+                leaderUserId,
+                memberUserId,
+                expectedRevision,
+                cancel));
+        }
+
+        public Task<int> DeleteExpiredWh40kPartiesAsync(
+            DateTime now,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.DeleteExpiredWh40kPartiesAsync(now, cancel));
+        }
+
+        public Task<bool> GetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kPartyInvitesAllowedAsync(userId, cancel));
+        }
+
+        public Task SetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            bool allowInvites,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetWh40kPartyInvitesAllowedAsync(userId, allowInvites, cancel));
         }
 
         public Task<long> GetMonoCoinsAsync(NetUserId userId, CancellationToken cancel = default)

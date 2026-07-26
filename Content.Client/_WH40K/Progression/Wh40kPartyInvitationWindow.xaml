@@ -1,0 +1,26 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               xmlns:pda="clr-namespace:Content.Client.PDA"
+               Title="{Loc 'wh40k-rpg-party-invitation-title'}"
+               MinSize="430 210"
+               SetSize="470 235">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="8">
+        <pda:PdaTerminalHeaderPanel SetHeight="30" Margin="0 0 0 6">
+            <Label Text="{Loc 'wh40k-rpg-party-invitation-header'}"
+                   FontColorOverride="#88D2A5" Align="Center"/>
+        </pda:PdaTerminalHeaderPanel>
+        <pda:PdaTerminalPanel HorizontalExpand="True" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10 8">
+                <RichTextLabel Name="InvitationText" HorizontalExpand="True" VerticalExpand="True"/>
+                <RichTextLabel Name="ExpiryText" HorizontalExpand="True" Margin="0 5"/>
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 8 0 0">
+                    <Button Name="AcceptButton" Access="Public"
+                            Text="{Loc 'wh40k-rpg-party-invitation-accept'}"
+                            MinWidth="150"/>
+                    <Button Name="DeclineButton" Access="Public"
+                            Text="{Loc 'wh40k-rpg-party-invitation-decline'}"
+                            MinWidth="150" Margin="8 0 0 0"/>
+                </BoxContainer>
+            </BoxContainer>
+        </pda:PdaTerminalPanel>
+    </BoxContainer>
+</DefaultWindow>

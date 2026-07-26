@@ -10,11 +10,30 @@ concurrency:
 
 jobs:
   add_label:
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions-ecosystem/action-add-labels@v1
+    - name: Mark PR as needing review
+      uses: actions/github-script@v8
       with:
-        labels: "S: Needs Review"
-    - uses: actions-ecosystem/action-remove-labels@v1
-      with:
-        labels: "S: Awaiting Changes"
+        script: |
+          const issueNumber = context.payload.pull_request.number;
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issueNumber,
+            labels: ['S: Needs Review'],
+          });
+
+          try {
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              name: 'S: Awaiting Changes',
+            });
+          } catch (error) {
+            if (error.status !== 404)
+              throw error;
+          }

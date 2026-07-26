@@ -7,9 +7,12 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._Mono.Company;
+using Content.Server._WH40K.Progression;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Shared._Mono.Company;
+using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.Progression;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Ghost.Roles;
@@ -29,6 +32,15 @@ namespace Content.Server.Database
 {
     public abstract class ServerDbBase
     {
+        private const int Wh40kMutationRetryLimit = 8;
+        private const int Wh40kMaximumRewardIdLength = 128;
+        private const int Wh40kMaximumRewardEntryIdLength = 64;
+        private const int Wh40kMaximumRewardTypeLength = 32;
+        private const int Wh40kMaximumRewardPrototypeIdLength = 128;
+        private const int Wh40kMaximumSourceTypeLength = 32;
+        private const int Wh40kMaximumIssuerEntityLength = 128;
+        private const int Wh40kMaximumContextJsonLength = 4096;
+
         private readonly ISawmill _opsLog;
 
         public event Action<DatabaseNotification>? OnNotificationReceived;
@@ -152,6 +164,16 @@ namespace Content.Server.Database
             prefs.Profiles.Add(profile);
 
             db.DbContext.Preference.Add(prefs);
+            var now = DateTime.UtcNow;
+            db.DbContext.Wh40kPlayerProgresses.Add(new Wh40kPlayerProgress
+            {
+                UserId = userId.UserId,
+                ActStage = (int) Wh40kActStage.Act1NotStarted,
+                OnboardingStatus = (int) Wh40kOnboardingStatus.Required,
+                OnboardingProfileSlot = 0,
+                CreatedAt = now,
+                UpdatedAt = now,
+            });
 
             await db.DbContext.SaveChangesAsync();
 
@@ -248,6 +270,9 @@ namespace Content.Server.Database
             // Get the company with fallback to default "None"
             var company = profile.Company ?? "None";
 
+            var wh40kBuild = profile.Wh40kBuild?.RootElement.Deserialize<Wh40kCharacterBuild>()?.Validated()
+                ?? new Wh40kCharacterBuild();
+
             // Validate height and width to prevent sprite scale errors
             // Database migration set default values to 0f for existing profiles
             var height = profile.Height <= 0.005f ? 1.0f : profile.Height;
@@ -279,7 +304,8 @@ namespace Content.Server.Database
                 antags.ToHashSet(),
                 traits.ToHashSet(),
                 loadouts,
-                company);
+                company,
+                wh40kBuild);
         }
 
         private static Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
@@ -313,6 +339,7 @@ namespace Content.Server.Database
             profile.Slot = slot;
             profile.PreferenceUnavailable = (DbPreferenceUnavailableMode) humanoid.PreferenceUnavailable;
             profile.Company = humanoid.Company;
+            profile.Wh40kBuild = JsonSerializer.SerializeToDocument(humanoid.Wh40kBuild.Validated());
 
             profile.Jobs.Clear();
             profile.Jobs.AddRange(
@@ -365,6 +392,1472 @@ namespace Content.Server.Database
             }
 
             return profile;
+        }
+        #endregion
+
+        #region WH40K character creation
+        public async Task<Wh40kPlayerProgressSnapshot?> GetWh40kPlayerProgressAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var progress = await db.DbContext.Wh40kPlayerProgresses
+                .SingleOrDefaultAsync(progress => progress.UserId == userId.UserId, cancel);
+
+            return progress == null ? null : ToSnapshot(progress);
+        }
+
+        public async Task<Wh40kPlayerProgressSnapshot> GetOrCreateWh40kPlayerProgressAsync(
+            NetUserId userId,
+            Wh40kPlayerProgressSnapshot fallback,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var progress = await db.DbContext.Wh40kPlayerProgresses
+                .SingleOrDefaultAsync(progress => progress.UserId == userId.UserId, cancel);
+
+            if (progress != null)
+                return ToSnapshot(progress);
+
+            var now = DateTime.UtcNow;
+            progress = new Wh40kPlayerProgress
+            {
+                UserId = userId.UserId,
+                ActStage = (int) fallback.ActStage,
+                OnboardingStatus = (int) fallback.OnboardingStatus,
+                OnboardingProfileSlot = fallback.OnboardingProfileSlot,
+                CreatedAt = now,
+                UpdatedAt = now,
+            };
+
+            db.DbContext.Wh40kPlayerProgresses.Add(progress);
+            await db.DbContext.SaveChangesAsync(cancel);
+            return ToSnapshot(progress);
+        }
+
+        /// <summary>
+        /// Replaces only the server-designated temporary profile. The explicit transaction keeps the profile and
+        /// progress updates inseparable, so a failed save cannot unlock the account without the profile.
+        /// </summary>
+        public async Task<Wh40kOnboardingCompletionResult> CompleteWh40kOnboardingAsync(
+            NetUserId userId,
+            HumanoidCharacterProfile humanoid,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var progress = await db.DbContext.Wh40kPlayerProgresses
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+
+            if (progress == null)
+            {
+                return new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.NotAllowed,
+                    Wh40kPlayerProgressSnapshot.Unknown,
+                    -1);
+            }
+
+            var snapshot = ToSnapshot(progress);
+            if (snapshot.ActStage != Wh40kActStage.Act1NotStarted ||
+                snapshot.OnboardingStatus != Wh40kOnboardingStatus.Required ||
+                snapshot.OnboardingProfileSlot < 0)
+            {
+                return new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.NotAllowed,
+                    snapshot,
+                    -1);
+            }
+
+            if (await db.DbContext.Wh40kAccountRpgFoundations
+                    .AnyAsync(candidate => candidate.UserId == userId.UserId, cancel))
+            {
+                return new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.NotAllowed,
+                    snapshot,
+                    -1);
+            }
+
+            var slot = snapshot.OnboardingProfileSlot;
+            var oldProfile = await db.DbContext.Profile
+                .Include(profile => profile.Preference)
+                .Where(profile => profile.Preference.UserId == userId.UserId)
+                .Include(profile => profile.Jobs)
+                .Include(profile => profile.Antags)
+                .Include(profile => profile.Traits)
+                .Include(profile => profile.Loadouts)
+                    .ThenInclude(loadout => loadout.Groups)
+                    .ThenInclude(group => group.Loadouts)
+                .AsSplitQuery()
+                .SingleOrDefaultAsync(profile => profile.Slot == slot, cancel);
+
+            if (oldProfile == null)
+            {
+                return new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.NotAllowed,
+                    snapshot,
+                    -1);
+            }
+
+            var build = humanoid.Wh40kBuild;
+            if (!build.IsCompleteFoundation)
+            {
+                return new Wh40kOnboardingCompletionResult(
+                    Wh40kOnboardingCompletionStatus.InvalidBuild,
+                    snapshot,
+                    -1);
+            }
+
+            var foundation = new Wh40kRpgFoundationDraft(
+                build.HomeworldId!,
+                build.OriginId!,
+                build.ClassId!,
+                build.PortraitId!,
+                build.CharacteristicPoints,
+                Wh40kRpgFoundationSource.Onboarding);
+
+            ConvertProfiles(humanoid, slot, oldProfile);
+            oldProfile.Preference.SelectedCharacterSlot = slot;
+            progress.ActStage = (int) Wh40kActStage.Act1InProgress;
+            progress.OnboardingStatus = (int) Wh40kOnboardingStatus.CharacterCreated;
+            progress.UpdatedAt = DateTime.UtcNow;
+            AddWh40kAccountRpg(db.DbContext, userId, foundation, progress.UpdatedAt);
+
+            await db.DbContext.SaveChangesAsync(cancel);
+            await transaction.CommitAsync(cancel);
+            return new Wh40kOnboardingCompletionResult(
+                Wh40kOnboardingCompletionStatus.Success,
+                ToSnapshot(progress),
+                slot);
+        }
+
+        public async Task<Wh40kAccountRpgRecord?> GetWh40kAccountRpgAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            return await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+        }
+
+        public async Task<Wh40kAccountRpgRecord> GetOrCreateWh40kAccountRpgAsync(
+            NetUserId userId,
+            Wh40kRpgFoundationDraft foundation,
+            CancellationToken cancel = default)
+        {
+            ValidateWh40kFoundationDraft(foundation);
+            DbUpdateException? concurrentInsert = null;
+
+            await using (var db = await GetDb(cancel))
+            {
+                var existing = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+                if (existing != null)
+                    return existing;
+
+                AddWh40kAccountRpg(db.DbContext, userId, foundation, DateTime.UtcNow);
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                    return await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                           ?? throw new InvalidOperationException($"WH40K RPG account {userId} disappeared after creation.");
+                }
+                catch (DbUpdateException exception)
+                {
+                    // A second server or connection may have won the unique UserId insert.
+                    // Re-read using a clean context; any other persistence error is rethrown below.
+                    concurrentInsert = exception;
+                }
+            }
+
+            await using var retryDb = await GetDb(cancel);
+            var concurrentlyCreated = await LoadWh40kAccountRpgAsync(retryDb.DbContext, userId, cancel);
+            if (concurrentlyCreated != null)
+                return concurrentlyCreated;
+
+            throw concurrentInsert!;
+        }
+
+        public async Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(
+            NetUserId userId,
+            Wh40kXpAwardRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidateWh40kXpAwardRequest(request);
+            ValidateWh40kLevelRewardDefinitions(request.LevelRewards);
+
+            for (var attempt = 0; attempt < Wh40kMutationRetryLimit; attempt++)
+            {
+                await using var db = await GetDb(cancel);
+                await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+                var existingLedger = await db.DbContext.Wh40kExperienceLedgers
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(
+                        entry => entry.UserId == userId.UserId && entry.RewardId == request.RewardId,
+                        cancel);
+                if (existingLedger != null)
+                {
+                    var duplicateAccount = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                        ?? throw new InvalidOperationException($"WH40K RPG account {userId} does not exist.");
+                    return new Wh40kExperienceAwardResult(
+                        Wh40kExperienceAwardStatus.Duplicate,
+                        duplicateAccount,
+                        ToWh40kExperienceLedgerRecord(existingLedger),
+                        duplicateAccount.Progress.Level,
+                        0,
+                        0);
+                }
+
+                var progress = await db.DbContext.Wh40kAccountRpgProgresses
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel)
+                    ?? throw new InvalidOperationException($"WH40K RPG account {userId} does not exist.");
+                var experienceTenths = checked(progress.ExperienceTenths + request.AmountTenths);
+                var level = Wh40kExperienceCurve.GetLevel(experienceTenths);
+                var levelsGained = level - progress.Level;
+                if (levelsGained < 0)
+                {
+                    throw new InvalidOperationException(
+                        $"WH40K RPG account {userId} has level {progress.Level} above its XP-derived level {level}.");
+                }
+
+                var developmentPointsAwarded = checked(
+                    levelsGained * Wh40kExperienceCurve.DevelopmentPointsPerLevel);
+                var unspentDevelopmentPoints = checked(
+                    progress.UnspentDevelopmentPoints + developmentPointsAwarded);
+                var revision = request.AmountTenths == 0
+                    ? progress.Revision
+                    : checked(progress.Revision + 1);
+                var now = DateTime.UtcNow;
+
+                if (request.AmountTenths > 0)
+                {
+                    var updated = await db.DbContext.Wh40kAccountRpgProgresses
+                        .Where(candidate =>
+                            candidate.UserId == userId.UserId &&
+                            candidate.Revision == progress.Revision)
+                        .ExecuteUpdateAsync(setters => setters
+                            .SetProperty(candidate => candidate.ExperienceTenths, experienceTenths)
+                            .SetProperty(candidate => candidate.Level, level)
+                            .SetProperty(candidate => candidate.UnspentDevelopmentPoints, unspentDevelopmentPoints)
+                            .SetProperty(candidate => candidate.UpdatedAt, now)
+                            .SetProperty(candidate => candidate.Revision, revision), cancel);
+                    if (updated == 0)
+                        continue;
+                }
+
+                var ledger = new Wh40kExperienceLedger
+                {
+                    UserId = userId.UserId,
+                    RewardId = request.RewardId,
+                    SourceType = ToDatabaseExperienceSourceType(request.SourceType),
+                    AmountTenths = request.AmountTenths,
+                    RoundId = request.RoundId,
+                    IssuerEntity = request.IssuerEntity,
+                    ContextJson = ParseWh40kContextJson(request.ContextJson),
+                    AwardedAt = now,
+                    BalanceVersion = Wh40kExperienceCurve.BalanceVersion,
+                };
+                db.DbContext.Wh40kExperienceLedgers.Add(ledger);
+                if (levelsGained > 0 && request.LevelRewards != null)
+                {
+                    foreach (var definition in request.LevelRewards)
+                    {
+                        if (definition.Level <= progress.Level || definition.Level > level)
+                            continue;
+
+                        AddWh40kRewardDeliveries(
+                            db.DbContext,
+                            userId,
+                            definition.Entries,
+                            now);
+                    }
+                }
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                    await transaction.CommitAsync(cancel);
+                }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync(cancel);
+                    continue;
+                }
+
+                var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                    ?? throw new InvalidOperationException($"WH40K RPG account {userId} disappeared after XP award.");
+                return new Wh40kExperienceAwardResult(
+                    Wh40kExperienceAwardStatus.Awarded,
+                    account,
+                    ToWh40kExperienceLedgerRecord(ledger),
+                    progress.Level,
+                    levelsGained,
+                    developmentPointsAwarded);
+            }
+
+            await using var duplicateDb = await GetDb(cancel);
+            var duplicate = await duplicateDb.DbContext.Wh40kExperienceLedgers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    entry => entry.UserId == userId.UserId && entry.RewardId == request.RewardId,
+                    cancel);
+            if (duplicate != null)
+            {
+                var account = await LoadWh40kAccountRpgAsync(duplicateDb.DbContext, userId, cancel)
+                    ?? throw new InvalidOperationException($"WH40K RPG account {userId} disappeared after XP award.");
+                return new Wh40kExperienceAwardResult(
+                    Wh40kExperienceAwardStatus.Duplicate,
+                    account,
+                    ToWh40kExperienceLedgerRecord(duplicate),
+                    account.Progress.Level,
+                    0,
+                    0);
+            }
+
+            throw new InvalidOperationException(
+                $"WH40K RPG account {userId} could not be updated after {Wh40kMutationRetryLimit} attempts.");
+        }
+
+        public async Task<Wh40kDevelopmentPointGrantResult> GrantWh40kDevelopmentPointsAsync(
+            NetUserId userId,
+            int amount,
+            Wh40kXpAwardRequest audit,
+            CancellationToken cancel = default)
+        {
+            ValidateWh40kXpAwardRequest(audit);
+            if (amount <= 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "WH40K development point grant must be positive.");
+            if (audit.SourceType != Wh40kExperienceSourceType.Admin || audit.AmountTenths != 0)
+            {
+                throw new ArgumentException(
+                    "WH40K development point grants require a zero-XP admin ledger entry.",
+                    nameof(audit));
+            }
+
+            for (var attempt = 0; attempt < Wh40kMutationRetryLimit; attempt++)
+            {
+                await using var db = await GetDb(cancel);
+                await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+                var existingLedger = await db.DbContext.Wh40kExperienceLedgers
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(
+                        entry => entry.UserId == userId.UserId && entry.RewardId == audit.RewardId,
+                        cancel);
+                if (existingLedger != null)
+                {
+                    var duplicateAccount = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                        ?? throw new InvalidOperationException($"WH40K RPG account {userId} does not exist.");
+                    return new Wh40kDevelopmentPointGrantResult(
+                        Wh40kExperienceAwardStatus.Duplicate,
+                        duplicateAccount,
+                        ToWh40kExperienceLedgerRecord(existingLedger),
+                        0);
+                }
+
+                var progress = await db.DbContext.Wh40kAccountRpgProgresses
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel)
+                    ?? throw new InvalidOperationException($"WH40K RPG account {userId} does not exist.");
+                var now = DateTime.UtcNow;
+                var revision = checked(progress.Revision + 1);
+                var points = checked(progress.UnspentDevelopmentPoints + amount);
+                var updated = await db.DbContext.Wh40kAccountRpgProgresses
+                    .Where(candidate =>
+                        candidate.UserId == userId.UserId &&
+                        candidate.Revision == progress.Revision)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(candidate => candidate.UnspentDevelopmentPoints, points)
+                        .SetProperty(candidate => candidate.UpdatedAt, now)
+                        .SetProperty(candidate => candidate.Revision, revision), cancel);
+                if (updated == 0)
+                    continue;
+
+                var ledger = new Wh40kExperienceLedger
+                {
+                    UserId = userId.UserId,
+                    RewardId = audit.RewardId,
+                    SourceType = ToDatabaseExperienceSourceType(audit.SourceType),
+                    AmountTenths = 0,
+                    RoundId = audit.RoundId,
+                    IssuerEntity = audit.IssuerEntity,
+                    ContextJson = ParseWh40kContextJson(audit.ContextJson),
+                    AwardedAt = now,
+                    BalanceVersion = Wh40kExperienceCurve.BalanceVersion,
+                };
+                db.DbContext.Wh40kExperienceLedgers.Add(ledger);
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                    await transaction.CommitAsync(cancel);
+                }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync(cancel);
+                    continue;
+                }
+
+                var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                    ?? throw new InvalidOperationException(
+                        $"WH40K RPG account {userId} disappeared after development point grant.");
+                return new Wh40kDevelopmentPointGrantResult(
+                    Wh40kExperienceAwardStatus.Awarded,
+                    account,
+                    ToWh40kExperienceLedgerRecord(ledger),
+                    amount);
+            }
+
+            throw new InvalidOperationException(
+                $"WH40K RPG account {userId} could not receive development points after " +
+                $"{Wh40kMutationRetryLimit} attempts.");
+        }
+
+        public async Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kCharacteristic characteristic,
+            int count,
+            CancellationToken cancel = default)
+        {
+            return await SpendWh40kCharacteristicsAsync(
+                userId,
+                expectedRevision,
+                [new Wh40kCharacteristicAllocation(characteristic, count)],
+                cancel);
+        }
+
+        public async Task<Wh40kCharacteristicSpendResult> SpendWh40kCharacteristicsAsync(
+            NetUserId userId,
+            long expectedRevision,
+            IReadOnlyList<Wh40kCharacteristicAllocation> allocations,
+            CancellationToken cancel = default)
+        {
+            if (allocations == null || allocations.Count == 0)
+                return await GetWh40kSpendFailureAsync(userId, Wh40kCharacteristicSpendStatus.InvalidCount, cancel);
+
+            var normalized = new Dictionary<Wh40kCharacteristic, int>();
+            var totalCount = 0;
+            foreach (var allocation in allocations)
+            {
+                if (!Enum.IsDefined(allocation.Characteristic))
+                {
+                    return await GetWh40kSpendFailureAsync(
+                        userId,
+                        Wh40kCharacteristicSpendStatus.InvalidCharacteristic,
+                        cancel);
+                }
+
+                if (allocation.Count <= 0 || !normalized.TryAdd(allocation.Characteristic, allocation.Count))
+                {
+                    return await GetWh40kSpendFailureAsync(
+                        userId,
+                        Wh40kCharacteristicSpendStatus.InvalidCount,
+                        cancel);
+                }
+
+                try
+                {
+                    totalCount = checked(totalCount + allocation.Count);
+                }
+                catch (OverflowException)
+                {
+                    return await GetWh40kSpendFailureAsync(
+                        userId,
+                        Wh40kCharacteristicSpendStatus.InvalidCount,
+                        cancel);
+                }
+            }
+
+            for (var attempt = 0; attempt < Wh40kMutationRetryLimit; attempt++)
+            {
+                await using var db = await GetDb(cancel);
+                await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+                var progress = await db.DbContext.Wh40kAccountRpgProgresses
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+                if (progress == null)
+                    return new Wh40kCharacteristicSpendResult(Wh40kCharacteristicSpendStatus.AccountNotFound, null);
+
+                if (progress.Revision != expectedRevision)
+                {
+                    var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+                    return new Wh40kCharacteristicSpendResult(
+                        Wh40kCharacteristicSpendStatus.RevisionMismatch,
+                        account);
+                }
+
+                if (progress.UnspentDevelopmentPoints < totalCount)
+                {
+                    var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+                    return new Wh40kCharacteristicSpendResult(
+                        Wh40kCharacteristicSpendStatus.InsufficientDevelopmentPoints,
+                        account);
+                }
+
+                var purchases =
+                    new Dictionary<Wh40kCharacteristic, (Wh40kAccountAttributePurchase? Entity, int Points)>();
+                foreach (var (characteristic, count) in normalized)
+                {
+                    var purchase = await db.DbContext.Wh40kAccountAttributePurchases
+                        .SingleOrDefaultAsync(candidate =>
+                            candidate.UserId == userId.UserId &&
+                            candidate.Characteristic == (int) characteristic,
+                            cancel);
+                    try
+                    {
+                        purchases.Add(
+                            characteristic,
+                            (purchase, checked((purchase?.PurchasedPoints ?? 0) + count)));
+                    }
+                    catch (OverflowException)
+                    {
+                        var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+                        return new Wh40kCharacteristicSpendResult(
+                            Wh40kCharacteristicSpendStatus.InvalidCount,
+                            account);
+                    }
+                }
+
+                var now = DateTime.UtcNow;
+                var revision = checked(progress.Revision + 1);
+                var updated = await db.DbContext.Wh40kAccountRpgProgresses
+                    .Where(candidate =>
+                        candidate.UserId == userId.UserId &&
+                        candidate.Revision == expectedRevision)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(
+                            candidate => candidate.UnspentDevelopmentPoints,
+                            progress.UnspentDevelopmentPoints - totalCount)
+                        .SetProperty(candidate => candidate.UpdatedAt, now)
+                        .SetProperty(candidate => candidate.Revision, revision), cancel);
+                if (updated == 0)
+                    continue;
+
+                foreach (var (characteristic, purchase) in purchases)
+                {
+                    if (purchase.Entity == null)
+                    {
+                        db.DbContext.Wh40kAccountAttributePurchases.Add(new Wh40kAccountAttributePurchase
+                        {
+                            UserId = userId.UserId,
+                            Characteristic = (int) characteristic,
+                            PurchasedPoints = purchase.Points,
+                            FirstPurchasedAt = now,
+                            UpdatedAt = now,
+                        });
+                    }
+                    else
+                    {
+                        purchase.Entity.PurchasedPoints = purchase.Points;
+                        purchase.Entity.UpdatedAt = now;
+                    }
+                }
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                    await transaction.CommitAsync(cancel);
+                }
+                catch (DbUpdateException)
+                {
+                    await transaction.RollbackAsync(cancel);
+                    continue;
+                }
+
+                var result = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                    ?? throw new InvalidOperationException(
+                        $"WH40K RPG account {userId} disappeared after characteristic purchase.");
+                return new Wh40kCharacteristicSpendResult(Wh40kCharacteristicSpendStatus.Success, result);
+            }
+
+            return await GetWh40kSpendFailureAsync(
+                userId,
+                Wh40kCharacteristicSpendStatus.RevisionMismatch,
+                cancel);
+        }
+
+        public async Task<Wh40kExperienceLedgerRecord?> GetWh40kExperienceLedgerEntryAsync(
+            NetUserId userId,
+            string rewardId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var ledger = await db.DbContext.Wh40kExperienceLedgers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    entry => entry.UserId == userId.UserId && entry.RewardId == rewardId,
+                    cancel);
+
+            return ledger == null ? null : ToWh40kExperienceLedgerRecord(ledger);
+        }
+
+        public async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> GetPendingWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var deliveries = await db.DbContext.Wh40kRewardDeliveries
+                .AsNoTracking()
+                .Where(delivery =>
+                    delivery.UserId == userId.UserId &&
+                    delivery.Status == (int) Wh40kRewardDeliveryStatus.Pending)
+                .OrderBy(delivery => delivery.CreatedAt)
+                .ThenBy(delivery => delivery.Id)
+                .ToListAsync(cancel);
+
+            return deliveries.Select(ToWh40kRewardDeliveryRecord).ToList();
+        }
+
+        public async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> EnqueueWh40kRewardDeliveriesAsync(
+            NetUserId userId,
+            IReadOnlyList<Wh40kRewardDeliveryDraft> deliveries,
+            CancellationToken cancel = default)
+        {
+            ValidateWh40kRewardDeliveries(deliveries);
+            if (deliveries.Count == 0)
+                return Array.Empty<Wh40kRewardDeliveryRecord>();
+
+            for (var attempt = 0; attempt < Wh40kMutationRetryLimit; attempt++)
+            {
+                await using var db = await GetDb(cancel);
+                var rewardIds = deliveries.Select(delivery => delivery.RewardId).Distinct().ToArray();
+                var entryIds = deliveries.Select(delivery => delivery.EntryId).Distinct().ToArray();
+                var existing = await db.DbContext.Wh40kRewardDeliveries
+                    .AsNoTracking()
+                    .Where(delivery =>
+                        delivery.UserId == userId.UserId &&
+                        rewardIds.Contains(delivery.RewardId) &&
+                        entryIds.Contains(delivery.EntryId))
+                    .ToListAsync(cancel);
+                var existingKeys = existing
+                    .Select(delivery => (delivery.RewardId, delivery.EntryId))
+                    .ToHashSet();
+                var missing = deliveries
+                    .Where(delivery => !existingKeys.Contains((delivery.RewardId, delivery.EntryId)))
+                    .ToArray();
+                if (missing.Length == 0)
+                    return existing.Select(ToWh40kRewardDeliveryRecord).ToList();
+
+                var foundationExists = await db.DbContext.Wh40kAccountRpgFoundations
+                    .AnyAsync(foundation => foundation.UserId == userId.UserId, cancel);
+                if (!foundationExists)
+                    throw new InvalidOperationException($"WH40K RPG account {userId} does not exist.");
+
+                AddWh40kRewardDeliveries(db.DbContext, userId, missing, DateTime.UtcNow);
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                }
+                catch (DbUpdateException)
+                {
+                    continue;
+                }
+
+                var inserted = await db.DbContext.Wh40kRewardDeliveries
+                    .AsNoTracking()
+                    .Where(delivery =>
+                        delivery.UserId == userId.UserId &&
+                        rewardIds.Contains(delivery.RewardId) &&
+                        entryIds.Contains(delivery.EntryId))
+                    .OrderBy(delivery => delivery.Id)
+                    .ToListAsync(cancel);
+                return inserted.Select(ToWh40kRewardDeliveryRecord).ToList();
+            }
+
+            throw new InvalidOperationException(
+                $"WH40K reward deliveries for {userId} could not be queued after " +
+                $"{Wh40kMutationRetryLimit} attempts.");
+        }
+
+        public async Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+            NetUserId userId,
+            long deliveryId,
+            bool delivered,
+            CancellationToken cancel = default)
+        {
+            if (deliveryId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(deliveryId));
+
+            await using var db = await GetDb(cancel);
+            var now = DateTime.UtcNow;
+            var updated = delivered
+                ? await db.DbContext.Wh40kRewardDeliveries
+                    .Where(candidate =>
+                        candidate.Id == deliveryId &&
+                        candidate.UserId == userId.UserId &&
+                        candidate.Status == (int) Wh40kRewardDeliveryStatus.Pending)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(candidate => candidate.Status, (int) Wh40kRewardDeliveryStatus.Delivered)
+                        .SetProperty(candidate => candidate.DeliveredAt, now)
+                        .SetProperty(candidate => candidate.LastAttemptAt, now)
+                        .SetProperty(candidate => candidate.AttemptCount, candidate => candidate.AttemptCount + 1), cancel)
+                : await db.DbContext.Wh40kRewardDeliveries
+                    .Where(candidate =>
+                        candidate.Id == deliveryId &&
+                        candidate.UserId == userId.UserId &&
+                        candidate.Status == (int) Wh40kRewardDeliveryStatus.Pending)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(candidate => candidate.LastAttemptAt, now)
+                        .SetProperty(candidate => candidate.AttemptCount, candidate => candidate.AttemptCount + 1), cancel);
+
+            return updated == 1;
+        }
+
+        public async Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var party = await LoadWh40kPartyAsync(db.DbContext, userId, cancel);
+            if (party == null)
+                return null;
+
+            if (party.ExpiresAt <= DateTime.UtcNow)
+            {
+                await db.DbContext.Wh40kParties
+                    .Where(candidate => candidate.Id == party.Id)
+                    .ExecuteDeleteAsync(cancel);
+                return null;
+            }
+
+            return party;
+        }
+
+        public async Task<Wh40kPartyMutationResult> CreateWh40kPartyAsync(
+            NetUserId leaderUserId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            if (!await db.DbContext.Wh40kAccountRpgFoundations
+                    .AsNoTracking()
+                    .AnyAsync(candidate => candidate.UserId == leaderUserId.UserId, cancel))
+            {
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.AccountNotFound, null);
+            }
+
+            if (await db.DbContext.Wh40kPartyMembers
+                    .AsNoTracking()
+                    .AnyAsync(member => member.UserId == leaderUserId.UserId, cancel))
+            {
+                return new Wh40kPartyMutationResult(
+                    Wh40kPartyMutationStatus.AlreadyInParty,
+                    await LoadWh40kPartyAsync(db.DbContext, leaderUserId, cancel));
+            }
+
+            var now = DateTime.UtcNow;
+            var party = new Wh40kParty
+            {
+                Id = Guid.NewGuid(),
+                LeaderUserId = leaderUserId.UserId,
+                CreatedAt = now,
+                ExpiresAt = now + Wh40kPartyManager.PartyLifetime,
+                Revision = 0,
+            };
+            db.DbContext.Wh40kParties.Add(party);
+            db.DbContext.Wh40kPartyMembers.Add(new Wh40kPartyMember
+            {
+                PartyId = party.Id,
+                UserId = leaderUserId.UserId,
+                JoinedAt = now,
+            });
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+            }
+            catch (DbUpdateException)
+            {
+                var existing = await LoadWh40kPartyAsync(db.DbContext, leaderUserId, cancel);
+                return new Wh40kPartyMutationResult(
+                    existing == null
+                        ? Wh40kPartyMutationStatus.RevisionMismatch
+                        : Wh40kPartyMutationStatus.AlreadyInParty,
+                    existing);
+            }
+
+            return new Wh40kPartyMutationResult(
+                Wh40kPartyMutationStatus.Success,
+                await LoadWh40kPartyAsync(db.DbContext, leaderUserId, cancel));
+        }
+
+        public async Task<Wh40kPartyMutationResult> AddWh40kPartyMemberAsync(
+            Guid partyId,
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var party = await db.DbContext.Wh40kParties
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.Id == partyId, cancel);
+            if (party == null)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.PartyNotFound, null);
+            if (party.ExpiresAt <= DateTime.UtcNow)
+            {
+                await db.DbContext.Wh40kParties
+                    .Where(candidate => candidate.Id == party.Id)
+                    .ExecuteDeleteAsync(cancel);
+                await transaction.CommitAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.PartyExpired, null);
+            }
+            if (party.LeaderUserId != leaderUserId.UserId)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.NotLeader, null);
+            if (party.Revision != expectedRevision)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            if (!await db.DbContext.Wh40kAccountRpgFoundations
+                    .AsNoTracking()
+                    .AnyAsync(candidate => candidate.UserId == memberUserId.UserId, cancel))
+            {
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.AccountNotFound, null);
+            }
+            if (await db.DbContext.Wh40kPartyMembers
+                    .AsNoTracking()
+                    .AnyAsync(member => member.UserId == memberUserId.UserId, cancel))
+            {
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.AlreadyInParty, null);
+            }
+            if (await db.DbContext.Wh40kPartyMembers
+                    .AsNoTracking()
+                    .CountAsync(member => member.PartyId == partyId, cancel) >= 5)
+            {
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.PartyFull, null);
+            }
+
+            var updated = await db.DbContext.Wh40kParties
+                .Where(candidate => candidate.Id == partyId && candidate.Revision == expectedRevision)
+                .ExecuteUpdateAsync(
+                    setters => setters.SetProperty(candidate => candidate.Revision, expectedRevision + 1),
+                    cancel);
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            }
+
+            db.DbContext.Wh40kPartyMembers.Add(new Wh40kPartyMember
+            {
+                PartyId = partyId,
+                UserId = memberUserId.UserId,
+                JoinedAt = DateTime.UtcNow,
+            });
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateException)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            }
+
+            return new Wh40kPartyMutationResult(
+                Wh40kPartyMutationStatus.Success,
+                await LoadWh40kPartyAsync(db.DbContext, memberUserId, cancel));
+        }
+
+        public async Task<Wh40kPartyMutationResult> LeaveWh40kPartyAsync(
+            NetUserId userId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var membership = await db.DbContext.Wh40kPartyMembers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(member => member.UserId == userId.UserId, cancel);
+            if (membership == null)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.NotInParty, null);
+
+            var party = await db.DbContext.Wh40kParties
+                .AsNoTracking()
+                .SingleAsync(candidate => candidate.Id == membership.PartyId, cancel);
+            if (party.Revision != expectedRevision)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+
+            if (party.LeaderUserId == userId.UserId || party.ExpiresAt <= DateTime.UtcNow)
+            {
+                await db.DbContext.Wh40kParties
+                    .Where(candidate => candidate.Id == party.Id && candidate.Revision == expectedRevision)
+                    .ExecuteDeleteAsync(cancel);
+                await transaction.CommitAsync(cancel);
+                return new Wh40kPartyMutationResult(
+                    party.ExpiresAt <= DateTime.UtcNow
+                        ? Wh40kPartyMutationStatus.PartyExpired
+                        : Wh40kPartyMutationStatus.Success,
+                    null);
+            }
+
+            var updated = await db.DbContext.Wh40kParties
+                .Where(candidate => candidate.Id == party.Id && candidate.Revision == expectedRevision)
+                .ExecuteUpdateAsync(
+                    setters => setters.SetProperty(candidate => candidate.Revision, expectedRevision + 1),
+                    cancel);
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            }
+
+            await db.DbContext.Wh40kPartyMembers
+                .Where(member => member.PartyId == party.Id && member.UserId == userId.UserId)
+                .ExecuteDeleteAsync(cancel);
+            await transaction.CommitAsync(cancel);
+            return new Wh40kPartyMutationResult(
+                Wh40kPartyMutationStatus.Success,
+                await LoadWh40kPartyAsync(
+                    db.DbContext,
+                    new NetUserId(party.LeaderUserId),
+                    cancel));
+        }
+
+        public async Task<Wh40kPartyMutationResult> KickWh40kPartyMemberAsync(
+            NetUserId leaderUserId,
+            NetUserId memberUserId,
+            long expectedRevision,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var leaderMembership = await db.DbContext.Wh40kPartyMembers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(member => member.UserId == leaderUserId.UserId, cancel);
+            if (leaderMembership == null)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.NotInParty, null);
+
+            var party = await db.DbContext.Wh40kParties
+                .AsNoTracking()
+                .SingleAsync(candidate => candidate.Id == leaderMembership.PartyId, cancel);
+            if (party.LeaderUserId != leaderUserId.UserId || memberUserId == leaderUserId)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.NotLeader, null);
+            if (party.ExpiresAt <= DateTime.UtcNow)
+            {
+                await db.DbContext.Wh40kParties
+                    .Where(candidate => candidate.Id == party.Id)
+                    .ExecuteDeleteAsync(cancel);
+                await transaction.CommitAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.PartyExpired, null);
+            }
+            if (party.Revision != expectedRevision)
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            if (!await db.DbContext.Wh40kPartyMembers
+                    .AsNoTracking()
+                    .AnyAsync(member =>
+                        member.PartyId == party.Id &&
+                        member.UserId == memberUserId.UserId,
+                        cancel))
+            {
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.NotInParty, null);
+            }
+
+            var updated = await db.DbContext.Wh40kParties
+                .Where(candidate => candidate.Id == party.Id && candidate.Revision == expectedRevision)
+                .ExecuteUpdateAsync(
+                    setters => setters.SetProperty(candidate => candidate.Revision, expectedRevision + 1),
+                    cancel);
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kPartyMutationResult(Wh40kPartyMutationStatus.RevisionMismatch, null);
+            }
+
+            await db.DbContext.Wh40kPartyMembers
+                .Where(member =>
+                    member.PartyId == party.Id &&
+                    member.UserId == memberUserId.UserId)
+                .ExecuteDeleteAsync(cancel);
+            await transaction.CommitAsync(cancel);
+            return new Wh40kPartyMutationResult(
+                Wh40kPartyMutationStatus.Success,
+                await LoadWh40kPartyAsync(db.DbContext, leaderUserId, cancel));
+        }
+
+        public async Task<int> DeleteExpiredWh40kPartiesAsync(
+            DateTime now,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            return await db.DbContext.Wh40kParties
+                .Where(party => party.ExpiresAt <= now)
+                .ExecuteDeleteAsync(cancel);
+        }
+
+        public async Task<bool> GetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var preference = await db.DbContext.Wh40kPartyPreferences
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            return preference?.AllowInvites ?? true;
+        }
+
+        public async Task SetWh40kPartyInvitesAllowedAsync(
+            NetUserId userId,
+            bool allowInvites,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var preference = await db.DbContext.Wh40kPartyPreferences
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+
+            if (preference == null)
+            {
+                preference = new Wh40kPartyPreference
+                {
+                    UserId = userId.UserId,
+                };
+                db.DbContext.Wh40kPartyPreferences.Add(preference);
+            }
+
+            preference.AllowInvites = allowInvites;
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        private static async Task<Wh40kAccountRpgRecord?> LoadWh40kAccountRpgAsync(
+            ServerDbContext db,
+            NetUserId userId,
+            CancellationToken cancel)
+        {
+            var foundation = await db.Wh40kAccountRpgFoundations
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (foundation == null)
+                return null;
+
+            var progress = await db.Wh40kAccountRpgProgresses
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel)
+                ?? throw new InvalidOperationException($"WH40K RPG account {userId} has no progress row.");
+
+            var purchases = await db.Wh40kAccountAttributePurchases
+                .AsNoTracking()
+                .Where(purchase => purchase.UserId == userId.UserId)
+                .ToListAsync(cancel);
+
+            var foundationRecord = ToWh40kFoundationRecord(foundation);
+            var progressRecord = new Wh40kRpgProgressRecord(
+                userId,
+                progress.SchemaVersion,
+                progress.ExperienceTenths,
+                progress.Level,
+                progress.UnspentDevelopmentPoints,
+                progress.CreatedAt,
+                progress.UpdatedAt,
+                progress.Revision);
+            var purchaseRecords = new Dictionary<Wh40kCharacteristic, Wh40kAttributePurchaseRecord>();
+
+            foreach (var purchase in purchases)
+            {
+                if (purchase.Characteristic is < byte.MinValue or > byte.MaxValue ||
+                    !Enum.IsDefined(typeof(Wh40kCharacteristic), (byte) purchase.Characteristic))
+                {
+                    throw new InvalidOperationException(
+                        $"WH40K RPG account {userId} has unknown characteristic {purchase.Characteristic}.");
+                }
+
+                var characteristic = (Wh40kCharacteristic) purchase.Characteristic;
+                purchaseRecords.Add(
+                    characteristic,
+                    new Wh40kAttributePurchaseRecord(
+                        characteristic,
+                        purchase.PurchasedPoints,
+                        purchase.FirstPurchasedAt,
+                        purchase.UpdatedAt));
+            }
+
+            return new Wh40kAccountRpgRecord(foundationRecord, progressRecord, purchaseRecords);
+        }
+
+        private static async Task<Wh40kPartyRecord?> LoadWh40kPartyAsync(
+            ServerDbContext db,
+            NetUserId userId,
+            CancellationToken cancel)
+        {
+            var membership = await db.Wh40kPartyMembers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(member => member.UserId == userId.UserId, cancel);
+            if (membership == null)
+                return null;
+
+            var party = await db.Wh40kParties
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.Id == membership.PartyId, cancel);
+            if (party == null)
+                return null;
+
+            var memberEntities = await db.Wh40kPartyMembers
+                .AsNoTracking()
+                .Where(member => member.PartyId == party.Id)
+                .OrderBy(member => member.JoinedAt)
+                .ThenBy(member => member.UserId)
+                .ToListAsync(cancel);
+            var members = memberEntities
+                .Select(member => new Wh40kPartyMemberRecord(
+                    new NetUserId(member.UserId),
+                    member.JoinedAt))
+                .ToList();
+
+            return new Wh40kPartyRecord(
+                party.Id,
+                new NetUserId(party.LeaderUserId),
+                party.CreatedAt,
+                party.ExpiresAt,
+                party.Revision,
+                members);
+        }
+
+        private static void AddWh40kAccountRpg(
+            ServerDbContext db,
+            NetUserId userId,
+            Wh40kRpgFoundationDraft foundation,
+            DateTime now)
+        {
+            ValidateWh40kFoundationDraft(foundation);
+            db.Wh40kAccountRpgFoundations.Add(new Wh40kAccountRpgFoundation
+            {
+                UserId = userId.UserId,
+                HomeworldId = foundation.HomeworldId,
+                OriginId = foundation.OriginId,
+                ClassId = foundation.ClassId,
+                InitialPortraitId = foundation.InitialPortraitId,
+                InitialCharacteristicPoints = JsonSerializer.SerializeToDocument(
+                    new Dictionary<Wh40kCharacteristic, int>(foundation.InitialCharacteristicPoints)),
+                Source = ToDatabaseFoundationSource(foundation.Source),
+                CreatedAt = now,
+            });
+            db.Wh40kAccountRpgProgresses.Add(new Wh40kAccountRpgProgress
+            {
+                UserId = userId.UserId,
+                SchemaVersion = Wh40kExperienceCurve.ProgressSchemaVersion,
+                ExperienceTenths = 0,
+                Level = Wh40kExperienceCurve.MinimumLevel,
+                UnspentDevelopmentPoints = 0,
+                CreatedAt = now,
+                UpdatedAt = now,
+                Revision = 0,
+            });
+            db.Wh40kPartyPreferences.Add(new Wh40kPartyPreference
+            {
+                UserId = userId.UserId,
+                AllowInvites = true,
+            });
+        }
+
+        private static void ValidateWh40kFoundationDraft(Wh40kRpgFoundationDraft foundation)
+        {
+            if (!Enum.IsDefined(foundation.Source) || !foundation.ToCharacterBuild().IsCompleteFoundation)
+                throw new ArgumentException("WH40K RPG foundation is incomplete or invalid.", nameof(foundation));
+        }
+
+        private async Task<Wh40kCharacteristicSpendResult> GetWh40kSpendFailureAsync(
+            NetUserId userId,
+            Wh40kCharacteristicSpendStatus status,
+            CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+            return new Wh40kCharacteristicSpendResult(
+                account == null ? Wh40kCharacteristicSpendStatus.AccountNotFound : status,
+                account);
+        }
+
+        private static void ValidateWh40kXpAwardRequest(Wh40kXpAwardRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            if (string.IsNullOrWhiteSpace(request.RewardId) ||
+                request.RewardId.Length > Wh40kMaximumRewardIdLength)
+            {
+                throw new ArgumentException("WH40K XP RewardId is empty or too long.", nameof(request));
+            }
+
+            if (!Enum.IsDefined(request.SourceType) ||
+                ToDatabaseExperienceSourceType(request.SourceType).Length > Wh40kMaximumSourceTypeLength)
+            {
+                throw new ArgumentException("WH40K XP source type is unknown.", nameof(request));
+            }
+
+            if (request.AmountTenths < 0)
+                throw new ArgumentOutOfRangeException(nameof(request), "WH40K XP amount cannot be negative.");
+
+            if (request.RoundId < 0)
+                throw new ArgumentOutOfRangeException(nameof(request), "WH40K XP round ID cannot be negative.");
+
+            if (request.IssuerEntity?.Length > Wh40kMaximumIssuerEntityLength)
+                throw new ArgumentException("WH40K XP issuer context is too long.", nameof(request));
+
+            if (request.ContextJson?.Length > Wh40kMaximumContextJsonLength)
+                throw new ArgumentException("WH40K XP diagnostic context is too long.", nameof(request));
+
+            if (request.ContextJson != null)
+            {
+                try
+                {
+                    using var _ = JsonDocument.Parse(request.ContextJson);
+                }
+                catch (JsonException exception)
+                {
+                    throw new ArgumentException("WH40K XP diagnostic context is not valid JSON.", nameof(request), exception);
+                }
+            }
+        }
+
+        private static void ValidateWh40kLevelRewardDefinitions(
+            IReadOnlyList<Wh40kLevelRewardDefinition>? definitions)
+        {
+            if (definitions == null)
+                return;
+
+            var levels = new HashSet<int>();
+            foreach (var definition in definitions)
+            {
+                if (definition.Level <= Wh40kExperienceCurve.MinimumLevel ||
+                    definition.Level > Wh40kExperienceCurve.MaximumLevel ||
+                    !levels.Add(definition.Level))
+                {
+                    throw new ArgumentException("WH40K level reward definitions contain an invalid or duplicate level.");
+                }
+
+                if (string.IsNullOrWhiteSpace(definition.RewardId) ||
+                    definition.Entries.Count == 0 ||
+                    definition.Entries.Any(entry => entry.RewardId != definition.RewardId))
+                {
+                    throw new ArgumentException("WH40K level reward definition is incomplete or inconsistent.");
+                }
+
+                ValidateWh40kRewardDeliveries(definition.Entries);
+            }
+        }
+
+        private static void ValidateWh40kRewardDeliveries(IReadOnlyList<Wh40kRewardDeliveryDraft> deliveries)
+        {
+            ArgumentNullException.ThrowIfNull(deliveries);
+            var keys = new HashSet<(string RewardId, string EntryId)>();
+
+            foreach (var delivery in deliveries)
+            {
+                if (string.IsNullOrWhiteSpace(delivery.RewardId) ||
+                    delivery.RewardId.Length > Wh40kMaximumRewardIdLength)
+                {
+                    throw new ArgumentException("WH40K reward delivery RewardId is empty or too long.");
+                }
+
+                if (string.IsNullOrWhiteSpace(delivery.EntryId) ||
+                    delivery.EntryId.Length > Wh40kMaximumRewardEntryIdLength ||
+                    !keys.Add((delivery.RewardId, delivery.EntryId)))
+                {
+                    throw new ArgumentException("WH40K reward delivery EntryId is empty, too long or duplicated.");
+                }
+
+                if (string.IsNullOrWhiteSpace(delivery.RewardType) ||
+                    delivery.RewardType.Length > Wh40kMaximumRewardTypeLength ||
+                    delivery.RewardType is not (
+                        Wh40kLevelRewardCatalog.CurrencyRewardType or
+                        Wh40kLevelRewardCatalog.ItemRewardType))
+                {
+                    throw new ArgumentException("WH40K reward delivery type is unknown.");
+                }
+
+                if (delivery.Amount <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(deliveries), "WH40K reward amount must be positive.");
+
+                if (delivery.RewardType == Wh40kLevelRewardCatalog.ItemRewardType &&
+                    delivery.Amount > Wh40kLevelRewardCatalog.MaximumItemDeliveryCount)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(deliveries),
+                        "WH40K item reward count exceeds the delivery limit.");
+                }
+
+                if (delivery.RewardType == Wh40kLevelRewardCatalog.CurrencyRewardType &&
+                    delivery.Amount > Wh40kLevelRewardCatalog.MaximumCurrencyDeliveryAmount)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(deliveries),
+                        "WH40K currency reward exceeds the stack limit.");
+                }
+
+                if (delivery.RewardType == Wh40kLevelRewardCatalog.ItemRewardType &&
+                    (string.IsNullOrWhiteSpace(delivery.PrototypeId) ||
+                     delivery.PrototypeId.Length > Wh40kMaximumRewardPrototypeIdLength))
+                {
+                    throw new ArgumentException("WH40K item reward requires a valid prototype ID.");
+                }
+
+                if (delivery.RewardType == Wh40kLevelRewardCatalog.CurrencyRewardType &&
+                    delivery.PrototypeId != null)
+                {
+                    throw new ArgumentException("WH40K currency reward cannot specify an item prototype.");
+                }
+
+                if (delivery.ContextJson?.Length > Wh40kMaximumContextJsonLength)
+                    throw new ArgumentException("WH40K reward diagnostic context is too long.");
+
+                if (delivery.ContextJson != null)
+                {
+                    try
+                    {
+                        using var _ = JsonDocument.Parse(delivery.ContextJson);
+                    }
+                    catch (JsonException exception)
+                    {
+                        throw new ArgumentException(
+                            "WH40K reward diagnostic context is not valid JSON.",
+                            nameof(deliveries),
+                            exception);
+                    }
+                }
+            }
+        }
+
+        private static void AddWh40kRewardDeliveries(
+            ServerDbContext db,
+            NetUserId userId,
+            IEnumerable<Wh40kRewardDeliveryDraft> deliveries,
+            DateTime createdAt)
+        {
+            foreach (var delivery in deliveries)
+            {
+                db.Wh40kRewardDeliveries.Add(new Wh40kRewardDelivery
+                {
+                    UserId = userId.UserId,
+                    RewardId = delivery.RewardId,
+                    EntryId = delivery.EntryId,
+                    RewardType = delivery.RewardType,
+                    PrototypeId = delivery.PrototypeId,
+                    Amount = delivery.Amount,
+                    ContextJson = ParseWh40kContextJson(delivery.ContextJson),
+                    Status = (int) Wh40kRewardDeliveryStatus.Pending,
+                    CreatedAt = createdAt,
+                    AttemptCount = 0,
+                });
+            }
+        }
+
+        private static JsonDocument? ParseWh40kContextJson(string? contextJson)
+        {
+            return contextJson == null ? null : JsonDocument.Parse(contextJson);
+        }
+
+        private static string ToDatabaseExperienceSourceType(Wh40kExperienceSourceType source)
+        {
+            return source switch
+            {
+                Wh40kExperienceSourceType.Mission => "mission",
+                Wh40kExperienceSourceType.Objective => "objective",
+                Wh40kExperienceSourceType.Combat => "combat",
+                Wh40kExperienceSourceType.Support => "support",
+                Wh40kExperienceSourceType.Story => "story",
+                Wh40kExperienceSourceType.Admin => "admin",
+                _ => throw new ArgumentOutOfRangeException(nameof(source)),
+            };
+        }
+
+        private static Wh40kRpgFoundationRecord ToWh40kFoundationRecord(Wh40kAccountRpgFoundation foundation)
+        {
+            var points = foundation.InitialCharacteristicPoints.RootElement
+                .Deserialize<Dictionary<Wh40kCharacteristic, int>>()
+                ?? throw new InvalidOperationException(
+                    $"WH40K RPG foundation {foundation.UserId} has no characteristic allocation.");
+            var source = foundation.Source switch
+            {
+                "onboarding" => Wh40kRpgFoundationSource.Onboarding,
+                "legacy-random" => Wh40kRpgFoundationSource.LegacyRandom,
+                _ => throw new InvalidOperationException(
+                    $"WH40K RPG foundation {foundation.UserId} has unknown source '{foundation.Source}'."),
+            };
+            var record = new Wh40kRpgFoundationRecord(
+                new NetUserId(foundation.UserId),
+                foundation.HomeworldId,
+                foundation.OriginId,
+                foundation.ClassId,
+                foundation.InitialPortraitId,
+                points,
+                source,
+                foundation.CreatedAt);
+
+            if (!record.ToCharacterBuild().IsCompleteFoundation)
+                throw new InvalidOperationException($"WH40K RPG foundation {foundation.UserId} is invalid.");
+
+            return record;
+        }
+
+        private static Wh40kExperienceLedgerRecord ToWh40kExperienceLedgerRecord(Wh40kExperienceLedger ledger)
+        {
+            return new Wh40kExperienceLedgerRecord(
+                ledger.Id,
+                new NetUserId(ledger.UserId),
+                ledger.RewardId,
+                ledger.SourceType,
+                ledger.AmountTenths,
+                ledger.RoundId,
+                ledger.IssuerEntity,
+                ledger.ContextJson?.RootElement.GetRawText(),
+                ledger.AwardedAt,
+                ledger.BalanceVersion);
+        }
+
+        private static Wh40kRewardDeliveryRecord ToWh40kRewardDeliveryRecord(Wh40kRewardDelivery delivery)
+        {
+            if (delivery.Status is < byte.MinValue or > byte.MaxValue ||
+                !Enum.IsDefined(typeof(Wh40kRewardDeliveryStatus), (byte) delivery.Status))
+            {
+                throw new InvalidOperationException(
+                    $"WH40K reward delivery {delivery.Id} has unknown status {delivery.Status}.");
+            }
+
+            return new Wh40kRewardDeliveryRecord(
+                delivery.Id,
+                new NetUserId(delivery.UserId),
+                delivery.RewardId,
+                delivery.EntryId,
+                delivery.RewardType,
+                delivery.PrototypeId,
+                delivery.Amount,
+                delivery.ContextJson?.RootElement.GetRawText(),
+                (Wh40kRewardDeliveryStatus) delivery.Status,
+                delivery.CreatedAt,
+                delivery.DeliveredAt,
+                delivery.AttemptCount,
+                delivery.LastAttemptAt);
+        }
+
+        private static string ToDatabaseFoundationSource(Wh40kRpgFoundationSource source)
+        {
+            return source switch
+            {
+                Wh40kRpgFoundationSource.Onboarding => "onboarding",
+                Wh40kRpgFoundationSource.LegacyRandom => "legacy-random",
+                _ => throw new ArgumentOutOfRangeException(nameof(source)),
+            };
+        }
+
+        private static Wh40kPlayerProgressSnapshot ToSnapshot(Wh40kPlayerProgress progress)
+        {
+            if (progress.ActStage is < byte.MinValue or > byte.MaxValue ||
+                progress.OnboardingStatus is < byte.MinValue or > byte.MaxValue ||
+                !Enum.IsDefined(typeof(Wh40kActStage), (byte) progress.ActStage) ||
+                !Enum.IsDefined(typeof(Wh40kOnboardingStatus), (byte) progress.OnboardingStatus))
+            {
+                return Wh40kPlayerProgressSnapshot.Unknown;
+            }
+
+            var snapshot = new Wh40kPlayerProgressSnapshot(
+                (Wh40kActStage) progress.ActStage,
+                (Wh40kOnboardingStatus) progress.OnboardingStatus,
+                progress.OnboardingProfileSlot);
+
+            return snapshot is
+                { ActStage: Wh40kActStage.Act1NotStarted, OnboardingStatus: Wh40kOnboardingStatus.Required, OnboardingProfileSlot: >= 0 } or
+                { ActStage: Wh40kActStage.Act1InProgress, OnboardingStatus: Wh40kOnboardingStatus.CharacterCreated, OnboardingProfileSlot: >= 0 } or
+                { ActStage: Wh40kActStage.Act1Completed, OnboardingStatus: Wh40kOnboardingStatus.CharacterCreated }
+                ? snapshot
+                : Wh40kPlayerProgressSnapshot.Unknown;
         }
         #endregion
 

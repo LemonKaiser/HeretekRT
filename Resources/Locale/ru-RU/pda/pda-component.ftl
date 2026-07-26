@@ -14,6 +14,15 @@ pda-bound-user-interface-lock-uplink-title = Закрыть аплинк
 pda-bound-user-interface-lock-uplink-description = Предотвратите доступ к вашему аплинку персон без кода
 comp-pda-ui-menu-title = КПК
 comp-pda-ui-footer = Карманный Персональный Компьютер
+comp-pda-ui-gados-terminal = ПОЛЕВОЙ ТЕРМИНАЛ
+comp-pda-ui-gados-easter-egg = GadOS // ДУХ МАШИНЫ НА СВЯЗИ
+comp-pda-ui-gados-status = СВЯЗЬ ТЕРМИНАЛА // В СЕТИ
+comp-pda-ui-service-channel = СЛУЖЕБНЫЙ КАНАЛ
+comp-pda-ui-gados-ringtone-sequence = ПОСЛЕДОВАТЕЛЬНОСТЬ СИГНАЛА // A-G, # ДЛЯ ДИЕЗА
+comp-pda-ui-gados-notes = ЗАМЕТКИ // ЛОКАЛЬНЫЙ КЭШ
+comp-pda-ui-program-status-cartridge = ВНЕШНИЙ КАРТРИДЖ
+comp-pda-ui-program-status-installed = УСТАНОВЛЕНО
+comp-pda-ui-program-status-readonly = ТОЛЬКО ЧТЕНИЕ
 comp-pda-ui-station = Станция: [color=white]{ $station }[/color]
 comp-pda-ui-station-alert-level = Уровень угрозы: [color={ $color }]{ $level }[/color]
 comp-pda-ui-station-alert-level-instructions = Инструкции: [color=white]{ $instructions }[/color]

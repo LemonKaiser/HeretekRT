@@ -1,0 +1,40 @@
+<progression:Wh40kPartyUiFragment xmlns="https://spacestation14.io"
+                                  xmlns:progression="clr-namespace:Content.Client._WH40K.Progression"
+                                  xmlns:pda="clr-namespace:Content.Client.PDA">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <pda:PdaTerminalHeaderPanel SetHeight="28" Margin="0 0 0 4">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="7 0">
+                <Label Text="{Loc 'wh40k-rpg-party-header'}" FontColorOverride="#88D2A5"
+                       VerticalAlignment="Center" HorizontalExpand="True"/>
+                <Label Name="MemberCount" FontColorOverride="#D7E0D7" VerticalAlignment="Center"/>
+            </BoxContainer>
+        </pda:PdaTerminalHeaderPanel>
+
+        <RichTextLabel Name="StatusLabel" Visible="False" HorizontalExpand="True"
+                       Margin="4 0 4 4"/>
+
+        <pda:PdaTerminalPanel HorizontalExpand="True" Margin="0 0 0 4">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+                <progression:Wh40kMultilineCheckBox Name="AllowInvites"
+                                                     HorizontalExpand="True"/>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 5 0 0">
+                    <LineEdit Name="InviteCkey" HorizontalExpand="True"
+                              PlaceHolder="{Loc 'wh40k-rpg-party-invite-placeholder'}"/>
+                    <Button Name="InviteButton" Text="+" SetSize="28 26" Margin="4 0 0 0"
+                            ToolTip="{Loc 'wh40k-rpg-party-invite-tooltip'}"/>
+                </BoxContainer>
+            </BoxContainer>
+        </pda:PdaTerminalPanel>
+
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="MemberList" Orientation="Vertical" HorizontalExpand="True"/>
+        </ScrollContainer>
+
+        <pda:PdaTerminalPanel HorizontalExpand="True" Margin="0 4 0 0">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+                <RichTextLabel Name="ExpiryLabel" HorizontalExpand="True"/>
+                <Button Name="LeaveButton" HorizontalExpand="True" Margin="0 4 0 0"/>
+            </BoxContainer>
+        </pda:PdaTerminalPanel>
+    </BoxContainer>
+</progression:Wh40kPartyUiFragment>

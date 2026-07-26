@@ -19,15 +19,15 @@ public sealed partial class PdaNavigationButton : ContainerButton
 
     private readonly StyleBoxFlat _styleBox = new()
     {
-        BackgroundColor = Color.FromHex("#202023"),
-        BorderColor = Color.FromHex("#5a5a5a"),
+        BackgroundColor = Color.FromHex("#1B211D"),
+        BorderColor = Color.FromHex("#536258"),
         BorderThickness = new Thickness(0, 0, 0, 2)
     };
 
-    public string InactiveBgColor { get; set; } = "#202320";
-    public string ActiveBgColor { get; set; } = "#252725";
-    public string InactiveFgColor { get; set; } = "#5a5a5a";
-    public string ActiveFgColor { get; set; } = "#FFFFFF";
+    public string InactiveBgColor { get; set; } = "#1B211D";
+    public string ActiveBgColor { get; set; } = "#29382F";
+    public string InactiveFgColor { get; set; } = "#667168";
+    public string ActiveFgColor { get; set; } = "#D7E0D7";
 
     public SpriteSpecifier? IconTexture
     {
@@ -86,6 +86,7 @@ public sealed partial class PdaNavigationButton : ContainerButton
         {
             _isCurrent = value;
             _styleBox.BackgroundColor = Color.FromHex(value ? ActiveBgColor : InactiveBgColor);
+            _styleBox.BorderColor = value ? PdaTerminalPalette.Accent : PdaTerminalPalette.Rail;
             _styleBox.BorderThickness = value ? CurrentTabBorderThickness : BorderThickness;
         }
     }

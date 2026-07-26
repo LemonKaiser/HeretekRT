@@ -20,6 +20,10 @@ namespace Content.Server.Preferences.Managers
         PlayerPreferences? GetPreferencesOrNull(NetUserId? userId);
         IEnumerable<KeyValuePair<NetUserId, ICharacterProfile>> GetSelectedProfilesForPlayers(List<NetUserId> userIds);
         bool HavePreferencesLoaded(ICommonSession session);
+        /// <summary>
+        ///     Returns true while a persistent account must finish its initial WH40K profile before entering a round.
+        /// </summary>
+        bool IsWh40kOnboardingRequired(NetUserId userId);
         Task RefreshPreferencesAsync(ICommonSession session, CancellationToken cancel);
         Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile,
             bool authoritative = true); // Mono

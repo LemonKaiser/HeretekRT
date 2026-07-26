@@ -143,6 +143,13 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     /// </summary>
     [DataField]
     public ProtoId<KoronusPlanetSurfacePrototype>? Surface;
+
+    /// <summary>
+    /// Optional server-owned XP source awarded on the first successful landing.
+    /// Kept as an ID string because the source prototype itself is server-only.
+    /// </summary>
+    [DataField]
+    public string? ExplorationRewardSource;
 }
 
 public enum KoronusCelestialBodyType : byte

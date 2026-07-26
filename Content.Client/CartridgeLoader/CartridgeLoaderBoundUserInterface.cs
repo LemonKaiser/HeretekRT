@@ -56,12 +56,19 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         if (control is not null && _activeProgram.HasValue)
         {
             AttachCartridgeUI(control, Loc.GetString(comp?.ProgramName ?? "default-program-name"));
+            _activeCartridgeUI = ui;
             SendCartridgeUiReadyEvent(_activeProgram.Value);
         }
 
         _activeCartridgeUI = ui;
         _activeUiFragment?.Dispose();
         _activeUiFragment = control;
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        _activeCartridgeUI?.ReceiveMessage(message);
     }
 
     protected void ActivateCartridge(EntityUid cartridgeUid)

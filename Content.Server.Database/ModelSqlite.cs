@@ -82,6 +82,22 @@ namespace Content.Server.Database
                 .Property(log => log.Markings)
                 .HasConversion(jsonByteArrayConverter);
 
+            modelBuilder.Entity<Profile>()
+                .Property(log => log.Wh40kBuild)
+                .HasConversion(jsonByteArrayConverter);
+
+            modelBuilder.Entity<Wh40kAccountRpgFoundation>()
+                .Property(foundation => foundation.InitialCharacteristicPoints)
+                .HasConversion(jsonByteArrayConverter);
+
+            modelBuilder.Entity<Wh40kExperienceLedger>()
+                .Property(ledger => ledger.ContextJson)
+                .HasConversion(jsonByteArrayConverter);
+
+            modelBuilder.Entity<Wh40kRewardDelivery>()
+                .Property(delivery => delivery.ContextJson)
+                .HasConversion(jsonByteArrayConverter);
+
             // EF core can make this automatically unique on sqlite but not psql.
             modelBuilder.Entity<IPIntelCache>()
                 .HasIndex(p => p.Address)

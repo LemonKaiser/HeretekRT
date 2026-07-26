@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Content.Shared._Mono.Company;
 using Content.Shared._NF.Bank;
+using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -143,6 +144,13 @@ namespace Content.Shared.Preferences
         [DataField]
         public string Company { get; private set; } = "None";
 
+        /// <summary>
+        /// Selections from the WH40K introductory character creation.
+        /// They are persisted now but do not have gameplay effects yet.
+        /// </summary>
+        [DataField]
+        public Wh40kCharacterBuild Wh40kBuild { get; private set; } = new();
+
         public HumanoidCharacterProfile(
             string name,
             string flavortext,
@@ -158,7 +166,8 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<AntagPrototype>> antagPreferences,
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts,
-            string company = "None")
+            string company = "None",
+            Wh40kCharacterBuild? wh40kBuild = null)
         {
             Name = name;
             FlavorText = flavortext;
@@ -175,6 +184,7 @@ namespace Content.Shared.Preferences
             _traitPreferences = traitPreferences;
             _loadouts = loadouts;
             Company = company;
+            Wh40kBuild = wh40kBuild?.Clone() ?? new Wh40kCharacterBuild();
         }
 
         /// <summary>Copy constructor but with overridable references (to prevent useless copies)</summary>
@@ -185,7 +195,7 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts)
             : this(other.Name, other.FlavorText, other.Species, other.Age, other.Sex, other.Gender, other.BankBalance, other.Appearance, other.SpawnPriority,
-                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company)
+                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild)
         {
         }
 
@@ -205,7 +215,8 @@ namespace Content.Shared.Preferences
                 new HashSet<ProtoId<AntagPrototype>>(other.AntagPreferences),
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
                 new Dictionary<string, RoleLoadout>(other.Loadouts),
-                other.Company)
+                other.Company,
+                other.Wh40kBuild)
         {
         }
 
@@ -394,6 +405,11 @@ namespace Content.Shared.Preferences
             return new(this) { Company = company };
         }
 
+        public HumanoidCharacterProfile WithWh40kCharacterBuild(Wh40kCharacterBuild build)
+        {
+            return new(this) { Wh40kBuild = build.Clone() };
+        }
+
         public HumanoidCharacterProfile WithAntagPreferences(IEnumerable<ProtoId<AntagPrototype>> antagPreferences)
         {
             return new(this)
@@ -479,6 +495,18 @@ namespace Content.Shared.Preferences
             };
         }
 
+        /// <summary>
+        ///     Replaces the stored trait preferences while keeping all other profile data intact.
+        ///     Used by the first-character onboarding to preserve the same trait data as the normal editor.
+        /// </summary>
+        public HumanoidCharacterProfile WithTraitPreferences(IEnumerable<ProtoId<TraitPrototype>> traitIds)
+        {
+            return new(this)
+            {
+                _traitPreferences = new HashSet<ProtoId<TraitPrototype>>(traitIds),
+            };
+        }
+
         public HumanoidCharacterProfile WithoutAllTraitPreferences()
         {
             return new(this)
@@ -510,6 +538,7 @@ namespace Content.Shared.Preferences
             if (SpawnPriority != other.SpawnPriority) return false;
             if (Species != other.Species) return false;
             if (Company != other.Company) return false;
+            if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
             if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
             if (!_traitPreferences.SequenceEqual(other._traitPreferences)) return false;
@@ -671,6 +700,7 @@ namespace Content.Shared.Preferences
             BankBalance = bankBalance;
             Appearance = appearance;
             SpawnPriority = spawnPriority;
+            Wh40kBuild = Wh40kBuild.Validated();
 
             // Check if the company exists, if not set to "None"
             if (!string.IsNullOrEmpty(Company) &&
@@ -791,6 +821,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(BankBalance); // Frontier
             hashCode.Add((int)SpawnPriority);
             hashCode.Add((int)PreferenceUnavailable);
+            hashCode.Add(Wh40kBuild);
             return hashCode.ToHashCode();
         }
 

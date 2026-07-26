@@ -1,4 +1,5 @@
 using System.IO;
+using Content.Shared._WH40K.CharacterCreation;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;
@@ -14,6 +15,7 @@ namespace Content.Shared.Preferences
 
         public PlayerPreferences Preferences = default!;
         public GameSettings Settings = default!;
+        public Wh40kPlayerProgressSnapshot Wh40kProgress = Wh40kPlayerProgressSnapshot.Unknown;
 
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
@@ -31,6 +33,11 @@ namespace Content.Shared.Preferences
                 buffer.ReadAlignedMemory(stream, length);
                 serializer.DeserializeDirect(stream, out Settings);
             }
+
+            Wh40kProgress = new Wh40kPlayerProgressSnapshot(
+                (Wh40kActStage) buffer.ReadByte(),
+                (Wh40kOnboardingStatus) buffer.ReadByte(),
+                buffer.ReadInt32());
         }
 
         public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
@@ -50,6 +57,10 @@ namespace Content.Shared.Preferences
                 stream.TryGetBuffer(out var segment);
                 buffer.Write(segment);
             }
+
+            buffer.Write((byte) Wh40kProgress.ActStage);
+            buffer.Write((byte) Wh40kProgress.OnboardingStatus);
+            buffer.Write(Wh40kProgress.OnboardingProfileSlot);
         }
     }
 }

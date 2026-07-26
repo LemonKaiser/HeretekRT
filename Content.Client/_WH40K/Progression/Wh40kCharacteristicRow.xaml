@@ -1,0 +1,18 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:pda="clr-namespace:Content.Client.PDA"
+              HorizontalExpand="True"
+              Margin="0 0 0 4">
+    <pda:PdaTerminalPanel Name="Panel" HorizontalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Name="CharacteristicName" FontColorOverride="#D7E0D7" HorizontalExpand="True"/>
+                <Label Name="FinalValue" FontColorOverride="#88D2A5" Margin="4 0"/>
+                <Button Name="RemoveButton" Text="−" SetSize="24 22"
+                        ToolTip="{Loc 'wh40k-rpg-player-remove-draft-tooltip'}"/>
+                <Button Name="AddButton" Text="+" SetSize="24 22" Margin="3 0 0 0"
+                        ToolTip="{Loc 'wh40k-rpg-player-add-draft-tooltip'}"/>
+            </BoxContainer>
+            <RichTextLabel Name="EffectDescription" HorizontalExpand="True" Margin="0 3 0 0"/>
+        </BoxContainer>
+    </pda:PdaTerminalPanel>
+</BoxContainer>

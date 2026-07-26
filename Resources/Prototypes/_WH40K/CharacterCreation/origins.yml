@@ -1,0 +1,111 @@
+- type: wh40kOrigin
+  id: astra-militarum-commander
+  order: 0
+  name: heretek-origin-commander-name
+  description: heretek-origin-commander-description
+  focus: heretek-origin-commander-feature-name
+  focusDescription: heretek-origin-commander-focus-description
+  loreNote: heretek-origin-commander-lore-note
+  characteristicModifiers:
+    Ranged: 6
+    Intelligence: 4
+    Agility: -5
+  futureTalents: heretek-origin-commander-talents
+
+- type: wh40kOrigin
+  id: commissar
+  order: 1
+  name: heretek-origin-commissar-name
+  description: heretek-origin-commissar-description
+  focus: heretek-origin-commissar-feature-name
+  focusDescription: heretek-origin-commissar-focus-description
+  loreNote: heretek-origin-commissar-lore-note
+  characteristicModifiers:
+    Melee: 4
+    Endurance: 6
+    Intelligence: -5
+  futureTalents: heretek-origin-commissar-talents
+
+- type: wh40kOrigin
+  id: crime-lord
+  order: 2
+  name: heretek-origin-crime-lord-name
+  description: heretek-origin-crime-lord-description
+  focus: heretek-origin-crime-lord-feature-name
+  focusDescription: heretek-origin-crime-lord-focus-description
+  loreNote: heretek-origin-crime-lord-lore-note
+  characteristicModifiers:
+    Melee: 3
+    Agility: 7
+    Endurance: -5
+  futureTalents: heretek-origin-crime-lord-talents
+
+- type: wh40kOrigin
+  id: ministorum-priest
+  order: 3
+  name: heretek-origin-priest-name
+  description: heretek-origin-priest-description
+  focus: heretek-origin-priest-feature-name
+  focusDescription: heretek-origin-priest-focus-description
+  loreNote: heretek-origin-priest-lore-note
+  characteristicModifiers:
+    Melee: 6
+    Endurance: 4
+    Agility: -5
+  futureTalents: heretek-origin-priest-talents
+
+- type: wh40kOrigin
+  id: navy-officer
+  order: 4
+  name: heretek-origin-navy-name
+  description: heretek-origin-navy-description
+  focus: heretek-origin-navy-feature-name
+  focusDescription: heretek-origin-navy-focus-description
+  loreNote: heretek-origin-navy-lore-note
+  characteristicModifiers:
+    Ranged: 4
+    Agility: 6
+    Melee: -5
+  futureTalents: heretek-origin-navy-talents
+
+- type: wh40kOrigin
+  id: noble
+  order: 5
+  name: heretek-origin-noble-name
+  description: heretek-origin-noble-description
+  focus: heretek-origin-noble-feature-name
+  focusDescription: heretek-origin-noble-focus-description
+  loreNote: heretek-origin-noble-lore-note
+  characteristicModifiers:
+    Intelligence: 7
+    Agility: 3
+    Endurance: -5
+  futureTalents: heretek-origin-noble-talents
+
+- type: wh40kOrigin
+  id: sanctioned-psyker
+  order: 6
+  name: heretek-origin-psyker-name
+  description: heretek-origin-psyker-description
+  focus: heretek-origin-psyker-feature-name
+  focusDescription: heretek-origin-psyker-focus-description
+  loreNote: heretek-origin-psyker-lore-note
+  characteristicModifiers:
+    Ranged: 4
+    Intelligence: 6
+    Endurance: -5
+  futureTalents: heretek-origin-psyker-talents
+
+- type: wh40kOrigin
+  id: arbitrator
+  order: 7
+  name: heretek-origin-arbitrator-name
+  description: heretek-origin-arbitrator-description
+  focus: heretek-origin-arbitrator-feature-name
+  focusDescription: heretek-origin-arbitrator-focus-description
+  loreNote: heretek-origin-arbitrator-lore-note
+  characteristicModifiers:
+    Ranged: 6
+    Endurance: 4
+    Agility: -5
+  futureTalents: heretek-origin-arbitrator-talents

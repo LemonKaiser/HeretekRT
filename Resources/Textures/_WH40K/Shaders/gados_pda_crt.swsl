@@ -1,0 +1,47 @@
+uniform highp vec2 RenderSize;
+uniform highp float Curvature;
+uniform highp float ScanlineStrength;
+uniform highp float PixelGridStrength;
+uniform highp float VignetteStrength;
+uniform highp float FlickerStrength;
+
+highp vec2 gados_curve(highp vec2 uv)
+{
+    highp vec2 centered = uv * 2.0 - 1.0;
+    centered *= 1.0 + dot(centered, centered) * Curvature;
+    return centered * 0.5 + 0.5;
+}
+
+highp vec4 gados_sample(highp vec2 uv)
+{
+    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+        return vec4(0.0);
+
+    return texture2D(TEXTURE, uv);
+}
+
+void fragment()
+{
+    highp vec2 sourceUv = gados_curve(UV);
+    highp vec4 source = gados_sample(sourceUv);
+
+    // Alternating phosphor rows remain visible, but do not make labels shimmer.
+    highp float scan = 0.5 + 0.5 * sin(sourceUv.y * RenderSize.y * 3.14159265);
+    highp float scanDarken = ScanlineStrength * (0.22 + (1.0 - scan) * 0.78);
+
+    // A fine 3x3 phosphor mesh is applied after the curved source sampling.
+    // The gaps are physical screen pixels, so text remains sharp instead of blurred.
+    highp vec2 phosphorCell = mod(floor(FRAGCOORD.xy), 3.0);
+    highp float phosphorDot = step(0.5, phosphorCell.x) * step(0.5, phosphorCell.y);
+    highp float pixelGrid = mix(0.70, 1.0, phosphorDot);
+
+    highp vec2 centered = UV * 2.0 - 1.0;
+    centered.x *= RenderSize.x / RenderSize.y;
+    highp float edge = 1.0 - smoothstep(0.34, 1.42, dot(centered, centered));
+    highp float vignette = mix(1.0 - VignetteStrength, 1.0, edge);
+    highp float flicker = 1.0 + sin(TIME * 37.0) * FlickerStrength;
+
+    highp vec3 color = source.rgb * (1.0 - scanDarken) * vignette * flicker;
+    color *= mix(1.0, pixelGrid, PixelGridStrength);
+    COLOR = vec4(color, source.a);
+}

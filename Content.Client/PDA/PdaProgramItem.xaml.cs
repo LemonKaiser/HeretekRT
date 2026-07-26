@@ -9,12 +9,14 @@ namespace Content.Client.PDA;
 public sealed partial class PdaProgramItem : ContainerButton
 {
     public const string StylePropertyBgColor = "backgroundColor";
-    public const string NormalBgColor = "#313331";
-    public const string HoverColor = "#3E6C45";
+    public const string NormalBgColor = "#222A25";
+    public const string HoverColor = "#30483B";
 
     private readonly StyleBoxFlat _styleBox = new()
     {
-        BackgroundColor = Color.FromHex("#252725"),
+        BackgroundColor = PdaTerminalPalette.ScreenPanel,
+        BorderColor = PdaTerminalPalette.Rail,
+        BorderThickness = new Thickness(1),
     };
 
     public Color BackgroundColor
@@ -27,6 +29,23 @@ public sealed partial class PdaProgramItem : ContainerButton
     {
         RobustXamlLoader.Load(this);
         Panel.PanelOverride = _styleBox;
+        IconPlate.PanelOverride = new PdaTerminalCutCornerStyleBox
+        {
+            BackgroundColor = PdaTerminalPalette.RaisedPanel,
+            BorderColor = PdaTerminalPalette.AccentMuted,
+            BorderThickness = new Thickness(1),
+            CornerCut = 5f
+        };
+
+        // AnimatedTextureRect is a wrapper around a separate TextureRect. Without an
+        // explicit layout for that inner control, every RSI frame is drawn from the
+        // wrapper's top-left corner instead of from the centre of the icon plate.
+        Icon.DisplayRect.HorizontalExpand = true;
+        Icon.DisplayRect.VerticalExpand = true;
+        Icon.DisplayRect.CanShrink = true;
+        Icon.DisplayRect.Stretch = TextureRect.StretchMode.KeepAspectCentered;
+
+        InstallButton.StyleBoxOverride = PdaTerminalPalette.CreateButton(accented: true);
     }
 
     protected override void Draw(DrawingHandleScreen handle)

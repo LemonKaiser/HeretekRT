@@ -44,7 +44,7 @@ public sealed partial class CCVars
     ///     Supported values: <c>server</c>, <c>static</c>, <c>animated</c>.
     /// </summary>
     public static readonly CVarDef<string> LobbyBackgroundType =
-        CVarDef.Create("accessibility.lobby_background_type", "server", CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("accessibility.lobby_background_type", "animated", CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
     ///     Preferred static lobby background prototype id.

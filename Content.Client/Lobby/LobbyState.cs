@@ -1,4 +1,5 @@
 using Content.Client._NF.LateJoin;
+using Content.Client._WH40K.CharacterCreation;
 using Content.Client._WH40K.DeathTransition;
 using Content.Client.Administration.Managers;
 using Content.Client.Audio;
@@ -9,7 +10,9 @@ using Content.Client.Message;
 using Content.Client.UserInterface.Systems.Chat;
 using Content.Client.Voting;
 using Content.Shared.CCVar;
+using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.Administration;
+using Content.Shared.Preferences;
 using Robust.Client;
 using Robust.Client.Console;
 using Robust.Client.Graphics;
@@ -36,6 +39,7 @@ namespace Content.Client.Lobby
         [Dependency] private IVoteManager _voteManager = default!;
         [Dependency] private IPrototypeManager _protoMan = default!;
         [Dependency] private IClientAdminManager _adminManager = default!;
+        [Dependency] private IClientPreferencesManager _preferencesManager = default!;
 
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
@@ -44,6 +48,7 @@ namespace Content.Client.Lobby
         private ChatUIController? _chatController;
         private bool? _lastRoundStarted;
         private bool? _lastObserveAvailable;
+        private bool? _lastPersonalizationAvailable;
         private long _lastLobbyClockSecond = long.MinValue;
         private bool? _lastLobbyClockRoundStarted;
         private bool? _lastLobbyClockPaused;
@@ -81,6 +86,8 @@ namespace Content.Client.Lobby
                 ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
                 : lobbyNameCvar;
 
+            _preferencesManager.OnWh40kProgressChanged += UpdatePersonalizationButton;
+            _preferencesManager.OnWh40kOnboardingCompletionFinished += OnWh40kOnboardingCompletionFinished;
             UpdateLobbyUi();
             Lobby.BeginPresentation();
             _lobbyBackgroundController = new LobbyBackgroundController(
@@ -96,12 +103,15 @@ namespace Content.Client.Lobby
             Lobby.PersonalizationButton.OnPressed += OnSetupPressed;
             Lobby.ReadyButton.OnPressed += OnReadyPressed;
             Lobby.ReadyButton.OnToggled += OnReadyToggled;
+            Lobby.OnboardingCancelButton.OnPressed += OnOnboardingCancelPressed;
+            Lobby.OnOnboardingCompletionRequested += OnOnboardingCompletionRequested;
 
             _gameTicker.InfoBlobUpdated += UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated += LobbyStatusUpdated;
             _gameTicker.LobbyLateJoinStatusUpdated += LobbyLateJoinStatusUpdated;
             _ghostPermissionStatus.StatusUpdated += UpdateLobbyUi;
             _adminManager.AdminStatusUpdated += UpdateLobbyUi;
+
         }
 
         protected override void Shutdown()
@@ -112,6 +122,8 @@ namespace Content.Client.Lobby
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
             _ghostPermissionStatus.StatusUpdated -= UpdateLobbyUi;
             _adminManager.AdminStatusUpdated -= UpdateLobbyUi;
+            _preferencesManager.OnWh40kProgressChanged -= UpdatePersonalizationButton;
+            _preferencesManager.OnWh40kOnboardingCompletionFinished -= OnWh40kOnboardingCompletionFinished;
             _contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
 
             _voteManager.ClearPopupContainer();
@@ -120,12 +132,16 @@ namespace Content.Client.Lobby
             Lobby!.PersonalizationButton.OnPressed -= OnSetupPressed;
             Lobby!.ReadyButton.OnPressed -= OnReadyPressed;
             Lobby!.ReadyButton.OnToggled -= OnReadyToggled;
+            Lobby!.OnboardingCancelButton.OnPressed -= OnOnboardingCancelPressed;
+            Lobby!.OnOnboardingCompletionRequested -= OnOnboardingCompletionRequested;
+            Lobby!.DiscardOnboardingDraft();
 
             _lobbyBackgroundController?.Shutdown();
             _lobbyBackgroundController = null;
             _chatController = null;
             _lastRoundStarted = null;
             _lastObserveAvailable = null;
+            _lastPersonalizationAvailable = null;
             Lobby = null;
         }
 
@@ -135,8 +151,33 @@ namespace Content.Client.Lobby
             Lobby?.SwitchState(state);
         }
 
+        /// <summary>
+        /// Opens the required Act I character creator.
+        /// </summary>
+        public bool TryOpenWh40kOnboarding()
+        {
+            if (_preferencesManager.Wh40kProgress.OnboardingStatus != Wh40kOnboardingStatus.Required)
+                return false;
+
+            var preferences = _preferencesManager.Preferences;
+            if (Lobby is null || preferences is null ||
+                preferences.SelectedCharacter is not HumanoidCharacterProfile profile)
+            {
+                return false;
+            }
+
+            SetReady(false);
+            Lobby.BeginOnboardingTransition(new Wh40kOnboardingDraft(
+                profile,
+                preferences.SelectedCharacterIndex));
+            return true;
+        }
+
         private void OnSetupPressed(BaseButton.ButtonEventArgs args)
         {
+            if (!_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization)
+                return;
+
             SetReady(false);
             Lobby?.SwitchState(LobbyGui.LobbyGuiState.CharacterSetup);
         }
@@ -147,21 +188,73 @@ namespace Content.Client.Lobby
             {
                 return;
             }
-            // Frontier to downstream: if you want to skip the first window and go straight to station picker,
-            // simply change the enum to station or crew in the PickerWindow constructor.
+
+            var progress = _preferencesManager.Wh40kProgress;
+            if (!progress.IsKnown)
+                return;
+
+            if (progress.OnboardingStatus == Wh40kOnboardingStatus.Required)
+            {
+                TryOpenWh40kOnboarding();
+                return;
+            }
+
+            // Act I progression is separate from the first-character gate. A saved profile may use ordinary late join.
+            if (!progress.CanUseLegacyPersonalization)
+                return;
+
             if (_pickerWindow is { IsOpen: true })
             {
                 _pickerWindow.Close();
                 return;
             }
 
-            _pickerWindow ??= new PickerWindow();
-            _pickerWindow.OpenCentered();
+            OpenLateJoinPicker();
+        }
+
+        private void OnOnboardingCancelPressed(BaseButton.ButtonEventArgs args)
+        {
+            Lobby?.ReturnToLobbyFromOnboarding();
+        }
+
+        private void OnOnboardingCompletionRequested(Wh40kOnboardingDraft draft)
+        {
+            if (_preferencesManager.CompleteWh40kOnboarding(draft.Profile))
+            {
+                Lobby?.SetOnboardingCompletionPending(true);
+                return;
+            }
+
+            Lobby?.SetOnboardingCompletionResult(Wh40kOnboardingCompletionStatus.NotAllowed);
+        }
+
+        private void OnWh40kOnboardingCompletionFinished(Wh40kOnboardingCompletionStatus status)
+        {
+            if (status == Wh40kOnboardingCompletionStatus.Success)
+            {
+                Lobby?.ReturnToLobbyFromOnboarding();
+
+                // A profile completed during a running round follows the same late-join route as an existing profile.
+                if (_gameTicker.IsGameStarted)
+                    OpenLateJoinPicker();
+
+                return;
+            }
+
+            Lobby?.SetOnboardingCompletionResult(status);
         }
 
         private void OnReadyToggled(BaseButton.ButtonToggledEventArgs args)
         {
             SetReady(args.Pressed);
+        }
+
+        private void OpenLateJoinPicker()
+        {
+            // Keep the normal station/job selection flow; it owns the final joingame command and its validation.
+            _pickerWindow ??= new PickerWindow();
+            if (!_pickerWindow.IsOpen)
+                _pickerWindow.OpenCentered();
         }
 
         public override void FrameUpdate(FrameEventArgs e)
@@ -171,6 +264,7 @@ namespace Content.Client.Lobby
             Lobby?.UpdateVisualEffects(e.DeltaSeconds);
 
             UpdateObserveButton();
+            UpdatePersonalizationButton();
             UpdateLobbyClock();
         }
 
@@ -322,6 +416,20 @@ namespace Content.Client.Lobby
             Lobby.SetObserveAvailable(available);
         }
 
+        private void UpdatePersonalizationButton()
+        {
+            if (Lobby == null)
+                return;
+
+            var available = _preferencesManager.Wh40kProgress.CanUseLegacyPersonalization;
+            if (_lastPersonalizationAvailable == available)
+                return;
+
+            _lastPersonalizationAvailable = available;
+            Lobby.SetPersonalizationAvailable(available);
+            Lobby.CharacterPreview.CharacterSetupButton.Disabled = !available;
+        }
+
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
         {
             if (ev.SoundtrackFilename == null)
@@ -355,6 +463,14 @@ namespace Content.Client.Lobby
         {
             if (_gameTicker.IsGameStarted)
             {
+                return;
+            }
+
+            if (newReady && !_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization)
+            {
+                if (_preferencesManager.Wh40kProgress.OnboardingStatus == Wh40kOnboardingStatus.Required)
+                    TryOpenWh40kOnboarding();
+
                 return;
             }
 

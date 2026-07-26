@@ -1,0 +1,317 @@
+<characterCreation:Wh40kAppearancePage
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:characterCreation="clr-namespace:Content.Client._WH40K.CharacterCreation"
+    xmlns:humanoid="clr-namespace:Content.Client.Humanoid"
+    xmlns:flavor="clr-namespace:Content.Client.FlavorText"
+    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:lobbyUi="clr-namespace:Content.Client.Lobby.UI"
+    HorizontalExpand="True" VerticalExpand="True">
+    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="12">
+            <BoxContainer Name="PortraitsSection" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                              VerticalAlignment="Center" SeparationOverride="8">
+                    <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                        </PanelContainer.PanelOverride>
+                    </PanelContainer>
+                    <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                 Modulate="#B69754A8"
+                                 TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                    <Label Name="PortraitsTitle" Access="Public" Text="{Loc 'heretek-onboarding-portraits-title'}" FontColorOverride="#E5C879"
+                           StyleClasses="Wh40kOnboardingSectionTitle" />
+                    <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                            MouseFilter="Ignore" Modulate="#B69754A8"
+                                                            TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                    <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                        </PanelContainer.PanelOverride>
+                    </PanelContainer>
+                </BoxContainer>
+                <Label Name="PortraitsKicker" Access="Public" Text="{Loc 'heretek-onboarding-portraits-kicker'}"
+                       FontColorOverride="#B69754" HorizontalAlignment="Center" Margin="0 16 0 4"
+                       StyleClasses="Wh40kOnboardingTechnicalText" />
+                <Label Name="PortraitsDescription" Access="Public" Text="{Loc 'heretek-onboarding-portraits-description'}"
+                       FontColorOverride="#B7AD9B" HorizontalAlignment="Center" Margin="0 0 0 10"
+                       StyleClasses="Wh40kOnboardingBodyText" />
+                <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                 EndColor="#00000000" Thickness="1" SetHeight="1" />
+                <GridContainer Name="PortraitGrid" Columns="5" HorizontalExpand="True"
+                               HSeparationOverride="10" VSeparationOverride="12" Margin="0 10 0 0" />
+                <Label Name="SelectedPortraitLabel" Visible="False" />
+            </BoxContainer>
+
+            <BoxContainer Name="BasicsSection" Visible="False" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" SeparationOverride="8">
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                        <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                     Modulate="#B69754A8"
+                                     TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <Label Name="BasicsTitle" Access="Public" Text="{Loc 'heretek-onboarding-appearance-basics-title'}" FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                                MouseFilter="Ignore" Modulate="#B69754A8"
+                                                                TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <Label Text="{Loc 'heretek-onboarding-appearance-basics-kicker'}" FontColorOverride="#B69754"
+                           HorizontalAlignment="Center" Margin="0 16 0 4" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Label Text="{Loc 'heretek-onboarding-appearance-basics-card-description'}" FontColorOverride="#B7AD9B"
+                           HorizontalAlignment="Center" Margin="0 0 0 10" StyleClasses="Wh40kOnboardingBodyText" />
+                    <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                     EndColor="#00000000" Thickness="1" SetHeight="1" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-species-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <OptionButton Name="SpeciesButton" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-age-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <LineEdit Name="AgeEdit" SetWidth="72" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-sex-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <OptionButton Name="SexButton" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-pronouns-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <OptionButton Name="PronounsButton" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-clothing'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <Button Name="ShowClothesButton" ToggleMode="True" Text="{Loc 'humanoid-profile-editor-clothing-show'}" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <OptionButton Name="SpawnPriorityButton" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-height-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <Slider Name="HeightSlider" MinValue="0.8" MaxValue="1.2" Value="1" SetWidth="230" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                    <Label Text="{Loc 'humanoid-profile-editor-width-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Control HorizontalExpand="True" />
+                    <Slider Name="WidthSlider" MinValue="0.8" MaxValue="1.2" Value="1" SetWidth="230" />
+                </BoxContainer>
+                <controls:HLine Color="#B6975470" Thickness="1" />
+                <Label Text="{Loc 'humanoid-profile-editor-skin-color-label'}" FontColorOverride="#B69754" StyleClasses="Wh40kOnboardingTechnicalText" />
+                <Slider Name="SkinToneSlider" MinValue="0" MaxValue="100" Value="20" HorizontalExpand="True" />
+                <PanelContainer Name="RgbSkinColorContainer" Visible="False" HorizontalExpand="True">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#0C0D0ADE" BorderColor="#B6975447" BorderThickness="1"
+                                               ContentMarginLeftOverride="10" ContentMarginRightOverride="10"
+                                               ContentMarginTopOverride="10" ContentMarginBottomOverride="10" />
+                    </PanelContainer.PanelOverride>
+                </PanelContainer>
+            </BoxContainer>
+
+            <BoxContainer Name="FlavorTextSection" Access="Public" Visible="False" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" SeparationOverride="8">
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                        <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                     Modulate="#B69754A8"
+                                     TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <Label Text="{Loc 'heretek-onboarding-appearance-flavor'}" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                                MouseFilter="Ignore" Modulate="#B69754A8"
+                                                                TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <Label Text="{Loc 'heretek-onboarding-appearance-flavor-kicker'}" FontColorOverride="#B69754"
+                           HorizontalAlignment="Center" Margin="0 16 0 4" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                     EndColor="#00000000" Thickness="1" SetHeight="1" />
+                </BoxContainer>
+                <PanelContainer HorizontalExpand="True" MinHeight="270">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#08090785" BorderColor="#B697547A" BorderThickness="1"
+                                               ContentMarginLeftOverride="12" ContentMarginRightOverride="12"
+                                               ContentMarginTopOverride="12" ContentMarginBottomOverride="10" />
+                    </PanelContainer.PanelOverride>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="7">
+                        <Label Text="{Loc 'heretek-onboarding-appearance-flavor-editor-title'}" FontColorOverride="#E5C879"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <Label Name="FlavorNote" HorizontalExpand="True" FontColorOverride="#B7AD9B"
+                               StyleClasses="Wh40kOnboardingBodyText" />
+                        <PanelContainer HorizontalExpand="True" SetHeight="172">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#050605D1" BorderColor="#B697547A" BorderThickness="1" />
+                            </PanelContainer.PanelOverride>
+                            <flavor:FlavorText Name="OnboardingFlavorText" Access="Public" HorizontalExpand="True" VerticalExpand="True" />
+                        </PanelContainer>
+                        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="14">
+                            <Label Text="{Loc 'heretek-onboarding-appearance-flavor-editor-meta'}" FontColorOverride="#B7AD9B"
+                                   StyleClasses="Wh40kOnboardingTechnicalText" />
+                            <Control HorizontalExpand="True" />
+                            <Label Name="OnboardingFlavorTextCount" Access="Public" Text="0 / 512" FontColorOverride="#E5C879"
+                                   StyleClasses="Wh40kOnboardingTechnicalText" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+
+            <BoxContainer Name="HairSection" Visible="False" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" SeparationOverride="8">
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                        <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                     Modulate="#B69754A8"
+                                     TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <Label Name="HairTitle" Access="Public" Text="{Loc 'heretek-onboarding-hair'}" FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                                MouseFilter="Ignore" Modulate="#B69754A8"
+                                                                TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <Label Text="{Loc 'heretek-onboarding-hair-kicker'}" FontColorOverride="#B69754"
+                           HorizontalAlignment="Center" Margin="0 16 0 4" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Label Text="{Loc 'heretek-onboarding-hair-card-description'}" FontColorOverride="#B7AD9B"
+                           HorizontalAlignment="Center" Margin="0 0 0 10" StyleClasses="Wh40kOnboardingBodyText" />
+                    <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                     EndColor="#00000000" Thickness="1" SetHeight="1" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="10">
+                    <PanelContainer HorizontalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#0C0D0ADE" BorderColor="#B6975447" BorderThickness="1"
+                                                   ContentMarginLeftOverride="8" ContentMarginRightOverride="8"
+                                                   ContentMarginTopOverride="8" ContentMarginBottomOverride="8" />
+                        </PanelContainer.PanelOverride>
+                        <humanoid:SingleMarkingPicker Name="HairStylePicker" Category="Hair" HorizontalExpand="True" />
+                    </PanelContainer>
+                    <PanelContainer HorizontalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <graphics:StyleBoxFlat BackgroundColor="#0C0D0ADE" BorderColor="#B6975447" BorderThickness="1"
+                                                   ContentMarginLeftOverride="8" ContentMarginRightOverride="8"
+                                                   ContentMarginTopOverride="8" ContentMarginBottomOverride="8" />
+                        </PanelContainer.PanelOverride>
+                        <humanoid:SingleMarkingPicker Name="FacialHairPicker" Category="FacialHair" HorizontalExpand="True" />
+                    </PanelContainer>
+                </BoxContainer>
+            </BoxContainer>
+
+            <BoxContainer Name="EyesSection" Visible="False" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" SeparationOverride="8">
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                        <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                     Modulate="#B69754A8"
+                                     TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <Label Name="EyesTitle" Access="Public" Text="{Loc 'heretek-onboarding-eyes'}" FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                                MouseFilter="Ignore" Modulate="#B69754A8"
+                                                                TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <Label Text="{Loc 'heretek-onboarding-eyes-kicker'}" FontColorOverride="#B69754"
+                           HorizontalAlignment="Center" Margin="0 16 0 4" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Label Text="{Loc 'heretek-onboarding-eyes-card-description'}" FontColorOverride="#B7AD9B"
+                           HorizontalAlignment="Center" Margin="0 0 0 10" StyleClasses="Wh40kOnboardingBodyText" />
+                    <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                     EndColor="#00000000" Thickness="1" SetHeight="1" />
+                </BoxContainer>
+                <PanelContainer HorizontalExpand="True">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#0C0D0ADE" BorderColor="#B6975447" BorderThickness="1"
+                                               ContentMarginLeftOverride="10" ContentMarginRightOverride="10"
+                                               ContentMarginTopOverride="10" ContentMarginBottomOverride="10" />
+                    </PanelContainer.PanelOverride>
+                    <humanoid:EyeColorPicker Name="EyeColorPicker" HorizontalExpand="True" />
+                </PanelContainer>
+            </BoxContainer>
+
+            <BoxContainer Name="MarkingsSection" Visible="False" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" SeparationOverride="8">
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                        <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                     Modulate="#B69754A8"
+                                     TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <Label Name="MarkingsTitle" Access="Public" Text="{Loc 'heretek-onboarding-appearance-traits'}" FontColorOverride="#E5C879" HorizontalAlignment="Center"
+                               StyleClasses="Wh40kOnboardingSectionTitle" />
+                        <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
+                                                                MouseFilter="Ignore" Modulate="#B69754A8"
+                                                                TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                        <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                            <PanelContainer.PanelOverride>
+                                <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
+                            </PanelContainer.PanelOverride>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <Label Text="{Loc 'heretek-onboarding-appearance-traits-kicker'}" FontColorOverride="#B69754"
+                           HorizontalAlignment="Center" Margin="0 16 0 4" StyleClasses="Wh40kOnboardingTechnicalText" />
+                    <Label Text="{Loc 'heretek-onboarding-appearance-traits-card-description'}" FontColorOverride="#B7AD9B"
+                           HorizontalAlignment="Center" Margin="0 0 0 10" StyleClasses="Wh40kOnboardingBodyText" />
+                    <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B6975438"
+                                                     EndColor="#00000000" Thickness="1" SetHeight="1" />
+                </BoxContainer>
+                <PanelContainer HorizontalExpand="True">
+                    <PanelContainer.PanelOverride>
+                        <graphics:StyleBoxFlat BackgroundColor="#0C0D0ADE" BorderColor="#B6975447" BorderThickness="1"
+                                               ContentMarginLeftOverride="10" ContentMarginRightOverride="10"
+                                               ContentMarginTopOverride="10" ContentMarginBottomOverride="10" />
+                    </PanelContainer.PanelOverride>
+                    <humanoid:MarkingPicker Name="AppearanceMarkings" HorizontalExpand="True" />
+                </PanelContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </ScrollContainer>
+</characterCreation:Wh40kAppearancePage>

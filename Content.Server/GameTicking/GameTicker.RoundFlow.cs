@@ -354,10 +354,16 @@ namespace Content.Server.GameTicking
             var total = 0;
             foreach (var (userId, status) in _playerGameStatuses)
             {
-                if (LobbyEnabled && status == PlayerGameStatus.NotReadyToPlay)
+                if (!_playerManager.TryGetSessionById(userId, out var session) ||
+                    !_userDb.IsLoadComplete(session))
+                {
+                    continue;
+                }
+
+                if (_prefsManager.IsWh40kOnboardingRequired(userId))
                     continue;
 
-                if (!_playerManager.TryGetSessionById(userId, out _))
+                if (LobbyEnabled && status == PlayerGameStatus.NotReadyToPlay)
                     continue;
 
                 total++;
@@ -393,8 +399,22 @@ namespace Content.Server.GameTicking
             var autoDeAdmin = _cfg.GetCVar(CCVars.AdminDeadminOnJoin);
             foreach (var (userId, status) in _playerGameStatuses)
             {
+                if (!_playerManager.TryGetSessionById(userId, out var session))
+                    continue;
+
+                if (!_userDb.IsLoadComplete(session))
+                {
+                    _playerGameStatuses[userId] = PlayerGameStatus.NotReadyToPlay;
+                    continue;
+                }
+
+                if (_prefsManager.IsWh40kOnboardingRequired(userId))
+                {
+                    _playerGameStatuses[userId] = PlayerGameStatus.NotReadyToPlay;
+                    continue;
+                }
+
                 if (LobbyEnabled && status != PlayerGameStatus.ReadyToPlay) continue;
-                if (!_playerManager.TryGetSessionById(userId, out var session)) continue;
 
                 if (autoDeAdmin && _adminManager.IsAdmin(session))
                 {

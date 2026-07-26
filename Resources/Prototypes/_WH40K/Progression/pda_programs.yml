@@ -1,0 +1,27 @@
+- type: entity
+  parent: NFBasePDACartridge
+  id: Wh40kPlayerCartridge
+  name: RPG player program
+  description: A personal account progression panel.
+  components:
+  - type: UIFragment
+    ui: !type:Wh40kPlayerUi
+  - type: Cartridge
+    programName: wh40k-rpg-player-program-name
+    icon: /Textures/_WH40K/Interface/PDA/Applications/player.png
+    readonly: true
+  - type: Wh40kPlayerCartridge
+
+- type: entity
+  parent: NFBasePDACartridge
+  id: Wh40kPartyCartridge
+  name: RPG party program
+  description: A personal party management panel.
+  components:
+  - type: UIFragment
+    ui: !type:Wh40kPartyUi
+  - type: Cartridge
+    programName: wh40k-rpg-party-program-name
+    icon: /Textures/_WH40K/Interface/PDA/Applications/party.png
+    readonly: true
+  - type: Wh40kPartyCartridge

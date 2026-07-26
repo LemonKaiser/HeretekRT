@@ -23,7 +23,7 @@
       ui: !type:BountyContractUi
     - type: Cartridge
       programName: bounty-contracts-program-name
-      icon: Interface/Actions/shop.png
+      icon: /Textures/_WH40K/Interface/PDA/Applications/contract.png
     - type: BountyContractsCartridge
 
 - type: entity

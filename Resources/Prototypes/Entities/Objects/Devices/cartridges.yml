@@ -11,9 +11,7 @@
     ui: !type:NotekeeperUi
   - type: Cartridge
     programName: notekeeper-program-name
-    icon:
-      sprite:  Objects/Misc/books.rsi
-      state: book_icon
+    icon: /Textures/_WH40K/Interface/PDA/Applications/notes.png
   - type: NotekeeperCartridge
 
 - type: entity
@@ -29,9 +27,7 @@
     ui: !type:NewsReaderUi
   - type: Cartridge
     programName: news-read-program-name
-    icon:
-      sprite: Interface/Misc/program_icons.rsi
-      state: news_read
+    icon: /Textures/_WH40K/Interface/PDA/Applications/news.png
   - type: NewsReaderCartridge
 
 - type: entity
@@ -47,9 +43,7 @@
       ui: !type:CrewManifestUi
     - type: Cartridge
       programName: crew-manifest-program-name
-      icon:
-        sprite: Interface/Misc/program_icons.rsi
-        state: crew_manifest
+      icon: /Textures/_WH40K/Interface/PDA/Applications/manifest.png
     - type: CrewManifestCartridge
 
 - type: entity
@@ -148,7 +142,5 @@
       state: cart-nav
     - type: Cartridge
       programName: astro-nav-program-name
-      icon:
-        sprite: Objects/Devices/gps.rsi
-        state: icon
+      icon: /Textures/_WH40K/Interface/PDA/Applications/astronav.png
     - type: AstroNavCartridge

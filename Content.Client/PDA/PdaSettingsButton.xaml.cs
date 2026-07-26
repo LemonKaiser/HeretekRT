@@ -10,15 +10,17 @@ public sealed partial class PdaSettingsButton : ContainerButton
 {
     public const string StylePropertyFgColor = "foregroundColor";
     public const string StylePropertyBgColor = "backgroundColor";
-    public const string NormalBgColor = "#313331";
-    public const string HoverColor = "#3E6C45";
-    public const string PressedColor = "#3E6C45";
-    public const string DisabledFgColor = "#5a5a5a";
-    public const string EnabledFgColor = "#FFFFFF";
+    public const string NormalBgColor = "#222A25";
+    public const string HoverColor = "#30483B";
+    public const string PressedColor = "#294238";
+    public const string DisabledFgColor = "#667168";
+    public const string EnabledFgColor = "#D7E0D7";
 
     private readonly StyleBoxFlat _styleBox = new()
     {
-        BackgroundColor = Color.FromHex("#252725")
+        BackgroundColor = PdaTerminalPalette.ScreenPanel,
+        BorderColor = PdaTerminalPalette.Rail,
+        BorderThickness = new Thickness(1)
     };
 
     public string? Text
@@ -53,6 +55,9 @@ public sealed partial class PdaSettingsButton : ContainerButton
     {
         RobustXamlLoader.Load(this);
         Panel.PanelOverride = _styleBox;
+        AccentRail.PanelOverride = PdaTerminalPalette.CreatePanel(
+            PdaTerminalPalette.AccentMuted,
+            PdaTerminalPalette.AccentMuted);
     }
 
     protected override void Draw(DrawingHandleScreen handle)

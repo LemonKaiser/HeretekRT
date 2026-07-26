@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Fluids.Components;
 using Content.Server._Mono.SpaceArtillery.Components;
@@ -37,6 +38,7 @@ using Content.Shared.Tiles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Server.Atmos.EntitySystems;
@@ -47,6 +49,7 @@ using Content.Shared.Interaction.Components;
 using Content.Shared.Popups;
 using Content.Shared.Radiation.Components;
 using Content.Shared.Weapons.Ranged.Systems;
+using Robust.Server.Player;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
@@ -65,6 +68,8 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedGunSystem _guns = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private Wh40kPartyManager _wh40kParties = default!;
 
     private EntityQuery<TransformComponent> _transformQuery;
 
@@ -366,7 +371,28 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     private void OnBeforeDamageChanged(EntityUid uid, DamageableComponent component, ref BeforeDamageChangedEvent args)
     {
-        if (args.Cancelled || args.Damage.GetTotal() <= 0)
+        if (args.Cancelled)
+            return;
+
+        if (_players.TryGetSessionByEntity(uid, out var target))
+        {
+            NetUserId? attacker = args.Origin is { Valid: true } origin &&
+                                  _players.TryGetSessionByEntity(origin, out var attackerSession)
+                ? attackerSession.UserId
+                : null;
+            if (Wh40kExperiencePolicy.ShouldBlockDirectDamage(
+                    args.Damage.GetTotal(),
+                    args.OriginFlag == null,
+                    attacker,
+                    target.UserId,
+                    _wh40kParties.AreInSameActiveParty))
+            {
+                args.Cancelled = true;
+                return;
+            }
+        }
+
+        if (args.Damage.GetTotal() <= 0)
             return;
 
         if (ShouldBlockPlayerAgainstPlayer(args.Origin, uid, KoronusSafetyRule.PlayerDamage) ||

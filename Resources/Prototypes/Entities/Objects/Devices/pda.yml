@@ -77,7 +77,10 @@
 #    range: 500 # Frontier
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
+    diskSpace: 14
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NewsReaderCartridge
@@ -150,6 +153,8 @@
   components:
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -165,6 +170,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -879,6 +886,8 @@
     state: pda-hos
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -947,6 +956,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NewsReaderCartridge
@@ -978,6 +989,8 @@
     uiKey: enum.PdaUiKey.Key
     notificationsEnabled: false
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NewsReaderCartridge
@@ -1102,6 +1115,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - NotekeeperCartridge
       - AstroNavCartridge # Frontier
 
@@ -1128,6 +1143,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NewsReaderCartridge
@@ -1310,6 +1327,8 @@
     state: pda-detective
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -1337,6 +1356,8 @@
     state: pda-brigmedic
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -1490,6 +1511,8 @@
   - type: CartridgeLoader
     uiKey: enum.PdaUiKey.Key
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - NotekeeperCartridge
       - MedTekCartridge
 

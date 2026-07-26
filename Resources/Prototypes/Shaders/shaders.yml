@@ -110,6 +110,11 @@
   path: "/Textures/_WH40K/Shaders/lobby-menu-divider.swsl"
 
 - type: shader
+  id: HeretekOnboardingAppearanceCard
+  kind: source
+  path: "/Textures/_WH40K/Shaders/onboarding-appearance-card.swsl"
+
+- type: shader
   id: HeretekLobbyDrawerRule
   kind: source
   path: "/Textures/_WH40K/Shaders/lobby-drawer-rule.swsl"

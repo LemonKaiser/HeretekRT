@@ -1,0 +1,56 @@
+<progression:Wh40kPlayerUiFragment xmlns="https://spacestation14.io"
+                                   xmlns:progression="clr-namespace:Content.Client._WH40K.Progression"
+                                   xmlns:pda="clr-namespace:Content.Client.PDA">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <pda:PdaTerminalHeaderPanel SetHeight="28" Margin="0 0 0 4">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="7 0">
+                <Label Text="{Loc 'wh40k-rpg-player-header'}" FontColorOverride="#88D2A5"
+                       VerticalAlignment="Center" HorizontalExpand="True"/>
+                <Label Name="LevelHeader" FontColorOverride="#D7E0D7" VerticalAlignment="Center"/>
+            </BoxContainer>
+        </pda:PdaTerminalHeaderPanel>
+
+        <RichTextLabel Name="StatusLabel" Visible="False" HorizontalExpand="True"
+                       Margin="4 0 4 4"/>
+
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="2">
+                <pda:PdaTerminalPanel Name="IdentityPanel" HorizontalExpand="True" Margin="0 0 0 4">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+                        <RichTextLabel Name="CharacterName" HorizontalExpand="True"/>
+                        <PanelContainer Name="CharacterDivider" HorizontalExpand="True"
+                                        SetHeight="1" Margin="0 5"/>
+                        <RichTextLabel Name="HomeworldLabel" HorizontalExpand="True"
+                                       ToolTip="{Loc 'wh40k-rpg-player-foundation-tooltip'}"/>
+                        <PanelContainer Name="HomeworldDivider" HorizontalExpand="True"
+                                        SetHeight="1" Margin="0 5"/>
+                        <RichTextLabel Name="OriginLabel" HorizontalExpand="True"
+                                       ToolTip="{Loc 'wh40k-rpg-player-foundation-tooltip'}"/>
+                        <PanelContainer Name="OriginDivider" HorizontalExpand="True"
+                                        SetHeight="1" Margin="0 5"/>
+                        <RichTextLabel Name="ClassLabel" HorizontalExpand="True"
+                                       ToolTip="{Loc 'wh40k-rpg-player-foundation-tooltip'}"/>
+                    </BoxContainer>
+                </pda:PdaTerminalPanel>
+
+                <pda:PdaTerminalPanel Name="ProgressPanel" HorizontalExpand="True" Margin="0 0 0 4">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                            <RichTextLabel Name="ExperienceLabel" HorizontalExpand="True"/>
+                            <RichTextLabel Name="PointsLabel" HorizontalExpand="True"/>
+                        </BoxContainer>
+                        <ProgressBar Name="ExperienceBar" MinValue="0" MaxValue="1" Value="0"
+                                     HorizontalExpand="True" SetHeight="10" Margin="0 4 0 0"/>
+                        <Button Name="ConfirmAllocationButton"
+                                Text="{Loc 'wh40k-rpg-player-confirm-allocation-empty'}"
+                                HorizontalExpand="True" Margin="0 6 0 0" Disabled="True"/>
+                    </BoxContainer>
+                </pda:PdaTerminalPanel>
+
+                <Label Text="{Loc 'wh40k-rpg-player-characteristics'}" FontColorOverride="#88D2A5"
+                       Margin="3 2 3 4"/>
+                <BoxContainer Name="CharacteristicList" Orientation="Vertical" HorizontalExpand="True"/>
+            </BoxContainer>
+        </ScrollContainer>
+    </BoxContainer>
+</progression:Wh40kPlayerUiFragment>

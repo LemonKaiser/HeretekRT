@@ -14,6 +14,8 @@
   components:
   - type: CartridgeLoader
     preinstalled:
+      - Wh40kPlayerCartridge
+      - Wh40kPartyCartridge
       - CrewManifestCartridge
       - NotekeeperCartridge
       - NewsReaderCartridge
@@ -140,6 +142,8 @@
     state: pda-hos
   - type: CartridgeLoader # Extended with the ledger
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -307,6 +311,8 @@
     state: pda-hop
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge
@@ -379,6 +385,8 @@
     state: pda-cmo
   - type: CartridgeLoader
     preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge

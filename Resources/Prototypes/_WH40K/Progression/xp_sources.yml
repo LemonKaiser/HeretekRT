@@ -1,0 +1,25 @@
+- type: wh40kExperienceSource
+  id: Wh40kSalvageExpeditionCompleted
+  sourceType: Mission
+  amountTenths: 10000
+  participation: Expedition
+
+- type: wh40kExperienceSource
+  id: Wh40kPvpPlayerKill
+  sourceType: Combat
+  amountTenths: 1000
+  participation: Radius
+  radius: 100
+
+- type: wh40kExperienceSource
+  id: Wh40kPlanetaryDiscovery
+  sourceType: Objective
+  amountTenths: 2500
+  participation: Expedition
+
+- type: wh40kExperienceSource
+  id: Wh40kMedicalSupport
+  sourceType: Support
+  amountTenths: 100
+  participation: Radius
+  radius: 100

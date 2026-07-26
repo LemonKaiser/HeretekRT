@@ -150,12 +150,17 @@ namespace Content.Server.GameTicking
 
         public void ToggleReadyAll(bool ready)
         {
-            var status = ready ? PlayerGameStatus.ReadyToPlay : PlayerGameStatus.NotReadyToPlay;
             foreach (var playerUserId in _playerGameStatuses.Keys)
             {
-                _playerGameStatuses[playerUserId] = status;
                 if (!_playerManager.TryGetSessionById(playerUserId, out var playerSession))
                     continue;
+
+                var status = ready &&
+                             _userDb.IsLoadComplete(playerSession) &&
+                             !_prefsManager.IsWh40kOnboardingRequired(playerUserId)
+                    ? PlayerGameStatus.ReadyToPlay
+                    : PlayerGameStatus.NotReadyToPlay;
+                _playerGameStatuses[playerUserId] = status;
                 RaiseNetworkEvent(GetStatusMsg(playerSession), playerSession.Channel);
             }
         }
@@ -173,7 +178,14 @@ namespace Content.Server.GameTicking
                 return;
             }
 
-            var status = ready ? PlayerGameStatus.ReadyToPlay : PlayerGameStatus.NotReadyToPlay;
+            if (ready && _prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            {
+                _playerGameStatuses[player.UserId] = PlayerGameStatus.NotReadyToPlay;
+                RaiseNetworkEvent(GetStatusMsg(player), player.Channel);
+                UpdateInfoText();
+                return;
+            }
+
             _playerGameStatuses[player.UserId] = ready ? PlayerGameStatus.ReadyToPlay : PlayerGameStatus.NotReadyToPlay;
             RaiseNetworkEvent(GetStatusMsg(player), player.Channel);
             // update server info to reflect new ready count

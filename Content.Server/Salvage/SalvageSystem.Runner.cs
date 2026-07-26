@@ -4,6 +4,7 @@ using Content.Server.Salvage.Expeditions;
 using Content.Server.Salvage.Expeditions.Structure;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
+using Content.Server._WH40K.Progression;
 using Content.Shared.Chat;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Components;
@@ -305,6 +306,10 @@ public sealed partial class SalvageSystem
             {
                 comp.Completed = true;
                 Announce(uid, Loc.GetString("salvage-expedition-completed"));
+                RaiseLocalEvent(new Wh40kSalvageExpeditionCompletedEvent(
+                    Transform(uid).MapID,
+                    comp.Difficulty,
+                    comp.MissionParams.Seed));
             }
         }
 
@@ -337,6 +342,10 @@ public sealed partial class SalvageSystem
             {
                 comp.Completed = true;
                 Announce(uid, Loc.GetString("salvage-expedition-completed"));
+                RaiseLocalEvent(new Wh40kSalvageExpeditionCompletedEvent(
+                    Transform(uid).MapID,
+                    comp.Difficulty,
+                    comp.MissionParams.Seed));
             }
         }
     }

@@ -1,0 +1,44 @@
+- type: wh40kLevelReward
+  id: Level5
+  level: 5
+  currency: 10000
+  items:
+  - id: BoxMRE
+
+- type: wh40kLevelReward
+  id: Level10
+  level: 10
+  currency: 25000
+
+- type: wh40kLevelReward
+  id: Level15
+  level: 15
+  currency: 100000
+  items:
+  - id: MedkitFilled
+
+- type: wh40kLevelReward
+  id: Level25
+  level: 25
+  currency: 150000
+
+- type: wh40kLevelReward
+  id: Level50
+  level: 50
+  currency: 250000
+  items:
+  - id: MedkitAdvancedFilled
+
+- type: wh40kLevelReward
+  id: Level75
+  level: 75
+  currency: 500000
+  items:
+  - id: MedkitCombatFilled
+
+- type: wh40kLevelReward
+  id: Level100
+  level: 100
+  currency: 1000000
+  items:
+  - id: MedkitCombatFilled

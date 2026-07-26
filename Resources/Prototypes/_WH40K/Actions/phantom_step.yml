@@ -1,0 +1,16 @@
+- type: entity
+  id: ActionWH40KTogglePhantomStep
+  name: Phantom Step
+  description: Toggle automatic evasive dashes.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 0.5
+    icon:
+      sprite: _WH40K/Interface/Actions/phantom_step.rsi
+      state: off
+    iconOn:
+      sprite: _WH40K/Interface/Actions/phantom_step.rsi
+      state: on
+    event: !type:ToggleActionEvent
+  - type: WH40KPhantomStepAction
