@@ -14,3 +14,19 @@
   texturePath: /Textures/Effects/fire_greyscale.rsi
   fireStates: 3
   temperature: 1200
+
+- type: explosion
+  id: SporeBomb
+  damagePerIntensity:
+    types:
+      Caustic: 10
+      Toxin: 5
+      Structural: 20
+  tileBreakChance: [0]
+  tileBreakIntensity: [0]
+  lightColor: Green
+  fireColor: Green
+  texturePath: /Textures/Effects/fire_greyscale.rsi
+  fireStates: 3
+  throwEntitiesOnExplosion: false
+  temperature: 300

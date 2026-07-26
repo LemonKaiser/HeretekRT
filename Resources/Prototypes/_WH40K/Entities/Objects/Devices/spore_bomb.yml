@@ -1,0 +1,55 @@
+
+- type: entity
+  id: WH40KTyranidSporeMine
+  parent: [SimpleSpaceMobBase, FlyingMobBase]
+  suffix: WH40K, Тираниды
+  name: spore mine
+  description: A floating biological bomb with animal-level intelligence and numerous sensory tentacles. It is full of toxic and corrosive chemicals, and will explode violently if it gets close to you.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: false
+    sprite: _WH40K/Mobs/spore_mine.rsi
+    state: base
+  - type: NpcFactionMember
+    factions:
+    - Tyranids
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: CombatMode
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 1.7
+    angle: 0
+    animation: WeaponArcBite
+    soundHit:
+      collection: GenestealerAttack
+    damage:
+      types:
+        Caustic: 1
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      25: Dead
+  - type: DamageOnHit
+    damage:
+      types:
+        Poison: 25
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Dead
+  - type: ExplodeOnTrigger
+  - type: GibOnTrigger
+  - type: Explosive
+    explosionType: SporeBomb
+    totalIntensity: 90
+    intensitySlope: 45
+    maxIntensity: 10
+    canCreateVacuum: false
+  - type: AmbientSound
+    range: 10
+    volume: -10
+    sound:
+       path: /Audio/Ambience/Objects/portable_scrubber.ogg
