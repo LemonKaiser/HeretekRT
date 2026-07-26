@@ -159,7 +159,6 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         FlavorTextSection.Visible = false;
 
         PortraitGrid.OnResized += UpdatePortraitCardSizing;
-        CreatePortraitsFromPrototypes();
 
         RefreshSpecies();
         SelectSection(Wh40kAppearanceSection.Portraits);
@@ -214,6 +213,9 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
     public void SetDraft(Wh40kOnboardingDraft draft)
     {
+        if (_portraits.Count == 0)
+            CreatePortraitsFromPrototypes();
+
         _draft = draft;
         if (draft.PortraitId is { } portraitId &&
             !_portraits.Any(portrait => portrait.Id == portraitId))

@@ -42,7 +42,6 @@ public sealed partial class Wh40kResultPage : BoxContainer
         _generateNameButtonFrameStyle = CreateFieldStyle("#17140DDE", "#8D6E35A8");
         GenerateNameButtonFrame.PanelOverride = _generateNameButtonFrameStyle;
         IoCManager.InjectDependencies(this);
-        GenerateNameButton.TextureNormal = _entityManager.System<SpriteSystem>().Frame0(DiceSprite);
 
         GenerateNameButton.OnMouseEntered += _ => SetGenerateNameButtonFrameStyle("#3A2D14EE", "#E5C879");
         GenerateNameButton.OnMouseExited += _ => SetGenerateNameButtonFrameStyle("#17140DDE", "#8D6E35A8");
@@ -70,6 +69,7 @@ public sealed partial class Wh40kResultPage : BoxContainer
 
     public void SetDraft(Wh40kOnboardingDraft draft)
     {
+        GenerateNameButton.TextureNormal ??= _entityManager.System<SpriteSystem>().Frame0(DiceSprite);
         _draft = draft;
         RefreshForDraft();
     }

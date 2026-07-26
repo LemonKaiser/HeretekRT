@@ -70,7 +70,11 @@ namespace Content.Server.Database
                 v => JsonDocumentToString(v),
                 v => StringToJsonDocument(v));
 
-            var jsonByteArrayConverter = new ValueConverter<JsonDocument?, byte[]>(
+            var jsonByteArrayConverter = new ValueConverter<JsonDocument, byte[]>(
+                v => JsonDocumentToByteArray(v),
+                v => ByteArrayToJsonDocument(v));
+
+            var nullableJsonByteArrayConverter = new ValueConverter<JsonDocument?, byte[]>(
                 v => JsonDocumentToByteArray(v),
                 v => ByteArrayToJsonDocument(v));
 
@@ -80,11 +84,11 @@ namespace Content.Server.Database
 
             modelBuilder.Entity<Profile>()
                 .Property(log => log.Markings)
-                .HasConversion(jsonByteArrayConverter);
+                .HasConversion(nullableJsonByteArrayConverter);
 
             modelBuilder.Entity<Profile>()
                 .Property(log => log.Wh40kBuild)
-                .HasConversion(jsonByteArrayConverter);
+                .HasConversion(nullableJsonByteArrayConverter);
 
             modelBuilder.Entity<Wh40kAccountRpgFoundation>()
                 .Property(foundation => foundation.InitialCharacteristicPoints)
@@ -92,11 +96,11 @@ namespace Content.Server.Database
 
             modelBuilder.Entity<Wh40kExperienceLedger>()
                 .Property(ledger => ledger.ContextJson)
-                .HasConversion(jsonByteArrayConverter);
+                .HasConversion(nullableJsonByteArrayConverter);
 
             modelBuilder.Entity<Wh40kRewardDelivery>()
                 .Property(delivery => delivery.ContextJson)
-                .HasConversion(jsonByteArrayConverter);
+                .HasConversion(nullableJsonByteArrayConverter);
 
             // EF core can make this automatically unique on sqlite but not psql.
             modelBuilder.Entity<IPIntelCache>()
