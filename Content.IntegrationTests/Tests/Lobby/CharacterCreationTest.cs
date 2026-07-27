@@ -35,6 +35,38 @@ namespace Content.IntegrationTests.Tests.Lobby
             var clientNetId = clientNetManager.ServerChannel.UserId;
             HumanoidCharacterProfile profile = null;
 
+            var session = System.Linq.Enumerable.Single(
+                server.ResolveDependency<Robust.Shared.Player.ISharedPlayerManager>().Sessions);
+            await server.ResolveDependency<Content.Server.Database.UserDbDataManager>().WaitLoadComplete(session);
+
+            var onboardingProfile = serverPrefManager.GetPreferences(clientNetId).Characters[0]
+                as HumanoidCharacterProfile;
+            Assert.That(onboardingProfile, Is.Not.Null);
+
+            var completedProfile = onboardingProfile!.WithWh40kCharacterBuild(
+                new Content.Shared._WH40K.CharacterCreation.Wh40kCharacterBuild
+                {
+                    HomeworldId = "death-world",
+                    OriginId = "astra-militarum-commander",
+                    ClassId = "soldier",
+                    PortraitId = "test-portrait-01",
+                    CharacteristicPoints =
+                    {
+                        [Content.Shared._WH40K.CharacterCreation.Wh40kCharacteristic.Melee] =
+                            Content.Shared._WH40K.CharacterCreation.Wh40kCharacterBuild.MaximumAttributePoints,
+                    },
+                });
+            var completion = await server.ResolveDependency<Content.Server.Database.IServerDbManager>()
+                .CompleteWh40kOnboardingAsync(clientNetId, completedProfile);
+            Assert.That(completion.IsSuccess, Is.True);
+            await serverPrefManager.RefreshPreferencesAsync(session, default);
+            await pair.RunTicksSync(1);
+            await PoolManager.WaitUntil(
+                client,
+                () => clientPrefManager.Wh40kProgress == completion.Progress &&
+                      clientPrefManager.Wh40kProgress.CanUseLegacyPersonalization,
+                60);
+
             await client.WaitAssertion(() =>
             {
                 clientPrefManager.SelectCharacter(0);
@@ -48,7 +80,7 @@ namespace Content.IntegrationTests.Tests.Lobby
                     Assert.That(clientStateManager.CurrentState, Is.TypeOf<LobbyState>());
                 });
 
-                profile = HumanoidCharacterProfile.Random();
+                profile = HumanoidCharacterProfile.Random().WithWh40kCharacterBuild(completedProfile.Wh40kBuild);
                 clientPrefManager.CreateCharacter(profile);
 
                 clientCharacters = clientPrefManager.Preferences?.Characters;
@@ -88,7 +120,7 @@ namespace Content.IntegrationTests.Tests.Lobby
 
             await client.WaitAssertion(() =>
             {
-                profile = HumanoidCharacterProfile.Random();
+                profile = HumanoidCharacterProfile.Random().WithWh40kCharacterBuild(completedProfile.Wh40kBuild);
 
                 clientPrefManager.CreateCharacter(profile);
 

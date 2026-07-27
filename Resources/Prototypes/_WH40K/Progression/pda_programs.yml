@@ -4,6 +4,9 @@
   name: RPG player program
   description: A personal account progression panel.
   components:
+  - type: Sprite
+    sprite: Objects/Devices/cartridge.rsi
+    state: cart-y
   - type: UIFragment
     ui: !type:Wh40kPlayerUi
   - type: Cartridge
@@ -18,6 +21,9 @@
   name: RPG party program
   description: A personal party management panel.
   components:
+  - type: Sprite
+    sprite: Objects/Devices/cartridge.rsi
+    state: cart-nav
   - type: UIFragment
     ui: !type:Wh40kPartyUi
   - type: Cartridge

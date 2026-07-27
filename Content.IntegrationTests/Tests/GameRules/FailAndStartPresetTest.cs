@@ -72,6 +72,40 @@ public sealed class FailAndStartPresetTest
         var ticker = server.System<GameTicker>();
         server.System<TestRuleSystem>().Run = true;
 
+        var userId = client.User!.Value;
+        var session = System.Linq.Enumerable.Single(
+            server.ResolveDependency<Robust.Shared.Player.ISharedPlayerManager>().Sessions);
+        await server.ResolveDependency<Content.Server.Database.UserDbDataManager>().WaitLoadComplete(session);
+
+        var preferences = (Content.Server.Preferences.Managers.ServerPreferencesManager) server
+            .ResolveDependency<Content.Server.Preferences.Managers.IServerPreferencesManager>();
+        var profile = preferences.GetPreferences(userId).Characters[0] as Content.Shared.Preferences.HumanoidCharacterProfile;
+        Assert.That(profile, Is.Not.Null);
+
+        var completedProfile = profile!.WithWh40kCharacterBuild(new Content.Shared._WH40K.CharacterCreation.Wh40kCharacterBuild
+        {
+            HomeworldId = "death-world",
+            OriginId = "astra-militarum-commander",
+            ClassId = "soldier",
+            PortraitId = "test-portrait-01",
+            CharacteristicPoints =
+            {
+                [Content.Shared._WH40K.CharacterCreation.Wh40kCharacteristic.Melee] =
+                    Content.Shared._WH40K.CharacterCreation.Wh40kCharacterBuild.MaximumAttributePoints,
+            },
+        });
+        var completion = await server.ResolveDependency<Content.Server.Database.IServerDbManager>()
+            .CompleteWh40kOnboardingAsync(userId, completedProfile);
+        Assert.That(completion.IsSuccess, Is.True);
+        await preferences.RefreshPreferencesAsync(session, default);
+
+        await server.WaitAssertion(() =>
+        {
+            var progress = server.ResolveDependency<Content.Server._WH40K.CharacterCreation.Wh40kPlayerProgressManager>();
+            Assert.That(progress.Get(userId), Is.EqualTo(completion.Progress));
+            Assert.That(preferences.IsWh40kOnboardingRequired(userId), Is.False);
+        });
+
         Assert.That(server.CfgMan.GetCVar(CCVars.GridFill), Is.False);
         Assert.That(server.CfgMan.GetCVar(CCVars.GameLobbyFallbackEnabled), Is.True);
         Assert.That(server.CfgMan.GetCVar(CCVars.GameLobbyDefaultPreset), Is.EqualTo("secret"));
@@ -97,6 +131,14 @@ public sealed class FailAndStartPresetTest
         Assert.That(!entMan.EntityExists(player));
 
         // Ready up and start nukeops
+        await server.WaitAssertion(() =>
+        {
+            var progress = server.ResolveDependency<Content.Server._WH40K.CharacterCreation.Wh40kPlayerProgressManager>();
+            var userDb = server.ResolveDependency<Content.Server.Database.UserDbDataManager>();
+            Assert.That(userDb.IsLoadComplete(session), Is.True);
+            Assert.That(progress.Get(userId), Is.EqualTo(completion.Progress));
+            Assert.That(preferences.IsWh40kOnboardingRequired(userId), Is.False);
+        });
         await pair.WaitClientCommand("toggleready True");
         Assert.That(ticker.PlayerGameStatuses[client.User!.Value], Is.EqualTo(PlayerGameStatus.ReadyToPlay));
         await pair.WaitCommand("setgamepreset TestPreset 9999");
