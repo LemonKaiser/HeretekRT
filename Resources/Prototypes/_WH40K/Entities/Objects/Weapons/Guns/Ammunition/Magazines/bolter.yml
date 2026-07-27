@@ -42,7 +42,7 @@
 
 - type: entity
   id: WH40KMagazineAstartesBoltPistol
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   suffix: WH40K, Astartes
   components:
   - type: Tag

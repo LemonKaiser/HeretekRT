@@ -42125,7 +42125,7 @@ entities:
     - type: Transform
       pos: 7.5,-8.5
       parent: 1668
-- proto: Magazine45_magnumPistolFMJ
+- proto: SpeedLoader357_magnumFMJ
   entities:
   - uid: 6885
     components:
@@ -49183,7 +49183,7 @@ entities:
     - type: Transform
       pos: 6.5,18.5
       parent: 1668
-- proto: SpeedLoader45_magnumAP
+- proto: SpeedLoader357_magnumAP
   entities:
   - uid: 2431
     components:
@@ -59393,7 +59393,7 @@ entities:
     - type: Transform
       pos: -30.623615,-7.8922486
       parent: 1668
-- proto: WeaponPistolN1984
+- proto: WeaponRevolverMateba
   entities:
   - uid: 1383
     components:

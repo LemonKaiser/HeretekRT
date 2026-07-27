@@ -1,5 +1,6 @@
 ent-BulletEnergyGun45_magnum = заряд .45 магнум
 ent-HeavyPulse = Heavy Pulse Bolt
+ent-BulletEnergyGun357_magnum = заряд .357 магнум
 ent-HeavyPulseExp = Explosive Pulse Bolt
 ent-BulletLaserSlug = energy slug
 ent-BulletLaserPellet = energy

@@ -1,3 +1,25 @@
+- type: entity
+  id: BaseMagazineWH40K
+  abstract: true
+  parent: [BaseItem, RecyclableItemSteelTiny]
+  components:
+  - type: Item
+    size: Small
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+  - type: Sprite
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/Magazine/357_magnum/357_magnum_pistol_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 8
+    zeroVisible: false
+  - type: Appearance
 
 - type: entity
   id: MagazineStabLMG
@@ -45,7 +67,7 @@
 
 - type: entity
   id: MagazineStubPistol
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   components:
   - type: Tag
     tags:
@@ -60,7 +82,7 @@
 
 - type: entity
   id: MagazineHevStubPistol
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   components:
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/Pistol.rsi
@@ -86,7 +108,7 @@
 
 - type: entity
   id: MagazineHeavyStubPistol
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   components:
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/heavy_stub_pistol.rsi
@@ -127,7 +149,7 @@
 
 - type: entity
   id: MagazineStubSMG
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   components:
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/SMG2.rsi
@@ -153,7 +175,7 @@
 
 - type: entity
   id: MagazineStub3SMG
-  parent: BaseMagazine45_magnum
+  parent: BaseMagazineWH40K
   components:
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Magazine/SMG3.rsi

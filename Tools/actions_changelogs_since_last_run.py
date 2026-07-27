@@ -8,6 +8,7 @@ Automatically figures out the last run and changelog contents with the GitHub AP
 
 import itertools
 import os
+import time
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -149,8 +150,23 @@ def send_discord_webhook(lines: list[str]):
     content = "".join(lines)
     body = get_discord_body(content)
 
-    response = requests.post(DISCORD_WEBHOOK_URL, json=body)
-    response.raise_for_status()
+    retry_attempt = 0
+
+    try:
+        response = requests.post(DISCORD_WEBHOOK_URL, json=body, timeout=10)
+        while response.status_code == 429:
+            retry_attempt += 1
+            if retry_attempt > 20:
+                print("Too many retries on a single request despite following retry_after header... giving up")
+                exit(1)
+            retry_after = response.json().get("retry_after", 5)
+            print(f"Rate limited, retrying after {retry_after} seconds")
+            time.sleep(retry_after)
+            response = requests.post(DISCORD_WEBHOOK_URL, json=body, timeout=10)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to send message: {e}")
+        exit(1)
 
 
 def changelog_entries_to_message_lines(entries: Iterable[ChangelogEntry]) -> list[str]:

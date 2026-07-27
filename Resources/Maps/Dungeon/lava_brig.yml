@@ -11082,7 +11082,7 @@ entities:
     - type: Transform
       pos: 24.466219,48.441994
       parent: 588
-- proto: SpeedLoader45_magnumFMJ
+- proto: SpeedLoader357_magnumFMJ
   entities:
   - uid: 950
     components:

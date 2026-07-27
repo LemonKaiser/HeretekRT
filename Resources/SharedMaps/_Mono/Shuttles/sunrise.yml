@@ -490,7 +490,7 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 20
-- proto: AmmoBox45_magnumBigFMJ
+- proto: AmmoBox357_magnumBigFMJ
   entities:
   - uid: 30
     components:
@@ -876,7 +876,7 @@ entities:
     - type: Transform
       pos: -3.407206,0.48506498
       parent: 1
-- proto: BoxMagazine45_magnumFMJ
+- proto: BoxMagazine357_magnumFMJ
   entities:
   - uid: 31
     components:
@@ -3021,7 +3021,7 @@ entities:
     - type: Transform
       pos: 1.5,3.5
       parent: 1
-- proto: SpeedLoader45_magnumAP
+- proto: SpeedLoader357_magnumAP
   entities:
   - uid: 32
     components:
@@ -3030,7 +3030,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SpeedLoader45_magnumRubber
+- proto: SpeedLoader357_magnumRubber
   entities:
   - uid: 33
     components:

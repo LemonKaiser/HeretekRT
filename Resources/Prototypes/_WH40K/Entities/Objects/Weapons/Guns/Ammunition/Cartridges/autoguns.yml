@@ -14,7 +14,7 @@
 
 - type: entity
   id: Cartridge10mm
-  parent: BaseCartridge45_magnum
+  parent: BaseCartridge357_magnum
   suffix: WH40K
   components:
   - type: CartridgeAmmo
@@ -40,7 +40,7 @@
 
 - type: entity
   id: Cartridge10mmLong
-  parent: BaseCartridge45_magnum
+  parent: BaseCartridge357_magnum
   suffix: WH40K
   components:
   - type: CartridgeAmmo
@@ -53,7 +53,7 @@
 
 - type: entity
   id: Cartridge11mm
-  parent: BaseCartridge45_magnum
+  parent: BaseCartridge357_magnum
   suffix: WH40K
   components:
   - type: CartridgeAmmo
@@ -65,7 +65,7 @@
 
 - type: entity
   id: CartridgeHeavyStubPistol
-  parent: BaseCartridge45_magnum
+  parent: BaseCartridge357_magnum
   suffix: WH40K
   components:
   - type: CartridgeAmmo

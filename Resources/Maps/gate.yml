@@ -140843,7 +140843,7 @@ entities:
     - type: Transform
       pos: 0.5,-3.5
       parent: 36996
-- proto: AmmoBox45_magnumPractice
+- proto: AmmoBox357_magnumPractice
   entities:
   - uid: 5301
     components:
@@ -163207,14 +163207,14 @@ entities:
     - type: Transform
       pos: -32.5,7.5
       parent: 2
-- proto: SpeedLoader45_magnumFMJ
+- proto: SpeedLoader357_magnumFMJ
   entities:
   - uid: 3542
     components:
     - type: Transform
       pos: 0.5574074,76.50379
       parent: 2
-- proto: SpeedLoader45_magnumPractice
+- proto: SpeedLoader357_magnumPractice
   entities:
   - uid: 4830
     components:

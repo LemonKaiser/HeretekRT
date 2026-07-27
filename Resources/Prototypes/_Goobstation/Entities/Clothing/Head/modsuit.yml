@@ -103,8 +103,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -160,8 +158,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -171,8 +167,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -228,8 +222,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -239,8 +231,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -400,8 +390,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: SealableClothingVisuals
@@ -409,8 +397,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -517,8 +503,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -528,8 +512,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
       head-vulpkanin:

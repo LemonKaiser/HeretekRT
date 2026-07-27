@@ -32,6 +32,86 @@ Magazine90mm: 90mmMagazineHE
 ShipCyrexaProjectile: 220mmBulletAPHE
 ShipBoforsProjectile: 255mmBulletAPHE
 
+# 2026-05-10 - https://github.com/Monolith-Station/Monolith/pull/3951
+
+SpeedLoader45_magnumRubber: SpeedLoader357_magnumRubber
+SpeedLoader45_magnumFMJ: SpeedLoader357_magnumFMJ
+SpeedLoader45_magnumAP: SpeedLoader357_magnumAP
+SpeedLoader45_magnumPractice: SpeedLoader357_magnumPractice
+SpeedLoader45_magnumEmpty: SpeedLoader357_magnumEmpty
+SpeedLoader45_magnumIncendiary: SpeedLoader357_magnumIncendiary
+SpeedLoader45_magnumUranium: SpeedLoader357_magnumUranium
+SpeedLoader45_magnumHP: SpeedLoader357_magnumHP
+SpeedLoader45_magnumRIP: SpeedLoader357_magnumRIP
+SpeedLoader45_magnumPlasteelAP: SpeedLoader357_magnumPlasteelAP
+AmmoBox45_magnumFMJ: AmmoBox357_magnumFMJ
+AmmoBox45_magnumBigFMJ: AmmoBox357_magnumBigFMJ
+AmmoBox45_magnumPractice: AmmoBox357_magnumPractice
+AmmoBox45_magnumIncendiary: AmmoBox357_magnumIncendiary
+AmmoBox45_magnumUranium: AmmoBox357_magnumUranium
+AmmoBox45_magnumRubber: AmmoBox357_magnumRubber
+AmmoBox45_magnumAP: AmmoBox357_magnumAP
+AmmoBox45_magnumHP: AmmoBox357_magnumHP
+AmmoBox45_magnumRIP: AmmoBox357_magnumRIP
+AmmoBox45_magnumPlasteelAP: AmmoBox357_magnumPlasteelAP
+BoxMagazine45_magnumFMJ: BoxMagazine357_magnumFMJ
+Cartridge45_magnumFMJ: Cartridge357_magnumFMJ
+Cartridge45_magnumPractice: Cartridge357_magnumPractice
+Cartridge45_magnumIncendiary: Cartridge357_magnumIncendiary
+Cartridge45_magnumAP: Cartridge357_magnumAP
+Cartridge45_magnumUranium: Cartridge357_magnumUranium
+Cartridge45_magnumRubber: Cartridge357_magnumRubber
+Cartridge45_magnumHP: Cartridge357_magnumHP
+Cartridge45_magnumRIP: Cartridge357_magnumRIP
+Cartridge45_magnumPlasteelAP: Cartridge357_magnumPlasteelAP
+Bullet45_magnumFMJ: Bullet357_magnumFMJ
+Bullet45_magnumPractice: Bullet357_magnumPractice
+Bullet45_magnumRubber: Bullet357_magnumRubber
+Bullet45_magnumIncendiary: Bullet357_magnumIncendiary
+Bullet45_magnumAP: Bullet357_magnumAP
+Bullet45_magnumUranium: Bullet357_magnumUranium
+Bullet45_magnumHP: Bullet357_magnumHP
+Bullet45_magnumRIP: Bullet357_magnumRIP
+Bullet45_magnumPlasteelAP: Bullet357_magnumPlasteelAP
+
+# Magazines for the removed N1984 and HCLM have no direct .357 replacement.
+Magazine45_magnumPistolFMJ: null
+Magazine45_magnumPistolEmpty: null
+Magazine45_magnumPistolIncendiary: null
+Magazine45_magnumPistolPractice: null
+Magazine45_magnumPistolUranium: null
+Magazine45_magnumPistolAP: null
+Magazine45_magnumPistolRubber: null
+Magazine45_magnumPistolHP: null
+Magazine45_magnumPistolRIP: null
+Magazine45_magnumPistolPlasteelAP: null
+Magazine45_magnumPistolHighCapacityEmpty: null
+Magazine45_magnumPistolHighCapacityFMJ: null
+Magazine45_magnumPistolHighCapacityPractice: null
+Magazine45_magnumPistolHighCapacityRubber: null
+Magazine45_magnumSubMachineGunFMJ: null
+Magazine45_magnumSubMachineGunEmpty: null
+Magazine45_magnumSubMachineGunPractice: null
+Magazine45_magnumSubMachineGunUranium: null
+Magazine45_magnumSubMachineGunIncendiary: null
+Magazine45_magnumSubMachineGunRubber: null
+Magazine45_magnumSubMachineGunHP: null
+Magazine45_magnumSubMachineGunRIP: null
+Magazine45_magnumSubMachineGunPlasteelAP: null
+
+WeaponPistolN1984: WeaponRevolverMateba
+WeaponRevolverLucky: WeaponRevolverInspector
+WeaponRevolverFaith: WeaponRevolverInspector
+WeaponRevolverFitz: WeaponRevolverInspector
+WeaponRevolverDeckardExpeditionGrifty: WeaponRevolverInspector
+WeaponRevolverDeckard: WeaponRevolverInspector
+WeaponRevolverPirate: WeaponRevolverInspector
+
+# 2026-07-27 - https://github.com/Monolith-Station/Monolith/pull/4333
+
+ClothingOuterHardsuitCsecMpeva: ClothingOuterHardsuitCCTCMedium
+ClothingHelmetHardsuitCsecMpeva: ClothingHelmetHardsuitCCTCMedium
+
 # Hyperlink books
 
 HyperlinkBookSpaceLaw: null
