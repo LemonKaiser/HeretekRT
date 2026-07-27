@@ -1,0 +1,16 @@
+- type: entity
+  parent: Poweredlight
+  id: WH40KAdeptusMechanicusWallLight
+  name: Adeptus Mechanicus lumen
+  description: A lumen from a forge temple. Its cold glow keeps the machine-spirits at their work.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Wallmounts/adeptus_mechanicus_light_tube.rsi
+  - type: PoweredLightVisuals
+    spriteStateMap:
+      empty: empty
+      off: base
+      on: base
+      broken: broken
+      burned: broken

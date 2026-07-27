@@ -3609,18 +3609,6 @@ entities:
     - type: Transform
       pos: -15.5,-1.5
       parent: 2
-- proto: CEWater
-  entities:
-  - uid: 783
-    components:
-    - type: Transform
-      pos: -14.5,-0.5
-      parent: 2
-  - uid: 784
-    components:
-    - type: Transform
-      pos: -14.5,-1.5
-      parent: 2
 - proto: Chair
   entities:
   - uid: 605

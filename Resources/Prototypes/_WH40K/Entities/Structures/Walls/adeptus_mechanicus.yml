@@ -1,0 +1,16 @@
+- type: entity
+  parent: WallSolid
+  id: WallSolidAdeptusMechanicus
+  name: Adeptus Mechanicus wall
+  description: Cog-toothed panels from a forge temple, concealing conduits and the quiet hum of machine-spirits.
+  suffix: WH40K
+  components:
+  - type: Sprite
+    drawdepth: OverMobs
+    sprite: _WH40K/Structures/Walls/adeptus_mechanicus.rsi
+  - type: Icon
+    sprite: _WH40K/Structures/Walls/adeptus_mechanicus.rsi
+    state: full
+  - type: IconSmooth
+    key: walls
+    base: wall

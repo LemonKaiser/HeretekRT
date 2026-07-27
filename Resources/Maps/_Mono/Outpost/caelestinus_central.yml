@@ -52443,6 +52443,13 @@ entities:
     - type: Transform
       pos: -21.5,-0.5
       parent: 2
+- proto: SpawnPointWanderer
+  entities:
+  - uid: 9637
+    components:
+    - type: Transform
+      pos: 11.5,11.5
+      parent: 2
 - proto: Spoon
   entities:
   - uid: 763
