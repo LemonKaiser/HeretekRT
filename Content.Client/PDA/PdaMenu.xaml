@@ -51,6 +51,10 @@
                 <ContainerButton Name="StationAlertLevelInstructionsButton" Margin="2 0">
                     <RichTextLabel Name="StationAlertLevelInstructions" Access="Public"/>
                 </ContainerButton>
+                <!-- Mono -->
+                <ContainerButton Name="WarLevelButton" Margin="2 0">
+                    <RichTextLabel Name="WarLevelLabel" Access="Public"/>
+                </ContainerButton>
                 <PanelContainer Name="HomeFooterDivider" SetHeight="1" HorizontalExpand="True" Margin="0 6"/>
                 <ContainerButton Name="BalanceButton" Margin="2 0">
                     <RichTextLabel Name="BalanceLabel" Access="Public"/>

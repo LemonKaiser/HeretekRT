@@ -8,6 +8,10 @@ ammo-loader-flushed = Боеприпасы отправлены!
 ammo-loader-no-artillery = Нет корабельных орудий, связанных с этим боекомплектером.
 ammo-loader-transfer-failed = Не удалось загрузить боеприпасы ни в одно из связанных орудий.
 ammo-loader-insert-fail = Боекомплектор заполнен.
+ammo-loader-turret-locked = Боеприпасы этой турели нельзя заменить.
+ammo-loader-incompatible-ammo = Эти боеприпасы несовместимы с выбранной турелью.
+ammo-loader-load-failed = Не удалось зарядить турель.
+ammo-loader-unload-failed = Не удалось выгрузить боеприпасы из турели.
 
 # Artillery Flush Verbs
 ammo-loader-flush-to-artillery-with-ammo-and-id = Загрузить в { $artillery } ({ $ammo }/{ $capacity }) [{ $id }]
@@ -20,3 +24,9 @@ signal-port-description-ammo-loader-load = Передаёт боеприпасы
 
 signal-port-name-space-artillery-load = Принять боеприпасы
 signal-port-description-space-artillery-load = Принимает боеприпасы от связанного боекомплектора.
+
+ent-AmmoLoader = загрузчик боеприпасов
+    .desc = Пневматическая система подачи боеприпасов производства Erebus HI. Свяжите её с корабельной артиллерией мультитулом для передачи боеприпасов. Вмещает до 30 предметов и поддерживает 8 орудий.
+
+ent-AmmoLoaderSmall = малый загрузчик боеприпасов
+    .desc = Пневматическая система подачи боеприпасов производства Erebus HI. Свяжите её с корабельной артиллерией мультитулом для передачи боеприпасов. Вмещает до 15 предметов и поддерживает только 2 орудия, но более живуча.
