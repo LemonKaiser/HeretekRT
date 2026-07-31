@@ -99,7 +99,8 @@ public sealed partial class CompanySystem : EntitySystem
         Dirty(args.Mob, companyComp);
 
         // Update the player's ID card with the company information
-        UpdateIdCardCompany(args.Mob, companyComp.CompanyName);
+        if (args.LoadoutMode == PlayerSpawnLoadoutMode.Default)
+            UpdateIdCardCompany(args.Mob, companyComp.CompanyName);
     }
 
     /// <summary>

@@ -12,6 +12,8 @@ namespace Content.Server.Jobs;
 [UsedImplicitly]
 public sealed partial class AddImplantSpecial : JobSpecial
 {
+    public override bool ApplyOnPersistentRestore => true;
+
     [DataField("implants", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<EntityPrototype>))]
     public HashSet<String> Implants { get; private set; } = new();
 

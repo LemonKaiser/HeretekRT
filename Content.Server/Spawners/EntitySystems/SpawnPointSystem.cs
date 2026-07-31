@@ -100,6 +100,7 @@ public sealed partial class SpawnPointSystem : EntitySystem
             args.Job,
             args.HumanoidCharacterProfile,
             args.Station,
-            session: args.Session); // Frontier
+            session: args.Session,
+            loadoutMode: args.LoadoutMode); // Frontier
     }
 }

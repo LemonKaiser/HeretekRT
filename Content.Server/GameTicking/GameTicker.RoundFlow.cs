@@ -982,6 +982,24 @@ namespace Content.Server.GameTicking
             if (DummyTicker)
                 return;
 
+            if (_postInitialized)
+            {
+                var barrierTask = _persistentInventoryShutdown.PrepareRoundRestartAsync(
+                    "Controlled round restart.");
+                _taskManager.BlockWaitOnTask(barrierTask);
+                var barrier = barrierTask.GetAwaiter().GetResult();
+                if (!barrier.SafeToContinue)
+                {
+                    _sawmill.Error(
+                        $"Round restart stopped by persistent inventory barrier: " +
+                        $"eligible {barrier.Eligible}, saved {barrier.Saved}, failed {barrier.Failed}, " +
+                        $"timedOut {barrier.TimedOut}, remainingBound {barrier.RemainingBound}.");
+                    SendServerMessage(
+                        "Перезапуск раунда остановлен: не удалось безопасно сохранить persistent inventory.");
+                    return;
+                }
+            }
+
             ReplayEndRound();
 
             // Handle restart for server update

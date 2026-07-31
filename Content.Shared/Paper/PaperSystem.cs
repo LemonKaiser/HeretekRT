@@ -407,6 +407,41 @@ public sealed partial class PaperSystem : EntitySystem
         _appearance.SetData(entity, PaperVisuals.Status, status, appearance);
     }
 
+    /// <summary>
+    /// Restores durable paper contents without replaying writing or stamping interactions.
+    /// </summary>
+    public bool TrySetPersistentInventoryState(
+        EntityUid uid,
+        string content,
+        IReadOnlyList<StampDisplayInfo> stamps,
+        string? stampState,
+        bool editingDisabled,
+        PaperComponent? component = null)
+    {
+        if (!Resolve(uid, ref component, false) ||
+            content.Length > component.ContentSize ||
+            stamps.Count > StampLimit)
+        {
+            return false;
+        }
+
+        SetContent((uid, component), content);
+        component.StampedBy = new List<StampDisplayInfo>(stamps);
+        component.StampState = stampState;
+        component.EditingDisabled = editingDisabled;
+        component.Mode = PaperAction.Read;
+        Dirty(uid, component);
+
+        if (component.StampState != null &&
+            TryComp<AppearanceComponent>(uid, out var appearance))
+        {
+            _appearance.SetData(uid, PaperVisuals.Stamp, component.StampState, appearance);
+        }
+
+        UpdateUserInterface((uid, component));
+        return true;
+    }
+
     private void UpdateUserInterface(Entity<PaperComponent> entity)
     {
         _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));

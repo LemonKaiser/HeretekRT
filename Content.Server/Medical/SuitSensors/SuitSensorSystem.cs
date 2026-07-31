@@ -369,6 +369,27 @@ public sealed partial class SuitSensorSystem : EntitySystem
         }
     }
 
+    public bool TrySetPersistentInventoryState(
+        Entity<SuitSensorComponent> sensor,
+        SuitSensorMode mode,
+        bool controlsLocked,
+        bool jammed,
+        bool iffSignatureEnabled)
+    {
+        if (!Enum.IsDefined(mode))
+            return false;
+
+        sensor.Comp.Mode = mode;
+        sensor.Comp.ControlsLocked = controlsLocked;
+        sensor.Comp.Jammed = jammed;
+        sensor.Comp.IFFSignatureEnabled = iffSignatureEnabled;
+        sensor.Comp.PreviousMode = mode;
+        sensor.Comp.PreviousControlsLocked = controlsLocked;
+        sensor.Comp.NextUpdate = TimeSpan.Zero;
+        sensor.Comp.ConnectedServer = null;
+        return true;
+    }
+
     public SuitSensorStatus? GetSensorState(EntityUid uid, SuitSensorComponent? sensor = null, TransformComponent? transform = null)
     {
         if (!Resolve(uid, ref sensor, ref transform))

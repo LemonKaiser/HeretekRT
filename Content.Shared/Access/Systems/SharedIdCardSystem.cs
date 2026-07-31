@@ -193,6 +193,31 @@ public abstract partial class SharedIdCardSystem : EntitySystem
         return true;
     }
 
+    public IReadOnlyList<ProtoId<DepartmentPrototype>> GetJobDepartments(
+        EntityUid uid,
+        IdCardComponent? id = null)
+    {
+        return Resolve(uid, ref id, false)
+            ? id.JobDepartments.ToArray()
+            : Array.Empty<ProtoId<DepartmentPrototype>>();
+    }
+
+    public bool TryChangePersistentMetadata(
+        EntityUid uid,
+        IReadOnlyList<ProtoId<DepartmentPrototype>> departments,
+        bool bypassLogging,
+        IdCardComponent? id = null)
+    {
+        if (!Resolve(uid, ref id, false))
+            return false;
+
+        id.JobDepartments.Clear();
+        id.JobDepartments.AddRange(departments);
+        id.BypassLogging = bypassLogging;
+        Dirty(uid, id);
+        return true;
+    }
+
     /// <summary>
     /// Mono
     /// Attempts to change the full name of a card.

@@ -1,8 +1,10 @@
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Server.Database;
 using Content.Server.GameTicking.Events;
 using Content.Server.Ghost;
 using Content.Server.Spawners.Components;
@@ -23,6 +25,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using Content.Server._Corvax.Respawn; // Frontier
+using Content.Server._WH40K.PersistentInventory;
 
 namespace Content.Server.GameTicking
 {
@@ -47,6 +50,7 @@ namespace Content.Server.GameTicking
 
         // Mainly to avoid allocations.
         private readonly List<EntityCoordinates> _possiblePositions = new();
+        private readonly HashSet<NetUserId> _pendingPlayerSpawns = new();
 
         private List<EntityUid> GetSpawnableStations()
         {
@@ -111,14 +115,20 @@ namespace Content.Server.GameTicking
 
             _stationJobs.CalcExtendedAccess(stationJobCounts);
 
-            // Spawn everybody in!
+            // Spawn everybody in. Persistent binds may await the database, so run them concurrently.
+            var spawnTasks = new List<Task>();
             foreach (var (player, (job, station)) in assignedJobs)
             {
                 if (job == null)
                     continue;
 
-                SpawnPlayer(_playerManager.GetSessionById(player), profiles[player], station, job, false);
+                spawnTasks.Add(
+                    SpawnPlayer(_playerManager.GetSessionById(player), profiles[player], station, job, false));
             }
+
+            var allSpawns = Task.WhenAll(spawnTasks);
+            _taskManager.BlockWaitOnTask(allSpawns);
+            allSpawns.GetAwaiter().GetResult();
 
             RefreshLateJoinAllowed();
 
@@ -129,7 +139,7 @@ namespace Content.Server.GameTicking
                 force));
         }
 
-        private void SpawnPlayer(ICommonSession player,
+        private async Task SpawnPlayer(ICommonSession player,
             EntityUid station,
             string? jobId = null,
             bool lateJoin = true,
@@ -149,16 +159,21 @@ namespace Content.Server.GameTicking
                     return;
             }
 
-            SpawnPlayer(player, character, station, jobId, lateJoin, silent);
+            await SpawnPlayer(player, character, station, jobId, lateJoin, silent);
         }
 
-        private void SpawnPlayer(ICommonSession player,
+        private async Task SpawnPlayer(ICommonSession player,
             HumanoidCharacterProfile character,
             EntityUid station,
             string? jobId = null,
             bool lateJoin = true,
             bool silent = false)
         {
+            if (!_pendingPlayerSpawns.Add(player.UserId))
+                return;
+
+            try
+            {
             // Can't spawn players with a dummy ticker!
             if (DummyTicker)
                 return;
@@ -217,18 +232,7 @@ namespace Content.Server.GameTicking
                 return;
             }
 
-            PlayerJoinGame(player, silent);
-
-            var data = player.ContentData();
-
-            DebugTools.AssertNotNull(data);
-
-            var newMind = _mind.CreateMind(data!.UserId, character.Name);
-            _mind.SetUserId(newMind, data.UserId);
-
             var jobPrototype = _prototypeManager.Index<JobPrototype>(jobId);
-
-            _playTimeTrackings.PlayerRolesChanged(player);
 
             // Delta-V: Add AlwaysUseSpawner.
             var spawnPointType = SpawnPointType.Unset;
@@ -238,9 +242,96 @@ namespace Content.Server.GameTicking
                 spawnPointType = SpawnPointType.Job;
             }
 
-            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(station, jobId, character, spawnPointType: spawnPointType, session: player); // Frontier: add session
-            DebugTools.AssertNotNull(mobMaybe);
-            var mob = mobMaybe!.Value;
+            try
+            {
+                await _persistentInventoryLifecycle.EnsureReadyAsync();
+            }
+            catch (Exception exception)
+            {
+                _sawmill.Error(
+                    $"Persistent inventory startup reconciliation blocked spawn for {player.UserId}: " +
+                    $"{exception.GetType().Name}.");
+                _chatManager.DispatchServerMessage(
+                    player,
+                    "Сохранённый инвентарь временно недоступен; персонаж не создан.");
+                return;
+            }
+
+            PersistentInventoryRestoreReservation? reservation = null;
+            var loadoutMode = PlayerSpawnLoadoutMode.Default;
+            if (_persistentInventoryRestore.TryReserveRestore(player.UserId, out var reserved))
+            {
+                reservation = reserved;
+                loadoutMode = PlayerSpawnLoadoutMode.PersistentRestore;
+            }
+            else if (_persistentInventoryRestore.IsSpawnBlockedByDurableState(player.UserId))
+            {
+                _chatManager.DispatchServerMessage(
+                    player,
+                    "Сохранённый инвентарь уже привязан или ещё обрабатывается. Повторный персонаж не создан.");
+                return;
+            }
+            var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(
+                station,
+                jobId,
+                character,
+                spawnPointType: spawnPointType,
+                session: player,
+                loadoutMode: loadoutMode); // Frontier: add session
+            if (mobMaybe == null)
+            {
+                if (reservation != null)
+                    _persistentInventoryRestore.CancelRestore(reservation);
+                return;
+            }
+
+            var mob = mobMaybe.Value;
+            var persistentRestoreBound = false;
+            try
+            {
+            if (reservation != null)
+            {
+                var restore = await _persistentInventoryRestore.RestoreAndBindAsync(mob, reservation);
+                if (!restore.IsSuccess)
+                {
+                    Del(mob);
+                    if (!restore.MayFallbackToDefault)
+                    {
+                        _chatManager.DispatchServerMessage(
+                            player,
+                            "Восстановление инвентаря не подтверждено. Персонаж не был выпущен; попробуйте позже.");
+                        return;
+                    }
+
+                    loadoutMode = PlayerSpawnLoadoutMode.Default;
+                    mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(
+                        station,
+                        jobId,
+                        character,
+                        spawnPointType: spawnPointType,
+                        session: player,
+                        loadoutMode: loadoutMode);
+                    if (mobMaybe == null)
+                        return;
+                    mob = mobMaybe.Value;
+                }
+                else
+                {
+                    persistentRestoreBound = true;
+                    _stationSpawning.CompletePersistentRestoreSpawn(jobId, mob);
+                }
+            }
+
+            PlayerJoinGame(player, silent);
+
+            var data = player.ContentData();
+
+            DebugTools.AssertNotNull(data);
+
+            var newMind = _mind.CreateMind(data!.UserId, character.Name);
+            _mind.SetUserId(newMind, data.UserId);
+
+            _playTimeTrackings.PlayerRolesChanged(player);
 
             _mind.TransferTo(newMind, mob);
 
@@ -316,12 +407,95 @@ namespace Content.Server.GameTicking
                 silent,
                 PlayersJoinedRoundNormally,
                 station,
-                character);
+                character,
+                loadoutMode);
             RaiseLocalEvent(mob, aev, true);
+            }
+            catch (Exception exception) when (persistentRestoreBound)
+            {
+                _sawmill.Error(
+                    $"Post-bind spawn failed for persistent inventory player {player.UserId}; " +
+                    $"retiring the bound life before cleanup: {exception}");
+                var retired = await _persistentInventoryLifecycle.InvalidateBoundLifeAsync(
+                    mob,
+                    PersistentInventoryInvalidationReason.StaffAction,
+                    "spawn-compensation",
+                    null,
+                    $"Post-bind spawn failed: {exception.GetType().Name}.");
+                if (!retired)
+                {
+                    _chatManager.DispatchServerMessage(
+                        player,
+                        "Ошибка завершения персонажа; durable-привязка остаётся заблокированной до восстановления БД.");
+                    return;
+                }
+
+                ReturnPlayerToLobby(player);
+                if (Exists(mob) && !TerminatingOrDeleted(mob))
+                    Del(mob);
+                _chatManager.DispatchServerMessage(
+                    player,
+                    "Восстановленный персонаж не прошёл финализацию и был безопасно отозван.");
+            }
+            }
+            finally
+            {
+                _pendingPlayerSpawns.Remove(player.UserId);
+            }
         }
 
-        public void Respawn(ICommonSession player)
+        private async void SpawnPlayerSafely(
+            ICommonSession player,
+            EntityUid station,
+            string? jobId = null,
+            bool lateJoin = true,
+            bool silent = false)
         {
+            try
+            {
+                await SpawnPlayer(player, station, jobId, lateJoin, silent);
+            }
+            catch (Exception exception)
+            {
+                _sawmill.Error($"Не удалось завершить spawn игрока {player}: {exception}");
+            }
+        }
+
+        public async Task<bool> RespawnAsync(
+            ICommonSession player,
+            PersistentInventoryInvalidationReason invalidationReason =
+                PersistentInventoryInvalidationReason.StaffAction,
+            string actor = "respawn",
+            Guid? actorUserId = null)
+        {
+            try
+            {
+                var preparation = await _persistentInventoryLifecycle.PrepareRespawnAsync(
+                    player.UserId,
+                    invalidationReason,
+                    actor,
+                    actorUserId,
+                    "The respawn command ended the current bound life.");
+                if (!preparation.Success)
+                {
+                    _sawmill.Error(
+                        $"Respawn for {player} was cancelled before mind removal: {preparation.Message}");
+                    _chatManager.DispatchServerMessage(
+                        player,
+                        Loc.GetString("cmd-respawn-persistent-inventory-failed"));
+                    return false;
+                }
+            }
+            catch (Exception exception)
+            {
+                _sawmill.Error(
+                    $"Respawn for {player} failed while retiring persistent inventory: {exception}");
+                _chatManager.DispatchServerMessage(
+                    player,
+                    Loc.GetString("cmd-respawn-persistent-inventory-failed"));
+                return false;
+            }
+
             _mind.WipeMind(player);
             _adminLogger.Add(LogType.Respawn, LogImpact.Medium, $"Player {player} was respawned.");
 
@@ -330,7 +504,14 @@ namespace Content.Server.GameTicking
             if (LobbyEnabled)
                 PlayerJoinLobby(player);
             else
-                SpawnPlayer(player, EntityUid.Invalid);
+                SpawnPlayerSafely(player, EntityUid.Invalid);
+
+            return true;
+        }
+
+        public async void Respawn(ICommonSession player)
+        {
+            await RespawnAsync(player);
         }
 
         /// <summary>
@@ -360,7 +541,7 @@ namespace Content.Server.GameTicking
             if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
                 return;
 
-            SpawnPlayer(player, station, jobId, silent: silent);
+            SpawnPlayerSafely(player, station, jobId, silent: silent);
         }
 
         /// <summary>

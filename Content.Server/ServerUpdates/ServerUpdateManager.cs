@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using Content.Server.Chat.Managers;
+using System.Threading.Tasks;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Shared.CCVar;
 using Robust.Server;
 using Robust.Server.Player;
@@ -27,6 +29,7 @@ public sealed partial class ServerUpdateManager : IPostInjectInit
     [Dependency] private IBaseServer _server = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private ILogManager _logManager = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     private ISawmill _sawmill = default!;
 
@@ -36,6 +39,9 @@ public sealed partial class ServerUpdateManager : IPostInjectInit
     private TimeSpan? _restartTime;
 
     private TimeSpan _uptimeRestart;
+    private Task<PersistentInventoryShutdownResult>? _shutdownPreparation;
+    private string? _shutdownReason;
+    private bool _shutdownIssued;
 
     public void Initialize()
     {
@@ -50,6 +56,9 @@ public sealed partial class ServerUpdateManager : IPostInjectInit
 
     public void Update()
     {
+        if (UpdateShutdownPreparation())
+            return;
+
         if (_restartTime != null)
         {
             if (_restartTime < _gameTiming.RealTime)
@@ -134,9 +143,40 @@ public sealed partial class ServerUpdateManager : IPostInjectInit
 
     private void DoShutdown()
     {
+        if (_shutdownIssued || _shutdownPreparation != null)
+            return;
+
         _sawmill.Debug($"Shutting down via {nameof(ServerUpdateManager)}!");
-        var reason = _updateOnRoundEnd ? "server-updates-shutdown" : "server-updates-shutdown-uptime";
-        _server.Shutdown(Loc.GetString(reason));
+        var reasonKey = _updateOnRoundEnd ? "server-updates-shutdown" : "server-updates-shutdown-uptime";
+        _shutdownReason = Loc.GetString(reasonKey);
+        _shutdownPreparation = _entities.System<PersistentInventoryShutdownSystem>()
+            .PrepareAsync(_shutdownReason);
+    }
+
+    private bool UpdateShutdownPreparation()
+    {
+        if (_shutdownPreparation == null)
+            return _shutdownIssued;
+        if (!_shutdownPreparation.IsCompleted)
+            return true;
+
+        try
+        {
+            var result = _shutdownPreparation.GetAwaiter().GetResult();
+            _sawmill.Info(
+                $"Persistent inventory shutdown barrier: eligible {result.Eligible}, saved {result.Saved}, " +
+                $"failed {result.Failed}, timedOut {result.TimedOut}, remainingBound {result.RemainingBound}, " +
+                $"epochClean {result.EpochMarkedClean}.");
+        }
+        catch (Exception exception)
+        {
+            _sawmill.Error(
+                $"Persistent inventory shutdown barrier failed unexpectedly: {exception.GetType().Name}.");
+        }
+
+        _shutdownIssued = true;
+        _server.Shutdown(_shutdownReason);
+        return true;
     }
 
     private bool ShouldShutdownDueToUptime()

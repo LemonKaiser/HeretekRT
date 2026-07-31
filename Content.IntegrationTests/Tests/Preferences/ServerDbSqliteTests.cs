@@ -382,13 +382,16 @@ namespace Content.IntegrationTests.Tests.Preferences
             var awarded = await db.AwardWh40kExperienceAsync(userId, xpRequest);
             var duplicate = await db.AwardWh40kExperienceAsync(userId, xpRequest);
             var pending = await db.GetPendingWh40kRewardDeliveriesAsync(userId);
-            var delivered = await db.RecordWh40kRewardDeliveryAttemptAsync(
+            var claim = await db.ClaimWh40kRewardDeliveryAsync(userId, pending[0].Id);
+            var delivered = await db.CompleteWh40kRewardDeliveryClaimAsync(
                 userId,
                 pending[0].Id,
+                claim!.AttemptCount,
                 true);
-            var deliveredReplay = await db.RecordWh40kRewardDeliveryAttemptAsync(
+            var deliveredReplay = await db.CompleteWh40kRewardDeliveryClaimAsync(
                 userId,
                 pending[0].Id,
+                claim.AttemptCount,
                 true);
             var afterDelivery = await db.GetPendingWh40kRewardDeliveriesAsync(userId);
 
@@ -411,7 +414,7 @@ namespace Content.IntegrationTests.Tests.Preferences
                     pending.Select(entry => (entry.RewardId, entry.EntryId)),
                     Is.EquivalentTo(new[] { (rewardId, "currency"), (rewardId, "item:0") }));
                 Assert.That(delivered, Is.True);
-                Assert.That(deliveredReplay, Is.False);
+                Assert.That(deliveredReplay, Is.True);
                 Assert.That(afterDelivery, Has.Count.EqualTo(1));
                 Assert.That(pointGrant.Status, Is.EqualTo(Wh40kExperienceAwardStatus.Awarded));
                 Assert.That(pointGrant.DevelopmentPointsAwarded, Is.EqualTo(4));

@@ -70,7 +70,8 @@ public sealed partial class TraitSystem : EntitySystem
             // Einstein Engines - Language end
 
             // Add item required by the trait
-            if (traitPrototype.TraitGear == null)
+            if (args.LoadoutMode == PlayerSpawnLoadoutMode.PersistentRestore ||
+                traitPrototype.TraitGear == null)
                 continue;
 
             if (!TryComp(args.Mob, out HandsComponent? handsComponent))

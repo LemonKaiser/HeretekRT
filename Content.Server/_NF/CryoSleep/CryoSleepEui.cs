@@ -31,7 +31,7 @@ public sealed class CryoSleepEui : BaseEui
         {
             if (choice.Button == AcceptCryoUiButton.Accept)
             {
-                _cryoSystem.CryoStoreBody(_body, _cryopod);
+                _cryoSystem.RequestCryoStoreBody(_body, _cryopod);
             }
             else
             {

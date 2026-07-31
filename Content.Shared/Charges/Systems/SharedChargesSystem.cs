@@ -48,6 +48,45 @@ public abstract partial class SharedChargesSystem : EntitySystem
             Dirty(uid, comp);
     }
 
+    public bool TrySetPersistentCharges(
+        EntityUid uid,
+        int maxCharges,
+        int charges,
+        LimitedChargesComponent? comp = null)
+    {
+        if (maxCharges < 0 ||
+            charges < 0 ||
+            charges > maxCharges ||
+            !Query.Resolve(uid, ref comp, false))
+        {
+            return false;
+        }
+
+        if (comp.MaxCharges == maxCharges && comp.Charges == charges)
+            return true;
+
+        comp.MaxCharges = maxCharges;
+        comp.Charges = charges;
+        Dirty(uid, comp);
+        return true;
+    }
+
+    public bool TryGetPersistentCharges(
+        EntityUid uid,
+        out int charges,
+        out int maxCharges,
+        LimitedChargesComponent? comp = null)
+    {
+        charges = default;
+        maxCharges = default;
+        if (!Query.Resolve(uid, ref comp, false))
+            return false;
+
+        charges = comp.Charges;
+        maxCharges = comp.MaxCharges;
+        return true;
+    }
+
     /// <summary>
     /// Gets the limited charges component and returns true if there are no charges. Will return false if there is no limited charges component.
     /// </summary>

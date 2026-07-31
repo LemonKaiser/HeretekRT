@@ -1781,6 +1781,326 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("wh40k_party_preference", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventory", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CurrentSnapshotId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("current_snapshot_id");
+
+                    b.Property<DateTime?>("InvalidatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("invalidated_at");
+
+                    b.Property<int>("InvalidationReason")
+                        .HasColumnType("integer")
+                        .HasColumnName("invalidation_reason");
+
+                    b.Property<Guid?>("LastKnownGoodSnapshotId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("last_known_good_snapshot_id");
+
+                    b.Property<Guid?>("LifeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("life_id");
+
+                    b.Property<int>("LossReason")
+                        .HasColumnType("integer")
+                        .HasColumnName("loss_reason");
+
+                    b.Property<DateTime?>("LostAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lost_at");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("operation_id");
+
+                    b.Property<int>("QuarantineReason")
+                        .HasColumnType("integer")
+                        .HasColumnName("quarantine_reason");
+
+                    b.Property<string>("ReasonDetails")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("reason_details");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("restored_at");
+
+                    b.Property<long>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("revision");
+
+                    b.Property<int>("SavePhase")
+                        .HasColumnType("integer")
+                        .HasColumnName("save_phase");
+
+                    b.Property<Guid?>("ServerEpoch")
+                        .HasColumnType("uuid")
+                        .HasColumnName("server_epoch");
+
+                    b.Property<Guid?>("StagingServerEpoch")
+                        .HasColumnType("uuid")
+                        .HasColumnName("staging_server_epoch");
+
+                    b.Property<Guid?>("StagingSnapshotId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("staging_snapshot_id");
+
+                    b.Property<int>("State")
+                        .HasColumnType("integer")
+                        .HasColumnName("state");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("VerifiedState")
+                        .HasColumnType("integer")
+                        .HasColumnName("verified_state");
+
+                    b.Property<DateTime?>("WorldCleanupAuthorizedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("world_cleanup_authorized_at");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_persistent_inventory");
+
+                    b.HasIndex("LostAt")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_lost_at");
+
+                    b.HasIndex("OperationId")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_operation_id");
+
+                    b.HasIndex("State")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_state");
+
+                    b.HasIndex("UpdatedAt")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_updated_at");
+
+                    b.ToTable("wh40k_persistent_inventory", null, t =>
+                        {
+                            t.HasCheckConstraint("PersistentInventoryRevisionNonNegative", "revision >= 0");
+
+                            t.HasCheckConstraint("PersistentInventorySavePhaseNonNegative", "save_phase >= 0");
+
+                            t.HasCheckConstraint("PersistentInventoryVerifiedStateNonNegative", "verified_state >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventoryAudit", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("wh40k_persistent_inventory_audit_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer")
+                        .HasColumnName("action");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<Guid?>("ActorUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<int>("CompressedBytes")
+                        .HasColumnType("integer")
+                        .HasColumnName("compressed_bytes");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("EntityCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("entity_count");
+
+                    b.Property<int>("ItemCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("item_count");
+
+                    b.Property<int>("NewState")
+                        .HasColumnType("integer")
+                        .HasColumnName("new_state");
+
+                    b.Property<int>("OldState")
+                        .HasColumnType("integer")
+                        .HasColumnName("old_state");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("operation_id");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("reason");
+
+                    b.Property<long>("Revision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("revision");
+
+                    b.Property<Guid?>("SnapshotId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("snapshot_id");
+
+                    b.Property<int>("UncompressedBytes")
+                        .HasColumnType("integer")
+                        .HasColumnName("uncompressed_bytes");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("PK_wh40k_persistent_inventory_audit");
+
+                    b.HasIndex("UserId", "CreatedAt")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_audit_user_id_created_at");
+
+                    b.HasIndex("UserId", "OperationId", "Action")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_audit_user_id_operation_id_action");
+
+                    b.ToTable("wh40k_persistent_inventory_audit", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventoryRevision", b =>
+                {
+                    b.Property<Guid>("SnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("snapshot_id");
+
+                    b.Property<string>("CapturedProfileName")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("captured_profile_name");
+
+                    b.Property<string>("CapturedRoleId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("captured_role_id");
+
+                    b.Property<int>("CompressedBytes")
+                        .HasColumnType("integer")
+                        .HasColumnName("compressed_bytes");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("EntityCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("entity_count");
+
+                    b.Property<int>("ItemCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("item_count");
+
+                    b.Property<Guid>("OperationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("operation_id");
+
+                    b.Property<byte[]>("Payload")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("payload");
+
+                    b.Property<byte[]>("PayloadSha256")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("bytea")
+                        .HasColumnName("payload_sha256");
+
+                    b.Property<string>("PolicyId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("policy_id");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("saved_at");
+
+                    b.Property<int>("SchemaVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("schema_version");
+
+                    b.Property<int>("UncompressedBytes")
+                        .HasColumnType("integer")
+                        .HasColumnName("uncompressed_bytes");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("SnapshotId")
+                        .HasName("PK_wh40k_persistent_inventory_revision");
+
+                    b.HasIndex("SavedAt")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_revision_saved_at");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_revision_user_id");
+
+                    b.HasIndex("UserId", "OperationId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_wh40k_persistent_inventory_revision_user_id_operation_id");
+
+                    b.ToTable("wh40k_persistent_inventory_revision", null, t =>
+                        {
+                            t.HasCheckConstraint("PersistentInventoryCompressedBytesNonNegative", "compressed_bytes >= 0");
+
+                            t.HasCheckConstraint("PersistentInventoryEntityCountNonNegative", "entity_count >= 0");
+
+                            t.HasCheckConstraint("PersistentInventoryItemCountNonNegative", "item_count >= 0");
+
+                            t.HasCheckConstraint("PersistentInventoryUncompressedBytesNonNegative", "uncompressed_bytes >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventoryServerEpoch", b =>
+                {
+                    b.Property<Guid>("ServerEpoch")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("server_epoch");
+
+                    b.Property<DateTime?>("CleanShutdownAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("clean_shutdown_at");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_at");
+
+                    b.HasKey("ServerEpoch")
+                        .HasName("PK_wh40k_persistent_inventory_server_epoch");
+
+                    b.HasIndex("StartedAt");
+
+                    b.ToTable("wh40k_persistent_inventory_server_epoch", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Wh40kPlayerProgress", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -2561,6 +2881,27 @@ namespace Content.Server.Database.Migrations.Postgres
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_wh40k_party_preference_wh40k_account_rpg_foundation_wh40k_a~");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventory", b =>
+                {
+                    b.HasOne("Content.Server.Database.Player", null)
+                        .WithOne()
+                        .HasForeignKey("Content.Server.Database.Wh40kPersistentInventory", "UserId")
+                        .HasPrincipalKey("Content.Server.Database.Player", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_persistent_inventory_player_player_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kPersistentInventoryRevision", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kPersistentInventory", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_persistent_inventory_revision_wh40k_persistent_invent~");
                 });
 
             modelBuilder.Entity("Content.Server.Database.Wh40kRewardDelivery", b =>

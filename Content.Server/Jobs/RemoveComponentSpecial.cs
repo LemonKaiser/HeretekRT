@@ -5,6 +5,8 @@ namespace Content.Server.Jobs;
 
 public sealed partial class RemoveComponentSpecial : JobSpecial
 {
+    public override bool ApplyOnPersistentRestore => true;
+
     [DataField(required: true)]
     public ComponentRegistry Components { get; private set; } = new();
 

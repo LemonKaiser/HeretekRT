@@ -353,6 +353,48 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
             : 0f;
     }
 
+    /// <summary>
+    /// Restores a server-validated rarity roll and reapplies its derived effective statistics once.
+    /// </summary>
+    public bool TrySetPersistentInventoryState(
+        EntityUid uid,
+        ProtoId<ItemRarityPrototype> rarityId,
+        float bonusPercent,
+        bool isRolled,
+        bool worldEffectSuppressed)
+    {
+        if (!_prototypeManager.TryIndex(rarityId, out ItemRarityPrototype? rarityPrototype) ||
+            !float.IsFinite(bonusPercent) ||
+            bonusPercent < 0f ||
+            TryComp<ItemRarityStatsComponent>(uid, out var existingStats) && existingStats.Applied)
+        {
+            return false;
+        }
+
+        if (isRolled)
+        {
+            var minimum = MathF.Min(rarityPrototype.BonusMinPercent, rarityPrototype.BonusMaxPercent);
+            var maximum = MathF.Max(rarityPrototype.BonusMinPercent, rarityPrototype.BonusMaxPercent);
+            if (bonusPercent < minimum || bonusPercent > maximum)
+                return false;
+        }
+        else if (bonusPercent != 0f)
+        {
+            return false;
+        }
+
+        var rarity = EnsureComp<ItemRarityComponent>(uid);
+        rarity.Rarity = rarityId;
+        rarity.BonusPercent = bonusPercent;
+        rarity.IsRolled = isRolled;
+        rarity.WorldEffectSuppressed = worldEffectSuppressed;
+        Dirty(uid, rarity);
+
+        TryComp<ItemRarityRandomComponent>(uid, out var profile);
+        ApplyStats(uid, rarity, profile);
+        return true;
+    }
+
     public static float GetRarityMultiplier(float bonusPercent)
     {
         return 1f + MathF.Max(0f, float.IsFinite(bonusPercent) ? bonusPercent : 0f) / 100f;

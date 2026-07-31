@@ -1,4 +1,6 @@
 using System.Numerics;
+using System.Linq;
+using System.Threading.Tasks;
 using Content.Server.DoAfter;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
@@ -37,10 +39,14 @@ using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Content.Server.Ghost;
 using Content.Shared.Roles;
 using Content.Server._NF.Shuttles.Components;
+using Content.Server._WH40K.PersistentInventory;
+using Content.Shared.CCVar;
+using Robust.Shared.Asynchronous;
 
 namespace Content.Server._NF.CryoSleep;
 
@@ -68,6 +74,8 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private StationJobsSystem _stationJobs = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private ITaskManager _taskManager = default!;
+    [Dependency] private PersistentInventorySaveSystem _persistentInventorySave = default!;
 
     private readonly Dictionary<NetUserId, StoredBody?> _storedBodies = new();
     private EntityUid? _storageMap;
@@ -175,6 +183,12 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         if (args.Victim != component.BodyContainer.ContainedEntity)
             return;
 
+        if (HasComp<PersistentInventoryOperationComponent>(args.Victim))
+        {
+            args.Handled = true;
+            return;
+        }
+
         QueueDel(args.Victim);
         _audio.PlayPvs(component.LeaveSound, uid);
         args.Handled = true;
@@ -199,7 +213,10 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         if (body is not { Valid: true } || pod is not { Valid: true })
             return;
 
-        CryoStoreBody(body.Value, pod.Value);
+        if (_configurationManager.GetCVar(CCVars.Wh40kPersistentInventoryEnabled))
+            EjectBody(pod.Value, body: body.Value);
+        else
+            CryoStoreBody(body.Value, pod.Value);
         args.Handled = true;
     }
 
@@ -240,6 +257,15 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         if (_player.TryGetSessionByEntity(toInsert.Value, out var session)
             && session.Status == SessionStatus.Disconnected)
         {
+            if (_configurationManager.GetCVar(CCVars.Wh40kPersistentInventoryEnabled))
+            {
+                _popup.PopupEntity(
+                    "Отключённое тело нельзя сохранить через persistent cryo.",
+                    cryopod,
+                    PopupType.SmallCaution);
+                return false;
+            }
+
             CryoStoreBody(toInsert.Value, cryopod);
             return true;
         }
@@ -275,6 +301,151 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         }
 
         return success;
+    }
+
+    public bool ContainsBody(EntityUid pod, EntityUid body)
+    {
+        return TryComp<CryoSleepComponent>(pod, out var component) &&
+               component.BodyContainer.ContainedEntity == body;
+    }
+
+    public void RequestCryoStoreBody(EntityUid bodyId, EntityUid cryopod)
+    {
+        if (!_configurationManager.GetCVar(CCVars.Wh40kPersistentInventoryEnabled))
+        {
+            CryoStoreBody(bodyId, cryopod);
+            return;
+        }
+
+        if (!_mind.TryGetMind(bodyId, out _, out var mind) ||
+            mind.UserId is not { } userId ||
+            !_player.TryGetSessionById(userId, out var session))
+        {
+            EjectBody(cryopod, body: bodyId);
+            _popup.PopupEntity(
+                "Не удалось подтвердить владельца persistent inventory.",
+                cryopod,
+                PopupType.SmallCaution);
+            return;
+        }
+
+        _ = SavePersistentCryoAndNotifyAsync(bodyId, cryopod, session);
+    }
+
+    private async Task SavePersistentCryoAndNotifyAsync(
+        EntityUid bodyId,
+        EntityUid cryopod,
+        ICommonSession session)
+    {
+        PersistentInventorySaveResult result;
+        try
+        {
+            result = await _persistentInventorySave.TrySaveAsync(
+                new PersistentInventorySaveRequest(
+                    session.UserId,
+                    bodyId,
+                    session,
+                    PersistentInventorySaveSource.PhysicalCryo,
+                    cryopod,
+                    $"player:{session.UserId}",
+                    session.UserId.UserId,
+                    "Physical cryosleep consent"));
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Persistent cryo request for {session.UserId} failed: {exception}");
+            result = new PersistentInventorySaveResult(
+                PersistentInventorySaveStatus.DatabaseFailure,
+                "Сохранение отменено из-за внутренней ошибки.");
+        }
+
+        _taskManager.RunOnMainThread(() =>
+        {
+            if (!result.IsSuccess && Exists(bodyId))
+                EjectBody(cryopod, body: bodyId);
+
+            if (Exists(cryopod))
+            {
+                _popup.PopupEntity(
+                    result.Message,
+                    cryopod,
+                    result.IsSuccess ? PopupType.Small : PopupType.SmallCaution);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Completes only the world-side portion of persistent cryo. The body is not moved to the cryo map
+    /// or registered for return; the caller deletes it immediately after this method.
+    /// </summary>
+    public void CompletePersistentCryoWorldRetirement(
+        EntityUid bodyId,
+        EntityUid? cryopod,
+        NetUserId userId)
+    {
+        if (!Exists(bodyId))
+            return;
+
+        if (cryopod is { Valid: true } pod &&
+            TryComp<CryoSleepComponent>(pod, out var cryo))
+        {
+            RaiseLocalEvent(bodyId, new CryosleepBeforeMindRemovedEvent(pod, userId), true);
+            _container.Remove(bodyId, cryo.BodyContainer, reparent: false, force: true);
+            RaiseLocalEvent(bodyId, new CryosleepEnterEvent(pod, userId), true);
+
+            if (cryo.CryosleepDoAfter != null &&
+                _doAfter.GetStatus(cryo.CryosleepDoAfter) == DoAfterStatus.Running)
+            {
+                _doAfter.Cancel(cryo.CryosleepDoAfter);
+            }
+        }
+
+        ReopenPersistentCryoJobSlot(bodyId, userId);
+    }
+
+    private void ReopenPersistentCryoJobSlot(EntityUid bodyId, NetUserId userId)
+    {
+        string? currentJobPrototype = null;
+        if (_mind.TryGetMind(bodyId, out var foundMind, out _))
+        {
+            if (_jobs.MindTryGetJobId(foundMind, out var jobId) && jobId != null)
+                currentJobPrototype = jobId;
+        }
+
+        if (currentJobPrototype == null &&
+            TryComp<PlayerJobComponent>(bodyId, out var playerJob) &&
+            playerJob.JobPrototype != null)
+        {
+            currentJobPrototype = playerJob.JobPrototype;
+        }
+
+        if (currentJobPrototype == null)
+            return;
+
+        var jobPrototype = currentJobPrototype;
+        if (!TryComp<PlayerJobComponent>(bodyId, out var job) ||
+            job.SpawnStation is not { } playerStation ||
+            !Exists(playerStation) ||
+            !TryComp<StationDataComponent>(playerStation, out var stationData) ||
+            !stationData.Grids.Any(grid => HasComp<ForceAnchorComponent>(grid)) ||
+            !TryComp<StationJobsComponent>(playerStation, out var stationJobs))
+            return;
+
+        if (_stationJobs.TryGetPlayerJobs(playerStation, userId, out var jobs, stationJobs!) &&
+            jobs.Contains(jobPrototype))
+        {
+            _stationJobs.TryAdjustJobSlot(playerStation, jobPrototype, 1, clamp: true);
+            _stationJobs.TryRemovePlayerJobs(playerStation, userId, stationJobs!);
+        }
+        else
+        {
+            _stationJobs.TryAdjustJobSlot(
+                playerStation,
+                jobPrototype,
+                1,
+                clamp: true,
+                createSlot: true);
+        }
     }
 
     public void CryoStoreBody(EntityUid bodyId, EntityUid cryopod)
@@ -488,6 +659,9 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
 
         var toEject = component.BodyContainer.ContainedEntity;
         if (toEject == null)
+            return false;
+
+        if (HasComp<PersistentInventoryOperationComponent>(toEject.Value))
             return false;
 
         _container.Remove(toEject.Value, component.BodyContainer, force: true);

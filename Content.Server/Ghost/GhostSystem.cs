@@ -653,7 +653,7 @@ namespace Content.Server.Ghost
                     _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
             }
 
-            var handleEv = new GhostAttemptHandleEvent(mind, canReturnGlobal);
+            var handleEv = new GhostAttemptHandleEvent(mind, canReturnGlobal, viaCommand, forced);
             RaiseLocalEvent(handleEv);
 
             // Something else has handled the ghost attempt for us! We return its result.
@@ -742,10 +742,16 @@ namespace Content.Server.Ghost
         // End Frontier
     }
 
-    public sealed class GhostAttemptHandleEvent(MindComponent mind, bool canReturnGlobal) : HandledEntityEventArgs
+    public sealed class GhostAttemptHandleEvent(
+        MindComponent mind,
+        bool canReturnGlobal,
+        bool viaCommand = false,
+        bool forced = false) : HandledEntityEventArgs
     {
         public MindComponent Mind { get; } = mind;
         public bool CanReturnGlobal { get; } = canReturnGlobal;
+        public bool ViaCommand { get; } = viaCommand;
+        public bool Forced { get; } = forced;
         public bool Result { get; set; }
     }
 }

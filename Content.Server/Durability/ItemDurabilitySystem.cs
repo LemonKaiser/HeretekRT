@@ -115,6 +115,39 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
         return newValue > oldValue;
     }
 
+    /// <summary>
+    /// Restores an already validated durability snapshot without raising gameplay consumption or repair events.
+    /// </summary>
+    public bool TrySetPersistentInventoryState(
+        EntityUid uid,
+        float maximum,
+        float current,
+        bool broken,
+        ItemDurabilityComponent? component = null)
+    {
+        if (!Resolve(uid, ref component, false))
+            return false;
+
+        maximum = DurabilityMath.Round(maximum);
+        current = DurabilityMath.Round(current);
+        if (!float.IsFinite(maximum) ||
+            maximum <= 0f ||
+            !float.IsFinite(current) ||
+            current < 0f ||
+            current > maximum ||
+            broken != (current <= 0f) ||
+            broken && component.DestroyAtZero)
+        {
+            return false;
+        }
+
+        component.MaxDurability = maximum;
+        component.CurrentDurability = current;
+        component.Broken = broken;
+        Dirty(uid, component);
+        return true;
+    }
+
     private void OnMapInit(Entity<ItemDurabilityComponent> ent, ref MapInitEvent args)
     {
         ent.Comp.MaxDurability = DurabilityMath.Round(ent.Comp.MaxDurability);

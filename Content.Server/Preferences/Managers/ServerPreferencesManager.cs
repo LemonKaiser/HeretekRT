@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Database;
 using Content.Server._WH40K.CharacterCreation;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Server._WH40K.Progression;
 using Content.Shared.CCVar;
 using Content.Shared._WH40K.CharacterCreation;
@@ -36,6 +37,7 @@ namespace Content.Server.Preferences.Managers
         [Dependency] private IEntityManager _entityManager = default!;
         [Dependency] private Wh40kPlayerProgressManager _wh40kOnboarding = default!;
         [Dependency] private Wh40kAccountRpgManager _wh40kRpg = default!;
+        [Dependency] private PersistentInventoryManager _persistentInventory = default!;
         [Dependency] private Wh40kProgressManager _wh40kRpgProgress = default!;
         [Dependency] private Wh40kPartyManager _wh40kParties = default!;
 
@@ -446,6 +448,7 @@ namespace Content.Server.Preferences.Managers
                 _cachedPlayerPrefs[session.UserId] = prefsData;
                 _wh40kOnboarding.SetTransient(session.UserId, Wh40kPlayerProgressSnapshot.LegacyCompleted);
                 _wh40kRpgProgress.Cache(_wh40kRpg.CreateTransientLegacyAccount(session.UserId));
+                _persistentInventory.SetTransientNone(session.UserId);
             }
             else
             {
@@ -466,6 +469,8 @@ namespace Content.Server.Preferences.Managers
                         _wh40kRpgProgress.Cache(account);
                         await _wh40kParties.LoadAsync(session.UserId, cancel);
                     }
+
+                    await _persistentInventory.LoadAsync(session.UserId, cancel);
                 }
             }
         }
@@ -500,6 +505,7 @@ namespace Content.Server.Preferences.Managers
             _cachedPlayerPrefs.Remove(session.UserId);
             _wh40kOnboarding.Remove(session.UserId);
             _wh40kRpg.Remove(session.UserId);
+            _persistentInventory.Remove(session.UserId);
             _wh40kRpgProgress.Remove(session.UserId);
             _wh40kParties.OnDisconnected(session.UserId);
             lock (_wh40kOnboardingCompletionsLock)
@@ -604,6 +610,8 @@ namespace Content.Server.Preferences.Managers
                         _wh40kRpgProgress.Cache(account);
                         await _wh40kParties.LoadAsync(session.UserId, cancel);
                     }
+
+                    await _persistentInventory.LoadAsync(session.UserId, cancel);
 
                     var msg = new MsgPreferencesAndSettings
                     {

@@ -1,0 +1,13 @@
+- type: persistentInventoryPolicy
+  id: Wh40kDefault
+  version: 1
+  deniedPrototypePrefixes:
+  - Admin
+  - Debug
+  - ItemRaritySample
+  - ItemRarityStatsSample
+  - ItemRarityTest
+  - Mapping
+  - ServerControl
+  - SpawnPoint
+  - Test

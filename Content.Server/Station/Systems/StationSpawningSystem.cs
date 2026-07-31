@@ -9,6 +9,7 @@ using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.DetailExaminable;
+using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.PDA;
@@ -83,14 +84,14 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     /// <remarks>
     /// This only spawns the character, and does none of the mind-related setup you'd need for it to be playable.
     /// </remarks>
-    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null) // Frontier: add session
+    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null, PlayerSpawnLoadoutMode loadoutMode = PlayerSpawnLoadoutMode.Default) // Frontier: add session
     {
         if (station != null && !Resolve(station.Value, ref stationSpawning))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
         // Delta-V: Set desired spawn point type.
         // Frontier: add session
-        var ev = new PlayerSpawningEvent(job, profile, station, spawnPointType, session);
+        var ev = new PlayerSpawningEvent(job, profile, station, spawnPointType, session, loadoutMode);
 
         RaiseLocalEvent(ev);
         DebugTools.Assert(ev.SpawnResult is { Valid: true } or null);
@@ -118,24 +119,29 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         HumanoidCharacterProfile? profile,
         EntityUid? station,
         EntityUid? entity = null,
-        ICommonSession? session = null) // Frontier
+        ICommonSession? session = null,
+        PlayerSpawnLoadoutMode loadoutMode = PlayerSpawnLoadoutMode.Default) // Frontier
     {
         _prototypeManager.TryIndex(job ?? string.Empty, out var prototype);
         RoleLoadout? loadout = null;
 
-        // Need to get the loadout up-front to handle names if we use an entity spawn override.
-        var jobLoadout = LoadoutSystem.GetJobPrototype(prototype?.ID);
-
-        if (_prototypeManager.TryIndex(jobLoadout, out RoleLoadoutPrototype? roleProto))
+        RoleLoadoutPrototype? roleProto = null;
+        if (loadoutMode == PlayerSpawnLoadoutMode.Default)
         {
-            profile?.Loadouts.TryGetValue(jobLoadout, out loadout);
+            // Need to get the loadout up-front to handle names if we use an entity spawn override.
+            var jobLoadout = LoadoutSystem.GetJobPrototype(prototype?.ID);
 
-            // Set to default if not present
-            if (loadout == null)
+            if (_prototypeManager.TryIndex(jobLoadout, out roleProto))
             {
-                loadout = new RoleLoadout(jobLoadout);
-                loadout.SetDefault(profile, _actors.GetSession(entity), _prototypeManager);
-                loadout.EnsureValid(profile!, session, _dependencyCollection); // Frontier - profile must not be null, but if it was, TryGetValue above should fail
+                profile?.Loadouts.TryGetValue(jobLoadout, out loadout);
+
+                // Set to default if not present
+                if (loadout == null)
+                {
+                    loadout = new RoleLoadout(jobLoadout);
+                    loadout.SetDefault(profile, _actors.GetSession(entity), _prototypeManager);
+                    loadout.EnsureValid(profile!, session, _dependencyCollection); // Frontier - profile must not be null, but if it was, TryGetValue above should fail
+                }
             }
         }
 
@@ -152,7 +158,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 EquipRoleName(jobEntity, loadout, roleProto!);
             }
 
-            DoJobSpecials(job, jobEntity);
+            if (loadoutMode == PlayerSpawnLoadoutMode.Default)
+                DoJobSpecials(job, jobEntity);
             _identity.QueueIdentityUpdate(jobEntity);
             return jobEntity;
         }
@@ -290,7 +297,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
         // Job starting gear is mandatory base equipment, not a character loadout.
         // Roles without a RoleLoadout must receive it as well.
-        if (prototype?.StartingGear is not null)
+        if (loadoutMode == PlayerSpawnLoadoutMode.Default && prototype?.StartingGear is not null)
         {
             EquipStartingGear(entity.Value, prototype.StartingGear, raiseEvent: false);
 
@@ -302,8 +309,11 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             }
         }
 
-        var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
-        RaiseLocalEvent(entity.Value, ref gearEquippedEv);
+        if (loadoutMode == PlayerSpawnLoadoutMode.Default)
+        {
+            var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
+            RaiseLocalEvent(entity.Value, ref gearEquippedEv);
+        }
 
         if (profile != null)
         {
@@ -316,7 +326,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
                 name = $"{name} {identifier.FullIdentifier}";
             }
             // End Frontier
-            if (prototype != null)
+            if (loadoutMode == PlayerSpawnLoadoutMode.Default && prototype != null)
                 SetPdaAndIdCardData(entity.Value, name, prototype, station); // Frontier: profile.Name<name
 
             _humanoidSystem.LoadProfile(entity.Value, profile);
@@ -327,18 +337,31 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             }
         }
 
-        DoJobSpecials(job, entity.Value);
+        if (loadoutMode == PlayerSpawnLoadoutMode.Default)
+            DoJobSpecials(job, entity.Value);
         _identity.QueueIdentityUpdate(entity.Value);
         return entity.Value;
     }
 
-    private void DoJobSpecials(ProtoId<JobPrototype>? job, EntityUid entity)
+    public void CompletePersistentRestoreSpawn(ProtoId<JobPrototype>? job, EntityUid entity)
+    {
+        DoJobSpecials(job, entity, persistentRestore: true);
+        _identity.QueueIdentityUpdate(entity);
+    }
+
+    private void DoJobSpecials(
+        ProtoId<JobPrototype>? job,
+        EntityUid entity,
+        bool persistentRestore = false)
     {
         if (!_prototypeManager.TryIndex(job ?? string.Empty, out JobPrototype? prototype))
             return;
 
         foreach (var jobSpecial in prototype.Special)
         {
+            if (persistentRestore && !jobSpecial.ApplyOnPersistentRestore)
+                continue;
+
             jobSpecial.AfterEquip(entity);
         }
     }
@@ -418,13 +441,18 @@ public sealed class PlayerSpawningEvent : EntityEventArgs
     /// Frontier: The session associated with the entity, if any.
     /// </summary>
     public readonly ICommonSession? Session;
+    /// <summary>
+    /// Equipment source for the body being created.
+    /// </summary>
+    public readonly PlayerSpawnLoadoutMode LoadoutMode;
 
-    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null) // Frontier: added session
+    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null, PlayerSpawnLoadoutMode loadoutMode = PlayerSpawnLoadoutMode.Default) // Frontier: added session
     {
         Job = job;
         HumanoidCharacterProfile = humanoidCharacterProfile;
         Station = station;
         DesiredSpawnPointType = spawnPointType;
         Session = session; // Frontier
+        LoadoutMode = loadoutMode;
     }
 }

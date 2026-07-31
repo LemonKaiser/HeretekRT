@@ -3,6 +3,7 @@ using Content.Server._Mono.MonoCoins; // Mono
   using Content.Server._WH40K.Administration.ScreenCheck;
   using Content.Server._WH40K.Administration;
 using Content.Server._WH40K.CharacterCreation;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Server._WH40K.Progression;
 using Content.Server._NF.Auth;
 using Content.Server.Administration;
@@ -67,6 +68,7 @@ namespace Content.Server.IoC
             IoCManager.Register<ScreenCheckManager>();
             IoCManager.Register<Wh40kPlayerProgressManager>();
             IoCManager.Register<Wh40kAccountRpgManager>();
+            IoCManager.Register<PersistentInventoryManager>();
             IoCManager.Register<Wh40kProgressManager>();
             IoCManager.Register<Wh40kPartyManager>();
             IoCManager.Register<Wh40kExperienceService>();

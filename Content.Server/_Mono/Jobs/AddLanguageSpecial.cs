@@ -5,6 +5,8 @@ namespace Content.Server.Jobs;
 
 public sealed partial class AddLanguageSpecial : JobSpecial
 {
+    public override bool ApplyOnPersistentRestore => true;
+
     /// <summary>
     ///     The list of all Spoken Languages that this trait adds.
     /// </summary>

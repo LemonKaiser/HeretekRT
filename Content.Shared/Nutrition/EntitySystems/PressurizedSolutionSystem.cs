@@ -239,6 +239,31 @@ public sealed partial class PressurizedSolutionSystem : EntitySystem
         RollSprayThreshold((entity, entity.Comp));
     }
 
+    /// <summary>
+    /// Restores the time-relative runtime state used by persistent inventory snapshots.
+    /// </summary>
+    public bool TrySetPersistentInventoryState(
+        Entity<PressurizedSolutionComponent?> entity,
+        TimeSpan remainingFizziness,
+        float sprayThreshold)
+    {
+        if (!Resolve(entity, ref entity.Comp, false) ||
+            remainingFizziness < TimeSpan.Zero ||
+            remainingFizziness > entity.Comp.FizzinessMaxDuration ||
+            !float.IsFinite(sprayThreshold) ||
+            sprayThreshold is < 0f or > 1f)
+        {
+            return false;
+        }
+
+        entity.Comp.FizzySettleTime = remainingFizziness == TimeSpan.Zero
+            ? TimeSpan.Zero
+            : _timing.CurTime + remainingFizziness;
+        entity.Comp.SprayFizzinessThresholdRoll = sprayThreshold;
+        Dirty(entity, entity.Comp);
+        return true;
+    }
+
     #endregion
 
     #region Event Handlers

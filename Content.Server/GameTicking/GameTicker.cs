@@ -9,6 +9,7 @@ using Content.Server.Players.PlayTimeTracking;
 using Content.Server.Preferences.Managers;
 using Content.Server.ServerUpdates;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Shared.Chat;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
@@ -64,6 +65,9 @@ namespace Content.Server.GameTicking
         [Dependency] private MetaDataSystem _metaData = default!;
         [Dependency] private SharedRoleSystem _roles = default!;
         [Dependency] private ServerDbEntryManager _dbEntryManager = default!;
+        [Dependency] private PersistentInventoryRestoreSystem _persistentInventoryRestore = default!;
+        [Dependency] private PersistentInventoryLifecycleSystem _persistentInventoryLifecycle = default!;
+        [Dependency] private PersistentInventoryShutdownSystem _persistentInventoryShutdown = default!;
 
         [ViewVariables] private bool _initialized;
         [ViewVariables] private bool _postInitialized;

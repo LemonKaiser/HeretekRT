@@ -101,9 +101,14 @@ namespace Content.Server.Database
             NetUserId userId,
             IReadOnlyList<Wh40kRewardDeliveryDraft> deliveries,
             CancellationToken cancel = default);
-        Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+        Task<Wh40kRewardDeliveryRecord?> ClaimWh40kRewardDeliveryAsync(
             NetUserId userId,
             long deliveryId,
+            CancellationToken cancel = default);
+        Task<bool> CompleteWh40kRewardDeliveryClaimAsync(
+            NetUserId userId,
+            long deliveryId,
+            int claimAttempt,
             bool delivered,
             CancellationToken cancel = default);
         Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
@@ -136,6 +141,63 @@ namespace Content.Server.Database
         Task SetWh40kPartyInvitesAllowedAsync(
             NetUserId userId,
             bool allowInvites,
+            CancellationToken cancel = default);
+        #endregion
+
+        #region WH40K persistent inventory
+        Task<PersistentInventorySnapshotHeader?> GetPersistentInventoryHeaderAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryStoredRevision?> GetPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySnapshotId snapshotId,
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<PersistentInventoryAuditRecord>> GetPersistentInventoryAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default);
+        Task<PersistentInventorySnapshotId?> GetLatestPersistentInventoryLostSnapshotAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryStagingAsync(
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryBoundAsync(
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<PersistentInventoryStateCount>> GetPersistentInventoryStateCountsAsync(
+            CancellationToken cancel = default);
+        Task<PersistentInventoryServerEpochRecord?> GetPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default);
+        Task BeginPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default);
+        Task<bool> MarkPersistentInventoryServerEpochCleanAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryMutationResult> StagePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryStageRequest request,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryMutationResult> AuthorizePersistentInventoryWorldCleanupAsync(
+            NetUserId userId,
+            PersistentInventoryAuthorizeWorldCleanupRequest request,
+            CancellationToken cancel = default);
+        void InjectPersistentInventoryAuthorizeResponseLossForTest();
+        Task<PersistentInventoryMutationResult> PromotePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryPromoteRequest request,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryMutationResult> RepairPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryRepairRequest request,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryMutationResult> TransitionPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryTransitionRequest request,
+            CancellationToken cancel = default);
+        Task<PersistentInventoryMutationResult> SelectPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySelectRevisionRequest request,
             CancellationToken cancel = default);
         #endregion
 
@@ -547,6 +609,7 @@ namespace Content.Server.Database
         private ILoggerFactory _msLoggerFactory = default!;
 
         private bool _synchronous;
+        private int _loseNextPersistentInventoryAuthorizeResponseForTest;
         // When running in integration tests, we'll use a single in-memory SQLite database connection.
         // This is that connection, close it when we shut down.
         private SqliteConnection? _sqliteInMemoryConnection;
@@ -739,15 +802,31 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.EnqueueWh40kRewardDeliveriesAsync(userId, deliveries, cancel));
         }
 
-        public Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+        public Task<Wh40kRewardDeliveryRecord?> ClaimWh40kRewardDeliveryAsync(
             NetUserId userId,
             long deliveryId,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() =>
+                _db.ClaimWh40kRewardDeliveryAsync(userId, deliveryId, cancel));
+        }
+
+        public Task<bool> CompleteWh40kRewardDeliveryClaimAsync(
+            NetUserId userId,
+            long deliveryId,
+            int claimAttempt,
             bool delivered,
             CancellationToken cancel = default)
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() =>
-                _db.RecordWh40kRewardDeliveryAttemptAsync(userId, deliveryId, delivered, cancel));
+                _db.CompleteWh40kRewardDeliveryClaimAsync(
+                    userId,
+                    deliveryId,
+                    claimAttempt,
+                    delivered,
+                    cancel));
         }
 
         public Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
@@ -828,6 +907,155 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.SetWh40kPartyInvitesAllowedAsync(userId, allowInvites, cancel));
+        }
+
+        public Task<PersistentInventorySnapshotHeader?> GetPersistentInventoryHeaderAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryHeaderAsync(userId, cancel));
+        }
+
+        public Task<PersistentInventoryStoredRevision?> GetPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySnapshotId snapshotId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryRevisionAsync(userId, snapshotId, cancel));
+        }
+
+        public Task<IReadOnlyList<PersistentInventoryAuditRecord>> GetPersistentInventoryAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryAuditAsync(userId, limit, cancel));
+        }
+
+        public Task<PersistentInventorySnapshotId?> GetLatestPersistentInventoryLostSnapshotAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetLatestPersistentInventoryLostSnapshotAsync(userId, cancel));
+        }
+
+        public Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryStagingAsync(
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryStagingAsync(cancel));
+        }
+
+        public Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryBoundAsync(
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryBoundAsync(cancel));
+        }
+
+        public Task<IReadOnlyList<PersistentInventoryStateCount>> GetPersistentInventoryStateCountsAsync(
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryStateCountsAsync(cancel));
+        }
+
+        public Task<PersistentInventoryServerEpochRecord?> GetPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetPersistentInventoryServerEpochAsync(serverEpoch, cancel));
+        }
+
+        public Task BeginPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.BeginPersistentInventoryServerEpochAsync(serverEpoch, cancel));
+        }
+
+        public Task<bool> MarkPersistentInventoryServerEpochCleanAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.MarkPersistentInventoryServerEpochCleanAsync(serverEpoch, cancel));
+        }
+
+        public Task<PersistentInventoryMutationResult> StagePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryStageRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.StagePersistentInventoryAsync(userId, request, cancel));
+        }
+
+        public async Task<PersistentInventoryMutationResult> AuthorizePersistentInventoryWorldCleanupAsync(
+            NetUserId userId,
+            PersistentInventoryAuthorizeWorldCleanupRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            var result = await RunDbCommand(
+                () => _db.AuthorizePersistentInventoryWorldCleanupAsync(userId, request, cancel));
+            if (result.IsSuccess &&
+                Interlocked.Exchange(
+                    ref _loseNextPersistentInventoryAuthorizeResponseForTest,
+                    0) == 1)
+            {
+                throw new IOException(
+                    "Injected persistent inventory authorize response loss after durable commit.");
+            }
+
+            return result;
+        }
+
+        public void InjectPersistentInventoryAuthorizeResponseLossForTest()
+        {
+            Interlocked.Exchange(ref _loseNextPersistentInventoryAuthorizeResponseForTest, 1);
+        }
+
+        public Task<PersistentInventoryMutationResult> PromotePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryPromoteRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.PromotePersistentInventoryAsync(userId, request, cancel));
+        }
+
+        public Task<PersistentInventoryMutationResult> RepairPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryRepairRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.RepairPersistentInventoryAsync(userId, request, cancel));
+        }
+
+        public Task<PersistentInventoryMutationResult> TransitionPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryTransitionRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.TransitionPersistentInventoryAsync(userId, request, cancel));
+        }
+
+        public Task<PersistentInventoryMutationResult> SelectPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySelectRevisionRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SelectPersistentInventoryRevisionAsync(userId, request, cancel));
         }
 
         public Task<long> GetMonoCoinsAsync(NetUserId userId, CancellationToken cancel = default)

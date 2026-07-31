@@ -115,6 +115,39 @@ namespace Content.Server.Light.EntitySystems
             return false;
         }
 
+        /// <summary>
+        /// Restores whether a one-way light was already consumed without replaying activation sounds.
+        /// Any light that had been activated before persistence is restored as fully spent.
+        /// </summary>
+        public bool TrySetPersistentInventorySpent(
+            EntityUid uid,
+            bool spent,
+            ExpendableLightComponent? component = null)
+        {
+            if (!Resolve(uid, ref component, false))
+                return false;
+
+            component.CurrentState = spent
+                ? ExpendableLightState.Dead
+                : ExpendableLightState.BrandNew;
+            component.StateExpiryTime = 0f;
+
+            if (spent)
+            {
+                var meta = MetaData(uid);
+                _metaData.SetEntityName(uid, Loc.GetString(component.SpentName), meta);
+                _metaData.SetEntityDescription(uid, Loc.GetString(component.SpentDesc), meta);
+                _tagSystem.AddTag(uid, TrashTag);
+            }
+
+            if (TryComp<ItemComponent>(uid, out var item))
+                _item.SetHeldPrefix(uid, "unlit", component: item);
+
+            UpdateVisualizer((uid, component));
+            Dirty(uid, component);
+            return true;
+        }
+
         private void UpdateVisualizer(Entity<ExpendableLightComponent> ent, AppearanceComponent? appearance = null)
         {
             var component = ent.Comp;

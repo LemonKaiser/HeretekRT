@@ -8,6 +8,7 @@ using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Mind;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Shared.Administration;
 using Content.Shared.Chat;
 using Content.Shared.Database;
@@ -21,6 +22,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Maths;
+using Robust.Shared.Asynchronous;
 
 namespace Content.Server._WH40K.DeathTransition;
 
@@ -36,10 +38,13 @@ public sealed class GhostPermissionSystem : EntitySystem
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private GameTicker _ticker = default!;
+    [Dependency] private GhostSystem _ghost = default!;
     [Dependency] private MindSystem _minds = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ITaskManager _taskManager = default!;
+    [Dependency] private PersistentInventoryLifecycleSystem _persistentInventory = default!;
 
     private readonly Dictionary<NetUserId, GhostPermissionData> _permissions = new();
     private readonly HashSet<NetUserId> _loadedPermissions = new();
@@ -48,6 +53,8 @@ public sealed class GhostPermissionSystem : EntitySystem
     private readonly Dictionary<NetUserId, TimeSpan> _staffObserverAuthorizations = new();
     private readonly Dictionary<NetUserId, PendingDeathLobbyTransition> _pendingTransitions = new();
     private readonly HashSet<NetUserId> _deathScreenEligible = new();
+    private readonly HashSet<NetUserId> _persistentGhostTransitions = new();
+    private readonly HashSet<NetUserId> _authorizedPersistentGhostAttempts = new();
     private int _nextTransitionId;
 
     public override void Initialize()
@@ -96,14 +103,7 @@ public sealed class GhostPermissionSystem : EntitySystem
 
             _pendingTransitions.Remove(userId);
 
-            if (_players.TryGetSessionById(userId, out var session))
-            {
-                _ticker.ReturnPlayerToLobby(session);
-                continue;
-            }
-
-            if (_minds.TryGetMind(userId, out var mindId, out var mind))
-                _minds.WipeMind(mindId, mind);
+            _ = CompleteDeathTransitionAsync(userId);
         }
     }
 
@@ -239,6 +239,36 @@ public sealed class GhostPermissionSystem : EntitySystem
         if (userId == null || !_players.TryGetSessionById(userId.Value, out var session))
             return;
 
+        if (_authorizedPersistentGhostAttempts.Remove(userId.Value))
+            return;
+
+        if (ev.ViaCommand &&
+            (!ev.Mind.PreventGhosting || ev.Forced) &&
+            ev.Mind.CurrentEntity is { } body &&
+            HasComp<PersistentInventoryBoundLifeComponent>(body))
+        {
+            ev.Handled = true;
+            ev.Result = false;
+            if (!_persistentGhostTransitions.Add(userId.Value))
+                return;
+
+            var allowObserver = IsGhostStaff(session) || TryReservePermissionUse(session);
+            _ = CompletePersistentGhostTransitionAsync(
+                userId.Value,
+                body,
+                ev.Forced
+                    ? PersistentInventoryInvalidationReason.StaffAction
+                    : PersistentInventoryInvalidationReason.VoluntaryGhost,
+                ev.Forced ? "forced-ghost" : "voluntary-ghost",
+                ev.Forced
+                    ? "Bound life ended by a forced ghost command."
+                    : "Bound life ended by a voluntary ghost command.",
+                allowObserver,
+                ev.CanReturnGlobal,
+                ev.Forced);
+            return;
+        }
+
         if (IsGhostStaff(session) || TryReservePermissionUse(session))
             return;
 
@@ -247,6 +277,72 @@ public sealed class GhostPermissionSystem : EntitySystem
         ReturnPlayerToLobbyImmediately(session);
         ev.Handled = true;
         ev.Result = true;
+    }
+
+    private async System.Threading.Tasks.Task CompletePersistentGhostTransitionAsync(
+        NetUserId userId,
+        EntityUid body,
+        PersistentInventoryInvalidationReason reason,
+        string actor,
+        string details,
+        bool allowObserver,
+        bool canReturnGlobal,
+        bool forced)
+    {
+        try
+        {
+            var committed = await _persistentInventory.InvalidateBoundLifeAsync(
+                body,
+                reason,
+                actor,
+                userId.UserId,
+                details);
+            if (!committed)
+            {
+                if (allowObserver)
+                    _reservedPermissionUses.Remove(userId);
+                return;
+            }
+
+            await RunOnMainThread(() =>
+            {
+                if (!_players.TryGetSessionById(userId, out var session))
+                    return;
+
+                if (allowObserver &&
+                    _minds.TryGetMind(userId, out var mindId, out var mind) &&
+                    mindId is { } resolvedMindId &&
+                    mind.CurrentEntity == body)
+                {
+                    _authorizedPersistentGhostAttempts.Add(userId);
+                    if (_ghost.OnGhostAttempt(
+                            resolvedMindId,
+                            canReturnGlobal,
+                            viaCommand: true,
+                            forced: forced,
+                            mind))
+                    {
+                        return;
+                    }
+
+                    _authorizedPersistentGhostAttempts.Remove(userId);
+                }
+
+                ReturnPlayerToLobbyImmediately(session);
+            });
+        }
+        catch (Exception exception)
+        {
+            if (allowObserver)
+                _reservedPermissionUses.Remove(userId);
+            Log.Error(
+                $"Persistent inventory ghost transition failed for {userId}: " +
+                $"{exception.GetType().Name}.");
+        }
+        finally
+        {
+            await RunOnMainThread(() => _persistentGhostTransitions.Remove(userId));
+        }
     }
 
     private void OnMobStateChanged(MobStateChangedEvent ev)
@@ -390,6 +486,54 @@ public sealed class GhostPermissionSystem : EntitySystem
         RaiseNetworkEvent(new DeathTransitionStartEvent(transition.Id, DeathTransitionTiming.TotalDuration), session.Channel);
     }
 
+    private async System.Threading.Tasks.Task CompleteDeathTransitionAsync(NetUserId userId)
+    {
+        try
+        {
+            if (!_players.TryGetSessionById(userId, out var session) ||
+                session.AttachedEntity is not { } body ||
+                !_mobState.IsDead(body) ||
+                !_minds.TryGetMind(body, out _, out var mind) ||
+                mind.UserId != userId)
+            {
+                return;
+            }
+
+            var committed = await _persistentInventory.InvalidateBoundLifeAsync(
+                body,
+                PersistentInventoryInvalidationReason.Surrender,
+                "death-surrender",
+                userId.UserId,
+                "Player confirmed surrender after physical death.");
+            if (!committed)
+                return;
+
+            await RunOnMainThread(() =>
+            {
+                if (!_players.TryGetSessionById(userId, out var currentSession))
+                    return;
+                if (currentSession.AttachedEntity is { } currentBody &&
+                    _mobState.IsDead(currentBody))
+                {
+                    _ticker.ReturnPlayerToLobby(currentSession);
+                    return;
+                }
+
+                if (_minds.TryGetMind(userId, out var mindId, out var currentMind) &&
+                    currentMind.CurrentEntity == null)
+                {
+                    _minds.WipeMind(mindId, currentMind);
+                }
+            });
+        }
+        catch (Exception exception)
+        {
+            Log.Error(
+                $"Persistent inventory surrender transition failed for {userId}: " +
+                $"{exception.GetType().Name}.");
+        }
+    }
+
     private void CancelDeathTransition(ICommonSession session)
     {
         if (!_pendingTransitions.Remove(session.UserId, out var transition))
@@ -420,6 +564,25 @@ public sealed class GhostPermissionSystem : EntitySystem
     {
         return permission is { RemainingUses: > 0 }
                && (permission.ExpiresAt == null || permission.ExpiresAt > DateTime.UtcNow);
+    }
+
+    private async System.Threading.Tasks.Task RunOnMainThread(Action action)
+    {
+        var completion = new System.Threading.Tasks.TaskCompletionSource(
+            System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
+        _taskManager.RunOnMainThread(() =>
+        {
+            try
+            {
+                action();
+                completion.TrySetResult();
+            }
+            catch (Exception exception)
+            {
+                completion.TrySetException(exception);
+            }
+        });
+        await completion.Task;
     }
 
     private readonly record struct PendingDeathLobbyTransition(int Id, TimeSpan ReturnAt);

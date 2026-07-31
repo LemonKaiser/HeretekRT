@@ -15,6 +15,7 @@ public enum Wh40kRewardDeliveryStatus : byte
 {
     Pending,
     Delivered,
+    Claimed,
 }
 
 public enum Wh40kExperienceAwardStatus : byte

@@ -58,6 +58,10 @@ namespace Content.Server.Database
         public DbSet<Wh40kParty> Wh40kParties { get; set; } = null!;
         public DbSet<Wh40kPartyMember> Wh40kPartyMembers { get; set; } = null!;
         public DbSet<Wh40kPartyPreference> Wh40kPartyPreferences { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventory> Wh40kPersistentInventories { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryRevision> Wh40kPersistentInventoryRevisions { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryAudit> Wh40kPersistentInventoryAudits { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryServerEpoch> Wh40kPersistentInventoryServerEpochs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -477,6 +481,43 @@ namespace Content.Server.Database
             modelBuilder.Entity<Wh40kPartyPreference>()
                 .Property(preference => preference.AllowInvites)
                 .HasDefaultValue(true);
+
+            modelBuilder.Entity<Wh40kPersistentInventory>()
+                .HasOne<Player>()
+                .WithOne()
+                .HasForeignKey<Wh40kPersistentInventory>(inventory => inventory.UserId)
+                .HasPrincipalKey<Player>(player => player.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPersistentInventory>()
+                .Property(inventory => inventory.Revision)
+                .IsConcurrencyToken();
+
+            modelBuilder.Entity<Wh40kPersistentInventory>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("PersistentInventoryRevisionNonNegative", "revision >= 0");
+                    table.HasCheckConstraint("PersistentInventoryVerifiedStateNonNegative", "verified_state >= 0");
+                    table.HasCheckConstraint("PersistentInventorySavePhaseNonNegative", "save_phase >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kPersistentInventoryRevision>()
+                .HasOne<Wh40kPersistentInventory>()
+                .WithMany()
+                .HasForeignKey(revision => revision.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPersistentInventoryRevision>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("PersistentInventoryItemCountNonNegative", "item_count >= 0");
+                    table.HasCheckConstraint("PersistentInventoryEntityCountNonNegative", "entity_count >= 0");
+                    table.HasCheckConstraint("PersistentInventoryUncompressedBytesNonNegative", "uncompressed_bytes >= 0");
+                    table.HasCheckConstraint("PersistentInventoryCompressedBytesNonNegative", "compressed_bytes >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kPersistentInventoryServerEpoch>()
+                .HasIndex(epoch => epoch.StartedAt);
         }
 
         public virtual IQueryable<AdminLog> SearchLogs(IQueryable<AdminLog> query, string searchText)
@@ -1672,6 +1713,155 @@ namespace Content.Server.Database
         public Guid UserId { get; set; }
 
         public bool AllowInvites { get; set; } = true;
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Index(nameof(State))]
+    [Index(nameof(UpdatedAt))]
+    [Index(nameof(LostAt))]
+    [Index(nameof(OperationId))]
+    [Table("wh40k_persistent_inventory")]
+    public class Wh40kPersistentInventory
+    {
+        public Guid UserId { get; set; }
+
+        public int State { get; set; }
+
+        public int VerifiedState { get; set; }
+
+        public int SavePhase { get; set; }
+
+        public long Revision { get; set; }
+
+        public Guid OperationId { get; set; }
+
+        public Guid? CurrentSnapshotId { get; set; }
+
+        public Guid? LastKnownGoodSnapshotId { get; set; }
+
+        public Guid? StagingSnapshotId { get; set; }
+
+        public Guid? ServerEpoch { get; set; }
+
+        public Guid? StagingServerEpoch { get; set; }
+
+        public Guid? LifeId { get; set; }
+
+        public int InvalidationReason { get; set; }
+
+        public int LossReason { get; set; }
+
+        public int QuarantineReason { get; set; }
+
+        [MaxLength(512)]
+        public string? ReasonDetails { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public DateTime? RestoredAt { get; set; }
+
+        public DateTime? InvalidatedAt { get; set; }
+
+        public DateTime? LostAt { get; set; }
+
+        public DateTime? WorldCleanupAuthorizedAt { get; set; }
+    }
+
+    [Index(nameof(UserId))]
+    [Index(nameof(UserId), nameof(OperationId), IsUnique = true)]
+    [Index(nameof(SavedAt))]
+    [Table("wh40k_persistent_inventory_revision")]
+    public class Wh40kPersistentInventoryRevision
+    {
+        [Key]
+        public Guid SnapshotId { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public int SchemaVersion { get; set; }
+
+        [Required, MaxLength(64)]
+        public string PolicyId { get; set; } = default!;
+
+        [MaxLength(64)]
+        public string? CapturedRoleId { get; set; }
+
+        [MaxLength(64)]
+        public string? CapturedProfileName { get; set; }
+
+        [Required]
+        public byte[] Payload { get; set; } = default!;
+
+        [Required, MaxLength(32)]
+        public byte[] PayloadSha256 { get; set; } = default!;
+
+        public int ItemCount { get; set; }
+
+        public int EntityCount { get; set; }
+
+        public int UncompressedBytes { get; set; }
+
+        public int CompressedBytes { get; set; }
+
+        public Guid OperationId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime SavedAt { get; set; }
+    }
+
+    [Index(nameof(UserId), nameof(CreatedAt))]
+    [Index(nameof(UserId), nameof(OperationId), nameof(Action), IsUnique = true)]
+    [Table("wh40k_persistent_inventory_audit")]
+    public class Wh40kPersistentInventoryAudit
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public Guid OperationId { get; set; }
+
+        public int Action { get; set; }
+
+        public int OldState { get; set; }
+
+        public int NewState { get; set; }
+
+        public long Revision { get; set; }
+
+        public Guid? SnapshotId { get; set; }
+
+        public Guid? ActorUserId { get; set; }
+
+        [Required, MaxLength(64)]
+        public string Actor { get; set; } = default!;
+
+        [MaxLength(512)]
+        public string? Reason { get; set; }
+
+        public int ItemCount { get; set; }
+
+        public int EntityCount { get; set; }
+
+        public int UncompressedBytes { get; set; }
+
+        public int CompressedBytes { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(ServerEpoch))]
+    [Table("wh40k_persistent_inventory_server_epoch")]
+    public class Wh40kPersistentInventoryServerEpoch
+    {
+        public Guid ServerEpoch { get; set; }
+
+        public DateTime StartedAt { get; set; }
+
+        public DateTime? CleanShutdownAt { get; set; }
     }
     // Mono-End
 }

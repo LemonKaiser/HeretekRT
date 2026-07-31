@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Database;
 using Content.Server.Mind;
 using Content.Shared.Players;
 using Robust.Server.Player;
@@ -52,18 +53,25 @@ namespace Content.Server.GameTicking.Commands
 
             if (!_player.TryGetSessionById(userId, out var targetPlayer))
             {
-                if (!_player.TryGetPlayerData(userId, out var data))
+                if (!_player.TryGetPlayerData(userId, out _))
                 {
                     shell.WriteError(Loc.GetString("cmd-respawn-unknown-player"));
                     return;
                 }
 
-                _mind.WipeMind(data.ContentData()?.Mind);
                 shell.WriteError(Loc.GetString("cmd-respawn-player-not-online"));
                 return;
             }
 
-            _gameTicker.Respawn(targetPlayer);
+            var actor = player == null ? "server-console:respawn" : $"respawn:{player.Name}";
+            if (!await _gameTicker.RespawnAsync(
+                    targetPlayer,
+                    PersistentInventoryInvalidationReason.StaffAction,
+                    actor,
+                    player?.UserId.UserId))
+            {
+                shell.WriteError(Loc.GetString("cmd-respawn-persistent-inventory-failed"));
+            }
         }
 
       public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)

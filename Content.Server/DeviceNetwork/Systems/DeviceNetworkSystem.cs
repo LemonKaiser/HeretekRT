@@ -290,6 +290,39 @@ namespace Content.Server.DeviceNetwork.Systems
         }
 
         /// <summary>
+        /// Restores the portable configuration of a device without carrying network-local entity references
+        /// or an automatically generated address across rounds.
+        /// </summary>
+        public bool TrySetPersistentInventoryState(
+            EntityUid uid,
+            uint? receiveFrequency,
+            uint? transmitFrequency,
+            bool receiveAll,
+            bool autoConnect,
+            string? customAddress,
+            DeviceNetworkComponent? device = null)
+        {
+            if (!Resolve(uid, ref device, false) ||
+                customAddress != null &&
+                (string.IsNullOrWhiteSpace(customAddress) || customAddress.Length > 128))
+            {
+                return false;
+            }
+
+            var network = GetNetwork(device.DeviceNetId);
+            network.Remove(device);
+
+            device.ReceiveFrequency = receiveFrequency;
+            device.TransmitFrequency = transmitFrequency;
+            device.ReceiveAll = receiveAll;
+            device.AutoConnect = autoConnect;
+            device.CustomAddress = customAddress != null;
+            device.Address = customAddress ?? string.Empty;
+
+            return !autoConnect || network.Add(device);
+        }
+
+        /// <summary>
         ///     Try to find a device on a network using its address.
         /// </summary>
         private bool TryGetDevice(int netId, string address, [NotNullWhen(true)] out DeviceNetworkComponent? device) =>

@@ -190,6 +190,21 @@ namespace Content.Server.PDA.Ringer
             return true;
         }
 
+        public bool TrySetPersistentInventoryRingtone(
+            EntityUid uid,
+            IReadOnlyList<Note> ringtone,
+            RingerComponent? ringer = null)
+        {
+            if (!Resolve(uid, ref ringer, false) ||
+                ringtone.Count != RingtoneLength ||
+                ringtone.Any(note => !Enum.IsDefined(note)))
+            {
+                return false;
+            }
+
+            return UpdateRingerRingtone(uid, ringer, ringtone.ToArray());
+        }
+
         private void UpdateRingerUserInterface(EntityUid uid, RingerComponent ringer, bool isPlaying)
         {
             _ui.SetUiState(uid, RingerUiKey.Key, new RingerUpdateState(isPlaying, ringer.Ringtone));

@@ -6,6 +6,12 @@ namespace Content.Shared.Roles
     [ImplicitDataDefinitionForInheritors]
     public abstract partial class JobSpecial
     {
+        /// <summary>
+        /// Must only be enabled by code for body-only, idempotent setup that cannot issue gear,
+        /// currency, access cards, or other transferable entities.
+        /// </summary>
+        public virtual bool ApplyOnPersistentRestore => false;
+
         public abstract void AfterEquip(EntityUid mob);
     }
 }

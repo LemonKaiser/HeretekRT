@@ -150,7 +150,7 @@ namespace Content.Server.GameTicking
                     return;
                 }
 
-                SpawnPlayer(session, EntityUid.Invalid);
+                await SpawnPlayer(session, EntityUid.Invalid);
             }
 
             async void SpawnObserverWaitDb()

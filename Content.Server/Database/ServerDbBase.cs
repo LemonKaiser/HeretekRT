@@ -40,6 +40,10 @@ namespace Content.Server.Database
         private const int Wh40kMaximumSourceTypeLength = 32;
         private const int Wh40kMaximumIssuerEntityLength = 128;
         private const int Wh40kMaximumContextJsonLength = 4096;
+        private const int PersistentInventoryMaximumPolicyIdLength = 64;
+        private const int PersistentInventoryMaximumAuditActorLength = 64;
+        private const int PersistentInventoryMaximumAuditReasonLength = 512;
+        private const int PersistentInventoryMaximumAuditEntries = 100;
 
         private readonly ISawmill _opsLog;
 
@@ -996,11 +1000,14 @@ namespace Content.Server.Database
             CancellationToken cancel = default)
         {
             await using var db = await GetDb(cancel);
+            var expiredClaim = DateTime.UtcNow.AddMinutes(-5);
             var deliveries = await db.DbContext.Wh40kRewardDeliveries
                 .AsNoTracking()
                 .Where(delivery =>
                     delivery.UserId == userId.UserId &&
-                    delivery.Status == (int) Wh40kRewardDeliveryStatus.Pending)
+                    (delivery.Status == (int) Wh40kRewardDeliveryStatus.Pending ||
+                     delivery.Status == (int) Wh40kRewardDeliveryStatus.Claimed &&
+                     delivery.LastAttemptAt < expiredClaim))
                 .OrderBy(delivery => delivery.CreatedAt)
                 .ThenBy(delivery => delivery.Id)
                 .ToListAsync(cancel);
@@ -1069,10 +1076,9 @@ namespace Content.Server.Database
                 $"{Wh40kMutationRetryLimit} attempts.");
         }
 
-        public async Task<bool> RecordWh40kRewardDeliveryAttemptAsync(
+        public async Task<Wh40kRewardDeliveryRecord?> ClaimWh40kRewardDeliveryAsync(
             NetUserId userId,
             long deliveryId,
-            bool delivered,
             CancellationToken cancel = default)
         {
             if (deliveryId <= 0)
@@ -1080,27 +1086,78 @@ namespace Content.Server.Database
 
             await using var db = await GetDb(cancel);
             var now = DateTime.UtcNow;
-            var updated = delivered
-                ? await db.DbContext.Wh40kRewardDeliveries
-                    .Where(candidate =>
-                        candidate.Id == deliveryId &&
-                        candidate.UserId == userId.UserId &&
-                        candidate.Status == (int) Wh40kRewardDeliveryStatus.Pending)
-                    .ExecuteUpdateAsync(setters => setters
-                        .SetProperty(candidate => candidate.Status, (int) Wh40kRewardDeliveryStatus.Delivered)
-                        .SetProperty(candidate => candidate.DeliveredAt, now)
-                        .SetProperty(candidate => candidate.LastAttemptAt, now)
-                        .SetProperty(candidate => candidate.AttemptCount, candidate => candidate.AttemptCount + 1), cancel)
-                : await db.DbContext.Wh40kRewardDeliveries
-                    .Where(candidate =>
-                        candidate.Id == deliveryId &&
-                        candidate.UserId == userId.UserId &&
-                        candidate.Status == (int) Wh40kRewardDeliveryStatus.Pending)
-                    .ExecuteUpdateAsync(setters => setters
-                        .SetProperty(candidate => candidate.LastAttemptAt, now)
-                        .SetProperty(candidate => candidate.AttemptCount, candidate => candidate.AttemptCount + 1), cancel);
+            var expiredClaim = now.AddMinutes(-5);
+            var updated = await db.DbContext.Wh40kRewardDeliveries
+                .Where(candidate =>
+                    candidate.Id == deliveryId &&
+                    candidate.UserId == userId.UserId &&
+                    (candidate.Status == (int) Wh40kRewardDeliveryStatus.Pending ||
+                     candidate.Status == (int) Wh40kRewardDeliveryStatus.Claimed &&
+                     candidate.LastAttemptAt < expiredClaim))
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(candidate => candidate.Status, (int) Wh40kRewardDeliveryStatus.Claimed)
+                    .SetProperty(candidate => candidate.LastAttemptAt, now)
+                    .SetProperty(candidate => candidate.AttemptCount, candidate => candidate.AttemptCount + 1),
+                    cancel);
+            if (updated != 1)
+                return null;
 
-            return updated == 1;
+            var claimed = await db.DbContext.Wh40kRewardDeliveries
+                .AsNoTracking()
+                .SingleAsync(candidate =>
+                    candidate.Id == deliveryId &&
+                    candidate.UserId == userId.UserId,
+                    cancel);
+            return ToWh40kRewardDeliveryRecord(claimed);
+        }
+
+        public async Task<bool> CompleteWh40kRewardDeliveryClaimAsync(
+            NetUserId userId,
+            long deliveryId,
+            int claimAttempt,
+            bool delivered,
+            CancellationToken cancel = default)
+        {
+            if (deliveryId <= 0)
+                throw new ArgumentOutOfRangeException(nameof(deliveryId));
+            if (claimAttempt <= 0)
+                throw new ArgumentOutOfRangeException(nameof(claimAttempt));
+
+            await using var db = await GetDb(cancel);
+            var now = DateTime.UtcNow;
+            var candidates = db.DbContext.Wh40kRewardDeliveries
+                .Where(candidate =>
+                    candidate.Id == deliveryId &&
+                    candidate.UserId == userId.UserId &&
+                    candidate.Status == (int) Wh40kRewardDeliveryStatus.Claimed &&
+                    candidate.AttemptCount == claimAttempt);
+            var updated = delivered
+                ? await candidates.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(
+                            candidate => candidate.Status,
+                            (int) Wh40kRewardDeliveryStatus.Delivered)
+                        .SetProperty(candidate => candidate.DeliveredAt, now)
+                        .SetProperty(candidate => candidate.LastAttemptAt, now),
+                    cancel)
+                : await candidates.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(
+                            candidate => candidate.Status,
+                            (int) Wh40kRewardDeliveryStatus.Pending)
+                        .SetProperty(candidate => candidate.LastAttemptAt, now),
+                    cancel);
+            if (updated == 1)
+                return true;
+            if (!delivered)
+                return false;
+
+            return await db.DbContext.Wh40kRewardDeliveries
+                .AsNoTracking()
+                .AnyAsync(candidate =>
+                    candidate.Id == deliveryId &&
+                    candidate.UserId == userId.UserId &&
+                    candidate.Status == (int) Wh40kRewardDeliveryStatus.Delivered &&
+                    candidate.AttemptCount == claimAttempt,
+                    cancel);
         }
 
         public async Task<Wh40kPartyRecord?> GetWh40kPartyAsync(
@@ -1859,6 +1916,1635 @@ namespace Content.Server.Database
                 ? snapshot
                 : Wh40kPlayerProgressSnapshot.Unknown;
         }
+        #endregion
+
+        #region WH40K persistent inventory
+
+        public async Task<PersistentInventorySnapshotHeader?> GetPersistentInventoryHeaderAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            return await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel);
+        }
+
+        public async Task<PersistentInventoryStoredRevision?> GetPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySnapshotId snapshotId,
+            CancellationToken cancel = default)
+        {
+            if (snapshotId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор снимка не может быть пустым.", nameof(snapshotId));
+
+            await using var db = await GetDb(cancel);
+            var revision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate =>
+                    candidate.UserId == userId.UserId &&
+                    candidate.SnapshotId == snapshotId.Value,
+                    cancel);
+
+            return revision == null
+                ? null
+                : new PersistentInventoryStoredRevision(
+                    new PersistentInventoryAccountId(revision.UserId),
+                    ToPersistentInventoryRevisionMetadata(revision),
+                    revision.Payload);
+        }
+
+        public async Task<IReadOnlyList<PersistentInventoryAuditRecord>> GetPersistentInventoryAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default)
+        {
+            if (limit is < 1 or > PersistentInventoryMaximumAuditEntries)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(limit),
+                    $"Число записей аудита должно быть от 1 до {PersistentInventoryMaximumAuditEntries}.");
+            }
+
+            await using var db = await GetDb(cancel);
+            var entries = await db.DbContext.Wh40kPersistentInventoryAudits
+                .AsNoTracking()
+                .Where(entry => entry.UserId == userId.UserId)
+                .OrderByDescending(entry => entry.Id)
+                .Take(limit)
+                .ToListAsync(cancel);
+
+            return entries.Select(ToPersistentInventoryAuditRecord).ToList();
+        }
+
+        public async Task<PersistentInventorySnapshotId?> GetLatestPersistentInventoryLostSnapshotAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var snapshotId = await FindLatestPersistentInventoryLostSnapshotIdAsync(
+                db.DbContext,
+                userId.UserId,
+                cancel);
+            return snapshotId == null
+                ? null
+                : new PersistentInventorySnapshotId(snapshotId.Value);
+        }
+
+        public async Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryStagingAsync(
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var userIds = await db.DbContext.Wh40kPersistentInventories
+                .AsNoTracking()
+                .Where(account => account.State == (int) PersistentInventorySnapshotState.Staging)
+                .OrderBy(account => account.UpdatedAt)
+                .Select(account => account.UserId)
+                .ToListAsync(cancel);
+
+            var headers = new List<PersistentInventorySnapshotHeader>(userIds.Count);
+            foreach (var userId in userIds)
+            {
+                var header = await LoadPersistentInventoryHeaderAsync(db.DbContext, userId, cancel);
+                if (header != null)
+                    headers.Add(header);
+            }
+
+            return headers;
+        }
+
+        public async Task<IReadOnlyList<PersistentInventorySnapshotHeader>> GetPersistentInventoryBoundAsync(
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var userIds = await db.DbContext.Wh40kPersistentInventories
+                .AsNoTracking()
+                .Where(account => account.State == (int) PersistentInventorySnapshotState.Bound)
+                .OrderBy(account => account.UpdatedAt)
+                .Select(account => account.UserId)
+                .ToListAsync(cancel);
+
+            var headers = new List<PersistentInventorySnapshotHeader>(userIds.Count);
+            foreach (var userId in userIds)
+            {
+                var header = await LoadPersistentInventoryHeaderAsync(db.DbContext, userId, cancel);
+                if (header != null)
+                    headers.Add(header);
+            }
+
+            return headers;
+        }
+
+        public async Task<IReadOnlyList<PersistentInventoryStateCount>> GetPersistentInventoryStateCountsAsync(
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var counts = await db.DbContext.Wh40kPersistentInventories
+                .AsNoTracking()
+                .GroupBy(account => account.State)
+                .Select(group => new
+                {
+                    State = group.Key,
+                    Count = group.Count(),
+                })
+                .ToListAsync(cancel);
+
+            return counts
+                .Where(entry => Enum.IsDefined(typeof(PersistentInventorySnapshotState), entry.State))
+                .Select(entry => new PersistentInventoryStateCount(
+                    (PersistentInventorySnapshotState) entry.State,
+                    entry.Count))
+                .OrderBy(entry => entry.State)
+                .ToList();
+        }
+
+        public async Task<PersistentInventoryServerEpochRecord?> GetPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            if (serverEpoch.Value == Guid.Empty)
+                throw new ArgumentException("Server epoch не может быть пустым.", nameof(serverEpoch));
+
+            await using var db = await GetDb(cancel);
+            var epoch = await db.DbContext.Wh40kPersistentInventoryServerEpochs
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.ServerEpoch == serverEpoch.Value, cancel);
+            return epoch == null
+                ? null
+                : new PersistentInventoryServerEpochRecord(
+                    new PersistentInventoryServerEpoch(epoch.ServerEpoch),
+                    NormalizeDatabaseTime(epoch.StartedAt),
+                    NormalizeDatabaseTime(epoch.CleanShutdownAt));
+        }
+
+        public async Task BeginPersistentInventoryServerEpochAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            if (serverEpoch.Value == Guid.Empty)
+                throw new ArgumentException("Server epoch не может быть пустым.", nameof(serverEpoch));
+
+            await using var db = await GetDb(cancel);
+            if (await db.DbContext.Wh40kPersistentInventoryServerEpochs
+                    .AsNoTracking()
+                    .AnyAsync(candidate => candidate.ServerEpoch == serverEpoch.Value, cancel))
+            {
+                return;
+            }
+
+            db.DbContext.Wh40kPersistentInventoryServerEpochs.Add(
+                new Wh40kPersistentInventoryServerEpoch
+                {
+                    ServerEpoch = serverEpoch.Value,
+                    StartedAt = DateTime.UtcNow,
+                });
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+            }
+            catch (DbUpdateException)
+            {
+                await using var retryDb = await GetDb(cancel);
+                if (await retryDb.DbContext.Wh40kPersistentInventoryServerEpochs
+                        .AsNoTracking()
+                        .AnyAsync(candidate => candidate.ServerEpoch == serverEpoch.Value, cancel))
+                {
+                    return;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<bool> MarkPersistentInventoryServerEpochCleanAsync(
+            PersistentInventoryServerEpoch serverEpoch,
+            CancellationToken cancel = default)
+        {
+            if (serverEpoch.Value == Guid.Empty)
+                throw new ArgumentException("Server epoch не может быть пустым.", nameof(serverEpoch));
+
+            await using var db = await GetDb(cancel);
+            var epoch = await db.DbContext.Wh40kPersistentInventoryServerEpochs
+                .SingleOrDefaultAsync(candidate => candidate.ServerEpoch == serverEpoch.Value, cancel);
+            if (epoch == null)
+                return false;
+            if (epoch.CleanShutdownAt != null)
+                return true;
+
+            epoch.CleanShutdownAt = DateTime.UtcNow;
+            await db.DbContext.SaveChangesAsync(cancel);
+            return true;
+        }
+
+        public async Task<PersistentInventoryMutationResult> StagePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryStageRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryStageRequest(request);
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                PersistentInventoryAuditAction.Staged,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            var oldState = PersistentInventorySnapshotState.None;
+
+            if (account == null)
+            {
+                if (request.ExpectedRevision != PersistentInventoryRevision.None)
+                {
+                    return CreatePersistentInventoryFailure(
+                        PersistentInventoryMutationStatus.RevisionMismatch,
+                        null);
+                }
+
+                var now = DateTime.UtcNow;
+                account = new Wh40kPersistentInventory
+                {
+                    UserId = userId.UserId,
+                    State = (int) PersistentInventorySnapshotState.None,
+                    VerifiedState = (int) PersistentInventorySnapshotState.None,
+                    SavePhase = (int) PersistentInventorySavePhase.None,
+                    Revision = 0,
+                    OperationId = request.OperationId.Value,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                };
+                db.DbContext.Wh40kPersistentInventories.Add(account);
+            }
+            else
+            {
+                oldState = ParsePersistentInventoryState(account.State);
+                if (account.Revision != request.ExpectedRevision.Value)
+                {
+                    return CreatePersistentInventoryFailure(
+                        PersistentInventoryMutationStatus.RevisionMismatch,
+                        await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+                }
+
+                if (oldState == PersistentInventorySnapshotState.Staging)
+                {
+                    return CreatePersistentInventoryFailure(
+                        PersistentInventoryMutationStatus.StagingConflict,
+                        await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+                }
+
+                if (!PersistentInventoryStateMachine.CanTransition(
+                        oldState,
+                        PersistentInventorySnapshotState.Staging))
+                {
+                    return CreatePersistentInventoryFailure(
+                        PersistentInventoryMutationStatus.InvalidTransition,
+                        await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+                }
+
+                if (account.StagingSnapshotId is { } staleStaging &&
+                    staleStaging != account.CurrentSnapshotId &&
+                    staleStaging != account.LastKnownGoodSnapshotId)
+                {
+                    var staleRevision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                        .SingleOrDefaultAsync(candidate =>
+                            candidate.UserId == userId.UserId &&
+                            candidate.SnapshotId == staleStaging,
+                            cancel);
+                    if (staleRevision != null)
+                        db.DbContext.Wh40kPersistentInventoryRevisions.Remove(staleRevision);
+                }
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revision = checked(account.Revision + 1);
+            var candidate = new Wh40kPersistentInventoryRevision
+            {
+                SnapshotId = request.SnapshotId.Value,
+                UserId = userId.UserId,
+                SchemaVersion = request.SchemaVersion,
+                PolicyId = request.PolicyId,
+                CapturedRoleId = request.CapturedRoleId,
+                CapturedProfileName = request.CapturedProfileName,
+                Payload = request.Payload,
+                PayloadSha256 = request.PayloadSha256,
+                ItemCount = request.ItemCount,
+                EntityCount = request.EntityCount,
+                UncompressedBytes = request.UncompressedBytes,
+                CompressedBytes = request.Payload.Length,
+                OperationId = request.OperationId.Value,
+                CreatedAt = timestamp,
+                SavedAt = timestamp,
+            };
+            db.DbContext.Wh40kPersistentInventoryRevisions.Add(candidate);
+
+            account.State = (int) PersistentInventorySnapshotState.Staging;
+            account.SavePhase = (int) PersistentInventorySavePhase.CandidateStaged;
+            account.Revision = revision;
+            account.OperationId = request.OperationId.Value;
+            account.StagingSnapshotId = request.SnapshotId.Value;
+            account.StagingServerEpoch = request.ServerEpoch?.Value;
+            account.WorldCleanupAuthorizedAt = null;
+            account.UpdatedAt = timestamp;
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                PersistentInventoryAuditAction.Staged,
+                oldState,
+                PersistentInventorySnapshotState.Staging,
+                request.SnapshotId,
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                candidate,
+                timestamp);
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Staged,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Staged,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            var header = await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel);
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                header,
+                new PersistentInventoryRevision(revision),
+                PersistentInventorySnapshotState.Staging,
+                request.SnapshotId);
+        }
+
+        public async Task<PersistentInventoryMutationResult> AuthorizePersistentInventoryWorldCleanupAsync(
+            NetUserId userId,
+            PersistentInventoryAuthorizeWorldCleanupRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+            if (request.SnapshotId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор снимка не может быть пустым.", nameof(request));
+            if (request.ServerEpoch.Value == Guid.Empty)
+                throw new ArgumentException("Server epoch не может быть пустым.", nameof(request));
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                PersistentInventoryAuditAction.WorldCleanupAuthorized,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (account == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.NotFound, null);
+
+            if (account.Revision != request.ExpectedRevision.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            if (ParsePersistentInventoryState(account.State) != PersistentInventorySnapshotState.Staging ||
+                ParsePersistentInventorySavePhase(account.SavePhase) != PersistentInventorySavePhase.CandidateStaged ||
+                account.StagingSnapshotId != request.SnapshotId.Value ||
+                account.OperationId != request.OperationId.Value ||
+                account.StagingServerEpoch != request.ServerEpoch.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var candidate = await db.DbContext.Wh40kPersistentInventoryRevisions
+                .AsNoTracking()
+                .SingleOrDefaultAsync(revision =>
+                    revision.UserId == userId.UserId &&
+                    revision.SnapshotId == request.SnapshotId.Value &&
+                    revision.OperationId == request.OperationId.Value,
+                    cancel);
+            if (candidate == null)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revisionNumber = checked(account.Revision + 1);
+            account.SavePhase = (int) PersistentInventorySavePhase.WorldCleanupAuthorized;
+            account.WorldCleanupAuthorizedAt = timestamp;
+            account.Revision = revisionNumber;
+            account.UpdatedAt = timestamp;
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                PersistentInventoryAuditAction.WorldCleanupAuthorized,
+                PersistentInventorySnapshotState.Staging,
+                PersistentInventorySnapshotState.Staging,
+                request.SnapshotId,
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                candidate,
+                timestamp);
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.WorldCleanupAuthorized,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.WorldCleanupAuthorized,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel),
+                new PersistentInventoryRevision(revisionNumber),
+                PersistentInventorySnapshotState.Staging,
+                request.SnapshotId);
+        }
+
+        public async Task<PersistentInventoryMutationResult> PromotePersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryPromoteRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+            if (request.SnapshotId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор снимка не может быть пустым.", nameof(request));
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                PersistentInventoryAuditAction.Promoted,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (account == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.NotFound, null);
+
+            if (account.Revision != request.ExpectedRevision.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var oldState = ParsePersistentInventoryState(account.State);
+            if (oldState != PersistentInventorySnapshotState.Staging ||
+                ParsePersistentInventorySavePhase(account.SavePhase) !=
+                    PersistentInventorySavePhase.WorldCleanupAuthorized ||
+                account.StagingSnapshotId != request.SnapshotId.Value ||
+                account.OperationId != request.OperationId.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var candidate = await db.DbContext.Wh40kPersistentInventoryRevisions
+                .SingleOrDefaultAsync(revision =>
+                    revision.UserId == userId.UserId &&
+                    revision.SnapshotId == request.SnapshotId.Value,
+                    cancel);
+            if (candidate == null)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var latestLostSnapshotId = await FindLatestPersistentInventoryLostSnapshotIdAsync(
+                db.DbContext,
+                userId.UserId,
+                cancel);
+            if (account.LastKnownGoodSnapshotId is { } oldLastKnownGood &&
+                oldLastKnownGood != account.CurrentSnapshotId &&
+                oldLastKnownGood != latestLostSnapshotId)
+            {
+                var retained = await db.DbContext.Wh40kPersistentInventoryRevisions
+                    .SingleOrDefaultAsync(revision =>
+                        revision.UserId == userId.UserId &&
+                        revision.SnapshotId == oldLastKnownGood,
+                        cancel);
+                if (retained != null)
+                    db.DbContext.Wh40kPersistentInventoryRevisions.Remove(retained);
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revisionNumber = checked(account.Revision + 1);
+            account.LastKnownGoodSnapshotId = account.CurrentSnapshotId;
+            account.CurrentSnapshotId = request.SnapshotId.Value;
+            account.StagingSnapshotId = null;
+            account.State = (int) PersistentInventorySnapshotState.Active;
+            account.VerifiedState = (int) PersistentInventorySnapshotState.Active;
+            account.SavePhase = (int) PersistentInventorySavePhase.None;
+            account.Revision = revisionNumber;
+            account.OperationId = request.OperationId.Value;
+            account.ServerEpoch = null;
+            account.StagingServerEpoch = null;
+            account.LifeId = null;
+            account.InvalidationReason = (int) PersistentInventoryInvalidationReason.None;
+            account.LossReason = (int) PersistentInventoryLossReason.None;
+            account.QuarantineReason = (int) PersistentInventoryQuarantineReason.None;
+            account.ReasonDetails = null;
+            account.UpdatedAt = timestamp;
+            account.RestoredAt = null;
+            account.InvalidatedAt = null;
+            account.LostAt = null;
+            account.WorldCleanupAuthorizedAt = null;
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                PersistentInventoryAuditAction.Promoted,
+                oldState,
+                PersistentInventorySnapshotState.Active,
+                request.SnapshotId,
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                candidate,
+                timestamp);
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Promoted,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Promoted,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel),
+                new PersistentInventoryRevision(revisionNumber),
+                PersistentInventorySnapshotState.Active,
+                request.SnapshotId);
+        }
+
+        public async Task<PersistentInventoryMutationResult> RepairPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryRepairRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryRepairRequest(request);
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                PersistentInventoryAuditAction.Repaired,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (account == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.NotFound, null);
+
+            if (account.Revision != request.ExpectedRevision.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var oldState = ParsePersistentInventoryState(account.State);
+            if (oldState != PersistentInventorySnapshotState.Active ||
+                ParsePersistentInventoryState(account.VerifiedState) !=
+                    PersistentInventorySnapshotState.Active ||
+                ParsePersistentInventorySavePhase(account.SavePhase) !=
+                    PersistentInventorySavePhase.None ||
+                account.CurrentSnapshotId != request.SourceSnapshotId.Value ||
+                account.StagingSnapshotId != null)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.InvalidTransition,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var source = await db.DbContext.Wh40kPersistentInventoryRevisions
+                .SingleOrDefaultAsync(revision =>
+                    revision.UserId == userId.UserId &&
+                    revision.SnapshotId == request.SourceSnapshotId.Value,
+                    cancel);
+            if (source == null)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            if (await db.DbContext.Wh40kPersistentInventoryRevisions
+                    .AsNoTracking()
+                    .AnyAsync(revision =>
+                        revision.SnapshotId == request.RepairedSnapshotId.Value,
+                        cancel))
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.StagingConflict,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revisionNumber = checked(account.Revision + 1);
+            var repaired = new Wh40kPersistentInventoryRevision
+            {
+                SnapshotId = request.RepairedSnapshotId.Value,
+                UserId = userId.UserId,
+                SchemaVersion = request.SchemaVersion,
+                PolicyId = request.PolicyId,
+                CapturedRoleId = source.CapturedRoleId,
+                CapturedProfileName = source.CapturedProfileName,
+                Payload = request.Payload,
+                PayloadSha256 = request.PayloadSha256,
+                ItemCount = request.ItemCount,
+                EntityCount = request.EntityCount,
+                UncompressedBytes = request.UncompressedBytes,
+                CompressedBytes = request.Payload.Length,
+                OperationId = request.OperationId.Value,
+                CreatedAt = timestamp,
+                SavedAt = timestamp,
+            };
+            db.DbContext.Wh40kPersistentInventoryRevisions.Add(repaired);
+
+            account.CurrentSnapshotId = request.RepairedSnapshotId.Value;
+            if (account.LastKnownGoodSnapshotId == request.SourceSnapshotId.Value)
+                account.LastKnownGoodSnapshotId = null;
+            account.Revision = revisionNumber;
+            account.OperationId = request.OperationId.Value;
+            account.ReasonDetails = request.Reason;
+            account.UpdatedAt = timestamp;
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                PersistentInventoryAuditAction.Repaired,
+                oldState,
+                PersistentInventorySnapshotState.Active,
+                request.RepairedSnapshotId,
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                repaired,
+                timestamp);
+            db.DbContext.Wh40kPersistentInventoryRevisions.Remove(source);
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Repaired,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    PersistentInventoryAuditAction.Repaired,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel),
+                new PersistentInventoryRevision(revisionNumber),
+                PersistentInventorySnapshotState.Active,
+                request.RepairedSnapshotId);
+        }
+
+        public async Task<PersistentInventoryMutationResult> TransitionPersistentInventoryAsync(
+            NetUserId userId,
+            PersistentInventoryTransitionRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+            if (!IsPersistentInventoryTransitionAuditActionValid(request.NewState, request.AuditAction))
+                throw new ArgumentException("Audit action не соответствует переходу состояния.", nameof(request));
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                request.AuditAction,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (account == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.NotFound, null);
+
+            if (account.Revision != request.ExpectedRevision.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var oldState = ParsePersistentInventoryState(account.State);
+            if (!PersistentInventoryStateMachine.CanTransition(oldState, request.NewState) ||
+                !PersistentInventoryStateMachine.HasValidTransitionMetadata(request) ||
+                oldState == PersistentInventorySnapshotState.Staging &&
+                request.NewState == PersistentInventorySnapshotState.Active)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.InvalidTransition,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revisionNumber = checked(account.Revision + 1);
+            Wh40kPersistentInventoryRevision? auditRevision = null;
+            var auditSnapshotId = account.CurrentSnapshotId;
+            var supersededLostSnapshotId =
+                request.NewState == PersistentInventorySnapshotState.LostByDisconnect
+                    ? await FindLatestPersistentInventoryLostSnapshotIdAsync(
+                        db.DbContext,
+                        userId.UserId,
+                        cancel)
+                    : null;
+
+            if (request.NewState == PersistentInventorySnapshotState.Aborted &&
+                account.StagingSnapshotId is { } stagingSnapshotId)
+            {
+                auditSnapshotId = stagingSnapshotId;
+                auditRevision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                    .SingleOrDefaultAsync(revision =>
+                        revision.UserId == userId.UserId &&
+                        revision.SnapshotId == stagingSnapshotId,
+                        cancel);
+                if (auditRevision != null)
+                    db.DbContext.Wh40kPersistentInventoryRevisions.Remove(auditRevision);
+                account.StagingSnapshotId = null;
+                account.StagingServerEpoch = null;
+                account.SavePhase = (int) PersistentInventorySavePhase.None;
+                account.WorldCleanupAuthorizedAt = null;
+            }
+            else
+            {
+                var metadataSnapshotId = request.NewState == PersistentInventorySnapshotState.Quarantined
+                    ? account.StagingSnapshotId ?? account.CurrentSnapshotId
+                    : account.CurrentSnapshotId;
+                auditSnapshotId = metadataSnapshotId;
+                if (metadataSnapshotId != null)
+                {
+                    auditRevision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                        .AsNoTracking()
+                        .SingleOrDefaultAsync(revision =>
+                            revision.UserId == userId.UserId &&
+                            revision.SnapshotId == metadataSnapshotId,
+                            cancel);
+                }
+            }
+
+            var isCandidateAbort = oldState == PersistentInventorySnapshotState.Staging &&
+                                   request.NewState == PersistentInventorySnapshotState.Aborted;
+            account.State = isCandidateAbort
+                ? account.VerifiedState
+                : (int) request.NewState;
+            account.Revision = revisionNumber;
+            account.OperationId = request.OperationId.Value;
+            account.ReasonDetails = request.Reason;
+            account.UpdatedAt = timestamp;
+            var preservesVerifiedState = oldState == PersistentInventorySnapshotState.Staging &&
+                                         request.NewState is PersistentInventorySnapshotState.Aborted
+                                             or PersistentInventorySnapshotState.Quarantined;
+            if (preservesVerifiedState)
+            {
+                if (request.NewState == PersistentInventorySnapshotState.Quarantined)
+                {
+                    account.QuarantineReason = (int) request.QuarantineReason;
+                    account.SavePhase = (int) PersistentInventorySavePhase.None;
+                    account.StagingServerEpoch = null;
+                    account.WorldCleanupAuthorizedAt = null;
+                }
+            }
+            else
+            {
+                account.VerifiedState = (int) request.NewState;
+                account.ServerEpoch = request.NewState == PersistentInventorySnapshotState.Bound
+                    ? request.ServerEpoch?.Value
+                    : null;
+                account.LifeId = request.NewState == PersistentInventorySnapshotState.Bound
+                    ? request.LifeId?.Value
+                    : null;
+                account.InvalidationReason = (int) request.InvalidationReason;
+                account.LossReason = (int) request.LossReason;
+                account.QuarantineReason = (int) request.QuarantineReason;
+                account.RestoredAt = request.NewState == PersistentInventorySnapshotState.Bound
+                    ? timestamp
+                    : account.RestoredAt;
+                account.InvalidatedAt = request.NewState == PersistentInventorySnapshotState.Invalid
+                    ? timestamp
+                    : null;
+                account.LostAt = request.NewState == PersistentInventorySnapshotState.LostByDisconnect
+                    ? timestamp
+                    : null;
+            }
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                request.AuditAction,
+                oldState,
+                request.NewState,
+                auditSnapshotId == null ? null : new PersistentInventorySnapshotId(auditSnapshotId.Value),
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                auditRevision,
+                timestamp);
+
+            if (supersededLostSnapshotId is { } oldLostSnapshotId &&
+                oldLostSnapshotId != auditSnapshotId &&
+                oldLostSnapshotId != account.CurrentSnapshotId &&
+                oldLostSnapshotId != account.LastKnownGoodSnapshotId &&
+                oldLostSnapshotId != account.StagingSnapshotId)
+            {
+                var supersededLostRevision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                    .SingleOrDefaultAsync(revision =>
+                        revision.UserId == userId.UserId &&
+                        revision.SnapshotId == oldLostSnapshotId,
+                        cancel);
+                if (supersededLostRevision != null)
+                    db.DbContext.Wh40kPersistentInventoryRevisions.Remove(supersededLostRevision);
+            }
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    request.AuditAction,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    request.AuditAction,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            var appliedState = ParsePersistentInventoryState(account.State);
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel),
+                new PersistentInventoryRevision(revisionNumber),
+                appliedState,
+                auditSnapshotId == null ? null : new PersistentInventorySnapshotId(auditSnapshotId.Value));
+        }
+
+        public async Task<PersistentInventoryMutationResult> SelectPersistentInventoryRevisionAsync(
+            NetUserId userId,
+            PersistentInventorySelectRevisionRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+            if (request.SnapshotId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор снимка не может быть пустым.", nameof(request));
+            if (!Enum.IsDefined(request.Mode))
+                throw new ArgumentOutOfRangeException(nameof(request), "Неизвестный режим выбора ревизии.");
+
+            var action = request.Mode == PersistentInventoryRevisionSelectionMode.RecoverLost
+                ? PersistentInventoryAuditAction.Recovered
+                : PersistentInventoryAuditAction.RolledBack;
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                db.DbContext,
+                userId.UserId,
+                request.OperationId,
+                action,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(db.DbContext, duplicate, cancel);
+
+            var account = await db.DbContext.Wh40kPersistentInventories
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (account == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.NotFound, null);
+            if (account.Revision != request.ExpectedRevision.Value)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var oldState = ParsePersistentInventoryState(account.State);
+            var oldVerifiedState = ParsePersistentInventoryState(account.VerifiedState);
+            var target = request.SnapshotId.Value;
+            var isCurrent = account.CurrentSnapshotId == target;
+            var isLastKnownGood = account.LastKnownGoodSnapshotId == target;
+            var selected = await db.DbContext.Wh40kPersistentInventoryRevisions
+                .SingleOrDefaultAsync(revision =>
+                    revision.UserId == userId.UserId &&
+                    revision.SnapshotId == target,
+                    cancel);
+            if (selected == null)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.CandidateNotFound,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var selectableState = oldState is not PersistentInventorySnapshotState.Bound
+                                      and not PersistentInventorySnapshotState.Staging &&
+                                  oldVerifiedState != PersistentInventorySnapshotState.Bound;
+            var isVerifiedRollbackTarget =
+                request.Mode != PersistentInventoryRevisionSelectionMode.Rollback ||
+                await db.DbContext.Wh40kPersistentInventoryAudits
+                    .AsNoTracking()
+                    .AnyAsync(audit =>
+                        audit.UserId == userId.UserId &&
+                        audit.SnapshotId == target &&
+                        (audit.Action == (int) PersistentInventoryAuditAction.Promoted ||
+                         audit.Action == (int) PersistentInventoryAuditAction.Repaired),
+                        cancel);
+            var latestLostSnapshotId =
+                request.Mode == PersistentInventoryRevisionSelectionMode.RecoverLost
+                    ? await FindLatestPersistentInventoryLostSnapshotIdAsync(
+                        db.DbContext,
+                        userId.UserId,
+                        cancel)
+                    : null;
+            var allowed = request.Mode switch
+            {
+                PersistentInventoryRevisionSelectionMode.Rollback =>
+                    selectableState &&
+                    isVerifiedRollbackTarget,
+                PersistentInventoryRevisionSelectionMode.RecoverLost =>
+                    selectableState &&
+                    latestLostSnapshotId == target,
+                PersistentInventoryRevisionSelectionMode.StartupFallback =>
+                    oldState == PersistentInventorySnapshotState.Bound &&
+                    isLastKnownGood,
+                _ => false,
+            };
+            if (!allowed)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.InvalidTransition,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+            }
+
+            var previousCurrent = account.CurrentSnapshotId;
+            var abandonedStaging = account.StagingSnapshotId;
+            account.CurrentSnapshotId = target;
+            if (!isCurrent)
+            {
+                account.LastKnownGoodSnapshotId =
+                    request.Mode == PersistentInventoryRevisionSelectionMode.StartupFallback
+                        ? null
+                        : previousCurrent;
+            }
+
+            var timestamp = DateTime.UtcNow;
+            var revisionNumber = checked(account.Revision + 1);
+            account.State = (int) PersistentInventorySnapshotState.Active;
+            account.VerifiedState = (int) PersistentInventorySnapshotState.Active;
+            account.SavePhase = (int) PersistentInventorySavePhase.None;
+            account.Revision = revisionNumber;
+            account.OperationId = request.OperationId.Value;
+            account.StagingSnapshotId = null;
+            account.ServerEpoch = null;
+            account.StagingServerEpoch = null;
+            account.LifeId = null;
+            account.InvalidationReason = (int) PersistentInventoryInvalidationReason.None;
+            account.LossReason = (int) PersistentInventoryLossReason.None;
+            account.QuarantineReason = (int) PersistentInventoryQuarantineReason.None;
+            account.ReasonDetails = request.Reason;
+            account.UpdatedAt = timestamp;
+            account.RestoredAt = null;
+            account.InvalidatedAt = null;
+            account.LostAt = null;
+            account.WorldCleanupAuthorizedAt = null;
+
+            if (abandonedStaging is { } abandonedSnapshotId &&
+                abandonedSnapshotId != target &&
+                abandonedSnapshotId != account.CurrentSnapshotId &&
+                abandonedSnapshotId != account.LastKnownGoodSnapshotId)
+            {
+                var abandonedRevision = await db.DbContext.Wh40kPersistentInventoryRevisions
+                    .SingleOrDefaultAsync(revision =>
+                        revision.UserId == userId.UserId &&
+                        revision.SnapshotId == abandonedSnapshotId,
+                        cancel);
+                if (abandonedRevision != null)
+                    db.DbContext.Wh40kPersistentInventoryRevisions.Remove(abandonedRevision);
+            }
+
+            AddPersistentInventoryAudit(
+                db.DbContext,
+                account,
+                request.OperationId,
+                action,
+                oldState,
+                PersistentInventorySnapshotState.Active,
+                request.SnapshotId,
+                request.Actor,
+                request.ActorUserId,
+                request.Reason,
+                selected,
+                timestamp);
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    action,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+            catch (DbUpdateException exception)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await ResolvePersistentInventoryWriteFailureAsync(
+                    userId.UserId,
+                    request.OperationId,
+                    action,
+                    request.ExpectedRevision,
+                    exception,
+                    cancel);
+            }
+
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Success,
+                await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel),
+                new PersistentInventoryRevision(revisionNumber),
+                PersistentInventorySnapshotState.Active,
+                request.SnapshotId);
+        }
+
+        private async Task<PersistentInventorySnapshotHeader?> LoadPersistentInventoryHeaderAsync(
+            ServerDbContext db,
+            Guid userId,
+            CancellationToken cancel)
+        {
+            var account = await db.Wh40kPersistentInventories
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId, cancel);
+            if (account == null)
+                return null;
+
+            var snapshotIds = new[]
+                {
+                    account.CurrentSnapshotId,
+                    account.LastKnownGoodSnapshotId,
+                    account.StagingSnapshotId,
+                }
+                .Where(snapshotId => snapshotId != null)
+                .Select(snapshotId => snapshotId!.Value)
+                .Distinct()
+                .ToArray();
+            var revisions = snapshotIds.Length == 0
+                ? new Dictionary<Guid, Wh40kPersistentInventoryRevision>()
+                : await db.Wh40kPersistentInventoryRevisions
+                    .AsNoTracking()
+                    .Where(revision =>
+                        revision.UserId == userId &&
+                        snapshotIds.Contains(revision.SnapshotId))
+                    .ToDictionaryAsync(revision => revision.SnapshotId, cancel);
+
+            PersistentInventoryRevisionMetadata? Metadata(Guid? snapshotId)
+            {
+                if (snapshotId == null || !revisions.TryGetValue(snapshotId.Value, out var revision))
+                    return null;
+
+                return ToPersistentInventoryRevisionMetadata(revision);
+            }
+
+            return new PersistentInventorySnapshotHeader(
+                new PersistentInventoryAccountId(account.UserId),
+                ParsePersistentInventoryState(account.State),
+                ParsePersistentInventoryState(account.VerifiedState),
+                ParsePersistentInventorySavePhase(account.SavePhase),
+                new PersistentInventoryRevision(account.Revision),
+                new PersistentInventoryOperationId(account.OperationId),
+                Metadata(account.CurrentSnapshotId),
+                Metadata(account.LastKnownGoodSnapshotId),
+                Metadata(account.StagingSnapshotId),
+                account.ServerEpoch == null
+                    ? null
+                    : new PersistentInventoryServerEpoch(account.ServerEpoch.Value),
+                account.StagingServerEpoch == null
+                    ? null
+                    : new PersistentInventoryServerEpoch(account.StagingServerEpoch.Value),
+                account.LifeId == null
+                    ? null
+                    : new PersistentInventoryLifeId(account.LifeId.Value),
+                ParsePersistentInventoryInvalidationReason(account.InvalidationReason),
+                ParsePersistentInventoryLossReason(account.LossReason),
+                ParsePersistentInventoryQuarantineReason(account.QuarantineReason),
+                account.ReasonDetails,
+                NormalizeDatabaseTime(account.CreatedAt),
+                NormalizeDatabaseTime(account.UpdatedAt),
+                NormalizeDatabaseTime(account.RestoredAt),
+                NormalizeDatabaseTime(account.InvalidatedAt),
+                NormalizeDatabaseTime(account.LostAt),
+                NormalizeDatabaseTime(account.WorldCleanupAuthorizedAt));
+        }
+
+        private static async Task<Guid?> FindLatestPersistentInventoryLostSnapshotIdAsync(
+            ServerDbContext db,
+            Guid userId,
+            CancellationToken cancel)
+        {
+            var lostAudits = db.Wh40kPersistentInventoryAudits
+                .AsNoTracking()
+                .Where(audit =>
+                    audit.UserId == userId &&
+                    audit.Action == (int) PersistentInventoryAuditAction.Lost &&
+                    audit.OldState == (int) PersistentInventorySnapshotState.Bound &&
+                    audit.NewState == (int) PersistentInventorySnapshotState.LostByDisconnect &&
+                    audit.SnapshotId != null);
+
+            return await (
+                    from audit in lostAudits
+                    join revision in db.Wh40kPersistentInventoryRevisions.AsNoTracking()
+                        on new
+                        {
+                            audit.UserId,
+                            SnapshotId = audit.SnapshotId!.Value,
+                        }
+                        equals new
+                        {
+                            revision.UserId,
+                            revision.SnapshotId,
+                        }
+                    orderby audit.Id descending
+                    select audit.SnapshotId)
+                .FirstOrDefaultAsync(cancel);
+        }
+
+        private async Task<PersistentInventoryMutationResult> ResolvePersistentInventoryWriteFailureAsync(
+            Guid userId,
+            PersistentInventoryOperationId operationId,
+            PersistentInventoryAuditAction action,
+            PersistentInventoryRevision expectedRevision,
+            Exception exception,
+            CancellationToken cancel)
+        {
+            await using var retryDb = await GetDb(cancel);
+            var duplicate = await FindPersistentInventoryDuplicateAsync(
+                retryDb.DbContext,
+                userId,
+                operationId,
+                action,
+                cancel);
+            if (duplicate != null)
+                return await ToDuplicatePersistentInventoryResultAsync(retryDb.DbContext, duplicate, cancel);
+
+            var header = await LoadPersistentInventoryHeaderAsync(retryDb.DbContext, userId, cancel);
+            if (header != null && header.Revision != expectedRevision)
+            {
+                return CreatePersistentInventoryFailure(
+                    PersistentInventoryMutationStatus.RevisionMismatch,
+                    header);
+            }
+
+            throw new InvalidOperationException(
+                $"Не удалось сохранить persistent inventory для аккаунта {userId}.",
+                exception);
+        }
+
+        private async Task<PersistentInventoryMutationResult> ToDuplicatePersistentInventoryResultAsync(
+            ServerDbContext db,
+            Wh40kPersistentInventoryAudit duplicate,
+            CancellationToken cancel)
+        {
+            var header = await LoadPersistentInventoryHeaderAsync(db, duplicate.UserId, cancel);
+            return new PersistentInventoryMutationResult(
+                PersistentInventoryMutationStatus.Duplicate,
+                header,
+                new PersistentInventoryRevision(duplicate.Revision),
+                header?.State ?? ParsePersistentInventoryState(duplicate.NewState),
+                duplicate.SnapshotId == null
+                    ? null
+                    : new PersistentInventorySnapshotId(duplicate.SnapshotId.Value));
+        }
+
+        private static async Task<Wh40kPersistentInventoryAudit?> FindPersistentInventoryDuplicateAsync(
+            ServerDbContext db,
+            Guid userId,
+            PersistentInventoryOperationId operationId,
+            PersistentInventoryAuditAction action,
+            CancellationToken cancel)
+        {
+            return await db.Wh40kPersistentInventoryAudits
+                .AsNoTracking()
+                .SingleOrDefaultAsync(entry =>
+                    entry.UserId == userId &&
+                    entry.OperationId == operationId.Value &&
+                    entry.Action == (int) action,
+                    cancel);
+        }
+
+        private static void AddPersistentInventoryAudit(
+            ServerDbContext db,
+            Wh40kPersistentInventory account,
+            PersistentInventoryOperationId operationId,
+            PersistentInventoryAuditAction action,
+            PersistentInventorySnapshotState oldState,
+            PersistentInventorySnapshotState newState,
+            PersistentInventorySnapshotId? snapshotId,
+            string actor,
+            Guid? actorUserId,
+            string? reason,
+            Wh40kPersistentInventoryRevision? metadata,
+            DateTime timestamp)
+        {
+            db.Wh40kPersistentInventoryAudits.Add(new Wh40kPersistentInventoryAudit
+            {
+                UserId = account.UserId,
+                OperationId = operationId.Value,
+                Action = (int) action,
+                OldState = (int) oldState,
+                NewState = (int) newState,
+                Revision = account.Revision,
+                SnapshotId = snapshotId?.Value,
+                ActorUserId = actorUserId,
+                Actor = actor,
+                Reason = reason,
+                ItemCount = metadata?.ItemCount ?? 0,
+                EntityCount = metadata?.EntityCount ?? 0,
+                UncompressedBytes = metadata?.UncompressedBytes ?? 0,
+                CompressedBytes = metadata?.CompressedBytes ?? 0,
+                CreatedAt = timestamp,
+            });
+        }
+
+        private static PersistentInventoryMutationResult CreatePersistentInventoryFailure(
+            PersistentInventoryMutationStatus status,
+            PersistentInventorySnapshotHeader? header)
+        {
+            return new PersistentInventoryMutationResult(
+                status,
+                header,
+                header?.Revision ?? PersistentInventoryRevision.None,
+                header?.State ?? PersistentInventorySnapshotState.None,
+                header?.Staging?.SnapshotId ?? header?.CurrentVerified?.SnapshotId);
+        }
+
+        private static void ValidatePersistentInventoryStageRequest(PersistentInventoryStageRequest request)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+
+            if (request.SnapshotId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор снимка не может быть пустым.", nameof(request));
+            if (request.CapturedRoleId?.Length > PersistentInventoryMaximumPolicyIdLength ||
+                request.CapturedProfileName?.Length > PersistentInventoryMaximumPolicyIdLength)
+            {
+                throw new ArgumentException(
+                    $"Диагностические role/profile поля не могут превышать {PersistentInventoryMaximumPolicyIdLength} символов.",
+                    nameof(request));
+            }
+
+            ValidatePersistentInventoryPayloadMetadata(
+                request.SchemaVersion,
+                request.PolicyId,
+                request.Payload,
+                request.PayloadSha256,
+                request.ItemCount,
+                request.EntityCount,
+                request.UncompressedBytes,
+                nameof(request));
+        }
+
+        private static void ValidatePersistentInventoryRepairRequest(PersistentInventoryRepairRequest request)
+        {
+            ValidatePersistentInventoryMutationIdentity(
+                request.OperationId,
+                request.ExpectedRevision,
+                request.Actor,
+                request.Reason);
+
+            if (request.SourceSnapshotId.Value == Guid.Empty ||
+                request.RepairedSnapshotId.Value == Guid.Empty ||
+                request.SourceSnapshotId == request.RepairedSnapshotId)
+            {
+                throw new ArgumentException(
+                    "Исходный и исправленный снимки должны иметь разные непустые идентификаторы.",
+                    nameof(request));
+            }
+
+            ValidatePersistentInventoryPayloadMetadata(
+                request.SchemaVersion,
+                request.PolicyId,
+                request.Payload,
+                request.PayloadSha256,
+                request.ItemCount,
+                request.EntityCount,
+                request.UncompressedBytes,
+                nameof(request));
+        }
+
+        private static void ValidatePersistentInventoryPayloadMetadata(
+            int schemaVersion,
+            string policyId,
+            byte[] payload,
+            byte[] payloadSha256,
+            int itemCount,
+            int entityCount,
+            int uncompressedBytes,
+            string parameterName)
+        {
+            if (schemaVersion <= 0)
+                throw new ArgumentOutOfRangeException(parameterName, "Версия схемы должна быть положительной.");
+            if (string.IsNullOrWhiteSpace(policyId) ||
+                policyId.Length > PersistentInventoryMaximumPolicyIdLength)
+            {
+                throw new ArgumentException(
+                    $"Идентификатор policy должен содержать от 1 до {PersistentInventoryMaximumPolicyIdLength} символов.",
+                    parameterName);
+            }
+
+            ArgumentNullException.ThrowIfNull(payload);
+            ArgumentNullException.ThrowIfNull(payloadSha256);
+            if (payloadSha256.Length != 32)
+                throw new ArgumentException("SHA-256 должен содержать ровно 32 байта.", parameterName);
+            if (itemCount < 0 || entityCount < 0 || uncompressedBytes < 0)
+                throw new ArgumentOutOfRangeException(parameterName, "Размеры и количества не могут быть отрицательными.");
+        }
+
+        private static void ValidatePersistentInventoryMutationIdentity(
+            PersistentInventoryOperationId operationId,
+            PersistentInventoryRevision expectedRevision,
+            string actor,
+            string? reason)
+        {
+            if (operationId.Value == Guid.Empty)
+                throw new ArgumentException("Идентификатор операции не может быть пустым.", nameof(operationId));
+            if (expectedRevision.Value < 0)
+                throw new ArgumentOutOfRangeException(nameof(expectedRevision), "Ожидаемая ревизия не может быть отрицательной.");
+            if (string.IsNullOrWhiteSpace(actor) || actor.Length > PersistentInventoryMaximumAuditActorLength)
+            {
+                throw new ArgumentException(
+                    $"Инициатор должен содержать от 1 до {PersistentInventoryMaximumAuditActorLength} символов.",
+                    nameof(actor));
+            }
+
+            if (reason?.Length > PersistentInventoryMaximumAuditReasonLength)
+            {
+                throw new ArgumentException(
+                    $"Причина не может превышать {PersistentInventoryMaximumAuditReasonLength} символов.",
+                    nameof(reason));
+            }
+        }
+
+        private static bool IsPersistentInventoryTransitionAuditActionValid(
+            PersistentInventorySnapshotState state,
+            PersistentInventoryAuditAction action)
+        {
+            if (action == PersistentInventoryAuditAction.StateChanged)
+                return true;
+
+            return (state, action) switch
+            {
+                (PersistentInventorySnapshotState.Invalid, PersistentInventoryAuditAction.Invalidated) => true,
+                (PersistentInventorySnapshotState.LostByDisconnect, PersistentInventoryAuditAction.Lost) => true,
+                (PersistentInventorySnapshotState.Quarantined, PersistentInventoryAuditAction.Quarantined) => true,
+                (PersistentInventorySnapshotState.Active, PersistentInventoryAuditAction.Recovered) => true,
+                _ => false,
+            };
+        }
+
+        private PersistentInventoryRevisionMetadata ToPersistentInventoryRevisionMetadata(
+            Wh40kPersistentInventoryRevision revision)
+        {
+            return new PersistentInventoryRevisionMetadata(
+                new PersistentInventorySnapshotId(revision.SnapshotId),
+                revision.SchemaVersion,
+                revision.PolicyId,
+                revision.CapturedRoleId,
+                revision.CapturedProfileName,
+                revision.PayloadSha256,
+                revision.ItemCount,
+                revision.EntityCount,
+                revision.UncompressedBytes,
+                revision.CompressedBytes,
+                new PersistentInventoryOperationId(revision.OperationId),
+                NormalizeDatabaseTime(revision.CreatedAt),
+                NormalizeDatabaseTime(revision.SavedAt));
+        }
+
+        private PersistentInventoryAuditRecord ToPersistentInventoryAuditRecord(
+            Wh40kPersistentInventoryAudit audit)
+        {
+            return new PersistentInventoryAuditRecord(
+                audit.Id,
+                new PersistentInventoryAccountId(audit.UserId),
+                new PersistentInventoryOperationId(audit.OperationId),
+                ParsePersistentInventoryAuditAction(audit.Action),
+                ParsePersistentInventoryState(audit.OldState),
+                ParsePersistentInventoryState(audit.NewState),
+                new PersistentInventoryRevision(audit.Revision),
+                audit.SnapshotId == null
+                    ? null
+                    : new PersistentInventorySnapshotId(audit.SnapshotId.Value),
+                audit.ActorUserId,
+                audit.Actor,
+                audit.Reason,
+                audit.ItemCount,
+                audit.EntityCount,
+                audit.UncompressedBytes,
+                audit.CompressedBytes,
+                NormalizeDatabaseTime(audit.CreatedAt));
+        }
+
+        private static PersistentInventorySnapshotState ParsePersistentInventoryState(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventorySnapshotState), value)
+                ? (PersistentInventorySnapshotState) value
+                : throw new InvalidOperationException($"Неизвестное состояние persistent inventory: {value}.");
+        }
+
+        private static PersistentInventorySavePhase ParsePersistentInventorySavePhase(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventorySavePhase), value)
+                ? (PersistentInventorySavePhase) value
+                : throw new InvalidOperationException($"Неизвестная фаза save-saga persistent inventory: {value}.");
+        }
+
+        private static PersistentInventoryInvalidationReason ParsePersistentInventoryInvalidationReason(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventoryInvalidationReason), value)
+                ? (PersistentInventoryInvalidationReason) value
+                : throw new InvalidOperationException($"Неизвестная причина invalidation: {value}.");
+        }
+
+        private static PersistentInventoryLossReason ParsePersistentInventoryLossReason(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventoryLossReason), value)
+                ? (PersistentInventoryLossReason) value
+                : throw new InvalidOperationException($"Неизвестная причина утраты: {value}.");
+        }
+
+        private static PersistentInventoryQuarantineReason ParsePersistentInventoryQuarantineReason(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventoryQuarantineReason), value)
+                ? (PersistentInventoryQuarantineReason) value
+                : throw new InvalidOperationException($"Неизвестная причина карантина: {value}.");
+        }
+
+        private static PersistentInventoryAuditAction ParsePersistentInventoryAuditAction(int value)
+        {
+            return Enum.IsDefined(typeof(PersistentInventoryAuditAction), value)
+                ? (PersistentInventoryAuditAction) value
+                : throw new InvalidOperationException($"Неизвестное действие аудита: {value}.");
+        }
+
         #endregion
 
         #region User Ids
