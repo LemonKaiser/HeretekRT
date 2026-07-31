@@ -105,7 +105,6 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     public Angle TargetAngle { get; private set; }
 
     public float MaximumIFFDistance { get; set; } = 3000f; // Frontier // Mono - 3000 by default to not gigaclutter
-    public bool HideCoords { get; set; } = false; // Frontier
 
     private static Color _dockLabelColor = Color.White; // Frontier
 
@@ -731,7 +730,6 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // Frontier
         if (state.MaxIffRange != null)
             MaximumIFFDistance = state.MaxIffRange.Value;
-        HideCoords = state.HideCoords;
         // End Frontier
 
         _docks = state.Docks;
@@ -1041,6 +1039,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     var labelText = Loc.GetString("shuttle-console-iff-label", ("name", labelName)!, ("distance", displayedDistance));
 
                     var coordsText = $"({gridMapPos.X:0.0}, {gridMapPos.Y:0.0})";
+                    var trackIdText = iff != null ? Loc.GetString("shuttle-console-track-label") + $"{iff.Address}" : Loc.GetString("shuttle-console-track-unknown-label");
 
                     #region Mono
 
@@ -1060,6 +1059,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     // The radius and squared radius of the radar, in virtual pixels.
                     var radius = Width * 0.5f;
                     var squaredRadius = radius * radius;
+
 
                     // If true, flip the entire label to the right side of the blip and left-align it.
                     // We default to the label being on the left side of the blip because it looked better to me in testing. (arbitrary)
@@ -1099,34 +1099,27 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     var mainLabel = lineBreak < 0 ? labelText : labelText[..lineBreak];
                     var companyLabel = !hideLabel && lineBreak >= 0
                         ? labelText[(lineBreak + 1)..]
-                        : null;
+                        : Loc.GetString("shuttle-console-company-unknown");
 
                     // Draw main ship label with company color if available
                     handle.DrawString(Font, (uiPosition + labelOffset) * UIScale, mainLabel, UIScale * 0.9f, displayColor);
 
-                    // Draw company label if present
-                    if (companyLabel != null)
-                    {
-                        var companyLabelOffset = new Vector2(
-                            labelOffset.X,
-                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y
-                        );
+                    var companyLabelOffset = new Vector2(
+                        labelOffset.X,
+                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y
+                    );
+                    handle.DrawString(Font, (uiPosition + companyLabelOffset) * UIScale, companyLabel, UIScale * 0.7f, displayColor);
 
-                        handle.DrawString(Font, (uiPosition + companyLabelOffset) * UIScale, companyLabel, UIScale * 0.9f, displayColor);
-                    }
+                    var coordOffset = new Vector2(
+                        labelOffset.X,
+                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y);
+                    handle.DrawString(Font, (uiPosition + coordOffset) * UIScale, coordsText, 0.7f * UIScale, displayColor);
 
-                    if (isMouseOver && !HideCoords)
-                    {
-                        var coordDimensions = handle.GetDimensions(Font, coordsText, 0.7f);
-                        var coordOffset = new Vector2()
-                        {
-                            X = uiPosition.X > Width / 2f
-                                ? -coordDimensions.X - blipSize / 0.7f // right align the text to left of the blip (0.7 needed for scale)
-                                : blipSize, // left align the text to the right of the blip
-                            Y = labelOffset.Y + handle.GetDimensions(Font, mainLabel, 1f).Y + (companyLabel != null ? handle.GetDimensions(Font, companyLabel, 1f).Y : 0) + 5
-                        };
-                        handle.DrawString(Font, (uiPosition + coordOffset) * UIScale, coordsText, 0.7f * UIScale, displayColor);
-                    }
+                    var trackIdOffset = new Vector2(
+                        labelOffset.X,
+                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y + handle.GetDimensions(Font, coordsText, 0.7f).Y);
+                    if (iff != null)
+                        handle.DrawString(Font, (uiPosition + trackIdOffset) * UIScale, trackIdText, 0.7f * UIScale, displayColor);
                 }
 
                 NfAddBlipToList(_tempBlipDataList, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, labelColor, hideLabel ? default : gUid); // Frontier code

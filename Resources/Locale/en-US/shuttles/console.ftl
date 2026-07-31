@@ -23,6 +23,8 @@ shuttle-console-angular-velocity-value = {$angularVelocity}
 
 shuttle-console-unknown = Unknown
 shuttle-console-iff-label = {$name} ({$distance}m)
+shuttle-console-track-unknown-label = TRACK.ID UNKNOWN
+shuttle-console-track-label = TRACK.ID
 shuttle-console-exclusion = Exclusion Area
 
 # Buttons
