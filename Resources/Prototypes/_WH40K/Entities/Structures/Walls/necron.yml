@@ -4,11 +4,11 @@
   suffix: WH40K, Некроны
   components:
   - type: Sprite
+    drawdepth: OverMobs
     sprite: _WH40K/Structures/Walls/necron.rsi
-    state: full
   - type: Icon
     sprite: _WH40K/Structures/Walls/necron.rsi
     state: full
   - type: IconSmooth
     key: walls
-    base: solid
+    base: wall
