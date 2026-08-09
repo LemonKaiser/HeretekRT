@@ -6,7 +6,7 @@
   suffix: WH40K
   components:
   - type: Sprite
-    drawdepth: OverMobs
+    drawdepth: Mobs
     sprite: _WH40K/Structures/Walls/adeptus_mechanicus.rsi
   - type: Icon
     sprite: _WH40K/Structures/Walls/adeptus_mechanicus.rsi

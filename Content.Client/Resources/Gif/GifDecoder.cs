@@ -6,14 +6,11 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Content.Client.Resources.Gif;
 
-/// <summary>
-/// Decodes GIF image streams into full RGBA frames and per-frame delays.
-/// The decoder is client-side content code, but is not tied to any particular UI.
-/// </summary>
 public static class GifDecoder
 {
     private const int GifMaxCodeSize = 4096;
     private const int DefaultFrameSafetyLimit = 10000;
+    private const int DefaultCanvasPixelLimit = 4 * 1024 * 1024;
     private const float DefaultGifFrameDelay = 0.1f;
     private const float MinGifFrameDelay = 0.01f;
 
@@ -24,24 +21,45 @@ public static class GifDecoder
 
     public readonly record struct DecodedAnimation(int Width, int Height, DecodedFrame[] Frames);
     public readonly record struct DecodedFrame(byte[] Pixels, float DelaySeconds);
+    public readonly record struct StreamedFrame(Rgba32[] Pixels, float DelaySeconds);
 
     public readonly record struct DecodeOptions(
         int MaxFrameCount,
         bool StopAtFrameLimit,
         float DefaultFrameDelaySeconds,
-        float MinFrameDelaySeconds)
+        float MinFrameDelaySeconds,
+        int MaxCanvasPixels)
     {
         public static DecodeOptions Default => new(
             DefaultFrameSafetyLimit,
             StopAtFrameLimit: false,
             DefaultGifFrameDelay,
-            MinGifFrameDelay);
+            MinGifFrameDelay,
+            DefaultCanvasPixelLimit);
 
         public static DecodeOptions FirstFrameOnly => new(
             MaxFrameCount: 1,
             StopAtFrameLimit: true,
             DefaultGifFrameDelay,
-            MinGifFrameDelay);
+            MinGifFrameDelay,
+            DefaultCanvasPixelLimit);
+    }
+
+    public static DecodedAnimation Decode(byte[] gifData, CancellationToken cancellationToken = default)
+    {
+        return Decode(gifData, DecodeOptions.Default, cancellationToken);
+    }
+
+    public static DecodedAnimation Decode(
+        byte[] gifData,
+        DecodeOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        if (gifData.Length == 0)
+            return new DecodedAnimation(0, 0, Array.Empty<DecodedFrame>());
+
+        using var stream = new MemoryStream(gifData, writable: false);
+        return Decode(stream, options, cancellationToken);
     }
 
     public static DecodedAnimation Decode(
@@ -59,7 +77,7 @@ public static class GifDecoder
         if (gifData.Length == 0)
             return new DecodedAnimation(0, 0, Array.Empty<DecodedFrame>());
 
-        using var stream = OpenReadOnlyStream(gifData);
+        using var stream = new MemoryStream(gifData.ToArray(), writable: false);
         return Decode(stream, options, cancellationToken);
     }
 
@@ -70,22 +88,27 @@ public static class GifDecoder
         return Decode(gifData, DecodeOptions.FirstFrameOnly, cancellationToken);
     }
 
+    public static DecodedAnimation DecodeFirstFrame(byte[] gifData, CancellationToken cancellationToken = default)
+    {
+        return Decode(gifData, DecodeOptions.FirstFrameOnly, cancellationToken);
+    }
+
     public static DecodedAnimation Decode(
         Stream stream,
         DecodeOptions options,
         CancellationToken cancellationToken = default)
     {
-        var decoded = DecodeRaw(stream, options, cancellationToken);
+        var width = 0;
+        var height = 0;
+        var frames = new List<DecodedFrame>();
+        DecodeFrames(stream, options, (frameWidth, frameHeight, frame) =>
+        {
+            width = frameWidth;
+            height = frameHeight;
+            frames.Add(new DecodedFrame(ToBytes(frame.Pixels), frame.DelaySeconds));
+        }, cancellationToken);
 
-        if (decoded.Frames.Count == 0)
-            return new DecodedAnimation(0, 0, Array.Empty<DecodedFrame>());
-
-        var delayedFrames = BuildDelayedFrames(
-            decoded.Frames,
-            options.DefaultFrameDelaySeconds,
-            options.MinFrameDelaySeconds);
-
-        return new DecodedAnimation(decoded.Width, decoded.Height, delayedFrames.ToArray());
+        return new DecodedAnimation(width, height, frames.ToArray());
     }
 
     public static DecodedAnimation DecodeFirstFrame(
@@ -95,37 +118,53 @@ public static class GifDecoder
         return Decode(stream, DecodeOptions.FirstFrameOnly, cancellationToken);
     }
 
-    private static MemoryStream OpenReadOnlyStream(ReadOnlyMemory<byte> gifData)
+    public static int DecodeFrames(
+        byte[] gifData,
+        DecodeOptions options,
+        Action<int, int, StreamedFrame> onFrame,
+        CancellationToken cancellationToken = default,
+        Func<int, Rgba32[]>? frameBufferFactory = null)
     {
-        return new MemoryStream(gifData.ToArray(), writable: false);
+        if (gifData.Length == 0)
+            return 0;
+
+        using var stream = new MemoryStream(gifData, writable: false);
+        return DecodeFrames(stream, options, onFrame, cancellationToken, frameBufferFactory);
     }
 
-    private static List<DecodedFrame> BuildDelayedFrames(
-        IReadOnlyList<RawDecodedFrame> rawFrames,
-        float defaultDelay,
-        float minDelay)
+    public static int DecodeFrames(
+        ReadOnlyMemory<byte> gifData,
+        DecodeOptions options,
+        Action<int, int, StreamedFrame> onFrame,
+        CancellationToken cancellationToken = default,
+        Func<int, Rgba32[]>? frameBufferFactory = null)
     {
-        var result = new List<DecodedFrame>(rawFrames.Count);
+        if (gifData.Length == 0)
+            return 0;
 
-        foreach (var frame in rawFrames)
-        {
-            var delay = frame.DelayCentiseconds > 0
-                ? frame.DelayCentiseconds / 100f
-                : defaultDelay;
-
-            result.Add(new DecodedFrame(frame.Pixels, MathF.Max(delay, minDelay)));
-        }
-
-        return result;
+        using var stream = new MemoryStream(gifData.ToArray(), writable: false);
+        return DecodeFrames(stream, options, onFrame, cancellationToken, frameBufferFactory);
     }
 
-    private static RawDecodedGif DecodeRaw(
+    public static int DecodeFrames(
         Stream stream,
         DecodeOptions options,
-        CancellationToken cancellationToken)
+        Action<int, int, StreamedFrame> onFrame,
+        CancellationToken cancellationToken = default,
+        Func<int, Rgba32[]>? frameBufferFactory = null)
+    {
+        return DecodeRaw(stream, options, onFrame, cancellationToken, frameBufferFactory);
+    }
+
+    private static int DecodeRaw(
+        Stream stream,
+        DecodeOptions options,
+        Action<int, int, StreamedFrame> onFrame,
+        CancellationToken cancellationToken,
+        Func<int, Rgba32[]>? frameBufferFactory)
     {
         if (options.MaxFrameCount <= 0)
-            return new RawDecodedGif(0, 0, new List<RawDecodedFrame>());
+            return 0;
 
         using var reader = new BinaryReader(stream, System.Text.Encoding.ASCII, leaveOpen: true);
 
@@ -143,6 +182,12 @@ public static class GifDecoder
         if (screenWidth <= 0 || screenHeight <= 0)
             throw new InvalidDataException("Invalid GIF logical screen size.");
 
+        var canvasPixelCount = (long) screenWidth * screenHeight;
+        if (canvasPixelCount > options.MaxCanvasPixels)
+            throw new InvalidDataException($"GIF canvas exceeds the pixel limit ({canvasPixelCount} > {options.MaxCanvasPixels}).");
+
+        var canvasPixels = (int) canvasPixelCount;
+
         var packed = reader.ReadByte();
         var hasGlobalColorTable = (packed & 0x80) != 0;
         var globalColorTableSize = 1 << ((packed & 0x07) + 1);
@@ -154,11 +199,12 @@ public static class GifDecoder
         if (hasGlobalColorTable)
             globalColorTable = ReadColorTable(reader, globalColorTableSize);
 
-        var canvas = new byte[screenWidth * screenHeight * 4];
-        var frames = new List<RawDecodedFrame>();
-
+        var canvas = new Rgba32[canvasPixels];
+        var lzwScratch = new GifLzwScratch();
+        var frameCount = 0;
         var gce = GraphicControlExtension.Default;
         PreviousFrameState? previousFrame = null;
+        Rgba32[]? restoreBuffer = null;
 
         while (TryReadByte(reader, out var blockId))
         {
@@ -178,13 +224,13 @@ public static class GifDecoder
 
                 case GifImageDescriptor:
                 {
-                    if (frames.Count >= options.MaxFrameCount)
+                    if (frameCount >= options.MaxFrameCount)
                     {
                         if (options.StopAtFrameLimit)
-                            return new RawDecodedGif(screenWidth, screenHeight, frames);
+                            return frameCount;
 
                         throw new InvalidDataException(
-                            $"GIF contains too many frames ({frames.Count + 1}). Limit is {options.MaxFrameCount}.");
+                            $"GIF contains too many frames ({frameCount + 1}). Limit is {options.MaxFrameCount}.");
                     }
 
                     ApplyDisposal(canvas, screenWidth, screenHeight, previousFrame);
@@ -193,6 +239,8 @@ public static class GifDecoder
                     var top = reader.ReadUInt16();
                     var width = reader.ReadUInt16();
                     var height = reader.ReadUInt16();
+                    if (width <= 0 || height <= 0)
+                        throw new InvalidDataException("Invalid GIF frame size.");
 
                     var imagePacked = reader.ReadByte();
                     var hasLocalColorTable = (imagePacked & 0x80) != 0;
@@ -206,18 +254,26 @@ public static class GifDecoder
                     if (colorTable == null)
                         throw new InvalidDataException("GIF frame has no color table.");
 
-                    var lzwMinCodeSize = reader.ReadByte();
-                    var compressedData = ReadSubBlocks(reader);
-                    var expectedPixels = width * height;
-                    var colorIndices = DecodeLzw(compressedData, lzwMinCodeSize, expectedPixels, cancellationToken);
-
-                    byte[]? restoreSnapshot = null;
-                    if (gce.DisposalMethod == 3)
+                    var framePixelCount = (long) width * height;
+                    if (framePixelCount > options.MaxCanvasPixels)
                     {
-                        restoreSnapshot = new byte[canvas.Length];
-                        Array.Copy(canvas, restoreSnapshot, canvas.Length);
+                        throw new InvalidDataException(
+                            $"GIF frame exceeds the pixel limit ({framePixelCount} > {options.MaxCanvasPixels}).");
                     }
 
+                    var lzwMinCodeSize = reader.ReadByte();
+                    Rgba32[]? restoreSnapshot = null;
+                    if (gce.DisposalMethod == 3)
+                    {
+                        restoreBuffer ??= new Rgba32[canvas.Length];
+                        Array.Copy(canvas, restoreBuffer, canvas.Length);
+                        restoreSnapshot = restoreBuffer;
+                    }
+
+                    var expectedPixels = (int) framePixelCount;
+                    lzwScratch.EnsureColorCapacity(expectedPixels);
+                    var compressedLength = ReadSubBlocks(reader, lzwScratch);
+                    DecodeLzwFrame(lzwMinCodeSize, lzwScratch.CompressedData, compressedLength, expectedPixels, lzwScratch, cancellationToken);
                     DrawFrame(
                         canvas,
                         screenWidth,
@@ -227,15 +283,24 @@ public static class GifDecoder
                         width,
                         height,
                         interlaced,
-                        colorIndices,
+                        lzwScratch.ColorIndices,
                         colorTable,
                         gce.TransparentColorFlag,
                         gce.TransparentColorIndex,
                         cancellationToken);
 
-                    var framePixels = new byte[canvas.Length];
+                    var framePixels = frameBufferFactory?.Invoke(canvas.Length) ?? new Rgba32[canvas.Length];
+                    if (framePixels.Length != canvas.Length)
+                        throw new InvalidDataException("GIF frame buffer has an invalid size.");
+
                     Array.Copy(canvas, framePixels, canvas.Length);
-                    frames.Add(new RawDecodedFrame(framePixels, gce.DelayCentiseconds));
+                    var delay = gce.DelayCentiseconds > 0
+                        ? gce.DelayCentiseconds / 100f
+                        : options.DefaultFrameDelaySeconds;
+                    onFrame(screenWidth, screenHeight, new StreamedFrame(
+                        framePixels,
+                        MathF.Max(delay, options.MinFrameDelaySeconds)));
+                    frameCount++;
 
                     previousFrame = new PreviousFrameState(
                         left,
@@ -250,18 +315,153 @@ public static class GifDecoder
                 }
 
                 case GifTrailer:
-                    return new RawDecodedGif(screenWidth, screenHeight, frames);
+                    return frameCount;
 
                 default:
                     throw new InvalidDataException($"Unexpected GIF block id 0x{blockId:X2}.");
             }
         }
 
-        return new RawDecodedGif(screenWidth, screenHeight, frames);
+        throw new InvalidDataException("Unexpected EOF before GIF trailer.");
+    }
+
+    private static void DecodeLzwFrame(
+        int minCodeSize,
+        byte[] compressedData,
+        int compressedLength,
+        int expectedPixels,
+        GifLzwScratch scratch,
+        CancellationToken cancellationToken)
+    {
+        if (minCodeSize <= 0 || minCodeSize > 8)
+            throw new InvalidDataException($"Unsupported GIF LZW minimum code size: {minCodeSize}");
+
+        var clearCode = 1 << minCodeSize;
+        var endCode = clearCode + 1;
+        var nextCode = clearCode + 2;
+        var codeSize = minCodeSize + 1;
+        var codeMask = (1 << codeSize) - 1;
+        var datum = 0;
+        var bits = 0;
+        var oldCode = -1;
+        var first = 0;
+        var stackTop = 0;
+        var outputCount = 0;
+        var dataIndex = 0;
+
+        for (var i = 0; i < clearCode; i++)
+            scratch.Suffix[i] = (byte) i;
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            while (bits < codeSize)
+            {
+                if (dataIndex >= compressedLength)
+                {
+                    if (outputCount == expectedPixels)
+                        return;
+
+                    throw new InvalidDataException(
+                        $"Unexpected EOF in GIF LZW data after {outputCount} of {expectedPixels} pixels.");
+                }
+
+                var nextByte = compressedData[dataIndex++];
+                datum |= nextByte << bits;
+                bits += 8;
+            }
+
+            var code = datum & codeMask;
+            datum >>= codeSize;
+            bits -= codeSize;
+
+            if (code == clearCode)
+            {
+                codeSize = minCodeSize + 1;
+                codeMask = (1 << codeSize) - 1;
+                nextCode = clearCode + 2;
+                oldCode = -1;
+                continue;
+            }
+
+            if (code == endCode)
+                break;
+
+            if (oldCode == -1)
+            {
+                if (code >= clearCode)
+                    throw new InvalidDataException("Invalid first GIF LZW code.");
+
+                if (outputCount >= expectedPixels)
+                    throw new InvalidDataException("GIF LZW frame contains too many pixels.");
+
+                scratch.ColorIndices[outputCount++] = (byte) code;
+                first = code;
+                oldCode = code;
+                continue;
+            }
+
+            var inputCode = code;
+            if (code == nextCode)
+            {
+                if (stackTop >= scratch.PixelStack.Length)
+                    throw new InvalidDataException("GIF LZW stack overflow.");
+
+                scratch.PixelStack[stackTop++] = (byte) first;
+                code = oldCode;
+            }
+            else if (code > nextCode)
+            {
+                throw new InvalidDataException("Invalid GIF LZW code.");
+            }
+
+            while (code > clearCode)
+            {
+                if (code >= nextCode || stackTop >= scratch.PixelStack.Length)
+                    throw new InvalidDataException("Invalid GIF LZW dictionary reference.");
+
+                scratch.PixelStack[stackTop++] = scratch.Suffix[code];
+                code = scratch.Prefix[code];
+            }
+
+            first = scratch.Suffix[code];
+            if (stackTop >= scratch.PixelStack.Length)
+                throw new InvalidDataException("GIF LZW stack overflow.");
+
+            scratch.PixelStack[stackTop++] = (byte) first;
+
+            while (stackTop > 0)
+            {
+                if (outputCount >= expectedPixels)
+                    throw new InvalidDataException("GIF LZW frame contains too many pixels.");
+
+                scratch.ColorIndices[outputCount++] = scratch.PixelStack[--stackTop];
+            }
+
+            if (nextCode < GifMaxCodeSize)
+            {
+                scratch.Prefix[nextCode] = (short) oldCode;
+                scratch.Suffix[nextCode] = (byte) first;
+                nextCode++;
+
+                if (nextCode == (1 << codeSize) && codeSize < 12)
+                {
+                    codeSize++;
+                    codeMask = (1 << codeSize) - 1;
+                }
+            }
+
+            oldCode = inputCode;
+        }
+
+        if (outputCount != expectedPixels)
+            throw new InvalidDataException("GIF LZW frame ended before all pixels were decoded.");
+
     }
 
     private static void DrawFrame(
-        byte[] canvas,
+        Rgba32[] canvas,
         int screenWidth,
         int screenHeight,
         int left,
@@ -275,17 +475,11 @@ public static class GifDecoder
         byte transparentIndex,
         CancellationToken cancellationToken)
     {
-        if (frameWidth <= 0 || frameHeight <= 0)
-            return;
-
-        var rowMap = interlaced ? BuildInterlacedRowMap(frameHeight) : null;
-
         for (var dataRow = 0; dataRow < frameHeight; dataRow++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var frameRow = rowMap == null ? dataRow : rowMap[dataRow];
-            var screenY = top + frameRow;
+            var screenY = top + (interlaced ? GetInterlacedRow(dataRow, frameHeight) : dataRow);
             if (screenY < 0 || screenY >= screenHeight)
                 continue;
 
@@ -301,20 +495,35 @@ public static class GifDecoder
                     continue;
 
                 if (colorIndex >= colorTable.Length)
-                    continue;
+                    throw new InvalidDataException("GIF frame references a missing color table entry.");
 
-                var color = colorTable[colorIndex];
-                var dst = ((screenY * screenWidth) + screenX) * 4;
-                canvas[dst + 0] = color.R;
-                canvas[dst + 1] = color.G;
-                canvas[dst + 2] = color.B;
-                canvas[dst + 3] = 255;
+                canvas[(screenY * screenWidth) + screenX] = colorTable[colorIndex];
             }
         }
     }
 
+    private static int GetInterlacedRow(int index, int height)
+    {
+        var firstPass = (height + 7) / 8;
+        if (index < firstPass)
+            return index * 8;
+
+        index -= firstPass;
+        var secondPass = height <= 4 ? 0 : ((height - 5) / 8) + 1;
+        if (index < secondPass)
+            return 4 + index * 8;
+
+        index -= secondPass;
+        var thirdPass = height <= 2 ? 0 : ((height - 3) / 4) + 1;
+        if (index < thirdPass)
+            return 2 + index * 4;
+
+        index -= thirdPass;
+        return 1 + index * 2;
+    }
+
     private static void ApplyDisposal(
-        byte[] canvas,
+        Rgba32[] canvas,
         int screenWidth,
         int screenHeight,
         PreviousFrameState? previous)
@@ -336,17 +545,13 @@ public static class GifDecoder
                 break;
             case 3:
                 if (previous.Value.RestoreSnapshot != null)
-                {
-                    var copyLength = Math.Min(previous.Value.RestoreSnapshot.Length, canvas.Length);
-                    Array.Copy(previous.Value.RestoreSnapshot, 0, canvas, 0, copyLength);
-                }
-
+                    Array.Copy(previous.Value.RestoreSnapshot, canvas, canvas.Length);
                 break;
         }
     }
 
     private static void ClearRect(
-        byte[] canvas,
+        Rgba32[] canvas,
         int screenWidth,
         int screenHeight,
         int left,
@@ -354,103 +559,75 @@ public static class GifDecoder
         int width,
         int height)
     {
-        if (width <= 0 || height <= 0)
-            return;
-
         var startX = Math.Max(left, 0);
         var startY = Math.Max(top, 0);
         var endX = Math.Min(left + width, screenWidth);
         var endY = Math.Min(top + height, screenHeight);
-        var rowLength = (endX - startX) * 4;
+        var rowLength = endX - startX;
 
-        if (rowLength <= 0)
+        if (rowLength <= 0 || endY <= startY)
             return;
 
         var span = canvas.AsSpan();
         for (var y = startY; y < endY; y++)
-        {
-            var rowStart = ((y * screenWidth) + startX) * 4;
-            span.Slice(rowStart, rowLength).Clear();
-        }
-    }
-
-    private static int[] BuildInterlacedRowMap(int height)
-    {
-        var rows = new int[height];
-        var index = 0;
-
-        for (var y = 0; y < height; y += 8)
-            rows[index++] = y;
-        for (var y = 4; y < height; y += 8)
-            rows[index++] = y;
-        for (var y = 2; y < height; y += 4)
-            rows[index++] = y;
-        for (var y = 1; y < height; y += 2)
-            rows[index++] = y;
-
-        return rows;
+            span.Slice((y * screenWidth) + startX, rowLength).Clear();
     }
 
     private static Rgba32[] ReadColorTable(BinaryReader reader, int size)
     {
         var table = new Rgba32[size];
-        var raw = reader.ReadBytes(size * 3);
-        if (raw.Length != size * 3)
-            throw new InvalidDataException("Unexpected EOF reading GIF color table.");
-
-        for (var i = 0; i < size; i++)
-        {
-            var offset = i * 3;
-            table[i] = new Rgba32(raw[offset], raw[offset + 1], raw[offset + 2], 255);
-        }
+        for (var i = 0; i < table.Length; i++)
+            table[i] = new Rgba32(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), 255);
 
         return table;
     }
 
-    private static byte[] ReadSubBlocks(BinaryReader reader)
+    private static byte[] ToBytes(Rgba32[] pixels)
     {
-        using var stream = new MemoryStream();
+        var result = new byte[checked(pixels.Length * 4)];
+        for (var i = 0; i < pixels.Length; i++)
+        {
+            var pixel = pixels[i];
+            var offset = i * 4;
+            result[offset] = pixel.R;
+            result[offset + 1] = pixel.G;
+            result[offset + 2] = pixel.B;
+            result[offset + 3] = pixel.A;
+        }
+
+        return result;
+    }
+
+    private static int ReadSubBlocks(BinaryReader reader, GifLzwScratch scratch)
+    {
+        var length = 0;
         while (true)
         {
             var blockSize = reader.ReadByte();
             if (blockSize == 0)
-                break;
+                return length;
 
-            var block = reader.ReadBytes(blockSize);
-            if (block.Length != blockSize)
-                throw new InvalidDataException("Unexpected EOF in GIF sub-block.");
+            scratch.EnsureCompressedCapacity(checked(length + blockSize));
+            var blockOffset = length;
+            var remaining = (int) blockSize;
+            while (remaining > 0)
+            {
+                var read = reader.Read(scratch.CompressedData, blockOffset, remaining);
+                if (read == 0)
+                    throw new InvalidDataException("Unexpected EOF in GIF sub-block.");
 
-            stream.Write(block, 0, block.Length);
+                blockOffset += read;
+                remaining -= read;
+            }
+
+            length += blockSize;
         }
-
-        return stream.ToArray();
     }
 
     private static void SkipSubBlocks(BinaryReader reader)
     {
-        var stream = reader.BaseStream;
-
-        while (true)
-        {
-            var blockSize = reader.ReadByte();
-            if (blockSize == 0)
-                break;
-
-            if (stream.CanSeek)
-            {
-                var newPos = stream.Position + blockSize;
-                if (newPos > stream.Length)
-                    throw new InvalidDataException("Unexpected EOF while skipping GIF sub-block.");
-
-                stream.Position = newPos;
-            }
-            else
-            {
-                var skipped = reader.ReadBytes(blockSize);
-                if (skipped.Length != blockSize)
-                    throw new InvalidDataException("Unexpected EOF while skipping GIF sub-block.");
-            }
-        }
+        var source = new GifSubBlockReader(reader);
+        source.Drain();
     }
 
     private static GraphicControlExtension ReadGraphicControlExtension(BinaryReader reader)
@@ -458,140 +635,26 @@ public static class GifDecoder
         var blockSize = reader.ReadByte();
         if (blockSize != 4)
         {
-            _ = reader.ReadBytes(blockSize);
-            _ = reader.ReadByte();
+            for (var i = 0; i < blockSize; i++)
+                _ = reader.ReadByte();
+
+            if (reader.ReadByte() != 0)
+                throw new InvalidDataException("Invalid GIF graphic control extension.");
+
             return GraphicControlExtension.Default;
         }
 
         var packed = reader.ReadByte();
         var delay = reader.ReadUInt16();
         var transparentIndex = reader.ReadByte();
-        _ = reader.ReadByte();
-
-        var disposal = (packed >> 2) & 0x7;
-        var transparent = (packed & 0x1) != 0;
+        if (reader.ReadByte() != 0)
+            throw new InvalidDataException("Invalid GIF graphic control extension terminator.");
 
         return new GraphicControlExtension(
             delay,
-            (byte) disposal,
-            transparent,
+            (byte) ((packed >> 2) & 0x7),
+            (packed & 0x1) != 0,
             transparentIndex);
-    }
-
-    private static byte[] DecodeLzw(
-        byte[] data,
-        int minCodeSize,
-        int expectedPixelCount,
-        CancellationToken cancellationToken)
-    {
-        if (expectedPixelCount <= 0)
-            return Array.Empty<byte>();
-
-        if (minCodeSize <= 0 || minCodeSize > 8)
-            throw new InvalidDataException($"Unsupported GIF LZW minimum code size: {minCodeSize}");
-
-        var clearCode = 1 << minCodeSize;
-        var endCode = clearCode + 1;
-        var nextCode = clearCode + 2;
-        var codeSize = minCodeSize + 1;
-        var codeMask = (1 << codeSize) - 1;
-
-        var prefix = new short[GifMaxCodeSize];
-        var suffix = new byte[GifMaxCodeSize];
-        var pixelStack = new byte[GifMaxCodeSize + 1];
-
-        for (var i = 0; i < clearCode; i++)
-            suffix[i] = (byte) i;
-
-        var output = new byte[expectedPixelCount];
-        var outIndex = 0;
-        var dataIndex = 0;
-        var datum = 0;
-        var bits = 0;
-
-        var oldCode = -1;
-        var first = 0;
-        var stackTop = 0;
-
-        while (outIndex < expectedPixelCount)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            while (bits < codeSize)
-            {
-                if (dataIndex >= data.Length)
-                    return output;
-
-                datum |= data[dataIndex++] << bits;
-                bits += 8;
-            }
-
-            var code = datum & codeMask;
-            datum >>= codeSize;
-            bits -= codeSize;
-
-            if (code == clearCode)
-            {
-                codeSize = minCodeSize + 1;
-                codeMask = (1 << codeSize) - 1;
-                nextCode = clearCode + 2;
-                oldCode = -1;
-                continue;
-            }
-
-            if (code == endCode)
-                break;
-
-            if (code >= GifMaxCodeSize)
-                break;
-
-            if (oldCode == -1)
-            {
-                output[outIndex++] = suffix[code];
-                first = suffix[code];
-                oldCode = code;
-                continue;
-            }
-
-            var inCode = code;
-            if (code >= nextCode)
-            {
-                pixelStack[stackTop++] = (byte) first;
-                code = oldCode;
-            }
-
-            while (code >= clearCode)
-            {
-                if (code >= GifMaxCodeSize || stackTop >= pixelStack.Length)
-                    return output;
-
-                pixelStack[stackTop++] = suffix[code];
-                code = prefix[code];
-            }
-
-            first = suffix[code];
-            pixelStack[stackTop++] = (byte) first;
-
-            while (stackTop > 0 && outIndex < expectedPixelCount)
-                output[outIndex++] = pixelStack[--stackTop];
-
-            if (nextCode < GifMaxCodeSize)
-            {
-                prefix[nextCode] = (short) oldCode;
-                suffix[nextCode] = (byte) first;
-                nextCode++;
-
-                if (nextCode == (1 << codeSize) && codeSize < 12)
-                {
-                    codeSize++;
-                    codeMask = (1 << codeSize) - 1;
-                }
-            }
-
-            oldCode = inCode;
-        }
-
-        return output;
     }
 
     private static bool TryReadByte(BinaryReader reader, out byte value)
@@ -606,8 +669,76 @@ public static class GifDecoder
         return true;
     }
 
-    private readonly record struct RawDecodedGif(int Width, int Height, List<RawDecodedFrame> Frames);
-    private readonly record struct RawDecodedFrame(byte[] Pixels, int DelayCentiseconds);
+    private sealed class GifLzwScratch
+    {
+        public readonly short[] Prefix = new short[GifMaxCodeSize];
+        public readonly byte[] Suffix = new byte[GifMaxCodeSize];
+        public readonly byte[] PixelStack = new byte[GifMaxCodeSize + 1];
+        public byte[] ColorIndices = Array.Empty<byte>();
+        public byte[] CompressedData = Array.Empty<byte>();
+
+        public void EnsureColorCapacity(int pixelCount)
+        {
+            if (ColorIndices.Length < pixelCount)
+                ColorIndices = new byte[pixelCount];
+        }
+
+        public void EnsureCompressedCapacity(int byteCount)
+        {
+            if (CompressedData.Length < byteCount)
+            {
+                var length = Math.Max(byteCount, Math.Max(256, CompressedData.Length * 2));
+                var expanded = new byte[length];
+                Array.Copy(CompressedData, expanded, CompressedData.Length);
+                CompressedData = expanded;
+            }
+        }
+    }
+
+    private sealed class GifSubBlockReader
+    {
+        private readonly BinaryReader _reader;
+        private int _remaining;
+        private bool _finished;
+
+        public GifSubBlockReader(BinaryReader reader)
+        {
+            _reader = reader;
+        }
+
+        public bool TryReadByte(out byte value)
+        {
+            if (_finished)
+            {
+                value = default;
+                return false;
+            }
+
+            if (_remaining == 0)
+            {
+                var blockSize = _reader.ReadByte();
+                if (blockSize == 0)
+                {
+                    _finished = true;
+                    value = default;
+                    return false;
+                }
+
+                _remaining = blockSize;
+            }
+
+            _remaining--;
+            value = _reader.ReadByte();
+            return true;
+        }
+
+        public void Drain()
+        {
+            while (TryReadByte(out _))
+            {
+            }
+        }
+    }
 
     private readonly record struct PreviousFrameState(
         int Left,
@@ -615,7 +746,7 @@ public static class GifDecoder
         int Width,
         int Height,
         byte DisposalMethod,
-        byte[]? RestoreSnapshot);
+        Rgba32[]? RestoreSnapshot);
 
     private readonly record struct GraphicControlExtension(
         ushort DelayCentiseconds,

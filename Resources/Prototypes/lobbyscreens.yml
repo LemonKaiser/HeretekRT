@@ -96,24 +96,42 @@
 
 - type: lobbyBackground
   id: WPA1
+  background: /Textures/LobbyScreens/Animated/wpa1.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa1.gif
+  title: lobby-state-background-wpa1-title
+  artist: lobby-state-background-wpa-artist
 
 - type: lobbyBackground
   id: WPA2
+  background: /Textures/LobbyScreens/Animated/wpa2.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa2.gif
+  title: lobby-state-background-wpa2-title
+  artist: lobby-state-background-wpa-artist
 
 - type: lobbyBackground
   id: WPA3
+  background: /Textures/LobbyScreens/Animated/wpa3.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa3.gif
+  title: lobby-state-background-wpa3-title
+  artist: lobby-state-background-wpa-artist
 
 - type: lobbyBackground
   id: WPA4
+  background: /Textures/LobbyScreens/Animated/wpa4.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa4.gif
+  title: lobby-state-background-wpa4-title
+  artist: lobby-state-background-wpa-artist
 
 - type: lobbyBackground
   id: WPA5
+  background: /Textures/LobbyScreens/Animated/wpa5.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa5.gif
+  title: lobby-state-background-wpa5-title
+  artist: lobby-state-background-wpa-artist
 
 - type: lobbyBackground
   id: WPA6
+  background: /Textures/LobbyScreens/Animated/wpa6.webp
   backgroundGif: /Textures/LobbyScreens/Animated/wpa6.gif
+  title: lobby-state-background-wpa6-title
+  artist: lobby-state-background-wpa-artist

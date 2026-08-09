@@ -25,6 +25,13 @@ lobby-state-background-text = [font="Monospace" size=10][color=#D8B94F]Menu art:
 lobby-state-background-no-background-text = [font="Monospace" size=10][color=#BEB5A2]Menu art: unavailable[/color][/font]
 lobby-state-background-unknown-title = [color=dimgray]Unknown title[/color]
 lobby-state-background-unknown-artist = [color=dimgray]Unknown artist[/color]
+lobby-state-background-wpa1-title = Animated background 1
+lobby-state-background-wpa2-title = Animated background 2
+lobby-state-background-wpa3-title = Animated background 3
+lobby-state-background-wpa4-title = Animated background 4
+lobby-state-background-wpa5-title = Animated background 5
+lobby-state-background-wpa6-title = Animated background 6
+lobby-state-background-wpa-artist = [color=dimgray]Author not specified[/color]
 
 heretek-lobby-sector = KORONUS SECTOR
 heretek-lobby-round-awaiting = Expedition awaiting departure

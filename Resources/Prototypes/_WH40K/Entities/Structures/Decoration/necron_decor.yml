@@ -1,0 +1,51 @@
+- type: entity
+  id: WH40KNecronDecorObelisk
+  parent: WH40KDecorPropBase
+  name: Necron obelisk
+  description: A dormant blackstone obelisk pulsing with cold green energy.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_obelisk.rsi
+    state: obelisk
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_obelisk.rsi
+    state: obelisk
+
+- type: entity
+  id: WH40KNecronDecorPillarSix
+  parent: WH40KDecorPropBase
+  name: Necron ornamented pillar
+  description: A decorative blackstone pillar from a Necron tomb complex.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: six
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: six
+
+- type: entity
+  id: WH40KNecronDecorPillarSeven
+  parent: WH40KDecorPropBase
+  name: Necron ornamented pillar
+  description: A decorative blackstone pillar from a Necron tomb complex.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: seven
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: seven
+
+- type: entity
+  id: WH40KNecronDecorPylon
+  parent: WH40KDecorPropBase
+  name: Necron pylon
+  description: A compact blackstone pylon with an active glyph display.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pylon.rsi
+    state: pylon
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_pylon.rsi
+    state: pylon

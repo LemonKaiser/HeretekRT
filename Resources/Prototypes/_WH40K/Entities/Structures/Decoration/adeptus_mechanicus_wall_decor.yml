@@ -1,0 +1,46 @@
+- type: entity
+  id: WH40KAdeptusMechanicusWallDecorBase
+  abstract: true
+  parent: BaseStructure
+  suffix: WH40K, Adeptus Mechanicus, wall decor
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wallmount
+  components:
+  - type: Transform
+    anchored: true
+  - type: WallMount
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures: {}
+  - type: Sprite
+    drawdepth: WallFixtures
+    noRot: true
+    sprite: _WH40K/Structures/Wallmounts/adeptus_mechanicus_decor.rsi
+
+- type: entity
+  id: WH40KAdeptusMechanicusWallDecorCog
+  parent: WH40KAdeptusMechanicusWallDecorBase
+  name: Adeptus Mechanicus wall cog
+  description: A decorative cog assembly for a forge-temple wall.
+  components:
+  - type: Sprite
+    state: cog
+  - type: Icon
+    sprite: _WH40K/Structures/Wallmounts/adeptus_mechanicus_decor.rsi
+    state: cog
+
+- type: entity
+  id: WH40KAdeptusMechanicusWallDecorServoSkull
+  parent: WH40KAdeptusMechanicusWallDecorBase
+  name: Adeptus Mechanicus wall servo-skull
+  description: A decorative servo-skull and cable assembly for a forge-temple wall.
+  components:
+  - type: Sprite
+    state: servo_skull
+  - type: Icon
+    sprite: _WH40K/Structures/Wallmounts/adeptus_mechanicus_decor.rsi
+    state: servo_skull

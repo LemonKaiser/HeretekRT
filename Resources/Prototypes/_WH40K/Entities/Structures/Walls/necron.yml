@@ -4,7 +4,7 @@
   suffix: WH40K, Некроны
   components:
   - type: Sprite
-    drawdepth: OverMobs
+    drawdepth: Mobs
     sprite: _WH40K/Structures/Walls/necron.rsi
   - type: Icon
     sprite: _WH40K/Structures/Walls/necron.rsi

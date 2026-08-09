@@ -27,6 +27,13 @@ lobby-state-background-text = [font="Monospace" size=10][color=#D8B94F]Фон м
 lobby-state-background-no-background-text = [font="Monospace" size=10][color=#BEB5A2]Фон меню: не загружен[/color][/font]
 lobby-state-background-unknown-title = [color=dimgray]Неизвестное название[/color]
 lobby-state-background-unknown-artist = [color=dimgray]неизвестен[/color]
+lobby-state-background-wpa1-title = Анимированный фон 1
+lobby-state-background-wpa2-title = Анимированный фон 2
+lobby-state-background-wpa3-title = Анимированный фон 3
+lobby-state-background-wpa4-title = Анимированный фон 4
+lobby-state-background-wpa5-title = Анимированный фон 5
+lobby-state-background-wpa6-title = Анимированный фон 6
+lobby-state-background-wpa-artist = [color=dimgray]автор не указан[/color]
 
 heretek-lobby-sector = СЕКТОР КОРОНУС
 heretek-lobby-round-awaiting = Экспедиция ожидает начала

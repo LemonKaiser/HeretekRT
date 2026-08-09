@@ -1,15 +1,12 @@
 {
   "version": 1,
-  "license": "CC-BY-SA-4.0",
-  "copyright": "By FizzoGhoster",
   "size": {
     "x": 32,
     "y": 64
   },
+  "license": "CC-BY-SA-4.0",
+  "copyright": "Created by FizzoGhoster",
   "states": [
-    {
-      "name": "full"
-    },
     {
       "name": "wall0",
       "directions": 4
@@ -41,6 +38,9 @@
     {
       "name": "wall7",
       "directions": 4
+    },
+    {
+      "name": "full"
     }
   ]
 }

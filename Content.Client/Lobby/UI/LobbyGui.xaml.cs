@@ -105,6 +105,7 @@ public sealed partial class LobbyGui : UIScreen
     private float _lastChatPanelWidth = -1f;
     private bool _chatExpanded;
     private bool _chatPanelAvailable = true;
+    private bool _isAnimatedLobbyBackground;
     private bool _ready;
     private bool _roundStarted;
     private bool _readyHovered;
@@ -2577,6 +2578,23 @@ public sealed partial class LobbyGui : UIScreen
         UpdateChatPanelLayout();
     }
 
+    public void SetLobbyBackgroundIsAnimated(bool isAnimated)
+    {
+        if (_isAnimatedLobbyBackground == isAnimated)
+            return;
+
+        _isAnimatedLobbyBackground = isAnimated;
+        UpdateChatPanelLayout();
+    }
+
+    public void SetLobbyBackgroundTexture(Texture? texture)
+    {
+        Background.Texture = texture;
+
+        if (!_isAnimatedLobbyBackground)
+            UpdateChatPanelLayout();
+    }
+
     public void UpdateChatAnimation(float deltaSeconds)
     {
         if (!_chatPanelAvailable)
@@ -2621,13 +2639,15 @@ public sealed partial class LobbyGui : UIScreen
         var panelVisible = _chatExpanded || _chatCurrentWidth > 0f;
         RightSide.Visible = panelVisible;
         DrawerShadow.Visible = panelVisible;
-        DrawerBlurBackdrop.Visible = panelVisible;
+        var showDrawerBlur = panelVisible && !_isAnimatedLobbyBackground;
+        DrawerBlurBackdrop.Visible = showDrawerBlur;
         if (!panelVisible)
         {
             ChatContent.Visible = false;
             RightSide.ModulateSelfOverride = null;
             DrawerShadow.ModulateSelfOverride = null;
             DrawerBlurBackdrop.ModulateSelfOverride = null;
+            DrawerBlurBackdrop.BackgroundTexture = null;
             ChatContent.Modulate = Color.White;
             return;
         }
@@ -2638,9 +2658,17 @@ public sealed partial class LobbyGui : UIScreen
         SetMarginRight(RightSide, panelWidth - _chatCurrentWidth);
         DrawerBlurBackdrop.SetWidth = panelWidth;
         SetMarginRight(DrawerBlurBackdrop, panelWidth - _chatCurrentWidth);
-        DrawerBlurBackdrop.BackgroundTexture = Background.Texture;
-        DrawerBlurBackdrop.BackgroundPixelSize = Background.PixelSize;
-        DrawerBlurBackdrop.BackgroundGlobalPixelPosition = Background.GlobalPixelPosition;
+        if (showDrawerBlur)
+        {
+            DrawerBlurBackdrop.BackgroundTexture = Background.Texture;
+            DrawerBlurBackdrop.BackgroundPixelSize = Background.PixelSize;
+            DrawerBlurBackdrop.BackgroundGlobalPixelPosition = Background.GlobalPixelPosition;
+        }
+        else
+        {
+            DrawerBlurBackdrop.BackgroundTexture = null;
+            DrawerBlurBackdrop.ModulateSelfOverride = null;
+        }
         // On compact screens the drawer owns the whole viewport, so a separate
         // left-edge shadow would only create an artificial dark strip.
         DrawerShadow.SetWidth = IsFullscreenChatLayout() ? panelWidth : panelWidth + 64f;
@@ -2653,7 +2681,8 @@ public sealed partial class LobbyGui : UIScreen
         // The drawer surface starts softly before text becomes readable; this avoids
         // the previous hard pop when ChatContent crossed a width threshold.
         RightSide.ModulateSelfOverride = Color.White.WithAlpha(0.12f + easedOpenAmount * 0.88f);
-        DrawerBlurBackdrop.ModulateSelfOverride = Color.White.WithAlpha(0.12f + easedOpenAmount * 0.88f);
+        if (showDrawerBlur)
+            DrawerBlurBackdrop.ModulateSelfOverride = Color.White.WithAlpha(0.12f + easedOpenAmount * 0.88f);
         DrawerShadow.Opacity = easedOpenAmount;
         DrawerShadow.ModulateSelfOverride = Color.White.WithAlpha(easedOpenAmount);
         ChatContent.Visible = _chatCurrentWidth >= ChatContentRevealThreshold * 0.5f;
