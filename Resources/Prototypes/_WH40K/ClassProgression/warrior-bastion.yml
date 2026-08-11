@@ -170,7 +170,7 @@
   kind: StatModifier
   mechanic: ProfileModifier
   characteristic: Endurance
-  category: Defense
+  modifierCategory: Defense
   magnitude: 2
   maximumMagnitude: 4
   safety: SelfOnly

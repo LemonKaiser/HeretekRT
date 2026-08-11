@@ -23,7 +23,7 @@
   kind: StatModifier
   mechanic: ProfileModifier
   characteristic: Agility
-  category: Mobility
+  modifierCategory: Mobility
   magnitude: 1
   maximumMagnitude: 3
   safety: SelfOnly
@@ -59,7 +59,7 @@
   kind: StatModifier
   mechanic: ProfileModifier
   characteristic: Agility
-  category: Mobility
+  modifierCategory: Mobility
   magnitude: 1
   maximumMagnitude: 3
   safety: SelfOnly
@@ -209,7 +209,7 @@
   kind: StatModifier
   mechanic: ProfileModifier
   characteristic: Agility
-  category: Mobility
+  modifierCategory: Mobility
   magnitude: 2
   maximumMagnitude: 4
   safety: SelfOnly

@@ -4,6 +4,7 @@ ent-Magazine20mm = автоподатчик боеприпасов 20 мм (сп
     .ammo-loader-caliber = 20mm
     .ammo-loader-weight = 8 кг
 ent-20mmCartridge = патрон (20 мм, сплошной)
+    .desc = Сплошной патрон калибра 20 мм для корабельной артиллерии.
     .ammo-loader-type = Боеприпас
     .ammo-loader-caliber = 20mm
     .ammo-loader-weight = 0.10 кг

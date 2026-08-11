@@ -4,6 +4,7 @@ ent-Magazine57mmHE = автоподатчик боеприпасов 57 мм (о
     .ammo-loader-caliber = 57mm HE
     .ammo-loader-weight = 18 кг
 ent-57mmCartridgeHE = патрон (57 мм)
+    .desc = Осколочно-фугасный патрон калибра 57 мм для корабельной артиллерии.
     .ammo-loader-type = Боеприпас
     .ammo-loader-caliber = 57mm HE
     .ammo-loader-weight = 0.45 кг

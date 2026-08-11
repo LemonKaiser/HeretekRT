@@ -4,6 +4,7 @@ ent-Magazine30mm = автоподатчик боеприпасов 30 мм (сп
     .ammo-loader-caliber = 30mm
     .ammo-loader-weight = 12 кг
 ent-30mmCartridge = патрон (30x173 мм, бронебойный)
+    .desc = Бронебойный патрон калибра 30×173 мм для корабельной артиллерии.
     .ammo-loader-type = Боеприпас
     .ammo-loader-caliber = 30mm
     .ammo-loader-weight = 0.18 кг

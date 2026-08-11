@@ -29,10 +29,12 @@ ent-Magazine90mmWeak = барабан 90мм
 ent-90mmCartridgeWeak = снаряд 90мм
 
 ent-Magazine140mm = барабан 140мм (кумулятивные)
+    .desc = Автоподатчик с бесконечным запасом 140-мм кумулятивных боеприпасов. Используется корабельными артиллерийскими установками.
     .ammo-loader-type = Контейнер
     .ammo-loader-caliber = 140mm
     .ammo-loader-weight = 55 кг
 ent-140mmCartridge = снаряд 140мм (кумулятивный)
+    .desc = Кумулятивный снаряд калибра 140 мм для корабельной артиллерии.
     .ammo-loader-type = Боеприпас
     .ammo-loader-caliber = 140mm
     .ammo-loader-weight = 3.5 кг
