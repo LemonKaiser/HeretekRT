@@ -42,7 +42,7 @@
         Heat: 0.95
 
 - type: entity
-  parent: [BaseDurableMask, ClothingMaskGas]
+  parent: [BaseDurableMask, ClothingMaskGas, BaseFactionGearPDVT1]
   id: ClothingMaskGasSyndicate
   name: syndicate gas mask
   description: A close-fitting tactical mask that can be connected to an air supply.

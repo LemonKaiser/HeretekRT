@@ -98,7 +98,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     ];
 
     public bool ShowIFF { get; set; } = true;
-    public bool ShowIFFShuttles { get; set; } = true;
+    public bool ShowIFFDetailed { get; set; } = true;
     public bool ShowDocks { get; set; } = true;
     public bool ForcePannable { get; set; }
     public ShuttleNavTargetingMode TargetingMode { get; private set; }
@@ -970,12 +970,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 : _shuttles.GetIFFLabel(grid, self: false, component: iff);
 
             var shouldDrawIFF = ShowIFF && labelName != null;
+            var shouldDrawDetailedIFF = ShowIFFDetailed && shouldDrawIFF; // Mono
             if (shouldDrawIFF)
             {
                 if (IFFFilter != null)
                     shouldDrawIFF &= IFFFilter(gUid, grid.Comp, iff, hideLabel, labelName!);
-                if (isPlayerShuttle)
-                    shouldDrawIFF &= ShowIFFShuttles;
+                //if (isPlayerShuttle) // Mono - comments this out, replaced elsewere
+                //    shouldDrawIFF &= ShowIFFShuttles;
             }
 
             //var mapCenter = curGridToWorld. * gridBody.LocalCenter;
@@ -1104,22 +1105,27 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     // Draw main ship label with company color if available
                     handle.DrawString(Font, (uiPosition + labelOffset) * UIScale, mainLabel, UIScale * 0.9f, displayColor);
 
-                    var companyLabelOffset = new Vector2(
-                        labelOffset.X,
-                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y
-                    );
-                    handle.DrawString(Font, (uiPosition + companyLabelOffset) * UIScale, companyLabel, UIScale * 0.7f, displayColor);
+                    // Mono start - draw main stack of info
+                    if (shouldDrawDetailedIFF)
+                    {
+                        var companyLabelOffset = new Vector2(
+                            labelOffset.X,
+                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y
+                        );
+                        handle.DrawString(Font, (uiPosition + companyLabelOffset) * UIScale, companyLabel, UIScale * 0.7f, displayColor);
 
-                    var coordOffset = new Vector2(
-                        labelOffset.X,
-                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y);
-                    handle.DrawString(Font, (uiPosition + coordOffset) * UIScale, coordsText, 0.7f * UIScale, displayColor);
+                        var coordOffset = new Vector2(
+                            labelOffset.X,
+                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y);
+                        handle.DrawString(Font, (uiPosition + coordOffset) * UIScale, coordsText, 0.7f * UIScale, displayColor);
 
-                    var trackIdOffset = new Vector2(
-                        labelOffset.X,
-                        labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y + handle.GetDimensions(Font, coordsText, 0.7f).Y);
-                    if (iff != null)
-                        handle.DrawString(Font, (uiPosition + trackIdOffset) * UIScale, trackIdText, 0.7f * UIScale, displayColor);
+                        var trackIdOffset = new Vector2(
+                            labelOffset.X,
+                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y + handle.GetDimensions(Font, coordsText, 0.7f).Y);
+                        if (iff != null)
+                            handle.DrawString(Font, (uiPosition + trackIdOffset) * UIScale, trackIdText, 0.7f * UIScale, displayColor);
+                    }
+                    // Mono end
                 }
 
                 NfAddBlipToList(_tempBlipDataList, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, labelColor, hideLabel ? default : gUid); // Frontier code

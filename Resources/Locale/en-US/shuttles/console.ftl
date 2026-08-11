@@ -33,8 +33,12 @@ shuttle-console-nav-settings = Settings
 shuttle-console-navigation-mode = Navigation Mode
 shuttle-console-navigation-mode-bss = FTL
 shuttle-console-iff-toggle = Show IFF
+shuttle-console-iff-detailed = Detailed IFF
 shuttle-console-dock-toggle = Show Docks
 shuttle-console-iffshuttles-toggle = Show Shuttles
+shuttle-console-iff-toggle-short = IFF
+shuttle-console-iff-detailed-short = D.IFF
+shuttle-console-dock-toggle-short = DOCKS
 
 # MAP
 
