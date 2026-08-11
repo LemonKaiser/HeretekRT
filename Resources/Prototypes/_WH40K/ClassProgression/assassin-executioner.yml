@@ -1,0 +1,584 @@
+# Ассасина: Палач. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-01
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 2
+  maximumMagnitude: 6
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-02
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 10
+  maximumMagnitude: 15
+  safety: SelfOnly
+  counterplay: RequiresBackstab
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-03
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 6
+  maximumMagnitude: 10
+  safety: SelfOnly
+  counterplay: RequiresCloak
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-04
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  counterplay: RequiresMarkedTarget, RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-05
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 25
+  maximumMagnitude: 35
+  action: ActionWh40kAssassinThrownNeedle
+  duration: 8
+  maximumDuration: 10
+  safety: OffensiveControl
+  maximumTargets: 1
+  cooldown: 16
+  counterplay: BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-06
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 30
+  maximumMagnitude: 40
+  action: ActionWh40kAssassinDisarmGrip
+  duration: 8
+  maximumDuration: 10
+  safety: OffensiveStamina
+  maximumTargets: 1
+  cooldown: 18
+  counterplay: BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-07
+  kind: TargetMark
+  mechanic: TargetMark
+  action: ActionWh40kAssassinExecutionMark
+  duration: 20
+  maximumDuration: 25
+  safety: OffensiveControl
+  range: 7
+  maximumTargets: 1
+  cooldown: 18
+  counterplay: RequiresHostile, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-08
+  kind: GrantAction
+  mechanic: WeaponCoating
+  magnitude: 8
+  maximumMagnitude: 12
+  action: ActionWh40kAssassinPoisonEdge
+  duration: 30
+  maximumDuration: 40
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 30
+  counterplay: RequiresConsumable, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-09
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 20
+  maximumMagnitude: 30
+  action: ActionWh40kAssassinTendonCut
+  duration: 8
+  maximumDuration: 10
+  safety: OffensiveControl
+  maximumTargets: 1
+  cooldown: 22
+  counterplay: RequiresMarkedTarget, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-10
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 8
+  maximumMagnitude: 12
+  safety: SelfOnly
+  counterplay: RequiresCloak, RequiresMarkedTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-11
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 6
+  maximumMagnitude: 10
+  safety: SelfOnly
+  counterplay: RequiresBackstab, RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-12
+  kind: GrantAction
+  mechanic: GuardPreparation
+  magnitude: 10
+  maximumMagnitude: 15
+  action: ActionWh40kAssassinFalseSurrender
+  duration: 5
+  maximumDuration: 7
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 25
+  counterplay: BreakOnMove, BreakOnAttack, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-13
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 6
+  maximumMagnitude: 10
+  safety: SelfOnly
+  counterplay: RequiresBackstab, RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-14
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  counterplay: RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-15
+  kind: GrantAction
+  mechanic: Finisher
+  magnitude: 45
+  maximumMagnitude: 55
+  action: ActionWh40kAssassinRemoveWitness
+  duration: 5
+  maximumDuration: 7
+  safety: OffensiveControl
+  range: 2
+  maximumTargets: 1
+  cooldown: 45
+  counterplay: RequiresDownedTarget, RequiresHostile, RequiresBackstab, RequiresLineOfSight, RequiresDoAfter, PlayerNonLethal, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-16
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-17
+  kind: GrantAction
+  mechanic: WeaponCoating
+  magnitude: 12
+  maximumMagnitude: 18
+  action: ActionWh40kAssassinLethalDose
+  duration: 30
+  maximumDuration: 45
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 45
+  counterplay: RequiresConsumable, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-18
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 35
+  maximumMagnitude: 45
+  action: ActionWh40kAssassinSeverThread
+  duration: 6
+  maximumDuration: 8
+  safety: OffensiveStamina
+  maximumTargets: 1
+  cooldown: 32
+  counterplay: RequiresMarkedTarget, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-19
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  counterplay: RequiresMarkedTarget, RequiresBackstab
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-executioner-20
+  kind: GrantAction
+  mechanic: Finisher
+  magnitude: 55
+  maximumMagnitude: 65
+  action: ActionWh40kAssassinFinalSentence
+  duration: 7
+  maximumDuration: 9
+  safety: OffensiveDamage
+  range: 2
+  maximumTargets: 1
+  cooldown: 75
+  counterplay: RequiresMarkedTarget, RequiresHostile, RequiresBackstab, RequiresLineOfSight, RequiresDoAfter, PlayerNonLethal, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-01
+  specialization: assassin-executioner
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [assassin-executioner-02]
+  displayPosition: "1, 0"
+  kind: Passive
+  effects: [effect-assassin-executioner-01]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-01-name
+  description: wh40k-class-skill-assassin-executioner-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-02
+  specialization: assassin-executioner
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-executioner-01
+  connections: [assassin-executioner-03, assassin-executioner-04]
+  displayPosition: "2, 0"
+  kind: Passive
+  effects: [effect-assassin-executioner-02]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-02-name
+  description: wh40k-class-skill-assassin-executioner-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-03
+  specialization: assassin-executioner
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-executioner-02
+  connections: [assassin-executioner-05, assassin-executioner-06]
+  displayPosition: "3, -2.4"
+  kind: Passive
+  effects: [effect-assassin-executioner-03]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-03-name
+  description: wh40k-class-skill-assassin-executioner-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-04
+  specialization: assassin-executioner
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-executioner-02
+  connections: [assassin-executioner-07, assassin-executioner-08]
+  displayPosition: "3, 2.4"
+  kind: Passive
+  effects: [effect-assassin-executioner-04]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-04-name
+  description: wh40k-class-skill-assassin-executioner-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-05
+  specialization: assassin-executioner
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-executioner-03
+  connections: [assassin-executioner-09]
+  displayPosition: "4, -4.5"
+  kind: Active
+  effects: [effect-assassin-executioner-05]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-05-name
+  description: wh40k-class-skill-assassin-executioner-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-06
+  specialization: assassin-executioner
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-executioner-03
+  connections: [assassin-executioner-10]
+  displayPosition: "4, -1.5"
+  kind: Active
+  effects: [effect-assassin-executioner-06]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-06-name
+  description: wh40k-class-skill-assassin-executioner-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-07
+  specialization: assassin-executioner
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-executioner-04
+  connections: [assassin-executioner-11]
+  displayPosition: "4, 1.5"
+  kind: Active
+  effects: [effect-assassin-executioner-07]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-07-name
+  description: wh40k-class-skill-assassin-executioner-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-08
+  specialization: assassin-executioner
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-executioner-04
+  connections: [assassin-executioner-12]
+  displayPosition: "4, 4.5"
+  kind: Active
+  effects: [effect-assassin-executioner-08]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-08-name
+  description: wh40k-class-skill-assassin-executioner-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-09
+  specialization: assassin-executioner
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-executioner-05
+  connections: [assassin-executioner-13, assassin-executioner-14]
+  displayPosition: "5, -4.5"
+  kind: Active
+  effects: [effect-assassin-executioner-09]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-09-name
+  description: wh40k-class-skill-assassin-executioner-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-10
+  specialization: assassin-executioner
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-executioner-06
+  connections: [assassin-executioner-15]
+  displayPosition: "5, -1.5"
+  kind: Passive
+  effects: [effect-assassin-executioner-10]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-10-name
+  description: wh40k-class-skill-assassin-executioner-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-11
+  specialization: assassin-executioner
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-executioner-07
+  connections: [assassin-executioner-16]
+  displayPosition: "5, 1.5"
+  kind: Passive
+  effects: [effect-assassin-executioner-11]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-11-name
+  description: wh40k-class-skill-assassin-executioner-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-12
+  specialization: assassin-executioner
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-executioner-08
+  connections: [assassin-executioner-17, assassin-executioner-18]
+  displayPosition: "5, 4.5"
+  kind: Active
+  effects: [effect-assassin-executioner-12]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-12-name
+  description: wh40k-class-skill-assassin-executioner-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-13
+  specialization: assassin-executioner
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-executioner-09
+  connections: [assassin-executioner-19]
+  displayPosition: "6, -5.2"
+  kind: Passive
+  effects: [effect-assassin-executioner-13]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-13-name
+  description: wh40k-class-skill-assassin-executioner-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-14
+  specialization: assassin-executioner
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-executioner-09
+  displayPosition: "6, -3.5"
+  kind: Passive
+  effects: [effect-assassin-executioner-14]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-14-name
+  description: wh40k-class-skill-assassin-executioner-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-15
+  specialization: assassin-executioner
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-executioner-10
+  displayPosition: "6, -1.5"
+  kind: Active
+  effects: [effect-assassin-executioner-15]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/execution.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-15-name
+  description: wh40k-class-skill-assassin-executioner-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-16
+  specialization: assassin-executioner
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-executioner-11
+  displayPosition: "6, 1.5"
+  kind: Passive
+  effects: [effect-assassin-executioner-16]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-16-name
+  description: wh40k-class-skill-assassin-executioner-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-17
+  specialization: assassin-executioner
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-executioner-12
+  displayPosition: "6, 3.5"
+  kind: Active
+  effects: [effect-assassin-executioner-17]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-17-name
+  description: wh40k-class-skill-assassin-executioner-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-18
+  specialization: assassin-executioner
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-executioner-12
+  connections: [assassin-executioner-20]
+  displayPosition: "6, 5.2"
+  kind: Active
+  effects: [effect-assassin-executioner-18]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-18-name
+  description: wh40k-class-skill-assassin-executioner-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-19
+  specialization: assassin-executioner
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-executioner-13
+  displayPosition: "7, -5.2"
+  kind: Passive
+  effects: [effect-assassin-executioner-19]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-19-name
+  description: wh40k-class-skill-assassin-executioner-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-executioner-20
+  specialization: assassin-executioner
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: assassin-executioner-18
+  displayPosition: "7, 5.2"
+  kind: Active
+  effects: [effect-assassin-executioner-20]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/execution.svg.192dpi.png
+  name: wh40k-class-skill-assassin-executioner-20-name
+  description: wh40k-class-skill-assassin-executioner-20-description
+  availability: Enabled
+

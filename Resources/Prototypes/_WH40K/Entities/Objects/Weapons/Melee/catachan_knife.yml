@@ -7,6 +7,8 @@
     tags:
     - CombatKnife
     - Knife
+    - Wh40kSkillLightMelee
+    - Wh40kSkillSoldierMelee
   - type: MeleeWeapon
     attackRate: 1.5
     damage:
@@ -24,6 +26,9 @@
   id: CatachanMachete
   suffix: WH40K, Catachan
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillSoldierMelee
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/catachan_machete.rsi
     state: icon

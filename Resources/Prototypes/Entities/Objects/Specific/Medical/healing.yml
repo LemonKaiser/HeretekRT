@@ -3,6 +3,9 @@
   id: BaseHealingItem
   abstract: true
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillMedicalItem
   - type: Sprite
     sprite: _DV/Objects/Specific/medical.rsi # DeltaV - Resprited some medical items
   - type: Item
@@ -26,6 +29,7 @@
   - type: Tag
     tags:
     - Ointment
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: ointment
   - type: Item
@@ -83,6 +87,7 @@
   - type: Tag
     tags:
     - Ointment
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: regenerative-mesh
   - type: Item
@@ -131,6 +136,7 @@
   - type: Tag
     tags:
     - Brutepack
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: brutepack
   - type: Healing
@@ -183,6 +189,7 @@
   - type: Tag
     tags:
     - Brutepack
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: medicated-suture
   - type: Item
@@ -230,6 +237,7 @@
   - type: Tag
     tags:
     - Bloodpack
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: bloodpack
   - type: Healing
@@ -307,6 +315,7 @@
   - type: Tag
     tags:
     - Gauze
+    - Wh40kSkillMedicalItem
   - type: Sprite
     state: gauze
   - type: Construction

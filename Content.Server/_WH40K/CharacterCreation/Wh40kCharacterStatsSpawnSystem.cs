@@ -1,5 +1,6 @@
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Server._WH40K.Combat.PhantomStep;
+using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.Progression;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
@@ -42,6 +43,25 @@ public sealed class Wh40kCharacterStatsSpawnSystem : EntitySystem
     }
 
     public void ApplyAccountStats(EntityUid uid, Wh40kAccountRpgRecord account)
+    {
+        if (TryComp<Wh40kClassRuntimeProfileComponent>(uid, out var classProfile))
+        {
+            ApplyResolvedStats(uid, _resolver.Resolve(
+                account,
+                classProfile.TalentModifiers,
+                classProfile.EquipmentModifiers,
+                classProfile.TemporaryModifiers));
+            return;
+        }
+
+        ApplyResolvedStats(uid, _resolver.Resolve(account));
+    }
+
+    /// <summary>
+    /// Restores the account-only baseline when a body-local class profile is detached.
+    /// This deliberately ignores a profile that may still be shutting down on the entity.
+    /// </summary>
+    public void ApplyBaseAccountStats(EntityUid uid, Wh40kAccountRpgRecord account)
     {
         ApplyResolvedStats(uid, _resolver.Resolve(account));
     }

@@ -14,6 +14,10 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockClassOffensiveActions: true
+  blockClassDeviceInteractions: true
+  blockClassAreaEffects: true
+  blockClassMobilityActions: true
 
 - type: koronusSafetyProfile
   id: KoronusStationSafeZone
@@ -29,6 +33,10 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockClassOffensiveActions: true
+  blockClassDeviceInteractions: true
+  blockClassAreaEffects: true
+  blockClassMobilityActions: true
 
 - type: koronusSafetyProfile
   id: KoronusFootfallStationRestrictions
@@ -43,6 +51,8 @@
   autoCleanupHostileNpcs: true
   blockPlayerDisposal: true
   blockAtmosphericRelease: true
+  blockClassDeviceInteractions: true
+  blockClassAreaEffects: true
 
 - type: koronusSafetyProfile
   id: KoronusPlanetSafeSurface
@@ -58,3 +68,7 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockClassOffensiveActions: true
+  blockClassDeviceInteractions: true
+  blockClassAreaEffects: true
+  blockClassMobilityActions: true

@@ -71,13 +71,18 @@ public sealed partial class HealingSystem : EntitySystem
             return;
         }
 
+        var classModifier = new Wh40kClassHealingAttemptEvent(args.Used.Value, entity.Owner, completing: true);
+        RaiseLocalEvent(args.User, classModifier);
+
         // Heal some bloodloss damage.
         if (healing.BloodlossModifier != 0)
         {
             if (!TryComp<BloodstreamComponent>(entity.Owner, out var bloodstream))
                 return;
             var isBleeding = bloodstream.BleedAmount > 0;
-            _bloodstreamSystem.TryModifyBleedAmount(entity.Owner, healing.BloodlossModifier);
+            _bloodstreamSystem.TryModifyBleedAmount(
+                entity.Owner,
+                healing.BloodlossModifier * classModifier.BloodlossMultiplier);
             if (isBleeding != bloodstream.BleedAmount > 0)
             {
                 if (entity.Owner == args.User)
@@ -89,9 +94,16 @@ public sealed partial class HealingSystem : EntitySystem
 
         // Restores missing blood
         if (healing.ModifyBloodLevel != 0)
-            _bloodstreamSystem.TryModifyBloodLevel(entity.Owner, healing.ModifyBloodLevel);
+            _bloodstreamSystem.TryModifyBloodLevel(
+                entity.Owner,
+                healing.ModifyBloodLevel * classModifier.HealingMultiplier);
 
-        var healed = _damageable.TryChangeDamage(entity.Owner, healing.Damage, true, origin: args.User, canSever: false); // Shitmed Change
+        var healed = _damageable.TryChangeDamage(
+            entity.Owner,
+            healing.Damage * classModifier.HealingMultiplier,
+            true,
+            origin: args.User,
+            canSever: false); // Shitmed Change
 
         if (healed == null && healing.BloodlossModifier != 0)
             return;
@@ -235,6 +247,9 @@ public sealed partial class HealingSystem : EntitySystem
         var delay = isNotSelf
             ? component.Delay
             : component.Delay * GetScaledHealingPenalty(user, component);
+        var classModifier = new Wh40kClassHealingAttemptEvent(uid, target, completing: false);
+        RaiseLocalEvent(user, classModifier);
+        delay *= Math.Clamp(classModifier.DelayMultiplier, 0.5f, 1f);
 
         var doAfterEventArgs =
             new DoAfterArgs(EntityManager, user, delay, new HealingDoAfterEvent(), target, target: target, used: uid)

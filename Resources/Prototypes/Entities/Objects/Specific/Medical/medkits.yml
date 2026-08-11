@@ -23,6 +23,8 @@
   - type: Tag
     tags:
     - Medkit
+    - Wh40kSkillMedicalItem
+    - Wh40kMedicalNode
 
 - type: entity
   name: burn treatment kit

@@ -144,6 +144,7 @@ public sealed partial class GunSystem : SharedGunSystem
                         RaiseLocalEvent(ent!.Value, new AmmoShotEvent()
                         {
                             FiredProjectiles = shotProjectiles,
+                            User = user,
                         });
 
                         SetCartridgeSpent(ent.Value, cartridge, true);
@@ -201,6 +202,7 @@ public sealed partial class GunSystem : SharedGunSystem
         RaiseLocalEvent(gunUid, new AmmoShotEvent()
         {
             FiredProjectiles = shotProjectiles,
+            User = user,
         });
 
         void CreateAndFireProjectiles(EntityUid ammoEnt, AmmoComponent ammoComp, float offset = 0f)

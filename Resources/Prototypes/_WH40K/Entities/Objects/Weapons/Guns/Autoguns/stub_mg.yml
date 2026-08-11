@@ -3,7 +3,12 @@
   id: WeaponStubMG
   suffix: WH40K, Общий
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillAutomaticWeapon
   - type: GunRequiresWield
+  - type: Wh40kWeaponHandling
+    category: Automatic
   - type: Item
     size: Huge
     sprite: _WH40K/Objects/Weapons/Guns/Autoguns/stub_mg_inhand.rsi
@@ -61,7 +66,4 @@
     steps: 11
     zeroVisible: true
   - type: Appearance
-  - type: HeldSpeedModifier
-    walkModifier: 0.9
-    sprintModifier: 0.9
 

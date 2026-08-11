@@ -2,6 +2,8 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._WH40K.CharacterCreation;
 
+using Content.Shared._WH40K.ClassProgression;
+
 /// <summary>
 ///     A starting class in the introductory character creator.
 ///     Its characteristic modifiers affect onboarding totals; abilities remain descriptive until their gameplay systems exist.
@@ -37,6 +39,12 @@ public sealed partial class Wh40kCharacterClassPrototype : IPrototype
     /// </summary>
     [DataField(required: true)]
     public string NavigationDescription { get; private set; } = string.Empty;
+
+    /// <summary>
+    ///     The two account-level skill branches. They describe future progression rather than abilities granted by onboarding.
+    /// </summary>
+    [DataField(required: true)]
+    public List<ProtoId<Wh40kClassSpecializationPrototype>> Specializations { get; private set; } = new();
 
     [DataField(required: true)]
     public string ActiveAbility { get; private set; } = string.Empty;

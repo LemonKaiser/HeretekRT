@@ -5,6 +5,9 @@
   description: A crew-operated heavy bolter. Deploy it, take position behind the gun, and suppress the lane.
   suffix: WH40K, стационарное
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillAutomaticWeapon
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -73,6 +76,8 @@
     rotateRightAction: ActionWH40KHeavyBolterRotateRight
   - type: BuckleMountedGun
     shootOriginOffset: "0,-0.35"
+  - type: Wh40kWeaponHandling
+    category: HeavyMachineGun
   - type: WH40KDirectionalBarricade
     flipPassSide: true
     blockedSidePassChance: 0.05

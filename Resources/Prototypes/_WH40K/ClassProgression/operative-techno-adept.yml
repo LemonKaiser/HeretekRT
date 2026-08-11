@@ -1,0 +1,567 @@
+# Оперативника: Техноадепт. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-01
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 3
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-02
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-03
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-04
+  kind: DeviceInteraction
+  mechanic: DeviceScan
+  action: ActionWh40kOperativeMachineWhisper
+  duration: 3
+  maximumDuration: 3
+  safety: DeviceInteraction
+  range: 6
+  maximumTargets: 8
+  cooldown: 16
+  counterplay: RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-05
+  kind: DeviceInteraction
+  mechanic: DeviceBypass
+  action: ActionWh40kOperativeLockBypass
+  duration: 5
+  maximumDuration: 8
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 28
+  counterplay: RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-06
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-07
+  kind: DeviceInteraction
+  mechanic: DeviceDisable
+  action: ActionWh40kOperativeSafetyShunt
+  duration: 4
+  maximumDuration: 7
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 26
+  counterplay: RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-08
+  kind: DeviceInteraction
+  mechanic: DeviceRepair
+  magnitude: 20
+  maximumMagnitude: 35
+  action: ActionWh40kOperativeFieldRepair
+  duration: 4
+  maximumDuration: 6
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 12
+  counterplay: RequiresLineOfSight, RequiresDoAfter, RequiresConsumable, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-09
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-10
+  kind: DeviceInteraction
+  mechanic: DeviceBypass
+  action: ActionWh40kOperativeQuietBreaker
+  duration: 7
+  maximumDuration: 10
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 35
+  counterplay: RequiresOpenPanel, RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-11
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-12
+  kind: DeviceInteraction
+  mechanic: DeviceScan
+  action: ActionWh40kOperativeRepairBeacon
+  duration: 3
+  maximumDuration: 3
+  safety: DeviceInteraction
+  range: 7
+  maximumTargets: 8
+  cooldown: 24
+  counterplay: RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-13
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-14
+  kind: DeviceInteraction
+  mechanic: DeviceDisable
+  action: ActionWh40kOperativeCircuitLoop
+  duration: 6
+  maximumDuration: 9
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 32
+  counterplay: RequiresOpenPanel, RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-15
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-16
+  kind: DeviceInteraction
+  mechanic: DeviceScan
+  action: ActionWh40kOperativeCommandProtocol
+  duration: 3
+  maximumDuration: 3
+  safety: DeviceInteraction
+  range: 8
+  maximumTargets: 8
+  cooldown: 20
+  counterplay: RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-17
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 7
+  maximumMagnitude: 12
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-18
+  kind: DeviceInteraction
+  mechanic: DeviceDisable
+  action: ActionWh40kOperativeMachineWrath
+  duration: 7
+  maximumDuration: 10
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 38
+  counterplay: RequiresOpenPanel, RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-19
+  kind: DeviceInteraction
+  mechanic: DeviceBypass
+  action: ActionWh40kOperativeSanctionedHack
+  duration: 10
+  maximumDuration: 14
+  safety: DeviceInteraction
+  range: 2
+  maximumTargets: 1
+  cooldown: 60
+  counterplay: RequiresOpenPanel, RequiresLineOfSight, RequiresDoAfter, BreakOnMove, BreakOnDamage, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-techno-adept-20
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 8
+  maximumMagnitude: 15
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-01
+  specialization: operative-techno-adept
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [operative-techno-adept-02]
+  displayPosition: "1, 0"
+  kind: Passive
+  effects: [effect-operative-techno-adept-01]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-01-name
+  description: wh40k-class-skill-operative-techno-adept-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-02
+  specialization: operative-techno-adept
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-techno-adept-01
+  connections: [operative-techno-adept-03, operative-techno-adept-04]
+  displayPosition: "2, 0"
+  kind: Passive
+  effects: [effect-operative-techno-adept-02]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-02-name
+  description: wh40k-class-skill-operative-techno-adept-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-03
+  specialization: operative-techno-adept
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-techno-adept-02
+  connections: [operative-techno-adept-05, operative-techno-adept-06]
+  displayPosition: "3, -2.4"
+  kind: Passive
+  effects: [effect-operative-techno-adept-03]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-03-name
+  description: wh40k-class-skill-operative-techno-adept-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-04
+  specialization: operative-techno-adept
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-techno-adept-02
+  connections: [operative-techno-adept-07, operative-techno-adept-08]
+  displayPosition: "3, 2.4"
+  kind: Active
+  effects: [effect-operative-techno-adept-04]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-04-name
+  description: wh40k-class-skill-operative-techno-adept-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-05
+  specialization: operative-techno-adept
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-techno-adept-03
+  connections: [operative-techno-adept-09]
+  displayPosition: "4, -4.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-05]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-05-name
+  description: wh40k-class-skill-operative-techno-adept-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-06
+  specialization: operative-techno-adept
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-techno-adept-03
+  connections: [operative-techno-adept-10]
+  displayPosition: "4, -1.5"
+  kind: Passive
+  effects: [effect-operative-techno-adept-06]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-06-name
+  description: wh40k-class-skill-operative-techno-adept-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-07
+  specialization: operative-techno-adept
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-techno-adept-04
+  connections: [operative-techno-adept-11]
+  displayPosition: "4, 1.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-07]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-07-name
+  description: wh40k-class-skill-operative-techno-adept-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-08
+  specialization: operative-techno-adept
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-techno-adept-04
+  connections: [operative-techno-adept-12]
+  displayPosition: "4, 4.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-08]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-08-name
+  description: wh40k-class-skill-operative-techno-adept-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-09
+  specialization: operative-techno-adept
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-techno-adept-05
+  connections: [operative-techno-adept-13, operative-techno-adept-14]
+  displayPosition: "5, -4.5"
+  kind: Passive
+  effects: [effect-operative-techno-adept-09]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-09-name
+  description: wh40k-class-skill-operative-techno-adept-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-10
+  specialization: operative-techno-adept
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-techno-adept-06
+  connections: [operative-techno-adept-15]
+  displayPosition: "5, -1.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-10]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-10-name
+  description: wh40k-class-skill-operative-techno-adept-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-11
+  specialization: operative-techno-adept
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-techno-adept-07
+  connections: [operative-techno-adept-16]
+  displayPosition: "5, 1.5"
+  kind: Passive
+  effects: [effect-operative-techno-adept-11]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-11-name
+  description: wh40k-class-skill-operative-techno-adept-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-12
+  specialization: operative-techno-adept
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-techno-adept-08
+  connections: [operative-techno-adept-17, operative-techno-adept-18]
+  displayPosition: "5, 4.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-12]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-12-name
+  description: wh40k-class-skill-operative-techno-adept-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-13
+  specialization: operative-techno-adept
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-techno-adept-09
+  connections: [operative-techno-adept-19]
+  displayPosition: "6, -5.2"
+  kind: Passive
+  effects: [effect-operative-techno-adept-13]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-13-name
+  description: wh40k-class-skill-operative-techno-adept-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-14
+  specialization: operative-techno-adept
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-techno-adept-09
+  displayPosition: "6, -3.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-14]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-14-name
+  description: wh40k-class-skill-operative-techno-adept-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-15
+  specialization: operative-techno-adept
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-techno-adept-10
+  displayPosition: "6, -1.5"
+  kind: Passive
+  effects: [effect-operative-techno-adept-15]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-15-name
+  description: wh40k-class-skill-operative-techno-adept-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-16
+  specialization: operative-techno-adept
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-techno-adept-11
+  displayPosition: "6, 1.5"
+  kind: Active
+  effects: [effect-operative-techno-adept-16]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-16-name
+  description: wh40k-class-skill-operative-techno-adept-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-17
+  specialization: operative-techno-adept
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-techno-adept-12
+  displayPosition: "6, 3.5"
+  kind: Passive
+  effects: [effect-operative-techno-adept-17]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-17-name
+  description: wh40k-class-skill-operative-techno-adept-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-18
+  specialization: operative-techno-adept
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-techno-adept-12
+  connections: [operative-techno-adept-20]
+  displayPosition: "6, 5.2"
+  kind: Active
+  effects: [effect-operative-techno-adept-18]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-18-name
+  description: wh40k-class-skill-operative-techno-adept-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-19
+  specialization: operative-techno-adept
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-techno-adept-13
+  displayPosition: "7, -5.2"
+  kind: Active
+  effects: [effect-operative-techno-adept-19]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-19-name
+  description: wh40k-class-skill-operative-techno-adept-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-techno-adept-20
+  specialization: operative-techno-adept
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: operative-techno-adept-18
+  displayPosition: "7, 5.2"
+  kind: Passive
+  effects: [effect-operative-techno-adept-20]
+  requiredEquipmentTags: [Wh40kSkillTool]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-techno-adept-20-name
+  description: wh40k-class-skill-operative-techno-adept-20-description
+  availability: Enabled
+

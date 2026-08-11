@@ -7,6 +7,8 @@
     tags:
     - CombatKnife
     - Knife
+    - Wh40kSkillLightMelee
+    - Wh40kSkillSoldierMelee
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/ogryn_combat_knife.rsi
     state: icon

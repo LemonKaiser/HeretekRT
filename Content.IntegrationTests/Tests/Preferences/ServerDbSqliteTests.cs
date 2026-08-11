@@ -4,6 +4,7 @@ using System.Net;
 using Content.Server._WH40K.Progression;
 using Content.Server.Database;
 using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.Progression;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -168,6 +169,98 @@ namespace Content.IntegrationTests.Tests.Preferences
 
             await db.SetWh40kPartyInvitesAllowedAsync(userId, false);
             Assert.That(await db.GetWh40kPartyInvitesAllowedAsync(userId), Is.False);
+            await pair.CleanReturnAsync();
+        }
+
+        [Test]
+        public async Task TestWh40kClassPurchasesAndAdminMutationsAreAtomicAndAudited()
+        {
+            var pair = await PoolManager.GetServerClient();
+            var db = GetDb(pair.Server);
+            var userId = NewUserId();
+            await db.UpdatePlayerRecord(userId, "ClassProgressionTest", IPAddress.Loopback, null);
+            await db.GetOrCreateWh40kAccountRpgAsync(
+                userId,
+                FoundationDraft(
+                    "death-world",
+                    Wh40kRpgFoundationSource.LegacyRandom,
+                    Wh40kCharacteristic.Melee));
+            await db.AwardWh40kExperienceAsync(
+                userId,
+                new Wh40kXpAwardRequest(
+                    "class-progression-level-five",
+                    Wh40kExperienceSourceType.Admin,
+                    Wh40kExperienceCurve.GetCumulativeExperienceTenths(5)));
+
+            var initial = await db.GetWh40kAccountClassProgressAsync(userId);
+            Assert.That(initial, Is.Not.Null);
+            var firstSpec = new Wh40kClassSkillPurchaseSpec(
+                "integration-soldier-01",
+                "soldier",
+                null,
+                5,
+                1,
+                Wh40kClassProgressionConstants.TreeVersion,
+                Wh40kClassContentAvailability.Enabled);
+            var purchased = await db.PurchaseWh40kClassSkillAsync(userId, initial!.Revision, firstSpec, 0);
+            var replayed = await db.PurchaseWh40kClassSkillAsync(userId, initial.Revision, firstSpec, 0);
+            var duplicate = await db.PurchaseWh40kClassSkillAsync(
+                userId,
+                purchased.ClassProgress!.Revision,
+                firstSpec,
+                0);
+            var insufficientPoints = await db.PurchaseWh40kClassSkillAsync(
+                userId,
+                purchased.ClassProgress.Revision,
+                firstSpec with { SkillId = "integration-soldier-other", MinimumLevel = 5 },
+                0);
+            var unavailable = await db.PurchaseWh40kClassSkillAsync(
+                userId,
+                purchased.ClassProgress.Revision,
+                firstSpec with
+                {
+                    SkillId = "integration-soldier-coming-soon",
+                    Availability = Wh40kClassContentAvailability.ComingSoon,
+                },
+                0);
+
+            var operationId = Guid.NewGuid();
+            var mutation = new Wh40kClassAdminMutationRequest(
+                operationId,
+                Wh40kClassAdminOperation.SetClass,
+                purchased.ClassProgress.Revision,
+                "assassin",
+                [],
+                Wh40kClassProgressionConstants.TreeVersion,
+                "integration-test",
+                "integration-test",
+                "verify atomic audited class change");
+            var mutated = await db.MutateWh40kClassProgressAsync(userId, mutation);
+            var idempotent = await db.MutateWh40kClassProgressAsync(userId, mutation);
+            var persisted = await db.GetWh40kAccountClassProgressAsync(userId);
+            var account = await db.GetWh40kAccountRpgAsync(userId);
+            var audit = await db.GetWh40kClassAuditAsync(userId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(purchased.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.Success));
+                Assert.That(purchased.ClassProgress!.Revision, Is.EqualTo(1));
+                Assert.That(purchased.ClassProgress.PurchasedSkillIds, Contains.Item(firstSpec.SkillId));
+                Assert.That(replayed.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.RevisionMismatch));
+                Assert.That(duplicate.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.AlreadyPurchased));
+                Assert.That(insufficientPoints.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.InsufficientPoints));
+                Assert.That(unavailable.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.ContentUnavailable));
+                Assert.That(mutated.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.Success));
+                Assert.That(idempotent.Status, Is.EqualTo(Wh40kClassSkillPurchaseStatus.Success));
+                Assert.That(persisted!.Revision, Is.EqualTo(2));
+                Assert.That(persisted.Skills, Is.Empty);
+                Assert.That(account!.Foundation.ClassId, Is.EqualTo("assassin"));
+                Assert.That(audit.Count, Is.EqualTo(2));
+                Assert.That(audit.Select(entry => entry.Operation), Is.EquivalentTo(new[] { "Purchase", "SetClass" }));
+                Assert.That(audit.Single(entry => entry.OperationId == operationId).Reason,
+                    Is.EqualTo("verify atomic audited class change"));
+            });
+
             await pair.CleanReturnAsync();
         }
 

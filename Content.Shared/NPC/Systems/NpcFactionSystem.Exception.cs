@@ -132,4 +132,13 @@ public sealed partial class NpcFactionSystem
             AggroEntity(ent, uid);
         }
     }
+
+    /// <summary>
+    /// Reports only an explicit per-entity hostility exception. Callers use this before adding a temporary
+    /// override so cleanup never removes hostility owned by another system.
+    /// </summary>
+    public bool IsForcedHostile(Entity<FactionExceptionComponent?> ent, EntityUid target)
+    {
+        return Resolve(ent, ref ent.Comp, false) && ent.Comp.Hostiles.Contains(target);
+    }
 }

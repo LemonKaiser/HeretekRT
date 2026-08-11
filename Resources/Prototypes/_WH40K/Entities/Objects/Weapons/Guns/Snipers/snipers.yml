@@ -3,7 +3,12 @@
   id: BaseWeaponSniperLondoronMk2
   abstract: true
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillMarksmanWeapon
   - type: GunRequiresWield
+  - type: Wh40kWeaponHandling
+    category: SemiAutomaticRifle
   - type: Item
     size: Huge
     shape:

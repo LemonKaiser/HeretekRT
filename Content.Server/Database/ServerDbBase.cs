@@ -7,11 +7,13 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._Mono.Company;
+using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.Progression;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Shared._Mono.Company;
 using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.Progression;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
@@ -40,6 +42,10 @@ namespace Content.Server.Database
         private const int Wh40kMaximumSourceTypeLength = 32;
         private const int Wh40kMaximumIssuerEntityLength = 128;
         private const int Wh40kMaximumContextJsonLength = 4096;
+        private const int Wh40kMaximumClassIdLength = 64;
+        private const int Wh40kMaximumSkillIdLength = 128;
+        private const int Wh40kMaximumClassAuditActorLength = 128;
+        private const int Wh40kMaximumClassAuditReasonLength = 1024;
         private const int PersistentInventoryMaximumPolicyIdLength = 64;
         private const int PersistentInventoryMaximumAuditActorLength = 64;
         private const int PersistentInventoryMaximumAuditReasonLength = 512;
@@ -578,6 +584,248 @@ namespace Content.Server.Database
                 return concurrentlyCreated;
 
             throw concurrentInsert!;
+        }
+
+        public async Task<Wh40kAccountClassProgressRecord?> GetWh40kAccountClassProgressAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            return await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel);
+        }
+
+        public async Task<Wh40kClassSkillPurchaseResult> PurchaseWh40kClassSkillAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kClassSkillPurchaseSpec skill,
+            int additionalSkillPoints,
+            CancellationToken cancel = default)
+        {
+            ArgumentNullException.ThrowIfNull(skill);
+            if (additionalSkillPoints < 0)
+                throw new ArgumentOutOfRangeException(nameof(additionalSkillPoints));
+
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+            var classProgress = await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel);
+            if (account == null || classProgress == null)
+            {
+                return new Wh40kClassSkillPurchaseResult(
+                    Wh40kClassSkillPurchaseStatus.AccountNotFound,
+                    account,
+                    classProgress);
+            }
+
+            var status = classProgress.TreeVersion != skill.TreeVersion
+                ? Wh40kClassSkillPurchaseStatus.ContentUnavailable
+                : Wh40kClassPurchasePolicy.Evaluate(
+                    account.Foundation.ClassId,
+                    account.Progress.Level,
+                    classProgress.Revision,
+                    expectedRevision,
+                    classProgress.PurchasedSkillIds,
+                    new Wh40kClassSkillPurchaseSpecData(
+                        skill.SkillId,
+                        skill.ClassId,
+                        skill.PrerequisiteSkillId,
+                        skill.MinimumLevel,
+                        skill.Cost,
+                        skill.Availability),
+                    additionalSkillPoints,
+                    Wh40kClassProgressionPolicy.GetSpentSkillPoints(
+                        classProgress.PurchasedSkillIds,
+                        skill.PersistentSkillCosts));
+            if (status != Wh40kClassSkillPurchaseStatus.Success)
+                return new Wh40kClassSkillPurchaseResult(status, account, classProgress);
+
+            var now = DateTime.UtcNow;
+            var revision = checked(expectedRevision + 1);
+            var updated = await db.DbContext.Wh40kAccountClassProgresses
+                .Where(candidate =>
+                    candidate.UserId == userId.UserId &&
+                    candidate.Revision == expectedRevision)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(candidate => candidate.UpdatedAt, now)
+                    .SetProperty(candidate => candidate.Revision, revision), cancel);
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await GetWh40kClassPurchaseFailureAsync(
+                    userId,
+                    Wh40kClassSkillPurchaseStatus.RevisionMismatch,
+                    cancel);
+            }
+
+            db.DbContext.Wh40kAccountClassSkills.Add(new Wh40kAccountClassSkill
+            {
+                UserId = userId.UserId,
+                SkillId = skill.SkillId,
+                PurchasedAt = now,
+            });
+            var newSkills = classProgress.Skills.Select(entry => entry.SkillId)
+                .Append(skill.SkillId)
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToArray();
+            db.DbContext.Wh40kAccountClassAudits.Add(CreateWh40kClassAudit(
+                Guid.NewGuid(),
+                userId,
+                Wh40kClassAdminOperation.Purchase,
+                userId.ToString(),
+                userId.ToString(),
+                "player-purchase",
+                account.Foundation.ClassId,
+                account.Foundation.ClassId,
+                classProgress.Skills.Select(entry => entry.SkillId),
+                newSkills,
+                now));
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateException)
+            {
+                await transaction.RollbackAsync(cancel);
+                return await GetWh40kClassPurchaseFailureAsync(
+                    userId,
+                    Wh40kClassSkillPurchaseStatus.RevisionMismatch,
+                    cancel);
+            }
+
+            var resultAccount = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel)
+                ?? throw new InvalidOperationException($"WH40K RPG account {userId} disappeared after skill purchase.");
+            var resultProgress = await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel)
+                ?? throw new InvalidOperationException($"WH40K class progress {userId} disappeared after skill purchase.");
+            return new Wh40kClassSkillPurchaseResult(
+                Wh40kClassSkillPurchaseStatus.Success,
+                resultAccount,
+                resultProgress);
+        }
+
+        public async Task<Wh40kClassAdminMutationResult> MutateWh40kClassProgressAsync(
+            NetUserId userId,
+            Wh40kClassAdminMutationRequest request,
+            CancellationToken cancel = default)
+        {
+            ValidateWh40kClassAdminMutationRequest(request);
+            await using var db = await GetDb(cancel);
+            await using var transaction = await db.DbContext.Database.BeginTransactionAsync(cancel);
+            var duplicate = await db.DbContext.Wh40kAccountClassAudits
+                .AsNoTracking()
+                .AnyAsync(audit => audit.OperationId == request.OperationId, cancel);
+            if (duplicate)
+            {
+                return new Wh40kClassAdminMutationResult(
+                    Wh40kClassSkillPurchaseStatus.Success,
+                    await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel),
+                    await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel));
+            }
+
+            var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+            var classProgress = await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel);
+            if (account == null || classProgress == null)
+            {
+                return new Wh40kClassAdminMutationResult(
+                    Wh40kClassSkillPurchaseStatus.AccountNotFound,
+                    account,
+                    classProgress);
+            }
+
+            if (classProgress.Revision != request.ExpectedRevision)
+            {
+                return new Wh40kClassAdminMutationResult(
+                    Wh40kClassSkillPurchaseStatus.RevisionMismatch,
+                    account,
+                    classProgress);
+            }
+
+            var now = DateTime.UtcNow;
+            var revision = checked(request.ExpectedRevision + 1);
+            var updated = await db.DbContext.Wh40kAccountClassProgresses
+                .Where(candidate =>
+                    candidate.UserId == userId.UserId &&
+                    candidate.Revision == request.ExpectedRevision)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(candidate => candidate.TreeVersion, request.TreeVersion)
+                    .SetProperty(candidate => candidate.UpdatedAt, now)
+                    .SetProperty(candidate => candidate.Revision, revision), cancel);
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kClassAdminMutationResult(
+                    Wh40kClassSkillPurchaseStatus.RevisionMismatch,
+                    account,
+                    classProgress);
+            }
+
+            await db.DbContext.Wh40kAccountRpgFoundations
+                .Where(candidate => candidate.UserId == userId.UserId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(candidate => candidate.ClassId, request.NewClassId), cancel);
+            await db.DbContext.Wh40kAccountClassSkills
+                .Where(candidate => candidate.UserId == userId.UserId)
+                .ExecuteDeleteAsync(cancel);
+            foreach (var skillId in request.NewSkillIds.Distinct(StringComparer.Ordinal))
+            {
+                db.DbContext.Wh40kAccountClassSkills.Add(new Wh40kAccountClassSkill
+                {
+                    UserId = userId.UserId,
+                    SkillId = skillId,
+                    PurchasedAt = now,
+                });
+            }
+
+            db.DbContext.Wh40kAccountClassAudits.Add(CreateWh40kClassAudit(
+                request.OperationId,
+                userId,
+                request.Operation,
+                request.ActorId,
+                request.ActorName,
+                request.Reason,
+                account.Foundation.ClassId,
+                request.NewClassId,
+                classProgress.Skills.Select(entry => entry.SkillId),
+                request.NewSkillIds,
+                now));
+
+            try
+            {
+                await db.DbContext.SaveChangesAsync(cancel);
+                await transaction.CommitAsync(cancel);
+            }
+            catch (DbUpdateException)
+            {
+                await transaction.RollbackAsync(cancel);
+                return new Wh40kClassAdminMutationResult(
+                    Wh40kClassSkillPurchaseStatus.RevisionMismatch,
+                    await GetWh40kAccountRpgAsync(userId, cancel),
+                    await GetWh40kAccountClassProgressAsync(userId, cancel));
+            }
+
+            return new Wh40kClassAdminMutationResult(
+                Wh40kClassSkillPurchaseStatus.Success,
+                await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel),
+                await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel));
+        }
+
+        public async Task<IReadOnlyList<Wh40kClassAuditRecord>> GetWh40kClassAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default)
+        {
+            if (limit is < 1 or > 100)
+                throw new ArgumentOutOfRangeException(nameof(limit));
+
+            await using var db = await GetDb(cancel);
+            var audits = await db.DbContext.Wh40kAccountClassAudits
+                .AsNoTracking()
+                .Where(audit => audit.UserId == userId.UserId)
+                .OrderByDescending(audit => audit.CreatedAt)
+                .Take(limit)
+                .ToListAsync(cancel);
+            return audits.Select(ToWh40kClassAuditRecord).ToList();
         }
 
         public async Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(
@@ -1530,6 +1778,32 @@ namespace Content.Server.Database
             return new Wh40kAccountRpgRecord(foundationRecord, progressRecord, purchaseRecords);
         }
 
+        private static async Task<Wh40kAccountClassProgressRecord?> LoadWh40kAccountClassProgressAsync(
+            ServerDbContext db,
+            NetUserId userId,
+            CancellationToken cancel)
+        {
+            var progress = await db.Wh40kAccountClassProgresses
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
+            if (progress == null)
+                return null;
+
+            var skills = await db.Wh40kAccountClassSkills
+                .AsNoTracking()
+                .Where(skill => skill.UserId == userId.UserId)
+                .OrderBy(skill => skill.SkillId)
+                .Select(skill => new Wh40kAccountClassSkillRecord(skill.SkillId, skill.PurchasedAt))
+                .ToListAsync(cancel);
+            return new Wh40kAccountClassProgressRecord(
+                userId,
+                progress.TreeVersion,
+                progress.Revision,
+                progress.CreatedAt,
+                progress.UpdatedAt,
+                skills);
+        }
+
         private static async Task<Wh40kPartyRecord?> LoadWh40kPartyAsync(
             ServerDbContext db,
             NetUserId userId,
@@ -1598,6 +1872,14 @@ namespace Content.Server.Database
                 UpdatedAt = now,
                 Revision = 0,
             });
+            db.Wh40kAccountClassProgresses.Add(new Wh40kAccountClassProgress
+            {
+                UserId = userId.UserId,
+                TreeVersion = Wh40kClassProgressionConstants.TreeVersion,
+                Revision = 0,
+                CreatedAt = now,
+                UpdatedAt = now,
+            });
             db.Wh40kPartyPreferences.Add(new Wh40kPartyPreference
             {
                 UserId = userId.UserId,
@@ -1621,6 +1903,100 @@ namespace Content.Server.Database
             return new Wh40kCharacteristicSpendResult(
                 account == null ? Wh40kCharacteristicSpendStatus.AccountNotFound : status,
                 account);
+        }
+
+        private async Task<Wh40kClassSkillPurchaseResult> GetWh40kClassPurchaseFailureAsync(
+            NetUserId userId,
+            Wh40kClassSkillPurchaseStatus status,
+            CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var account = await LoadWh40kAccountRpgAsync(db.DbContext, userId, cancel);
+            var classProgress = await LoadWh40kAccountClassProgressAsync(db.DbContext, userId, cancel);
+            return new Wh40kClassSkillPurchaseResult(
+                account == null || classProgress == null
+                    ? Wh40kClassSkillPurchaseStatus.AccountNotFound
+                    : status,
+                account,
+                classProgress);
+        }
+
+        private static Wh40kAccountClassAudit CreateWh40kClassAudit(
+            Guid operationId,
+            NetUserId userId,
+            Wh40kClassAdminOperation operation,
+            string actorId,
+            string actorName,
+            string reason,
+            string previousClassId,
+            string newClassId,
+            IEnumerable<string> previousSkillIds,
+            IEnumerable<string> newSkillIds,
+            DateTime now)
+        {
+            return new Wh40kAccountClassAudit
+            {
+                OperationId = operationId,
+                UserId = userId.UserId,
+                Operation = operation.ToString(),
+                ActorId = actorId,
+                ActorName = actorName,
+                Reason = reason,
+                PreviousClassId = previousClassId,
+                NewClassId = newClassId,
+                PreviousSkillIds = JsonSerializer.SerializeToDocument(
+                    previousSkillIds.Distinct(StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal)),
+                NewSkillIds = JsonSerializer.SerializeToDocument(
+                    newSkillIds.Distinct(StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal)),
+                CreatedAt = now,
+            };
+        }
+
+        private static Wh40kClassAuditRecord ToWh40kClassAuditRecord(Wh40kAccountClassAudit audit)
+        {
+            return new Wh40kClassAuditRecord(
+                audit.OperationId,
+                new NetUserId(audit.UserId),
+                audit.Operation,
+                audit.ActorId,
+                audit.ActorName,
+                audit.Reason,
+                audit.PreviousClassId,
+                audit.NewClassId,
+                audit.PreviousSkillIds.Deserialize<List<string>>() ?? [],
+                audit.NewSkillIds.Deserialize<List<string>>() ?? [],
+                audit.CreatedAt);
+        }
+
+        private static void ValidateWh40kClassAdminMutationRequest(Wh40kClassAdminMutationRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            if (request.Operation == Wh40kClassAdminOperation.Purchase || !Enum.IsDefined(request.Operation))
+                throw new ArgumentException("WH40K class admin operation is invalid.", nameof(request));
+            if (request.ExpectedRevision < 0)
+                throw new ArgumentOutOfRangeException(nameof(request));
+            if (request.TreeVersion <= 0)
+                throw new ArgumentOutOfRangeException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.NewClassId) || request.NewClassId.Length > Wh40kMaximumClassIdLength)
+                throw new ArgumentException("WH40K class ID is empty or too long.", nameof(request));
+            if (request.NewSkillIds.Count > Wh40kClassProgressionConstants.MaximumSkillsPerClass ||
+                request.NewSkillIds.Any(id => string.IsNullOrWhiteSpace(id) || id.Length > Wh40kMaximumSkillIdLength) ||
+                request.NewSkillIds.Distinct(StringComparer.Ordinal).Count() != request.NewSkillIds.Count)
+            {
+                throw new ArgumentException("WH40K class skill set is invalid.", nameof(request));
+            }
+            if (string.IsNullOrWhiteSpace(request.ActorId) ||
+                request.ActorId.Length > Wh40kMaximumClassAuditActorLength ||
+                string.IsNullOrWhiteSpace(request.ActorName) ||
+                request.ActorName.Length > Wh40kMaximumClassAuditActorLength)
+            {
+                throw new ArgumentException("WH40K class audit actor is invalid.", nameof(request));
+            }
+            if (string.IsNullOrWhiteSpace(request.Reason) ||
+                request.Reason.Length > Wh40kMaximumClassAuditReasonLength)
+            {
+                throw new ArgumentException("WH40K class audit reason is empty or too long.", nameof(request));
+            }
         }
 
         private static void ValidateWh40kXpAwardRequest(Wh40kXpAwardRequest request)

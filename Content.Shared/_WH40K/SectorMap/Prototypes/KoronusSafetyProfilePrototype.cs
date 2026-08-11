@@ -130,6 +130,18 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
     [DataField]
     public bool BlockAtmosphericRelease;
 
+    [DataField]
+    public bool BlockClassOffensiveActions;
+
+    [DataField]
+    public bool BlockClassDeviceInteractions;
+
+    [DataField]
+    public bool BlockClassAreaEffects;
+
+    [DataField]
+    public bool BlockClassMobilityActions;
+
     public KoronusSafetyRule Rules
     {
         get
@@ -183,6 +195,14 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
                 rules |= KoronusSafetyRule.PlayerDisposal;
             if (BlockAtmosphericRelease)
                 rules |= KoronusSafetyRule.AtmosphericRelease;
+            if (BlockClassOffensiveActions)
+                rules |= KoronusSafetyRule.ClassOffensiveActions;
+            if (BlockClassDeviceInteractions)
+                rules |= KoronusSafetyRule.ClassDeviceInteractions;
+            if (BlockClassAreaEffects)
+                rules |= KoronusSafetyRule.ClassAreaEffects;
+            if (BlockClassMobilityActions)
+                rules |= KoronusSafetyRule.ClassMobilityActions;
             return rules;
         }
     }
@@ -232,4 +252,8 @@ public enum KoronusSafetyRule : uint
     HostileNpcAutoCleanup = 1 << 21,
     PlayerDisposal = 1 << 22,
     AtmosphericRelease = 1 << 23,
+    ClassOffensiveActions = 1 << 24,
+    ClassDeviceInteractions = 1 << 25,
+    ClassAreaEffects = 1 << 26,
+    ClassMobilityActions = 1 << 27,
 }

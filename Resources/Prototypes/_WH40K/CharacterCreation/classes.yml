@@ -12,6 +12,7 @@
     Endurance: 12
     Melee: -15
   navigationDescription: heretek-class-soldier-navigation-description
+  specializations: [soldier-fire-line, soldier-long-shadow]
   activeAbility: heretek-class-soldier-active-ability
   passiveAbility: heretek-class-soldier-passive-ability
 
@@ -26,6 +27,7 @@
     Agility: 14
     Endurance: -15
   navigationDescription: heretek-class-assassin-navigation-description
+  specializations: [assassin-shadow, assassin-executioner]
   activeAbility: heretek-class-assassin-active-ability
   passiveAbility: heretek-class-assassin-passive-ability
 
@@ -40,6 +42,7 @@
     Ranged: 13
     Melee: -15
   navigationDescription: heretek-class-overseer-navigation-description
+  specializations: [overseer-formation-doctrine, overseer-pressure-doctrine]
   activeAbility: heretek-class-overseer-active-ability
   passiveAbility: heretek-class-overseer-passive-ability
 
@@ -54,6 +57,7 @@
     Endurance: 11
     Intelligence: -15
   navigationDescription: heretek-class-warrior-navigation-description
+  specializations: [warrior-bastion, warrior-blade-path]
   activeAbility: heretek-class-warrior-active-ability
   passiveAbility: heretek-class-warrior-passive-ability
 
@@ -68,5 +72,6 @@
     Agility: 16
     Endurance: -15
   navigationDescription: heretek-class-operative-navigation-description
+  specializations: [operative-field-aesculapian, operative-techno-adept]
   activeAbility: heretek-class-operative-active-ability
   passiveAbility: heretek-class-operative-passive-ability

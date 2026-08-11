@@ -53,6 +53,9 @@ namespace Content.Server.Database
         public DbSet<Wh40kAccountRpgFoundation> Wh40kAccountRpgFoundations { get; set; } = null!;
         public DbSet<Wh40kAccountRpgProgress> Wh40kAccountRpgProgresses { get; set; } = null!;
         public DbSet<Wh40kAccountAttributePurchase> Wh40kAccountAttributePurchases { get; set; } = null!;
+        public DbSet<Wh40kAccountClassProgress> Wh40kAccountClassProgresses { get; set; } = null!;
+        public DbSet<Wh40kAccountClassSkill> Wh40kAccountClassSkills { get; set; } = null!;
+        public DbSet<Wh40kAccountClassAudit> Wh40kAccountClassAudits { get; set; } = null!;
         public DbSet<Wh40kExperienceLedger> Wh40kExperienceLedgers { get; set; } = null!;
         public DbSet<Wh40kRewardDelivery> Wh40kRewardDeliveries { get; set; } = null!;
         public DbSet<Wh40kParty> Wh40kParties { get; set; } = null!;
@@ -427,6 +430,31 @@ namespace Content.Server.Database
             modelBuilder.Entity<Wh40kAccountAttributePurchase>()
                 .ToTable(table =>
                     table.HasCheckConstraint("PurchasedPointsNonNegative", "purchased_points >= 0"));
+
+            modelBuilder.Entity<Wh40kAccountClassProgress>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithOne()
+                .HasForeignKey<Wh40kAccountClassProgress>(progress => progress.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountClassProgress>()
+                .ToTable(table =>
+                {
+                    table.HasCheckConstraint("ClassTreeVersionPositive", "tree_version > 0");
+                    table.HasCheckConstraint("ClassTreeRevisionNonNegative", "revision >= 0");
+                });
+
+            modelBuilder.Entity<Wh40kAccountClassSkill>()
+                .HasOne<Wh40kAccountClassProgress>()
+                .WithMany()
+                .HasForeignKey(skill => skill.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kAccountClassAudit>()
+                .HasOne<Wh40kAccountRpgFoundation>()
+                .WithMany()
+                .HasForeignKey(audit => audit.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Wh40kExperienceLedger>()
                 .HasOne<Wh40kAccountRpgFoundation>()
@@ -1606,6 +1634,69 @@ namespace Content.Server.Database
         public DateTime FirstPurchasedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_account_class_progress")]
+    public class Wh40kAccountClassProgress
+    {
+        public Guid UserId { get; set; }
+
+        public int TreeVersion { get; set; }
+
+        public long Revision { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId), nameof(SkillId))]
+    [Table("wh40k_account_class_skill")]
+    public class Wh40kAccountClassSkill
+    {
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(128)]
+        public string SkillId { get; set; } = default!;
+
+        public DateTime PurchasedAt { get; set; }
+    }
+
+    [Index(nameof(UserId), nameof(CreatedAt))]
+    [Table("wh40k_account_class_audit")]
+    public class Wh40kAccountClassAudit
+    {
+        [Key]
+        public Guid OperationId { get; set; }
+
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(32)]
+        public string Operation { get; set; } = default!;
+
+        [Required, MaxLength(128)]
+        public string ActorId { get; set; } = default!;
+
+        [Required, MaxLength(128)]
+        public string ActorName { get; set; } = default!;
+
+        [Required, MaxLength(1024)]
+        public string Reason { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string PreviousClassId { get; set; } = default!;
+
+        [Required, MaxLength(64)]
+        public string NewClassId { get; set; } = default!;
+
+        [Required, Column(TypeName = "jsonb")]
+        public JsonDocument PreviousSkillIds { get; set; } = default!;
+
+        [Required, Column(TypeName = "jsonb")]
+        public JsonDocument NewSkillIds { get; set; } = default!;
+
+        public DateTime CreatedAt { get; set; }
     }
 
     [Index(nameof(UserId), nameof(RewardId), IsUnique = true)]

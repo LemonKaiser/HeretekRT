@@ -31,3 +31,20 @@
     icon: /Textures/_WH40K/Interface/PDA/Applications/party.png
     readonly: true
   - type: Wh40kPartyCartridge
+
+- type: entity
+  parent: NFBasePDACartridge
+  id: Wh40kClassCartridge
+  name: RPG class program
+  description: A private, server-authoritative class progression tree.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/cartridge.rsi
+    state: cart-y
+  - type: UIFragment
+    ui: !type:Wh40kClassUi
+  - type: Cartridge
+    programName: wh40k-rpg-class-program-name
+    icon: /Textures/_WH40K/CharacterCreation/Ornaments/cog-sigil.svg.192dpi.png
+    readonly: true
+  - type: Wh40kClassCartridge

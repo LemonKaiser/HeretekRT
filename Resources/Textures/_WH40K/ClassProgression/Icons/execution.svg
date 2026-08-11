@@ -1,0 +1,10 @@
+<!-- SPDX-FileCopyrightText: 2026 HeretekRT contributors -->
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 34c0-13 8-22 18-22s18 9 18 22c0 9-4 15-10 19v13H32V53c-6-4-10-10-10-19z"/>
+    <circle cx="33" cy="36" r="3" fill="#fff"/><circle cx="47" cy="36" r="3" fill="#fff"/>
+    <path d="M36 48h8M36 58v8M44 58v8"/>
+    <path d="M67 9L48 28M60 8l8 8M52 24l5 5"/>
+  </g>
+</svg>

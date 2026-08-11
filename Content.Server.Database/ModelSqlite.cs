@@ -94,6 +94,14 @@ namespace Content.Server.Database
                 .Property(foundation => foundation.InitialCharacteristicPoints)
                 .HasConversion(jsonByteArrayConverter);
 
+            modelBuilder.Entity<Wh40kAccountClassAudit>()
+                .Property(audit => audit.PreviousSkillIds)
+                .HasConversion(jsonByteArrayConverter);
+
+            modelBuilder.Entity<Wh40kAccountClassAudit>()
+                .Property(audit => audit.NewSkillIds)
+                .HasConversion(jsonByteArrayConverter);
+
             modelBuilder.Entity<Wh40kExperienceLedger>()
                 .Property(ledger => ledger.ContextJson)
                 .HasConversion(nullableJsonByteArrayConverter);

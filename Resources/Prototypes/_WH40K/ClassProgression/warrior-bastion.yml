@@ -1,0 +1,571 @@
+# Воина: Бастион. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-01
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 3
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-02
+  kind: StatusReaction
+  mechanic: IncomingStaminaReaction
+  magnitude: 8
+  maximumMagnitude: 20
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-03
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 4
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-04
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 4
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-05
+  kind: NpcPressure
+  mechanic: AreaPressure
+  magnitude: 20
+  maximumMagnitude: 35
+  action: ActionWh40kWarriorBattleCry
+  duration: 6
+  maximumDuration: 9
+  safety: NpcOnly
+  range: 6
+  maximumTargets: 6
+  cooldown: 30
+  counterplay: RequiresLineOfSight, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-06
+  kind: GrantAction
+  mechanic: Intercept
+  magnitude: 50
+  maximumMagnitude: 60
+  action: ActionWh40kWarriorBodyCover
+  duration: 4
+  maximumDuration: 6
+  safety: SelfOnly
+  range: 3
+  maximumTargets: 1
+  cooldown: 16
+  counterplay: RequiresAlly, RequiresLineOfSight, BreakOnMove
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-07
+  kind: StatusReaction
+  mechanic: IncomingStaminaReaction
+  magnitude: 12
+  maximumMagnitude: 20
+  safety: SelfOnly
+  counterplay: RequiresLowHealth
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-08
+  kind: GrantAction
+  mechanic: StationaryStance
+  magnitude: 18
+  maximumMagnitude: 28
+  action: ActionWh40kWarriorShieldBrace
+  duration: 6
+  maximumDuration: 9
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 18
+  counterplay: RequiresStationary, BreakOnMove, BreakOnAttack
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-09
+  kind: StatusReaction
+  mechanic: KnockbackReaction
+  magnitude: 12
+  maximumMagnitude: 20
+  safety: SelfOnly
+  cooldown: 12
+  counterplay: RequiresFrontArc
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-10
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 18
+  maximumMagnitude: 28
+  action: ActionWh40kWarriorChallengeChampion
+  duration: 8
+  maximumDuration: 12
+  safety: NpcOnly
+  range: 6
+  maximumTargets: 1
+  cooldown: 24
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-11
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-12
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  counterplay: RequiresLowHealth
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-13
+  kind: GrantAction
+  mechanic: DashToEntity
+  magnitude: 45
+  maximumMagnitude: 60
+  action: ActionWh40kWarriorGuardianStep
+  duration: 0.35
+  maximumDuration: 0.6
+  safety: Mobility
+  range: 6
+  maximumTargets: 1
+  cooldown: 22
+  counterplay: RequiresAlly, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-14
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  cooldown: 18
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-15
+  kind: StatModifier
+  mechanic: ProfileModifier
+  characteristic: Endurance
+  category: Defense
+  magnitude: 2
+  maximumMagnitude: 4
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-16
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 3
+  maximumMagnitude: 6
+  safety: SelfOnly
+  counterplay: RequiresLowHealth
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-17
+  kind: AreaCommand
+  mechanic: AreaPressure
+  magnitude: 35
+  maximumMagnitude: 50
+  action: ActionWh40kWarriorPunishingBarrier
+  duration: 3
+  maximumDuration: 5
+  safety: NpcOnly
+  range: 3
+  maximumTargets: 5
+  cooldown: 25
+  counterplay: RequiresLineOfSight, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-18
+  kind: StatusReaction
+  mechanic: IncomingStaminaReaction
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-19
+  kind: AreaCommand
+  mechanic: AreaPressure
+  magnitude: 40
+  maximumMagnitude: 55
+  action: ActionWh40kWarriorLastStand
+  duration: 7
+  maximumDuration: 10
+  safety: NpcOnly
+  range: 8
+  maximumTargets: 10
+  cooldown: 60
+  counterplay: RequiresLineOfSight, RequiresLowHealth, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-bastion-20
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 6
+  maximumMagnitude: 12
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-01
+  specialization: warrior-bastion
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [warrior-bastion-02]
+  displayPosition: "-1, 0"
+  kind: Passive
+  effects: [effect-warrior-bastion-01]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-01-name
+  description: wh40k-class-skill-warrior-bastion-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-02
+  specialization: warrior-bastion
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-bastion-01
+  connections: [warrior-bastion-03, warrior-bastion-04]
+  displayPosition: "-2, 0"
+  kind: Passive
+  effects: [effect-warrior-bastion-02]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-02-name
+  description: wh40k-class-skill-warrior-bastion-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-03
+  specialization: warrior-bastion
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-bastion-02
+  connections: [warrior-bastion-05, warrior-bastion-06]
+  displayPosition: "-3, -2.4"
+  kind: Passive
+  effects: [effect-warrior-bastion-03]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-03-name
+  description: wh40k-class-skill-warrior-bastion-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-04
+  specialization: warrior-bastion
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-bastion-02
+  connections: [warrior-bastion-07, warrior-bastion-08]
+  displayPosition: "-3, 2.4"
+  kind: Passive
+  effects: [effect-warrior-bastion-04]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-04-name
+  description: wh40k-class-skill-warrior-bastion-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-05
+  specialization: warrior-bastion
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-bastion-03
+  connections: [warrior-bastion-09]
+  displayPosition: "-4, -4.5"
+  kind: Active
+  effects: [effect-warrior-bastion-05]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-05-name
+  description: wh40k-class-skill-warrior-bastion-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-06
+  specialization: warrior-bastion
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-bastion-03
+  connections: [warrior-bastion-10]
+  displayPosition: "-4, -1.5"
+  kind: Active
+  effects: [effect-warrior-bastion-06]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-06-name
+  description: wh40k-class-skill-warrior-bastion-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-07
+  specialization: warrior-bastion
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-bastion-04
+  connections: [warrior-bastion-11]
+  displayPosition: "-4, 1.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-07]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-07-name
+  description: wh40k-class-skill-warrior-bastion-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-08
+  specialization: warrior-bastion
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-bastion-04
+  connections: [warrior-bastion-12]
+  displayPosition: "-4, 4.5"
+  kind: Active
+  effects: [effect-warrior-bastion-08]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-08-name
+  description: wh40k-class-skill-warrior-bastion-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-09
+  specialization: warrior-bastion
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-bastion-05
+  connections: [warrior-bastion-13, warrior-bastion-14]
+  displayPosition: "-5, -4.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-09]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-09-name
+  description: wh40k-class-skill-warrior-bastion-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-10
+  specialization: warrior-bastion
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-bastion-06
+  connections: [warrior-bastion-15]
+  displayPosition: "-5, -1.5"
+  kind: Active
+  effects: [effect-warrior-bastion-10]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-10-name
+  description: wh40k-class-skill-warrior-bastion-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-11
+  specialization: warrior-bastion
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-bastion-07
+  connections: [warrior-bastion-16]
+  displayPosition: "-5, 1.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-11]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-11-name
+  description: wh40k-class-skill-warrior-bastion-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-12
+  specialization: warrior-bastion
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-bastion-08
+  connections: [warrior-bastion-17, warrior-bastion-18]
+  displayPosition: "-5, 4.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-12]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-12-name
+  description: wh40k-class-skill-warrior-bastion-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-13
+  specialization: warrior-bastion
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-bastion-09
+  connections: [warrior-bastion-19]
+  displayPosition: "-6, -5.2"
+  kind: Active
+  effects: [effect-warrior-bastion-13]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-13-name
+  description: wh40k-class-skill-warrior-bastion-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-14
+  specialization: warrior-bastion
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-bastion-09
+  displayPosition: "-6, -3.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-14]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-14-name
+  description: wh40k-class-skill-warrior-bastion-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-15
+  specialization: warrior-bastion
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-bastion-10
+  displayPosition: "-6, -1.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-15]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/focus.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-15-name
+  description: wh40k-class-skill-warrior-bastion-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-16
+  specialization: warrior-bastion
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-bastion-11
+  displayPosition: "-6, 1.5"
+  kind: Passive
+  effects: [effect-warrior-bastion-16]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-16-name
+  description: wh40k-class-skill-warrior-bastion-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-17
+  specialization: warrior-bastion
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-bastion-12
+  displayPosition: "-6, 3.5"
+  kind: Active
+  effects: [effect-warrior-bastion-17]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-17-name
+  description: wh40k-class-skill-warrior-bastion-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-18
+  specialization: warrior-bastion
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-bastion-12
+  connections: [warrior-bastion-20]
+  displayPosition: "-6, 5.2"
+  kind: Passive
+  effects: [effect-warrior-bastion-18]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-18-name
+  description: wh40k-class-skill-warrior-bastion-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-19
+  specialization: warrior-bastion
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-bastion-13
+  displayPosition: "-7, -5.2"
+  kind: Active
+  effects: [effect-warrior-bastion-19]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-19-name
+  description: wh40k-class-skill-warrior-bastion-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-bastion-20
+  specialization: warrior-bastion
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: warrior-bastion-18
+  displayPosition: "-7, 5.2"
+  kind: Passive
+  effects: [effect-warrior-bastion-20]
+  requiredEquipmentTags: [Wh40kSkillShield]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-bastion-20-name
+  description: wh40k-class-skill-warrior-bastion-20-description
+  availability: Enabled
+

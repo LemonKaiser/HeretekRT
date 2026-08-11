@@ -70,6 +70,23 @@ namespace Content.Server.Database
             NetUserId userId,
             Wh40kRpgFoundationDraft foundation,
             CancellationToken cancel = default);
+        Task<Wh40kAccountClassProgressRecord?> GetWh40kAccountClassProgressAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+        Task<Wh40kClassSkillPurchaseResult> PurchaseWh40kClassSkillAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kClassSkillPurchaseSpec skill,
+            int additionalSkillPoints,
+            CancellationToken cancel = default);
+        Task<Wh40kClassAdminMutationResult> MutateWh40kClassProgressAsync(
+            NetUserId userId,
+            Wh40kClassAdminMutationRequest request,
+            CancellationToken cancel = default);
+        Task<IReadOnlyList<Wh40kClassAuditRecord>> GetWh40kClassAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default);
         Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(
             NetUserId userId,
             Wh40kXpAwardRequest request,
@@ -732,6 +749,48 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.GetOrCreateWh40kAccountRpgAsync(userId, foundation, cancel));
+        }
+
+        public Task<Wh40kAccountClassProgressRecord?> GetWh40kAccountClassProgressAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kAccountClassProgressAsync(userId, cancel));
+        }
+
+        public Task<Wh40kClassSkillPurchaseResult> PurchaseWh40kClassSkillAsync(
+            NetUserId userId,
+            long expectedRevision,
+            Wh40kClassSkillPurchaseSpec skill,
+            int additionalSkillPoints,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.PurchaseWh40kClassSkillAsync(
+                userId,
+                expectedRevision,
+                skill,
+                additionalSkillPoints,
+                cancel));
+        }
+
+        public Task<Wh40kClassAdminMutationResult> MutateWh40kClassProgressAsync(
+            NetUserId userId,
+            Wh40kClassAdminMutationRequest request,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.MutateWh40kClassProgressAsync(userId, request, cancel));
+        }
+
+        public Task<IReadOnlyList<Wh40kClassAuditRecord>> GetWh40kClassAuditAsync(
+            NetUserId userId,
+            int limit = 50,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kClassAuditAsync(userId, limit, cancel));
         }
 
         public Task<Wh40kExperienceAwardResult> AwardWh40kExperienceAsync(

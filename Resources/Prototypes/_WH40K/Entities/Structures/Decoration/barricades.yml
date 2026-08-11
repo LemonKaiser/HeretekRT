@@ -12,6 +12,9 @@
   - type: WH40KDirectionalBarricade
     flipPassSide: true
     blockedSidePassChance: 0.05
+  # The only currently approved low obstacle for Soldier's Assault Jump. Do not put this on walls, doors,
+  # grilles, or arbitrary furniture: the class route checks this component as a closed whitelist.
+  - type: Wh40kClassLowDashObstacle
   - type: Climbable
     delay: 4
   - type: Tag

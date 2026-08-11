@@ -1,0 +1,105 @@
+# Soldier rework actions. Their actual cooldowns and costs are server-owned by the class effects.
+
+- type: entity
+  id: ActionWh40kSoldierCombatDash
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WorldTargetAction
+    itemIconStyle: BigAction
+    range: 5
+    checkCanAccess: true
+    icon:
+      sprite: _WH40K/Objects/Weapons/Guns/Autoguns/stub_mg.rsi
+      state: base
+    event: !type:Wh40kClassWorldTargetActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierAssaultJump
+  parent: ActionWh40kSoldierCombatDash
+  components:
+  - type: WorldTargetAction
+    icon:
+      sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
+      state: icon
+
+- type: entity
+  id: ActionWh40kSoldierSteelFirePosition
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    icon:
+      sprite: _WH40K/Objects/Weapons/Guns/Autoguns/stub_mg.rsi
+      state: base
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierSteelBarrage
+  parent: ActionWh40kSoldierSteelFirePosition
+  components:
+  - type: InstantAction
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierSteelBreach
+  parent: ActionWh40kSoldierSteelFirePosition
+  components:
+  - type: InstantAction
+    icon:
+      sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
+      state: icon
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierVoidHoldBreath
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: BigAction
+    icon:
+      sprite: _WH40K/Objects/Weapons/Guns/Snipers/londoron_mk2.rsi
+      state: base
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierVoidVerdictShot
+  parent: ActionWh40kSoldierVoidHoldBreath
+  components:
+  - type: InstantAction
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierVoidPriorityTarget
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityTargetAction
+    itemIconStyle: BigAction
+    whitelist:
+      components:
+      - MobState
+    canTargetSelf: false
+    interactOnMiss: false
+    icon:
+      sprite: _WH40K/Objects/Weapons/Guns/Snipers/londoron_mk2.rsi
+      state: base
+    event: !type:Wh40kClassEntityTargetActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierVoidNestPlace
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WorldTargetAction
+    itemIconStyle: BigAction
+    range: 10
+    checkCanAccess: true
+    icon:
+      sprite: _WH40K/Objects/Weapons/Guns/Snipers/londoron_mk2.rsi
+      state: base
+    event: !type:Wh40kClassWorldTargetActionEvent
+
+- type: entity
+  id: ActionWh40kSoldierVoidNestAdvance
+  parent: ActionWh40kSoldierVoidHoldBreath
+  components:
+  - type: InstantAction
+    event: !type:Wh40kClassInstantActionEvent

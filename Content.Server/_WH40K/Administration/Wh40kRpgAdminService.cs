@@ -1,10 +1,13 @@
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server._WH40K.Progression;
+using Content.Server._WH40K.ClassProgression;
 using Content.Server.Administration.Logs;
 using Content.Server.Database;
 using Content.Shared._WH40K.Progression;
+using Content.Shared._WH40K.ClassProgression;
 using Content.Shared.Database;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -22,6 +25,8 @@ public sealed class Wh40kRpgAdminService
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private Wh40kExperienceService _experience = default!;
     [Dependency] private Wh40kProgressManager _progress = default!;
+    [Dependency] private Wh40kAccountRpgManager _accountRpg = default!;
+    [Dependency] private Wh40kClassProgressManager _classProgress = default!;
 
     public async Task<Wh40kExperienceAwardResult> GrantExperienceAsync(
         NetUserId target,
@@ -166,10 +171,163 @@ public sealed class Wh40kRpgAdminService
         return result;
     }
 
+    public async Task<Wh40kClassAdminMutationResult> SetClassAsync(
+        NetUserId target,
+        string targetName,
+        string classId,
+        Wh40kAdminAudit audit,
+        CancellationToken cancel = default)
+    {
+        var progress = await RequireClassProgressAsync(target, cancel);
+        return await MutateClassAsync(
+            target,
+            targetName,
+            Wh40kClassAdminOperation.SetClass,
+            progress.Revision,
+            classId,
+            [],
+            audit,
+            cancel);
+    }
+
+    public async Task<Wh40kClassAdminMutationResult> ReplaceSkillsAsync(
+        NetUserId target,
+        string targetName,
+        IReadOnlyList<string> skillIds,
+        Wh40kAdminAudit audit,
+        CancellationToken cancel = default)
+    {
+        var account = await RequireAccountAsync(target, cancel);
+        var progress = await RequireClassProgressAsync(target, cancel);
+        return await MutateClassAsync(
+            target,
+            targetName,
+            Wh40kClassAdminOperation.ReplaceSkills,
+            progress.Revision,
+            account.Foundation.ClassId,
+            skillIds,
+            audit,
+            cancel);
+    }
+
+    public async Task<Wh40kClassAdminMutationResult> GrantSkillAsync(
+        NetUserId target,
+        string targetName,
+        string skillId,
+        Wh40kAdminAudit audit,
+        CancellationToken cancel = default)
+    {
+        var account = await RequireAccountAsync(target, cancel);
+        var progress = await RequireClassProgressAsync(target, cancel);
+        if (progress.PurchasedSkillIds.Contains(skillId))
+            throw new InvalidOperationException($"Навык '{skillId}' уже выдан аккаунту.");
+
+        var skills = progress.Skills.Select(skill => skill.SkillId).Append(skillId).ToArray();
+        return await MutateClassAsync(
+            target,
+            targetName,
+            Wh40kClassAdminOperation.GrantSkill,
+            progress.Revision,
+            account.Foundation.ClassId,
+            skills,
+            audit,
+            cancel);
+    }
+
+    public async Task<Wh40kClassAdminMutationResult> RevokeSkillAsync(
+        NetUserId target,
+        string targetName,
+        string skillId,
+        Wh40kAdminAudit audit,
+        CancellationToken cancel = default)
+    {
+        var account = await RequireAccountAsync(target, cancel);
+        var progress = await RequireClassProgressAsync(target, cancel);
+        if (!progress.PurchasedSkillIds.Contains(skillId))
+            throw new InvalidOperationException($"Навык '{skillId}' не выдан аккаунту.");
+
+        var revoked = new HashSet<string>(StringComparer.Ordinal) { skillId };
+        bool changed;
+        do
+        {
+            changed = false;
+            foreach (var skill in _prototypes.EnumeratePrototypes<Wh40kClassSkillPrototype>())
+            {
+                if (skill.Prerequisite is not { } prerequisite ||
+                    !revoked.Contains(prerequisite.Id) ||
+                    !progress.PurchasedSkillIds.Contains(skill.ID))
+                {
+                    continue;
+                }
+
+                changed |= revoked.Add(skill.ID);
+            }
+        } while (changed);
+
+        var skills = progress.Skills
+            .Select(skill => skill.SkillId)
+            .Where(id => !revoked.Contains(id))
+            .ToArray();
+        return await MutateClassAsync(
+            target,
+            targetName,
+            Wh40kClassAdminOperation.RevokeSkill,
+            progress.Revision,
+            account.Foundation.ClassId,
+            skills,
+            audit,
+            cancel);
+    }
+
+    private async Task<Wh40kClassAdminMutationResult> MutateClassAsync(
+        NetUserId target,
+        string targetName,
+        Wh40kClassAdminOperation operation,
+        long expectedRevision,
+        string newClassId,
+        IReadOnlyList<string> skillIds,
+        Wh40kAdminAudit audit,
+        CancellationToken cancel)
+    {
+        var request = new Wh40kClassAdminMutationRequest(
+            Guid.NewGuid(),
+            operation,
+            expectedRevision,
+            newClassId,
+            skillIds,
+            Wh40kClassProgressionConstants.TreeVersion,
+            audit.AdminId,
+            audit.AdminName,
+            audit.Reason);
+        var result = await _classProgress.MutateAsync(target, request, cancel);
+        if (!result.IsSuccess || result.Account == null)
+        {
+            throw new InvalidOperationException(
+                $"Изменение класса отклонено: {result.Status}; повторите команду с актуальным состоянием.");
+        }
+
+        _progress.Cache(result.Account, true);
+        _accountRpg.CacheFoundation(result.Account.Foundation);
+        _adminLog.Add(
+            LogType.Action,
+            LogImpact.High,
+            $"WH40K class admin {audit.AdminName} ({audit.AdminId}) performed {operation} for " +
+            $"{targetName} ({target}); class={newClassId}; skills={skillIds.Count}. Reason: {audit.Reason}");
+        return result;
+    }
+
     private async Task<Wh40kAccountRpgRecord> RequireAccountAsync(NetUserId target, CancellationToken cancel)
     {
         return await _db.GetWh40kAccountRpgAsync(target, cancel)
                ?? throw new InvalidOperationException($"У аккаунта {target} нет фундамента WH40K RPG.");
+    }
+
+    private async Task<Wh40kAccountClassProgressRecord> RequireClassProgressAsync(
+        NetUserId target,
+        CancellationToken cancel)
+    {
+        return await _db.GetWh40kAccountClassProgressAsync(target, cancel)
+               ?? throw new InvalidOperationException($"У аккаунта {target} нет постоянного прогресса класса.");
     }
 
     private static Wh40kXpAwardRequest CreateAuditRequest(

@@ -1,0 +1,127 @@
+- type: entity
+  id: Wh40kClassCommandBeacon
+  parent: DefaultStationBeaconUnanchored
+  name: formation beacon
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  abstract: true
+  id: ActionWh40kOverseerInstantBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 20
+    itemIconStyle: BigAction
+    icon:
+      sprite: Objects/Devices/communication.rsi
+      state: radio
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  abstract: true
+  id: ActionWh40kOverseerTargetBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityTargetAction
+    useDelay: 20
+    itemIconStyle: BigAction
+    whitelist:
+      components:
+      - MobState
+    canTargetSelf: false
+    interactOnMiss: false
+    icon:
+      sprite: Objects/Devices/communication.rsi
+      state: radio
+    event: !type:Wh40kClassEntityTargetActionEvent
+
+- type: entity
+  abstract: true
+  id: ActionWh40kOverseerPointBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WorldTargetAction
+    useDelay: 20
+    itemIconStyle: BigAction
+    range: 10
+    checkCanAccess: true
+    icon:
+      sprite: Objects/Devices/communication.rsi
+      state: radio
+    event: !type:Wh40kClassWorldTargetActionEvent
+
+- type: entity
+  id: ActionWh40kOverseerPriorityTarget
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerTakeCover
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerRallySignal
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerOrderBeacon
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerFireRotation
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerForward
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerOrderInChaos
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerVeteranVoice
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerFullFormation
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerExposeWeakness
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerVoxInterference
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerBreakFormation
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerFalseCommand
+  parent: ActionWh40kOverseerPointBase
+
+- type: entity
+  id: ActionWh40kOverseerBack
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerStrikeNerves
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerDoubtCascade
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerCutPlan
+  parent: ActionWh40kOverseerTargetBase
+
+- type: entity
+  id: ActionWh40kOverseerDespairVoice
+  parent: ActionWh40kOverseerInstantBase
+
+- type: entity
+  id: ActionWh40kOverseerTotalTarget
+  parent: ActionWh40kOverseerTargetBase

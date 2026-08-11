@@ -1,5 +1,6 @@
 wh40k-rpg-player-program-name = Игрок
 wh40k-rpg-party-program-name = Группа
+wh40k-rpg-class-program-name = Класс
 
 wh40k-rpg-player-header = ПРОГРЕССИЯ АККАУНТА
 wh40k-rpg-player-level-short = УРОВЕНЬ {$level}

@@ -61,6 +61,11 @@ public sealed class Wh40kAccountRpgManager
             DateTime.UtcNow);
     }
 
+    public void CacheFoundation(Wh40kRpgFoundationRecord foundation)
+    {
+        _foundations[foundation.UserId] = foundation;
+    }
+
     public Wh40kAccountRpgRecord CreateTransientLegacyAccount(NetUserId userId)
     {
         var draft = RollLegacyFoundation();

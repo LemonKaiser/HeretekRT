@@ -1,0 +1,615 @@
+# Надзирателя: Доктрина строя. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-01
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 1
+  maximumMagnitude: 1
+  modifierCategory: Command
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-02
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 8
+  maximumMagnitude: 12
+  modifierCategory: Defense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-03
+  kind: TargetMark
+  mechanic: TargetMark
+  magnitude: 10
+  maximumMagnitude: 15
+  modifierCategory: Offense
+  action: ActionWh40kOverseerPriorityTarget
+  duration: 6
+  maximumDuration: 10
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 20
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-04
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 12
+  maximumMagnitude: 16
+  modifierCategory: Defense
+  action: ActionWh40kOverseerTakeCover
+  duration: 6
+  maximumDuration: 9
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 24
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-05
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 5
+  maximumMagnitude: 8
+  modifierCategory: Mobility
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-06
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 4
+  maximumMagnitude: 7
+  modifierCategory: Offense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-07
+  kind: AreaCommand
+  mechanic: CommandStamina
+  magnitude: 12
+  maximumMagnitude: 18
+  modifierCategory: Medical
+  action: ActionWh40kOverseerRallySignal
+  duration: 2
+  maximumDuration: 3
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 28
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-08
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 6
+  maximumMagnitude: 9
+  modifierCategory: Offense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-09
+  kind: AreaCommand
+  mechanic: CommandBeacon
+  magnitude: 10
+  maximumMagnitude: 14
+  modifierCategory: Command
+  action: ActionWh40kOverseerOrderBeacon
+  duration: 12
+  maximumDuration: 16
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 45
+  counterplay: RequiresConsumable
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-10
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 10
+  maximumMagnitude: 14
+  modifierCategory: Offense
+  action: ActionWh40kOverseerFireRotation
+  duration: 6
+  maximumDuration: 9
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 30
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-11
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 6
+  maximumMagnitude: 9
+  modifierCategory: Defense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-12
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 14
+  maximumMagnitude: 18
+  modifierCategory: Mobility
+  action: ActionWh40kOverseerForward
+  duration: 3
+  maximumDuration: 4
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 30
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-13
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 8
+  maximumMagnitude: 11
+  modifierCategory: Defense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-14
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 7
+  maximumMagnitude: 10
+  modifierCategory: Defense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-15
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 8
+  maximumMagnitude: 12
+  modifierCategory: Command
+  action: ActionWh40kOverseerOrderInChaos
+  duration: 8
+  maximumDuration: 12
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 34
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-16
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 7
+  maximumMagnitude: 10
+  modifierCategory: Offense
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-17
+  kind: AreaCommand
+  mechanic: CommandStamina
+  magnitude: 20
+  maximumMagnitude: 25
+  modifierCategory: Medical
+  action: ActionWh40kOverseerVeteranVoice
+  duration: 2
+  maximumDuration: 3
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 42
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-18
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 10
+  maximumMagnitude: 14
+  modifierCategory: Mobility
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-19
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 15
+  maximumMagnitude: 20
+  modifierCategory: Command
+  action: ActionWh40kOverseerFullFormation
+  duration: 5
+  maximumDuration: 7
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  cooldown: 60
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-formation-doctrine-20
+  kind: AreaCommand
+  mechanic: CommandAura
+  magnitude: 10
+  maximumMagnitude: 15
+  modifierCategory: Command
+  duration: 1
+  maximumDuration: 1
+  safety: AreaEffect
+  range: 10
+  maximumTargets: 32
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-01
+  specialization: overseer-formation-doctrine
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [overseer-formation-doctrine-02]
+  displayPosition: "-1, 0"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-01]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-01-name
+  description: wh40k-class-skill-overseer-formation-doctrine-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-02
+  specialization: overseer-formation-doctrine
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-formation-doctrine-01
+  connections: [overseer-formation-doctrine-03, overseer-formation-doctrine-04]
+  displayPosition: "-2, 0"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-02]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-02-name
+  description: wh40k-class-skill-overseer-formation-doctrine-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-03
+  specialization: overseer-formation-doctrine
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-formation-doctrine-02
+  connections: [overseer-formation-doctrine-05, overseer-formation-doctrine-06]
+  displayPosition: "-3, -2.4"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-03]
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-03-name
+  description: wh40k-class-skill-overseer-formation-doctrine-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-04
+  specialization: overseer-formation-doctrine
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-formation-doctrine-02
+  connections: [overseer-formation-doctrine-07, overseer-formation-doctrine-08]
+  displayPosition: "-3, 2.4"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-04]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-04-name
+  description: wh40k-class-skill-overseer-formation-doctrine-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-05
+  specialization: overseer-formation-doctrine
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-formation-doctrine-03
+  connections: [overseer-formation-doctrine-09]
+  displayPosition: "-4, -4.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-05]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-05-name
+  description: wh40k-class-skill-overseer-formation-doctrine-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-06
+  specialization: overseer-formation-doctrine
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-formation-doctrine-03
+  connections: [overseer-formation-doctrine-10]
+  displayPosition: "-4, -1.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-06]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-06-name
+  description: wh40k-class-skill-overseer-formation-doctrine-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-07
+  specialization: overseer-formation-doctrine
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-formation-doctrine-04
+  connections: [overseer-formation-doctrine-11]
+  displayPosition: "-4, 1.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-07]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-07-name
+  description: wh40k-class-skill-overseer-formation-doctrine-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-08
+  specialization: overseer-formation-doctrine
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-formation-doctrine-04
+  connections: [overseer-formation-doctrine-12]
+  displayPosition: "-4, 4.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-08]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-08-name
+  description: wh40k-class-skill-overseer-formation-doctrine-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-09
+  specialization: overseer-formation-doctrine
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-formation-doctrine-05
+  connections: [overseer-formation-doctrine-13, overseer-formation-doctrine-14]
+  displayPosition: "-5, -4.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-09]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-09-name
+  description: wh40k-class-skill-overseer-formation-doctrine-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-10
+  specialization: overseer-formation-doctrine
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-formation-doctrine-06
+  connections: [overseer-formation-doctrine-15]
+  displayPosition: "-5, -1.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-10]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-10-name
+  description: wh40k-class-skill-overseer-formation-doctrine-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-11
+  specialization: overseer-formation-doctrine
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-formation-doctrine-07
+  connections: [overseer-formation-doctrine-16]
+  displayPosition: "-5, 1.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-11]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-11-name
+  description: wh40k-class-skill-overseer-formation-doctrine-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-12
+  specialization: overseer-formation-doctrine
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-formation-doctrine-08
+  connections: [overseer-formation-doctrine-17, overseer-formation-doctrine-18]
+  displayPosition: "-5, 4.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-12]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-12-name
+  description: wh40k-class-skill-overseer-formation-doctrine-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-13
+  specialization: overseer-formation-doctrine
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-formation-doctrine-09
+  connections: [overseer-formation-doctrine-19]
+  displayPosition: "-6, -5.2"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-13]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-13-name
+  description: wh40k-class-skill-overseer-formation-doctrine-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-14
+  specialization: overseer-formation-doctrine
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-formation-doctrine-09
+  displayPosition: "-6, -3.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-14]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-14-name
+  description: wh40k-class-skill-overseer-formation-doctrine-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-15
+  specialization: overseer-formation-doctrine
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-formation-doctrine-10
+  displayPosition: "-6, -1.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-15]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-15-name
+  description: wh40k-class-skill-overseer-formation-doctrine-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-16
+  specialization: overseer-formation-doctrine
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-formation-doctrine-11
+  displayPosition: "-6, 1.5"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-16]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-16-name
+  description: wh40k-class-skill-overseer-formation-doctrine-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-17
+  specialization: overseer-formation-doctrine
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-formation-doctrine-12
+  displayPosition: "-6, 3.5"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-17]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-17-name
+  description: wh40k-class-skill-overseer-formation-doctrine-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-18
+  specialization: overseer-formation-doctrine
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-formation-doctrine-12
+  connections: [overseer-formation-doctrine-20]
+  displayPosition: "-6, 5.2"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-18]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-18-name
+  description: wh40k-class-skill-overseer-formation-doctrine-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-19
+  specialization: overseer-formation-doctrine
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-formation-doctrine-13
+  displayPosition: "-7, -5.2"
+  kind: Active
+  effects: [effect-overseer-formation-doctrine-19]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-19-name
+  description: wh40k-class-skill-overseer-formation-doctrine-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-formation-doctrine-20
+  specialization: overseer-formation-doctrine
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: overseer-formation-doctrine-18
+  displayPosition: "-7, 5.2"
+  kind: Passive
+  effects: [effect-overseer-formation-doctrine-20]
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+  name: wh40k-class-skill-overseer-formation-doctrine-20-name
+  description: wh40k-class-skill-overseer-formation-doctrine-20-description
+  availability: Enabled
+

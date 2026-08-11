@@ -19,6 +19,7 @@
     tags:
     - PlantSampleTaker
     - Wirecutter
+    - Wh40kSkillTool
   - type: Sprite
     sprite: Objects/Tools/wirecutters.rsi
     layers:
@@ -231,6 +232,7 @@
     tags:
     - Multitool
     - DoorElectronicsConfigurator
+    - Wh40kSkillTool
   - type: PhysicalComposition
     materialComposition:
       Steel: 100

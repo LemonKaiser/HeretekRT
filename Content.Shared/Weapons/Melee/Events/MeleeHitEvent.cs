@@ -89,6 +89,13 @@ public record struct GetMeleeDamageEvent(EntityUid Weapon, DamageSpecifier Damag
 public record struct GetMeleeAttackRateEvent(EntityUid Weapon, float Rate, float Multipliers, EntityUid User);
 
 /// <summary>
+/// Raised on a melee weapon immediately before the stamina cost of a heavy multi-target swing is applied.
+/// The cost is per additional target, so modifiers cannot accidentally turn the first target into a stamina cost.
+/// </summary>
+[ByRefEvent]
+public record struct GetHeavyMeleeStaminaCostEvent(EntityUid Weapon, float Cost, EntityUid User, int TargetCount);
+
+/// <summary>
 /// Raised on a melee weapon to calculate the heavy damage modifier.
 /// </summary>
 [ByRefEvent]

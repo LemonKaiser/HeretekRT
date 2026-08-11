@@ -1,0 +1,554 @@
+# Ассасина: Тень. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-01
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 1
+  maximumMagnitude: 3
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-02
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-03
+  kind: StatModifier
+  mechanic: ProfileModifier
+  characteristic: Agility
+  category: Mobility
+  magnitude: 1
+  maximumMagnitude: 3
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-04
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  counterplay: RequiresStationary
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-05
+  kind: GrantAction
+  mechanic: Cloak
+  magnitude: 40
+  maximumMagnitude: 55
+  action: ActionWh40kAssassinDissolve
+  duration: 8
+  maximumDuration: 10
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 25
+  counterplay: BreakOnMove, BreakOnDamage, BreakOnAttack, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-06
+  kind: StatModifier
+  mechanic: ProfileModifier
+  characteristic: Agility
+  category: Mobility
+  magnitude: 1
+  maximumMagnitude: 3
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-07
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-08
+  kind: TargetMark
+  mechanic: TargetMark
+  action: ActionWh40kAssassinPreyMark
+  duration: 15
+  maximumDuration: 20
+  safety: OffensiveControl
+  range: 8
+  maximumTargets: 1
+  cooldown: 12
+  counterplay: RequiresHostile, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-09
+  kind: NpcPressure
+  mechanic: Distraction
+  magnitude: 25
+  maximumMagnitude: 40
+  action: ActionWh40kAssassinFalseTrail
+  duration: 6
+  maximumDuration: 9
+  safety: NpcOnly
+  range: 5
+  maximumTargets: 4
+  cooldown: 20
+  counterplay: RequiresConsumable, RequiresLineOfSight, BreakOnItemChange, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-10
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  counterplay: RequiresMarkedTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-11
+  kind: GrantAction
+  mechanic: Distraction
+  magnitude: 30
+  maximumMagnitude: 45
+  action: ActionWh40kAssassinSmokeVeil
+  duration: 7
+  maximumDuration: 10
+  safety: NpcOnly
+  range: 5
+  maximumTargets: 5
+  cooldown: 28
+  counterplay: RequiresConsumable, RequiresLineOfSight, BreakOnItemChange, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-12
+  kind: NpcPressure
+  mechanic: Distraction
+  magnitude: 34
+  maximumMagnitude: 50
+  action: ActionWh40kAssassinFalseSilhouette
+  duration: 7
+  maximumDuration: 11
+  safety: NpcOnly
+  range: 6
+  maximumTargets: 6
+  cooldown: 32
+  counterplay: RequiresConsumable, RequiresLineOfSight, BreakOnItemChange, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-13
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-14
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-15
+  kind: GrantAction
+  mechanic: Distraction
+  magnitude: 38
+  maximumMagnitude: 55
+  action: ActionWh40kAssassinVanishingGlimmer
+  duration: 8
+  maximumDuration: 12
+  safety: NpcOnly
+  range: 6
+  maximumTargets: 7
+  cooldown: 38
+  counterplay: RequiresConsumable, RequiresLineOfSight, BreakOnItemChange, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-16
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-17
+  kind: GrantAction
+  mechanic: Cloak
+  magnitude: 65
+  maximumMagnitude: 75
+  action: ActionWh40kAssassinDeepVanish
+  duration: 7
+  maximumDuration: 9
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 45
+  counterplay: BreakOnMove, BreakOnDamage, BreakOnAttack, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-18
+  kind: StatModifier
+  mechanic: ProfileModifier
+  characteristic: Agility
+  category: Mobility
+  magnitude: 2
+  maximumMagnitude: 4
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-19
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 3
+  maximumMagnitude: 8
+  safety: SelfOnly
+  counterplay: BreakOnAttack
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-assassin-shadow-20
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 4
+  maximumMagnitude: 10
+  safety: SelfOnly
+  counterplay: BreakOnAttack, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-01
+  specialization: assassin-shadow
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [assassin-shadow-02]
+  displayPosition: "-1, 0"
+  kind: Passive
+  effects: [effect-assassin-shadow-01]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-01-name
+  description: wh40k-class-skill-assassin-shadow-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-02
+  specialization: assassin-shadow
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-shadow-01
+  connections: [assassin-shadow-03, assassin-shadow-04]
+  displayPosition: "-2, 0"
+  kind: Passive
+  effects: [effect-assassin-shadow-02]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-02-name
+  description: wh40k-class-skill-assassin-shadow-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-03
+  specialization: assassin-shadow
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-shadow-02
+  connections: [assassin-shadow-05, assassin-shadow-06]
+  displayPosition: "-3, -2.4"
+  kind: Passive
+  effects: [effect-assassin-shadow-03]
+  icon: /Textures/_WH40K/ClassProgression/Icons/focus.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-03-name
+  description: wh40k-class-skill-assassin-shadow-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-04
+  specialization: assassin-shadow
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: assassin-shadow-02
+  connections: [assassin-shadow-07, assassin-shadow-08]
+  displayPosition: "-3, 2.4"
+  kind: Passive
+  effects: [effect-assassin-shadow-04]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-04-name
+  description: wh40k-class-skill-assassin-shadow-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-05
+  specialization: assassin-shadow
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-shadow-03
+  connections: [assassin-shadow-09]
+  displayPosition: "-4, -4.5"
+  kind: Active
+  effects: [effect-assassin-shadow-05]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-05-name
+  description: wh40k-class-skill-assassin-shadow-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-06
+  specialization: assassin-shadow
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-shadow-03
+  connections: [assassin-shadow-10]
+  displayPosition: "-4, -1.5"
+  kind: Passive
+  effects: [effect-assassin-shadow-06]
+  icon: /Textures/_WH40K/ClassProgression/Icons/focus.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-06-name
+  description: wh40k-class-skill-assassin-shadow-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-07
+  specialization: assassin-shadow
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-shadow-04
+  connections: [assassin-shadow-11]
+  displayPosition: "-4, 1.5"
+  kind: Passive
+  effects: [effect-assassin-shadow-07]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-07-name
+  description: wh40k-class-skill-assassin-shadow-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-08
+  specialization: assassin-shadow
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: assassin-shadow-04
+  connections: [assassin-shadow-12]
+  displayPosition: "-4, 4.5"
+  kind: Active
+  effects: [effect-assassin-shadow-08]
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-08-name
+  description: wh40k-class-skill-assassin-shadow-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-09
+  specialization: assassin-shadow
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-shadow-05
+  connections: [assassin-shadow-13, assassin-shadow-14]
+  displayPosition: "-5, -4.5"
+  kind: Active
+  effects: [effect-assassin-shadow-09]
+  requiredEquipmentTags: [Wh40kSkillDistraction]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-09-name
+  description: wh40k-class-skill-assassin-shadow-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-10
+  specialization: assassin-shadow
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-shadow-06
+  connections: [assassin-shadow-15]
+  displayPosition: "-5, -1.5"
+  kind: Passive
+  effects: [effect-assassin-shadow-10]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-10-name
+  description: wh40k-class-skill-assassin-shadow-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-11
+  specialization: assassin-shadow
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-shadow-07
+  connections: [assassin-shadow-16]
+  displayPosition: "-5, 1.5"
+  kind: Active
+  effects: [effect-assassin-shadow-11]
+  requiredEquipmentTags: [Wh40kSkillDistraction]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-11-name
+  description: wh40k-class-skill-assassin-shadow-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-12
+  specialization: assassin-shadow
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: assassin-shadow-08
+  connections: [assassin-shadow-17, assassin-shadow-18]
+  displayPosition: "-5, 4.5"
+  kind: Active
+  effects: [effect-assassin-shadow-12]
+  requiredEquipmentTags: [Wh40kSkillDistraction]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-12-name
+  description: wh40k-class-skill-assassin-shadow-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-13
+  specialization: assassin-shadow
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-shadow-09
+  connections: [assassin-shadow-19]
+  displayPosition: "-6, -5.2"
+  kind: Passive
+  effects: [effect-assassin-shadow-13]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-13-name
+  description: wh40k-class-skill-assassin-shadow-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-14
+  specialization: assassin-shadow
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-shadow-09
+  displayPosition: "-6, -3.5"
+  kind: Passive
+  effects: [effect-assassin-shadow-14]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-14-name
+  description: wh40k-class-skill-assassin-shadow-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-15
+  specialization: assassin-shadow
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-shadow-10
+  displayPosition: "-6, -1.5"
+  kind: Active
+  effects: [effect-assassin-shadow-15]
+  requiredEquipmentTags: [Wh40kSkillDistraction]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-15-name
+  description: wh40k-class-skill-assassin-shadow-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-16
+  specialization: assassin-shadow
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: assassin-shadow-11
+  displayPosition: "-6, 1.5"
+  kind: Passive
+  effects: [effect-assassin-shadow-16]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-16-name
+  description: wh40k-class-skill-assassin-shadow-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-17
+  specialization: assassin-shadow
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-shadow-12
+  displayPosition: "-6, 3.5"
+  kind: Active
+  effects: [effect-assassin-shadow-17]
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-17-name
+  description: wh40k-class-skill-assassin-shadow-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-18
+  specialization: assassin-shadow
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-shadow-12
+  connections: [assassin-shadow-20]
+  displayPosition: "-6, 5.2"
+  kind: Passive
+  effects: [effect-assassin-shadow-18]
+  icon: /Textures/_WH40K/ClassProgression/Icons/focus.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-18-name
+  description: wh40k-class-skill-assassin-shadow-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-19
+  specialization: assassin-shadow
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: assassin-shadow-13
+  displayPosition: "-7, -5.2"
+  kind: Passive
+  effects: [effect-assassin-shadow-19]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-19-name
+  description: wh40k-class-skill-assassin-shadow-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: assassin-shadow-20
+  specialization: assassin-shadow
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: assassin-shadow-18
+  displayPosition: "-7, 5.2"
+  kind: Passive
+  effects: [effect-assassin-shadow-20]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-assassin-shadow-20-name
+  description: wh40k-class-skill-assassin-shadow-20-description
+  availability: Enabled
+

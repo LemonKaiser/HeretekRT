@@ -1,0 +1,37 @@
+# Explicit equipment gates for WH40K class effects.
+- type: Tag
+  id: Wh40kSkillShield
+
+- type: Tag
+  id: Wh40kSkillLightMelee
+
+# Soldier's rifle-butt/bayonet line deliberately has its own gate. Do not infer it from the generic knife tag.
+- type: Tag
+  id: Wh40kSkillSoldierMelee
+
+- type: Tag
+  id: Wh40kSkillAutomaticWeapon
+
+- type: Tag
+  id: Wh40kSkillMarksmanWeapon
+
+- type: Tag
+  id: Wh40kSkillMedicalItem
+
+- type: Tag
+  id: Wh40kSkillTool
+
+- type: Tag
+  id: Wh40kMedicalNode
+
+- type: Tag
+  id: Wh40kClassHackable
+
+- type: Tag
+  id: Wh40kSkillDistraction
+
+- type: Tag
+  id: Wh40kSkillPoison
+
+- type: Tag
+  id: Wh40kCommandBeaconConsumable

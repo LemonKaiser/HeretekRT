@@ -43,6 +43,7 @@
     preinstalled:
     - Wh40kPlayerCartridge
     - Wh40kPartyCartridge
+    - Wh40kClassCartridge
     - CrewManifestCartridge
     - NotekeeperCartridge
     - NewsReaderCartridge

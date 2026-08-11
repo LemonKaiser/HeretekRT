@@ -209,7 +209,7 @@ public sealed partial class Wh40kCompensateItemCommand : IConsoleCommand
         CompletePlayer(_players, args);
 }
 
-file static class Wh40kRpgGrantCommandHelpers
+internal static class Wh40kRpgGrantCommandHelpers
 {
     public static async Task<LocatedPlayerData> ResolveTargetAsync(IPlayerLocator locator, string value)
     {

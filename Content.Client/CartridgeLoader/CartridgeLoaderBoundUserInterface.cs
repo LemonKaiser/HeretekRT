@@ -1,7 +1,9 @@
 ﻿using Content.Client.UserInterface.Fragments;
+using System.Linq;
 using Content.Shared.CartridgeLoader;
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
+using Robust.Shared.Utility;
 
 namespace Content.Client.CartridgeLoader;
 
@@ -16,6 +18,8 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
 
     [ViewVariables]
     private Control? _activeUiFragment;
+
+    private List<(EntityUid Uid, CartridgeComponent Component)> _availablePrograms = new();
 
     private IEntityManager _entManager;
 
@@ -36,19 +40,24 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
 
         // TODO move this to a component state and ensure the net ids.
         var programs = GetCartridgeComponents(_entManager.GetEntityList(loaderUiState.Programs));
+        _availablePrograms = programs
+            .Select(program => (program.Item1, program.Item2))
+            .ToList();
         UpdateAvailablePrograms(programs);
 
         var activeUI = _entManager.GetEntity(loaderUiState.ActiveUI);
+
+        // Loader state can be resent without changing the active cartridge. Calling Setup again would replace the
+        // fragment owned by the UI object while the old fragment remains attached and visible. Subsequent private
+        // messages would then update an invisible control tree instead of the PDA currently on screen.
+        if (_activeProgram == activeUI && _activeCartridgeUI is not null && _activeUiFragment is not null)
+            return;
 
         _activeProgram = activeUI;
 
         var ui = RetrieveCartridgeUI(activeUI);
         var comp = RetrieveCartridgeComponent(activeUI);
         var control = ui?.GetUIFragmentRoot();
-
-        //Prevent the same UI fragment from getting disposed and attached multiple times
-        if (_activeUiFragment?.GetType() == control?.GetType())
-            return;
 
         if (_activeUiFragment is not null)
             DetachCartridgeUI(_activeUiFragment);
@@ -75,6 +84,20 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
     {
         var message = new CartridgeLoaderUiMessage(_entManager.GetNetEntity(cartridgeUid), CartridgeUiMessageAction.Activate);
         SendMessage(message);
+    }
+
+    public bool TryActivateCartridgeProgram(LocId programName)
+    {
+        foreach (var (uid, component) in _availablePrograms)
+        {
+            if (!component.ProgramName.Equals(programName))
+                continue;
+
+            ActivateCartridge(uid);
+            return true;
+        }
+
+        return false;
     }
 
     protected void DeactivateActiveCartridge()

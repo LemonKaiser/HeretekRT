@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server._WH40K.Progression;
+using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Fluids.Components;
 using Content.Server._Mono.SpaceArtillery.Components;
@@ -9,6 +10,7 @@ using Content.Shared._Mono;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared._WH40K.ClassProgression;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Atmos.Events;
 using Content.Shared.Atmos.Piping.Unary.Components;
@@ -153,8 +155,16 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     public bool HasRule(EntityUid entity, KoronusSafetyRule rule)
     {
+        return (GetRules(entity) & rule) != 0;
+    }
+
+    /// <summary>
+    /// Returns the additive rule set active at an entity, including its grid profile.
+    /// </summary>
+    public KoronusSafetyRule GetRules(EntityUid entity)
+    {
         if (!_transformQuery.TryComp(entity, out var transform))
-            return false;
+            return KoronusSafetyRule.None;
 
         var rules = GetAreaRules(transform.MapID, _transform.GetWorldPosition(transform));
         if (TryComp<KoronusGridSafetyProfileComponent>(entity, out var ownGridProfile))
@@ -165,7 +175,33 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             rules |= _prototypes.Index(gridProfile.Profile).Rules;
         }
 
-        return (rules & rule) != 0;
+        return rules;
+    }
+
+    /// <summary>
+    /// Generic first-line gate for class Actions. Concrete handlers must call this again with their actual target.
+    /// </summary>
+    public bool IsClassActionAllowed(
+        EntityUid source,
+        EntityUid? target,
+        Wh40kClassEffectSafety safety)
+    {
+        var sourceRules = GetRules(source);
+        var targetRules = target is { Valid: true } targetUid
+            ? GetRules(targetUid)
+            : KoronusSafetyRule.None;
+        var targetIsPlayer = target is { Valid: true } player && IsPlayerCharacter(player);
+        var targetIsProtectedNpc = safety == Wh40kClassEffectSafety.NpcOnly &&
+                                   target is { Valid: true } npc &&
+                                   !targetIsPlayer &&
+                                   ShouldBlockPlayerAgainstMob(source, npc);
+        return Wh40kClassRuntimePolicy.IsClassActionAllowed(
+            safety,
+            sourceRules,
+            targetRules,
+            targetIsPlayer,
+            targetIsProtectedNpc,
+            target == null || target == source);
     }
 
     /// <summary>

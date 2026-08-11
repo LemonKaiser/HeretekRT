@@ -28,6 +28,9 @@
             - Impassable
     - type: Item
       size: Normal
+    - type: Tag
+      tags:
+        - Wh40kCommandBeaconConsumable
     - type: Foldable
       folded: true
     - type: Clickable

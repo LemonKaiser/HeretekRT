@@ -12,6 +12,7 @@
   - type: Tag
     tags:
     - CableCoil
+    - Wh40kSkillTool
   - type: Stack
     stackType: Cable
   - type: Sprite

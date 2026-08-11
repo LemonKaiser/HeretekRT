@@ -1,0 +1,585 @@
+# Надзирателя: Доктрина давления. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-01
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 1
+  maximumMagnitude: 1
+  modifierCategory: Command
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-02
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 1
+  maximumMagnitude: 1
+  modifierCategory: Offense
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-03
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 12
+  maximumMagnitude: 20
+  modifierCategory: Offense
+  action: ActionWh40kOverseerExposeWeakness
+  duration: 8
+  maximumDuration: 11
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 21
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-04
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 20
+  maximumMagnitude: 28
+  modifierCategory: Offense
+  action: ActionWh40kOverseerVoxInterference
+  duration: 4
+  maximumDuration: 7
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 22
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-05
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 2
+  maximumMagnitude: 2
+  modifierCategory: Command
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-06
+  kind: NpcPressure
+  mechanic: AreaPressure
+  magnitude: 16
+  maximumMagnitude: 24
+  modifierCategory: Mobility
+  action: ActionWh40kOverseerBreakFormation
+  duration: 6
+  maximumDuration: 9
+  safety: NpcOnly
+  range: 7
+  maximumTargets: 8
+  cooldown: 24
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-07
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 2
+  maximumMagnitude: 2
+  modifierCategory: Offense
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-08
+  kind: NpcPressure
+  mechanic: AreaPressure
+  magnitude: 12
+  maximumMagnitude: 20
+  modifierCategory: Command
+  action: ActionWh40kOverseerFalseCommand
+  duration: 5
+  maximumDuration: 8
+  safety: NpcOnly
+  range: 7
+  maximumTargets: 3
+  cooldown: 26
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-09
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 3
+  maximumMagnitude: 3
+  modifierCategory: Offense
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-10
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 18
+  maximumMagnitude: 26
+  modifierCategory: Mobility
+  action: ActionWh40kOverseerBack
+  duration: 5
+  maximumDuration: 8
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 28
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-11
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 3
+  maximumMagnitude: 3
+  modifierCategory: Command
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-12
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 20
+  maximumMagnitude: 28
+  modifierCategory: Mobility
+  action: ActionWh40kOverseerStrikeNerves
+  duration: 5
+  maximumDuration: 8
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 30
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-13
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 4
+  maximumMagnitude: 4
+  modifierCategory: Mobility
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-14
+  kind: NpcPressure
+  mechanic: AreaPressure
+  magnitude: 16
+  maximumMagnitude: 24
+  modifierCategory: Offense
+  action: ActionWh40kOverseerDoubtCascade
+  duration: 6
+  maximumDuration: 9
+  safety: NpcOnly
+  range: 7
+  maximumTargets: 8
+  cooldown: 32
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-15
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 4
+  maximumMagnitude: 4
+  modifierCategory: Mobility
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-16
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 22
+  maximumMagnitude: 30
+  modifierCategory: Command
+  action: ActionWh40kOverseerCutPlan
+  duration: 4
+  maximumDuration: 7
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 34
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-17
+  kind: NpcPressure
+  mechanic: AreaPressure
+  magnitude: 20
+  maximumMagnitude: 28
+  modifierCategory: Command
+  action: ActionWh40kOverseerDespairVoice
+  duration: 6
+  maximumDuration: 9
+  safety: NpcOnly
+  range: 7
+  maximumTargets: 8
+  cooldown: 35
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-18
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 5
+  maximumMagnitude: 5
+  modifierCategory: Command
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-19
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 24
+  maximumMagnitude: 32
+  modifierCategory: Command
+  action: ActionWh40kOverseerTotalTarget
+  duration: 8
+  maximumDuration: 11
+  safety: NpcOnly
+  range: 10
+  maximumTargets: 1
+  cooldown: 37
+  counterplay: RequiresLineOfSight, RequiresHostile, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-overseer-pressure-doctrine-20
+  kind: StatusReaction
+  mechanic: PressureAmplifier
+  magnitude: 6
+  maximumMagnitude: 6
+  modifierCategory: Command
+  safety: NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-01
+  specialization: overseer-pressure-doctrine
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [overseer-pressure-doctrine-02]
+  displayPosition: "1, 0"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-01]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-01-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-02
+  specialization: overseer-pressure-doctrine
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-01
+  connections: [overseer-pressure-doctrine-03, overseer-pressure-doctrine-04]
+  displayPosition: "2, 0"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-02]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-02-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-03
+  specialization: overseer-pressure-doctrine
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-02
+  connections: [overseer-pressure-doctrine-05, overseer-pressure-doctrine-06]
+  displayPosition: "3, -2.4"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-03]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-03-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-04
+  specialization: overseer-pressure-doctrine
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-02
+  connections: [overseer-pressure-doctrine-07, overseer-pressure-doctrine-08]
+  displayPosition: "3, 2.4"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-04]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-04-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-05
+  specialization: overseer-pressure-doctrine
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-03
+  connections: [overseer-pressure-doctrine-09]
+  displayPosition: "4, -4.5"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-05]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-05-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-06
+  specialization: overseer-pressure-doctrine
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-03
+  connections: [overseer-pressure-doctrine-10]
+  displayPosition: "4, -1.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-06]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-06-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-07
+  specialization: overseer-pressure-doctrine
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-04
+  connections: [overseer-pressure-doctrine-11]
+  displayPosition: "4, 1.5"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-07]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-07-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-08
+  specialization: overseer-pressure-doctrine
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-04
+  connections: [overseer-pressure-doctrine-12]
+  displayPosition: "4, 4.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-08]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-08-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-09
+  specialization: overseer-pressure-doctrine
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-05
+  connections: [overseer-pressure-doctrine-13, overseer-pressure-doctrine-14]
+  displayPosition: "5, -4.5"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-09]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-09-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-10
+  specialization: overseer-pressure-doctrine
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-06
+  connections: [overseer-pressure-doctrine-15]
+  displayPosition: "5, -1.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-10]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-10-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-11
+  specialization: overseer-pressure-doctrine
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-07
+  connections: [overseer-pressure-doctrine-16]
+  displayPosition: "5, 1.5"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-11]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-11-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-12
+  specialization: overseer-pressure-doctrine
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-08
+  connections: [overseer-pressure-doctrine-17, overseer-pressure-doctrine-18]
+  displayPosition: "5, 4.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-12]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-12-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-13
+  specialization: overseer-pressure-doctrine
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-09
+  connections: [overseer-pressure-doctrine-19]
+  displayPosition: "6, -5.2"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-13]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-13-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-14
+  specialization: overseer-pressure-doctrine
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-09
+  displayPosition: "6, -3.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-14]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-14-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-15
+  specialization: overseer-pressure-doctrine
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-10
+  displayPosition: "6, -1.5"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-15]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-15-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-16
+  specialization: overseer-pressure-doctrine
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-11
+  displayPosition: "6, 1.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-16]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-16-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-17
+  specialization: overseer-pressure-doctrine
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-12
+  displayPosition: "6, 3.5"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-17]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-17-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-18
+  specialization: overseer-pressure-doctrine
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-12
+  connections: [overseer-pressure-doctrine-20]
+  displayPosition: "6, 5.2"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-18]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-18-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-19
+  specialization: overseer-pressure-doctrine
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-13
+  displayPosition: "7, -5.2"
+  kind: Active
+  effects: [effect-overseer-pressure-doctrine-19]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-19-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: overseer-pressure-doctrine-20
+  specialization: overseer-pressure-doctrine
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: overseer-pressure-doctrine-18
+  displayPosition: "7, 5.2"
+  kind: Passive
+  effects: [effect-overseer-pressure-doctrine-20]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-overseer-pressure-doctrine-20-name
+  description: wh40k-class-skill-overseer-pressure-doctrine-20-description
+  availability: Enabled
+

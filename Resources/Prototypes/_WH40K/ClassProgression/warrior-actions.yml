@@ -1,0 +1,136 @@
+- type: entity
+  id: ActionWh40kWarriorBattleCry
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 30
+    itemIconStyle: BigAction
+    icon:
+      sprite: Objects/Weapons/Melee/shields.rsi
+      state: riot-icon
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kWarriorCounterattack
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityTargetAction
+    useDelay: 14
+    itemIconStyle: BigAction
+    whitelist:
+      components:
+      - MobState
+    canTargetSelf: false
+    interactOnMiss: false
+    icon:
+      sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
+      state: icon
+    event: !type:Wh40kClassEntityTargetActionEvent
+
+- type: entity
+  id: ActionWh40kWarriorFindGap
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: EntityTargetAction
+    useDelay: 12
+    itemIconStyle: BigAction
+    whitelist:
+      components:
+      - MobState
+    canTargetSelf: false
+    interactOnMiss: false
+    icon:
+      sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
+      state: icon
+    event: !type:Wh40kClassEntityTargetActionEvent
+
+- type: entity
+  id: ActionWh40kWarriorBodyCover
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 16
+
+- type: entity
+  id: ActionWh40kWarriorShieldBrace
+  parent: ActionWh40kWarriorBattleCry
+  components:
+  - type: InstantAction
+    useDelay: 18
+
+- type: entity
+  id: ActionWh40kWarriorChallengeChampion
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 24
+
+- type: entity
+  id: ActionWh40kWarriorGuardianStep
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 22
+
+- type: entity
+  id: ActionWh40kWarriorPunishingBarrier
+  parent: ActionWh40kWarriorBattleCry
+  components:
+  - type: InstantAction
+    useDelay: 25
+
+- type: entity
+  id: ActionWh40kWarriorLastStand
+  parent: ActionWh40kWarriorBattleCry
+  components:
+  - type: InstantAction
+    useDelay: 60
+
+- type: entity
+  id: ActionWh40kWarriorSunderArmor
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 20
+
+- type: entity
+  id: ActionWh40kWarriorBladeRush
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 18
+
+- type: entity
+  id: ActionWh40kWarriorSeizeInitiative
+  parent: ActionWh40kWarriorCounterattack
+  components:
+  - type: EntityTargetAction
+    useDelay: 20
+
+- type: entity
+  id: ActionWh40kWarriorBreakFormation
+  parent: ActionWh40kWarriorBattleCry
+  components:
+  - type: InstantAction
+    useDelay: 26
+
+- type: entity
+  id: ActionWh40kWarriorRecklessFury
+  parent: ActionWh40kWarriorBattleCry
+  components:
+  - type: InstantAction
+    useDelay: 35
+
+- type: entity
+  id: ActionWh40kWarriorRedBreakthrough
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: WorldTargetAction
+    useDelay: 45
+    itemIconStyle: BigAction
+    range: 7
+    checkCanAccess: true
+    icon:
+      sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
+      state: icon
+    event: !type:Wh40kClassWorldTargetActionEvent

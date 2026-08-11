@@ -1,5 +1,6 @@
 wh40k-rpg-player-program-name = Player
 wh40k-rpg-party-program-name = Party
+wh40k-rpg-class-program-name = Class
 
 wh40k-rpg-player-header = ACCOUNT PROGRESSION
 wh40k-rpg-player-level-short = LEVEL {$level}

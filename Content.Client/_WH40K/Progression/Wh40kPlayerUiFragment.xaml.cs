@@ -20,6 +20,7 @@ public sealed partial class Wh40kPlayerUiFragment : BoxContainer
     private bool _pending;
 
     public event Action<List<Wh40kCharacteristicAllocation>>? OnCharacteristicPurchase;
+    public event Action? OnClassProgramRequested;
 
     public Wh40kPlayerUiFragment()
     {
@@ -37,7 +38,9 @@ public sealed partial class Wh40kPlayerUiFragment : BoxContainer
         HomeworldDivider.PanelOverride = dividerStyle;
         OriginDivider.PanelOverride = dividerStyle;
         ConfirmAllocationButton.StyleBoxOverride = PdaTerminalPalette.CreateButton(accented: true);
+        OpenClassProgramButton.StyleBoxOverride = PdaTerminalPalette.CreateButton();
         ConfirmAllocationButton.OnPressed += _ => ConfirmDraft();
+        OpenClassProgramButton.OnPressed += _ => OnClassProgramRequested?.Invoke();
 
         foreach (var characteristic in Enum.GetValues<Wh40kCharacteristic>())
         {
@@ -69,6 +72,7 @@ public sealed partial class Wh40kPlayerUiFragment : BoxContainer
             HomeworldLabel.Clear();
             OriginLabel.Clear();
             ClassLabel.Clear();
+            OpenClassProgramButton.Disabled = true;
             ExperienceLabel.Clear();
             PointsLabel.Clear();
             ExperienceBar.MaxValue = 1;
@@ -101,6 +105,7 @@ public sealed partial class Wh40kPlayerUiFragment : BoxContainer
                 "wh40k-rpg-player-class",
                 ("class", GetPrototypeName<Wh40kCharacterClassPrototype>(snapshot.ClassId))),
             Color.FromHex("#D7E0D7"));
+        OpenClassProgramButton.Disabled = false;
         var experienceText = snapshot.CurrentLevelSpanTenths == 0
             ? Loc.GetString(
                 "wh40k-rpg-player-xp-maximum",

@@ -1459,6 +1459,130 @@ namespace Content.Server.Database.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassAudit", b =>
+                {
+                    b.Property<Guid>("OperationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("operation_id");
+
+                    b.Property<string>("ActorId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("actor_id");
+
+                    b.Property<string>("ActorName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("actor_name");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("NewClassId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("new_class_id");
+
+                    b.Property<byte[]>("NewSkillIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("new_skill_ids");
+
+                    b.Property<string>("Operation")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("operation");
+
+                    b.Property<string>("PreviousClassId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("previous_class_id");
+
+                    b.Property<byte[]>("PreviousSkillIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("previous_skill_ids");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("OperationId")
+                        .HasName("PK_wh40k_account_class_audit");
+
+                    b.HasIndex("UserId", "CreatedAt")
+                        .HasDatabaseName("IX_wh40k_account_class_audit_user_id_created_at");
+
+                    b.ToTable("wh40k_account_class_audit", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassProgress", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("created_at");
+
+                    b.Property<long>("Revision")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("revision");
+
+                    b.Property<int>("TreeVersion")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("tree_version");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_account_class_progress");
+
+                    b.ToTable("wh40k_account_class_progress", null, t =>
+                        {
+                            t.HasCheckConstraint("ClassTreeRevisionNonNegative", "revision >= 0");
+
+                            t.HasCheckConstraint("ClassTreeVersionPositive", "tree_version > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassSkill", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("SkillId")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("skill_id");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("purchased_at");
+
+                    b.HasKey("UserId", "SkillId")
+                        .HasName("PK_wh40k_account_class_skill");
+
+                    b.ToTable("wh40k_account_class_skill", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgFoundation", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -2731,6 +2855,36 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_wh40k_account_attribute_purchase_wh40k_account_rpg_foundation_user_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassAudit", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_class_audit_wh40k_account_rpg_foundation_wh40k_account_rpg_foundation_user_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassProgress", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountRpgFoundation", null)
+                        .WithOne()
+                        .HasForeignKey("Content.Server.Database.Wh40kAccountClassProgress", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_class_progress_wh40k_account_rpg_foundation_wh40k_account_rpg_foundation_user_id");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.Wh40kAccountClassSkill", b =>
+                {
+                    b.HasOne("Content.Server.Database.Wh40kAccountClassProgress", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wh40k_account_class_skill_wh40k_account_class_progress_user_id");
                 });
 
             modelBuilder.Entity("Content.Server.Database.Wh40kAccountRpgFoundation", b =>

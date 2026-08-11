@@ -1,6 +1,12 @@
 ent-ShipTarnyxProjectile = снаряд TARNYX 150 мм (ЭМИ)
 ent-150mmEmpShell = снаряд 150 мм (ЭМИ)
     .desc = Химически разгоняемый ЭМИ-снаряд для 150-мм пушек вроде TARNYX. Просто и эффективно.
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 150mm EMP
+    .ammo-loader-weight = 17 кг
 ent-ShipTarnyxApProjectile = снаряд TARNYX 150 мм (бронебойный)
 ent-150mmApShell = снаряд 150 мм (бронебойный)
     .desc = Химически разгоняемый бронебойный снаряд для 150-мм пушек. Не самый удачный вариант: большинство 150-мм орудий оптимизированы под ЭМИ-боеприпасы. Грубый подход, который инспекция TSFN вряд ли одобрила бы.
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 150mm AP
+    .ammo-loader-weight = 17 кг

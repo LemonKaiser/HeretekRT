@@ -407,6 +407,9 @@
   suffix: toxin
   parent: BaseChemistryBottleFilled
   components:
+  - type: Tag
+    tags:
+    - Wh40kSkillPoison
   - type: Label
     currentLabel: reagent-name-toxin
   - type: SolutionContainerManager

@@ -29,6 +29,12 @@ ent-Magazine90mmWeak = барабан 90мм
 ent-90mmCartridgeWeak = снаряд 90мм
 
 ent-Magazine140mm = барабан 140мм (кумулятивные)
+    .ammo-loader-type = Контейнер
+    .ammo-loader-caliber = 140mm
+    .ammo-loader-weight = 55 кг
 ent-140mmCartridge = снаряд 140мм (кумулятивный)
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 140mm
+    .ammo-loader-weight = 3.5 кг
 ent-Magazine140mmWeak = барабан 140мм
 ent-140mmCartridgeWeak = снаряд 140мм

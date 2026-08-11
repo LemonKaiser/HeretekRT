@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.Progression;
 using Robust.Shared.Network;
 
@@ -57,6 +59,16 @@ public enum Wh40kCharacteristicSpendStatus : byte
     InvalidCount,
     RevisionMismatch,
     InsufficientDevelopmentPoints,
+}
+
+public enum Wh40kClassAdminOperation : byte
+{
+    Purchase,
+    SetClass,
+    ReplaceSkills,
+    GrantSkill,
+    RevokeSkill,
+    TreeMigration,
 }
 
 public sealed record Wh40kXpAwardRequest(
@@ -145,6 +157,79 @@ public sealed record Wh40kAccountRpgRecord(
     Wh40kRpgFoundationRecord Foundation,
     Wh40kRpgProgressRecord Progress,
     IReadOnlyDictionary<Wh40kCharacteristic, Wh40kAttributePurchaseRecord> AttributePurchases);
+
+public sealed record Wh40kAccountClassSkillRecord(
+    string SkillId,
+    DateTime PurchasedAt);
+
+public sealed record Wh40kAccountClassProgressRecord(
+    NetUserId UserId,
+    int TreeVersion,
+    long Revision,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    IReadOnlyList<Wh40kAccountClassSkillRecord> Skills)
+{
+    public IReadOnlySet<string> PurchasedSkillIds =>
+        Skills.Select(skill => skill.SkillId).ToHashSet(StringComparer.Ordinal);
+}
+
+public sealed record Wh40kClassSkillPurchaseSpec(
+    string SkillId,
+    string ClassId,
+    string? PrerequisiteSkillId,
+    int MinimumLevel,
+    int Cost,
+    int TreeVersion,
+    Wh40kClassContentAvailability Availability)
+{
+    /// <summary>
+    /// Immutable server-side catalogue of canonical entitlement costs. The database uses it inside the purchase
+    /// transaction, so zero-cost mirror display nodes never make the point calculation depend on a stale cache.
+    /// </summary>
+    public IReadOnlyDictionary<string, int> PersistentSkillCosts { get; init; } =
+        new Dictionary<string, int>(StringComparer.Ordinal);
+}
+
+public sealed record Wh40kClassSkillPurchaseResult(
+    Wh40kClassSkillPurchaseStatus Status,
+    Wh40kAccountRpgRecord? Account,
+    Wh40kAccountClassProgressRecord? ClassProgress)
+{
+    public bool IsSuccess => Status == Wh40kClassSkillPurchaseStatus.Success;
+}
+
+public sealed record Wh40kClassAdminMutationRequest(
+    Guid OperationId,
+    Wh40kClassAdminOperation Operation,
+    long ExpectedRevision,
+    string NewClassId,
+    IReadOnlyList<string> NewSkillIds,
+    int TreeVersion,
+    string ActorId,
+    string ActorName,
+    string Reason);
+
+public sealed record Wh40kClassAdminMutationResult(
+    Wh40kClassSkillPurchaseStatus Status,
+    Wh40kAccountRpgRecord? Account,
+    Wh40kAccountClassProgressRecord? ClassProgress)
+{
+    public bool IsSuccess => Status == Wh40kClassSkillPurchaseStatus.Success;
+}
+
+public sealed record Wh40kClassAuditRecord(
+    Guid OperationId,
+    NetUserId UserId,
+    string Operation,
+    string ActorId,
+    string ActorName,
+    string Reason,
+    string PreviousClassId,
+    string NewClassId,
+    IReadOnlyList<string> PreviousSkillIds,
+    IReadOnlyList<string> NewSkillIds,
+    DateTime CreatedAt);
 
 public sealed record Wh40kExperienceAwardResult(
     Wh40kExperienceAwardStatus Status,

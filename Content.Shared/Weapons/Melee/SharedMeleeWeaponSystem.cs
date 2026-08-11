@@ -785,8 +785,12 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
 
         // goob edit - stunmeta
         if (TryComp<StaminaComponent>(user, out var stamina))
-            // make it not immediate to prevent annoying stamcrits // Mono - scale with targets count
-            _stamina.TakeStaminaDamage(user, component.HeavyStaminaCost * (targets.Count - 1), stamina, visual: false, immediate: false);
+        {
+            var staminaCost = new GetHeavyMeleeStaminaCostEvent(meleeUid, component.HeavyStaminaCost, user, targets.Count);
+            RaiseLocalEvent(meleeUid, ref staminaCost);
+            // Make it not immediate to prevent annoying stamcrits. Cost remains per additional target.
+            _stamina.TakeStaminaDamage(user, Math.Max(0f, staminaCost.Cost) * (targets.Count - 1), stamina, visual: false, immediate: false);
+        }
 
         return true;
     }

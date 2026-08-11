@@ -1,0 +1,84 @@
+# WH40K account class specializations.
+
+- type: wh40kClassSpecialization
+  id: warrior-bastion
+  class: warrior
+  order: 0
+  name: wh40k-class-specialization-warrior-bastion-name
+  description: wh40k-class-specialization-warrior-bastion-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: warrior-blade-path
+  class: warrior
+  order: 1
+  name: wh40k-class-specialization-warrior-blade-path-name
+  description: wh40k-class-specialization-warrior-blade-path-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: soldier-fire-line
+  class: soldier
+  order: 0
+  skillCount: 25
+  name: wh40k-class-specialization-soldier-fire-line-name
+  description: wh40k-class-specialization-soldier-fire-line-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: soldier-long-shadow
+  class: soldier
+  order: 1
+  skillCount: 25
+  name: wh40k-class-specialization-soldier-long-shadow-name
+  description: wh40k-class-specialization-soldier-long-shadow-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/focus.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: operative-field-aesculapian
+  class: operative
+  order: 0
+  name: wh40k-class-specialization-operative-field-aesculapian-name
+  description: wh40k-class-specialization-operative-field-aesculapian-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: operative-techno-adept
+  class: operative
+  order: 1
+  name: wh40k-class-specialization-operative-techno-adept-name
+  description: wh40k-class-specialization-operative-techno-adept-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: assassin-shadow
+  class: assassin
+  order: 0
+  name: wh40k-class-specialization-assassin-shadow-name
+  description: wh40k-class-specialization-assassin-shadow-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/stealth.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: assassin-executioner
+  class: assassin
+  order: 1
+  name: wh40k-class-specialization-assassin-executioner-name
+  description: wh40k-class-specialization-assassin-executioner-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/execution.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: overseer-formation-doctrine
+  class: overseer
+  order: 0
+  name: wh40k-class-specialization-overseer-formation-doctrine-name
+  description: wh40k-class-specialization-overseer-formation-doctrine-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/command.svg.192dpi.png
+
+- type: wh40kClassSpecialization
+  id: overseer-pressure-doctrine
+  class: overseer
+  order: 1
+  name: wh40k-class-specialization-overseer-pressure-doctrine-name
+  description: wh40k-class-specialization-overseer-pressure-doctrine-description
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+

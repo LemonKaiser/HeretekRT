@@ -27,6 +27,8 @@
   id: WH40KAirlockImperiumEngineeringLocked
   suffix: WH40K, Imperium, Engineering, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsEngineering ]
@@ -38,6 +40,8 @@
   id: WH40KAirlockImperiumCargoLocked
   suffix: WH40K, Imperium, Cargo, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargo ]
@@ -95,6 +99,8 @@
   id: WH40KAirlockChaosEngineeringLocked
   suffix: WH40K, Chaos, Engineering, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsEngineering ]
@@ -106,6 +112,8 @@
   id: WH40KAirlockChaosCargoLocked
   suffix: WH40K, Chaos, Cargo, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargo ]
@@ -150,6 +158,8 @@
   id: WH40KDoubleAirlockEngineeringLocked
   suffix: WH40K, Double, Engineering, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsEngineering ]
@@ -161,6 +171,8 @@
   id: WH40KDoubleAirlockCargoLocked
   suffix: WH40K, Double, Cargo, Locked
   components:
+  - type: Tag
+    tags: [Wh40kClassHackable]
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargo ]

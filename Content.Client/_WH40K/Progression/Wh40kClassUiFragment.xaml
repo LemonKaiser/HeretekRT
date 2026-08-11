@@ -1,0 +1,41 @@
+<progression:Wh40kClassUiFragment xmlns="https://spacestation14.io"
+                                  xmlns:progression="clr-namespace:Content.Client._WH40K.Progression"
+                                  xmlns:pda="clr-namespace:Content.Client.PDA">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <pda:PdaTerminalHeaderPanel SetHeight="28" Margin="0 0 0 4">
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="7 0">
+                <Label Text="{Loc 'wh40k-class-ui-pda-header'}" FontColorOverride="#E5C879"
+                       VerticalAlignment="Center" HorizontalExpand="True"/>
+                <Label Name="PointsLabel" FontColorOverride="#F2D44F" VerticalAlignment="Center"/>
+            </BoxContainer>
+        </pda:PdaTerminalHeaderPanel>
+
+        <RichTextLabel Name="StatusLabel" Visible="False" HorizontalExpand="True" Margin="4 0 4 4"/>
+
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="2" SeparationOverride="4">
+                <pda:PdaTerminalPanel HorizontalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5" SeparationOverride="4">
+                        <Label Name="ClassNameLabel" FontColorOverride="#E5C879"/>
+                        <RichTextLabel Name="ClassSummary" HorizontalExpand="True"/>
+                    </BoxContainer>
+                </pda:PdaTerminalPanel>
+
+                <Label Text="{Loc 'wh40k-class-ui-specializations'}" FontColorOverride="#88D2A5" Margin="3 2"/>
+                <Button Name="SpecializationOneButton" HorizontalExpand="True"/>
+                <Button Name="SpecializationTwoButton" HorizontalExpand="True"/>
+
+                <pda:PdaTerminalPanel HorizontalExpand="True" Margin="0 3 0 0">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="7 5">
+                        <Label Text="{Loc 'wh40k-class-ui-recent'}" FontColorOverride="#88D2A5"/>
+                        <BoxContainer Name="RecentSkills" Orientation="Vertical" HorizontalExpand="True"
+                                      SeparationOverride="2"/>
+                    </BoxContainer>
+                </pda:PdaTerminalPanel>
+            </BoxContainer>
+        </ScrollContainer>
+
+        <Button Name="OpenTreeButton" Text="{Loc 'wh40k-class-ui-open-tree'}"
+                HorizontalExpand="True" Margin="2 4 2 2"/>
+    </BoxContainer>
+</progression:Wh40kClassUiFragment>

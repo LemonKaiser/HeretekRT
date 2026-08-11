@@ -1,6 +1,9 @@
 ent-ShipRailgunProjectile = снаряд M381 «Чарон» 280 мм, 26,5 кг
 ent-CharonSlugAmmo = боеприпас M381 «Чарон» 280 мм, 26,5 кг
     .desc = Всё в одном: плазменный газовый ускоритель и вольфрамовый снаряд высокой плотности. Дёшево, разрушительно и дальнобойно.
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 280mm кинетический
+    .ammo-loader-weight = 40 кг
 ent-ShipRailgunProjectileSubnuclear = снаряд M381 «Чарон» 280 мм, ядерный (1,5 кт)
     .desc = Когда джинн вылетел из бутылки, обратно его не засунешь, тархан.
 ent-CharonSubnuclearSlugAmmo = боеприпас M381 «Чарон» 280 мм, ядерный (1,5 кт)

@@ -1,0 +1,571 @@
+# Оперативника: Полевой эскулап. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-01
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 3
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-02
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-03
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-04
+  kind: GrantAction
+  mechanic: MedicalProtocol
+  magnitude: 25
+  maximumMagnitude: 40
+  action: ActionWh40kOperativeHemostaticProtocol
+  duration: 12
+  maximumDuration: 18
+  safety: Supportive
+  range: 2
+  maximumTargets: 1
+  cooldown: 18
+  counterplay: RequiresAlly, RequiresInjuredTarget, RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-05
+  kind: GrantAction
+  mechanic: TransferHeldItem
+  action: ActionWh40kOperativeMedicalTransfer
+  duration: 10
+  maximumDuration: 15
+  safety: Supportive
+  range: 2
+  maximumTargets: 1
+  cooldown: 12
+  counterplay: RequiresAlly, RequiresLineOfSight, RequiresConsent, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-06
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 4
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-07
+  kind: GrantAction
+  mechanic: MedicalProtocol
+  magnitude: 15
+  maximumMagnitude: 25
+  action: ActionWh40kOperativeCombatStabilization
+  duration: 8
+  maximumDuration: 12
+  safety: Supportive
+  range: 2
+  maximumTargets: 1
+  cooldown: 24
+  counterplay: RequiresAlly, RequiresDownedTarget, RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-08
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 3
+  maximumMagnitude: 6
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-09
+  kind: TargetMark
+  mechanic: TargetMark
+  magnitude: 1
+  maximumMagnitude: 1
+  action: ActionWh40kOperativeTriageMark
+  duration: 15
+  maximumDuration: 22
+  safety: Supportive
+  range: 7
+  maximumTargets: 1
+  cooldown: 14
+  counterplay: RequiresAlly, RequiresInjuredTarget, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-10
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-11
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 6
+  maximumMagnitude: 12
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-12
+  kind: GrantAction
+  mechanic: MedicalProtocol
+  magnitude: 12
+  maximumMagnitude: 20
+  action: ActionWh40kOperativeAnalgesicProtocol
+  duration: 10
+  maximumDuration: 15
+  safety: Supportive
+  range: 2
+  maximumTargets: 1
+  cooldown: 22
+  counterplay: RequiresAlly, RequiresInjuredTarget, RequiresConsumable, RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-13
+  kind: GrantAction
+  mechanic: DeployHeldItem
+  action: ActionWh40kOperativeMedicalNode
+  duration: 30
+  maximumDuration: 30
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 30
+  counterplay: RequiresConsumable, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-14
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 5
+  maximumMagnitude: 10
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-15
+  kind: GrantAction
+  mechanic: PullAlly
+  magnitude: 1
+  maximumMagnitude: 1
+  action: ActionWh40kOperativeEvacuationLine
+  duration: 4
+  maximumDuration: 6
+  safety: Mobility
+  range: 5
+  maximumTargets: 1
+  cooldown: 30
+  counterplay: RequiresAlly, RequiresDownedTarget, RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-16
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 7
+  maximumMagnitude: 12
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-17
+  kind: GrantAction
+  mechanic: TransferHeldItem
+  action: ActionWh40kOperativeSupplyExchange
+  duration: 12
+  maximumDuration: 18
+  safety: Supportive
+  range: 3
+  maximumTargets: 1
+  cooldown: 16
+  counterplay: RequiresAlly, RequiresLineOfSight, RequiresConsent, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-18
+  kind: AreaCommand
+  mechanic: TriageArea
+  magnitude: 1
+  maximumMagnitude: 1
+  action: ActionWh40kOperativeFieldTriage
+  duration: 10
+  maximumDuration: 15
+  safety: AreaEffect
+  range: 6
+  maximumTargets: 8
+  cooldown: 28
+  counterplay: RequiresLineOfSight, BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-19
+  kind: StatusReaction
+  mechanic: ServiceModifier
+  magnitude: 6
+  maximumMagnitude: 12
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-operative-field-aesculapian-20
+  kind: StatusReaction
+  mechanic: HealingModifier
+  magnitude: 8
+  maximumMagnitude: 15
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-01
+  specialization: operative-field-aesculapian
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [operative-field-aesculapian-02]
+  displayPosition: "-1, 0"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-01]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-01-name
+  description: wh40k-class-skill-operative-field-aesculapian-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-02
+  specialization: operative-field-aesculapian
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-field-aesculapian-01
+  connections: [operative-field-aesculapian-03, operative-field-aesculapian-04]
+  displayPosition: "-2, 0"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-02]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-02-name
+  description: wh40k-class-skill-operative-field-aesculapian-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-03
+  specialization: operative-field-aesculapian
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-field-aesculapian-02
+  connections: [operative-field-aesculapian-05, operative-field-aesculapian-06]
+  displayPosition: "-3, -2.4"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-03]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-03-name
+  description: wh40k-class-skill-operative-field-aesculapian-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-04
+  specialization: operative-field-aesculapian
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: operative-field-aesculapian-02
+  connections: [operative-field-aesculapian-07, operative-field-aesculapian-08]
+  displayPosition: "-3, 2.4"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-04]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-04-name
+  description: wh40k-class-skill-operative-field-aesculapian-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-05
+  specialization: operative-field-aesculapian
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-field-aesculapian-03
+  connections: [operative-field-aesculapian-09]
+  displayPosition: "-4, -4.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-05]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-05-name
+  description: wh40k-class-skill-operative-field-aesculapian-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-06
+  specialization: operative-field-aesculapian
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-field-aesculapian-03
+  connections: [operative-field-aesculapian-10]
+  displayPosition: "-4, -1.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-06]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-06-name
+  description: wh40k-class-skill-operative-field-aesculapian-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-07
+  specialization: operative-field-aesculapian
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-field-aesculapian-04
+  connections: [operative-field-aesculapian-11]
+  displayPosition: "-4, 1.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-07]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-07-name
+  description: wh40k-class-skill-operative-field-aesculapian-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-08
+  specialization: operative-field-aesculapian
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: operative-field-aesculapian-04
+  connections: [operative-field-aesculapian-12]
+  displayPosition: "-4, 4.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-08]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-08-name
+  description: wh40k-class-skill-operative-field-aesculapian-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-09
+  specialization: operative-field-aesculapian
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-field-aesculapian-05
+  connections: [operative-field-aesculapian-13, operative-field-aesculapian-14]
+  displayPosition: "-5, -4.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-09]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-09-name
+  description: wh40k-class-skill-operative-field-aesculapian-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-10
+  specialization: operative-field-aesculapian
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-field-aesculapian-06
+  connections: [operative-field-aesculapian-15]
+  displayPosition: "-5, -1.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-10]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-10-name
+  description: wh40k-class-skill-operative-field-aesculapian-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-11
+  specialization: operative-field-aesculapian
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-field-aesculapian-07
+  connections: [operative-field-aesculapian-16]
+  displayPosition: "-5, 1.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-11]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-11-name
+  description: wh40k-class-skill-operative-field-aesculapian-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-12
+  specialization: operative-field-aesculapian
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: operative-field-aesculapian-08
+  connections: [operative-field-aesculapian-17, operative-field-aesculapian-18]
+  displayPosition: "-5, 4.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-12]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-12-name
+  description: wh40k-class-skill-operative-field-aesculapian-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-13
+  specialization: operative-field-aesculapian
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-field-aesculapian-09
+  connections: [operative-field-aesculapian-19]
+  displayPosition: "-6, -5.2"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-13]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-13-name
+  description: wh40k-class-skill-operative-field-aesculapian-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-14
+  specialization: operative-field-aesculapian
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-field-aesculapian-09
+  displayPosition: "-6, -3.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-14]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-14-name
+  description: wh40k-class-skill-operative-field-aesculapian-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-15
+  specialization: operative-field-aesculapian
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-field-aesculapian-10
+  displayPosition: "-6, -1.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-15]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-15-name
+  description: wh40k-class-skill-operative-field-aesculapian-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-16
+  specialization: operative-field-aesculapian
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: operative-field-aesculapian-11
+  displayPosition: "-6, 1.5"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-16]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-16-name
+  description: wh40k-class-skill-operative-field-aesculapian-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-17
+  specialization: operative-field-aesculapian
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-field-aesculapian-12
+  displayPosition: "-6, 3.5"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-17]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-17-name
+  description: wh40k-class-skill-operative-field-aesculapian-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-18
+  specialization: operative-field-aesculapian
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-field-aesculapian-12
+  connections: [operative-field-aesculapian-20]
+  displayPosition: "-6, 5.2"
+  kind: Active
+  effects: [effect-operative-field-aesculapian-18]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-18-name
+  description: wh40k-class-skill-operative-field-aesculapian-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-19
+  specialization: operative-field-aesculapian
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: operative-field-aesculapian-13
+  displayPosition: "-7, -5.2"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-19]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/tech.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-19-name
+  description: wh40k-class-skill-operative-field-aesculapian-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: operative-field-aesculapian-20
+  specialization: operative-field-aesculapian
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: operative-field-aesculapian-18
+  displayPosition: "-7, 5.2"
+  kind: Passive
+  effects: [effect-operative-field-aesculapian-20]
+  requiredEquipmentTags: [Wh40kSkillMedicalItem]
+  icon: /Textures/_WH40K/ClassProgression/Icons/medical.svg.192dpi.png
+  name: wh40k-class-skill-operative-field-aesculapian-20-name
+  description: wh40k-class-skill-operative-field-aesculapian-20-description
+  availability: Enabled
+

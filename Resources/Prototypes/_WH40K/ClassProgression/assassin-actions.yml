@@ -1,0 +1,147 @@
+- type: entity
+  id: ActionWh40kAssassinDissolve
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    useDelay: 25
+    itemIconStyle: BigAction
+    icon:
+      sprite: Clothing/Mask/gas.rsi
+      state: icon
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kAssassinPreyMark
+  categories: [HideSpawnMenu]
+  components:
+  - type: EntityTargetAction
+    useDelay: 12
+    itemIconStyle: BigAction
+    whitelist:
+      components: [MobState]
+    canTargetSelf: false
+    interactOnMiss: false
+    icon:
+      sprite: Objects/Weapons/Melee/throwing_knife.rsi
+      state: icon
+    event: !type:Wh40kClassEntityTargetActionEvent
+
+- type: entity
+  id: ActionWh40kAssassinFalseTrail
+  categories: [HideSpawnMenu]
+  components:
+  - type: WorldTargetAction
+    useDelay: 20
+    itemIconStyle: BigAction
+    range: 5
+    checkCanAccess: true
+    icon:
+      sprite: Objects/Weapons/Grenades/flashbang.rsi
+      state: icon
+    event: !type:Wh40kClassWorldTargetActionEvent
+
+- type: entity
+  id: ActionWh40kAssassinSmokeVeil
+  parent: ActionWh40kAssassinFalseTrail
+  components:
+  - type: WorldTargetAction
+    useDelay: 28
+    range: 5
+
+- type: entity
+  id: ActionWh40kAssassinFalseSilhouette
+  parent: ActionWh40kAssassinFalseTrail
+  components:
+  - type: WorldTargetAction
+    useDelay: 32
+    range: 6
+
+- type: entity
+  id: ActionWh40kAssassinVanishingGlimmer
+  parent: ActionWh40kAssassinFalseTrail
+  components:
+  - type: WorldTargetAction
+    useDelay: 38
+    range: 6
+
+- type: entity
+  id: ActionWh40kAssassinDeepVanish
+  parent: ActionWh40kAssassinDissolve
+  components:
+  - type: InstantAction
+    useDelay: 45
+
+- type: entity
+  id: ActionWh40kAssassinThrownNeedle
+  categories: [HideSpawnMenu]
+  components:
+  - type: InstantAction
+    useDelay: 16
+    itemIconStyle: BigAction
+    icon:
+      sprite: Objects/Weapons/Melee/throwing_knife.rsi
+      state: icon
+    event: !type:Wh40kClassInstantActionEvent
+
+- type: entity
+  id: ActionWh40kAssassinDisarmGrip
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 18
+
+- type: entity
+  id: ActionWh40kAssassinExecutionMark
+  parent: ActionWh40kAssassinPreyMark
+  components:
+  - type: EntityTargetAction
+    useDelay: 18
+
+- type: entity
+  id: ActionWh40kAssassinPoisonEdge
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 30
+
+- type: entity
+  id: ActionWh40kAssassinTendonCut
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 22
+
+- type: entity
+  id: ActionWh40kAssassinFalseSurrender
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 25
+
+- type: entity
+  id: ActionWh40kAssassinRemoveWitness
+  parent: ActionWh40kAssassinPreyMark
+  components:
+  - type: EntityTargetAction
+    useDelay: 45
+
+- type: entity
+  id: ActionWh40kAssassinLethalDose
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 45
+
+- type: entity
+  id: ActionWh40kAssassinSeverThread
+  parent: ActionWh40kAssassinThrownNeedle
+  components:
+  - type: InstantAction
+    useDelay: 32
+
+- type: entity
+  id: ActionWh40kAssassinFinalSentence
+  parent: ActionWh40kAssassinPreyMark
+  components:
+  - type: EntityTargetAction
+    useDelay: 75

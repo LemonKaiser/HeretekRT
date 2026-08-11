@@ -5,3 +5,6 @@ public sealed partial class Wh40kPlayerCartridgeComponent : Component;
 
 [RegisterComponent]
 public sealed partial class Wh40kPartyCartridgeComponent : Component;
+
+[RegisterComponent]
+public sealed partial class Wh40kClassCartridgeComponent : Component;

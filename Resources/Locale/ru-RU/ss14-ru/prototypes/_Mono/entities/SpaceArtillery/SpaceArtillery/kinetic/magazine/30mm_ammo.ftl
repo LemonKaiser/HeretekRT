@@ -1,3 +1,9 @@
 ent-Magazine30mm = автоподатчик боеприпасов 30 мм (сплошной)
     .desc = Автоподатчик с бесконечным запасом сплошных 30-мм боеприпасов. Используется корабельными артиллерийскими установками.
+    .ammo-loader-type = Контейнер
+    .ammo-loader-caliber = 30mm
+    .ammo-loader-weight = 12 кг
 ent-30mmCartridge = патрон (30x173 мм, бронебойный)
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 30mm
+    .ammo-loader-weight = 0.18 кг

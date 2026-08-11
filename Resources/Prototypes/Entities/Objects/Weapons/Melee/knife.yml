@@ -113,6 +113,7 @@
     tags:
     - CombatKnife
     - Knife
+    - Wh40kSkillLightMelee
   - type: Sprite
     sprite: Objects/Weapons/Melee/combat_knife.rsi
     state: icon
@@ -329,6 +330,7 @@
     tags:
     - CombatKnife
     - Knife
+    - Wh40kSkillLightMelee
   - type: Sprite
     sprite: Objects/Weapons/Melee/throwing_knife.rsi
     state: icon

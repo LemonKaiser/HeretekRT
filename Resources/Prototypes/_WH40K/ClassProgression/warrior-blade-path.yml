@@ -1,0 +1,572 @@
+# Воина: Путь клинка. Persistent ids must never be repurposed.
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-01
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 2
+  maximumMagnitude: 6
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-02
+  kind: StatusReaction
+  mechanic: MeleeTempoModifier
+  magnitude: 3
+  maximumMagnitude: 8
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-03
+  kind: StatusReaction
+  mechanic: MovementModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-04
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 12
+  maximumMagnitude: 20
+  action: ActionWh40kWarriorCounterattack
+  duration: 4
+  maximumDuration: 6
+  safety: OffensiveDamage
+  range: 2.5
+  maximumTargets: 1
+  cooldown: 14
+  counterplay: RequiresHostile, RequiresLineOfSight, BreakOnMove, BreakOnAttack
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-05
+  kind: TargetMark
+  mechanic: TargetMark
+  magnitude: 8
+  maximumMagnitude: 12
+  action: ActionWh40kWarriorFindGap
+  duration: 6
+  maximumDuration: 9
+  safety: OffensiveDamage
+  range: 3
+  maximumTargets: 1
+  cooldown: 12
+  counterplay: RequiresHostile, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-06
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-07
+  kind: StatusReaction
+  mechanic: MeleeTempoModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-08
+  kind: GrantAction
+  mechanic: AttackPreparation
+  magnitude: 18
+  maximumMagnitude: 28
+  action: ActionWh40kWarriorSunderArmor
+  duration: 4
+  maximumDuration: 6
+  safety: OffensiveDamage
+  range: 3
+  maximumTargets: 1
+  cooldown: 20
+  counterplay: RequiresHostile, RequiresLineOfSight, BreakOnMove, BreakOnAttack
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-09
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 2
+  maximumMagnitude: 4
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-10
+  kind: StatusReaction
+  mechanic: MeleeTempoModifier
+  magnitude: 2
+  maximumMagnitude: 5
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-11
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 6
+  maximumMagnitude: 10
+  safety: SelfOnly
+  counterplay: RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-12
+  kind: GrantAction
+  mechanic: DashToEntity
+  magnitude: 12
+  maximumMagnitude: 20
+  action: ActionWh40kWarriorBladeRush
+  duration: 0.3
+  maximumDuration: 0.5
+  safety: Mobility
+  range: 5
+  maximumTargets: 1
+  cooldown: 18
+  counterplay: RequiresHostile, RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-13
+  kind: StatusReaction
+  mechanic: MeleeTempoModifier
+  magnitude: 4
+  maximumMagnitude: 9
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-14
+  kind: NpcPressure
+  mechanic: NpcPressure
+  magnitude: 14
+  maximumMagnitude: 22
+  action: ActionWh40kWarriorSeizeInitiative
+  duration: 4
+  maximumDuration: 6
+  safety: NpcOnly
+  range: 3
+  maximumTargets: 1
+  cooldown: 20
+  counterplay: RequiresHostile, RequiresLineOfSight, BreakOnAttack, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-15
+  kind: StatusReaction
+  mechanic: MeleeDamageModifier
+  magnitude: 3
+  maximumMagnitude: 6
+  safety: SelfOnly
+  counterplay: RequiresInjuredTarget
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-16
+  kind: StatusReaction
+  mechanic: IncomingDamageReaction
+  magnitude: 3
+  maximumMagnitude: 6
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-17
+  kind: AreaCommand
+  mechanic: AreaPressure
+  magnitude: 30
+  maximumMagnitude: 45
+  action: ActionWh40kWarriorBreakFormation
+  duration: 3
+  maximumDuration: 5
+  safety: NpcOnly
+  range: 4
+  maximumTargets: 5
+  cooldown: 26
+  counterplay: RequiresLineOfSight, NpcOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-18
+  kind: GrantAction
+  mechanic: TimedOffenseStance
+  magnitude: 18
+  maximumMagnitude: 25
+  action: ActionWh40kWarriorRecklessFury
+  duration: 7
+  maximumDuration: 10
+  safety: SelfOnly
+  maximumTargets: 1
+  cooldown: 35
+  counterplay: BreakOnItemChange
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-19
+  kind: StatusReaction
+  mechanic: MeleeTempoModifier
+  magnitude: 3
+  maximumMagnitude: 7
+  safety: SelfOnly
+  availability: Enabled
+
+- type: wh40kClassSkillEffect
+  id: effect-warrior-blade-path-20
+  kind: AreaCommand
+  mechanic: DashToPoint
+  magnitude: 25
+  maximumMagnitude: 35
+  action: ActionWh40kWarriorRedBreakthrough
+  duration: 0.5
+  maximumDuration: 0.6
+  safety: Mobility
+  range: 7
+  maximumTargets: 6
+  cooldown: 45
+  counterplay: RequiresLineOfSight
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-01
+  specialization: warrior-blade-path
+  order: 1
+  minimumLevel: 5
+  cost: 1
+  connections: [warrior-blade-path-02]
+  displayPosition: "1, 0"
+  kind: Passive
+  effects: [effect-warrior-blade-path-01]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-01-name
+  description: wh40k-class-skill-warrior-blade-path-01-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-02
+  specialization: warrior-blade-path
+  order: 2
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-blade-path-01
+  connections: [warrior-blade-path-03, warrior-blade-path-04]
+  displayPosition: "2, 0"
+  kind: Passive
+  effects: [effect-warrior-blade-path-02]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-02-name
+  description: wh40k-class-skill-warrior-blade-path-02-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-03
+  specialization: warrior-blade-path
+  order: 3
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-blade-path-02
+  connections: [warrior-blade-path-05, warrior-blade-path-06]
+  displayPosition: "3, -2.4"
+  kind: Passive
+  effects: [effect-warrior-blade-path-03]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-03-name
+  description: wh40k-class-skill-warrior-blade-path-03-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-04
+  specialization: warrior-blade-path
+  order: 4
+  minimumLevel: 5
+  cost: 1
+  prerequisite: warrior-blade-path-02
+  connections: [warrior-blade-path-07, warrior-blade-path-08]
+  displayPosition: "3, 2.4"
+  kind: Active
+  effects: [effect-warrior-blade-path-04]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-04-name
+  description: wh40k-class-skill-warrior-blade-path-04-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-05
+  specialization: warrior-blade-path
+  order: 5
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-blade-path-03
+  connections: [warrior-blade-path-09]
+  displayPosition: "4, -4.5"
+  kind: Active
+  effects: [effect-warrior-blade-path-05]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/ranged.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-05-name
+  description: wh40k-class-skill-warrior-blade-path-05-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-06
+  specialization: warrior-blade-path
+  order: 6
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-blade-path-03
+  connections: [warrior-blade-path-10]
+  displayPosition: "4, -1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-06]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-06-name
+  description: wh40k-class-skill-warrior-blade-path-06-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-07
+  specialization: warrior-blade-path
+  order: 7
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-blade-path-04
+  connections: [warrior-blade-path-11]
+  displayPosition: "4, 1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-07]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-07-name
+  description: wh40k-class-skill-warrior-blade-path-07-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-08
+  specialization: warrior-blade-path
+  order: 8
+  minimumLevel: 25
+  cost: 1
+  prerequisite: warrior-blade-path-04
+  connections: [warrior-blade-path-12]
+  displayPosition: "4, 4.5"
+  kind: Active
+  effects: [effect-warrior-blade-path-08]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-08-name
+  description: wh40k-class-skill-warrior-blade-path-08-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-09
+  specialization: warrior-blade-path
+  order: 9
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-blade-path-05
+  connections: [warrior-blade-path-13, warrior-blade-path-14]
+  displayPosition: "5, -4.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-09]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-09-name
+  description: wh40k-class-skill-warrior-blade-path-09-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-10
+  specialization: warrior-blade-path
+  order: 10
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-blade-path-06
+  connections: [warrior-blade-path-15]
+  displayPosition: "5, -1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-10]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-10-name
+  description: wh40k-class-skill-warrior-blade-path-10-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-11
+  specialization: warrior-blade-path
+  order: 11
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-blade-path-07
+  connections: [warrior-blade-path-16]
+  displayPosition: "5, 1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-11]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-11-name
+  description: wh40k-class-skill-warrior-blade-path-11-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-12
+  specialization: warrior-blade-path
+  order: 12
+  minimumLevel: 45
+  cost: 1
+  prerequisite: warrior-blade-path-08
+  connections: [warrior-blade-path-17, warrior-blade-path-18]
+  displayPosition: "5, 4.5"
+  kind: Active
+  effects: [effect-warrior-blade-path-12]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-12-name
+  description: wh40k-class-skill-warrior-blade-path-12-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-13
+  specialization: warrior-blade-path
+  order: 13
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-blade-path-09
+  connections: [warrior-blade-path-19]
+  displayPosition: "6, -5.2"
+  kind: Passive
+  effects: [effect-warrior-blade-path-13]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-13-name
+  description: wh40k-class-skill-warrior-blade-path-13-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-14
+  specialization: warrior-blade-path
+  order: 14
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-blade-path-09
+  displayPosition: "6, -3.5"
+  kind: Active
+  effects: [effect-warrior-blade-path-14]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-14-name
+  description: wh40k-class-skill-warrior-blade-path-14-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-15
+  specialization: warrior-blade-path
+  order: 15
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-blade-path-10
+  displayPosition: "6, -1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-15]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-15-name
+  description: wh40k-class-skill-warrior-blade-path-15-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-16
+  specialization: warrior-blade-path
+  order: 16
+  minimumLevel: 65
+  cost: 1
+  prerequisite: warrior-blade-path-11
+  displayPosition: "6, 1.5"
+  kind: Passive
+  effects: [effect-warrior-blade-path-16]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/defense.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-16-name
+  description: wh40k-class-skill-warrior-blade-path-16-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-17
+  specialization: warrior-blade-path
+  order: 17
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-blade-path-12
+  displayPosition: "6, 3.5"
+  kind: Active
+  effects: [effect-warrior-blade-path-17]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/pressure.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-17-name
+  description: wh40k-class-skill-warrior-blade-path-17-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-18
+  specialization: warrior-blade-path
+  order: 18
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-blade-path-12
+  connections: [warrior-blade-path-20]
+  displayPosition: "6, 5.2"
+  kind: Active
+  effects: [effect-warrior-blade-path-18]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-18-name
+  description: wh40k-class-skill-warrior-blade-path-18-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-19
+  specialization: warrior-blade-path
+  order: 19
+  minimumLevel: 85
+  cost: 1
+  prerequisite: warrior-blade-path-13
+  displayPosition: "7, -5.2"
+  kind: Passive
+  effects: [effect-warrior-blade-path-19]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/assault.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-19-name
+  description: wh40k-class-skill-warrior-blade-path-19-description
+  availability: Enabled
+
+- type: wh40kClassSkill
+  id: warrior-blade-path-20
+  specialization: warrior-blade-path
+  order: 20
+  minimumLevel: 100
+  cost: 1
+  prerequisite: warrior-blade-path-18
+  displayPosition: "7, 5.2"
+  kind: Active
+  effects: [effect-warrior-blade-path-20]
+  requiredEquipmentTags: [Wh40kSkillLightMelee]
+  icon: /Textures/_WH40K/ClassProgression/Icons/mobility.svg.192dpi.png
+  name: wh40k-class-skill-warrior-blade-path-20-name
+  description: wh40k-class-skill-warrior-blade-path-20-description
+  availability: Enabled
+

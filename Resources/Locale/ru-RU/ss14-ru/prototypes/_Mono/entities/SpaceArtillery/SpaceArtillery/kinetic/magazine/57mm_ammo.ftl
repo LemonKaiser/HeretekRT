@@ -1,3 +1,9 @@
 ent-Magazine57mmHE = автоподатчик боеприпасов 57 мм (осколочно-фугасный)
     .desc = Автоподатчик с бесконечным запасом 57-мм осколочно-фугасных боеприпасов. Используется корабельными артиллерийскими установками.
+    .ammo-loader-type = Контейнер
+    .ammo-loader-caliber = 57mm HE
+    .ammo-loader-weight = 18 кг
 ent-57mmCartridgeHE = патрон (57 мм)
+    .ammo-loader-type = Боеприпас
+    .ammo-loader-caliber = 57mm HE
+    .ammo-loader-weight = 0.45 кг

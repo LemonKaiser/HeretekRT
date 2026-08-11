@@ -92,6 +92,7 @@
     tags:
     - GrenadeFlashBang
     - GrenadeLaunchable
+    - Wh40kSkillDistraction
   - type: CartridgeAmmo
     proto: GrenadeFlashBangLaunched
     deleteOnSpawn: true
@@ -375,6 +376,7 @@
   - type: Tag
     tags:
     - GrenadeLaunchable
+    - Wh40kSkillDistraction
   - type: CartridgeAmmo
     proto: EmpGrenadeLaunched
     deleteOnSpawn: true
@@ -424,6 +426,7 @@
   - type: Tag
     tags:
     - GrenadeLaunchable
+    - Wh40kSkillDistraction
   - type: CartridgeAmmo
     proto: SmokeGrenadeLaunched
     deleteOnSpawn: true
