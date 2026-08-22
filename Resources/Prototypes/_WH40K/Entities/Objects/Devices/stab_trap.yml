@@ -1,0 +1,33 @@
+- type: entity
+  id: WH40KStabTrap
+  name: шипастая ловушка
+  description: Напольная ловушка с выдвижными шипами. Успейте сойти с неё, пока механизм раскрывается.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Sprite
+    drawdepth: Items
+    sprite: _WH40K/Objects/Devices/stab_trap.rsi
+    layers:
+    - state: idle
+      map: ["base"]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.WH40KStabTrapVisuals.State:
+        base:
+          Idle: { state: idle }
+          Activating: { state: activate }
+  - type: Transform
+    anchored: true
+  - type: WH40KStabTrap
+    damage:
+      types:
+        Piercing: 10
+    activationDelay: 1.09
+    extendedDuration: 2
+    retractionDuration: 0.15
+    rechargeDelay: 5
+  - type: Tag
+    tags:
+    - HideContextMenu

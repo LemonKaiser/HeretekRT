@@ -1,7 +1,7 @@
 - type: species
   id: Tau
   name: species-name-tau
-  roundStart: true
+  roundStart: false
   prototype: MobTau
   sprites: MobTauSprites
   markingLimits: MobTauMarkingLimits
@@ -145,7 +145,7 @@
 - type: species
   id: Ork
   name: species-name-ork
-  roundStart: true
+  roundStart: false
   prototype: MobOrk
   sprites: MobOrkSprites
   markingLimits: MobOrkMarkingLimits
@@ -293,7 +293,7 @@
 - type: species
   id: Astartes
   name: species-name-astartes
-  roundStart: true
+  roundStart: false
   prototype: MobAstartes
   sprites: MobAstartesSprites
   markingLimits: MobAstartesMarkingLimits

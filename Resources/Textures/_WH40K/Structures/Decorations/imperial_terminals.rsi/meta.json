@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "license": "CC-BY-NC-SA-3.0",
+  "copyright": "Made for HeretekRT",
+  "size": { "x": 32, "y": 32 },
+  "states": [
+    { "name": "auspex_terminal" },
+    { "name": "command_console" }
+  ]
+}

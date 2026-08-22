@@ -1,0 +1,73 @@
+- type: entity
+  id: WH40KDecorOmnissiahShrine
+  parent: WH40KDecorPropBase
+  name: придорожный алтарь Омниссии
+  description: Небольшой алтарь машинного божества. Его ржавые шестерни помнят молитвы техножрецов и гул давно ушедших караванов.
+  suffix: WH40K, Декорация
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/imperial_altar.rsi
+    state: altar
+
+- type: entity
+  id: WH40KDecorCogitatorDesk
+  parent: WH40KDecorPropBase
+  name: архивный когитаторный стол
+  description: Пыльный рабочий стол писца. В его памяти ещё могут храниться приказы, которым уже несколько столетий.
+  suffix: WH40K, Декорация
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/cogitator_desk.rsi
+    state: cogitator_desk
+
+- type: entity
+  id: WH40KDecorAuspexTerminal
+  parent: WH40KDecorPropBase
+  name: терминал ауспика
+  description: Компактный пост наблюдения, сверяющий сигнатуры с давно устаревшими литаниями допуска.
+  suffix: WH40K, Декорация
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/imperial_terminals.rsi
+    state: auspex_terminal
+
+- type: entity
+  id: WH40KDecorCommandConsole
+  parent: WH40KDecorPropBase
+  name: консоль тактического хора
+  description: Панель связи, где приказы офицера превращались в машинные гимны для всего корабля.
+  suffix: WH40K, Декорация
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/imperial_terminals.rsi
+    state: command_console
+
+- type: entity
+  id: WH40KDecorCartographTable
+  parent: WH40KDecorPropBase
+  name: стол картографа крестового похода
+  description: Длинный стол для звёздных карт и планов высадки. На его поверхности легко представить следы воска и крови.
+  suffix: WH40K, Декорация
+  components:
+  - type: Transform
+    anchored: true
+    noRot: false
+  - type: Rotatable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/cartograph_table.rsi
+    state: cartograph_table
+
+- type: entity
+  id: WH40KDecorFieldTable
+  parent: WH40KDecorPropBase
+  name: походный стол писца
+  description: Скромный стол для донесений и печатей. Даже на передовой бюрократия Империума не знает пощады.
+  suffix: WH40K, Декорация
+  components:
+  - type: Transform
+    anchored: true
+    noRot: false
+  - type: Rotatable
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/field_table.rsi
+    state: field_table

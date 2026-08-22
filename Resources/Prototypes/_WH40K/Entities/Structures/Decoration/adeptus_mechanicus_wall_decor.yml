@@ -17,7 +17,7 @@
   - type: Fixtures
     fixtures: {}
   - type: Sprite
-    drawdepth: WallFixtures
+    drawdepth: WallMountedItems
     noRot: true
     sprite: _WH40K/Structures/Wallmounts/adeptus_mechanicus_decor.rsi
 

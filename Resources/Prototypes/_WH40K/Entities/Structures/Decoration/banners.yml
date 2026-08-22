@@ -109,3 +109,59 @@
   - type: Construction
     graph: WH40KBanners
     node: tauBanner
+
+- type: entity
+  id: WH40KImperialFleetBanner
+  parent: WHChaosBanner
+  name: штандарт Имперского Военного Флота
+  description: Чёрно-золотой штандарт командования Военного Флота. Он напоминает каждому экипажу, что звёзды принадлежат Трону.
+  suffix: WH40K, Военный Флот
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/faction_flags.rsi
+    state: fleet
+  - type: Construction
+    graph: WH40KBanners
+    node: imperialFleetBanner
+
+- type: entity
+  id: WH40KContraBanner
+  parent: WHChaosBanner
+  name: покаянный штандарт Конклава «Контра»
+  description: Знак Конклава «Контра», чья верность Императору выкована в покаянии, долге и крови.
+  suffix: WH40K, Конклав Контра
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/faction_flags.rsi
+    state: contra
+  - type: Construction
+    graph: WH40KBanners
+    node: contraBanner
+
+- type: entity
+  id: WH40KCorsairBanner
+  parent: WHChaosBanner
+  name: вымпел пустотных корсаров
+  description: Зловещий вымпел вольных корсаров. Там, где он развевается, закон держится лишь на силе оружия.
+  suffix: WH40K, Корсары
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/faction_flags.rsi
+    state: corsairs
+  - type: Construction
+    graph: WH40KBanners
+    node: corsairBanner
+
+- type: entity
+  id: WH40KImperiumBanner
+  parent: WHChaosBanner
+  name: штандарт Имперской Аквилы
+  description: Золотая Аквила возвещает незыблемую власть Бога-Императора над миром и пустотой.
+  suffix: WH40K, Империум
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/faction_flags.rsi
+    state: imperium
+  - type: Construction
+    graph: WH40KBanners
+    node: imperiumBanner

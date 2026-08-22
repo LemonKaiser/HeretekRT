@@ -77,6 +77,58 @@
   - !type:TileNotBlocked
 
 - type: construction
+  id: WH40KImperialFleetBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: imperialFleetBanner
+  icon: { sprite: _WH40K/Structures/Decorations/faction_flags.rsi, state: fleet }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KContraBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: contraBanner
+  icon: { sprite: _WH40K/Structures/Decorations/faction_flags.rsi, state: contra }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KCorsairBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: corsairBanner
+  icon: { sprite: _WH40K/Structures/Decorations/faction_flags.rsi, state: corsairs }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  id: WH40KImperiumBanner
+  graph: WH40KBanners
+  startNode: start
+  targetNode: imperiumBanner
+  icon: { sprite: _WH40K/Structures/Decorations/faction_flags.rsi, state: imperium }
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
   id: WH40KFalloutBarricades
   graph: WH40KFalloutBarricades
   startNode: start

@@ -1,0 +1,13 @@
+- type: entity
+  parent: BaseItem
+  id: WH40KHartyRelic
+  name: свиток проповедника Харти
+  description: Пожелтевший лист с проповедью, приписываемой святому Харти. Печать давно треснула, но слова всё ещё требуют безусловной веры в Бога-Императора.
+  suffix: WH40K, Декорация
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Misc/harty_relic.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _WH40K/Objects/Misc/harty_relic.rsi

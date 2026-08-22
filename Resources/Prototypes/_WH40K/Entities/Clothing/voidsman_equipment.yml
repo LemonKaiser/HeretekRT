@@ -1,0 +1,234 @@
+# Отдельные корпуса и шлемы войдсменов: скафандр не разворачивает и не содержит шлем.
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanStandard
+  id: ClothingOuterHardsuitVoidsmanEnlistedA
+  name: скафандр рядового войдсмена
+  description: Герметичный пустотный скафандр для палубного стрелка Имперского Флота. Шлем и запас воздуха выдаются отдельно.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_enlisted_a.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_enlisted_a.rsi
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanStandard
+  id: ClothingOuterHardsuitVoidsmanEnlistedB
+  name: скафандр рядового войдсмена
+  description: Герметичный пустотный скафандр для палубного стрелка Имперского Флота. Шлем и запас воздуха выдаются отдельно.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_enlisted_b.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_enlisted_b.rsi
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanSergeant
+  id: ClothingOuterHardsuitVoidsmanSergeantA
+  name: скафандр сержанта войдсменов
+  description: Усиленный скафандр старшего палубной группы. Знаки службы на кирасе не заменяют осторожность в вакууме.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_sergeant_a.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_sergeant_a.rsi
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanSergeant
+  id: ClothingOuterHardsuitVoidsmanSergeantB
+  name: скафандр сержанта войдсменов
+  description: Усиленный скафандр старшего палубной группы. Знаки службы на кирасе не заменяют осторожность в вакууме.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_sergeant_b.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_sergeant_b.rsi
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanGrenadier
+  id: ClothingOuterHardsuitVoidsmanSpecialist
+  name: тяжёлый скафандр специалиста войдсменов
+  description: Пустотная броня для бойца, которому поручают самые опасные работы абордажа. Защита соответствует тяжёлому комплекту гренадера.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_specialist.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_specialist.rsi
+
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanGrenadier
+  id: ClothingOuterHardsuitVoidsmanGrenadierA
+  name: скафандр гренадера войдсменов
+  description: Тяжёлый пустотный скафандр гренадера с дополнительной защитой от взрывной волны. Шлем носится отдельным предметом.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_grenadier.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/voidsuit_grenadier.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanEnlistedA
+  categories: [ HideSpawnMenu ]
+  name: шлем рядового войдсмена
+  description: Герметичный шлем палубного стрелка. Без корпуса скафандра он защищает только голову.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_enlisted_a.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_enlisted_a.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanEnlistedB
+  categories: [ HideSpawnMenu ]
+  name: шлем рядового войдсмена
+  description: Герметичный шлем палубного стрелка. Без корпуса скафандра он защищает только голову.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_enlisted_b.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_enlisted_b.rsi
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanSergeantA
+  categories: [ HideSpawnMenu ]
+  name: шлем сержанта войдсменов
+  description: Герметичный шлем старшего палубной группы с усиленной лицевой плитой.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_sergeant_a.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_sergeant_a.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.40
+    lowPressureMultiplier: 1000
+  - type: Armor
+    armorRating: 120
+    modifiers:
+      coefficients:
+        Blunt: 0.92
+        Slash: 0.90
+        Piercing: 0.95
+        Heat: 0.88
+  - type: FlashImmunity
+  - type: EyeProtection
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanSergeantB
+  categories: [ HideSpawnMenu ]
+  name: шлем сержанта войдсменов
+  description: Герметичный шлем старшего палубной группы с усиленной лицевой плитой.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_sergeant_b.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_sergeant_b.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.40
+    lowPressureMultiplier: 1000
+  - type: Armor
+    armorRating: 120
+    modifiers:
+      coefficients:
+        Blunt: 0.92
+        Slash: 0.90
+        Piercing: 0.95
+        Heat: 0.88
+  - type: FlashImmunity
+  - type: EyeProtection
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanSpecialist
+  categories: [ HideSpawnMenu ]
+  name: шлем специалиста войдсменов
+  description: Тяжёлый герметичный шлем для абордажной работы. Его защита соответствует шлему гренадера.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_specialist.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_specialist.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.40
+    lowPressureMultiplier: 1000
+  - type: Armor
+    armorRating: 120
+    modifiers:
+      coefficients:
+        Blunt: 0.92
+        Slash: 0.90
+        Piercing: 0.95
+        Heat: 0.88
+  - type: FlashImmunity
+  - type: EyeProtection
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetVoidsmanGrenadierA
+  categories: [ HideSpawnMenu ]
+  name: шлем гренадера войдсменов
+  description: Усиленный герметичный шлем гренадера, рассчитанный на ударную волну и осколки.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_grenadier.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/voidhelmet_grenadier.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.40
+    lowPressureMultiplier: 1000
+  - type: Armor
+    armorRating: 120
+    modifiers:
+      coefficients:
+        Blunt: 0.92
+        Slash: 0.90
+        Piercing: 0.95
+        Heat: 0.88
+  - type: FlashImmunity
+  - type: EyeProtection
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: ClothingBeltVoidsman
+  name: пояс войдсмена
+  description: Палубный пояс с подсумками для мелкого снаряжения. Рассчитан на обычную вместимость поясного слота.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/voidsman_belt.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/voidsman_belt.rsi
+
+- type: entity
+  parent: OxygenTankFilled
+  id: OxygenTankVoidsman
+  name: кислородный баллон войдсмена
+  description: Стандартный десяти литровый кислородный баллон Имперского Флота. Подходит для ранца и слота хранения скафандра.
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Tanks/voidsman_oxygen_tank.rsi
+  - type: Item
+    sprite: _WH40K/Objects/Tanks/voidsman_oxygen_tank.rsi
+  - type: Clothing
+    sprite: _WH40K/Objects/Tanks/voidsman_oxygen_tank.rsi
+    clothingVisuals:
+      back:
+      - state: equipped-BACKPACK
+      suitstorage:
+      - state: equipped-SUITSTORAGE

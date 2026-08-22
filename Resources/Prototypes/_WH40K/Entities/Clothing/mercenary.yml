@@ -1,0 +1,72 @@
+# Комплект вольного клинка: гражданско-военная экипировка без защитных преимуществ.
+- type: entity
+  parent: ClothingUniformBase
+  id: WH40KClothingUniformJumpsuitMercenary
+  name: комбинезон вольного клинка
+  description: Потёртый комбинезон профессионального солдата удачи. На швах видны следы десятков перелётов и ещё большего числа контрактов.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/mercenary_contract.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/mercenary_contract.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: WH40KClothingNeckCloakMercenary
+  name: плащ вольного клинка
+  description: Пыльный плащ, скрывающий лицо владельца от чужих глаз и ветра пустотных портов. Его цвет не принадлежит ни одному полку.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Neck/Cloaks/mercenary_cloak.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Neck/Cloaks/mercenary_cloak.rsi
+
+- type: entity
+  parent: ClothingHandsBase
+  id: WH40KClothingHandsGlovesMercenary
+  name: перчатки наёмника
+  description: Кожаные перчатки с усиленными ладонями. Они хорошо держат оружие, но не заменят ни изоляцию, ни броню.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/mercenary_gloves.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/mercenary_gloves.rsi
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: WH40KClothingShoesBootsMercenary
+  name: сапоги наёмника
+  description: Крепкие походные сапоги, пережившие больше высадок, чем их владелец готов признать. В голенище найдётся место для небольшой личной защиты.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/mercenary_boots.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/mercenary_boots.rsi
+
+- type: entity
+  parent: ClothingBeltStorageBase
+  id: WH40KClothingBeltMercenaryBandolier
+  name: патронная перевязь вольного клинка
+  description: Утилитарная перевязь с карманами для походной мелочи. Символ прост — достаточно патронов, чтобы дожить до выплаты.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/mercenary_bandolier.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/mercenary_bandolier.rsi
+
+- type: entity
+  parent: WH40KClothingBeltMercenaryBandolier
+  id: WH40KClothingBeltMercenaryBandolierOrnate
+  name: парадная патронная перевязь вольного клинка
+  description: Та же практичная перевязь, украшенная трофейной фурнитурой. Носит её тот, кому уже есть чем подтверждать цену своего контракта.
+  suffix: WH40K, Наёмник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/mercenary_bandolier_ornate.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/mercenary_bandolier_ornate.rsi

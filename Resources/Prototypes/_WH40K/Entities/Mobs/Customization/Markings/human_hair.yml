@@ -1,0 +1,8 @@
+- type: marking
+  id: HumanHairMagicGirlA
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/magic_girl_hair.rsi
+    state: magic_girl_a

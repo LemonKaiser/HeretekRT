@@ -52,6 +52,38 @@
       - material: Cloth
         amount: 2
         doAfter: 1
+    - to: imperialFleetBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: contraBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: corsairBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: imperiumBanner
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
 
   - node: chaosBanner
     entity: WHChaosBanner
@@ -135,6 +167,70 @@
 
   - node: tauBanner
     entity: WHTauBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: imperialFleetBanner
+    entity: WH40KImperialFleetBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: contraBanner
+    entity: WH40KContraBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: corsairBanner
+    entity: WH40KCorsairBanner
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:GivePrototype
+        prototype: MaterialCloth1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Anchoring
+        doAfter: 2
+
+  - node: imperiumBanner
+    entity: WH40KImperiumBanner
     edges:
     - to: start
       completed:

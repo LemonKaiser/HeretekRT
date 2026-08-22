@@ -2191,8 +2191,18 @@
   - type: VendingMachine
     pack: TankDispenserEVAInventory
   - type: Sprite
-    sprite: Structures/Machines/VendingMachines/tankdispenser.rsi #TODO add visualiser for remaining tanks as layers
-    state: dispenser
+    sprite: Structures/Machines/VendingMachines/tankdispenser.rsi
+    layers:
+    - state: dispenser
+    - state: light
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
   - type: MarketModifier # Frontier
     mod: 5 # Frontier
 
@@ -2206,10 +2216,18 @@
   - type: VendingMachine
     pack: TankDispenserEngineeringInventory
   - type: Sprite
-    sprite: Structures/Machines/VendingMachines/tankdispenser.rsi #TODO add visualiser for remaining tanks as layers
+    sprite: Structures/Machines/VendingMachines/tankdispenser.rsi
     layers:
     - state: dispenser
-    - state: dispensereng
+    - state: light
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
 
 - type: entity
   parent: VendingMachine
