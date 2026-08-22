@@ -118,9 +118,6 @@ HyperlinkBookSpaceLaw: null
 HyperlinkBookNfsdSop: null
 
 
-# base planet water replaced by CE water (z-level safe landing + distortion)
-FloorWaterEntity: CEWater
-
 # Entities removed for wizden wall-ening, such as ones that didn't have sprites available and weren't worth the effort for me to go out of my way to do so.
 ClockworkGrille: Grille
 ClockworkGrilleBroken: GrilleBroken
