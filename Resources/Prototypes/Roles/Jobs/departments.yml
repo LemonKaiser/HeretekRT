@@ -13,6 +13,7 @@
   description: department-NFCivilian-description # Frontier
   color: "#9FED58"
   weight: 130 # Mono
+  primary: false
   roles:
   # - Bartender # Frontier
   # - Botanist # Frontier
@@ -31,6 +32,12 @@
   # - Zookeeper # Frontier
   # - ServiceWorker # Frontier
   - Wanderer
+  - Contractor # Frontier
+  - Mercenary # Frontier
+  # - Pilot # Frontier
+  - Borg # Frontier
+  - TsfCivilian
+  - PdvCivilian
 
 - type: department
   id: CentralCommand
@@ -126,6 +133,7 @@
   - TsfEngineer # Mono
   - TsfMarsoc # Mono
   - TsfBorg # Mono
+  - TsfCivilian
   editorHidden: true
 
 - type: department

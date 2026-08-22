@@ -173,14 +173,20 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
 
     private void OnHitscanFired(Entity<HitscanBasicRaycastComponent> ent, ref HitscanRaycastFiredEvent args)
     {
-        if (args.Canceled || args.HitEntity is not { } target)
+        if (args.Canceled)
             return;
 
-        if (!TryComp<WH40KPhantomStepComponent>(target, out var step))
-            return;
+        foreach (var target in args.HitEntities)
+        {
+            if (!TryComp<WH40KPhantomStepComponent>(target, out var step))
+                continue;
 
-        if (TryTriggerDodge((target, step), args.Shooter ?? args.Gun, PhantomStepThreatType.Ranged))
-            args.Canceled = true;
+            if (TryTriggerDodge((target, step), args.Shooter ?? args.Gun, PhantomStepThreatType.Ranged))
+            {
+                args.Canceled = true;
+                return;
+            }
+        }
     }
 
     private void OnProjectileAttempt(Entity<WH40KPhantomStepComponent> ent, ref ProjectileReflectAttemptEvent args)

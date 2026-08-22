@@ -14,6 +14,7 @@
   - type: Tag
     tags:
     - HamsterWearable
+    - PetWearable
     - WhitelistChameleon
   - type: HideLayerClothing
     layers:
@@ -40,11 +41,14 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: [BaseDurableMask, ClothingMaskGas, BaseFactionGearPDVT1]
   id: ClothingMaskGasSyndicate
-  name: syndicate gas mask
+  name: advanced gas mask
   description: A close-fitting tactical mask that can be connected to an air supply.
   components:
   - type: Sprite
@@ -61,6 +65,9 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: [BaseDurableMask, ClothingMaskGas]
@@ -77,6 +84,9 @@
     modifiers:
       coefficients:
         Heat: 0.90 # Frontier 0.80<0.90
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskGasAtmos
@@ -90,6 +100,9 @@
     sprite: Clothing/Mask/gascaptain.rsi
   - type: BreathMask
   - type: IngestionBlocker
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskGasAtmos
@@ -103,7 +116,9 @@
     sprite: Clothing/Mask/gascentcom.rsi
   - type: BreathMask
   - type: IngestionBlocker
-
+  - type: Tag
+    tags:
+    - PetWearable
 - type: entity
   parent: [BaseDurableMask, ClothingMaskGas]
   id: ClothingMaskGasExplorer
@@ -122,6 +137,9 @@
         Slash: 0.95 # Frontier 0.90<0.95
         Piercing: 0.95
         Heat: 0.95
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskPullableBase
@@ -162,7 +180,10 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: ClothingMaskPullableBase
   id: ClothingMaskBreath
@@ -207,6 +228,7 @@
     - WhitelistChameleon
     - IPCMaskWearable # EE - IPCs
     - Mask
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Snout
@@ -221,6 +243,7 @@
     - HamsterWearable
     - WhitelistChameleon
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Snout
@@ -237,6 +260,9 @@
   - type: Construction
     graph: BananaClownMask
     node: mask
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: [BaseDurableMask, ClothingMaskClown]
@@ -256,6 +282,9 @@
         Slash: 0.95
         Piercing: 0.95
         Heat: 0.95
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -272,6 +301,9 @@
   - type: HideLayerClothing
     slots:
     - Snout
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -289,6 +321,7 @@
     tags:
     - HamsterWearable
     - WhitelistChameleon
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Snout
@@ -311,6 +344,9 @@
   - type: PhysicalComposition
     materialComposition:
       Plastic: 25
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -332,6 +368,9 @@
   - type: Construction
     graph: Muzzle
     node: muzzle
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskPullableBase
@@ -350,6 +389,9 @@
     slots:
     - Snout
     hideOnToggle: true
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskClownBase
@@ -365,6 +407,9 @@
   - type: Unremoveable
   - type: AddAccentClothing
     accent: StutteringAccent
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: [BaseDurableMask, ClothingMaskGas]
@@ -379,6 +424,7 @@
   - type: Tag
     tags:
     - WhitelistChameleon
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Hair
@@ -413,6 +459,9 @@
         Heat: 0.95
   - type: PirateBountyItem # Frontier
     id: ClothingMaskGasMercenary # Frontier
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: [BaseDurableMask, ClothingMaskGas]
@@ -426,6 +475,7 @@
     sprite: Clothing/Mask/ert.rsi
   - type: Tag
     tags:
+    - PetWearable
     - WhitelistChameleon
   - type: HideLayerClothing
     slots:
@@ -461,6 +511,9 @@
         Slash: 0.80
         Piercing: 0.90
         Heat: 0.90
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -478,6 +531,7 @@
     - HamsterWearable
     - WhitelistChameleon
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
   - type: HideLayerClothing
     slots:
     - Snout
@@ -501,6 +555,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -520,6 +575,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -539,6 +595,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -558,6 +615,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -577,6 +635,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -596,6 +655,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -614,6 +674,7 @@
     tags:
     - WhitelistChameleon
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskNeckGaiter
@@ -624,6 +685,9 @@
     sprite: Clothing/Mask/neckgaiterred.rsi
   - type: Clothing
     sprite: Clothing/Mask/neckgaiterred.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskClownBase
@@ -635,6 +699,9 @@
     sprite: Clothing/Mask/blushingclown.rsi
   - type: Clothing
     sprite: Clothing/Mask/blushingclown.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskMime
@@ -646,6 +713,9 @@
     sprite: Clothing/Mask/blushingmime.rsi
   - type: Clothing
     sprite: Clothing/Mask/blushingmime.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskMime
@@ -657,6 +727,9 @@
     sprite: Clothing/Mask/sadmime.rsi
   - type: Clothing
     sprite: Clothing/Mask/sadmime.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskMime
@@ -668,6 +741,9 @@
     sprite: Clothing/Mask/scaredmime.rsi
   - type: Clothing
     sprite: Clothing/Mask/scaredmime.rsi
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -684,6 +760,9 @@
   - type: AddAccentClothing
     accent: ReplacementAccent
     replacement: italian
+  - type: Tag
+    tags:
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskBase
@@ -703,6 +782,7 @@
   - type: Tag
     tags:
     - IPCMaskWearable # EE - IPCs
+    - PetWearable
 
 - type: entity
   parent: ClothingMaskGas
@@ -726,3 +806,4 @@
   - type: Tag
     tags:
     - WhitelistChameleon
+    - PetWearable

@@ -1784,8 +1784,12 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
 
     private void OnShotModifierHitscanRaycast(Entity<Wh40kClassShotModifierComponent> ent, ref HitscanRaycastFiredEvent args)
     {
-        if (args.Canceled || args.HitEntity is not { } target || !TryComp<HitscanBasicDamageComponent>(ent, out var damage))
+        if (args.Canceled || args.HitEntities.Count == 0 || !TryComp<HitscanBasicDamageComponent>(ent, out var damage))
             return;
+
+        // Hitscan damage is shared by all hit targets. Retain the previous single-hit behavior
+        // when a multi-raycast weapon is used.
+        var target = args.HitEntities.First();
 
         if (ent.Comp.LowHealthDamageBonus > 0f && IsBelowHealthThreshold(target, 0.7f))
             damage.Damage *= 1f + ent.Comp.LowHealthDamageBonus;

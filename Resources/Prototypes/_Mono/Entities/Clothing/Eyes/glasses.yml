@@ -26,6 +26,10 @@
     - Inorganic
     - Silicon
     - Biological
+  - type: Tag
+    tags:
+    - PetWearable
+    
 
 - type: entity
   parent: [BaseDurableEyewear, ClothingEyesHudMedical]
@@ -53,7 +57,10 @@
     - Inorganic
     - Silicon
     - Biological
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: [BaseDurableEyewear, ClothingEyesHudMedical]
   id: ClothingEyesBallisticGogglesGreen
@@ -80,7 +87,10 @@
     - Inorganic
     - Silicon
     - Biological
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: [BaseDurableEyewear, ClothingEyesHudMedical]
   id: ClothingEyesBallisticGlassesGreen
@@ -107,7 +117,10 @@
     - Inorganic
     - Silicon
     - Biological
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: [BaseDurableEyewear, ClothingEyesHudMedical]
   id: ClothingEyesBallisticGogglesOrange
@@ -134,7 +147,10 @@
     - Inorganic
     - Silicon
     - Biological
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: [BaseDurableEyewear, ClothingEyesHudMedical]
   id: ClothingEyesBallisticGlassesOrange
@@ -161,7 +177,10 @@
     - Inorganic
     - Silicon
     - Biological
-
+  - type: Tag
+    tags:
+    - PetWearable
+    
 - type: entity
   parent: [ClothingEyesBase, ShowSecurityIcons]
   id: ClothingEyesTSFOfficerGlasses
@@ -188,3 +207,7 @@
     action: ActionToggleNightVision
     phosphorColor: "#41D7D9"
     lightingColor: "#FFFFFF32"
+  - type: Tag
+    tags:
+    - PetWearable
+    
