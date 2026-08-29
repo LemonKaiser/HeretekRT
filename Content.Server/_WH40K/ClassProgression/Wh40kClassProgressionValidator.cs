@@ -4,7 +4,6 @@ using System.Linq;
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.ItemRarity.Prototypes;
-using Robust.Shared.ContentPack;
 using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 
@@ -29,7 +28,7 @@ public static class Wh40kClassProgressionValidator
         IReadOnlyCollection<Wh40kClassSkillPrototype> skills,
         IReadOnlyCollection<Wh40kClassSkillEffectPrototype> effects,
         Func<LocId, bool> hasLocalization,
-        Func<Robust.Shared.Utility.ResPath, bool> hasResource,
+        Func<Robust.Shared.Utility.ResPath, bool>? hasResource,
         Func<ProtoId<TagPrototype>, bool> hasTag,
         IReadOnlyCollection<Wh40kClassRarityModifierPrototype>? rarityModifiers = null,
         Func<EntProtoId, bool>? hasEntityPrototype = null,
@@ -460,14 +459,14 @@ public static class Wh40kClassProgressionValidator
         Robust.Shared.Utility.ResPath icon,
         string path,
         Func<LocId, bool> hasLocalization,
-        Func<Robust.Shared.Utility.ResPath, bool> hasResource,
+        Func<Robust.Shared.Utility.ResPath, bool>? hasResource,
         ICollection<Wh40kClassProgressionDiagnostic> diagnostics)
     {
         if (!hasLocalization(name))
             Add(diagnostics, "missing-name-localization", $"{path}.name", $"Localization '{name}' does not exist.");
         if (!hasLocalization(description))
             Add(diagnostics, "missing-description-localization", $"{path}.description", $"Localization '{description}' does not exist.");
-        if (!hasResource(icon))
+        if (hasResource != null && !hasResource(icon))
             Add(diagnostics, "missing-icon", $"{path}.icon", $"Resource '{icon}' does not exist.");
     }
 
@@ -488,7 +487,6 @@ public sealed class Wh40kClassProgressionValidationSystem : EntitySystem
 {
     [Dependency] private ILocalizationManager _localization = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IResourceManager _resources = default!;
 
     public override void Initialize()
     {
@@ -500,7 +498,9 @@ public sealed class Wh40kClassProgressionValidationSystem : EntitySystem
             _prototypes.EnumeratePrototypes<Wh40kClassSkillPrototype>().ToArray(),
             _prototypes.EnumeratePrototypes<Wh40kClassSkillEffectPrototype>().ToArray(),
             locId => _localization.HasString(locId.Id),
-            _resources.ContentFileExists,
+            // Dedicated server packages intentionally exclude Resources/Textures. Icon existence is checked
+            // by the integration catalog test, which runs with the complete source resource tree mounted.
+            null,
             _prototypes.HasIndex<TagPrototype>,
             _prototypes.EnumeratePrototypes<Wh40kClassRarityModifierPrototype>().ToArray(),
             id => _prototypes.HasIndex<EntityPrototype>(id.Id),
