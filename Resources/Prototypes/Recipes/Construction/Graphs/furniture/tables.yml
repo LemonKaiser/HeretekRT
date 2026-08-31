@@ -58,6 +58,20 @@
             - tool: Welding
               doAfter: 3
 
+        - to: TablePlasteel
+          steps:
+            - material: Plasteel
+              amount: 1
+              doAfter: 1
+
+        - to: TableReinforcedPlasteel
+          steps:
+            - material: Plasteel
+              amount: 2
+              doAfter: 1
+            - tool: Welding
+              doAfter: 3
+
         - to: TableGlass
           steps:
             - material: Glass
@@ -144,6 +158,32 @@
             - !type:SpawnPrototype
               prototype: SheetPlasteel1
               amount: 1
+          steps:
+            - tool: Welding
+              doAfter: 3
+            - tool: Anchoring
+              doAfter: 1
+
+    - node: TablePlasteel
+      entity: TablePlasteel
+      edges:
+        - to: TableFrame
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlasteel1
+              amount: 1
+          steps:
+            - tool: Anchoring
+              doAfter: 1
+
+    - node: TableReinforcedPlasteel
+      entity: TableReinforcedPlasteel
+      edges:
+        - to: TableFrame
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlasteel1
+              amount: 2
           steps:
             - tool: Welding
               doAfter: 3

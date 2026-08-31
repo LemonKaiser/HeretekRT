@@ -1,0 +1,90 @@
+- type: entity
+  id: WH40KCrateChaosBlood
+  parent: CrateGenericSteel
+  name: chaos blood crate
+  description: A blood-stained crate bearing the mark of Chaos.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/chaos_blood.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/chaos_blood.rsi
+
+- type: entity
+  id: WH40KCrateImperiumAmmo
+  parent: CrateGenericSteel
+  name: imperial ammunition crate
+  description: An Imperial supply crate marked for ammunition.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/imperium_ammo.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/imperium_ammo.rsi
+
+- type: entity
+  id: WH40KCrateImperiumExplosives
+  parent: CrateGenericSteel
+  name: imperial explosives crate
+  description: An Imperial supply crate marked for explosives.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/imperium_explosives.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/imperium_explosives.rsi
+
+- type: entity
+  id: WH40KCrateNeutralRed
+  parent: CrateGenericSteel
+  name: red cargo crate
+  description: A plain red cargo crate.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/neutral_red.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/neutral_red.rsi
+
+- type: entity
+  id: WH40KCrateNeutralOrange
+  parent: CrateGenericSteel
+  name: orange cargo crate
+  description: A plain orange cargo crate.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/neutral_orange.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/neutral_orange.rsi
+
+- type: entity
+  id: WH40KCrateNeutralOlive
+  parent: CrateGenericSteel
+  name: olive cargo crate
+  description: A plain olive cargo crate.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/neutral_olive.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/neutral_olive.rsi
+
+- type: entity
+  id: WH40KCrateNeutralGrey
+  parent: CrateGenericSteel
+  name: grey cargo crate
+  description: A plain grey cargo crate.
+  suffix: WH40K
+  components:
+  - type: Icon
+    sprite: _WH40K/Structures/Storage/Crates/neutral_grey.rsi
+    state: icon
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/Crates/neutral_grey.rsi

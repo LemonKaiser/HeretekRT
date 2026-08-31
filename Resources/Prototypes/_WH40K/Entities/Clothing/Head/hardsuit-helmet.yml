@@ -4,7 +4,6 @@
 - type: entity
   parent: ClothingHeadEVAHelmetBase
   id: ClothingHeadHelmetHardsuitVoidsmanStandard
-  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -38,7 +37,6 @@
 - type: entity
   parent: [WH40KDurableHeavyHelmet, ClothingHeadSuitWithLightBase, ClothingHeadEVAHelmetBase]
   id: ClothingHeadHelmetHardsuitVoidsmanOfficer
-  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -68,7 +66,6 @@
 - type: entity
   parent: [WH40KDurableHeavyHelmet, ClothingHeadSuitWithLightBase, ClothingHeadEVAHelmetBase]
   id: ClothingHeadHelmetHardsuitVoidsmanSergeant
-  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -99,7 +96,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanSergeant
   id: ClothingHeadHelmetHardsuitVoidsmanGrenadier
-  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask

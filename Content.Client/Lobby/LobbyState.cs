@@ -49,6 +49,7 @@ namespace Content.Client.Lobby
         private bool? _lastRoundStarted;
         private bool? _lastObserveAvailable;
         private bool? _lastPersonalizationAvailable;
+        private bool? _lastOnboardingRequired;
         private long _lastLobbyClockSecond = long.MinValue;
         private bool? _lastLobbyClockRoundStarted;
         private bool? _lastLobbyClockPaused;
@@ -86,10 +87,11 @@ namespace Content.Client.Lobby
                 ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
                 : lobbyNameCvar;
 
-            _preferencesManager.OnWh40kProgressChanged += UpdatePersonalizationButton;
+            _preferencesManager.OnWh40kProgressChanged += OnWh40kProgressChanged;
             _preferencesManager.OnWh40kOnboardingCompletionFinished += OnWh40kOnboardingCompletionFinished;
             UpdateLobbyUi();
             Lobby.BeginPresentation();
+            OnWh40kProgressChanged();
             _lobbyBackgroundController = new LobbyBackgroundController(
                 _cfg,
                 _protoMan,
@@ -122,7 +124,7 @@ namespace Content.Client.Lobby
             _gameTicker.LobbyLateJoinStatusUpdated -= LobbyLateJoinStatusUpdated;
             _ghostPermissionStatus.StatusUpdated -= UpdateLobbyUi;
             _adminManager.AdminStatusUpdated -= UpdateLobbyUi;
-            _preferencesManager.OnWh40kProgressChanged -= UpdatePersonalizationButton;
+            _preferencesManager.OnWh40kProgressChanged -= OnWh40kProgressChanged;
             _preferencesManager.OnWh40kOnboardingCompletionFinished -= OnWh40kOnboardingCompletionFinished;
             _contentAudioSystem.LobbySoundtrackChanged -= UpdateLobbySoundtrackInfo;
 
@@ -142,6 +144,7 @@ namespace Content.Client.Lobby
             _lastRoundStarted = null;
             _lastObserveAvailable = null;
             _lastPersonalizationAvailable = null;
+            _lastOnboardingRequired = null;
             Lobby = null;
         }
 
@@ -175,6 +178,12 @@ namespace Content.Client.Lobby
 
         private void OnSetupPressed(BaseButton.ButtonEventArgs args)
         {
+            if (_preferencesManager.Wh40kProgress.OnboardingStatus == Wh40kOnboardingStatus.Required)
+            {
+                TryOpenWh40kOnboarding();
+                return;
+            }
+
             if (!_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization)
                 return;
 
@@ -188,20 +197,6 @@ namespace Content.Client.Lobby
             {
                 return;
             }
-
-            var progress = _preferencesManager.Wh40kProgress;
-            if (!progress.IsKnown)
-                return;
-
-            if (progress.OnboardingStatus == Wh40kOnboardingStatus.Required)
-            {
-                TryOpenWh40kOnboarding();
-                return;
-            }
-
-            // Act I progression is separate from the first-character gate. A saved profile may use ordinary late join.
-            if (!progress.CanUseLegacyPersonalization)
-                return;
 
             if (_pickerWindow is { IsOpen: true })
             {
@@ -421,13 +416,27 @@ namespace Content.Client.Lobby
             if (Lobby == null)
                 return;
 
-            var available = _preferencesManager.Wh40kProgress.CanUseLegacyPersonalization;
-            if (_lastPersonalizationAvailable == available)
+            var onboardingRequired = _preferencesManager.Wh40kProgress.OnboardingStatus == Wh40kOnboardingStatus.Required;
+            var available = _preferencesManager.Wh40kProgress.CanUseLegacyPersonalization || onboardingRequired;
+            if (_lastPersonalizationAvailable == available && _lastOnboardingRequired == onboardingRequired)
                 return;
 
             _lastPersonalizationAvailable = available;
+            _lastOnboardingRequired = onboardingRequired;
             Lobby.SetPersonalizationAvailable(available);
             Lobby.CharacterPreview.CharacterSetupButton.Disabled = !available;
+            Lobby.PersonalizationButton.Text = Loc.GetString(onboardingRequired
+                ? "heretek-lobby-create-character"
+                : "heretek-lobby-personalization");
+        }
+
+        private void OnWh40kProgressChanged()
+        {
+            UpdatePersonalizationButton();
+
+            // Offer the creator as soon as account state arrives. Entering a round remains available if
+            // creation is cancelled or its interface fails.
+            TryOpenWh40kOnboarding();
         }
 
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
@@ -463,14 +472,6 @@ namespace Content.Client.Lobby
         {
             if (_gameTicker.IsGameStarted)
             {
-                return;
-            }
-
-            if (newReady && !_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization)
-            {
-                if (_preferencesManager.Wh40kProgress.OnboardingStatus == Wh40kOnboardingStatus.Required)
-                    TryOpenWh40kOnboarding();
-
                 return;
             }
 

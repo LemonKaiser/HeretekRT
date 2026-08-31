@@ -1,0 +1,54 @@
+# New Frontiers - This file is licensed under AGPLv3
+# Copyright (c) 2026 New Frontiers Contributors
+# See AGPLv3.txt for details.
+
+- type: entity
+  parent: BaseWeaponRifle
+  id: WeaponAutogunKalashnikov
+  suffix: WH40K, Общий
+  components:
+  - type: Tag
+    tags:
+    - Wh40kSkillAutomaticWeapon
+  - type: Wh40kWeaponHandling
+    category: Automatic
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/kalashnikov.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/kalashnikov_inhands.rsi
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/kalashnikov_inhands.rsi
+  - type: GunWieldBonus
+    minAngle: -8
+    maxAngle: -12
+  - type: Gun
+    minAngle: 16
+    maxAngle: 32
+    angleIncrease: 3
+    angleDecay: 18
+    fireRate: 5.5
+    availableModes:
+    - SemiAuto
+    - FullAuto
+    selectedMode: FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/rifle2.ogg
+  - type: ItemDurability
+    maxDurability: 150
+    shotDrain: 0.08
+    repairMaterial: Steel
+    requiredWorkbenchTier: 1
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: HeldSpeedModifier
+    walkModifier: 0.98
+    sprintModifier: 0.98

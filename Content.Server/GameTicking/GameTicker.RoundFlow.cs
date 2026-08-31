@@ -360,9 +360,6 @@ namespace Content.Server.GameTicking
                     continue;
                 }
 
-                if (_prefsManager.IsWh40kOnboardingRequired(userId))
-                    continue;
-
                 if (LobbyEnabled && status == PlayerGameStatus.NotReadyToPlay)
                     continue;
 
@@ -403,12 +400,6 @@ namespace Content.Server.GameTicking
                     continue;
 
                 if (!_userDb.IsLoadComplete(session))
-                {
-                    _playerGameStatuses[userId] = PlayerGameStatus.NotReadyToPlay;
-                    continue;
-                }
-
-                if (_prefsManager.IsWh40kOnboardingRequired(userId))
                 {
                     _playerGameStatuses[userId] = PlayerGameStatus.NotReadyToPlay;
                     continue;

@@ -25,7 +25,14 @@
   sector: KoronusExpanse
   displayName: Aivorius
   uiPosition: 0.525, 0.817
-  initialGridPath: /Maps/_NF/POI/trade.yml
+  # The authored derelict stays at the lower system marker; it is the Drifting Voidship from Aivorius.
+  initialGridPath: /Maps/Ruins/ruined_prison_ship.yml
+  initialGridDisplayName: Дрейфующий пустотный корабль
+  spaceMode: Planetary
+  # The voidship grid is authored at 0,0, four kilometres below this stellar centre.
+  stellarCenter: 0, -4000
+  # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
+  boundaryRadius: 6000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -39,6 +46,12 @@
   displayName: Sotto's Tomb
   uiPosition: 0.496, 0.841
   initialGridPath: /Maps/_Mono/POI/sevastopol.yml
+  # The facility is kept away from the stellar centre and the planet's outer orbit.
+  initialGridSpawnDistance: 3000
+  spaceMode: Planetary
+  stellarCenter: 0, 4000
+  # The Ice World's 4800 m orbit, its navigation marker and orbital launch point fit inside this boundary.
+  boundaryRadius: 6000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -56,7 +69,9 @@
   # Each round the trade station is placed at a random angle 3000 m from the star.
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  boundaryRadius: 5000
+  # Внешняя орбита Фоулстоуна — 4700 м; запас включает его радиус, площадку подхода
+  # и точку выхода шаттла на орбиту.
+  boundaryRadius: 6000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100

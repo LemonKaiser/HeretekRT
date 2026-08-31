@@ -1219,6 +1219,27 @@ ent-CommissarDogTag = { ent-StandardDogTag }
 ent-CrateNecron = necron box
     .desc = This is a storage facility belonging to the mysterious civilization of machines made of living steel - the Necrons. Do you have the will to open it?
 
+ent-WH40KCrateChaosBlood = chaos blood crate
+    .desc = A blood-stained crate bearing the mark of Chaos.
+
+ent-WH40KCrateImperiumAmmo = imperial ammunition crate
+    .desc = An Imperial supply crate marked for ammunition.
+
+ent-WH40KCrateImperiumExplosives = imperial explosives crate
+    .desc = An Imperial supply crate marked for explosives.
+
+ent-WH40KCrateNeutralRed = red cargo crate
+    .desc = A plain red cargo crate.
+
+ent-WH40KCrateNeutralOrange = orange cargo crate
+    .desc = A plain orange cargo crate.
+
+ent-WH40KCrateNeutralOlive = olive cargo crate
+    .desc = A plain olive cargo crate.
+
+ent-WH40KCrateNeutralGrey = grey cargo crate
+    .desc = A plain grey cargo crate.
+
 ent-Crater = crater
     .desc = Explosion-created hole in the ground
 
@@ -1344,6 +1365,30 @@ ent-FoodTinNutriPasteTrash = tinned nutrient paste
 
 ent-FragGrenade = frag grenade
     .desc = A standard Imperium fragmentation grenade used by Imperial Guard forces and Space Marines to eliminate enemies.
+
+ent-FragGrenadeBlack = black frag grenade
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeCyan = cyan frag grenade
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeGreen = green frag grenade
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeRed = red frag grenade
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickBlack = black frag grenade on a stick
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickCyan = cyan frag grenade on a stick
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickGreen = green frag grenade on a stick
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickRed = red frag grenade on a stick
+    .desc = { ent-FragGrenade.desc }
 
 ent-GenaWH40 = Gena
     .desc = Gene cabinet 2.5
@@ -3121,6 +3166,9 @@ ent-WeaponStubRevolver = M748 "Burglar" Stub Revolver
 
 ent-WeaponStubRifle = Agripinaa Mk.III assault rifle
     .desc = The Agripinaa model heavy assault rifle is a redesigned version of the Mk. II, is virtually no different from the Mk. II, except for more consistent recoil in exchange for weight. Uses 8.25 "Long".
+
+ent-WeaponAutogunKalashnikov = Kalashnikov-pattern autogun
+    .desc = A reliable old-pattern rifle adapted for the harsh conditions of the forty-first millennium. Uses 7.62×39mm cartridges.
 
 ent-WeaponStubSMG = M49 "Spatula"
     .desc = A high-quality submachine gun for "filling" holes in defenses.

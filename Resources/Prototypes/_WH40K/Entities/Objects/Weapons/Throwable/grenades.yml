@@ -29,6 +29,70 @@
       path: /Audio/Items/smoke_grenade_prime.ogg
 
 - type: entity
+  id: FragGrenadeBlack
+  parent: FragGrenade
+  name: black frag grenade
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_black.rsi
+
+- type: entity
+  id: FragGrenadeCyan
+  parent: FragGrenade
+  name: cyan frag grenade
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_cyan.rsi
+
+- type: entity
+  id: FragGrenadeGreen
+  parent: FragGrenade
+  name: green frag grenade
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_green.rsi
+
+- type: entity
+  id: FragGrenadeRed
+  parent: FragGrenade
+  name: red frag grenade
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_red.rsi
+
+- type: entity
+  id: FragGrenadeStickBlack
+  parent: FragGrenade
+  name: black frag grenade on a stick
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_stick_black.rsi
+
+- type: entity
+  id: FragGrenadeStickCyan
+  parent: FragGrenade
+  name: cyan frag grenade on a stick
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_stick_cyan.rsi
+
+- type: entity
+  id: FragGrenadeStickGreen
+  parent: FragGrenade
+  name: green frag grenade on a stick
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_stick_green.rsi
+
+- type: entity
+  id: FragGrenadeStickRed
+  parent: FragGrenade
+  name: red frag grenade on a stick
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Grenades/fraggrenade_stick_red.rsi
+
+- type: entity
   id: KrakGrenade
   name: krak grenade
   description: Explosive anti-armor grenade used by the Imperial Guard and Space Marines to destroy light vehicles and fortifications.

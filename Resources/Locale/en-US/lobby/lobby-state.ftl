@@ -45,6 +45,7 @@ heretek-lobby-chat-title = General chat
 heretek-lobby-chat-channel = OOC CHANNEL
 heretek-lobby-chat-toggle = Open or hide chat
 heretek-lobby-authors = Authors
+heretek-lobby-create-character = Create character
 
 heretek-onboarding-cancel = Return to lobby
 heretek-onboarding-title = Character creation

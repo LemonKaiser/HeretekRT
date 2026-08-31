@@ -75,7 +75,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanEnlistedA
-  categories: [ HideSpawnMenu ]
   name: шлем рядового войдсмена
   description: Герметичный шлем палубного стрелка. Без корпуса скафандра он защищает только голову.
   suffix: WH40K, Войдсмены
@@ -88,7 +87,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanEnlistedB
-  categories: [ HideSpawnMenu ]
   name: шлем рядового войдсмена
   description: Герметичный шлем палубного стрелка. Без корпуса скафандра он защищает только голову.
   suffix: WH40K, Войдсмены
@@ -101,7 +99,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanSergeantA
-  categories: [ HideSpawnMenu ]
   name: шлем сержанта войдсменов
   description: Герметичный шлем старшего палубной группы с усиленной лицевой плитой.
   suffix: WH40K, Войдсмены
@@ -127,7 +124,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanSergeantB
-  categories: [ HideSpawnMenu ]
   name: шлем сержанта войдсменов
   description: Герметичный шлем старшего палубной группы с усиленной лицевой плитой.
   suffix: WH40K, Войдсмены
@@ -153,7 +149,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanSpecialist
-  categories: [ HideSpawnMenu ]
   name: шлем специалиста войдсменов
   description: Тяжёлый герметичный шлем для абордажной работы. Его защита соответствует шлему гренадера.
   suffix: WH40K, Войдсмены
@@ -179,7 +174,6 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanStandard
   id: ClothingHeadHelmetVoidsmanGrenadierA
-  categories: [ HideSpawnMenu ]
   name: шлем гренадера войдсменов
   description: Усиленный герметичный шлем гренадера, рассчитанный на ударную волну и осколки.
   suffix: WH40K, Войдсмены

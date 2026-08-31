@@ -15,10 +15,11 @@
   id: Foulstone
   system: Trinnitos
   bodyType: Planet
-  displayName: Foulstone
-  description: A temperate world reachable through controlled atmospheric landings from Trinnitos.
-  climate: koronus-planetary-climate-temperate-forest
-  orbitRadius: 4000
+  displayName: Фоулстоун
+  description: Внешний мир Триннитоса, бывший мёртвый мир и нынешний мир-святыня Ордена Молота.
+  climate: koronus-planetary-climate-shrine-world
+  # Фоулстоун — внешний мир Триннитоса; три внутренних тела занимают первые орбиты.
+  orbitRadius: 4700
   orbitPhase: 215
   # One complete orbit every six hours: 360 degrees / 21600 seconds.
   orbitAngularSpeed: 0.0167
@@ -74,6 +75,445 @@
     moles:
     - 21.824779
     - 82.10312
+
+# Внутренние миры Триннитоса пока используют только штатные биомы и общую авторскую
+# площадку. Это отдельные поверхности: один mapPath намеренно загружается в три разных
+# MapId, поэтому состояние мира и посадочные резервы между ними не смешиваются.
+- type: koronusCelestialBody
+  id: TrinnitosDesertWorld
+  system: Trinnitos
+  bodyType: Planet
+  displayName: Мир-пустыня
+  description: Безымянный засушливый мир на внутренней орбите Триннитоса.
+  climate: koronus-planetary-climate-arid
+  orbitRadius: 1400
+  orbitPhase: 33
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/desert-world.png
+  navVisualRadius: 180
+  backgroundVisualRadius: 180
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.45
+  surfaceRotationPhase: 8
+  axialTilt: 5
+  cloudRotationSpeed: 0.25
+  cloudOpacity: 0.16
+  cloudScale: 3.1
+  cloudSeed: 1.4
+  atmosphereColor: "#D9A45B"
+  atmosphereIntensity: 0.35
+  surface: TrinnitosDesertSurface
+
+- type: koronusPlanetSurface
+  id: TrinnitosDesertSurface
+  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  planet: TrinnitosDesertWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: TrinnitosDesertWorldSurface
+  biome: MonoDesertPermanentPlanet
+  mapName: koronus-trinnitos-desert-map-name
+  mapLight: "#D8A55E"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 305.75
+    moles:
+    - 32.458
+    - 68.213
+
+- type: koronusCelestialBody
+  id: TrinnitosRockWorld
+  system: Trinnitos
+  bodyType: Planet
+  displayName: Скалистый мир
+  description: Безымянный скалистый мир на второй орбите Триннитоса.
+  climate: koronus-planetary-climate-rocky
+  orbitRadius: 2500
+  orbitPhase: -42
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/rock-world.png
+  navVisualRadius: 190
+  backgroundVisualRadius: 190
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.35
+  surfaceRotationPhase: 31
+  axialTilt: 9
+  cloudRotationSpeed: 0.2
+  cloudOpacity: 0.12
+  cloudScale: 3.0
+  cloudSeed: 2.8
+  atmosphereColor: "#C9A47A"
+  atmosphereIntensity: 0.28
+  surface: TrinnitosRockSurface
+
+- type: koronusPlanetSurface
+  id: TrinnitosRockSurface
+  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  planet: TrinnitosRockWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: TrinnitosRockWorldSurface
+  biome: Asteroid
+  mapName: koronus-trinnitos-rock-map-name
+  mapLight: "#B88A64"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 293.15
+    moles:
+    - 21.824779
+    - 82.10312
+
+- type: koronusCelestialBody
+  id: TrinnitosFlamingWorld
+  system: Trinnitos
+  bodyType: Planet
+  displayName: Пылающий мир
+  description: Безымянный вулканический мир на третьей орбите Триннитоса.
+  climate: koronus-planetary-climate-volcanic
+  orbitRadius: 3600
+  orbitPhase: 118
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/flaming-world.png
+  navVisualRadius: 200
+  backgroundVisualRadius: 200
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.25
+  surfaceRotationPhase: 16
+  axialTilt: 3
+  cloudRotationSpeed: 0
+  cloudOpacity: 0
+  atmosphereIntensity: 0
+  surface: TrinnitosFlamingSurface
+
+- type: koronusPlanetSurface
+  id: TrinnitosFlamingSurface
+  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  planet: TrinnitosFlamingWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: TrinnitosFlamingWorldSurface
+  biome: Lava
+  mapName: koronus-trinnitos-flaming-map-name
+  mapLight: "#7A4535"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 2.7
+
+# Sotto's Tomb contains a single known ice world in Rogue Trader. It stays on the far orbit;
+# no extra planets or fictional place names are added around it.
+- type: koronusCelestialBody
+  id: SottosTombStar
+  system: SottosTomb
+  bodyType: Star
+  displayName: Sotto's Tomb
+  description: Звезда в центре системы Sotto's Tomb.
+  navVisualRadius: 400
+  backgroundVisualRadius: 650
+  backgroundParallaxSlowness: 0.82
+
+- type: koronusCelestialBody
+  id: SottosTombIceWorld
+  system: SottosTomb
+  bodyType: Planet
+  displayName: Ледяной мир
+  description: Далёкий ледяной мир системы Sotto's Tomb.
+  climate: koronus-planetary-climate-frozen
+  orbitRadius: 4800
+  orbitPhase: 0
+  # One complete orbit every six hours.
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/ice-world.png
+  navVisualRadius: 230
+  backgroundVisualRadius: 230
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.3
+  surfaceRotationPhase: 19
+  axialTilt: 18
+  cloudRotationSpeed: 0.55
+  cloudOpacity: 0.42
+  cloudScale: 3.3
+  cloudSeed: 6.2
+  atmosphereColor: "#9DD5F1"
+  atmosphereIntensity: 0.68
+  surface: SottosTombIceSurface
+
+- type: koronusPlanetSurface
+  id: SottosTombIceSurface
+  # Reuses the existing neutral landing complex; PlanetSystem generates the surrounding Snow biome.
+  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  planet: SottosTombIceWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: SottosTombIceWorldSurface
+  biome: Snow
+  mapName: koronus-sottos-tomb-ice-map-name
+  mapLight: "#A9C7DC"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 273.15
+    moles:
+    - 21.824779
+    - 82.10312
+
+# Aivorius follows the four-world configuration from Rogue Trader. The initial grid is the
+# separate Drifting Voidship marker below; only solid worlds receive a generated surface.
+- type: koronusCelestialBody
+  id: AivoriusStar
+  system: Aivorius
+  bodyType: Star
+  displayName: Aivorius
+  description: Звезда в центре системы Aivorius.
+  navVisualRadius: 400
+  backgroundVisualRadius: 650
+  backgroundParallaxSlowness: 0.82
+
+- type: koronusCelestialBody
+  id: AivoriusBurningWorld
+  system: Aivorius
+  bodyType: Planet
+  displayName: Пылающий мир
+  description: Безымянный пылающий мир на внутренней орбите Aivorius.
+  climate: koronus-planetary-climate-burning
+  orbitRadius: 1400
+  orbitPhase: 125
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/aivorius-burning-world.png
+  navVisualRadius: 190
+  backgroundVisualRadius: 190
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.22
+  surfaceRotationPhase: 10
+  axialTilt: 3
+  cloudRotationSpeed: 0
+  cloudOpacity: 0
+  atmosphereIntensity: 0
+  surface: AivoriusBurningSurface
+
+- type: koronusPlanetSurface
+  id: AivoriusBurningSurface
+  mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
+  planet: AivoriusBurningWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: AivoriusBurningWorldSurface
+  biome: Lava
+  mapName: koronus-aivorius-burning-map-name
+  mapLight: "#7A4535"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 2.7
+
+- type: koronusCelestialBody
+  id: AivoriusJungleWorld
+  system: Aivorius
+  bodyType: Planet
+  displayName: Мир джунглей
+  description: Феодальный мир с тропической биосферой на второй орбите Aivorius.
+  climate: koronus-planetary-climate-tropical
+  orbitRadius: 2500
+  orbitPhase: -148
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/aivorius-jungle-world.png
+  navVisualRadius: 210
+  backgroundVisualRadius: 210
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.48
+  surfaceRotationPhase: 26
+  axialTilt: 17
+  cloudRotationSpeed: 0.85
+  cloudOpacity: 0.58
+  cloudScale: 3.5
+  cloudSeed: 5.3
+  atmosphereColor: "#7FCFA2"
+  atmosphereIntensity: 0.85
+  surface: AivoriusJungleSurface
+
+- type: koronusPlanetSurface
+  id: AivoriusJungleSurface
+  mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
+  planet: AivoriusJungleWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: AivoriusJungleWorldSurface
+  biome: Grasslands
+  mapName: koronus-aivorius-jungle-map-name
+  mapLight: "#92C47C"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 297.15
+    moles:
+    - 21.824779
+    - 82.10312
+
+- type: koronusCelestialBody
+  id: AivoriusDesertWorld
+  system: Aivorius
+  bodyType: Planet
+  displayName: Пустынный мир
+  description: Безымянный степной мир на третьей орбите Aivorius.
+  climate: koronus-planetary-climate-steppe
+  orbitRadius: 3600
+  orbitPhase: 10
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/aivorius-desert-world.png
+  navVisualRadius: 210
+  backgroundVisualRadius: 210
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.4
+  surfaceRotationPhase: 4
+  axialTilt: 7
+  cloudRotationSpeed: 0.22
+  cloudOpacity: 0.18
+  cloudScale: 3.2
+  cloudSeed: 1.8
+  atmosphereColor: "#DDB36F"
+  atmosphereIntensity: 0.34
+  surface: AivoriusDesertSurface
+
+- type: koronusPlanetSurface
+  id: AivoriusDesertSurface
+  mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
+  planet: AivoriusDesertWorldSurface
+  playableSize: 100, 100
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: AivoriusDesertWorldSurface
+  biome: MonoDesertPermanentPlanet
+  mapName: koronus-aivorius-desert-map-name
+  mapLight: "#D8A55E"
+  dayDuration: 900
+  nightDuration: 300
+  atmosphere:
+    volume: 2500
+    temperature: 305.75
+    moles:
+    - 32.458
+    - 68.213
+
+- type: koronusCelestialBody
+  id: AivoriusGasGiant
+  system: Aivorius
+  bodyType: Planet
+  displayName: Газовый гигант
+  description: Внешний газовый гигант системы Aivorius; посадка на него невозможна.
+  climate: koronus-planetary-climate-gas-giant
+  orbitRadius: 4700
+  orbitPhase: 154
+  orbitAngularSpeed: 0.0167
+  texture: /Textures/_WH40K/Celestial/aivorius-gas-giant.png
+  navVisualRadius: 260
+  backgroundVisualRadius: 260
+  backgroundParallaxSlowness: 0.82
+  surfaceRotationSpeed: 0.28
+  surfaceRotationPhase: 34
+  axialTilt: 2
+  cloudRotationSpeed: 0.4
+  cloudOpacity: 0.2
+  cloudScale: 4.1
+  cloudSeed: 7.6
+  atmosphereColor: "#E4D4B3"
+  atmosphereIntensity: 0.32
+
+# This marker and the authored grid share the same fixed coordinates: the grid root is 0,0,
+# while the star is 4000 m above it. It therefore remains aligned with the physical voidship.
+- type: koronusCelestialBody
+  id: AivoriusDriftingVoidship
+  system: Aivorius
+  bodyType: Station
+  displayName: Дрейфующий пустотный корабль
+  description: Потерявший ход корабль, дрейфующий в системе Aivorius.
+  climate: koronus-planetary-climate-voidship
+  orbitRadius: 4000
+  orbitPhase: 90
+  navVisualRadius: 90
 
 # A static landable body in the ordinary Footfall space map. Its angle is selected once per round;
 # zero angular speeds keep both its map position and visible surface fixed afterward.

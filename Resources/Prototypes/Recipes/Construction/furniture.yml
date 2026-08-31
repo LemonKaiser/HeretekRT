@@ -307,6 +307,40 @@
     - !type:TileNotBlocked
 
 - type: construction
+  name: plasteel table
+  id: TablePlasteel
+  graph: Table
+  startNode: start
+  targetNode: TablePlasteel
+  category: construction-category-furniture
+  description: A square piece of plasteel standing on four metal legs.
+  icon:
+    sprite: Structures/Furniture/Tables/plasteel.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
+  name: reinforced plasteel table
+  id: TableReinforcedPlasteel
+  graph: Table
+  startNode: start
+  targetNode: TableReinforcedPlasteel
+  category: construction-category-furniture
+  description: A square piece of plasteel standing on four metal legs. Extra robust.
+  icon:
+    sprite: Structures/Furniture/Tables/r_plasteel.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
   name: glass table
   id: TableGlass
   graph: Table

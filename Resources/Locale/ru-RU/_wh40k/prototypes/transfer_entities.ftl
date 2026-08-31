@@ -1212,6 +1212,27 @@ ent-CommissarDogTag = { ent-StandardDogTag }
 ent-CrateNecron = некронский ящик
     .desc = Это хранилище, принадлежащее загадочной цивилизации машин из живой стали - некронам. Хватит ли у вас воли открыть его?
 
+ent-WH40KCrateChaosBlood = ящик хаоса с кровью
+    .desc = Запятнанный кровью ящик со знаком Хаоса.
+
+ent-WH40KCrateImperiumAmmo = имперский ящик боеприпасов
+    .desc = Имперский ящик снабжения с маркировкой боеприпасов.
+
+ent-WH40KCrateImperiumExplosives = имперский ящик взрывчатки
+    .desc = Имперский ящик снабжения с маркировкой взрывчатки.
+
+ent-WH40KCrateNeutralRed = красный грузовой ящик
+    .desc = Обычный красный грузовой ящик.
+
+ent-WH40KCrateNeutralOrange = оранжевый грузовой ящик
+    .desc = Обычный оранжевый грузовой ящик.
+
+ent-WH40KCrateNeutralOlive = оливковый грузовой ящик
+    .desc = Обычный оливковый грузовой ящик.
+
+ent-WH40KCrateNeutralGrey = серый грузовой ящик
+    .desc = Обычный серый грузовой ящик.
+
 ent-Crater = кратер
     .desc = Созданное взрывом отверстие в земле.
 
@@ -1337,6 +1358,30 @@ ent-FoodTinNutriPasteTrash = законсервированная питател
 
 ent-FragGrenade = осколочная граната
     .desc = Стандартная осколочная граната Империума, используемая силами имперской гвардии и космическими десантниками для уничтожения врагов. 
+
+ent-FragGrenadeBlack = чёрная осколочная граната
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeCyan = циановая осколочная граната
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeGreen = зелёная осколочная граната
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeRed = красная осколочная граната
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickBlack = чёрная осколочная граната на ручке
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickCyan = циановая осколочная граната на ручке
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickGreen = зелёная осколочная граната на ручке
+    .desc = { ent-FragGrenade.desc }
+
+ent-FragGrenadeStickRed = красная осколочная граната на ручке
+    .desc = { ent-FragGrenade.desc }
 
 ent-GenaWH40 = Гена
     .desc = Гена шкаф 2,5 метра.
@@ -3116,6 +3161,9 @@ ent-WeaponStubRevolver = Стаб-револьвер M748 "Взломщик"
 
 ent-WeaponStubRifle = автомат Агрипинаа Mk.III
     .desc = Тяжёлый автомат модели «Агрипинаа» является переработанной версией Mk. II, фактически ничем не отличается от Mk. II, за исключением более стабильной отдачи взамен на вес. Использует 8,25 "Лонг".
+
+ent-WeaponAutogunKalashnikov = автоган «Калашников»
+    .desc = Надёжный автомат старого образца, переоснащённый для суровых условий сорок первого тысячелетия. Использует патроны 7,62×39 мм.
 
 ent-WeaponStubSMG = М49 "Шпатель"
     .desc = Качественный пистолет-пулемёт для "шпаклевания" дыр в обороне.
