@@ -356,7 +356,7 @@ namespace Content.Server.GameTicking
             {
                 if (!_playerManager.TryGetSessionById(userId, out var session) ||
                     !_userDb.IsLoadComplete(session) ||
-                    _prefsManager.IsWh40kOnboardingRequired(userId))
+                    IsWh40kOnboardingBlocking(userId))
                 {
                     continue;
                 }
@@ -406,7 +406,7 @@ namespace Content.Server.GameTicking
                     continue;
                 }
 
-                if (_prefsManager.IsWh40kOnboardingRequired(userId))
+                if (IsWh40kOnboardingBlocking(userId))
                 {
                     _playerGameStatuses[userId] = PlayerGameStatus.NotReadyToPlay;
                     SendWh40kProfileRequiredMessage(session);

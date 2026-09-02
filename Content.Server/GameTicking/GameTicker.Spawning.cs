@@ -145,7 +145,7 @@ namespace Content.Server.GameTicking
             bool lateJoin = true,
             bool silent = false)
         {
-            if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            if (IsWh40kOnboardingBlocking(player.UserId))
             {
                 SendWh40kProfileRequiredMessage(player);
                 return;
@@ -550,7 +550,7 @@ namespace Content.Server.GameTicking
             if (!_userDb.IsLoadComplete(player))
                 return;
 
-            if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            if (IsWh40kOnboardingBlocking(player.UserId))
             {
                 SendWh40kProfileRequiredMessage(player);
                 return;
