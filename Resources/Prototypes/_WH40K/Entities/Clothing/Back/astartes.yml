@@ -77,6 +77,16 @@
 
 - type: entity
   parent: ClothingBackpackAstartesBase
+  id: ClothingBackpackAstartesAquilaPowerpack
+  suffix: WH40K, Astartes, Aquila
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/astartes_aquila_powerpack.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/astartes_aquila_powerpack.rsi
+
+- type: entity
+  parent: ClothingBackpackAstartesBase
   id: ClothingBackpackAstartesMk7JumpPack
   components:
   - type: Sprite

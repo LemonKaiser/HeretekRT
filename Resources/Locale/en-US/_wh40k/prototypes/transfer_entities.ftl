@@ -230,6 +230,9 @@ ent-ClothingBackpackAstartesMk7JumpPack = Mk VII jump pack
 ent-ClothingBackpackAstartesMk7Powerpack = Ultramarines Mk VII power pack
     .desc = A power pack for Ultramarines power armour, scaled for the Adeptus Astartes.
 
+ent-ClothingBackpackAstartesAquilaPowerpack = Aquila power pack
+    .desc = A red power pack for Astartes power armour.
+
 ent-ClothingBackpackCULT1 = Chaos cultist backpack
     .desc = A backpack woven from skin of unknown origin; it holds supplies, weapons, and the hidden tomes of servants of Chaos.
 
@@ -393,6 +396,9 @@ ent-ClothingHeadHelmetAstartesMk6 = Mk VI helmet
 
 ent-ClothingHeadHelmetAstartesMk7 = Ultramarines Mk VII "Aquila" helmet
     .desc = A sealed Ultramarines power armour helmet designed for the anatomy of the Adeptus Astartes.
+
+ent-ClothingHeadHelmetAstartesAquila = Aquila helmet
+    .desc = A sealed red power armour helmet designed for the anatomy of the Adeptus Astartes.
 
 ent-ClothingHeadHelmetAstartesMk7BlackTemplars = Black Templars helmet
     .desc = A Mk VII "Aquila" helmet painted in the colours of the Black Templars.
@@ -800,6 +806,9 @@ ent-ClothingOuterArmorAstartesMk6 = Mk VI power armour
 
 ent-ClothingOuterArmorAstartesMk7 = Ultramarines Mk VII "Aquila" power armour
     .desc = A servo-enhanced suit of Ultramarines power armour, superior to standard carapace armour and fitted for a Space Marine.
+
+ent-ClothingOuterArmorAstartesAquila = Aquila power armour
+    .desc = A servo-enhanced red suit of power armour, fitted for the anatomy of the Adeptus Astartes.
 
 ent-ClothingOuterArmorAstartesMk7BlackTemplars = Black Templars power armour
     .desc = A Mk VII "Aquila" power armour suit repainted in the colours of the Black Templars and built for the anatomy of the Adeptus Astartes.

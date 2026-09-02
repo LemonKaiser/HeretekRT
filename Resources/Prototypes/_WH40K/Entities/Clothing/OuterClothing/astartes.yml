@@ -129,6 +129,16 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk6.rsi
 
 - type: entity
+  parent: ClothingOuterArmorAstartesMk7
+  id: ClothingOuterArmorAstartesAquila
+  suffix: WH40K, Astartes, Aquila
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_aquila.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_aquila.rsi
+
+- type: entity
   parent: [WH40KDurableAstartesArmor, ClothingOuterArmorBasic]
   id: ClothingOuterArmorAstartesChaos
   suffix: WH40K, Astartes, Chaos

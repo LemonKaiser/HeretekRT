@@ -224,6 +224,9 @@ ent-ClothingBackpackAstartesMk7JumpPack = прыжковый ранец Mk VII
 ent-ClothingBackpackAstartesMk7Powerpack = силовой ранец Ультрамаринов Mk VII
     .desc = Силовой ранец брони Ультрамаринов, рассчитанный на анатомию Адептус Астартес.
 
+ent-ClothingBackpackAstartesAquilaPowerpack = силовой ранец «Аквила»
+    .desc = Багровый силовой ранец для брони Адептус Астартес.
+
 ent-ClothingBackpackCULT1 = рюкзак культиста Хаоса
     .desc = Рюкзак, сотканный из кожи неведомого происхождения, вмещает припасы, оружие и тайные книги служителей Хаоса.
 
@@ -387,6 +390,9 @@ ent-ClothingHeadHelmetAstartesMk6 = шлем Mk VI
 
 ent-ClothingHeadHelmetAstartesMk7 = шлем Ультрамаринов Mk VII "Аквила"
     .desc = Герметичный шлем силовой брони Ультрамаринов, рассчитанный на анатомию Адептус Астартес.
+
+ent-ClothingHeadHelmetAstartesAquila = шлем «Аквила»
+    .desc = Герметичный багровый шлем силовой брони, рассчитанный на анатомию Адептус Астартес.
 
 ent-ClothingHeadHelmetAstartesMk7BlackTemplars = шлем Черных Храмовников
     .desc = Шлем Mk VII "Аквила" в цветах Черных Храмовников.
@@ -794,6 +800,9 @@ ent-ClothingOuterArmorAstartesMk6 = силовая броня Mk VI
 
 ent-ClothingOuterArmorAstartesMk7 = силовая броня Ультрамаринов Mk VII "Аквила"
     .desc = Сервоусиленный комплект силовой брони Ультрамаринов, защищающий лучше обычной панцирной брони и рассчитанный на тело космодесантника.
+
+ent-ClothingOuterArmorAstartesAquila = силовая броня «Аквила»
+    .desc = Багровый сервоусиленный комплект силовой брони, рассчитанный на анатомию Адептус Астартес.
 
 ent-ClothingOuterArmorAstartesMk7BlackTemplars = силовая броня Черных Храмовников
     .desc = Окрашенная в цвета Черных Храмовников силовая броня Mk VII "Аквила", подогнанная под анатомию Адептус Астартес.

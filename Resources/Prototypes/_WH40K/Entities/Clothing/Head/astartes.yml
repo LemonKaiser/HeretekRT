@@ -138,6 +138,16 @@
     sprite: _WH40K/Clothing/Head/Helmets/astartes_mk6.rsi
 
 - type: entity
+  parent: ClothingHeadHelmetAstartesMk7
+  id: ClothingHeadHelmetAstartesAquila
+  suffix: WH40K, Astartes, Aquila
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/astartes_aquila.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/astartes_aquila.rsi
+
+- type: entity
   parent: [WH40KDurableAstartesHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetAstartesChaos
   suffix: WH40K, Astartes, Chaos

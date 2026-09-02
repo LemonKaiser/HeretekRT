@@ -17,10 +17,22 @@
   speaker: cultist
 
 - type: ttsVoice
+  id: Dude
+  name: tts-voice-name-dude
+  sex: Male
+  speaker: dude
+
+- type: ttsVoice
   id: TtsGoblinEngineer
   name: tts-voice-name-goblin-engineer
   sex: Male
   speaker: goblin_engineer
+
+- type: ttsVoice
+  id: Glados
+  name: tts-voice-name-glados
+  sex: Female
+  speaker: glados
 
 - type: ttsVoice
   id: TtsInquisitor
@@ -45,6 +57,12 @@
   name: tts-voice-name-servitor
   sex: Male
   speaker: servitor
+
+- type: ttsVoice
+  id: Serana
+  name: tts-voice-name-serana
+  sex: Female
+  speaker: serana
 
 - type: ttsVoice
   id: TtsSileroAidar
