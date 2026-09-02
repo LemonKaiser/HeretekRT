@@ -146,6 +146,8 @@
     action: ActionToggleNightVision
     phosphorColor: "#00FF00"
     lightingColor: "#FFFFFF32"
+  - type: TTS
+    voice: Dude
 
 - type: entity
   id: MobRatKingBuff

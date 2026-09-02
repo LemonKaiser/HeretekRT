@@ -13,10 +13,12 @@ public sealed class VoiceMaskBuiState : BoundUserInterfaceState
 {
     public readonly string Name;
     public readonly string? Verb;
+    public readonly string Voice;
 
-    public VoiceMaskBuiState(string name, string? verb)
+    public VoiceMaskBuiState(string name, string voice, string? verb)
     {
         Name = name;
+        Voice = voice;
         Verb = verb;
     }
 }
@@ -43,5 +45,16 @@ public sealed class VoiceMaskChangeVerbMessage : BoundUserInterfaceMessage
     public VoiceMaskChangeVerbMessage(string? verb)
     {
         Verb = verb;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class VoiceMaskChangeVoiceMessage : BoundUserInterfaceMessage
+{
+    public readonly string Voice;
+
+    public VoiceMaskChangeVoiceMessage(string voice)
+    {
+        Voice = voice;
     }
 }

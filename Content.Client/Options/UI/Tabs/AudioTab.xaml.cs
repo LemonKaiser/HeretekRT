@@ -54,6 +54,16 @@ public sealed partial class AudioTab : Control
             SliderVolumeInterface,
             scale: ContentAudioSystem.InterfaceMultiplier);
 
+        Control.AddOptionPercentSlider(
+            CCVars.TTSVolume,
+            SliderVolumeTts,
+            scale: ContentAudioSystem.TtsMultiplier);
+
+        Control.AddOptionPercentSlider(
+            CCVars.TTSRadioVolume,
+            SliderVolumeRadioTts,
+            scale: ContentAudioSystem.TtsRadioMultiplier);
+
         Control.AddOptionSlider(
             CCVars.MaxAmbientSources,
             SliderMaxAmbienceSounds,
@@ -87,6 +97,8 @@ public sealed partial class AudioTab : Control
         Control.AddOptionCheckBox(CCVars.EventMusicEnabled, EventMusicCheckBox);
         Control.AddOptionCheckBox(CCVars.AdminSoundsEnabled, AdminSoundsCheckBox);
         Control.AddOptionCheckBox(CCVars.BwoinkSoundEnabled, BwoinkSoundCheckBox);
+        Control.AddOptionCheckBox(CCVars.LocalTTSEnabled, TtsCheckBox);
+        Control.AddOptionCheckBox(CCVars.LocalRadioTTSEnabled, RadioTtsCheckBox);
 
         Control.Initialize();
     }

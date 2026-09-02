@@ -376,6 +376,7 @@
   - type: Appearance
   - type: HumanoidAppearance
     species: Human
+  - type: TTS
   - type: Body
     prototype: Human
     requiredLegs: 2

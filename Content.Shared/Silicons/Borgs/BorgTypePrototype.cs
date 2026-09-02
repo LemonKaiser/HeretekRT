@@ -152,4 +152,10 @@ public sealed partial class BorgTypePrototype : IPrototype
     /// </summary>
     [DataField]
     public SoundSpecifier FootstepCollection { get; set; } = new SoundCollectionSpecifier(DefaultFootsteps);
+
+    /// <summary>
+    /// Голос TTS, используемый выбранным типом борга.
+    /// </summary>
+    [DataField]
+    public string? VoicePrototypeId { get; set; } = "Glados";
 }

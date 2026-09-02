@@ -7,7 +7,9 @@ using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Server.Speech;
 using Content.Server._EinsteinEngines.Language;
+using Content.Server.TTS;
 using Content.Shared.Chat;
+using Content.Shared.TTS;
 using Content.Shared.Radio.EntitySystems;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -19,6 +21,7 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
     [Dependency] private INetManager _netMan = default!;
     [Dependency] private RadioSystem _radio = default!;
     [Dependency] private LanguageSystem _language = default!;
+    [Dependency] private TTSSystem _tts = default!;
 
 
     public override void Initialize()
@@ -121,6 +124,20 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
             var ev = new RadioMessageHeardEvent(uid, msg, args.Channel);
             RaiseLocalEvent(Transform(uid).ParentUid, ref ev);
             // Mono - Borers end
+
+            if (Transform(uid).ParentUid != args.MessageSource &&
+                TryComp<TTSComponent>(args.MessageSource, out var tts) &&
+                !string.IsNullOrWhiteSpace(tts.VoicePrototypeId))
+            {
+                _tts.OnlyPlayerTTS(
+                    uid,
+                    args.OriginalChatMsg.Message,
+                    tts.VoicePrototypeId,
+                    actor.PlayerSession,
+                    isWhisper: false,
+                    language: args.Language,
+                    isRadio: true);
+            }
 
             // Send radio noise event to client
             var radioNoiseEvent = new RadioNoiseEvent(GetNetEntity(uid), args.Channel.ID);

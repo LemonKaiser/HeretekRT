@@ -12,5 +12,11 @@
             <Label Text="{Loc 'voice-mask-name-change-speech-style'}" />
             <OptionButton Name="SpeechVerbSelector" /> <!-- Populated in LoadVerbs -->
         </BoxContainer>
+        <BoxContainer Orientation="Vertical" Margin="5">
+            <Label Text="{Loc 'voice-mask-voice-change-info'}" />
+            <ScrollContainer MinSize="0 155" MaxSize="340 155">
+                <ItemList Name="VoiceSelector" />
+            </ScrollContainer>
+        </BoxContainer>
     </BoxContainer>
 </controls:FancyWindow>

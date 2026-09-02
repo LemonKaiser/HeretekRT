@@ -297,6 +297,8 @@
   - type: ShipNpcTarget
     needGrid: NoGrid
   - type: RetroMonitorView
+  - type: TTS
+    voice: Glados
   # </Mono>
 
 - type: entity

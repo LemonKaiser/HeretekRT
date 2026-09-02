@@ -10,6 +10,7 @@ using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Inventory;
 using Content.Shared.Preferences;
+using Content.Shared.TTS;
 using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects.Components.Localization;
@@ -44,6 +45,16 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
 
     [ValidatePrototypeId<SpeciesPrototype>]
     public const string DefaultSpecies = "Human";
+
+    [ValidatePrototypeId<TTSVoicePrototype>]
+    public const string DefaultVoice = "TtsTechpriest";
+
+    public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
+    {
+        { Sex.Male, "TtsTechpriest" },
+        { Sex.Female, "TtsShipAi" },
+        { Sex.Unsexed, "TtsAlarmComputer" },
+    };
 
     public override void Initialize()
     {
@@ -164,6 +175,12 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         targetHumanoid.Height = sourceHumanoid.Height;
         targetHumanoid.Width = sourceHumanoid.Width;
         SetSex(target, sourceHumanoid.Sex, false, targetHumanoid);
+        targetHumanoid.Voice = sourceHumanoid.Voice;
+        if (TryComp<TTSComponent>(source, out var sourceTts) &&
+            TryComp<TTSComponent>(target, out var targetTts))
+        {
+            targetTts.VoicePrototypeId = sourceTts.VoicePrototypeId;
+        }
         targetHumanoid.CustomBaseLayers = new(sourceHumanoid.CustomBaseLayers);
         targetHumanoid.MarkingSet = new(sourceHumanoid.MarkingSet);
 
@@ -454,6 +471,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         }
 
         EnsureDefaultMarkings(uid, humanoid);
+        SetTTSVoice(uid, profile.Voice, humanoid);
 
         humanoid.Gender = profile.Gender;
         if (TryComp<GrammarComponent>(uid, out var grammar))
@@ -475,6 +493,18 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
 
         RaiseLocalEvent(uid, new ProfileLoadFinishedEvent()); // Shitmed Change
         Dirty(uid, humanoid);
+    }
+
+    /// <summary>
+    /// Updates the voice stored in both humanoid appearance and speech components.
+    /// </summary>
+    public void SetTTSVoice(EntityUid uid, string voiceId, HumanoidAppearanceComponent humanoid)
+    {
+        if (!TryComp<TTSComponent>(uid, out var component))
+            return;
+
+        humanoid.Voice = voiceId;
+        component.VoicePrototypeId = voiceId;
     }
 
     /// <summary>

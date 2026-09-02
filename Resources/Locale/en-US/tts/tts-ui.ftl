@@ -1,0 +1,13 @@
+ui-options-tts-volume = TTS volume:
+ui-options-radio-tts-volume = Radio TTS volume:
+ui-options-tts-enabled = Play TTS
+ui-options-radio-tts-enabled = Play radio TTS
+tts-rate-limited = You are generating TTS too quickly!
+humanoid-profile-editor-voice-tab = Voice
+humanoid-profile-editor-voice-placeholder = Search voices...
+humanoid-profile-editor-voice-categories = Categories
+humanoid-profile-editor-voice-other = Other
+humanoid-profile-editor-voice-play = ▶
+humanoid-profile-editor-voice-tooltip-play = Preview
+humanoid-profile-editor-voice-category-tooltip = Show voices from {$category}
+humanoid-profile-editor-voice-match = Found: {$filtered}/{$all}

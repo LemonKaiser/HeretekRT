@@ -1002,6 +1002,11 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("species");
 
+                    b.Property<string>("Voice")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("voice");
+
                     b.Property<JsonDocument>("Wh40kBuild")
                         .HasColumnType("jsonb")
                         .HasColumnName("wh40k_build");

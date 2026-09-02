@@ -140,6 +140,8 @@
   - type: ShipRepairable
     repairTime: 5
     repairCost: 10
+  - type: TTS
+    voice: Glados
   - type: BarricadeBlock
     bidirectional: true
     blocking: 67

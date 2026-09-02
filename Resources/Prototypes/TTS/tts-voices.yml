@@ -1,0 +1,287 @@
+- type: ttsVoice
+  id: TtsAlarmComputer
+  name: tts-voice-name-alarm-computer
+  sex: Unsexed
+  speaker: alarm_computer
+
+- type: ttsVoice
+  id: TtsChaosJester
+  name: tts-voice-name-chaos-jester
+  sex: Unsexed
+  speaker: chaos_jester
+
+- type: ttsVoice
+  id: TtsCultist
+  name: tts-voice-name-cultist
+  sex: Male
+  speaker: cultist
+
+- type: ttsVoice
+  id: TtsGoblinEngineer
+  name: tts-voice-name-goblin-engineer
+  sex: Male
+  speaker: goblin_engineer
+
+- type: ttsVoice
+  id: TtsInquisitor
+  name: tts-voice-name-inquisitor
+  sex: Female
+  speaker: inquisitor
+
+- type: ttsVoice
+  id: TtsOrkWarboss
+  name: tts-voice-name-ork-warboss
+  sex: Male
+  speaker: ork_warboss
+
+- type: ttsVoice
+  id: TtsRadioOperator
+  name: tts-voice-name-radio-operator
+  sex: Female
+  speaker: radio_operator
+
+- type: ttsVoice
+  id: TtsServitor
+  name: tts-voice-name-servitor
+  sex: Male
+  speaker: servitor
+
+- type: ttsVoice
+  id: TtsSileroAidar
+  name: tts-voice-name-silero-aidar
+  sex: Male
+  speaker: silero_aidar
+
+- type: ttsVoice
+  id: TtsSileroBaya
+  name: tts-voice-name-silero-baya
+  sex: Unsexed
+  speaker: silero_baya
+
+- type: ttsVoice
+  id: TtsSileroEugene
+  name: tts-voice-name-silero-eugene
+  sex: Male
+  speaker: silero_eugene
+
+- type: ttsVoice
+  id: TtsSileroKseniya
+  name: tts-voice-name-silero-kseniya
+  sex: Female
+  speaker: silero_kseniya
+
+- type: ttsVoice
+  id: TtsSileroXenia
+  name: tts-voice-name-silero-xenia
+  sex: Female
+  speaker: silero_xenia
+
+- type: ttsVoice
+  id: TtsSileroCisAigul
+  name: tts-voice-name-silero-cis-aigul
+  sex: Female
+  speaker: silero_cis_aigul
+
+- type: ttsVoice
+  id: TtsSileroCisAlbina
+  name: tts-voice-name-silero-cis-albina
+  sex: Female
+  speaker: silero_cis_albina
+
+- type: ttsVoice
+  id: TtsSileroCisAlexandr
+  name: tts-voice-name-silero-cis-alexandr
+  sex: Male
+  speaker: silero_cis_alexandr
+
+- type: ttsVoice
+  id: TtsSileroCisAlfia
+  name: tts-voice-name-silero-cis-alfia
+  sex: Female
+  speaker: silero_cis_alfia
+
+- type: ttsVoice
+  id: TtsSileroCisAlfia2
+  name: tts-voice-name-silero-cis-alfia2
+  sex: Female
+  speaker: silero_cis_alfia2
+
+- type: ttsVoice
+  id: TtsSileroCisAnatoliy
+  name: tts-voice-name-silero-cis-anatoliy
+  sex: Male
+  speaker: silero_cis_anatoliy
+
+- type: ttsVoice
+  id: TtsSileroCisBogdan
+  name: tts-voice-name-silero-cis-bogdan
+  sex: Male
+  speaker: silero_cis_bogdan
+
+- type: ttsVoice
+  id: TtsSileroCisDmitriy
+  name: tts-voice-name-silero-cis-dmitriy
+  sex: Male
+  speaker: silero_cis_dmitriy
+
+- type: ttsVoice
+  id: TtsSileroCisEduard
+  name: tts-voice-name-silero-cis-eduard
+  sex: Male
+  speaker: silero_cis_eduard
+
+- type: ttsVoice
+  id: TtsSileroCisEkaterina
+  name: tts-voice-name-silero-cis-ekaterina
+  sex: Female
+  speaker: silero_cis_ekaterina
+
+- type: ttsVoice
+  id: TtsSileroCisGamat
+  name: tts-voice-name-silero-cis-gamat
+  sex: Male
+  speaker: silero_cis_gamat
+
+- type: ttsVoice
+  id: TtsSileroCisIgor
+  name: tts-voice-name-silero-cis-igor
+  sex: Male
+  speaker: silero_cis_igor
+
+- type: ttsVoice
+  id: TtsSileroCisKarina
+  name: tts-voice-name-silero-cis-karina
+  sex: Female
+  speaker: silero_cis_karina
+
+- type: ttsVoice
+  id: TtsSileroCisKejilgan
+  name: tts-voice-name-silero-cis-kejilgan
+  sex: Male
+  speaker: silero_cis_kejilgan
+
+- type: ttsVoice
+  id: TtsSileroCisKermen
+  name: tts-voice-name-silero-cis-kermen
+  sex: Unsexed
+  speaker: silero_cis_kermen
+
+- type: ttsVoice
+  id: TtsSileroCisLarisa
+  name: tts-voice-name-silero-cis-larisa
+  sex: Female
+  speaker: silero_cis_larisa
+
+- type: ttsVoice
+  id: TtsSileroCisMarat
+  name: tts-voice-name-silero-cis-marat
+  sex: Male
+  speaker: silero_cis_marat
+
+- type: ttsVoice
+  id: TtsSileroCisMiyau
+  name: tts-voice-name-silero-cis-miyau
+  sex: Unsexed
+  speaker: silero_cis_miyau
+
+- type: ttsVoice
+  id: TtsSileroCisNurgul
+  name: tts-voice-name-silero-cis-nurgul
+  sex: Female
+  speaker: silero_cis_nurgul
+
+- type: ttsVoice
+  id: TtsSileroCisOnaoy
+  name: tts-voice-name-silero-cis-onaoy
+  sex: Female
+  speaker: silero_cis_onaoy
+
+- type: ttsVoice
+  id: TtsSileroCisOksana
+  name: tts-voice-name-silero-cis-oksana
+  sex: Female
+  speaker: silero_cis_oksana
+
+- type: ttsVoice
+  id: TtsSileroCisRamilia
+  name: tts-voice-name-silero-cis-ramilia
+  sex: Female
+  speaker: silero_cis_ramilia
+
+- type: ttsVoice
+  id: TtsSileroCisRoman
+  name: tts-voice-name-silero-cis-roman
+  sex: Male
+  speaker: silero_cis_roman
+
+- type: ttsVoice
+  id: TtsSileroCisSaida
+  name: tts-voice-name-silero-cis-saida
+  sex: Female
+  speaker: silero_cis_saida
+
+- type: ttsVoice
+  id: TtsSileroCisSafarhuja
+  name: tts-voice-name-silero-cis-safarhuja
+  sex: Male
+  speaker: silero_cis_safarhuja
+
+- type: ttsVoice
+  id: TtsSileroCisSibday
+  name: tts-voice-name-silero-cis-sibday
+  sex: Male
+  speaker: silero_cis_sibday
+
+- type: ttsVoice
+  id: TtsSileroCisVika
+  name: tts-voice-name-silero-cis-vika
+  sex: Female
+  speaker: silero_cis_vika
+
+- type: ttsVoice
+  id: TtsSileroCisZara
+  name: tts-voice-name-silero-cis-zara
+  sex: Female
+  speaker: silero_cis_zara
+
+- type: ttsVoice
+  id: TtsSileroCisZhadyra
+  name: tts-voice-name-silero-cis-zhadyra
+  sex: Female
+  speaker: silero_cis_zhadyra
+
+- type: ttsVoice
+  id: TtsSileroCisZhazira
+  name: tts-voice-name-silero-cis-zhazira
+  sex: Female
+  speaker: silero_cis_zhazira
+
+- type: ttsVoice
+  id: TtsSileroCisZinaida
+  name: tts-voice-name-silero-cis-zinaida
+  sex: Female
+  speaker: silero_cis_zinaida
+
+- type: ttsVoice
+  id: TtsShipAi
+  name: tts-voice-name-ship-ai
+  sex: Female
+  speaker: ship_ai
+
+- type: ttsVoice
+  id: TtsSpaceCaptain
+  name: tts-voice-name-space-captain
+  sex: Male
+  speaker: space_captain
+
+- type: ttsVoice
+  id: TtsTechpriest
+  name: tts-voice-name-techpriest
+  sex: Male
+  speaker: techpriest
+
+- type: ttsVoice
+  id: TtsVoidBartender
+  name: tts-voice-name-void-bartender
+  sex: Male
+  speaker: void_bartender

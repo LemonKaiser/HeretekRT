@@ -1,17 +1,20 @@
 using Content.Server._NF.Radio; // Frontier
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
+using Content.Server.TTS;
 using Content.Server._EinsteinEngines.Language;
 using Content.Server.Power.Components;
 using Content.Server.Radio.Components;
 using Content.Shared._Mono.Radio;
 using Content.Shared.Chat;
+using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared._EinsteinEngines.Language;
 using Content.Shared._EinsteinEngines.Language.Systems;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
+using Content.Shared.TTS;
 using Content.Shared.Ghost; // Nuclear-14
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -20,6 +23,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
+using Robust.Shared.Configuration;
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -35,6 +39,8 @@ public sealed partial class RadioSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private LanguageSystem _language = default!; // Einstein Engines - Language
+    [Dependency] private INetConfigurationManager _netCfg = default!;
+    [Dependency] private TTSSystem _tts = default!;
 
     // set used to prevent radio feedback loops.
     private readonly HashSet<string> _messages = new();
@@ -84,6 +90,21 @@ public sealed partial class RadioSystem : EntitySystem
 
             _netMan.ServerSendMessage(new MsgChatMessage { Message = msg }, actor.PlayerSession.Channel);
             // Einstein Engines - Languages end
+
+            if (uid != args.MessageSource &&
+                _netCfg.GetClientCVar(actor.PlayerSession.Channel, CCVars.LocalRadioTTSEnabled) &&
+                TryComp<TTSComponent>(args.MessageSource, out var tts) &&
+                !string.IsNullOrWhiteSpace(tts.VoicePrototypeId))
+            {
+                _tts.OnlyPlayerTTS(
+                    uid,
+                    args.OriginalChatMsg.Message,
+                    tts.VoicePrototypeId,
+                    actor.PlayerSession,
+                    isWhisper: false,
+                    language: args.Language,
+                    isRadio: true);
+            }
 
             // Send radio noise event to client for IPCs
             var radioNoiseEvent = new RadioNoiseEvent(GetNetEntity(uid), args.Channel.ID);

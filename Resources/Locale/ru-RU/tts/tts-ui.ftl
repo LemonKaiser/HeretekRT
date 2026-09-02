@@ -1,6 +1,7 @@
 ui-options-tts-volume = Громкость TTS:
-ui-options-radio-tts-volume = Громкость TTS(радио):
-credits-window-tts-title = Функция TTS (Text-To-Speech)
+ui-options-radio-tts-volume = Громкость TTS по радио:
+ui-options-tts-enabled = Воспроизводить TTS
+ui-options-radio-tts-enabled = Воспроизводить TTS по радио
 tts-rate-limited = Вы генерируете TTS слишком быстро!
 humanoid-profile-editor-voice-tab = Голос
 humanoid-profile-editor-voice-placeholder = Поиск по голосам...
@@ -8,6 +9,5 @@ humanoid-profile-editor-voice-categories = Категории
 humanoid-profile-editor-voice-other = Прочие
 humanoid-profile-editor-voice-play = ▶
 humanoid-profile-editor-voice-tooltip-play = Прослушать
-humanoid-profile-editor-voice-tooltip-sponsoronly = Доступно только спонсорам
 humanoid-profile-editor-voice-category-tooltip = Показать голоса из {$category}
 humanoid-profile-editor-voice-match = Найдено: {$filtered}/{$all}

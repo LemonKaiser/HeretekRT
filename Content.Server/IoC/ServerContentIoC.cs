@@ -30,6 +30,7 @@ using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
 using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
+using Content.Server.TTS;
 using Content.Server.Voting.Managers;
 using Content.Server.Worldgen.Tools;
 using Content.Shared.Administration.Logs;
@@ -103,6 +104,7 @@ namespace Content.Server.IoC
             IoCManager.Register<MiniAuthManager>(); //Frontier
             IoCManager.Register<CompanyManager>(); // Mono
             IoCManager.Register<MonoCoinsManager>(); // Mono
+            IoCManager.Register<TTSManager>();
 
             IoCManager.Register<DiscordLink>();
             IoCManager.Register<DiscordChatLink>();

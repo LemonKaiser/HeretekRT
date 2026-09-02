@@ -9,6 +9,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
+using Content.Shared.TTS;
 using Content.Shared.Traits;
 using Robust.Shared.Collections;
 using Robust.Shared.Configuration;
@@ -95,6 +96,12 @@ namespace Content.Shared.Preferences
 
         [DataField]
         public Gender Gender { get; private set; } = Gender.Male;
+
+        /// <summary>
+        /// Selected voice used by text-to-speech.
+        /// </summary>
+        [DataField]
+        public string Voice { get; private set; } = SharedHumanoidAppearanceSystem.DefaultVoice;
 
         [DataField] // Frontier: Bank balance
         public int BankBalance { get; private set; } = DefaultBalance; // Frontier: Bank balance
@@ -197,6 +204,7 @@ namespace Content.Shared.Preferences
             : this(other.Name, other.FlavorText, other.Species, other.Age, other.Sex, other.Gender, other.BankBalance, other.Appearance, other.SpawnPriority,
                 jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild)
         {
+            Voice = other.Voice;
         }
 
         /// <summary>Copy constructor</summary>
@@ -218,6 +226,7 @@ namespace Content.Shared.Preferences
                 other.Company,
                 other.Wh40kBuild)
         {
+            Voice = other.Voice;
         }
 
         /// <summary>
@@ -290,6 +299,7 @@ namespace Content.Shared.Preferences
                 Age = age,
                 Gender = gender,
                 Species = species,
+                Voice = SharedHumanoidAppearanceSystem.DefaultSexVoice[sex],
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
             };
         }
@@ -317,6 +327,11 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithGender(Gender gender)
         {
             return new(this) { Gender = gender };
+        }
+
+        public HumanoidCharacterProfile WithVoice(string voice)
+        {
+            return new(this) { Voice = voice };
         }
 
         // Frontier: this is probably an issue and should be removed.
@@ -538,6 +553,7 @@ namespace Content.Shared.Preferences
             if (SpawnPriority != other.SpawnPriority) return false;
             if (Species != other.Species) return false;
             if (Company != other.Company) return false;
+            if (Voice != other.Voice) return false;
             if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
             if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
@@ -647,6 +663,12 @@ namespace Content.Shared.Preferences
             // End Frontier
 
             var appearance = HumanoidCharacterAppearance.EnsureValid(Appearance, Species, Sex);
+            var voice = Voice;
+            if (!prototypeManager.TryIndex<TTSVoicePrototype>(voice, out var voicePrototype) ||
+                !CanHaveVoice(voicePrototype, sex))
+            {
+                voice = SharedHumanoidAppearanceSystem.DefaultSexVoice[sex];
+            }
 
             var prefsUnavailableMode = PreferenceUnavailable switch
             {
@@ -700,6 +722,7 @@ namespace Content.Shared.Preferences
             BankBalance = bankBalance;
             Appearance = appearance;
             SpawnPriority = spawnPriority;
+            Voice = voice;
             Wh40kBuild = Wh40kBuild.Validated();
 
             // Check if the company exists, if not set to "None"
@@ -784,6 +807,11 @@ namespace Content.Shared.Preferences
             return result;
         }
 
+        public static bool CanHaveVoice(TTSVoicePrototype voice, Sex sex)
+        {
+            return voice.RoundStart && (voice.Sex == sex || voice.Sex == Sex.Unsexed);
+        }
+
         public ICharacterProfile Validated(ICommonSession session, IDependencyCollection collection)
         {
             var profile = new HumanoidCharacterProfile(this);
@@ -817,6 +845,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(Age);
             hashCode.Add((int)Sex);
             hashCode.Add((int)Gender);
+            hashCode.Add(Voice);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
             hashCode.Add((int)SpawnPriority);

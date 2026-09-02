@@ -15,6 +15,7 @@ using Content.Shared.Silicons.StationAi;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Speech;
 using Content.Shared.Telephone;
+using Content.Shared.TTS;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
@@ -116,6 +117,16 @@ public sealed partial class TelephoneSystem : SharedTelephoneSystem
 
         var range = args.TelephoneSource.Comp.LinkedTelephones.Count > 1 ? ChatTransmitRange.HideChat : ChatTransmitRange.GhostRangeLimit;
         var volume = entity.Comp.SpeakerVolume == TelephoneVolume.Speak ? InGameICChatType.Speak : InGameICChatType.Whisper;
+
+        if (TryComp<TTSComponent>(args.MessageSource, out var sourceTts))
+        {
+            var speakerTts = EnsureComp<TTSComponent>(speaker);
+            speakerTts.VoicePrototypeId = sourceTts.VoicePrototypeId;
+        }
+        else
+        {
+            RemComp<TTSComponent>(speaker);
+        }
 
         _chat.TrySendInGameICMessage(speaker, args.Message, volume, range, nameOverride: name, checkRadioPrefix: false, languageOverride: args.Language); // Einstein Engines - Language
     }

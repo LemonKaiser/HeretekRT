@@ -1210,6 +1210,8 @@ namespace Content.Client.Lobby.UI
             RefreshSpecies();
             RefreshTraits();
             RefreshFlavorText();
+            RefreshTTS();
+            UpdateTTSControls();
             ReloadPreview();
 
             if (Profile != null)
@@ -1670,6 +1672,7 @@ namespace Content.Client.Lobby.UI
                 return;
 
             Profile = Profile?.WithSex(newSex);
+            Profile = Profile?.WithVoice(SharedHumanoidAppearanceSystem.DefaultSexVoice[newSex]);
             // for convenience, default to most common gender when new sex is selected
             switch (newSex)
             {
@@ -1685,6 +1688,7 @@ namespace Content.Client.Lobby.UI
             }
 
             UpdateGenderControls();
+            UpdateTTSControls();
             Markings.SetSex(newSex);
             ReloadPreview();
         }
@@ -2146,6 +2150,12 @@ namespace Content.Client.Lobby.UI
             var oldBank = Profile?.BankBalance ?? HumanoidCharacterProfile.DefaultBalance; // Frontier
             Profile = HumanoidCharacterProfile.Random().WithBankBalance(oldBank); // Frontier: add WithBankBalance(oldBank)
             SetProfile(Profile, CharacterSlot);
+            SetDirty();
+        }
+
+        private void SetVoice(string newVoice)
+        {
+            Profile = Profile?.WithVoice(newVoice);
             SetDirty();
         }
 
