@@ -65,9 +65,13 @@ namespace Content.Server.Database
         public DbSet<Wh40kPersistentInventoryRevision> Wh40kPersistentInventoryRevisions { get; set; } = null!;
         public DbSet<Wh40kPersistentInventoryAudit> Wh40kPersistentInventoryAudits { get; set; } = null!;
         public DbSet<Wh40kPersistentInventoryServerEpoch> Wh40kPersistentInventoryServerEpochs { get; set; } = null!;
+        public DbSet<WH40KMute> WH40KMute { get; set; } = null!;
+        public DbSet<WH40KUnmute> WH40KUnmute { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ModelWH40KMute.Configure(modelBuilder);
+
             modelBuilder.Entity<Preference>()
                 .HasIndex(p => p.UserId)
                 .IsUnique();

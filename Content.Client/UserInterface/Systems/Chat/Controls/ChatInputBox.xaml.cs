@@ -1,4 +1,5 @@
 ﻿using Content.Client.Stylesheets;
+using System;
 using Content.Shared.Chat;
 using Content.Shared.Input;
 using Robust.Client.UserInterface.Controls;
@@ -14,6 +15,10 @@ public class ChatInputBox : PanelContainer
     public readonly ChannelFilterButton FilterButton;
     protected readonly BoxContainer Container;
     protected ChatChannel ActiveChannel { get; private set; } = ChatChannel.Local;
+    private bool _inputLocked;
+    private bool _emojiAllowed = true;
+    private string? _lockedPlaceholder;
+    private string? _lockedToolTip;
 
     public ChatInputBox()
     {
@@ -65,13 +70,68 @@ public class ChatInputBox : PanelContainer
 
     private void InsertEmoji(string emoji)
     {
+        if (_inputLocked)
+            return;
+
         Input.InsertAtCursor(emoji);
         Input.GrabKeyboardFocus();
     }
 
     public void SetEmojiAllowed(bool allowed)
     {
-        EmojiButton.SetAvailable(allowed);
+        _emojiAllowed = allowed;
+        ApplyEmojiButtonState();
+    }
+
+    /// <summary>
+    /// Locks player chat input while an administrative mute is active.
+    /// The server remains authoritative; this only provides immediate client feedback.
+    /// </summary>
+    public void SetInputLockState(bool locked, string? placeholder = null, string? toolTip = null)
+    {
+        var nextPlaceholder = locked ? placeholder ?? string.Empty : null;
+        var nextToolTip = locked ? toolTip : null;
+        var changed =
+            _inputLocked != locked ||
+            !string.Equals(_lockedPlaceholder, nextPlaceholder, StringComparison.Ordinal) ||
+            !string.Equals(_lockedToolTip, nextToolTip, StringComparison.Ordinal);
+
+        if (!changed)
+        {
+            ApplyEmojiButtonState();
+            return;
+        }
+
+        var lockingNow = locked && !_inputLocked;
+        _inputLocked = locked;
+        _lockedPlaceholder = nextPlaceholder;
+        _lockedToolTip = nextToolTip;
+
+        Input.PlaceHolder = _lockedPlaceholder ?? GetChatboxInfoPlaceholder();
+        Input.ToolTip = _lockedToolTip;
+        Input.Editable = !locked;
+        Input.CanKeyboardFocus = !locked;
+        Input.KeyboardFocusOnClick = !locked;
+        ApplyEmojiButtonState();
+        Input.InvalidateMeasure();
+        Input.InvalidateArrange();
+
+        if (!lockingNow)
+            return;
+
+        Input.Clear();
+        Input.ReleaseKeyboardFocus();
+    }
+
+    private void ApplyEmojiButtonState()
+    {
+        EmojiButton.SetAvailable(_emojiAllowed);
+
+        if (!_inputLocked)
+            return;
+
+        EmojiButton.Disabled = true;
+        EmojiButton.Popup.Close();
     }
 
     private static string GetChatboxInfoPlaceholder()

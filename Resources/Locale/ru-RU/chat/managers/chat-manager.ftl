@@ -51,6 +51,12 @@ chat-manager-dead-channel-name = МЁРТВЫЕ
 chat-manager-admin-channel-name = АДМИН
 chat-manager-rate-limited = Вы отправляете сообщения слишком быстро!
 chat-manager-rate-limit-admin-announcement = Игрок { $player } превысил ограничение на частоту сообщений в чате. Присмотрите за ним если это происходит регулярно.
+chat-manager-rate-limit-auto-mute-reason = Автоматический мут: превышен обычный лимит частоты чата.
+chat-manager-rate-limit-auto-muted = Вам автоматически выдан мут чата на {$minutes} мин. за спам.
+chat-manager-repeat-rate-limited = Повторяющееся сообщение заблокировано как спам.
+chat-manager-repeat-rate-limit-admin-announcement = Игрок { $player } повторяет спам в чате: {$message}
+chat-manager-repeat-rate-limit-auto-mute-reason = Автоматический мут: повторяющийся спам в чате.
+chat-manager-repeat-rate-limit-auto-muted = Вам автоматически выдан мут чата на {$minutes} мин. за повторяющийся спам.
 
 ## Speech verbs for chat
 

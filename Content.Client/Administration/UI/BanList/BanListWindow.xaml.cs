@@ -14,6 +14,7 @@ public sealed partial class BanListWindow : DefaultWindow
 
         TabContainer.SetTabTitle(0, Loc.GetString("ban-list-bans"));
         TabContainer.SetTabTitle(1, Loc.GetString("ban-list-role-bans"));
+        TabContainer.SetTabTitle(2, Loc.GetString("wh40k-mute-list-title"));
     }
 
     public void SetTitlePlayer(string playerName)

@@ -235,6 +235,17 @@ namespace Content.Server.Administration.Systems
                         Act = () => _console.ExecuteCommand(player, $"playerpanel \"{targetActor.PlayerSession.UserId}\""),
                         Impact = LogImpact.Low
                     });
+
+                    if (_groupController.CanCommand(player, "mutepanel"))
+                    {
+                        args.Verbs.Add(new Verb
+                        {
+                            Text = Loc.GetString("admin-player-actions-mute"),
+                            Category = VerbCategory.Admin,
+                            Act = () => _console.ExecuteCommand(player, $"mutepanel \"{targetActor.PlayerSession.UserId}\""),
+                            Impact = LogImpact.Low
+                        });
+                    }
                 }
 
                 if (_mindSystem.TryGetMind(args.Target, out _, out var mind) && mind.UserId != null)

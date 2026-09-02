@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
+using System.Linq;
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Shared.Administration;
 using Content.Shared.Administration.BanList;
+using Content.Shared._WH40K.Administration.Mute;
 using Content.Shared.Eui;
 using Robust.Shared.Network;
 
@@ -11,6 +13,8 @@ namespace Content.Server.Administration.BanList;
 
 public sealed partial class BanListEui : BaseEui
 {
+    private const int MuteHistoryPageSize = 100;
+
     [Dependency] private IAdminManager _admins = default!;
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IServerDbManager _db = default!;
@@ -24,6 +28,9 @@ public sealed partial class BanListEui : BaseEui
     private string BanListPlayerName { get; set; } = string.Empty;
     private List<SharedServerBan> Bans { get; } = new();
     private List<SharedServerRoleBan> RoleBans { get; } = new();
+    private List<WH40KSharedMute> Mutes { get; } = new();
+    private int MuteHistoryOffset { get; set; }
+    private bool HasNextMuteHistoryPage { get; set; }
 
     public override void Opened()
     {
@@ -41,7 +48,20 @@ public sealed partial class BanListEui : BaseEui
 
     public override EuiStateBase GetNewState()
     {
-        return new BanListEuiState(BanListPlayerName, Bans, RoleBans);
+        return new BanListEuiState(
+            BanListPlayerName,
+            Bans,
+            RoleBans,
+            Mutes,
+            MuteHistoryOffset,
+            HasNextMuteHistoryPage);
+    }
+
+    public override void HandleMessage(EuiMessageBase msg)
+    {
+        base.HandleMessage(msg);
+        if (msg is BanListEuiMessages.SetMuteHistoryOffset request)
+            _ = LoadMuteHistoryAsync(Math.Max(0, request.Offset));
     }
 
     private void OnPermsChanged(AdminPermsChangedEventArgs args)
@@ -134,10 +154,52 @@ public sealed partial class BanListEui : BaseEui
         }
     }
 
+    private async Task LoadMutes(NetUserId userId, int offset)
+    {
+        var page = await _db.GetMuteHistoryAsync(userId, offset, MuteHistoryPageSize);
+        var administratorIds = page.Entries
+            .SelectMany(mute => new[] { mute.MutingAdmin, mute.Unmute?.UnmutingAdmin })
+            .OfType<NetUserId>()
+            .Distinct()
+            .ToArray();
+        var administratorNames = (await Task.WhenAll(administratorIds.Select(async id =>
+                (Id: id, Name: (await _playerLocator.LookupIdAsync(id))?.Username))))
+            .ToDictionary(pair => pair.Id, pair => pair.Name);
+
+        Mutes.Clear();
+        MuteHistoryOffset = offset;
+        HasNextMuteHistoryPage = page.HasNextPage;
+        foreach (var mute in page.Entries)
+        {
+            SharedServerUnban? unmute = null;
+            if (mute.Unmute is { } unmuteDef)
+            {
+                var unmutingAdmin = unmuteDef.UnmutingAdmin is { } id
+                    ? administratorNames.GetValueOrDefault(id)
+                    : null;
+                unmute = new SharedServerUnban(unmutingAdmin, unmuteDef.UnmuteTime.UtcDateTime);
+            }
+
+            Mutes.Add(new WH40KSharedMute(
+                mute.Id ?? 0,
+                mute.Type,
+                mute.MuteTime.UtcDateTime,
+                mute.ExpirationTime?.UtcDateTime,
+                mute.Reason,
+                mute.MutingAdmin is { } mutingAdmin
+                    ? administratorNames.GetValueOrDefault(mutingAdmin)
+                    : null,
+                unmute));
+        }
+    }
+
     private async Task LoadFromDb()
     {
         Bans.Clear();
         RoleBans.Clear();
+        Mutes.Clear();
+        MuteHistoryOffset = 0;
+        HasNextMuteHistoryPage = false;
 
         var userId = new NetUserId(BanListPlayer);
         BanListPlayerName = (await _playerLocator.LookupIdAsync(userId))?.Username ??
@@ -145,6 +207,7 @@ public sealed partial class BanListEui : BaseEui
 
         await LoadBans(userId);
         await LoadRoleBans(userId);
+        await LoadMutes(userId, MuteHistoryOffset);
 
         StateDirty();
     }
@@ -153,5 +216,14 @@ public sealed partial class BanListEui : BaseEui
     {
         BanListPlayer = banListPlayer;
         await LoadFromDb();
+    }
+
+    private async Task LoadMuteHistoryAsync(int offset)
+    {
+        if (BanListPlayer == Guid.Empty)
+            return;
+
+        await LoadMutes(new NetUserId(BanListPlayer), offset);
+        StateDirty();
     }
 }

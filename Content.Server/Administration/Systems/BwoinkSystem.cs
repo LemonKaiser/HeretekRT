@@ -14,6 +14,7 @@ using Content.Server.Discord.DiscordLink;
 using Content.Server.GameTicking;
 using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
+using Content.Server._WH40K.Administration.Mute;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
@@ -46,6 +47,7 @@ namespace Content.Server.Administration.Systems
         [Dependency] private IAfkManager _afkManager = default!;
         [Dependency] private IServerDbManager _dbManager = default!;
         [Dependency] private PlayerRateLimitManager _rateLimit = default!;
+        [Dependency] private WH40KMuteSystem _muteSystem = default!;
         [Dependency] private IServerPreferencesManager _preferencesManager = default!;
         [Dependency] private DiscordChatLink _discordChatLink = default!;
 
@@ -704,6 +706,8 @@ namespace Content.Server.Administration.Systems
             base.OnBwoinkTextMessage(message, eventArgs);
 
             var senderSession = eventArgs.SenderSession;
+            if (_muteSystem.IsAHelpMuted(senderSession, out _))
+                return;
 
             // TODO: Sanitize text?
             // Confirm that this person is actually allowed to send a message here.

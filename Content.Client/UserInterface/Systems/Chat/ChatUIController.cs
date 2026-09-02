@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using Content.Client.Administration.Managers;
+using Content.Client._WH40K.Administration.Mute;
 using Content.Client.Chat;
 using Content.Client.Chat.Managers;
 using Content.Client.Chat.TypingIndicator;
@@ -16,6 +17,7 @@ using Content.Client.UserInterface.Screens;
 using Content.Client.UserInterface.Systems.Chat.Widgets;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Shared._Starlight.CollectiveMind; // Goobstation - Starlight collective mind port
+using Content.Shared._WH40K.Administration.Mute;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -68,6 +70,7 @@ public sealed partial class ChatUIController : UIController
     [UISystemDependency] private readonly TransformSystem? _transform = default;
     [UISystemDependency] private readonly MindSystem? _mindSystem = default!;
     [UISystemDependency] private readonly RoleCodewordSystem? _roleCodewordSystem = default!;
+    [UISystemDependency] private readonly WH40KMuteSystem? _muteSystem = default;
 
     [ValidatePrototypeId<ColorPalettePrototype>]
     private const string ChatNamePalette = "ChatNames";
@@ -172,6 +175,8 @@ public sealed partial class ChatUIController : UIController
     public ChatSelectChannel SelectableChannels { get; private set; }
     private ChatSelectChannel PreferredChannel { get; set; } = ChatSelectChannel.OOC;
     private int _historyLength;
+    private TimeSpan _nextMuteUiRefresh;
+    private bool _chatMuteUiLocked;
 
     public int MaxEmojiPerMessage => _emojiPolicy.MaxPerMessage;
 
@@ -196,6 +201,11 @@ public sealed partial class ChatUIController : UIController
         _chatNameColorsEnabled = _config.GetCVar(CCVars.ChatEnableColorName);
         _emojiPolicy.Changed += OnEmojiPolicyChanged;
         _config.OnValueChanged(CCVars.ChatHistoryLength, OnHistoryLengthChanged, true);
+        if (_muteSystem != null)
+        {
+            _muteSystem.SnapshotUpdated += OnMuteSnapshotUpdated;
+            _muteSystem.EnsureSnapshot();
+        }
 
         _speechBubbleRoot = new LayoutContainer();
 
@@ -611,7 +621,37 @@ public sealed partial class ChatUIController : UIController
 
     public override void FrameUpdate(FrameEventArgs delta)
     {
+        RefreshLiveMuteInputState();
         UpdateQueuedSpeechBubbles(delta);
+    }
+
+    private void RefreshLiveMuteInputState()
+    {
+        if (_muteSystem == null)
+            return;
+
+        var locked = _muteSystem.IsChatMuted(out var muteInfo);
+        if (!locked)
+        {
+            if (!_chatMuteUiLocked)
+                return;
+
+            foreach (var chat in _chats)
+            {
+                ApplyChatMuteState(chat);
+            }
+
+            return;
+        }
+
+        if (_timing.RealTime < _nextMuteUiRefresh || !WH40KMuteDisplayHelper.NeedsLiveRefresh(muteInfo))
+            return;
+
+        _nextMuteUiRefresh = _timing.RealTime + TimeSpan.FromSeconds(1);
+        foreach (var chat in _chats)
+        {
+            ApplyChatMuteState(chat);
+        }
     }
 
     private void UpdateQueuedSpeechBubbles(FrameEventArgs delta)
@@ -746,6 +786,7 @@ public sealed partial class ChatUIController : UIController
         }
 
         box.ChatInput.SetEmojiAllowed(IsEmojiAllowed(ResolveEffectiveInputChannel(box, prefixChannel)));
+        ApplyChatMuteState(box);
         // </Goobstation>
     }
 
@@ -805,6 +846,15 @@ public sealed partial class ChatUIController : UIController
 
     public void SendMessage(ChatBox box, ChatSelectChannel channel)
     {
+        if (_muteSystem != null && _muteSystem.IsChatMuted(out var muteInfo))
+        {
+            box.ChatInput.SetInputLockState(
+                true,
+                WH40KMuteDisplayHelper.BuildChatPlaceholder(muteInfo),
+                WH40KMuteDisplayHelper.BuildMuteTooltip(muteInfo));
+            return;
+        }
+
         _typingIndicator?.ClientSubmittedChatText();
 
         var text = box.ChatInput.Input.Text;
@@ -1049,6 +1099,34 @@ public sealed partial class ChatUIController : UIController
             History.RemoveRange(0, excess);
             Repopulate();
         }
+    }
+
+    private void OnMuteSnapshotUpdated(WH40KMuteSnapshot _)
+    {
+        foreach (var chat in _chats)
+        {
+            ApplyChatMuteState(chat);
+        }
+    }
+
+    private void ApplyChatMuteState(ChatBox box)
+    {
+        if (_muteSystem == null)
+            return;
+
+        if (_muteSystem.IsChatMuted(out var muteInfo))
+        {
+            _chatMuteUiLocked = true;
+            box.ChatInput.SetInputLockState(
+                true,
+                WH40KMuteDisplayHelper.BuildChatPlaceholder(muteInfo),
+                WH40KMuteDisplayHelper.BuildMuteTooltip(muteInfo));
+            return;
+        }
+
+        _chatMuteUiLocked = false;
+        box.ChatInput.SetInputLockState(false);
+        box.ChatInput.SetEmojiAllowed(IsEmojiAllowed(ResolveEffectiveInputChannel(box)));
     }
 
     /// <summary>

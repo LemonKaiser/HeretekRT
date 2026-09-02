@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Content.Client.Administration.UI.BanList.Bans;
 using Content.Client.Administration.UI.BanList.RoleBans;
+using Content.Client.Administration.UI.BanList.Mutes;
 using Content.Client.Eui;
 using Content.Shared.Administration.BanList;
 using Content.Shared.Eui;
@@ -26,12 +27,16 @@ public sealed partial class BanListEui : BaseEui
 
         RoleBanControl = BanWindow.RoleBanList;
         RoleBanControl.LineIdsClicked += OnLineIdsClicked;
+
+        MuteControl = BanWindow.MuteList;
+        MuteControl.PageRequested += offset => SendMessage(new BanListEuiMessages.SetMuteHistoryOffset(offset));
     }
 
     private BanListWindow BanWindow { get; }
 
     private BanListControl BanControl { get; }
     private RoleBanListControl RoleBanControl { get; }
+    private MuteListControl MuteControl { get; }
 
     private void OnClosed()
     {
@@ -61,11 +66,17 @@ public sealed partial class BanListEui : BaseEui
         s.Bans.Sort((a, b) => a.BanTime.CompareTo(b.BanTime));
         BanControl.SetBans(s.Bans);
         RoleBanControl.SetRoleBans(s.RoleBans);
+        MuteControl.SetMutes(s.Mutes, s.MuteHistoryOffset, s.HasNextMuteHistoryPage);
     }
 
     public override void Opened()
     {
         BanWindow.OpenCentered();
+    }
+
+    public static string FormatDate(DateTime date)
+    {
+        return date.ToString("MM/dd/yyyy h:mm tt");
     }
 
     private static string FormatDate(DateTimeOffset date)

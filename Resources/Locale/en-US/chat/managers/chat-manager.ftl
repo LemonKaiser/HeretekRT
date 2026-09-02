@@ -62,6 +62,12 @@ chat-manager-collective-mind-channel-name = collective mind
 
 chat-manager-rate-limited = You are sending messages too quickly!
 chat-manager-rate-limit-admin-announcement = Player { $player } breached chat rate limits. Watch them if this is a regular occurence.
+chat-manager-rate-limit-auto-mute-reason = Automatic mute: standard chat rate limit exceeded.
+chat-manager-rate-limit-auto-muted = You have been automatically chat-muted for {$minutes} minute(s) due to spam.
+chat-manager-repeat-rate-limited = Your repeated message was blocked as spam.
+chat-manager-repeat-rate-limit-admin-announcement = Player { $player } repeated spam in chat: {$message}
+chat-manager-repeat-rate-limit-auto-mute-reason = Automatic mute: repeated chat spam.
+chat-manager-repeat-rate-limit-auto-muted = You have been automatically chat-muted for {$minutes} minute(s) due to repeated spam.
 
 ## Speech verbs for chat
 

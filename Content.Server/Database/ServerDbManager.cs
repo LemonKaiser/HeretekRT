@@ -26,6 +26,7 @@ using Content.Shared._Mono.Company;
 using Content.Server._WH40K.Progression;
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared._WH40K.Progression;
+using Content.Shared._WH40K.Administration.Mute;
 using Content.Server._Mono.Company; // Mono
 
 namespace Content.Server.Database
@@ -274,6 +275,29 @@ namespace Content.Server.Database
 
         Task AddServerBanAsync(ServerBanDef serverBan);
         Task AddServerUnbanAsync(ServerUnbanDef serverBan);
+        /// <summary>Gets only currently active mute scopes for the player.</summary>
+        Task<List<WH40KMuteDef>> GetActiveMutesAsync(NetUserId userId);
+
+        /// <summary>Gets a bounded, newest-first page of mute history.</summary>
+        Task<WH40KMuteHistoryPage> GetMuteHistoryAsync(NetUserId userId, int offset, int limit);
+
+        /// <summary>
+        /// Atomically supersedes all active mutes in the requested scopes and creates their replacements.
+        /// </summary>
+        Task<WH40KMuteReplacementResult> ReplaceMutesAsync(
+            NetUserId userId,
+            IReadOnlyCollection<WH40KMuteType> types,
+            string reason,
+            NetUserId? mutingAdmin,
+            DateTimeOffset muteTime,
+            DateTimeOffset? expirationTime);
+
+        /// <summary>Atomically removes all active mutes in the requested scopes.</summary>
+        Task<int> RemoveActiveMutesAsync(
+            NetUserId userId,
+            IReadOnlyCollection<WH40KMuteType> types,
+            NetUserId? unmutingAdmin,
+            DateTimeOffset unmuteTime);
 
         public Task EditServerBan(
             int id,
@@ -1184,6 +1208,46 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.AddServerUnbanAsync(serverUnban));
+        }
+
+        public Task<List<WH40KMuteDef>> GetActiveMutesAsync(NetUserId userId)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetActiveMutesAsync(userId));
+        }
+
+        public Task<WH40KMuteHistoryPage> GetMuteHistoryAsync(NetUserId userId, int offset, int limit)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetMuteHistoryAsync(userId, offset, limit));
+        }
+
+        public Task<WH40KMuteReplacementResult> ReplaceMutesAsync(
+            NetUserId userId,
+            IReadOnlyCollection<WH40KMuteType> types,
+            string reason,
+            NetUserId? mutingAdmin,
+            DateTimeOffset muteTime,
+            DateTimeOffset? expirationTime)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.ReplaceMutesAsync(
+                userId,
+                types,
+                reason,
+                mutingAdmin,
+                muteTime,
+                expirationTime));
+        }
+
+        public Task<int> RemoveActiveMutesAsync(
+            NetUserId userId,
+            IReadOnlyCollection<WH40KMuteType> types,
+            NetUserId? unmutingAdmin,
+            DateTimeOffset unmuteTime)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.RemoveActiveMutesAsync(userId, types, unmutingAdmin, unmuteTime));
         }
 
         public Task EditServerBan(int id, string reason, NoteSeverity severity, DateTimeOffset? expiration, Guid editedBy, DateTimeOffset editedAt)

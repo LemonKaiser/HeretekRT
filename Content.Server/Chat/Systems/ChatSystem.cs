@@ -14,6 +14,7 @@ using Content.Server.Speech.Prototypes;
 using Content.Server.Speech.EntitySystems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.Administration.Mute;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
@@ -71,6 +72,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     [Dependency] private DiscordChatLink _discordLink = default!;
     [Dependency] private LanguageSystem _language = default!; // Einstein Engines - Language
     [Dependency] private CollectiveMindUpdateSystem _collectiveMind = default!; // Goobstation - Starlight collective mind port
+    [Dependency] private WH40KMuteSystem _muteSystem = default!;
 
     public const int VoiceRange = 10; // how far voice goes in world units
     public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
@@ -192,6 +194,12 @@ public sealed partial class ChatSystem : SharedChatSystem
         LanguagePrototype? languageOverride = null // Einstein Engines - Language
         )
     {
+        // Do this at the actual server entry point as well as in the speech/emote events.
+        // Not every chat path is guaranteed to reach ActionBlocker, while a player mute must
+        // always apply to local speech, whispers, radio and emotes.
+        if (player != null && _muteSystem.IsChatMuted(player, out _))
+            return;
+
         if (HasComp<GhostComponent>(source))
         {
             // Ghosts can only send dead chat messages, so we'll forward it to InGame OOC.
@@ -213,6 +221,9 @@ public sealed partial class ChatSystem : SharedChatSystem
         }
 
         if (!CanSendInGame(message, shell, player))
+            return;
+
+        if (player != null && _chatManager.HandleRepeatedRateLimit(player, message) != RateLimitStatus.Allowed)
             return;
 
         ignoreActionBlocker = CheckIgnoreSpeechBlocker(source, ignoreActionBlocker);
@@ -340,6 +351,9 @@ public sealed partial class ChatSystem : SharedChatSystem
         ICommonSession? player = null
         )
     {
+        if (player != null && _muteSystem.IsChatMuted(player, out _))
+            return;
+
         if (!CanSendInGame(message, shell, player))
             return;
 
@@ -351,11 +365,19 @@ public sealed partial class ChatSystem : SharedChatSystem
         if (player?.AttachedEntity is not { Valid: true } entity || source != entity)
             return;
 
+        // The null-conditional check above verifies the player identity at runtime,
+        // but the nullable flow analyzer cannot infer that it is non-null afterwards.
+        if (player == null)
+            return;
+
         message = SanitizeInGameOOCMessage(message);
         message = ApplyEmojiPolicy(message, type == InGameOOCChatType.Dead
             ? ChatSelectChannel.Dead
             : ChatSelectChannel.LOOC);
         if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        if (_chatManager.HandleRepeatedRateLimit(player, message) != RateLimitStatus.Allowed)
             return;
 
         var sendType = type;
@@ -370,6 +392,11 @@ public sealed partial class ChatSystem : SharedChatSystem
 
         // If crit player LOOC is disabled, don't send the message at all.
         if (!_critLoocEnabled && _mobStateSystem.IsCritical(source))
+            return;
+
+        var ev = new InGameOocMessageAttemptEvent(player, sendType);
+        RaiseLocalEvent(source, ref ev, true);
+        if (ev.Cancelled)
             return;
 
         switch (sendType)

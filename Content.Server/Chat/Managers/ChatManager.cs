@@ -8,6 +8,7 @@ using Content.Server.Administration.Systems;
 using Content.Server.Discord.DiscordLink;
 using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
+using Content.Server._WH40K.Administration.Mute;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -256,6 +257,9 @@ internal sealed partial class ChatManager : IChatManager
     /// <param name="type">The type of message.</param>
     public void TrySendOOCMessage(ICommonSession player, string message, OOCChatType type)
     {
+        if (_entityManager.System<WH40KMuteSystem>().IsChatMuted(player, out _))
+            return;
+
         if (HandleRateLimit(player) != RateLimitStatus.Allowed)
             return;
 
@@ -265,6 +269,9 @@ internal sealed partial class ChatManager : IChatManager
             DispatchServerMessage(player, Loc.GetString("chat-manager-max-message-length-exceeded-message", ("limit", MaxMessageLength)));
             return;
         }
+
+        if (HandleRepeatedRateLimit(player, message) != RateLimitStatus.Allowed)
+            return;
 
         switch (type)
         {

@@ -1,0 +1,18 @@
+<mutes:MuteListControl
+    xmlns="https://spacestation14.io"
+    xmlns:mutes="clr-namespace:Content.Client.Administration.UI.BanList.Mutes">
+    <BoxContainer Orientation="Vertical">
+        <PanelContainer StyleClasses="BackgroundDark" VerticalExpand="True">
+            <ScrollContainer>
+                <BoxContainer Name="Mutes" Access="Public" Orientation="Vertical">
+                    <mutes:MuteListHeader />
+                </BoxContainer>
+            </ScrollContainer>
+        </PanelContainer>
+        <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="PreviousPageButton" Access="Public" Text="{Loc 'wh40k-mute-list-previous-page'}" />
+            <Label Name="PageLabel" Access="Public" HorizontalAlignment="Center" MinWidth="80" />
+            <Button Name="NextPageButton" Access="Public" Text="{Loc 'wh40k-mute-list-next-page'}" />
+        </BoxContainer>
+    </BoxContainer>
+</mutes:MuteListControl>

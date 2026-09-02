@@ -11,6 +11,9 @@ namespace Content.Client.Administration.UI.Bwoink
     public sealed partial class BwoinkPanel : BoxContainer
     {
         private readonly Action<string> _messageSender;
+        private bool _inputLocked;
+        private string? _lockedPlaceholder;
+        private string? _lockedToolTip;
 
         public int Unread { get; private set; } = 0;
         public DateTime LastMessage { get; private set; } = DateTime.MinValue;
@@ -51,6 +54,41 @@ namespace Content.Client.Administration.UI.Bwoink
         private void Input_OnTextChanged(LineEdit.LineEditEventArgs args)
         {
             InputTextChanged?.Invoke(args.Text);
+        }
+
+        /// <summary>
+        /// Locks the ahelp text box while an administrative ahelp mute is active.
+        /// </summary>
+        public void SetInputLockState(bool locked, string? placeholder = null, string? toolTip = null)
+        {
+            var nextPlaceholder = locked ? placeholder ?? string.Empty : null;
+            var nextToolTip = locked ? toolTip : null;
+            var changed =
+                _inputLocked != locked ||
+                !string.Equals(_lockedPlaceholder, nextPlaceholder, StringComparison.Ordinal) ||
+                !string.Equals(_lockedToolTip, nextToolTip, StringComparison.Ordinal);
+
+            if (!changed)
+                return;
+
+            var lockingNow = locked && !_inputLocked;
+            _inputLocked = locked;
+            _lockedPlaceholder = nextPlaceholder;
+            _lockedToolTip = nextToolTip;
+
+            SenderLineEdit.PlaceHolder = _lockedPlaceholder;
+            SenderLineEdit.ToolTip = _lockedToolTip;
+            SenderLineEdit.Editable = !locked;
+            SenderLineEdit.CanKeyboardFocus = !locked;
+            SenderLineEdit.KeyboardFocusOnClick = !locked;
+            SenderLineEdit.InvalidateMeasure();
+            SenderLineEdit.InvalidateArrange();
+
+            if (!lockingNow)
+                return;
+
+            SenderLineEdit.Clear();
+            SenderLineEdit.ReleaseKeyboardFocus();
         }
 
         public void ReceiveLine(SharedBwoinkSystem.BwoinkTextMessage message)
