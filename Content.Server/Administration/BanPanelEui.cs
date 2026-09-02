@@ -19,6 +19,7 @@ public sealed partial class BanPanelEui : BaseEui
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private IAdminActionGuard _adminActionGuard = default!;
 
     private readonly ISawmill _sawmill;
 
@@ -114,6 +115,19 @@ public sealed partial class BanPanelEui : BaseEui
                 addressRange = (targetAddress, hid);
             }
             targetHWid = useLastHwid ? located.LastHWId : hwid;
+        }
+
+        if (targetUid != null
+            && await _adminActionGuard.TryDenyProtectedTargetAsync(
+                Player,
+                targetUid.Value,
+                Loc.GetString(roles?.Count > 0
+                    ? "admin-hierarchy-action-role-ban"
+                    : "admin-hierarchy-action-ban"),
+                target,
+                message => _chat.DispatchServerMessage(Player, message)))
+        {
+            return;
         }
 
         if (roles?.Count > 0)

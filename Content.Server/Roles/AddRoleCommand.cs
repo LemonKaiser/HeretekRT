@@ -15,10 +15,11 @@ namespace Content.Server.Roles
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly JobSystem _jobSystem = default!;
+        [Dependency] private readonly Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public override string Command => "addrole";
 
-        public override void Execute(IConsoleShell shell, string argStr, string[] args)
+        public override async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length != 2)
             {
@@ -31,6 +32,16 @@ namespace Content.Server.Roles
             if (!_playerManager.TryGetPlayerDataByUsername(args[0], out var data))
             {
                 shell.WriteLine(Loc.GetString($"cmd-addrole-mind-not-found"));
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    data.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    data.UserName,
+                    shell.WriteError))
+            {
                 return;
             }
 

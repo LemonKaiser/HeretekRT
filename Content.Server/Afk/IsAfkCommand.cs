@@ -9,15 +9,15 @@ namespace Content.Server.Afk
     public sealed partial class IsAfkCommand : IConsoleCommand
     {
         [Dependency] private IPlayerManager _players = default!;
+        [Dependency] private IAfkManager _afkManager = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public string Command => "isafk";
         public string Description => "Checks if a specified player is AFK";
         public string Help => "Usage: isafk <playerName>";
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
-            var afkManager = IoCManager.Resolve<IAfkManager>();
-
             if (args.Length == 0)
             {
                 shell.WriteError("Need one argument");
@@ -30,7 +30,17 @@ namespace Content.Server.Afk
                 return;
             }
 
-            shell.WriteLine(afkManager.IsAfk(player) ? "They are indeed AFK" : "They are not AFK");
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    player.Name,
+                    shell.WriteError))
+            {
+                return;
+            }
+
+            shell.WriteLine(_afkManager.IsAfk(player) ? "They are indeed AFK" : "They are not AFK");
         }
 
         public CompletionResult GetCompletion(IConsoleShell shell, string[] args)

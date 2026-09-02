@@ -14,6 +14,7 @@ namespace Content.Server.Traitor.Uplink.Commands
     {
         [Dependency] private IEntityManager _entManager = default!;
         [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public string Command => "adduplink";
 
@@ -33,7 +34,7 @@ namespace Content.Server.Traitor.Uplink.Commands
             };
         }
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length > 3)
             {
@@ -59,6 +60,16 @@ namespace Content.Server.Traitor.Uplink.Commands
             if (session?.AttachedEntity is not { } user)
             {
                 shell.WriteLine(Loc.GetString("add-uplink-command-error-1"));
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    session.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    session.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

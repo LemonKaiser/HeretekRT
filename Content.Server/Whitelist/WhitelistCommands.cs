@@ -1,4 +1,5 @@
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.Players.JobWhitelist; // Frontier
 using Content.Shared.Administration;
@@ -13,6 +14,7 @@ namespace Content.Server.Whitelist;
 [AdminCommand(AdminFlags.Whitelist)] // DeltaV - Custom permission for whitelist
 public sealed partial class AddWhitelistCommand : LocalizedCommands
 {
+    [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private JobWhitelistManager _jobWhitelist = default!; // Frontier
     public override string Command => "whitelistadd";
 
@@ -34,6 +36,16 @@ public sealed partial class AddWhitelistCommand : LocalizedCommands
         if (data != null)
         {
             var guid = data.UserId;
+            if (await _adminActionGuard.TryDenyProtectedTargetAsync(
+                    shell.Player,
+                    guid,
+                    Loc.GetString("admin-hierarchy-action-whitelist-add"),
+                    data.Username,
+                    shell.WriteError))
+            {
+                return;
+            }
+
             var isWhitelisted = await db.GetWhitelistStatusAsync(guid);
             if (isWhitelisted)
             {
@@ -64,6 +76,7 @@ public sealed partial class AddWhitelistCommand : LocalizedCommands
 [AdminCommand(AdminFlags.Ban)]
 public sealed partial class RemoveWhitelistCommand : LocalizedCommands
 {
+    [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private JobWhitelistManager _jobWhitelist = default!; // Frontier
     public override string Command => "whitelistremove";
 
@@ -85,6 +98,16 @@ public sealed partial class RemoveWhitelistCommand : LocalizedCommands
         if (data != null)
         {
             var guid = data.UserId;
+            if (await _adminActionGuard.TryDenyProtectedTargetAsync(
+                    shell.Player,
+                    guid,
+                    Loc.GetString("admin-hierarchy-action-whitelist-remove"),
+                    data.Username,
+                    shell.WriteError))
+            {
+                return;
+            }
+
             var isWhitelisted = await db.GetWhitelistStatusAsync(guid);
             if (!isWhitelisted)
             {

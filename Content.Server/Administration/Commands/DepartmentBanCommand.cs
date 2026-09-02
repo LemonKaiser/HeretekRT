@@ -14,6 +14,7 @@ public sealed partial class DepartmentBanCommand : IConsoleCommand
 {
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private IPlayerLocator _locator = default!;
+    [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private IBanManager _banManager = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
 
@@ -91,6 +92,16 @@ public sealed partial class DepartmentBanCommand : IConsoleCommand
 
         var targetUid = located.UserId;
         var targetHWid = located.LastHWId;
+
+        if (await _adminActionGuard.TryDenyProtectedTargetAsync(
+                shell.Player,
+                targetUid,
+                Loc.GetString("admin-hierarchy-action-department-ban"),
+                located.Username,
+                shell.WriteLine))
+        {
+            return;
+        }
 
         // If you are trying to remove the following variable, please don't. It's there because the note system groups role bans by time, reason and banning admin.
         // Without it the note list will get needlessly cluttered.

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Robust.Server.Player;
 using Robust.Shared.Console;
@@ -13,6 +14,7 @@ public sealed partial class Wh40kSetClassCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40ksetclass";
     public string Description => "Меняет постоянный класс аккаунта, очищает его дерево и пишет аудит.";
@@ -29,6 +31,8 @@ public sealed partial class Wh40kSetClassCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kClassProgression))
+                return;
             var result = await _admin.SetClassAsync(
                 target.UserId,
                 target.Username,
@@ -51,6 +55,7 @@ public sealed partial class Wh40kReplaceSkillsCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kreplaceskills";
     public string Description => "Атомарно заменяет постоянный набор навыков класса и пишет аудит.";
@@ -70,6 +75,8 @@ public sealed partial class Wh40kReplaceSkillsCommand : IConsoleCommand
                 ? Array.Empty<string>()
                 : args[1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kClassProgression))
+                return;
             var result = await _admin.ReplaceSkillsAsync(
                 target.UserId,
                 target.Username,
@@ -92,6 +99,7 @@ public sealed partial class Wh40kGrantSkillCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kgrantskill";
     public string Description => "Выдаёт постоянный навык класса с проверкой prerequisite и аудитом.";
@@ -108,6 +116,8 @@ public sealed partial class Wh40kGrantSkillCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kClassProgression))
+                return;
             var result = await _admin.GrantSkillAsync(
                 target.UserId,
                 target.Username,
@@ -130,6 +140,7 @@ public sealed partial class Wh40kRevokeSkillCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40krevokeskill";
     public string Description => "Отзывает навык и зависимые от него навыки с постоянным аудитом.";
@@ -146,6 +157,8 @@ public sealed partial class Wh40kRevokeSkillCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kClassProgression))
+                return;
             var result = await _admin.RevokeSkillAsync(
                 target.UserId,
                 target.Username,

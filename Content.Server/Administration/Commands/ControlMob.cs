@@ -1,4 +1,5 @@
 using Content.Server.Mind;
+using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
@@ -7,13 +8,14 @@ namespace Content.Server.Administration.Commands
     [AdminCommand(AdminFlags.Fun)]
     public sealed partial class ControlMob : IConsoleCommand
     {
+        [Dependency] private IAdminActionGuard _adminActionGuard = default!;
         [Dependency] private IEntityManager _entities = default!;
 
         public string Command => "controlmob";
         public string Description => Loc.GetString("control-mob-command-description");
         public string Help => Loc.GetString("control-mob-command-help-text");
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (shell.Player is not { } player)
             {
@@ -38,6 +40,15 @@ namespace Content.Server.Administration.Commands
             if (!_entities.TryGetEntity(targetNet, out var target))
             {
                 shell.WriteLine(Loc.GetString("shell-invalid-entity-id"));
+                return;
+            }
+
+            if (await _adminActionGuard.TryDenyProtectedEntityTargetAsync(
+                    player,
+                    target.Value,
+                    Loc.GetString("admin-hierarchy-action-control-mob"),
+                    notify: shell.WriteLine))
+            {
                 return;
             }
 

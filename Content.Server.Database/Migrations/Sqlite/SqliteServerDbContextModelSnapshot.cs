@@ -323,6 +323,12 @@ namespace Content.Server.Database.Migrations.Sqlite
                         .HasColumnType("INTEGER")
                         .HasColumnName("admin_rank_id");
 
+                    b.Property<byte>("HierarchyLevel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue((byte)9)
+                        .HasColumnName("hierarchy_level");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT")
@@ -336,7 +342,10 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.HasKey("Id")
                         .HasName("PK_admin_rank");
 
-                    b.ToTable("admin_rank", (string)null);
+                    b.ToTable("admin_rank", null, t =>
+                        {
+                            t.HasCheckConstraint("AdminRankHierarchyLevelRange", "hierarchy_level >= 1 AND hierarchy_level <= 9");
+                        });
                 });
 
             modelBuilder.Entity("Content.Server.Database.AdminRankFlag", b =>

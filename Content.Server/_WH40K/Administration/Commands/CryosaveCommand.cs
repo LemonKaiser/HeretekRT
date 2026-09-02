@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Administration.Logs;
 using Content.Server._WH40K.PersistentInventory;
 using Content.Shared.Administration;
@@ -20,6 +21,7 @@ public sealed partial class CryosaveCommand : LocalizedCommands
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private readonly IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "cryosave";
 
@@ -35,6 +37,16 @@ public sealed partial class CryosaveCommand : LocalizedCommands
         if (located == null)
         {
             shell.WriteError(Loc.GetString("cmd-cryosave-player-not-found"));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                located.UserId,
+                AdminOperation.GenericTarget,
+                located.Username,
+                shell.WriteError))
+        {
             return;
         }
 

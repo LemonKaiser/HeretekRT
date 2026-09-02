@@ -19,6 +19,8 @@ namespace Content.Server.Administration;
 public sealed partial class PlayerPanelEui : BaseEui
 {
     [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private IAdminHierarchyManager _adminHierarchy = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IAdminNotesManager _notesMan = default!;
     [Dependency] private IEntityManager _entity = default!;
@@ -100,9 +102,27 @@ public sealed partial class PlayerPanelEui : BaseEui
         StateDirty();
     }
 
-    public override void HandleMessage(EuiMessageBase msg)
+    public override async void HandleMessage(EuiMessageBase msg)
     {
         base.HandleMessage(msg);
+
+        if (msg is PlayerPanelFreezeMessage
+            or PlayerPanelLogsMessage
+            or PlayerPanelDeleteMessage
+            or PlayerPanelRejuvenationMessage
+            or PlayerPanelScreenCheckMessage)
+        {
+            if (await _authorization.TryDenyTargetAsync(
+                    Player,
+                    _targetPlayer.UserId,
+                    msg is PlayerPanelScreenCheckMessage
+                        ? AdminOperation.Wh40kScreenCheck
+                        : AdminOperation.GenericTarget,
+                    _targetPlayer.Username))
+            {
+                return;
+            }
+        }
 
         ICommonSession? session;
 
@@ -179,6 +199,13 @@ public sealed partial class PlayerPanelEui : BaseEui
     public async void SetPlayerState()
     {
         if (!_admins.IsAdmin(Player))
+        {
+            Close();
+            return;
+        }
+
+        var hierarchyDecision = await _adminHierarchy.CanManageAdminAsync(Player, _targetPlayer.UserId);
+        if (!hierarchyDecision.Allowed)
         {
             Close();
             return;

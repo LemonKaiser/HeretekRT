@@ -11,6 +11,7 @@ public sealed partial class PlayTimeAddOverallCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_addoverall";
     public string Description => Loc.GetString("cmd-playtime_addoverall-desc");
@@ -33,6 +34,16 @@ public sealed partial class PlayTimeAddOverallCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(args[0], out var player))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", args[0])));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                player.Name,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -63,6 +74,7 @@ public sealed partial class PlayTimeAddRoleCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_addrole";
     public string Description => Loc.GetString("cmd-playtime_addrole-desc");
@@ -80,6 +92,16 @@ public sealed partial class PlayTimeAddRoleCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(userName, out var player))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", userName)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                player.Name,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -128,6 +150,7 @@ public sealed partial class PlayTimeGetOverallCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_getoverall";
     public string Description => Loc.GetString("cmd-playtime_getoverall-desc");
@@ -145,6 +168,16 @@ public sealed partial class PlayTimeGetOverallCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(userName, out var player))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", userName)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                player.Name,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -173,6 +206,7 @@ public sealed partial class PlayTimeGetRoleCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_getrole";
     public string Description => Loc.GetString("cmd-playtime_getrole-desc");
@@ -190,6 +224,16 @@ public sealed partial class PlayTimeGetRoleCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(userName, out var session))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", userName)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                session.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                session.Name,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -252,6 +296,7 @@ public sealed partial class PlayTimeSaveCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_save";
     public string Description => Loc.GetString("cmd-playtime_save-desc");
@@ -269,6 +314,16 @@ public sealed partial class PlayTimeSaveCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(name, out var pSession))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", name)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                pSession.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                pSession.Name,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -294,12 +349,13 @@ public sealed partial class PlayTimeFlushCommand : IConsoleCommand
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private PlayTimeTrackingManager _playTimeTracking = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playtime_flush";
     public string Description => Loc.GetString("cmd-playtime_flush-desc");
     public string Help => Loc.GetString("cmd-playtime_flush-help", ("command", Command));
 
-    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         if (args.Length is not (0 or 1))
         {
@@ -317,6 +373,16 @@ public sealed partial class PlayTimeFlushCommand : IConsoleCommand
         if (!_playerManager.TryGetSessionByUsername(name, out var pSession))
         {
             shell.WriteError(Loc.GetString("parse-session-fail", ("username", name)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                pSession.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                pSession.Name,
+                shell.WriteError))
+        {
             return;
         }
 

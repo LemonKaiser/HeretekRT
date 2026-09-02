@@ -55,6 +55,9 @@ namespace Content.Server.IoC
             IoCManager.Register<IConnectionManager, ConnectionManager>();
             IoCManager.Register<ServerUpdateManager>();
             IoCManager.Register<IAdminManager, AdminManager>();
+            IoCManager.Register<IAdminHierarchyManager, AdminHierarchyManager>();
+            IoCManager.Register<IAdminAuthorizationManager, AdminAuthorizationManager>();
+            IoCManager.Register<IAdminActionGuard, AdminActionGuard>();
             IoCManager.Register<ISharedAdminManager, AdminManager>();
             IoCManager.Register<EuiManager, EuiManager>();
             IoCManager.Register<IVoteManager, VoteManager>();

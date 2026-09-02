@@ -11,6 +11,7 @@ public sealed partial class GrantConnectBypassCommand : LocalizedCommands
 
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IConnectionManager _connectionManager = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "grant_connect_bypass";
 
@@ -30,10 +31,20 @@ public sealed partial class GrantConnectBypassCommand : LocalizedCommands
             return;
         }
 
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                info.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                info.Username,
+                shell.WriteError))
+        {
+            return;
+        }
+
         var duration = DefaultDuration;
         if (args.Length > 1)
         {
-            var argDuration = args[2];
+            var argDuration = args[1];
             if (!uint.TryParse(argDuration, out var minutes))
             {
                 shell.WriteLine(Loc.GetString("cmd-grant_connect_bypass-invalid-duration", ("duration", argDuration)));

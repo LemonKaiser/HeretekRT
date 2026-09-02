@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
@@ -17,6 +18,7 @@ public sealed partial class DialogueMemoryCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "dialogue_memory";
     public string Description => "Shows persisted dialogue flags, counters, and completed dialogues for a player.";
@@ -32,6 +34,16 @@ public sealed partial class DialogueMemoryCommand : IConsoleCommand
         if (player == null)
         {
             shell.WriteError("Unable to find a player with that name or user ID.");
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                AdminOperation.GenericTarget,
+                player.Username,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -106,6 +118,7 @@ public sealed partial class ResetDialogueMemoryCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IEntitySystemManager _entitySystems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "dialogue_memory_reset";
     public string Description => "Clears persisted dialogue memory for a player and dialogue-memory key.";
@@ -121,6 +134,16 @@ public sealed partial class ResetDialogueMemoryCommand : IConsoleCommand
         if (player == null)
         {
             shell.WriteError("Unable to find a player with that name or user ID.");
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                AdminOperation.GenericTarget,
+                player.Username,
+                shell.WriteError))
+        {
             return;
         }
 

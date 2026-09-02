@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Server.Preferences.Managers;
 using Content.Shared.Administration;
@@ -23,6 +24,7 @@ public sealed partial class Wh40kProfileCommand : IConsoleCommand
     [Dependency] private IServerPreferencesManager _preferences = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kprofile";
     public string Description => "Показывает сохранённый профиль персонажа WH40K.";
@@ -40,6 +42,16 @@ public sealed partial class Wh40kProfileCommand : IConsoleCommand
         if (located == null)
         {
             shell.WriteError($"Игрок '{args[0]}' не найден.");
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                located.UserId,
+                AdminOperation.Wh40kProfileRead,
+                located.Username,
+                shell.WriteError))
+        {
             return;
         }
 

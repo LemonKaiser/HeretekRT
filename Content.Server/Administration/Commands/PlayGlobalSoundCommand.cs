@@ -17,12 +17,13 @@ public sealed partial class PlayGlobalSoundCommand : IConsoleCommand
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private IResourceManager _res = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "playglobalsound";
     public string Description => Loc.GetString("play-global-sound-command-description");
     public string Help => Loc.GetString("play-global-sound-command-help");
 
-    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         Filter filter;
         var audio = AudioParams.Default;
@@ -77,6 +78,16 @@ public sealed partial class PlayGlobalSoundCommand : IConsoleCommand
                         if (!_playerManager.TryGetSessionByUsername(username, out var session))
                         {
                             shell.WriteError(Loc.GetString("play-global-sound-command-player-not-found", ("username", username)));
+                            continue;
+                        }
+
+                        if (await _authorization.TryDenyTargetAsync(
+                                shell.Player,
+                                session.UserId,
+                                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                                session.Name,
+                                shell.WriteError))
+                        {
                             continue;
                         }
 

@@ -1,4 +1,5 @@
 using Content.Server.Polymorph.Components;
+using Content.Server.Administration.Managers;
 using Content.Server.Polymorph.Systems;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
@@ -8,6 +9,7 @@ namespace Content.Server.Administration.Commands;
 [AdminCommand(AdminFlags.Fun)]
 public sealed partial class AddPolymorphActionCommand : IConsoleCommand
 {
+    [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private IEntityManager _entityManager = default!;
 
     public string Command => "addpolymorphaction";
@@ -16,7 +18,7 @@ public sealed partial class AddPolymorphActionCommand : IConsoleCommand
 
     public string Help => Loc.GetString("add-polymorph-action-command-help-text");
 
-    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         if (args.Length != 2)
         {
@@ -27,6 +29,15 @@ public sealed partial class AddPolymorphActionCommand : IConsoleCommand
         if (!NetEntity.TryParse(args[0], out var entityUidNet) || !_entityManager.TryGetEntity(entityUidNet, out var entityUid))
         {
             shell.WriteError(Loc.GetString("shell-entity-uid-must-be-number"));
+            return;
+        }
+
+        if (await _adminActionGuard.TryDenyProtectedEntityTargetAsync(
+                shell.Player,
+                entityUid.Value,
+                Loc.GetString("admin-hierarchy-action-add-polymorph-action"),
+                notify: shell.WriteLine))
+        {
             return;
         }
 

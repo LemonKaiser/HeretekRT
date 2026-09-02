@@ -16,6 +16,7 @@ public sealed partial class CurrencyBalanceCommand : LocalizedCommands
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private MonoCoinsManager _coins = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "currency:balance";
 
@@ -47,6 +48,16 @@ public sealed partial class CurrencyBalanceCommand : LocalizedCommands
         }
 
         var userId = targetSession.UserId;
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                userId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                targetSession.Name,
+                shell.WriteError))
+        {
+            return;
+        }
 
         try
         {

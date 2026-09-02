@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
@@ -14,6 +15,7 @@ public sealed partial class PersistentInventoryStatusCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_status";
     public string Description =>
@@ -34,6 +36,16 @@ public sealed partial class PersistentInventoryStatusCommand : IConsoleCommand
             if (player == null)
             {
                 shell.WriteError("Игрок или UserId не найден.");
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    AdminOperation.GenericTarget,
+                    player.Username,
+                    shell.WriteError))
+            {
                 return;
             }
 
@@ -76,6 +88,7 @@ public sealed partial class PersistentInventoryHistoryCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_history";
     public string Description =>
@@ -106,6 +119,16 @@ public sealed partial class PersistentInventoryHistoryCommand : IConsoleCommand
             if (player == null)
             {
                 shell.WriteError("Игрок или UserId не найден.");
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    AdminOperation.GenericTarget,
+                    player.Username,
+                    shell.WriteError))
+            {
                 return;
             }
 
@@ -143,6 +166,7 @@ public sealed partial class PersistentInventoryQuarantineReasonCommand : IConsol
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_quarantine_reason";
     public string Description =>
@@ -163,6 +187,16 @@ public sealed partial class PersistentInventoryQuarantineReasonCommand : IConsol
             if (player == null)
             {
                 shell.WriteError("Игрок или UserId не найден.");
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    AdminOperation.GenericTarget,
+                    player.Username,
+                    shell.WriteError))
+            {
                 return;
             }
 
@@ -201,6 +235,7 @@ public sealed partial class PersistentInventoryInvalidateCommand : IConsoleComma
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_invalidate";
     public string Description =>
@@ -217,6 +252,7 @@ public sealed partial class PersistentInventoryInvalidateCommand : IConsoleComma
             args,
             _locator,
             _systems,
+            _authorization,
             (system, userId, actor, actorUserId, reason) =>
                 system.AdminInvalidateAsync(userId, actor, actorUserId, reason));
     }
@@ -232,6 +268,7 @@ public sealed partial class PersistentInventoryQuarantineCommand : IConsoleComma
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_quarantine";
     public string Description =>
@@ -248,6 +285,7 @@ public sealed partial class PersistentInventoryQuarantineCommand : IConsoleComma
             args,
             _locator,
             _systems,
+            _authorization,
             (system, userId, actor, actorUserId, reason) =>
                 system.AdminQuarantineAsync(userId, actor, actorUserId, reason));
     }
@@ -263,6 +301,7 @@ public sealed partial class PersistentInventoryRollbackCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_rollback";
     public string Description =>
@@ -274,7 +313,7 @@ public sealed partial class PersistentInventoryRollbackCommand : IConsoleCommand
 
     public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        await PersistentInventoryCommandHelpers.ExecuteRollback(shell, args, _locator, _systems);
+        await PersistentInventoryCommandHelpers.ExecuteRollback(shell, args, _locator, _systems, _authorization);
     }
 
     public CompletionResult GetCompletion(IConsoleShell shell, string[] args)
@@ -288,6 +327,7 @@ public sealed partial class PersistentInventoryRecoverLostCommand : IConsoleComm
 {
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "persistentinv_recover_lost";
     public string Description =>
@@ -304,6 +344,7 @@ public sealed partial class PersistentInventoryRecoverLostCommand : IConsoleComm
             args,
             _locator,
             _systems,
+            _authorization,
             (system, userId, actor, actorUserId, reason) =>
                 system.AdminRecoverLostAsync(userId, actor, actorUserId, reason));
     }
@@ -370,7 +411,8 @@ internal static class PersistentInventoryCommandHelpers
         IConsoleShell shell,
         string[] args,
         IPlayerLocator locator,
-        IEntitySystemManager systems)
+        IEntitySystemManager systems,
+        IAdminAuthorizationManager authorization)
     {
         if (!TryParseRollbackArguments(
                 args,
@@ -389,6 +431,16 @@ internal static class PersistentInventoryCommandHelpers
             if (player == null)
             {
                 shell.WriteError("Игрок или UserId не найден.");
+                return;
+            }
+
+            if (await authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    AdminOperation.GenericTarget,
+                    player.Username,
+                    shell.WriteError))
+            {
                 return;
             }
 
@@ -418,6 +470,7 @@ internal static class PersistentInventoryCommandHelpers
         string[] args,
         IPlayerLocator locator,
         IEntitySystemManager systems,
+        IAdminAuthorizationManager authorization,
         Func<
             PersistentInventoryLifecycleSystem,
             Robust.Shared.Network.NetUserId,
@@ -438,6 +491,16 @@ internal static class PersistentInventoryCommandHelpers
             if (player == null)
             {
                 shell.WriteError("Игрок или UserId не найден.");
+                return;
+            }
+
+            if (await authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    AdminOperation.GenericTarget,
+                    player.Username,
+                    shell.WriteError))
+            {
                 return;
             }
 

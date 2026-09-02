@@ -17,10 +17,11 @@ public sealed partial class AddObjectiveCommand : LocalizedEntityCommands
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private ObjectivesSystem _objectives = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "addobjective";
 
-    public override void Execute(IConsoleShell shell, string argStr, string[] args)
+    public override async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         if (args.Length != 2)
         {
@@ -31,6 +32,16 @@ public sealed partial class AddObjectiveCommand : LocalizedEntityCommands
         if (!_players.TryGetSessionByUsername(args[0], out var data))
         {
             shell.WriteError(Loc.GetString("cmd-addobjective-player-not-found"));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                data.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                data.Name,
+                shell.WriteError))
+        {
             return;
         }
 

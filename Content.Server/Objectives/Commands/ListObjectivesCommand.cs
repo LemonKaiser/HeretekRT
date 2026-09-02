@@ -13,15 +13,38 @@ namespace Content.Server.Objectives.Commands
     {
         [Dependency] private IEntityManager _entities = default!;
         [Dependency] private IPlayerManager _players = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public override string Command => "lsobjectives";
 
-        public override void Execute(IConsoleShell shell, string argStr, string[] args)
+        public override async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
+            if (args.Length > 1)
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
             var player = shell.Player;
-            if (player == null || !_players.TryGetSessionByUsername(args[0], out player))
+            if (args.Length == 1 && !_players.TryGetSessionByUsername(args[0], out player))
             {
                 shell.WriteError(LocalizationManager.GetString("shell-target-player-does-not-exist"));
+                return;
+            }
+
+            if (player == null)
+            {
+                shell.WriteError(LocalizationManager.GetString("shell-target-player-does-not-exist"));
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    player.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    player.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

@@ -10,6 +10,7 @@ public sealed partial class BanPanelCommand : LocalizedCommands
 
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private EuiManager _euis = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "banpanel";
 
@@ -31,6 +32,15 @@ public sealed partial class BanPanelCommand : LocalizedCommands
                 if (located is null)
                 {
                     shell.WriteError(Loc.GetString("cmd-banpanel-player-err"));
+                    return;
+                }
+                if (await _authorization.TryDenyTargetAsync(
+                        player,
+                        located.UserId,
+                        Content.Server.Administration.Managers.AdminOperation.Ban,
+                        located.Username,
+                        shell.WriteError))
+                {
                     return;
                 }
                 var ui = new BanPanelEui();

@@ -387,7 +387,7 @@ namespace Content.Server.Database
         Task<Admin?> GetAdminDataForAsync(NetUserId userId, CancellationToken cancel = default);
         Task<AdminRank?> GetAdminRankAsync(int id, CancellationToken cancel = default);
 
-        Task<((Admin, string? lastUserName)[] admins, AdminRank[])> GetAllAdminAndRanksAsync(
+        Task<((Admin admin, string? lastUserName, DateTime? lastSeenTime)[] admins, AdminRank[] ranks)> GetAllAdminAndRanksAsync(
             CancellationToken cancel = default);
 
         Task RemoveAdminAsync(NetUserId userId, CancellationToken cancel = default);
@@ -1310,7 +1310,7 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.GetAdminRankDataForAsync(id, cancel));
         }
 
-        public Task<((Admin, string? lastUserName)[] admins, AdminRank[])> GetAllAdminAndRanksAsync(
+        public Task<((Admin admin, string? lastUserName, DateTime? lastSeenTime)[] admins, AdminRank[] ranks)> GetAllAdminAndRanksAsync(
             CancellationToken cancel = default)
         {
             DbReadOpsMetric.Inc();

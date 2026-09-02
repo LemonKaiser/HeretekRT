@@ -52,6 +52,15 @@ namespace Content.Server.Administration.Commands
                 return;
             }
 
+            if (await IoCManager.Resolve<Content.Server.Administration.Managers.IAdminActionGuard>().TryDenyProtectedBanAsync(
+                    player,
+                    ban,
+                    Loc.GetString("admin-hierarchy-action-pardon"),
+                    shell.WriteLine))
+            {
+                return;
+            }
+
             await dbMan.AddServerUnbanAsync(new ServerUnbanDef(banId, player?.UserId, DateTimeOffset.Now));
 
             shell.WriteLine($"Pardoned ban with id {banId}");

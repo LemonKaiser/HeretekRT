@@ -1,4 +1,5 @@
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.EUI;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
@@ -14,6 +15,7 @@ public sealed partial class JobWhitelistsCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private IPlayerLocator _locator = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "jobwhitelists";
 
@@ -36,6 +38,16 @@ public sealed partial class JobWhitelistsCommand : LocalizedCommands
         if (located is null)
         {
             shell.WriteError(Loc.GetString("cmd-jobwhitelists-player-err"));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                player,
+                located.UserId,
+                AdminOperation.GenericTarget,
+                located.Username,
+                shell.WriteError))
+        {
             return;
         }
 

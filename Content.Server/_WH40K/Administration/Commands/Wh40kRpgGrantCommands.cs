@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Robust.Server.Player;
 using Robust.Shared.Console;
@@ -15,6 +16,7 @@ public sealed partial class Wh40kGrantExperienceCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kgrantxp";
     public string Description => "Выдаёт аккаунту WH40K RPG опыт с обязательной причиной и аудитом.";
@@ -31,6 +33,8 @@ public sealed partial class Wh40kGrantExperienceCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kRpgProgression))
+                return;
             var result = await _admin.GrantExperienceAsync(
                 target.UserId,
                 target.Username,
@@ -55,6 +59,7 @@ public sealed partial class Wh40kGrantLevelCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kgrantlevel";
     public string Description => "Повышает аккаунт WH40K RPG до указанного уровня через XP-ledger.";
@@ -71,6 +76,8 @@ public sealed partial class Wh40kGrantLevelCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kRpgProgression))
+                return;
             var result = await _admin.GrantTargetLevelAsync(
                 target.UserId,
                 target.Username,
@@ -94,6 +101,7 @@ public sealed partial class Wh40kGrantDevelopmentPointsCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kgrantpoints";
     public string Description => "Выдаёт аккаунту WH40K RPG очки развития с обязательным аудитом.";
@@ -110,6 +118,8 @@ public sealed partial class Wh40kGrantDevelopmentPointsCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kRpgProgression))
+                return;
             var result = await _admin.GrantDevelopmentPointsAsync(
                 target.UserId,
                 target.Username,
@@ -135,6 +145,7 @@ public sealed partial class Wh40kCompensateCurrencyCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kcompensatecurrency";
     public string Description => "Ставит денежную компенсацию WH40K RPG в постоянную очередь.";
@@ -151,6 +162,8 @@ public sealed partial class Wh40kCompensateCurrencyCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kRpgProgression))
+                return;
             await _admin.CompensateCurrencyAsync(
                 target.UserId,
                 target.Username,
@@ -174,6 +187,7 @@ public sealed partial class Wh40kCompensateItemCommand : IConsoleCommand
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kRpgAdminService _admin = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "wh40kcompensateitem";
     public string Description => "Ставит предметную компенсацию WH40K RPG в постоянную очередь.";
@@ -190,6 +204,8 @@ public sealed partial class Wh40kCompensateItemCommand : IConsoleCommand
         try
         {
             var target = await ResolveTargetAsync(_locator, args[0]);
+            if (!await TryAuthorizeTargetAsync(shell, _authorization, target.UserId, target.Username, AdminOperation.Wh40kRpgProgression))
+                return;
             var prototype = new EntProtoId(args[1]);
             await _admin.CompensateItemAsync(
                 target.UserId,
@@ -226,6 +242,21 @@ internal static class Wh40kRpgGrantCommandHelpers
         return shell.Player is { } player
             ? new Wh40kAdminAudit(player.UserId.UserId.ToString("N"), player.Name, reason)
             : new Wh40kAdminAudit("server-console", "server-console", reason);
+    }
+
+    public static async Task<bool> TryAuthorizeTargetAsync(
+        IConsoleShell shell,
+        IAdminAuthorizationManager authorization,
+        Robust.Shared.Network.NetUserId targetUserId,
+        string targetName,
+        AdminOperation operation)
+    {
+        return !await authorization.TryDenyTargetAsync(
+            shell.Player,
+            targetUserId,
+            operation,
+            targetName,
+            shell.WriteError);
     }
 
     public static CompletionResult CompletePlayer(IPlayerManager players, string[] args)

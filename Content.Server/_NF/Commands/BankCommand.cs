@@ -23,6 +23,7 @@ public sealed partial class BankCommand : IConsoleCommand
     [Dependency] private IServerDbManager _dbManager = default!;
     [Dependency] private IEntitySystemManager _entitySystemManager = default!;
     [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "bank";
 
@@ -102,6 +103,16 @@ public sealed partial class BankCommand : IConsoleCommand
 
     private async Task HandleOnlinePlayer(IConsoleShell shell, ICommonSession targetSession, int amount, string target)
     {
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                targetSession.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                targetSession.Name,
+                shell.WriteError))
+        {
+            return;
+        }
+
         var bankSystem = _entitySystemManager.GetEntitySystem<BankSystem>();
 
         if (!_prefsManager.TryGetCachedPreferences(targetSession.UserId, out var prefs))
@@ -196,6 +207,16 @@ public sealed partial class BankCommand : IConsoleCommand
 
     private async Task HandleOfflinePlayer(IConsoleShell shell, NetUserId userId, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount, string target)
     {
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                userId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                target,
+                shell.WriteError))
+        {
+            return;
+        }
+
         var bankSystem = _entitySystemManager.GetEntitySystem<BankSystem>();
         var currentBalance = profile.BankBalance;
 

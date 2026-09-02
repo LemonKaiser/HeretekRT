@@ -33,6 +33,16 @@ namespace Content.Shared.Administration
         public AdminFlags Flags;
 
         /// <summary>
+        /// Whether this account currently has HOST-equivalent authority.
+        /// </summary>
+        public bool IsHost;
+
+        /// <summary>
+        /// Effective hierarchy level used for staff-targeting checks and the permissions panel.
+        /// </summary>
+        public byte EffectiveHierarchyLevel = AdminHierarchy.DefaultHierarchyLevel;
+
+        /// <summary>
         ///     Checks whether this admin has an admin flag.
         /// </summary>
         /// <param name="flag">The flags to check. Multiple flags can be specified, they must all be held.</param>

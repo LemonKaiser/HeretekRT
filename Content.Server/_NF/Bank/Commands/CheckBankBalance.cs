@@ -19,6 +19,7 @@ namespace Content.Server._NF.Bank.Commands
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private IServerDbManager _dbManager = default!;
         [Dependency] private IEntitySystemManager _entitySystemManager = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public string Command => "checkbalance";
         public string Description => "Check a player's bank balance by username.";
@@ -40,6 +41,16 @@ namespace Content.Server._NF.Bank.Commands
 
             if (onlinePlayer != null)
             {
+                if (await _authorization.TryDenyTargetAsync(
+                        shell.Player,
+                        onlinePlayer.UserId,
+                        Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                        onlinePlayer.Name,
+                        shell.WriteError))
+                {
+                    return;
+                }
+
                 // Get the server-side BankSystem for online players
                 var bankSystem = _entitySystemManager.GetEntitySystem<BankSystem>();
                 if (bankSystem.TryGetBalance(onlinePlayer, out var balance))
@@ -50,8 +61,18 @@ namespace Content.Server._NF.Bank.Commands
             }
 
             // If not online, check cached preferences
-            if (TryGetOfflinePlayerBalance(username, out var offlineBalance))
+            if (TryGetOfflinePlayerBalance(username, out var offlineUserId, out var offlineBalance))
             {
+                if (await _authorization.TryDenyTargetAsync(
+                        shell.Player,
+                        offlineUserId,
+                        Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                        username,
+                        shell.WriteError))
+                {
+                    return;
+                }
+
                 shell.WriteLine($"Player {username} has a bank balance of {offlineBalance} credits.");
                 return;
             }
@@ -61,6 +82,16 @@ namespace Content.Server._NF.Bank.Commands
             if (record != null)
             {
                 var userId = record.UserId;
+                if (await _authorization.TryDenyTargetAsync(
+                        shell.Player,
+                        userId,
+                        Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                        record.LastSeenUserName,
+                        shell.WriteError))
+                {
+                    return;
+                }
+
                 var prefs = await _dbManager.GetPlayerPreferencesAsync(userId, default);
                 if (prefs != null &&
                     prefs.SelectedCharacterIndex >= 0 &&
@@ -77,8 +108,12 @@ namespace Content.Server._NF.Bank.Commands
             shell.WriteLine($"Could not find bank account for player {username}.");
         }
 
-        private bool TryGetOfflinePlayerBalance(string username, out int balance)
+        private bool TryGetOfflinePlayerBalance(
+            string username,
+            out Robust.Shared.Network.NetUserId userId,
+            out int balance)
         {
+            userId = default;
             balance = 0;
 
             // Check all users in the preferences cache
@@ -91,6 +126,7 @@ namespace Content.Server._NF.Bank.Commands
                         if (profile is HumanoidCharacterProfile humanoid &&
                             humanoid.Name.Equals(username, StringComparison.OrdinalIgnoreCase))
                         {
+                            userId = playerData.UserId;
                             balance = humanoid.BankBalance;
                             return true;
                         }

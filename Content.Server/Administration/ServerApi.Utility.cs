@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Content.Server.Administration.Managers;
+using Content.Shared.Administration;
 using Robust.Server.ServerStatus;
+using Robust.Shared.Network;
 
 namespace Content.Server.Administration;
 
@@ -29,8 +32,83 @@ public sealed partial class ServerApi
             if (await CheckActor(context) is not { } actor)
                 return;
 
+            if (!await CheckKnownAdminActorAsync(context, actor))
+                return;
+
             await handler(context, actor);
         });
+    }
+
+    private async Task<AdminData?> GetActiveActorAdminDataAsync(Actor actor)
+    {
+        var actorUserId = new NetUserId(actor.Guid);
+
+        if (_playerManager.TryGetSessionById(actorUserId, out var actorSession))
+            return _adminManager.GetAdminData(actorSession, includeDeAdmin: false);
+
+        var actorAdmin = await _db.GetAdminDataForAsync(actorUserId);
+        if (actorAdmin == null || actorAdmin.Suspended || actorAdmin.Deadminned)
+            return null;
+
+        var flags = AdminHierarchyManager.ResolveFlags(actorAdmin);
+        var isHost = (flags & AdminFlags.Host) != 0;
+
+        return new AdminData
+        {
+            Active = true,
+            Title = actorAdmin.Title ?? actorAdmin.AdminRank?.Name,
+            Flags = flags,
+            IsHost = isHost,
+            EffectiveHierarchyLevel = isHost
+                ? AdminHierarchy.HostHierarchyLevel
+                : actorAdmin.AdminRank?.HierarchyLevel ?? AdminHierarchy.DefaultHierarchyLevel,
+        };
+    }
+
+    private async Task<bool> CheckKnownAdminActorAsync(IStatusHandlerContext context, Actor actor)
+    {
+        if (await GetActiveActorAdminDataAsync(actor) != null)
+            return true;
+
+        await RespondError(
+            context,
+            ErrorCode.ActorNotAdmin,
+            HttpStatusCode.Forbidden,
+            "Actor must reference an active admin account.");
+        _sawmill.Warning($"Denied admin API request from {context.RemoteEndPoint} because actor {FormatLogActor(actor)} is not an active admin.");
+        return false;
+    }
+
+    private async Task<bool> CheckActorPermissionsAsync(
+        IStatusHandlerContext context,
+        Actor actor,
+        string action,
+        params AdminFlags[] requiredAnyFlags)
+    {
+        var actorData = await GetActiveActorAdminDataAsync(actor);
+        if (actorData == null)
+        {
+            await RespondError(
+                context,
+                ErrorCode.ActorNotAdmin,
+                HttpStatusCode.Forbidden,
+                "Actor must reference an active admin account.");
+            return false;
+        }
+
+        foreach (var requiredFlag in requiredAnyFlags)
+        {
+            if (actorData.HasFlag(requiredFlag))
+                return true;
+        }
+
+        await RespondError(
+            context,
+            ErrorCode.ActorNotAdmin,
+            HttpStatusCode.Forbidden,
+            $"Actor lacks required admin permissions to {action}.");
+        _sawmill.Warning($"Denied admin API request from {context.RemoteEndPoint} because actor {FormatLogActor(actor)} lacks required permissions to {action}.");
+        return false;
     }
 
     /// <summary>

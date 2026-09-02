@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server._WH40K.Administration.ScreenCheck;
 using Content.Shared.Administration;
 using Robust.Server.Player;
@@ -13,6 +14,7 @@ internal sealed partial class WH40KScreenCheckCommand : LocalizedCommands
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private ScreenCheckManager _screenChecks = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "screencheck";
 
@@ -41,6 +43,16 @@ internal sealed partial class WH40KScreenCheckCommand : LocalizedCommands
         if (!_players.TryGetSessionById(located.UserId, out var target))
         {
             shell.WriteError(Loc.GetString("screen-check-player-offline", ("player", located.Username)));
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                admin,
+                target.UserId,
+                AdminOperation.Wh40kScreenCheck,
+                target.Name,
+                shell.WriteError))
+        {
             return;
         }
 

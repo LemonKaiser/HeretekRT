@@ -36,6 +36,8 @@ namespace Content.Shared.Administration
                     Title = title,
                     ShortTitle = shortTitle, // Mono
                     Flags = flags,
+                    IsHost = buffer.ReadBoolean(),
+                    EffectiveHierarchyLevel = buffer.ReadByte(),
                 };
             }
 
@@ -59,6 +61,8 @@ namespace Content.Shared.Administration
             buffer.Write((uint) Admin.Flags);
             buffer.Write(Admin.Title);
             buffer.Write(Admin.ShortTitle); // Mono
+            buffer.Write(Admin.IsHost);
+            buffer.Write(Admin.EffectiveHierarchyLevel);
         }
 
         public override NetDeliveryMethod DeliveryMethod => NetDeliveryMethod.ReliableOrdered;

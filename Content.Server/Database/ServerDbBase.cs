@@ -4335,7 +4335,7 @@ namespace Content.Server.Database
                 .SingleOrDefaultAsync(p => p.UserId == userId.UserId, cancel);
         }
 
-        public abstract Task<((Admin, string? lastUserName)[] admins, AdminRank[])>
+        public abstract Task<((Admin admin, string? lastUserName, DateTime? lastSeenTime)[] admins, AdminRank[] ranks)>
             GetAllAdminAndRanksAsync(CancellationToken cancel);
 
         public async Task<AdminRank?> GetAdminRankDataForAsync(int id, CancellationToken cancel = default)
@@ -4489,6 +4489,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             existing.Flags = rank.Flags;
             existing.Name = rank.Name;
             existing.ShortName = rank.ShortName; // Mono
+            existing.HierarchyLevel = rank.HierarchyLevel;
 
             await db.DbContext.SaveChangesAsync(cancel);
         }

@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Database;
+using Content.Server.Administration.Managers;
 using Content.Server.Players.JobWhitelist;
 using Content.Shared.Administration;
 using Content.Shared.Ghost.Roles;
@@ -18,6 +19,7 @@ public sealed partial class GhostRoleWhitelistAddCommand : LocalizedCommands
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "ghostrolewhitelistadd";
 
@@ -45,6 +47,16 @@ public sealed partial class GhostRoleWhitelistAddCommand : LocalizedCommands
         if (data != null)
         {
             var guid = data.UserId;
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    guid,
+                    AdminOperation.GenericTarget,
+                    data.Username,
+                    shell.WriteError))
+            {
+                return;
+            }
+
             var isWhitelisted = await _db.IsGhostRoleWhitelisted(guid, ghostRole);
             if (isWhitelisted)
             {
@@ -92,6 +104,7 @@ public sealed partial class GetGhostRoleWhitelistCommand : LocalizedCommands
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "ghostrolewhitelistget";
 
@@ -109,6 +122,16 @@ public sealed partial class GetGhostRoleWhitelistCommand : LocalizedCommands
         if (data != null)
         {
             var guid = data.UserId;
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    guid,
+                    AdminOperation.GenericTarget,
+                    data.Username,
+                    shell.WriteError))
+            {
+                return;
+            }
+
             var whitelists = await _db.GetJobWhitelists(guid);
             if (whitelists.Count == 0)
             {
@@ -146,6 +169,7 @@ public sealed partial class RemoveGhostRoleWhitelistCommand : LocalizedCommands
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "ghostrolewhitelistremove";
 
@@ -173,6 +197,16 @@ public sealed partial class RemoveGhostRoleWhitelistCommand : LocalizedCommands
         if (data != null)
         {
             var guid = data.UserId;
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    guid,
+                    AdminOperation.GenericTarget,
+                    data.Username,
+                    shell.WriteError))
+            {
+                return;
+            }
+
             var isWhitelisted = await _db.IsGhostRoleWhitelisted(guid, ghostRole);
             if (!isWhitelisted)
             {

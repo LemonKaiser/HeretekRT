@@ -10,11 +10,13 @@ namespace Content.Server.Objectives.Commands
     public sealed partial class RemoveObjectiveCommand : IConsoleCommand
     {
         [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public string Command => "rmobjective";
         public string Description => "Removes an objective from the player's mind.";
         public string Help => "rmobjective <username> <index>";
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length != 2)
             {
@@ -22,11 +24,20 @@ namespace Content.Server.Objectives.Commands
                 return;
             }
 
-            var mgr = IoCManager.Resolve<IPlayerManager>();
             var minds = _entityManager.System<SharedMindSystem>();
-            if (!mgr.TryGetSessionByUsername(args[0], out var session))
+            if (!_playerManager.TryGetSessionByUsername(args[0], out var session))
             {
                 shell.WriteLine("Can't find the playerdata.");
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    session.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    session.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

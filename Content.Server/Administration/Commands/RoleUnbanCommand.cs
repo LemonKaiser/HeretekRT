@@ -1,4 +1,5 @@
 using Content.Server.Administration.Managers;
+using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
@@ -26,6 +27,17 @@ public sealed class RoleUnbanCommand : IConsoleCommand
         }
 
         var banManager = IoCManager.Resolve<IBanManager>();
+        var ban = await IoCManager.Resolve<IServerDbManager>().GetServerRoleBanAsync(banId);
+        if (ban != null
+            && await IoCManager.Resolve<IAdminActionGuard>().TryDenyProtectedRoleBanAsync(
+                shell.Player,
+                ban,
+                Loc.GetString("admin-hierarchy-action-role-unban"),
+                shell.WriteLine))
+        {
+            return;
+        }
+
         var response = await banManager.PardonRoleBan(banId, shell.Player?.UserId, DateTimeOffset.Now);
         shell.WriteLine(response);
     }

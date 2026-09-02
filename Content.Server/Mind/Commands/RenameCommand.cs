@@ -13,10 +13,11 @@ public sealed partial class RenameCommand : LocalizedEntityCommands
     [Dependency] private IEntityManager _entManager = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private MetaDataSystem _metaSystem = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminActionGuard _adminActionGuard = default!;
 
     public override string Command => "rename";
 
-    public override void Execute(IConsoleShell shell, string argStr, string[] args)
+    public override async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         if (args.Length != 2)
         {
@@ -33,6 +34,15 @@ public sealed partial class RenameCommand : LocalizedEntityCommands
 
         if (!TryParseUid(args[0], shell, _entManager, out var entityUid))
             return;
+
+        if (await _adminActionGuard.TryDenyProtectedEntityTargetAsync(
+                shell.Player,
+                entityUid.Value,
+                Loc.GetString("admin-hierarchy-action-rename"),
+                notify: shell.WriteError))
+        {
+            return;
+        }
 
         _metaSystem.SetEntityName(entityUid.Value, name);
     }

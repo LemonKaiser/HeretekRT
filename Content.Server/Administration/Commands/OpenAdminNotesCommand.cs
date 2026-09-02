@@ -44,6 +44,16 @@ public sealed class OpenAdminNotesCommand : IConsoleCommand
                 return;
         }
 
+        if (await IoCManager.Resolve<Content.Server.Administration.Managers.IAdminActionGuard>().TryDenyProtectedTargetAsync(
+                player,
+                new Robust.Shared.Network.NetUserId(notedPlayer),
+                Loc.GetString("admin-hierarchy-action-open-admin-notes"),
+                args[0],
+                shell.WriteError))
+        {
+            return;
+        }
+
         await IoCManager.Resolve<IAdminNotesManager>().OpenEui(player, notedPlayer);
     }
 }

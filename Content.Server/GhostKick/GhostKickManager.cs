@@ -45,13 +45,16 @@ public sealed partial class GhostKickManager
 }
 
 [AdminCommand(AdminFlags.Moderator)]
-public sealed class GhostKickCommand : IConsoleCommand
+public sealed partial class GhostKickCommand : IConsoleCommand
 {
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private GhostKickManager _ghostKick = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
     public string Command => "ghostkick";
     public string Description => "Kick a client from the server as if their network just dropped.";
     public string Help => "Usage: ghostkick <Player> [Reason]";
 
-    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         if (args.Length < 1)
         {
@@ -62,15 +65,22 @@ public sealed class GhostKickCommand : IConsoleCommand
         var playerName = args[0];
         var reason = args.Length > 1 ? args[1] : "Ghost kicked by console";
 
-        var players = IoCManager.Resolve<IPlayerManager>();
-        var ghostKick = IoCManager.Resolve<GhostKickManager>();
-
-        if (!players.TryGetSessionByUsername(playerName, out var player))
+        if (!_players.TryGetSessionByUsername(playerName, out var player))
         {
             shell.WriteError($"Unable to find player: '{playerName}'.");
             return;
         }
 
-        ghostKick.DoDisconnect(player.Channel, reason);
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                player.Name,
+                shell.WriteError))
+        {
+            return;
+        }
+
+        _ghostKick.DoDisconnect(player.Channel, reason);
     }
 }

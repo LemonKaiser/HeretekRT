@@ -12,12 +12,14 @@ namespace Content.Server.Mind.Commands
     public sealed partial class MindInfoCommand : IConsoleCommand
     {
         [Dependency] private IEntityManager _entities = default!;
+        [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public string Command => "mindinfo";
         public string Description => "Lists info for the mind of a specific player.";
         public string Help => "mindinfo <session ID>";
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length != 1)
             {
@@ -25,10 +27,19 @@ namespace Content.Server.Mind.Commands
                 return;
             }
 
-            var mgr = IoCManager.Resolve<IPlayerManager>();
-            if (!mgr.TryGetSessionByUsername(args[0], out var session))
+            if (!_playerManager.TryGetSessionByUsername(args[0], out var session))
             {
                 shell.WriteLine("Can't find that mind");
+                return;
+            }
+
+            if (await _authorization.TryDenyTargetAsync(
+                    shell.Player,
+                    session.UserId,
+                    Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                    session.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

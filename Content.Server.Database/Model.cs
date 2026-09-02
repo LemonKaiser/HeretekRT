@@ -128,6 +128,16 @@ namespace Content.Server.Database
                 .WithMany(p => p!.Admins)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<AdminRank>(entity =>
+            {
+                entity.Property(rank => rank.HierarchyLevel)
+                    .HasDefaultValue((byte) 9);
+                entity.ToTable(table =>
+                    table.HasCheckConstraint(
+                        "AdminRankHierarchyLevelRange",
+                        "hierarchy_level >= 1 AND hierarchy_level <= 9"));
+            });
+
             modelBuilder.Entity<AdminFlag>()
                 .HasIndex(f => new {f.Flag, f.AdminId})
                 .IsUnique();
@@ -829,6 +839,7 @@ namespace Content.Server.Database
         public int Id { get; set; }
         public string Name { get; set; } = default!;
         public string ShortName { get; set; } = default!; // Mono
+        public byte HierarchyLevel { get; set; } = 9;
 
         public List<Admin> Admins { get; set; } = default!;
         public List<AdminRankFlag> Flags { get; set; } = default!;

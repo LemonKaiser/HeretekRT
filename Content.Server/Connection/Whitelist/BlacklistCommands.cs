@@ -10,6 +10,7 @@ public sealed partial class AddBlacklistCommand : LocalizedCommands
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "blacklistadd";
 
@@ -38,6 +39,16 @@ public sealed partial class AddBlacklistCommand : LocalizedCommands
             return;
         }
         var guid = data.UserId;
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                guid,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                data.Username,
+                shell.WriteError))
+        {
+            return;
+        }
+
         var isBlacklisted = await _db.GetBlacklistStatusAsync(guid);
         if (isBlacklisted)
         {
@@ -65,6 +76,7 @@ public sealed partial class RemoveBlacklistCommand : LocalizedCommands
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "blacklistremove";
 
@@ -94,6 +106,16 @@ public sealed partial class RemoveBlacklistCommand : LocalizedCommands
         }
 
         var guid = data.UserId;
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                guid,
+                Content.Server.Administration.Managers.AdminOperation.GenericTarget,
+                data.Username,
+                shell.WriteError))
+        {
+            return;
+        }
+
         var isBlacklisted = await _db.GetBlacklistStatusAsync(guid);
         if (!isBlacklisted)
         {

@@ -1,4 +1,5 @@
 using Content.Server.Administration.UI;
+using Content.Server.Administration.Managers;
 using Content.Server.EUI;
 using Content.Server.Hands.Systems;
 using Content.Server.Preferences.Managers;
@@ -24,6 +25,7 @@ namespace Content.Server.Administration.Commands
     [AdminCommand(AdminFlags.Admin)]
     public sealed partial class SetOutfitCommand : IConsoleCommand
     {
+        [Dependency] private IAdminActionGuard _adminActionGuard = default!;
         [Dependency] private IEntityManager _entities = default!;
 
         public string Command => "setoutfit";
@@ -32,7 +34,7 @@ namespace Content.Server.Administration.Commands
 
         public string Help => Loc.GetString("set-outfit-command-help-text", ("command", Command));
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length < 1)
             {
@@ -57,6 +59,17 @@ namespace Content.Server.Administration.Commands
             if (!_entities.HasComponent<InventoryComponent>(target))
             {
                 shell.WriteLine(Loc.GetString("shell-target-entity-does-not-have-message", ("missing", "inventory")));
+                return;
+            }
+
+            if (_entities.TryGetComponent(target.Value, out ActorComponent? actor)
+                && await _adminActionGuard.TryDenyProtectedTargetAsync(
+                    shell.Player,
+                    actor.PlayerSession.UserId,
+                    Loc.GetString("admin-hierarchy-action-set-outfit"),
+                    actor.PlayerSession.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

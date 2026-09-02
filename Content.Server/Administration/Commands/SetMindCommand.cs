@@ -1,4 +1,5 @@
 using Content.Server.Players;
+using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
@@ -11,6 +12,7 @@ namespace Content.Server.Administration.Commands
     [AdminCommand(AdminFlags.Admin)]
     sealed partial class SetMindCommand : IConsoleCommand
     {
+        [Dependency] private IAdminActionGuard _adminActionGuard = default!;
         [Dependency] private IEntityManager _entManager = default!;
 
         public string Command => "setmind";
@@ -19,7 +21,7 @@ namespace Content.Server.Administration.Commands
 
         public string Help => Loc.GetString("set-mind-command-help-text", ("command", Command));
 
-        public void Execute(IConsoleShell shell, string argStr, string[] args)
+        public async void Execute(IConsoleShell shell, string argStr, string[] args)
         {
             if (args.Length < 2)
             {
@@ -56,6 +58,16 @@ namespace Content.Server.Administration.Commands
             if (!IoCManager.Resolve<IPlayerManager>().TryGetSessionByUsername(args[1], out var session))
             {
                 shell.WriteLine(Loc.GetString("shell-target-player-does-not-exist"));
+                return;
+            }
+
+            if (await _adminActionGuard.TryDenyProtectedTargetAsync(
+                    shell.Player,
+                    session.UserId,
+                    Loc.GetString("admin-hierarchy-action-set-mind"),
+                    session.Name,
+                    shell.WriteError))
+            {
                 return;
             }
 

@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Server.Player;
@@ -16,6 +17,7 @@ public sealed partial class CurrencyAddCommand : LocalizedCommands
 {
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private MonoCoinsManager _coins = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "currency:add";
 
@@ -53,6 +55,16 @@ public sealed partial class CurrencyAddCommand : LocalizedCommands
         }
 
         var userId = targetSession.UserId;
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                userId,
+                AdminOperation.GenericTarget,
+                targetSession.Name,
+                shell.WriteError))
+        {
+            return;
+        }
 
         try
         {

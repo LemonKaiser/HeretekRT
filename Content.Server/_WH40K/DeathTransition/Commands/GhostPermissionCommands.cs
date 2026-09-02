@@ -1,5 +1,6 @@
 using System;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Shared.Administration;
 using Content.Shared.Database;
 using Content.Shared._WH40K.DeathTransition;
@@ -13,6 +14,7 @@ public sealed partial class GhostPermissionGrantCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "ghostpermgrant";
     public string Description => "Grants a limited ghost permission to a player.";
@@ -27,6 +29,16 @@ public sealed partial class GhostPermissionGrantCommand : IConsoleCommand
         if (player == null)
         {
             shell.WriteError("Player not found.");
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                AdminOperation.GhostPermission,
+                player.Username,
+                shell.WriteError))
+        {
             return;
         }
 
@@ -89,6 +101,7 @@ public sealed partial class GhostPermissionRevokeCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "ghostpermrevoke";
     public string Description => "Revokes a player's ghost permission.";
@@ -109,6 +122,16 @@ public sealed partial class GhostPermissionRevokeCommand : IConsoleCommand
             return;
         }
 
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                AdminOperation.GhostPermission,
+                player.Username,
+                shell.WriteError))
+        {
+            return;
+        }
+
         await _systems.GetEntitySystem<GhostPermissionSystem>().RemovePermissionAsync(player.UserId);
         shell.WriteLine($"Ghost permission revoked for {player.Username}.");
     }
@@ -126,6 +149,7 @@ public sealed partial class GhostPermissionGetCommand : IConsoleCommand
 {
     [Dependency] private IPlayerLocator _playerLocator = default!;
     [Dependency] private IEntitySystemManager _systems = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public string Command => "ghostpermget";
     public string Description => "Shows a player's active ghost permission.";
@@ -143,6 +167,16 @@ public sealed partial class GhostPermissionGetCommand : IConsoleCommand
         if (player == null)
         {
             shell.WriteError("Player not found.");
+            return;
+        }
+
+        if (await _authorization.TryDenyTargetAsync(
+                shell.Player,
+                player.UserId,
+                AdminOperation.GhostPermission,
+                player.Username,
+                shell.WriteError))
+        {
             return;
         }
 
