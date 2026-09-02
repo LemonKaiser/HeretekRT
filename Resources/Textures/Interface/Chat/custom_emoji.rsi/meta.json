@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-4.0",
+  "copyright": "WH14K custom chat emoji",
+  "size": {
+    "x": 72,
+    "y": 72
+  },
+  "states": [
+    {
+      "name": "blunt"
+    },
+    {
+      "name": "Nosramus"
+    },
+    {
+      "name": "noERP"
+    },
+    {
+      "name": "pepe"
+    },
+    {
+      "name": "skull"
+    },
+    {
+      "name": "woodsman"
+    },
+    {
+      "name": "good"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+- type: chatCustomEmoji
+  id: blunt
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: blunt
+  displayName: Тупой
+  keywords: [ тупой, blunt ]
+
+- type: chatCustomEmoji
+  id: good
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: good
+  displayName: Хорошо
+  keywords: [ хорошо, good, палец ]
+
+- type: chatCustomEmoji
+  id: Nosramus
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: Nosramus
+  displayName: Носрамус
+  keywords: [ nosramus ]
+
+- type: chatCustomEmoji
+  id: noERP
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: noERP
+  displayName: Без ERP
+  keywords: [ noerp, erp ]
+
+- type: chatCustomEmoji
+  id: pepe
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: pepe
+  displayName: Пепе
+  keywords: [ pepe, frog, лягушка ]
+
+- type: chatCustomEmoji
+  id: wh40k_skull
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: skull
+  displayName: Череп Адептус Механикус
+  keywords: [ skull, череп, mechanicus, механикус ]
+
+- type: chatCustomEmoji
+  id: woodsman
+  rsiPath: /Textures/Interface/Chat/custom_emoji.rsi
+  state: woodsman
+  displayName: Лесоруб
+  keywords: [ woodsman, лесоруб ]

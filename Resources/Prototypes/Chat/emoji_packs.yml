@@ -1,0 +1,47 @@
+- type: chatEmojiPack
+  id: smileys
+  category: Smileys
+  order: 10
+  definitions: grinning=1F600 grin=1F601 joy=1F602 smiley=1F603 smile=1F604 sweat_smile=1F605 laughing=1F606 innocent=1F607 wink=1F609 blush=1F60A heart_eyes=1F60D sunglasses=1F60E smirk=1F60F neutral_face=1F610 expressionless=1F611 unamused=1F612 sweat=1F613 pensive=1F614 worried=1F61F pouting_face=1F620 rage=1F621 cry=1F622 sob=1F62D scream=1F631 sleeping=1F634 mask=1F637 slightly_smiling_face=1F642 upside_down_face=1F643 rolling_eyes=1F644 thinking=1F914 rofl=1F923 star_struck=1F929 zany_face=1F92A pleading_face=1F97A smiling_face_with_tear=1F972 partying_face=1F973 saluting_face=1FAE1 wave=1F44B thumbsup=1F44D thumbsdown=1F44E clap=1F44F point_left=1F448 point_right=1F449 ok_hand=1F44C fist=1F44A muscle=1F4AA pray=1F64F handshake=1F91D pinched_fingers=1F90C v=270C-FE0F writing_hand=270D-FE0F point_up=261D-FE0F
+
+- type: chatEmojiPack
+  id: nature
+  category: Nature
+  order: 20
+  definitions: dog=1F436 cat=1F431 mouse=1F42D wolf=1F43A fox=1F98A herb=1F33F four_leaf_clover=1F340 rose=1F339 skull=1F480 ghost=1F47B alien=1F47D robot=1F916 fire=1F525 sparkles=2728 star=2B50 sunny=2600-FE0F moon=1F319 zap=26A1 snowflake=2744-FE0F cloud_with_rain=1F327-FE0F
+
+- type: chatEmojiPack
+  id: food
+  category: Food
+  order: 30
+  definitions: apple=1F34E burger=1F354 pizza=1F355 fries=1F35F taco=1F32E coffee=2615 tea=1F375 beer=1F37A tropical_drink=1F379 birthday=1F382 icecream=1F366 lollipop=1F36D bowl_with_spoon=1F963
+
+- type: chatEmojiPack
+  id: activities
+  category: Activities
+  order: 40
+  definitions: soccer=26BD basketball=1F3C0 football=1F3C8 baseball=26BE video_game=1F3AE game_die=1F3B2 dart=1F3AF trophy=1F3C6 medal=1F3C5 musical_note=1F3B5 microphone=1F3A4 art=1F3A8 performing_arts=1F3AD
+
+- type: chatEmojiPack
+  id: travel
+  category: Travel
+  order: 50
+  definitions: car=1F697 taxi=1F695 bus=1F68C train=1F686 airplane=2708-FE0F rocket=1F680 ship=1F6A2 satellite=1F6F0-FE0F bicycle=1F6B2 motorcycle=1F3CD-FE0F
+
+- type: chatEmojiPack
+  id: objects
+  category: Objects
+  order: 60
+  definitions: package=1F4E6 gift=1F381 bulb=1F4A1 wrench=1F527 gear=2699-FE0F hammer=1F528 hammer_and_wrench=1F6E0-FE0F computer=1F4BB lock=1F512 key=1F511 moneybag=1F4B0 gem=1F48E book=1F4D6 pill=1F48A
+
+- type: chatEmojiPack
+  id: symbols
+  category: Symbols
+  order: 70
+  definitions: heart=2764-FE0F orange_heart=1F9E1 yellow_heart=1F49B green_heart=1F49A blue_heart=1F499 purple_heart=1F49C broken_heart=1F494 100=1F4AF boom=1F4A5 warning=26A0-FE0F white_check_mark=2705 x=274C question=2753 grey_question=2754 exclamation=2757 grey_exclamation=2755 recycle=267B-FE0F peace=262E-FE0F biohazard=2623-FE0F radioactive=2622-FE0F infinity=267E-FE0F zzz=1F4A4
+
+- type: chatEmojiPack
+  id: flags
+  category: Flags
+  order: 80
+  definitions: triangular_flag_on_post=1F6A9 checkered_flag=1F3C1 black_flag=1F3F4 white_flag=1F3F3-FE0F rainbow_flag=1F3F3-FE0F-200D-1F308 pirate_flag=1F3F4-200D-2620-FE0F flag_ru=1F1F7-1F1FA flag_us=1F1FA-1F1F8 flag_gb=1F1EC-1F1E7 flag_fr=1F1EB-1F1F7 flag_de=1F1E9-1F1EA flag_ua=1F1FA-1F1E6

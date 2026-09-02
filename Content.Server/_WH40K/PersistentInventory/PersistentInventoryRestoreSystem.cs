@@ -86,6 +86,15 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
 
     public bool IsSpawnBlockedByDurableState(NetUserId userId)
     {
+        // A snapshot from a previously enabled rollout must not prevent a normal
+        // spawn when persistent inventory is currently disabled or the account is
+        // outside the active rollout bucket.
+        if (PersistentInventoryRollout.GetDecision(_configuration, userId) !=
+            PersistentInventoryRolloutDecision.Full)
+        {
+            return false;
+        }
+
         var status = _manager.Get(userId).Status;
         if (status is PersistentInventoryCacheStatus.Bound
             or PersistentInventoryCacheStatus.Staging
@@ -94,9 +103,7 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
             return true;
         }
 
-        return status == PersistentInventoryCacheStatus.Available &&
-               PersistentInventoryRollout.GetDecision(_configuration, userId) !=
-               PersistentInventoryRolloutDecision.Full;
+        return false;
     }
 
     public void CancelRestore(PersistentInventoryRestoreReservation reservation)

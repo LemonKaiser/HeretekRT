@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Client._Mono.Company; // Mono
 using Content.Client._Mono.MonoCoins;
+using Content.Client.Administration.Managers;
 using Content.Client.Guidebook;
 using Content.Client.Humanoid;
 using Content.Client.Inventory;
@@ -33,6 +34,7 @@ namespace Content.Client.Lobby;
 public sealed partial class LobbyUIController : UIController, IOnStateEntered<LobbyState>, IOnStateExited<LobbyState>
 {
     [Dependency] private IClientPreferencesManager _preferencesManager = default!;
+    [Dependency] private IClientAdminManager _adminManager = default!;
     [Dependency] private IConfigurationManager _configurationManager = default!;
     [Dependency] private IFileDialogManager _dialogManager = default!;
     [Dependency] private ILogManager _logManager = default!;
@@ -80,6 +82,9 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         _configurationManager.OnValueChanged(CCVars.GameRoleTimers, _ => RefreshProfileEditor());
 
         _configurationManager.OnValueChanged(CCVars.GameRoleWhitelist, _ => RefreshProfileEditor());
+
+        _configurationManager.OnValueChanged(CCVars.Wh40kProfileEditMode, _ => _profileEditor?.RefreshProfileEditPermissions());
+        _configurationManager.OnValueChanged(CCVars.Wh40kProfileEditAdminBypass, _ => _profileEditor?.RefreshProfileEditPermissions());
     }
 
     private bool _monoCoinsSubscribed = false;
@@ -350,6 +355,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         _profileEditor = new HumanoidProfileEditor(
             _preferencesManager,
             _configurationManager,
+            _adminManager,
             EntityManager,
             _dialogManager,
             _logManager,

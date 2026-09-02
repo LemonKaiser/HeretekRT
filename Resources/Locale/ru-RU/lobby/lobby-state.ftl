@@ -48,6 +48,7 @@ heretek-lobby-chat-channel = КАНАЛ OOC
 heretek-lobby-chat-toggle = Открыть или скрыть чат
 heretek-lobby-authors = Авторы
 heretek-lobby-create-character = Создать персонажа
+heretek-lobby-profile-required = Сначала создайте персонажа, чтобы войти в раунд.
 
 heretek-onboarding-cancel = Вернуться в лобби
 heretek-onboarding-title = Создание персонажа

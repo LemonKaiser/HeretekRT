@@ -53,6 +53,7 @@ namespace Content.Server.Preferences.Managers
         private ISawmill _sawmill = default!;
 
         private int MaxCharacterSlots => _cfg.GetCVar(CCVars.GameMaxCharacterSlots);
+        private Wh40kProfileEditSystem Wh40kProfileEdits => _entityManager.System<Wh40kProfileEditSystem>();
 
         public void Init()
         {
@@ -115,11 +116,32 @@ namespace Content.Server.Preferences.Managers
                 return;
             }
 
+            if (!_cachedPlayerPrefs.TryGetValue(userId, out var prefsData) || !prefsData.PrefsLoaded)
+            {
+                _sawmill.Warning($"User {userId} tried to update a character before preferences loaded.");
+                return;
+            }
+
             // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (message.Profile == null)
+            {
                 _sawmill.Error($"User {userId} sent a {nameof(MsgUpdateCharacter)} with a null profile in slot {message.Slot}.");
-            else
-                await SetProfile(userId, message.Slot, message.Profile, false);
+                return;
+            }
+
+            var session = _playerManager.GetSessionById(userId);
+            prefsData.Prefs!.Characters.TryGetValue(message.Slot, out var existingProfile);
+            if (!Wh40kProfileEdits.TryPrepareProfileUpdate(
+                    session,
+                    existingProfile,
+                    message.Profile,
+                    out var preparedProfile))
+            {
+                _sawmill.Warning($"User {userId} tried to modify a WH40K character profile while profile editing is locked.");
+                return;
+            }
+
+            await SetProfile(userId, message.Slot, preparedProfile, false);
         }
 
         private async void HandleCompleteWh40kOnboardingMessage(MsgCompleteWh40kOnboarding message)
@@ -394,6 +416,12 @@ namespace Content.Server.Preferences.Managers
             if (IsWh40kOnboardingRequired(userId))
             {
                 _sawmill.Warning($"User {userId} tried to delete character slot {slot} before completing WH40K onboarding.");
+                return;
+            }
+
+            if (Wh40kProfileEdits.IsProfileMutationLocked(_playerManager.GetSessionById(userId)))
+            {
+                _sawmill.Warning($"User {userId} tried to delete a WH40K character profile while profile editing is locked.");
                 return;
             }
 

@@ -1,5 +1,7 @@
 using System.Numerics;
 using Content.Client.Chat.Managers;
+using Content.Client.UserInterface.Systems.Chat;
+using Content.Client.UserInterface.Systems.Chat.RichText;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
@@ -17,6 +19,7 @@ namespace Content.Client.Chat.UI
         [Dependency] private IGameTiming _timing = default!;
         [Dependency] private IEyeManager _eyeManager = default!;
         [Dependency] private IEntityManager _entityManager = default!;
+        [Dependency] private ChatEmojiCatalog _emojiCatalog = default!;
         [Dependency] protected IConfigurationManager ConfigManager = default!;
         private readonly SharedTransformSystem _transformSystem;
 
@@ -200,6 +203,14 @@ namespace Content.Client.Chat.UI
             return FormatSpeech(SharedChatSystem.GetStringInsideTag(message, tag), fontColor);
         }
 
+        protected bool ShouldRenderEmojiAliases(ChatMessage message)
+        {
+            return UserInterfaceManager.GetUIController<ChatUIController>().IsEmojiAllowed(message.Channel);
+        }
+
+        protected ChatEmojiCatalog EmojiCatalog => _emojiCatalog;
+        protected int MaxEmojiPerMessage => UserInterfaceManager.GetUIController<ChatUIController>().MaxEmojiPerMessage;
+
     }
 
     public sealed class TextSpeechBubble : SpeechBubble
@@ -216,7 +227,11 @@ namespace Content.Client.Chat.UI
                 MaxWidth = SpeechMaxWidth,
             };
 
-            label.SetMessage(FormatSpeech(message.WrappedMessage, fontColor));
+            label.SetMessage(ChatEmojiRichText.ReplaceEmojiText(
+                FormatSpeech(message.WrappedMessage, fontColor),
+                ShouldRenderEmojiAliases(message),
+                EmojiCatalog,
+                MaxEmojiPerMessage), tagsAllowed: null);
 
             var panel = new PanelContainer
             {
@@ -246,7 +261,11 @@ namespace Content.Client.Chat.UI
                     MaxWidth = SpeechMaxWidth
                 };
 
-                label.SetMessage(ExtractAndFormatSpeechSubstring(message, "BubbleContent", fontColor));
+                label.SetMessage(ChatEmojiRichText.ReplaceEmojiText(
+                    ExtractAndFormatSpeechSubstring(message, "BubbleContent", fontColor),
+                    ShouldRenderEmojiAliases(message),
+                    EmojiCatalog,
+                    MaxEmojiPerMessage), tagsAllowed: null);
 
                 var unfanciedPanel = new PanelContainer
                 {
@@ -272,8 +291,16 @@ namespace Content.Client.Chat.UI
             };
 
             //We'll be honest. *Yes* this is hacky. Doing this in a cleaner way would require a bottom-up refactor of how saycode handles sending chat messages. -Myr
-            bubbleHeader.SetMessage(ExtractAndFormatSpeechSubstring(message, "BubbleHeader", fontColor));
-            bubbleContent.SetMessage(ExtractAndFormatSpeechSubstring(message, "BubbleContent", fontColor));
+            bubbleHeader.SetMessage(ChatEmojiRichText.ReplaceEmojiText(
+                ExtractAndFormatSpeechSubstring(message, "BubbleHeader", fontColor),
+                ShouldRenderEmojiAliases(message),
+                EmojiCatalog,
+                MaxEmojiPerMessage), tagsAllowed: null);
+            bubbleContent.SetMessage(ChatEmojiRichText.ReplaceEmojiText(
+                ExtractAndFormatSpeechSubstring(message, "BubbleContent", fontColor),
+                ShouldRenderEmojiAliases(message),
+                EmojiCatalog,
+                MaxEmojiPerMessage), tagsAllowed: null);
 
             //As for below: Some day this could probably be converted to xaml. But that is not today. -Myr
             var mainPanel = new PanelContainer

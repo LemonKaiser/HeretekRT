@@ -151,6 +151,78 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
                !component.SuppressBodyDeletion;
     }
 
+    /// <summary>
+    /// Repairs a durable bind that belongs to this server epoch but has no corresponding
+    /// world body. This can only happen when a spawn was interrupted after the database
+    /// bind was committed. A real bound body is never released here.
+    /// </summary>
+    public async Task<bool> TryRecoverOrphanedBoundLifeAsync(NetUserId userId)
+    {
+        if (PersistentInventoryRollout.GetDecision(_configuration, userId) !=
+                PersistentInventoryRolloutDecision.Full ||
+            _manager.IsLifeLossPending(userId) ||
+            HasActiveBoundBody(userId))
+        {
+            return false;
+        }
+
+        var entry = _manager.Get(userId);
+        if (entry is not
+            {
+                Status: PersistentInventoryCacheStatus.Bound,
+                Header:
+                {
+                    State: PersistentInventorySnapshotState.Bound,
+                    ServerEpoch: { } serverEpoch,
+                } header,
+            } ||
+            serverEpoch != _manager.ServerEpoch)
+        {
+            return false;
+        }
+
+        try
+        {
+            var result = await _db.TransitionPersistentInventoryAsync(
+                userId,
+                new PersistentInventoryTransitionRequest(
+                    PersistentInventorySnapshotState.Active,
+                    PersistentInventoryOperationId.New(),
+                    header.Revision,
+                    "spawn-orphan-reconciliation",
+                    Reason: "Current server epoch has a bound snapshot without a world body.",
+                    LossReason: PersistentInventoryLossReason.ServerRecovery,
+                    AuditAction: PersistentInventoryAuditAction.Recovered),
+                CancellationToken.None);
+
+            if (result.Header is { } refreshed)
+                _manager.UpdateFromMutation(userId, refreshed);
+            else
+                _manager.Remove(userId);
+
+            if (!result.IsSuccess || result.Header?.State != PersistentInventorySnapshotState.Active)
+            {
+                Log.Warning(
+                    $"Persistent inventory orphaned bind recovery was rejected for {userId}: {result.Status}.");
+                return false;
+            }
+
+            _adminLog.Add(
+                LogType.Mind,
+                LogImpact.High,
+                $"Persistent inventory orphaned bound life recovered for {userId}: " +
+                $"snapshot {header.CurrentVerified?.SnapshotId}, epoch {_manager.ServerEpoch}.");
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Log.Error(
+                $"Persistent inventory orphaned bind recovery failed for {userId}: " +
+                $"{exception.GetType().Name}.");
+            return false;
+        }
+    }
+
     public async Task<bool> InvalidateBoundLifeAsync(
         EntityUid body,
         PersistentInventoryInvalidationReason reason,

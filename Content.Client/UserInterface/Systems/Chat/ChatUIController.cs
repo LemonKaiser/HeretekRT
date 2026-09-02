@@ -49,6 +49,7 @@ public sealed partial class ChatUIController : UIController
     [Dependency] private IClientAdminManager _admin = default!;
     [Dependency] private IChatManager _manager = default!;
     [Dependency] private IConfigurationManager _config = default!;
+    [Dependency] private ChatEmojiPolicy _emojiPolicy = default!;
     [Dependency] private IEyeManager _eye = default!;
     [Dependency] private IEntityManager _ent = default!;
     [Dependency] private IInputManager _input = default!;
@@ -170,6 +171,9 @@ public sealed partial class ChatUIController : UIController
     public ChatChannel FilterableChannels { get; private set; }
     public ChatSelectChannel SelectableChannels { get; private set; }
     private ChatSelectChannel PreferredChannel { get; set; } = ChatSelectChannel.OOC;
+    private int _historyLength;
+
+    public int MaxEmojiPerMessage => _emojiPolicy.MaxPerMessage;
 
     public event Action<ChatSelectChannel>? CanSendChannelsChanged;
     public event Action<ChatChannel>? FilterableChannelsChanged;
@@ -190,6 +194,8 @@ public sealed partial class ChatUIController : UIController
         SubscribeNetworkEvent<DamageForceSayEvent>(OnDamageForceSay);
         _config.OnValueChanged(CCVars.ChatEnableColorName, (value) => { _chatNameColorsEnabled = value; });
         _chatNameColorsEnabled = _config.GetCVar(CCVars.ChatEnableColorName);
+        _emojiPolicy.Changed += OnEmojiPolicyChanged;
+        _config.OnValueChanged(CCVars.ChatHistoryLength, OnHistoryLengthChanged, true);
 
         _speechBubbleRoot = new LayoutContainer();
 
@@ -719,13 +725,18 @@ public sealed partial class ChatUIController : UIController
     public void UpdateSelectedChannel(ChatBox box)
     {
         // <Goobstation> - Starlight collective mind port
-        var (prefixChannel, _, radioChannel, collectiveMind) = SplitInputContents(box.ChatInput.Input.Text.ToLower());
+        var (prefixChannel, _, radioChannel, collectiveMind) = SplitInputContents(box.ChatInput.Input.Text);
 
         switch (prefixChannel)
         {
             case ChatSelectChannel.None:
-                box.ChatInput.ChannelSelector.UpdateChannelSelectButton(box.SelectedChannel, null, null);
+            {
+                var selectedChannel = box.SelectedChannel == ChatSelectChannel.None
+                    ? GetPreferredChannel()
+                    : box.SelectedChannel;
+                box.ChatInput.ChannelSelector.UpdateChannelSelectButton(selectedChannel, null, null);
                 break;
+            }
             case ChatSelectChannel.CollectiveMind:
                 box.ChatInput.ChannelSelector.UpdateChannelSelectButton(prefixChannel, null, collectiveMind);
                 break;
@@ -733,7 +744,26 @@ public sealed partial class ChatUIController : UIController
                 box.ChatInput.ChannelSelector.UpdateChannelSelectButton(prefixChannel, radioChannel, null);
                 break;
         }
+
+        box.ChatInput.SetEmojiAllowed(IsEmojiAllowed(ResolveEffectiveInputChannel(box, prefixChannel)));
         // </Goobstation>
+    }
+
+    public ChatSelectChannel ResolveEffectiveInputChannel(ChatBox box)
+    {
+        var (prefixChannel, _, _, _) = SplitInputContents(box.ChatInput.Input.Text);
+        return ResolveEffectiveInputChannel(box, prefixChannel);
+    }
+
+    private ChatSelectChannel ResolveEffectiveInputChannel(ChatBox box, ChatSelectChannel prefixChannel)
+    {
+        var selectedChannel = box.SelectedChannel == ChatSelectChannel.None
+            ? GetPreferredChannel()
+            : box.SelectedChannel;
+
+        return prefixChannel == ChatSelectChannel.None
+            ? MapLocalIfGhost(selectedChannel)
+            : prefixChannel;
     }
 
     // Goobstation - Starlight collective mind port
@@ -888,7 +918,13 @@ public sealed partial class ChatUIController : UIController
         // Log all incoming chat to repopulate when filter is un-toggled
         if (!msg.HideChat)
         {
-            History.Add((_timing.CurTick, msg));
+            if (_historyLength > 0)
+            {
+                History.Add((_timing.CurTick, msg));
+                var excess = History.Count - _historyLength;
+                if (excess > 0)
+                    History.RemoveRange(0, excess);
+            }
             MessageAdded?.Invoke(msg);
 
             if (!msg.Read)
@@ -947,6 +983,7 @@ public sealed partial class ChatUIController : UIController
     public void RegisterChat(ChatBox chat)
     {
         _chats.Add(chat);
+        UpdateSelectedChannel(chat);
     }
 
     public void UnregisterChat(ChatBox chat)
@@ -974,6 +1011,43 @@ public sealed partial class ChatUIController : UIController
         foreach (var chat in _chats)
         {
             chat.Repopulate();
+        }
+    }
+
+    public bool IsEmojiAllowed(ChatSelectChannel channel)
+    {
+        return _emojiPolicy.IsAllowed(MapLocalIfGhost(channel));
+    }
+
+    public bool IsEmojiAllowed(ChatChannel channel)
+    {
+        return _emojiPolicy.IsAllowed(channel);
+    }
+
+    private void OnEmojiPolicyChanged()
+    {
+        foreach (var chat in _chats)
+        {
+            UpdateSelectedChannel(chat);
+        }
+        Repopulate();
+    }
+
+    private void OnHistoryLengthChanged(int value)
+    {
+        _historyLength = Math.Max(0, value);
+        if (_historyLength == 0)
+        {
+            History.Clear();
+            Repopulate();
+            return;
+        }
+
+        var excess = History.Count - _historyLength;
+        if (excess > 0)
+        {
+            History.RemoveRange(0, excess);
+            Repopulate();
         }
     }
 

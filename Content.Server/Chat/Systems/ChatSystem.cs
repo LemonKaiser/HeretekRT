@@ -53,6 +53,7 @@ public sealed partial class ChatSystem : SharedChatSystem
 {
     [Dependency] private IReplayRecordingManager _replay = default!;
     [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private ChatEmojiPolicy _emojiPolicy = default!;
     [Dependency] private IChatManager _chatManager = default!;
     [Dependency] private IChatSanitizationManager _sanitizer = default!;
     [Dependency] private IAdminManager _adminManager = default!;
@@ -90,7 +91,6 @@ public sealed partial class ChatSystem : SharedChatSystem
         Subs.CVar(_configurationManager, CCVars.LoocEnabled, OnLoocEnabledChanged, true);
         Subs.CVar(_configurationManager, CCVars.DeadLoocEnabled, OnDeadLoocEnabledChanged, true);
         Subs.CVar(_configurationManager, CCVars.CritLoocEnabled, OnCritLoocEnabledChanged, true);
-
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnGameChange);
     }
 
@@ -120,6 +120,11 @@ public sealed partial class ChatSystem : SharedChatSystem
         _critLoocEnabled = val;
         _chatManager.DispatchServerAnnouncement(
             Loc.GetString(val ? "chat-manager-crit-looc-chat-enabled-message" : "chat-manager-crit-looc-chat-disabled-message"));
+    }
+
+    private string ApplyEmojiPolicy(string message, ChatSelectChannel channel)
+    {
+        return _emojiPolicy.Apply(message, channel);
     }
 
     private void OnGameChange(GameRunLevelChangedEvent ev)
@@ -245,7 +250,9 @@ public sealed partial class ChatSystem : SharedChatSystem
         // Was there an emote in the message? If so, send it.
         if (player != null && emoteStr != message && emoteStr != null)
         {
-            SendEntityEmote(source, emoteStr, range, nameOverride, language, ignoreActionBlocker); // Einstein Engines - Language
+            emoteStr = ApplyEmojiPolicy(emoteStr, ChatSelectChannel.Emotes);
+            if (!string.IsNullOrWhiteSpace(emoteStr))
+                SendEntityEmote(source, emoteStr, range, nameOverride, language, ignoreActionBlocker); // Einstein Engines - Language
         }
 
         // This can happen if the entire string is sanitized out.
@@ -255,12 +262,21 @@ public sealed partial class ChatSystem : SharedChatSystem
         // This is really terrible. I hate myself for doing this. [-] Einstein Engines - Languages
         if (language.SpeechOverride.ChatTypeOverride is { } chatTypeOverride)
             desiredType = chatTypeOverride;
+
         // Mono Change: Is this being sent direct
         var targetEv = new CheckTargetedSpeechEvent();
         RaiseLocalEvent(source, targetEv);
 
         if (targetEv.Targets.Count > 0 && !targetEv.ChatTypeIgnore.Contains(desiredType))
         {
+            message = ApplyEmojiPolicy(message, desiredType switch
+            {
+                InGameICChatType.Whisper => ChatSelectChannel.Whisper,
+                InGameICChatType.Emote => ChatSelectChannel.Emotes,
+                _ => ChatSelectChannel.Local,
+            });
+            if (string.IsNullOrWhiteSpace(message))
+                return;
             SendEntityDirect(source, message, range, nameOverride, targetEv.Targets, language);
             return;
         }
@@ -270,6 +286,9 @@ public sealed partial class ChatSystem : SharedChatSystem
         {
             if (TryProccessRadioMessage(source, message, out var modMessage, out var channel))
             {
+                modMessage = ApplyEmojiPolicy(modMessage, ChatSelectChannel.Radio);
+                if (string.IsNullOrWhiteSpace(modMessage))
+                    return;
                 SendEntityWhisper(source, modMessage, range, channel, nameOverride, language, hideLog, ignoreActionBlocker); // Einstein Engines - Language
                 return;
             }
@@ -280,10 +299,22 @@ public sealed partial class ChatSystem : SharedChatSystem
         {
             if (TryProccessCollectiveMindMessage(source, message, out var modMessage, out var channel))
             {
+                modMessage = ApplyEmojiPolicy(modMessage, ChatSelectChannel.CollectiveMind);
+                if (string.IsNullOrWhiteSpace(modMessage))
+                    return;
                 SendCollectiveMindChat(source, modMessage, channel);
                 return;
             }
         }
+
+        message = ApplyEmojiPolicy(message, desiredType switch
+        {
+            InGameICChatType.Whisper => ChatSelectChannel.Whisper,
+            InGameICChatType.Emote => ChatSelectChannel.Emotes,
+            _ => ChatSelectChannel.Local,
+        });
+        if (string.IsNullOrWhiteSpace(message))
+            return;
 
         // Otherwise, send whatever type.
         switch (desiredType)
@@ -321,6 +352,11 @@ public sealed partial class ChatSystem : SharedChatSystem
             return;
 
         message = SanitizeInGameOOCMessage(message);
+        message = ApplyEmojiPolicy(message, type == InGameOOCChatType.Dead
+            ? ChatSelectChannel.Dead
+            : ChatSelectChannel.LOOC);
+        if (string.IsNullOrWhiteSpace(message))
+            return;
 
         var sendType = type;
         // If dead player LOOC is disabled, unless you are an admin with Moderator perms, send dead messages to dead chat

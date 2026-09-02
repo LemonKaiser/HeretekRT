@@ -1,4 +1,5 @@
 using Content.Client.UserInterface.Systems.Chat.Controls;
+using Content.Client.UserInterface.Systems.Chat.RichText;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Input;
@@ -22,6 +23,7 @@ public partial class ChatBox : UIWidget
 {
     private readonly ChatUIController _controller;
     private readonly IEntityManager _entManager;
+    private readonly ChatEmojiCatalog _emojiCatalog;
     private readonly IConfigurationManager _cfg; // WD EDIT
     private readonly ILocalizationManager _loc; // WD EDIT
 
@@ -39,6 +41,7 @@ public partial class ChatBox : UIWidget
         RobustXamlLoader.Load(this);
         _loc = IoCManager.Resolve<ILocalizationManager>();
         _entManager = IoCManager.Resolve<IEntityManager>();
+        _emojiCatalog = IoCManager.Resolve<ChatEmojiCatalog>();
 
         ChatInput.Input.OnTextEntered += OnTextEntered;
         ChatInput.Input.OnKeyBindDown += OnInputKeyBindDown;
@@ -95,14 +98,14 @@ public partial class ChatBox : UIWidget
         if (_coalescence && _lastLine == tup)
         {
             _lastLineRepeatCount++;
-            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount);
+            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount, _controller.IsEmojiAllowed(msg.Channel));
             Contents.RemoveEntry(^2);
         }
         else
         {
             _lastLineRepeatCount = 0;
             _lastLine = (msg.WrappedMessage, color);
-            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount);
+            AddLine(msg.WrappedMessage, color, _lastLineRepeatCount, _controller.IsEmojiAllowed(msg.Channel));
         } // WD EDIT END
     }
 
@@ -114,6 +117,8 @@ public partial class ChatBox : UIWidget
     public void Repopulate()
     {
         Contents.Clear();
+        _lastLine = null;
+        _lastLineRepeatCount = 0;
 
         foreach (var message in _controller.History)
         {
@@ -124,6 +129,8 @@ public partial class ChatBox : UIWidget
     private void OnChannelFilter(ChatChannel channel, bool active)
     {
         Contents.Clear();
+        _lastLine = null;
+        _lastLineRepeatCount = 0;
 
         foreach (var message in _controller.History)
         {
@@ -151,12 +158,14 @@ public partial class ChatBox : UIWidget
         ChatInput.FilterButton.Popup.UpdateAutoFill(autoFillKeywords);
     }
 
-    public void AddLine(string message, Color color, int repeat = 0) // WD EDIT
+    public void AddLine(string message, Color color, int repeat = 0, bool allowAliasMarkup = true) // WD EDIT
     {
-        var formatted = new FormattedMessage(4); // WD EDIT // specifying size beforehand smells like a useless microoptimisation, but i'll give them the benefit of doubt
-        formatted.PushColor(color);
-        formatted.AddMarkupOrThrow(message);
-        formatted.Pop();
+        var formatted = ChatEmojiRichText.BuildChatLine(
+            message,
+            color,
+            allowAliasMarkup,
+            _emojiCatalog,
+            _controller.MaxEmojiPerMessage);
         if(repeat != 0) // WD EDIT START
         {
             int displayRepeat = repeat + 1;

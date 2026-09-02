@@ -42,6 +42,7 @@ internal sealed partial class ChatManager : IChatManager
     [Dependency] private IAdminLogManager _adminLogger = default!;
     [Dependency] private IServerPreferencesManager _preferencesManager = default!;
     [Dependency] private IConfigurationManager _configurationManager = default!;
+    [Dependency] private ChatEmojiPolicy _emojiPolicy = default!;
     [Dependency] private INetConfigurationManager _netConfigManager = default!;
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private PlayerRateLimitManager _rateLimitManager = default!;
@@ -55,7 +56,6 @@ internal sealed partial class ChatManager : IChatManager
 
     private bool _oocEnabled = true;
     private bool _adminOocEnabled = true;
-
     private readonly Dictionary<NetUserId, ChatUser> _players = new();
 
     public void Initialize()
@@ -65,7 +65,6 @@ internal sealed partial class ChatManager : IChatManager
 
         _configurationManager.OnValueChanged(CCVars.OocEnabled, OnOocEnabledChanged, true);
         _configurationManager.OnValueChanged(CCVars.AdminOocEnabled, OnAdminOocEnabledChanged, true);
-
         RegisterRateLimits();
     }
 
@@ -284,6 +283,10 @@ internal sealed partial class ChatManager : IChatManager
 
     private void SendOOC(ICommonSession player, string message)
     {
+        message = _emojiPolicy.Apply(message, ChatSelectChannel.OOC);
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
         if (_adminManager.IsAdmin(player))
         {
             if (!_adminOocEnabled)
@@ -324,6 +327,10 @@ internal sealed partial class ChatManager : IChatManager
             _adminLogger.Add(LogType.Chat, LogImpact.Extreme, $"{player:Player} attempted to send admin message but was not admin");
             return;
         }
+
+        message = _emojiPolicy.Apply(message, ChatSelectChannel.Admin);
+        if (string.IsNullOrWhiteSpace(message))
+            return;
 
         var clients = _adminManager.ActiveAdmins.Select(p => p.Channel);
         var wrappedMessage = Loc.GetString("chat-manager-send-admin-chat-wrap-message",

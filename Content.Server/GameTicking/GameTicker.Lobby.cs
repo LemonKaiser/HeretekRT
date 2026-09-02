@@ -156,7 +156,8 @@ namespace Content.Server.GameTicking
                     continue;
 
                 var status = ready &&
-                             _userDb.IsLoadComplete(playerSession)
+                             _userDb.IsLoadComplete(playerSession) &&
+                             !_prefsManager.IsWh40kOnboardingRequired(playerUserId)
                     ? PlayerGameStatus.ReadyToPlay
                     : PlayerGameStatus.NotReadyToPlay;
                 _playerGameStatuses[playerUserId] = status;
@@ -171,6 +172,12 @@ namespace Content.Server.GameTicking
 
             if (!_userDb.IsLoadComplete(player))
                 return;
+
+            if (ready && _prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            {
+                SendWh40kProfileRequiredMessage(player);
+                return;
+            }
 
             if (RunLevel != GameRunLevel.PreRoundLobby)
             {

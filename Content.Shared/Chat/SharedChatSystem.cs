@@ -125,6 +125,12 @@ public abstract partial class SharedChatSystem : EntitySystem
         if (!(input.StartsWith(RadioChannelPrefix) || input.StartsWith(RadioChannelAltPrefix)))
             return;
 
+        // Emoji shortcodes use a matched pair of colons (for example, :pirate_flag:).
+        // Do not preserve their first two characters as a radio keycode; doing so would turn
+        // any emoji whose alias starts with a radio key into a radio message later on.
+        if (input[0] == RadioChannelPrefix && ChatEmoji.TryReadAlias(input, 0, out _, out _))
+            return;
+
         if (!_keyCodes.TryGetValue(char.ToLower(input[1]), out _))
             return;
 
@@ -163,6 +169,11 @@ public abstract partial class SharedChatSystem : EntitySystem
         }
 
         if (!(input.StartsWith(RadioChannelPrefix) || input.StartsWith(RadioChannelAltPrefix)))
+            return false;
+
+        // A channel prefix is a single leading colon plus its key. A complete :alias: token is
+        // unambiguously an emoji shortcode and must continue through normal local-chat handling.
+        if (input[0] == RadioChannelPrefix && ChatEmoji.TryReadAlias(input, 0, out _, out _))
             return false;
 
         if (input.Length < 2 || char.IsWhiteSpace(input[1]))

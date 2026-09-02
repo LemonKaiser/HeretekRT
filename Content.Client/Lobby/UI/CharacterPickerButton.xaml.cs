@@ -34,7 +34,8 @@ public sealed partial class CharacterPickerButton : ContainerButton
         IPrototypeManager prototypeManager,
         ButtonGroup group,
         ICharacterProfile profile,
-        bool isSelected)
+        bool isSelected,
+        bool canDelete)
     {
         RobustXamlLoader.Load(this);
         _entManager = entityManager;
@@ -62,7 +63,7 @@ public sealed partial class CharacterPickerButton : ContainerButton
         }
 
         Pressed = isSelected;
-        DeleteButton.Visible = !isSelected;
+        DeleteButton.Visible = canDelete && !isSelected;
 
         View.SetEntity(_previewDummy);
         DescriptionLabel.Text = description;

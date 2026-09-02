@@ -145,6 +145,12 @@ namespace Content.Server.GameTicking
             bool lateJoin = true,
             bool silent = false)
         {
+            if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            {
+                SendWh40kProfileRequiredMessage(player);
+                return;
+            }
+
             var character = GetPlayerProfile(player);
 
             var jobBans = _banManager.GetJobBans(player.UserId);
@@ -260,6 +266,12 @@ namespace Content.Server.GameTicking
             PersistentInventoryRestoreReservation? reservation = null;
             var loadoutMode = PlayerSpawnLoadoutMode.Default;
             if (_persistentInventoryRestore.TryReserveRestore(player.UserId, out var reserved))
+            {
+                reservation = reserved;
+                loadoutMode = PlayerSpawnLoadoutMode.PersistentRestore;
+            }
+            else if (await _persistentInventoryLifecycle.TryRecoverOrphanedBoundLifeAsync(player.UserId) &&
+                     _persistentInventoryRestore.TryReserveRestore(player.UserId, out reserved))
             {
                 reservation = reserved;
                 loadoutMode = PlayerSpawnLoadoutMode.PersistentRestore;
@@ -537,6 +549,12 @@ namespace Content.Server.GameTicking
 
             if (!_userDb.IsLoadComplete(player))
                 return;
+
+            if (_prefsManager.IsWh40kOnboardingRequired(player.UserId))
+            {
+                SendWh40kProfileRequiredMessage(player);
+                return;
+            }
 
             SpawnPlayerSafely(player, station, jobId, silent: silent);
         }

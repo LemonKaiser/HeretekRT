@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Configuration;
+﻿using Content.Shared.Chat;
+using Robust.Shared.Configuration;
 
 namespace Content.Shared.CCVar;
 
@@ -41,6 +42,44 @@ public sealed partial class CCVars
 
     public static readonly CVarDef<bool> ChatShowTypingIndicator =
         CVarDef.Create("chat.show_typing_indicator", true, CVar.ARCHIVE | CVar.REPLICATED | CVar.SERVER);
+
+    /// <summary>
+    /// A comma-separated list of regular player-facing channels where emoji are allowed. Console, radio and whisper
+    /// are intentionally excluded from this picker policy.
+    /// </summary>
+    public static readonly CVarDef<string> ChatEmojiAllowedChannels =
+        CVarDef.Create(
+            "chat.emoji_allowed_channels",
+            ChatEmoji.DefaultAllowedChannelsCVar,
+            CVar.SERVER | CVar.REPLICATED,
+            "Comma-separated list of regular chat channels where emoji aliases and direct emoji are enabled.");
+
+    /// <summary>
+    /// Maximum number of emoji shortcodes rendered from one chat message. The same replicated value is enforced
+    /// by the server while normalizing player input, which bounds rich-text controls created by a message.
+    /// </summary>
+    public static readonly CVarDef<int> ChatEmojiMaxPerMessage =
+        CVarDef.Create(
+            "chat.emoji_max_per_message",
+            32,
+            CVar.SERVER | CVar.REPLICATED,
+            "Maximum number of emoji rendered from a single chat message. Set to 0 to disable emoji rendering.");
+
+    /// <summary>Number of received messages retained in the client chat history outside replays.</summary>
+    public static readonly CVarDef<int> ChatHistoryLength =
+        CVarDef.Create(
+            "chat.history_length",
+            500,
+            CVar.CLIENTONLY | CVar.ARCHIVE,
+            "Maximum number of messages retained in the local chat history. Set to 0 to retain no history.");
+
+    /// <summary>Locally persisted recently used emoji aliases, separated by commas.</summary>
+    public static readonly CVarDef<string> ChatEmojiRecent =
+        CVarDef.Create("chat.emoji_recent", string.Empty, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>Locally persisted favourite emoji aliases, separated by commas.</summary>
+    public static readonly CVarDef<string> ChatEmojiFavorites =
+        CVarDef.Create("chat.emoji_favorites", string.Empty, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<bool> ChatEnableFancyBubbles =
         CVarDef.Create("chat.enable_fancy_bubbles",

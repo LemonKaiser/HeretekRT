@@ -10,6 +10,7 @@ using Content.Client.Message;
 using Content.Client.UserInterface.Systems.Chat;
 using Content.Client.Voting;
 using Content.Shared.CCVar;
+using Content.Shared.Chat;
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.Administration;
 using Content.Shared.Preferences;
@@ -22,6 +23,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 using PickerWindow = Content.Client._NF.LateJoin.Windows.PickerWindow;
 
 namespace Content.Client.Lobby
@@ -50,6 +52,8 @@ namespace Content.Client.Lobby
         private bool? _lastObserveAvailable;
         private bool? _lastPersonalizationAvailable;
         private bool? _lastOnboardingRequired;
+        private Wh40kProfileEditMode? _lastProfileEditMode;
+        private bool? _lastProfileEditBypass;
         private long _lastLobbyClockSecond = long.MinValue;
         private bool? _lastLobbyClockRoundStarted;
         private bool? _lastLobbyClockPaused;
@@ -145,6 +149,8 @@ namespace Content.Client.Lobby
             _lastObserveAvailable = null;
             _lastPersonalizationAvailable = null;
             _lastOnboardingRequired = null;
+            _lastProfileEditMode = null;
+            _lastProfileEditBypass = null;
             Lobby = null;
         }
 
@@ -187,6 +193,9 @@ namespace Content.Client.Lobby
             if (!_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization)
                 return;
 
+            if (IsWh40kProfileEditingFullyLocked)
+                return;
+
             SetReady(false);
             Lobby?.SwitchState(LobbyGui.LobbyGuiState.CharacterSetup);
         }
@@ -195,6 +204,12 @@ namespace Content.Client.Lobby
         {
             if (!_gameTicker.IsGameStarted)
             {
+                return;
+            }
+
+            if (!HasWh40kCharacterProfile)
+            {
+                ShowWh40kProfileRequiredMessage();
                 return;
             }
 
@@ -246,6 +261,12 @@ namespace Content.Client.Lobby
 
         private void OpenLateJoinPicker()
         {
+            if (!HasWh40kCharacterProfile)
+            {
+                ShowWh40kProfileRequiredMessage();
+                return;
+            }
+
             // Keep the normal station/job selection flow; it owns the final joingame command and its validation.
             _pickerWindow ??= new PickerWindow();
             if (!_pickerWindow.IsOpen)
@@ -341,7 +362,7 @@ namespace Content.Client.Lobby
 
         private void LobbyLateJoinStatusUpdated()
         {
-            Lobby!.ReadyButton.Disabled = _gameTicker.DisallowedLateJoin;
+            UpdateLobbyUi();
         }
 
         private void UpdateLobbyUi()
@@ -353,6 +374,7 @@ namespace Content.Client.Lobby
             {
                 Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
                 Lobby!.ReadyButton.ToggleMode = false;
+                Lobby!.ReadyButton.Disabled = _gameTicker.DisallowedLateJoin;
                 Lobby!.ReadyButton.Pressed = false;
                 Lobby.UpdateReadyButtonVisual(ready: false, roundStarted: true);
             }
@@ -362,7 +384,7 @@ namespace Content.Client.Lobby
                 var ready = _gameTicker.AreWeReady;
                 Lobby!.ReadyButton.Text = Loc.GetString(ready ? "lobby-state-player-status-ready" : "lobby-state-player-status-not-ready");
                 Lobby!.ReadyButton.ToggleMode = true;
-                Lobby!.ReadyButton.Disabled = false;
+                Lobby!.ReadyButton.Disabled = !HasWh40kCharacterProfile;
                 Lobby!.ReadyButton.Pressed = ready;
                 Lobby.UpdateReadyButtonVisual(ready, roundStarted: false);
             }
@@ -417,12 +439,21 @@ namespace Content.Client.Lobby
                 return;
 
             var onboardingRequired = _preferencesManager.Wh40kProgress.OnboardingStatus == Wh40kOnboardingStatus.Required;
-            var available = _preferencesManager.Wh40kProgress.CanUseLegacyPersonalization || onboardingRequired;
-            if (_lastPersonalizationAvailable == available && _lastOnboardingRequired == onboardingRequired)
+            var profileEditMode = Wh40kProfileEditPolicy.ParseMode(_cfg.GetCVar(CCVars.Wh40kProfileEditMode));
+            var adminBypass = CanBypassWh40kProfileEditing;
+            var available = onboardingRequired ||
+                            (_preferencesManager.Wh40kProgress.CanUseLegacyPersonalization &&
+                             (profileEditMode != Wh40kProfileEditMode.FullLocked || adminBypass));
+            if (_lastPersonalizationAvailable == available &&
+                _lastOnboardingRequired == onboardingRequired &&
+                _lastProfileEditMode == profileEditMode &&
+                _lastProfileEditBypass == adminBypass)
                 return;
 
             _lastPersonalizationAvailable = available;
             _lastOnboardingRequired = onboardingRequired;
+            _lastProfileEditMode = profileEditMode;
+            _lastProfileEditBypass = adminBypass;
             Lobby.SetPersonalizationAvailable(available);
             Lobby.CharacterPreview.CharacterSetupButton.Disabled = !available;
             Lobby.PersonalizationButton.Text = Loc.GetString(onboardingRequired
@@ -433,10 +464,7 @@ namespace Content.Client.Lobby
         private void OnWh40kProgressChanged()
         {
             UpdatePersonalizationButton();
-
-            // Offer the creator as soon as account state arrives. Entering a round remains available if
-            // creation is cancelled or its interface fails.
-            TryOpenWh40kOnboarding();
+            UpdateLobbyUi();
         }
 
         private void UpdateLobbySoundtrackInfo(LobbySoundtrackChangedEvent ev)
@@ -475,7 +503,38 @@ namespace Content.Client.Lobby
                 return;
             }
 
+            if (newReady && !HasWh40kCharacterProfile)
+            {
+                ShowWh40kProfileRequiredMessage();
+                return;
+            }
+
             _consoleHost.ExecuteCommand($"toggleready {newReady}");
+        }
+
+        private bool HasWh40kCharacterProfile => _preferencesManager.Wh40kProgress.CanUseLegacyPersonalization;
+
+        private bool IsWh40kProfileEditingFullyLocked =>
+            Wh40kProfileEditPolicy.ParseMode(_cfg.GetCVar(CCVars.Wh40kProfileEditMode)) == Wh40kProfileEditMode.FullLocked &&
+            !CanBypassWh40kProfileEditing;
+
+        private bool CanBypassWh40kProfileEditing =>
+            _cfg.GetCVar(CCVars.Wh40kProfileEditAdminBypass) &&
+            _adminManager.IsActive() &&
+            (_adminManager.HasFlag(AdminFlags.Admin) || _adminManager.HasFlag(AdminFlags.Moderator));
+
+        private void ShowWh40kProfileRequiredMessage()
+        {
+            if (_chatController == null)
+                return;
+
+            var message = Loc.GetString("heretek-lobby-profile-required");
+            var wrappedMessage = Loc.GetString(
+                "chat-manager-server-wrap-message",
+                ("message", FormattedMessage.EscapeText(message)));
+            _chatController.ProcessChatMessage(
+                new ChatMessage(ChatChannel.Server, message, wrappedMessage, default, null),
+                speechBubble: false);
         }
     }
 }

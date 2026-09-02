@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Content.Shared.Chat;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.IoC;
 using Content.Shared.Maps;
@@ -46,6 +47,8 @@ namespace Content.Shared.Entry
 
             InitTileDefinitions();
             IoCManager.Resolve<MarkingManager>().Initialize();
+            IoCManager.Resolve<ChatEmojiCatalog>().Initialize();
+            IoCManager.Resolve<ChatEmojiPolicy>().Initialize();
 
 #if DEBUG
             var configMan = IoCManager.Resolve<IConfigurationManager>();

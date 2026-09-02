@@ -1480,6 +1480,12 @@ public sealed partial class LobbyGui : UIScreen
             cornerRadius: 3f,
             horizontalMargin: 10f);
 
+        inputBox.EmojiButton.MinSize = new Vector2(38f, chatControlHeight);
+        inputBox.EmojiButton.SetSize = new Vector2(38f, chatControlHeight);
+        inputBox.EmojiButton.Margin = new Thickness(0f, 0f, 4f, 0f);
+        inputBox.EmojiButton.DefaultCursorShape = Control.CursorShape.Hand;
+        ConfigureChatPopupHover(inputBox.EmojiButton, ChatControlKind.Filter);
+
         inputBox.ChannelSelector.MinHeight = chatControlHeight;
         inputBox.ChannelSelector.SetHeight = chatControlHeight;
         inputBox.ChannelSelector.Margin = new Thickness(0f, 0f, 4f, 0f);

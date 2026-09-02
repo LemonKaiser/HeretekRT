@@ -8,6 +8,7 @@ namespace Content.Client.UserInterface.Systems.Chat.Controls;
 [Virtual]
 public class ChatInputBox : PanelContainer
 {
+    public readonly EmojiPickerButton EmojiButton;
     public readonly ChannelSelectorButton ChannelSelector;
     public readonly HistoryLineEdit Input;
     public readonly ChannelFilterButton FilterButton;
@@ -22,6 +23,14 @@ public class ChatInputBox : PanelContainer
             SeparationOverride = 4
         };
         AddChild(Container);
+
+        EmojiButton = new EmojiPickerButton
+        {
+            Name = "EmojiButton",
+            StyleClasses = {"chatFilterOptionButton"}
+        };
+        EmojiButton.OnEmojiPicked += InsertEmoji;
+        Container.AddChild(EmojiButton);
 
         ChannelSelector = new ChannelSelectorButton
         {
@@ -54,6 +63,17 @@ public class ChatInputBox : PanelContainer
         ActiveChannel = (ChatChannel) selectedChannel;
     }
 
+    private void InsertEmoji(string emoji)
+    {
+        Input.InsertAtCursor(emoji);
+        Input.GrabKeyboardFocus();
+    }
+
+    public void SetEmojiAllowed(bool allowed)
+    {
+        EmojiButton.SetAvailable(allowed);
+    }
+
     private static string GetChatboxInfoPlaceholder()
     {
         return (BoundKeyHelper.IsBound(ContentKeyFunctions.FocusChat), BoundKeyHelper.IsBound(ContentKeyFunctions.CycleChatChannelForward)) switch
@@ -63,5 +83,12 @@ public class ChatInputBox : PanelContainer
             (false, true) => Loc.GetString("hud-chatbox-info-cycle", ("cycle-key", BoundKeyHelper.ShortKeyName(ContentKeyFunctions.CycleChatChannelForward))),
             (false, false) => Loc.GetString("hud-chatbox-info-unbound")
         };
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+            EmojiButton.OnEmojiPicked -= InsertEmoji;
     }
 }

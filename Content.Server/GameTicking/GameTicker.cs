@@ -21,6 +21,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Console;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -122,6 +123,11 @@ namespace Content.Server.GameTicking
         {
             var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", message));
             _chatManager.ChatMessageToAll(ChatChannel.Server, message, wrappedMessage, default, false, true);
+        }
+
+        private void SendWh40kProfileRequiredMessage(ICommonSession player)
+        {
+            _chatManager.DispatchServerMessage(player, Loc.GetString("heretek-lobby-profile-required"));
         }
 
         public override void Update(float frameTime)

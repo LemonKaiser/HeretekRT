@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Content.Client.Humanoid;
+using Content.Client.Administration.Managers;
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -10,7 +11,9 @@ using Content.Client.Sprite;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Mono.Company;
+using Content.Shared.Administration;
 using Content.Shared.CCVar;
+using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
 using Content.Shared.Guidebook;
@@ -45,6 +48,7 @@ namespace Content.Client.Lobby.UI
     {
         private readonly IClientPreferencesManager _preferencesManager;
         private readonly IConfigurationManager _cfgManager;
+        private readonly IClientAdminManager _adminManager;
         private readonly IEntityManager _entManager;
         private readonly IFileDialogManager _dialogManager;
         private readonly IPlayerManager _playerManager;
@@ -112,6 +116,7 @@ namespace Content.Client.Lobby.UI
         public HumanoidProfileEditor(
             IClientPreferencesManager preferencesManager,
             IConfigurationManager configurationManager,
+            IClientAdminManager adminManager,
             IEntityManager entManager,
             IFileDialogManager dialogManager,
             ILogManager logManager,
@@ -125,6 +130,7 @@ namespace Content.Client.Lobby.UI
             RobustXamlLoader.Load(this);
             _sawmill = logManager.GetSawmill("profile.editor");
             _cfgManager = configurationManager;
+            _adminManager = adminManager;
             _entManager = entManager;
             _dialogManager = dialogManager;
             _playerManager = playerManager;
@@ -250,7 +256,7 @@ namespace Content.Client.Lobby.UI
 
             HairStylePicker.OnMarkingSelect += newStyle =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairStyleName(newStyle.id));
@@ -259,7 +265,7 @@ namespace Content.Client.Lobby.UI
 
             HairStylePicker.OnColorChanged += newColor =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairColor(newColor.marking.MarkingColors[0]));
@@ -269,7 +275,7 @@ namespace Content.Client.Lobby.UI
 
             FacialHairPicker.OnMarkingSelect += newStyle =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairStyleName(newStyle.id));
@@ -278,7 +284,7 @@ namespace Content.Client.Lobby.UI
 
             FacialHairPicker.OnColorChanged += newColor =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairColor(newColor.marking.MarkingColors[0]));
@@ -288,7 +294,7 @@ namespace Content.Client.Lobby.UI
 
             HairStylePicker.OnSlotRemove += _ =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairStyleName(HairStyles.DefaultHairStyle)
@@ -300,7 +306,7 @@ namespace Content.Client.Lobby.UI
 
             FacialHairPicker.OnSlotRemove += _ =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairStyleName(HairStyles.DefaultFacialHairStyle)
@@ -312,7 +318,7 @@ namespace Content.Client.Lobby.UI
 
             HairStylePicker.OnSlotAdd += delegate()
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
 
                 var hair = _markingManager.MarkingsByCategoryAndSpecies(MarkingCategories.Hair, Profile.Species).Keys
@@ -332,7 +338,7 @@ namespace Content.Client.Lobby.UI
 
             FacialHairPicker.OnSlotAdd += delegate()
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
 
                 var hair = _markingManager.MarkingsByCategoryAndSpecies(MarkingCategories.FacialHair, Profile.Species).Keys
@@ -399,7 +405,7 @@ namespace Content.Client.Lobby.UI
 
             EyeColorPicker.OnEyeColorPicked += newColor =>
             {
-                if (Profile is null)
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithEyeColor(newColor));
@@ -1210,6 +1216,37 @@ namespace Content.Client.Lobby.UI
             {
                 PreferenceUnavailableButton.SelectId((int) Profile.PreferenceUnavailable);
             }
+
+            RefreshProfileEditPermissions();
+        }
+
+        /// <summary>
+        /// Applies the current server profile-edit policy to the local editor controls.
+        /// Server-side validation remains authoritative.
+        /// </summary>
+        public void RefreshProfileEditPermissions()
+        {
+            var appearanceLocked = IsWh40kAppearanceEditingLocked;
+
+            NameEdit.Editable = !appearanceLocked;
+            NameRandomize.Disabled = appearanceLocked;
+            RandomizeEverythingButton.Disabled = appearanceLocked;
+            ImportButton.Disabled = appearanceLocked;
+            SpeciesButton.Disabled = appearanceLocked;
+            AgeEdit.Editable = !appearanceLocked;
+            SexButton.Disabled = appearanceLocked;
+            PronounsButton.Disabled = appearanceLocked;
+            Skin.Disabled = appearanceLocked;
+            _rgbSkinColorSelector.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            HairStylePicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            FacialHairPicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            HeightSlider.Disabled = appearanceLocked;
+            HeightResetButton.Disabled = appearanceLocked;
+            WidthSlider.Disabled = appearanceLocked;
+            WidthResetButton.Disabled = appearanceLocked;
+            EyeColorPicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            Markings.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            UpdateSaveButton();
         }
 
 
@@ -1505,7 +1542,7 @@ namespace Content.Client.Lobby.UI
 
         private void OnMarkingChange(MarkingSet markings)
         {
-            if (Profile is null)
+            if (IsWh40kAppearanceEditingLocked || Profile is null)
                 return;
 
             Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithMarkings(markings.GetForwardEnumerator().ToList()));
@@ -1514,7 +1551,7 @@ namespace Content.Client.Lobby.UI
 
         private void OnSkinColorOnValueChanged()
         {
-            if (Profile is null) return;
+            if (IsWh40kAppearanceEditingLocked || Profile is null) return;
 
             var skin = _prototypeManager.Index<SpeciesPrototype>(Profile.Species).SkinColoration;
 
@@ -1620,12 +1657,18 @@ namespace Content.Client.Lobby.UI
 
         private void SetAge(int newAge)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithAge(newAge);
             ReloadPreview();
         }
 
         private void SetSex(Sex newSex)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithSex(newSex);
             // for convenience, default to most common gender when new sex is selected
             switch (newSex)
@@ -1648,12 +1691,18 @@ namespace Content.Client.Lobby.UI
 
         private void SetGender(Gender newGender)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithGender(newGender);
             ReloadPreview();
         }
 
         private void SetSpecies(string newSpecies)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithSpecies(newSpecies);
             OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
             Markings.SetSpecies(newSpecies); // Repopulate the markings tab as well.
@@ -1697,6 +1746,9 @@ namespace Content.Client.Lobby.UI
 
         private void SetName(string newName)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithName(newName);
             SetDirty();
 
@@ -1714,6 +1766,9 @@ namespace Content.Client.Lobby.UI
 
         private void SetHeight(float newHeight)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithCharacterAppearance(Profile.Appearance.WithHeight(newHeight));
             SetDirty();
             ReloadPreview();
@@ -1727,6 +1782,9 @@ namespace Content.Client.Lobby.UI
 
         private void SetWidth(float newWidth)
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             Profile = Profile?.WithCharacterAppearance(Profile.Appearance.WithWidth(newWidth));
             SetDirty();
             ReloadPreview();
@@ -2070,7 +2128,7 @@ namespace Content.Client.Lobby.UI
 
         private void UpdateSaveButton()
         {
-            var canSave = Profile is not null;
+            var canSave = Profile is not null && !IsWh40kProfileEditingFullyLocked;
             SaveButton.Disabled = !canSave || !IsDirty;
             ResetButton.Disabled = !canSave || !IsDirty;
         }
@@ -2082,15 +2140,31 @@ namespace Content.Client.Lobby.UI
 
         private void RandomizeEverything()
         {
+            if (IsWh40kAppearanceEditingLocked)
+                return;
+
             var oldBank = Profile?.BankBalance ?? HumanoidCharacterProfile.DefaultBalance; // Frontier
             Profile = HumanoidCharacterProfile.Random().WithBankBalance(oldBank); // Frontier: add WithBankBalance(oldBank)
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
 
+        private bool IsWh40kProfileEditingFullyLocked =>
+            Wh40kProfileEditPolicy.ParseMode(_cfgManager.GetCVar(CCVars.Wh40kProfileEditMode)) == Wh40kProfileEditMode.FullLocked &&
+            !CanBypassWh40kProfileEditing;
+
+        private bool IsWh40kAppearanceEditingLocked =>
+            Wh40kProfileEditPolicy.ParseMode(_cfgManager.GetCVar(CCVars.Wh40kProfileEditMode)) != Wh40kProfileEditMode.Disabled &&
+            !CanBypassWh40kProfileEditing;
+
+        private bool CanBypassWh40kProfileEditing =>
+            _cfgManager.GetCVar(CCVars.Wh40kProfileEditAdminBypass) &&
+            _adminManager.IsActive() &&
+            (_adminManager.HasFlag(AdminFlags.Admin) || _adminManager.HasFlag(AdminFlags.Moderator));
+
         private void RandomizeName()
         {
-            if (Profile == null) return;
+            if (IsWh40kAppearanceEditingLocked || Profile == null) return;
             var name = HumanoidCharacterProfile.GetName(Profile.Species, Profile.Gender);
             SetName(name);
             UpdateNameEdit();
@@ -2111,7 +2185,7 @@ namespace Content.Client.Lobby.UI
 
         private async void ImportProfile()
         {
-            if (_exporting || CharacterSlot == null || Profile == null)
+            if (IsWh40kAppearanceEditingLocked || _exporting || CharacterSlot == null || Profile == null)
                 return;
 
             StartExport();
