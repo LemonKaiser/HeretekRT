@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
+using Content.Shared._Forge.Barks;
 using Content.Shared._Mono.Company;
 using Content.Shared._NF.Bank;
 using Content.Shared._WH40K.CharacterCreation;
@@ -103,6 +104,12 @@ namespace Content.Shared.Preferences
         [DataField]
         public string Voice { get; private set; } = SharedHumanoidAppearanceSystem.DefaultVoice;
 
+        /// <summary>
+        /// Selected bark used to accompany in-character speech.
+        /// </summary>
+        [DataField]
+        public string BarkVoice { get; private set; } = SharedHumanoidAppearanceSystem.DefaultBarkVoice;
+
         [DataField] // Frontier: Bank balance
         public int BankBalance { get; private set; } = DefaultBalance; // Frontier: Bank balance
 
@@ -205,6 +212,7 @@ namespace Content.Shared.Preferences
                 jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild)
         {
             Voice = other.Voice;
+            BarkVoice = other.BarkVoice;
         }
 
         /// <summary>Copy constructor</summary>
@@ -227,6 +235,7 @@ namespace Content.Shared.Preferences
                 other.Wh40kBuild)
         {
             Voice = other.Voice;
+            BarkVoice = other.BarkVoice;
         }
 
         /// <summary>
@@ -292,6 +301,15 @@ namespace Content.Shared.Preferences
             }
 
             var name = GetName(species, gender);
+            var barkVoice = SharedHumanoidAppearanceSystem.DefaultBarkVoice;
+            var availableBarks = prototypeManager
+                .EnumeratePrototypes<BarkPrototype>()
+                .Where(bark => bark.RoundStart)
+                .ToArray();
+
+            if (availableBarks.Length > 0)
+                barkVoice = random.Pick(availableBarks).ID;
+
             return new HumanoidCharacterProfile()
             {
                 Name = name,
@@ -300,6 +318,7 @@ namespace Content.Shared.Preferences
                 Gender = gender,
                 Species = species,
                 Voice = SharedHumanoidAppearanceSystem.DefaultSexVoice[sex],
+                BarkVoice = barkVoice,
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
             };
         }
@@ -332,6 +351,11 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithVoice(string voice)
         {
             return new(this) { Voice = voice };
+        }
+
+        public HumanoidCharacterProfile WithBarkVoice(string barkVoice)
+        {
+            return new(this) { BarkVoice = barkVoice };
         }
 
         // Frontier: this is probably an issue and should be removed.
@@ -554,6 +578,7 @@ namespace Content.Shared.Preferences
             if (Species != other.Species) return false;
             if (Company != other.Company) return false;
             if (Voice != other.Voice) return false;
+            if (BarkVoice != other.BarkVoice) return false;
             if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
             if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
@@ -670,6 +695,10 @@ namespace Content.Shared.Preferences
                 voice = SharedHumanoidAppearanceSystem.DefaultSexVoice[sex];
             }
 
+            var barkVoice = BarkVoice;
+            if (!prototypeManager.TryIndex<BarkPrototype>(barkVoice, out var barkPrototype) || !barkPrototype.RoundStart)
+                barkVoice = SharedHumanoidAppearanceSystem.DefaultBarkVoice;
+
             var prefsUnavailableMode = PreferenceUnavailable switch
             {
                 PreferenceUnavailableMode.StayInLobby => PreferenceUnavailableMode.StayInLobby,
@@ -723,6 +752,7 @@ namespace Content.Shared.Preferences
             Appearance = appearance;
             SpawnPriority = spawnPriority;
             Voice = voice;
+            BarkVoice = barkVoice;
             Wh40kBuild = Wh40kBuild.Validated();
 
             // Check if the company exists, if not set to "None"
@@ -846,6 +876,7 @@ namespace Content.Shared.Preferences
             hashCode.Add((int)Sex);
             hashCode.Add((int)Gender);
             hashCode.Add(Voice);
+            hashCode.Add(BarkVoice);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
             hashCode.Add((int)SpawnPriority);

@@ -490,4 +490,9 @@ public enum LogType
     /// Events relating to midi playback.
     /// </summary>
     Instrument = 103,
+
+    /// <summary>
+    /// A player wrote on paper. Image uploads use medium impact for filtering.
+    /// </summary>
+    Paper = 300,
 }

@@ -1,5 +1,6 @@
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared._Forge.Barks;
 using Content.Shared.Inventory;
 using Content.Shared.TTS;
 using Robust.Shared.Enums;
@@ -53,6 +54,12 @@ public sealed partial class HumanoidAppearanceComponent : Component
     /// </summary>
     [DataField("voice")]
     public ProtoId<TTSVoicePrototype> Voice { get; set; } = SharedHumanoidAppearanceSystem.DefaultVoice;
+
+    /// <summary>
+    ///     Current bark voice. Stored here so cloning preserves it.
+    /// </summary>
+    [DataField("barkVoice")]
+    public ProtoId<BarkPrototype> BarkVoice { get; set; } = SharedHumanoidAppearanceSystem.DefaultBarkVoice;
 
     /// <summary>
     ///     The initial profile and base layers to apply to this humanoid.

@@ -122,6 +122,8 @@ public sealed record PlayerRecord(
     IPAddress LastSeenAddress,
     ImmutableTypedHwid? HWId);
 
+public sealed record WhitelistPlayerRecord(NetUserId UserId, string UserName);
+
 public sealed record RoundRecord(int Id, DateTimeOffset? StartDate, ServerRecord Server);
 
 public sealed record ServerRecord(int Id, string Name);

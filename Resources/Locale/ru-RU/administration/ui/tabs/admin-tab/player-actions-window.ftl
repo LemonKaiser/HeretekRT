@@ -6,7 +6,7 @@ admin-player-actions-window-permissions = Панель доступов
 admin-player-actions-window-announce = Сделать объявление
 admin-player-actions-window-shuttle = Вызвать/отозвать шаттл
 admin-player-actions-window-admin-logs = Админ логи
-admin-player-actions-window-screen-check = Screencheck
+admin-player-actions-window-screen-check = Проверка экрана
 
 admin-screen-check-window-title = Панель screencheck
 admin-screen-check-window-no-player = Выберите игрока из списка.

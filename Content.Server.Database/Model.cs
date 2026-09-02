@@ -597,6 +597,7 @@ namespace Content.Server.Database
         public string Gender { get; set; } = null!;
         public string Species { get; set; } = null!;
         public string Voice { get; set; } = string.Empty;
+        public string BarkVoice { get; set; } = string.Empty;
         [Column(TypeName = "jsonb")] public JsonDocument? Markings { get; set; } = null!;
         [Column(TypeName = "jsonb")] public JsonDocument? Wh40kBuild { get; set; }
         public string HairName { get; set; } = null!;

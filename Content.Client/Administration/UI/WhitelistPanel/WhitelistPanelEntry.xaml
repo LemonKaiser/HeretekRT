@@ -1,0 +1,16 @@
+<BoxContainer
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    x:Class="Content.Client.Administration.UI.WhitelistPanel.WhitelistPanelEntry"
+    Orientation="Horizontal"
+    Margin="2"
+    HorizontalExpand="True">
+    <Label Name="CkeyLabel" VerticalAlignment="Center" HorizontalExpand="True" />
+    <controls:ConfirmButton
+        Name="RemoveButton"
+        Text="{Loc whitelist-panel-remove}"
+        ConfirmationText="{Loc whitelist-panel-remove-confirm}"
+        StyleClasses="Caution"
+        MinWidth="100" />
+</BoxContainer>

@@ -18,6 +18,7 @@
             <cc:UICommandButton Command="screencheck" Text="{Loc admin-player-actions-window-screen-check}" WindowType="{x:Type at:ScreenCheckAdminWindow}"/>
             <cc:CommandButton Command="faxui" Text="{Loc admin-player-actions-window-admin-fax}"/>
             <cc:CommandButton Command="timetransferpanel" Text="{Loc admin-player-actions-window-time-transfer}"/>
+            <cc:CommandButton Command="whitelistpanel" Text="{Loc admin-player-actions-window-whitelist-panel}"/>
         </GridContainer>
     </BoxContainer>
 </Control>

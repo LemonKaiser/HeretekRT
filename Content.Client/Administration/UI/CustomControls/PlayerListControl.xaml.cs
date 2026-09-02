@@ -29,6 +29,7 @@ public sealed partial class PlayerListControl : BoxContainer
 
     public Comparison<PlayerInfo>? Comparison;
     public Func<PlayerInfo, string, string>? OverrideText;
+    public Predicate<PlayerInfo>? FilterPredicate;
 
     public PlayerListControl()
     {
@@ -98,6 +99,9 @@ public sealed partial class PlayerListControl : BoxContainer
         _sortedPlayerList.Clear();
         foreach (var info in _playerList)
         {
+            if (FilterPredicate != null && !FilterPredicate(info))
+                continue;
+
             var displayName = $"{info.CharacterName} ({info.Username})";
             if (info.IdentityName != info.CharacterName)
                 displayName += $" [{info.IdentityName}]";
@@ -134,8 +138,19 @@ public sealed partial class PlayerListControl : BoxContainer
             }
         }
 
-        if (_selectedPlayer != null && !_playerList.Contains(_selectedPlayer))
-            _selectedPlayer = null;
+        if (_selectedPlayer != null)
+        {
+            var selectedPlayer = _playerList.FirstOrDefault(player => player.SessionId == _selectedPlayer.SessionId);
+            if (selectedPlayer == null || (FilterPredicate != null && !FilterPredicate(selectedPlayer)))
+            {
+                _selectedPlayer = null;
+                OnSelectionChanged?.Invoke(null);
+            }
+            else
+            {
+                _selectedPlayer = selectedPlayer;
+            }
+        }
 
         FilterList();
     }

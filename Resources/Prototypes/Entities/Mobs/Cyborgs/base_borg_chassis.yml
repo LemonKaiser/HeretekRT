@@ -297,6 +297,8 @@
   - type: ShipNpcTarget
     needGrid: NoGrid
   - type: RetroMonitorView
+  - type: SpeechSynthesis
+    voice: BarksCitadelSynthetic2
   - type: TTS
     voice: Glados
   # </Mono>

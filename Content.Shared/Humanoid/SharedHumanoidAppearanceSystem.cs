@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Content.Shared._Forge.Barks;
 using Content.Shared.CCVar;
 using Content.Shared.Decals;
 using Content.Shared.Examine;
@@ -48,6 +49,9 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
 
     [ValidatePrototypeId<TTSVoicePrototype>]
     public const string DefaultVoice = "TtsTechpriest";
+
+    [ValidatePrototypeId<BarkPrototype>]
+    public const string DefaultBarkVoice = "BarksGoonSpeak1";
 
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {
@@ -181,6 +185,11 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         {
             targetTts.VoicePrototypeId = sourceTts.VoicePrototypeId;
         }
+
+        targetHumanoid.BarkVoice = sourceHumanoid.BarkVoice;
+        if (TryComp<SpeechSynthesisComponent>(source, out var sourceBark))
+            SetBarkVoice(target, sourceBark.VoicePrototypeId ?? sourceHumanoid.BarkVoice, targetHumanoid);
+
         targetHumanoid.CustomBaseLayers = new(sourceHumanoid.CustomBaseLayers);
         targetHumanoid.MarkingSet = new(sourceHumanoid.MarkingSet);
 
@@ -471,6 +480,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         }
 
         EnsureDefaultMarkings(uid, humanoid);
+        SetBarkVoice(uid, profile.BarkVoice, humanoid);
         SetTTSVoice(uid, profile.Voice, humanoid);
 
         humanoid.Gender = profile.Gender;
@@ -505,6 +515,23 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
 
         humanoid.Voice = voiceId;
         component.VoicePrototypeId = voiceId;
+    }
+
+    /// <summary>
+    ///     Updates the bark stored in humanoid appearance and speech synthesis components.
+    /// </summary>
+    public void SetBarkVoice(EntityUid uid, string barkVoiceId, HumanoidAppearanceComponent humanoid)
+    {
+        if (!_proto.HasIndex<BarkPrototype>(barkVoiceId))
+            barkVoiceId = DefaultBarkVoice;
+
+        humanoid.BarkVoice = barkVoiceId;
+
+        // The client needs the selected value for profile previews, but only the server needs a speech component.
+        if (IsClientSide(uid))
+            return;
+
+        EnsureComp<SpeechSynthesisComponent>(uid).VoicePrototypeId = barkVoiceId;
     }
 
     /// <summary>

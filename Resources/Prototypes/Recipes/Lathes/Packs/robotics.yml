@@ -36,6 +36,8 @@
   - MedicalCyberneticEyes
   - DexLeftHand
   - DexRightHand
+  - TranexamicImplanter
+  - TranexamicImplanterDose
 
 - type: latheRecipePack
   id: BorgLimbsStatic

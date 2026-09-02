@@ -17,3 +17,5 @@ research-technology-mechs-combat = Производство боевых мех�
 
 research-technology-basic-economy = Портативное технологическое оборудование
 research-technology-uranium-processing-advanced = Усовершенствованная переработка урана
+
+research-technology-drones-1 = Изучение дронов

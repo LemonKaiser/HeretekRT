@@ -6,6 +6,8 @@
   - type: Sprite
     drawdepth: WallTops
     sprite: Structures/Windows/reinforced_window.rsi
+  - type: PaintableWall
+    protectTransparent: true
   - type: Icon
     sprite: Structures/Windows/reinforced_window.rsi
   - type: Repairable
@@ -77,6 +79,8 @@
   - type: Sprite
     sprite: Structures/Windows/directional.rsi
     state: reinforced_window
+  - type: PaintableWall
+    protectTransparent: true
   - type: Icon
     sprite: Structures/Windows/directional.rsi
     state: reinforced_window

@@ -1,7 +1,7 @@
 using Content.Server.Administration;
 using Content.Server.Administration.Managers;
 using Content.Server.Database;
-using Content.Server.Players.JobWhitelist; // Frontier
+using Content.Server.Players.JobWhitelist;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Robust.Server.Player;
@@ -138,7 +138,6 @@ public sealed partial class RemoveWhitelistCommand : LocalizedCommands
 [AdminCommand(AdminFlags.Ban)]
 public sealed partial class KickNonWhitelistedCommand : LocalizedCommands
 {
-    [Dependency] private JobWhitelistManager _jobWhitelist = default!; // Frontier
     public override string Command => "kicknonwhitelisted";
 
     public override async void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -164,7 +163,7 @@ public sealed partial class KickNonWhitelistedCommand : LocalizedCommands
             if (await db.GetAdminDataForAsync(session.UserId) is not null)
                 continue;
 
-            if (!_jobWhitelist.IsGloballyWhitelisted(session.UserId)) // Frontier: use JobWhitelistManager as a wrapper.
+            if (!await db.GetWhitelistStatusAsync(session.UserId))
             {
                 net.DisconnectChannel(session.Channel, Loc.GetString("whitelist-not-whitelisted"));
             }

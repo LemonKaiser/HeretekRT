@@ -321,6 +321,7 @@
     - Wall
   - type: Sprite
     sprite: Structures/Walls/plastitanium.rsi
+  - type: PaintableWall
   - type: Icon
     sprite: Structures/Walls/plastitanium.rsi
   - type: IconSmooth
@@ -402,6 +403,7 @@
     drawdepth: Walls
     sprite: Structures/Walls/plastitanium_diagonal.rsi
     state: state0
+  - type: PaintableWall
   - type: IconSmooth
     mode: Diagonal
     key: walls
@@ -441,6 +443,7 @@
   components:
   - type: Sprite
     sprite: Structures/Walls/solid.rsi
+  - type: PaintableWall
   - type: Icon
     sprite: Structures/Walls/solid.rsi
     state: rgeneric
@@ -646,6 +649,7 @@
     drawdepth: Walls
     sprite: Structures/Walls/shuttle_diagonal.rsi
     state: state0
+  - type: PaintableWall
   - type: IconSmooth
     mode: Diagonal
     key: walls
@@ -701,6 +705,7 @@
     resistance: 5
   - type: Sprite
     sprite: Structures/Walls/shuttle.rsi
+  - type: PaintableWall
   - type: Icon
     sprite: Structures/Walls/shuttle.rsi
     state: full
@@ -775,6 +780,7 @@
     - Wall
   - type: Sprite
     sprite: Structures/Walls/solid.rsi
+  - type: PaintableWall
   - type: WallReplacementMarker
   - type: Construction
     graph: Girder

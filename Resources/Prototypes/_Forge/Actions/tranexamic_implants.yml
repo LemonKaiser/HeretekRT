@@ -1,0 +1,27 @@
+- type: entity
+  id: ActionActivateTranexamic
+  name: Activate Tranexamic Acid
+  description: Deliver tranexamic acid and epinephrine from your implant.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    checkCanInteract: false
+    checkConsciousness: false
+    icon:
+      sprite: Objects/Specific/Medical/medipen.rsi
+      state: morphen
+    event: !type:ActivateImplantEvent
+
+- type: entity
+  id: ActionActivateTranexamicDose
+  name: Activate Tranexamic Acid (Dose)
+  description: Deliver a dose of tranexamic acid from your implant.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    checkCanInteract: false
+    checkConsciousness: false
+    icon:
+      sprite: Objects/Specific/Medical/medipen.rsi
+      state: morphen
+    event: !type:ActivateImplantEvent

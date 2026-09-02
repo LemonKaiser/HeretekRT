@@ -401,6 +401,8 @@ namespace Content.Client.Lobby.UI
 
             #endregion Width
 
+            InitializeBarkVoices();
+
             #region Eyes
 
             EyeColorPicker.OnEyeColorPicked += newColor =>
@@ -1195,6 +1197,7 @@ namespace Content.Client.Lobby.UI
             UpdateSpawnPriorityControls();
             UpdateHeightControls();
             UpdateWidthControls();
+            UpdateBarkVoiceControls();
             UpdateAgeEdit();
             UpdateEyePickers();
             UpdateSaveButton();
@@ -1246,6 +1249,8 @@ namespace Content.Client.Lobby.UI
             HeightResetButton.Disabled = appearanceLocked;
             WidthSlider.Disabled = appearanceLocked;
             WidthResetButton.Disabled = appearanceLocked;
+            BarkVoiceButton.Disabled = appearanceLocked;
+            BarkVoicePlayButton.Disabled = appearanceLocked;
             EyeColorPicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
             Markings.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
             UpdateSaveButton();

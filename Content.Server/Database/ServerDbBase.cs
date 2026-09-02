@@ -239,6 +239,9 @@ namespace Content.Server.Database
             var voice = string.IsNullOrWhiteSpace(profile.Voice)
                 ? SharedHumanoidAppearanceSystem.DefaultSexVoice[sex]
                 : profile.Voice;
+            var barkVoice = string.IsNullOrWhiteSpace(profile.BarkVoice)
+                ? SharedHumanoidAppearanceSystem.DefaultBarkVoice
+                : profile.BarkVoice;
 
             var balance = profile.BankBalance;
 
@@ -321,7 +324,8 @@ namespace Content.Server.Database
                 loadouts,
                 company,
                 wh40kBuild)
-                .WithVoice(voice);
+                .WithVoice(voice)
+                .WithBarkVoice(barkVoice);
         }
 
         private static Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
@@ -339,6 +343,7 @@ namespace Content.Server.Database
             profile.FlavorText = humanoid.FlavorText;
             profile.Species = humanoid.Species;
             profile.Voice = humanoid.Voice;
+            profile.BarkVoice = humanoid.BarkVoice;
             profile.Age = humanoid.Age;
             profile.Sex = humanoid.Sex.ToString();
             profile.Gender = humanoid.Gender.ToString();
@@ -4887,9 +4892,35 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             return await db.DbContext.Whitelist.AnyAsync(w => w.UserId == player);
         }
 
+        public async Task<List<WhitelistPlayerRecord>> GetWhitelistedPlayersAsync(
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+
+            var rows = await (
+                from whitelist in db.DbContext.Whitelist
+                join player in db.DbContext.Player on whitelist.UserId equals player.UserId into players
+                from player in players.DefaultIfEmpty()
+                select new
+                {
+                    whitelist.UserId,
+                    UserName = player == null ? null : player.LastSeenUserName,
+                }).ToListAsync(cancel);
+
+            return rows
+                .Select(row => new WhitelistPlayerRecord(
+                    new NetUserId(row.UserId),
+                    row.UserName ?? row.UserId.ToString()))
+                .OrderBy(record => record.UserName, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
         public async Task AddToWhitelistAsync(NetUserId player)
         {
             await using var db = await GetDb();
+
+            if (await db.DbContext.Whitelist.AnyAsync(w => w.UserId == player))
+                return;
 
             db.DbContext.Whitelist.Add(new Whitelist { UserId = player });
             await db.DbContext.SaveChangesAsync();
@@ -4898,7 +4929,10 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
         public async Task RemoveFromWhitelistAsync(NetUserId player)
         {
             await using var db = await GetDb();
-            var entry = await db.DbContext.Whitelist.SingleAsync(w => w.UserId == player);
+            var entry = await db.DbContext.Whitelist.SingleOrDefaultAsync(w => w.UserId == player);
+            if (entry == null)
+                return;
+
             db.DbContext.Whitelist.Remove(entry);
             await db.DbContext.SaveChangesAsync();
         }

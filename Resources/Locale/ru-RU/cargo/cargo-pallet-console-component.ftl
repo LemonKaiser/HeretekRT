@@ -4,3 +4,6 @@ cargo-pallet-menu-appraisal-label = Оценочная стоимость:{ " " 
 cargo-pallet-menu-count-label = Кол-во продаваемых товаров:{ " " }
 cargo-pallet-appraise-button = Оценить
 cargo-pallet-sell-button = Продать
+
+cargo-pallet-menu-crate-multiplier-label = Множитель торговых ящиков:{ " " }
+cargo-pallet-menu-other-multiplier-label = Прочий множитель:{ " " }

@@ -55,6 +55,11 @@ public sealed partial class AudioTab : Control
             scale: ContentAudioSystem.InterfaceMultiplier);
 
         Control.AddOptionPercentSlider(
+            CCVars.BarksVolume,
+            SliderVolumeBarks,
+            scale: ContentAudioSystem.BarksMultiplier);
+
+        Control.AddOptionPercentSlider(
             CCVars.TTSVolume,
             SliderVolumeTts,
             scale: ContentAudioSystem.TtsMultiplier);

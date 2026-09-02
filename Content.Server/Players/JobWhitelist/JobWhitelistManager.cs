@@ -178,13 +178,25 @@ public sealed partial class JobWhitelistManager : IPostInjectInit
 
     public async void AddGlobalWhitelist(NetUserId player)
     {
+        await TryAddGlobalWhitelistAsync(player);
+    }
+
+    /// <summary>
+    /// Adds a player to the manual server whitelist and updates their live role-whitelist state.
+    /// </summary>
+    public async Task<bool> TryAddGlobalWhitelistAsync(NetUserId player)
+    {
+        if (await _db.GetWhitelistStatusAsync(player))
+            return false;
+
+        await _db.AddToWhitelistAsync(player);
         if (_globalWhitelists.ContainsKey(player))
             _globalWhitelists[player] = true;
 
-        await _db.AddToWhitelistAsync(player);
-
         if (_player.TryGetSessionById(player, out var session))
             SendWhitelist(session);
+
+        return true;
     }
 
     public bool IsGloballyWhitelisted(NetUserId player)
@@ -205,13 +217,25 @@ public sealed partial class JobWhitelistManager : IPostInjectInit
 
     public async void RemoveGlobalWhitelist(NetUserId player)
     {
+        await TryRemoveGlobalWhitelistAsync(player);
+    }
+
+    /// <summary>
+    /// Removes a player from the manual server whitelist and updates their live role-whitelist state.
+    /// </summary>
+    public async Task<bool> TryRemoveGlobalWhitelistAsync(NetUserId player)
+    {
+        if (!await _db.GetWhitelistStatusAsync(player))
+            return false;
+
+        await _db.RemoveFromWhitelistAsync(player);
         if (_globalWhitelists.ContainsKey(player))
             _globalWhitelists[player] = false;
 
-        await _db.RemoveFromWhitelistAsync(player);
-
         if (_player.TryGetSessionById(player, out var session))
             SendWhitelist(session);
+
+        return true;
     }
 
     public void SendWhitelist(ICommonSession player)

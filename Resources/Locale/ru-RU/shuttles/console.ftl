@@ -68,3 +68,5 @@ shuttle-console-orientation-value = {$angle}
 shuttle-console-linear-velocity-value = {$X}, {$Y}
 shuttle-console-angular-velocity-value = {$angularVelocity}
 shuttle-console-ftl-state-Invalid = Неверный
+
+shuttle-console-iff-detailed = Подробный IFF

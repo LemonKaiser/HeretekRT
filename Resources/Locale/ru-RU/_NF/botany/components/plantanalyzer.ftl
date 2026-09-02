@@ -1,5 +1,5 @@
 plant-analyzer-interface-title = Анализатор растений АгроИнфо 3000
-plant-analyzer-window-no-seed-information-text = No seed/plant scanned.
+plant-analyzer-window-no-seed-information-text = Нет отсканированного растения.
 plant-analyzer-window-tab-basics = Информация
 plant-analyzer-window-tab-tolerances = Толерантность
 plant-analyzer-window-tab-mutations = Мутации

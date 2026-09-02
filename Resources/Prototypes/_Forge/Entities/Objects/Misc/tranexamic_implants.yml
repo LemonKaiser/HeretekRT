@@ -1,0 +1,93 @@
+- type: entity
+  parent: BaseSubdermalImplant
+  id: TranexamicImplant
+  name: Tranexamic acid implant
+  description: Automatically injects tranexamic acid and epinephrine on critical condition. Can also be activated manually and refilled after surgical extraction.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SubdermalImplant
+    permanent: false
+    implantAction: ActionActivateTranexamic
+    whitelist:
+      components:
+      - MobState
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Critical
+  - type: TriggerImplantAction
+  - type: SolutionContainerManager
+    solutions:
+      implant:
+        maxVol: 15
+        reagents:
+        - ReagentId: TranexamicAcid
+          Quantity: 5
+        - ReagentId: Epinephrine
+          Quantity: 10
+  - type: RefillableSolution
+    solution: implant
+  - type: InjectableSolution
+    solution: implant
+  - type: ExaminableSolution
+    solution: implant
+  - type: Hypospray
+    solutionName: implant
+    transferAmount: 15
+    injectOnly: true
+    onlyAffectsMobs: true
+    preventCombatInjection: true
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: TranexamicImplantDose
+  name: Tranexamic acid implant (dose)
+  description: Automatically injects a dose of tranexamic acid on critical condition. Can also be activated manually and refilled after surgical extraction.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SubdermalImplant
+    permanent: false
+    implantAction: ActionActivateTranexamicDose
+    whitelist:
+      components:
+      - MobState
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Critical
+  - type: TriggerImplantAction
+  - type: SolutionContainerManager
+    solutions:
+      implant:
+        maxVol: 15
+        reagents:
+        - ReagentId: TranexamicAcid
+          Quantity: 15
+  - type: RefillableSolution
+    solution: implant
+  - type: InjectableSolution
+    solution: implant
+  - type: ExaminableSolution
+    solution: implant
+  - type: Hypospray
+    solutionName: implant
+    transferAmount: 5
+    injectOnly: true
+    onlyAffectsMobs: true
+    preventCombatInjection: true
+
+- type: entity
+  id: TranexamicImplanter
+  parent: BaseImplantOnlyImplanter
+  name: tranexamic implanter
+  suffix: Full dose
+  components:
+  - type: Implanter
+    implant: TranexamicImplant
+
+- type: entity
+  id: TranexamicImplanterDose
+  parent: BaseImplantOnlyImplanter
+  name: tranexamic implanter
+  suffix: Three doses
+  components:
+  - type: Implanter
+    implant: TranexamicImplantDose

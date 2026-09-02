@@ -45,3 +45,5 @@ comp-hands-examine-empty-selfaware = Вы ничего не держите.
 comp-hands-examine-selfaware = Вы держите { $items }.
 
 humanoid-appearance-component-examine-selfaware = Вы - { $species } { $age }.
+
+head-examine-selfaware = - [bold]{$item}[/bold] на вашей голове.

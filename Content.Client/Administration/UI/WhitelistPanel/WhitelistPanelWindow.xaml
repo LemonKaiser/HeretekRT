@@ -1,0 +1,68 @@
+<controls:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    x:Class="Content.Client.Administration.UI.WhitelistPanel.WhitelistPanelWindow"
+    Title="{Loc whitelist-panel-title}"
+    MinSize="840 590">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <Label Name="WhitelistStatusLabel" />
+                <Label Text="{Loc whitelist-panel-enabled-hint}" StyleClasses="LabelSubText" />
+            </BoxContainer>
+            <Button Name="ToggleWhitelistButton" MinWidth="140" />
+            <Button Name="RefreshButton" Text="{Loc whitelist-panel-refresh}" />
+        </BoxContainer>
+        <cc:HSeparator />
+
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="10">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" MinWidth="390">
+                <Label Text="{Loc whitelist-panel-online-players}" />
+                <Label Text="{Loc whitelist-panel-online-players-hint}" StyleClasses="LabelSubText" />
+                <cc:PlayerListControl Name="OnlinePlayerList" VerticalExpand="True" MinHeight="300" />
+                <Label Name="SelectedPlayerLabel" StyleClasses="LabelSubText" ClipText="True" />
+                <Button Name="AddSelectedPlayerButton"
+                        Text="{Loc whitelist-panel-add-selected}"
+                        HorizontalExpand="True"
+                        Disabled="True" />
+            </BoxContainer>
+
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" MinWidth="390">
+                <Label Name="EntriesLabel" />
+                <Label Text="{Loc whitelist-panel-entries-hint}" StyleClasses="LabelSubText" />
+                <LineEdit Name="WhitelistFilterLineEdit"
+                          PlaceHolder="{Loc whitelist-panel-filter-placeholder}"
+                          HorizontalExpand="True" />
+                <PanelContainer Name="WhitelistEntriesPanel" VerticalExpand="True" MinHeight="300">
+                    <ScrollContainer HScrollEnabled="False">
+                        <BoxContainer Name="EntriesContainer" Orientation="Vertical" />
+                    </ScrollContainer>
+                </PanelContainer>
+                <Control MinHeight="14" />
+
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                    <LineEdit Name="PlayerCkeyLine"
+                              PlaceHolder="{Loc whitelist-panel-ckey-placeholder}"
+                              HorizontalExpand="True" />
+                    <Button Name="AddPlayerButton" Text="{Loc whitelist-panel-add}" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+
+        <cc:HSeparator />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <Label Text="{Loc whitelist-panel-kick-heading}" />
+                <Label Text="{Loc whitelist-panel-kick-hint}" StyleClasses="LabelSubText" />
+            </BoxContainer>
+            <controls:ConfirmButton
+                Name="KickNonWhitelistedButton"
+                Text="{Loc whitelist-panel-kick-non-whitelisted}"
+                ConfirmationText="{Loc whitelist-panel-kick-confirm}"
+                MinWidth="230" />
+        </BoxContainer>
+        <Label Name="NoticeLabel" StyleClasses="LabelSubText" />
+    </BoxContainer>
+</controls:FancyWindow>

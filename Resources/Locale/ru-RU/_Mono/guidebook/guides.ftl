@@ -1,2 +1,20 @@
 guide-entry-asakim = Асаким
 guide-entry-letoferol = Летоферол и Химеры
+
+guide-entry-armorexplanation = Механика брони
+guide-entry-ballistics = Баллистическое
+guide-entry-cortical-borer = Мозговой Червь
+guide-entry-creatures = Существа сектора
+guide-entry-energy = Энергетическое
+guide-entry-gridclaimer = Захват обломков
+guide-entry-gunnery = Корабельное вооружение
+guide-entry-misc = Разнообразное
+guide-entry-missiles = Ракетное
+guide-entry-shipyard-argent = Аргент
+guide-entry-shipyard-fenrir = Фенрир
+guide-entry-shipyard-judiciary = Джудикари
+guide-entry-shipyard-motley-anne = Пёстрая Энн
+guide-entry-shipyard-ruby = Руби
+guide-entry-shipyard-sabine = Сабин
+guide-entry-shipyard-takeaway = Тейквэй
+guide-entry-xenoborgs = Ксеноборги
