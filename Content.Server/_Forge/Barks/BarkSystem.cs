@@ -37,13 +37,23 @@ public sealed class BarkSystem : EntitySystem
             return;
         }
 
-        var soundPath = _random.Pick(bark.SoundFiles);
-        var barkEvent = new PlayBarkEvent(
-            soundPath,
-            GetNetEntity(uid),
+        var barks = ExpressiveBarkPlanner.CreatePlan(
             args.Message,
             component.PlaybackSpeed,
-            args.IsWhisper);
+            component.Pitch,
+            component.Expression,
+            bark.SoundFiles.Count,
+            _random.Next());
+
+        if (barks.Length == 0)
+            return;
+
+        var barkEvent = new PlayBarkEvent(
+            bark.SoundFiles.ToArray(),
+            GetNetEntity(uid),
+            barks,
+            args.IsWhisper,
+            component.PlaybackSpeed);
 
         RaiseNetworkEvent(barkEvent, Filter.Pvs(uid));
     }

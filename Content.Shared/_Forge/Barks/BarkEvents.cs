@@ -9,18 +9,25 @@ public sealed class RequestPreviewBarkEvent(string barkVoiceId) : EntityEventArg
 }
 
 [Serializable, NetSerializable]
+public readonly record struct BarkSoundEventData(
+    float Delay,
+    int SoundIndex,
+    float PitchScale,
+    float VolumeOffset);
+
+[Serializable, NetSerializable]
 public sealed class PlayBarkEvent(
-    string soundPath,
+    string[] soundPaths,
     NetEntity sourceUid,
-    string message,
-    float playbackSpeed,
-    bool isWhisper) : EntityEventArgs
+    BarkSoundEventData[] barks,
+    bool isWhisper,
+    float playbackSpeed) : EntityEventArgs
 {
-    public string SoundPath { get; } = soundPath;
+    public string[] SoundPaths { get; } = soundPaths;
     public NetEntity SourceUid { get; } = sourceUid;
-    public string Message { get; } = message;
-    public float PlaybackSpeed { get; } = playbackSpeed;
+    public BarkSoundEventData[] Barks { get; } = barks;
     public bool IsWhisper { get; } = isWhisper;
+    public float PlaybackSpeed { get; } = playbackSpeed;
 }
 
 [Serializable, NetSerializable]

@@ -49,14 +49,8 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
 
     public void DrawPopup(PopupSystem.PopupLabel popup, DrawingHandleScreen handle, Vector2 position, float scale)
     {
-        var lifetime = PopupSystem.GetPopupLifetime(popup);
-
-        // Keep alpha at 1 until TotalTime passes half its lifetime, then gradually decrease to 0.
-        var alpha = MathF.Min(1f, 1f - MathF.Max(0f, popup.TotalTime - lifetime / 2) * 2 / lifetime);
-
-        var updatedPosition = position - new Vector2(0f, MathF.Min(8f, 12f * (popup.TotalTime * popup.TotalTime + popup.TotalTime)));
         var font = _smallFont;
-        var color = Color.White.WithAlpha(alpha);
+        var color = Color.White;
 
         switch (popup.Type)
         {
@@ -81,8 +75,29 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
                 break;
         }
 
-        var dimensions = handle.GetDimensions(font, popup.Text, scale);
-        handle.DrawString(font, updatedPosition - dimensions / 2f, popup.Text, scale, color.WithAlpha(alpha));
+        if (popup is PopupSystem.WorldPopupLabel worldPopup)
+            worldPopup.PrepareLayout(font, scale);
+
+        var lifetime = PopupSystem.GetPopupLifetime(popup);
+        var fadeStart = PopupSystem.GetPopupFadeStart(popup);
+
+        // World text stays opaque until it has finished revealing. Cursor popups retain their old fade behavior.
+        var alpha = popup.TotalTime <= fadeStart || fadeStart >= lifetime
+            ? 1f
+            : Math.Clamp((lifetime - popup.TotalTime) / (lifetime - fadeStart), 0f, 1f);
+
+        var updatedPosition = position - new Vector2(0f, MathF.Min(8f, 12f * (popup.TotalTime * popup.TotalTime + popup.TotalTime)));
+
+        // A progressively revealed world popup must keep its final horizontal center; measuring
+        // only the current prefix makes it visibly jump sideways as every letter is added.
+        var displayText = popup is PopupSystem.WorldPopupLabel repeatedWorldPopup
+            ? repeatedWorldPopup.TextWithRepeatCount
+            : popup.Text;
+        var measuredText = popup is PopupSystem.WorldPopupLabel preparedWorldPopup
+            ? preparedWorldPopup.ReservedTextWithRepeatCount
+            : displayText;
+        var dimensions = handle.GetDimensions(font, measuredText, scale);
+        handle.DrawString(font, updatedPosition - dimensions / 2f, displayText, scale, color.WithAlpha(alpha));
     }
 
     /// <summary>

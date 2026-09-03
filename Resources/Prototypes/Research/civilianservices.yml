@@ -200,6 +200,8 @@
   - BasicCyberneticEyes
   - SecurityCyberneticEyes
   - MedicalCyberneticEyes
+  - TranexamicImplanter
+  - TranexamicImplanterDose
   technologyPrerequisites:
   - AdvancedTreatment
   position: -2, 12

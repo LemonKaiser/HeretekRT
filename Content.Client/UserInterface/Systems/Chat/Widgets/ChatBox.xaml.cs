@@ -160,6 +160,8 @@ public partial class ChatBox : UIWidget
 
     public void AddLine(string message, Color color, int repeat = 0, bool allowAliasMarkup = true) // WD EDIT
     {
+        // The spacer is output-only: speech bubbles continue to receive the original message markup.
+        message = ChatJobIconMarkup.ReserveOutputLineHeight(message);
         var formatted = ChatEmojiRichText.BuildChatLine(
             message,
             color,

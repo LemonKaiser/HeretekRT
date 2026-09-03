@@ -15,6 +15,8 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.ChatEnableColorName, EnableColorNameCheckBox);
         Control.AddOptionCheckBox(CCVars.AccessibilityColorblindFriendly, ColorblindFriendlyCheckBox);
         Control.AddOptionCheckBox(CCVars.ReducedMotion, ReducedMotionCheckBox);
+        Control.AddOptionCheckBox(CCVars.TypewriterTextEnabled, TypewriterTextEnabledCheckBox);
+        Control.AddOptionPercentSlider(CCVars.TypewriterTextSpeed, TypewriterTextSpeedSlider, min: 0.25f, max: 2f);
         Control.AddOptionDropDown(CCVars.ItemRarityWorldEffects, DropDownItemRarityWorldEffects, BuildItemRarityWorldEffectsOptions());
         Control.AddOptionPercentSlider(CCVars.ScreenShakeIntensity, ScreenShakeIntensitySlider);
         Control.AddOptionPercentSlider(CCVars.ChatWindowOpacity, ChatWindowOpacitySlider);

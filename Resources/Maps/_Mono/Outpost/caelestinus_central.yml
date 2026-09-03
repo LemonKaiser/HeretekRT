@@ -56315,7 +56315,7 @@ entities:
       parent: 2
 - proto: SpawnPointWanderer
   entities:
-  - uid: 9637
+  - uid: 10078
     components:
     - type: Transform
       pos: 11.5,11.5

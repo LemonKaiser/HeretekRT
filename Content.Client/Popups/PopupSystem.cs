@@ -1,7 +1,10 @@
 using System.Linq;
+using System.Text;
+using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Chat;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
+using Content.Shared._Forge.Text;
 using Content.Shared.Examine;
 using Content.Shared.GameTicking;
 using Content.Shared.Popups;
@@ -42,6 +45,7 @@ namespace Content.Client.Popups
         public const float MinimumPopupLifetime = 0.7f;
         public const float MaximumPopupLifetime = 5f;
         public const float PopupLifetimePerCharacter = 0.04f;
+        public const float MaximumWorldPopupWidth = 360f;
 
         // WD EDIT START
         private static readonly Dictionary<PopupType, string> FontSizeDict = new()
@@ -90,9 +94,20 @@ namespace Content.Client.Popups
         {
             existingLabel.TotalTime = 0;
             existingLabel.Repeats += 1;
-            existingLabel.Text = Loc.GetString("popup-system-repeated-popup-stacking-wrap",
+
+            if (existingLabel is WorldPopupLabel worldLabel)
+            {
+                // A world popup has an independent reveal clock. Only refresh its lifetime and
+                // counter: resetting its message would restart the typewriter every time a player
+                // repeats the same action.
+                worldLabel.SetRepeatCount(existingLabel.Repeats);
+                return;
+            }
+
+            var repeatedMessage = Loc.GetString("popup-system-repeated-popup-stacking-wrap",
                 ("popup-message", popupMessage),
                 ("count", existingLabel.Repeats));
+            existingLabel.Text = repeatedMessage;
         }
 
         private void PopupMessage(string? message, PopupType type, EntityCoordinates coordinates, EntityUid? entity, bool recordReplay)
@@ -137,9 +152,9 @@ namespace Content.Client.Popups
 
             var label = new WorldPopupLabel(coordinates)
             {
-                Text = message,
                 Type = type,
             };
+            label.SetMessage(message, ShouldAnimateTypewriter(), GetTypewriterSpeed());
 
             _aliveWorldLabels.Add(popupData, label);
         }
@@ -324,9 +339,21 @@ namespace Content.Client.Popups
 
         public static float GetPopupLifetime(PopupLabel label)
         {
-            return Math.Clamp(PopupLifetimePerCharacter * label.Text.Length,
+            var text = label is WorldPopupLabel worldLabel ? worldLabel.FullText : label.Text;
+            var readingTime = Math.Clamp(PopupLifetimePerCharacter * text.Length,
                 MinimumPopupLifetime,
                 MaximumPopupLifetime);
+
+            return label is WorldPopupLabel world ? readingTime + world.RevealDuration : readingTime;
+        }
+
+        public static float GetPopupFadeStart(PopupLabel label)
+        {
+            var lifetime = GetPopupLifetime(label);
+            if (label is not WorldPopupLabel world)
+                return lifetime / 2f;
+
+            return Math.Clamp(Math.Max(world.RevealDuration, lifetime - 0.5f), 0f, lifetime);
         }
 
         public override void FrameUpdate(float frameTime)
@@ -340,6 +367,7 @@ namespace Content.Client.Popups
                 foreach (var (data, label) in _aliveWorldLabels)
                 {
                     label.TotalTime += frameTime;
+                    label.AdvanceReveal(frameTime, !ShouldAnimateTypewriter());
                     if (label.TotalTime > GetPopupLifetime(label) || Deleted(label.InitialPos.EntityId))
                     {
                         aliveWorldToRemove.Add(data);
@@ -383,7 +411,217 @@ namespace Content.Client.Popups
             /// The original EntityCoordinates of the label.
             /// </summary>
             public EntityCoordinates InitialPos = coordinates;
+
+            public string FullText { get; private set; } = string.Empty;
+            /// <summary>
+            ///     The complete pre-wrapped text used to keep the world-space anchor stable while a
+            ///     prefix is being revealed.
+            /// </summary>
+            public string ReservedText { get; private set; } = string.Empty;
+            public float RevealDuration { get; private set; }
+
+            /// <summary>
+            ///     The counter is drawn separately from the typewriter source, so repeated popups
+            ///     can refresh their lifetime without recreating or rewinding the reveal.
+            /// </summary>
+            public string RepeatSuffix { get; private set; } = string.Empty;
+            public string TextWithRepeatCount => Text + RepeatSuffix;
+            public string ReservedTextWithRepeatCount => ReservedText + RepeatSuffix;
+
+            private TypewriterText? _typewriter;
+            private int _visibleTextElements = -1;
+            private float _revealElapsed;
+            private bool _animate;
+            private bool _layoutPrepared;
+            private bool _revealImmediately;
+            private float _speedMultiplier;
+
+            public void SetMessage(string message, bool animate, float speedMultiplier)
+            {
+                FullText = message;
+                ReservedText = message;
+                Text = animate ? string.Empty : message;
+                RevealDuration = 0f;
+                _typewriter = null;
+                _visibleTextElements = -1;
+                _revealElapsed = 0f;
+                _animate = animate;
+                _layoutPrepared = false;
+                _revealImmediately = false;
+                _speedMultiplier = speedMultiplier;
+                RepeatSuffix = string.Empty;
+            }
+
+            public void SetRepeatCount(int repeats)
+            {
+                RepeatSuffix = repeats > 1 ? $" x{repeats}" : string.Empty;
+            }
+
+            /// <summary>
+            ///     Builds the final visual layout before the first draw. The visible text is capped before it is
+            ///     wrapped, keeping an unusually long popup from reserving most of the viewport.
+            /// </summary>
+            public void PrepareLayout(Font font, float scale)
+            {
+                if (_layoutPrepared)
+                    return;
+
+                _layoutPrepared = true;
+                var boundedText = TypewriterText.Create(
+                    FullText,
+                    TextRevealTiming.MaxWorldTextElements,
+                    TimeSpan.Zero,
+                    _speedMultiplier);
+                var displayText = boundedText.GetVisibleText(boundedText.RevealPlan.ElementCount);
+                ReservedText = WrapText(displayText, font, scale, MaximumWorldPopupWidth * scale);
+
+                if (!_animate || _revealImmediately)
+                {
+                    Text = ReservedText;
+                    return;
+                }
+
+                // The lifetime includes the complete reveal duration. The visible text has already been
+                // bounded above, so its pace stays constant without producing an oversized popup.
+                _typewriter = TypewriterText.Create(
+                    ReservedText,
+                    Math.Max(ReservedText.Length, 1),
+                    TimeSpan.Zero,
+                    _speedMultiplier);
+                RevealDuration = (float) _typewriter.RevealPlan.Duration.TotalSeconds;
+                UpdateReveal(false);
+            }
+
+            public void AdvanceReveal(float frameTime, bool revealImmediately)
+            {
+                if (!revealImmediately)
+                    _revealElapsed += Math.Max(0f, frameTime);
+
+                UpdateReveal(revealImmediately);
+            }
+
+            public void UpdateReveal(bool revealImmediately)
+            {
+                _revealImmediately |= revealImmediately;
+                if (_typewriter == null)
+                    return;
+
+                var visible = revealImmediately
+                    ? _typewriter.RevealPlan.ElementCount
+                    : _typewriter.RevealPlan.GetVisibleElementCount(TimeSpan.FromSeconds(_revealElapsed));
+
+                if (visible == _visibleTextElements)
+                    return;
+
+                _visibleTextElements = visible;
+                Text = _typewriter.GetVisibleText(visible);
+            }
+
+            private static string WrapText(string text, Font font, float scale, float maximumWidth)
+            {
+                if (string.IsNullOrEmpty(text) || maximumWidth <= 0f)
+                    return text;
+
+                var result = new StringBuilder(text.Length + Math.Max(4, text.Length / 24));
+                var word = new List<string>();
+                var whitespace = new StringBuilder();
+                var lineWidth = 0f;
+                var whitespaceWidth = 0f;
+                var lineHasContent = false;
+
+                void AppendNewLine()
+                {
+                    result.Append('\n');
+                    lineWidth = 0f;
+                    lineHasContent = false;
+                }
+
+                void AppendWord()
+                {
+                    if (word.Count == 0)
+                        return;
+
+                    var wordWidth = 0f;
+                    foreach (var element in word)
+                    {
+                        wordWidth += GetElementWidth(element, font, scale);
+                    }
+
+                    if (lineHasContent && lineWidth + whitespaceWidth + wordWidth > maximumWidth)
+                    {
+                        AppendNewLine();
+                    }
+                    else if (lineHasContent && whitespace.Length > 0)
+                    {
+                        result.Append(whitespace);
+                        lineWidth += whitespaceWidth;
+                    }
+
+                    foreach (var element in word)
+                    {
+                        var elementWidth = GetElementWidth(element, font, scale);
+                        if (lineHasContent && lineWidth + elementWidth > maximumWidth)
+                            AppendNewLine();
+
+                        result.Append(element);
+                        lineWidth += elementWidth;
+                        lineHasContent = true;
+                    }
+
+                    word.Clear();
+                    whitespace.Clear();
+                    whitespaceWidth = 0f;
+                }
+
+                foreach (var element in TypewriterText.EnumerateTextElements(text))
+                {
+                    if (element.Contains('\n') || element.Contains('\r'))
+                    {
+                        AppendWord();
+                        whitespace.Clear();
+                        whitespaceWidth = 0f;
+                        AppendNewLine();
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(element))
+                    {
+                        AppendWord();
+                        if (lineHasContent)
+                        {
+                            whitespace.Append(element);
+                            whitespaceWidth += GetElementWidth(element, font, scale);
+                        }
+
+                        continue;
+                    }
+
+                    word.Add(element);
+                }
+
+                AppendWord();
+                return result.ToString();
+            }
+
+            private static float GetElementWidth(string element, Font font, float scale)
+            {
+                var width = 0f;
+                foreach (var rune in element.EnumerateRunes())
+                {
+                    if (font.GetCharMetrics(rune, scale) is { } metrics)
+                        width += metrics.Advance;
+                }
+
+                return width;
+            }
         }
+
+        private bool ShouldAnimateTypewriter()
+            => _configManager.GetCVar(CCVars.TypewriterTextEnabled) &&
+               !_configManager.GetCVar(CCVars.ReducedMotion);
+
+        private float GetTypewriterSpeed()
+            => _configManager.GetCVar(CCVars.TypewriterTextSpeed);
 
         public sealed class CursorPopupLabel(ScreenCoordinates screenCoords) : PopupLabel
         {

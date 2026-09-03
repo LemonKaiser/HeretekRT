@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.RichText;
+using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
 namespace Content.Client.UserInterface.Systems.Chat.RichText;
@@ -11,6 +12,8 @@ namespace Content.Client.UserInterface.Systems.Chat.RichText;
 [UsedImplicitly]
 public sealed partial class ChatEmojiTag : IMarkupTagHandler
 {
+    private const string TypewriterHiddenAttribute = "typewriterhidden";
+
     [Dependency] private readonly IResourceCache _resourceCache = default!;
     [Dependency] private readonly ChatEmojiCatalog _emojiCatalog = default!;
 
@@ -27,6 +30,14 @@ public sealed partial class ChatEmojiTag : IMarkupTagHandler
         }
 
         control = ChatEmojiRichText.CreateInlineTextureRect(_resourceCache, emoji);
+        if (node.Attributes.TryGetValue(TypewriterHiddenAttribute, out var hidden) &&
+            hidden.TryGetString(out var value) &&
+            bool.TryParse(value, out var isHidden) &&
+            isHidden)
+        {
+            control.ModulateSelfOverride = Color.Transparent;
+        }
+
         return true;
     }
 }

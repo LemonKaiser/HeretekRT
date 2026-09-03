@@ -15,17 +15,20 @@ using Content.Client.Roles;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Screens;
 using Content.Client.UserInterface.Systems.Chat.Widgets;
+using Content.Client.UserInterface.Systems.Chat.RichText;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Content.Shared._Starlight.CollectiveMind; // Goobstation - Starlight collective mind port
 using Content.Shared._WH40K.Administration.Mute;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
+using Content.Shared._Forge.Barks;
 using Content.Shared.Damage.ForceSay;
 using Content.Shared.Decals;
 using Content.Shared.Input;
 using Content.Shared.Radio;
 using Content.Shared.Roles.RoleCodeword;
+using Content.Shared.StatusIcon;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -109,19 +112,9 @@ public sealed partial class ChatUIController : UIController
     };
 
     /// <summary>
-    ///     The max amount of chars allowed to fit in a single speech bubble.
-    /// </summary>
-    private const int SingleBubbleCharLimit = 100;
-
-    /// <summary>
     ///     Base queue delay each speech bubble has.
     /// </summary>
     private const float BubbleDelayBase = 0.2f;
-
-    /// <summary>
-    ///     Factor multiplied by speech bubble char length to add to delay.
-    /// </summary>
-    private const float BubbleDelayFactor = 0.8f / SingleBubbleCharLimit;
 
     /// <summary>
     ///     The max amount of speech bubbles over a single entity at once.
@@ -474,16 +467,9 @@ public sealed partial class ChatUIController : UIController
             SpeechBubble.CreateSpeechBubble(speechData.Type, speechData.Message, entity);
 
         bubble.OnDied += SpeechBubbleDied;
+        bubble.OnContentSizeChanged += SpeechBubbleContentSizeChanged;
 
-        if (_activeSpeechBubbles.TryGetValue(entity, out var existing))
-        {
-            // Push up existing bubbles above the mob's head.
-            foreach (var existingBubble in existing)
-            {
-                existingBubble.VerticalOffset += bubble.ContentSize.Y;
-            }
-        }
-        else
+        if (!_activeSpeechBubbles.TryGetValue(entity, out var existing))
         {
             existing = new List<SpeechBubble>();
             _activeSpeechBubbles.Add(entity, existing);
@@ -491,6 +477,7 @@ public sealed partial class ChatUIController : UIController
 
         existing.Add(bubble);
         _speechBubbleRoot.AddChild(bubble);
+        RecalculateSpeechBubbleOffsets(existing);
 
         if (existing.Count > SpeechBubbleCap)
         {
@@ -503,6 +490,22 @@ public sealed partial class ChatUIController : UIController
     private void SpeechBubbleDied(EntityUid entity, SpeechBubble bubble)
     {
         RemoveSpeechBubble(entity, bubble);
+    }
+
+    private void SpeechBubbleContentSizeChanged(EntityUid entity, SpeechBubble _)
+    {
+        if (_activeSpeechBubbles.TryGetValue(entity, out var bubbles))
+            RecalculateSpeechBubbleOffsets(bubbles);
+    }
+
+    private static void RecalculateSpeechBubbleOffsets(List<SpeechBubble> bubbles)
+    {
+        var verticalOffset = 0f;
+        for (var i = bubbles.Count - 1; i >= 0; i--)
+        {
+            bubbles[i].VerticalOffset = verticalOffset;
+            verticalOffset += bubbles[i].ContentSize.Y;
+        }
     }
 
     private void EnqueueSpeechBubble(EntityUid entity, ChatMessage message, SpeechBubble.SpeechType speechType)
@@ -522,15 +525,22 @@ public sealed partial class ChatUIController : UIController
 
     public void RemoveSpeechBubble(EntityUid entityUid, SpeechBubble bubble)
     {
+        bubble.OnDied -= SpeechBubbleDied;
+        bubble.OnContentSizeChanged -= SpeechBubbleContentSizeChanged;
         bubble.Dispose();
 
-        var list = _activeSpeechBubbles[entityUid];
+        if (!_activeSpeechBubbles.TryGetValue(entityUid, out var list))
+            return;
+
         list.Remove(bubble);
 
         if (list.Count == 0)
         {
             _activeSpeechBubbles.Remove(entityUid);
+            return;
         }
+
+        RecalculateSpeechBubbleOffsets(list);
     }
 
     private void UpdateChannelPermissions()
@@ -684,7 +694,18 @@ public sealed partial class ChatUIController : UIController
 
             var msg = queueData.MessageQueue.Dequeue();
 
-            queueData.TimeLeft += BubbleDelayBase + msg.Message.Message.Length * BubbleDelayFactor;
+            var animateTypewriter = _config.GetCVar(CCVars.TypewriterTextEnabled) &&
+                                   !_config.GetCVar(CCVars.ReducedMotion);
+            var revealDuration = animateTypewriter
+                ? SpeechBubble.GetRevealDuration(
+                    msg.Message.Message,
+                    _config.GetCVar(CCVars.TypewriterTextSpeed),
+                    EntityManager.TryGetComponent<SpeechSynthesisComponent>(entity, out var speech)
+                        ? speech.PlaybackSpeed
+                        : 1f)
+                : TimeSpan.Zero;
+
+            queueData.TimeLeft += BubbleDelayBase + (float) revealDuration.TotalSeconds;
 
             // We keep the queue around while it has 0 items. This allows us to keep the timer.
             // When the timer hits 0 and there's no messages left, THEN we can clear it up.
@@ -939,6 +960,8 @@ public sealed partial class ChatUIController : UIController
 
     public void ProcessChatMessage(ChatMessage msg, bool speechBubble = true)
     {
+        ApplySenderJobIcon(msg);
+
         // color the name unless it's something like "the old man"
         if ((msg.Channel == ChatChannel.Local || msg.Channel == ChatChannel.Whisper) && _chatNameColorsEnabled)
         {
@@ -1018,6 +1041,18 @@ public sealed partial class ChatUIController : UIController
                     AddSpeechBubble(msg, SpeechBubble.SpeechType.Looc);
                 break;
         }
+    }
+
+    private void ApplySenderJobIcon(ChatMessage msg)
+    {
+        if (!ChatJobIconMarkup.ShouldInjectForChannel(msg.Channel) ||
+            string.IsNullOrWhiteSpace(msg.SenderJobIconId) ||
+            !_prototypeManager.HasIndex<JobIconPrototype>(msg.SenderJobIconId))
+        {
+            return;
+        }
+
+        msg.WrappedMessage = ChatJobIconMarkup.Inject(msg.WrappedMessage, msg.SenderJobIconId);
     }
 
     public void OnDeleteChatMessagesBy(MsgDeleteChatMessagesBy msg)

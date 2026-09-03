@@ -20,6 +20,18 @@ public sealed partial class CCVars
         CVarDef.Create("accessibility.reduced_motion", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
+    ///     Enables progressive typewriter-style revealing for transient text in the world.
+    /// </summary>
+    public static readonly CVarDef<bool> TypewriterTextEnabled =
+        CVarDef.Create("accessibility.typewriter_text_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Multiplier for the typewriter reveal speed. One is the default speed.
+    /// </summary>
+    public static readonly CVarDef<float> TypewriterTextSpeed =
+        CVarDef.Create("accessibility.typewriter_text_speed", 1f, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
     ///     World effects for item rarity: 0 disables them, 1 keeps the static
     ///     aura and mark, and 2 enables the full pulse, particles and beam.
     /// </summary>
