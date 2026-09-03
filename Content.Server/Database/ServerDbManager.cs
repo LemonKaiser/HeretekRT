@@ -582,6 +582,19 @@ namespace Content.Server.Database
 
         #endregion
 
+        #region WH40K Decorations
+
+        Task<Wh40kDecorationSelectionData?> GetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            CancellationToken cancel = default);
+
+        Task SetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            Wh40kDecorationSelectionData selection,
+            CancellationToken cancel = default);
+
+        #endregion
+
         #region DB Notifications
 
         void SubscribeToNotifications(Action<DatabaseNotification> handler);
@@ -1856,6 +1869,23 @@ namespace Content.Server.Database
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.RemoveGhostPermissionAsync(userId, cancel));
+        }
+
+        public Task<Wh40kDecorationSelectionData?> GetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetWh40kDecorationSelectionAsync(userId, cancel));
+        }
+
+        public Task SetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            Wh40kDecorationSelectionData selection,
+            CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetWh40kDecorationSelectionAsync(userId, selection, cancel));
         }
 
         public void SubscribeToNotifications(Action<DatabaseNotification> handler)

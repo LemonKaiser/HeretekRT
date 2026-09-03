@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
@@ -80,6 +81,13 @@ namespace Content.Server.Ghost
         private EntityQuery<PhysicsComponent> _physicsQuery;
 
         private static readonly ProtoId<TagPrototype> AllowGhostShownByEventTag = "AllowGhostShownByEvent";
+
+        /// <summary>
+        ///     Raised after the base ghost setup completes when a mind is attached to a ghost.
+        ///     Directed MindAddedMessage subscriptions are unique per component, so extensions
+        ///     must use this hook instead of subscribing to GhostComponent themselves.
+        /// </summary>
+        public event Action<Entity<GhostComponent>, MindAddedMessage>? GhostMindAdded;
 
         public override void Initialize()
         {
@@ -601,7 +609,7 @@ namespace Content.Server.Ghost
         /// </summary>
         /// <param name="ghostEntity">The ghost entity to apply the color to</param>
         /// <param name="mindId">The mind ID of the player</param>
-        public void ApplyAdminOOCColor(EntityUid ghostEntity, EntityUid mindId) // Mono
+        public void ApplyAdminOOCColor(EntityUid ghostEntity) // Mono
         {
             if (!_player.TryGetSessionByEntity(ghostEntity, out var session))
                 return;
@@ -627,6 +635,14 @@ namespace Content.Server.Ghost
             }
         }
 
+        /// <summary>
+        ///     Совместимость со старыми точками вызова, которым раньше передавался неиспользуемый идентификатор разума.
+        /// </summary>
+        public void ApplyAdminOOCColor(EntityUid ghostEntity, EntityUid mindId)
+        {
+            ApplyAdminOOCColor(ghostEntity);
+        }
+
         private void OnMindAdded(EntityUid uid, GhostComponent component, MindAddedMessage args)
         {
             // When a mind is added to a ghost, check if the player has an admin OOC color
@@ -636,6 +652,7 @@ namespace Content.Server.Ghost
 
             _ghostPermissions.HandleGhostMindAdded(args);
             ApplyAdminOOCColor(uid, args.Mind);
+            GhostMindAdded?.Invoke((uid, component), args);
         }
 
         public bool OnGhostAttempt(EntityUid mindId, bool canReturnGlobal, bool viaCommand = false, bool forced = false, MindComponent? mind = null)

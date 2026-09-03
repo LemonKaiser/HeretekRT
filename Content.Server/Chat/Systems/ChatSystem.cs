@@ -15,6 +15,7 @@ using Content.Server.Speech.EntitySystems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.Administration.Mute;
+using Content.Server._WH40K.MetaProgress;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
@@ -72,6 +73,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     [Dependency] private DiscordChatLink _discordLink = default!;
     [Dependency] private LanguageSystem _language = default!; // Einstein Engines - Language
     [Dependency] private CollectiveMindUpdateSystem _collectiveMind = default!; // Goobstation - Starlight collective mind port
+    [Dependency] private WH40KDecorationSystem _decorations = default!;
     [Dependency] private WH40KMuteSystem _muteSystem = default!;
 
     public const int VoiceRange = 10; // how far voice goes in world units
@@ -885,7 +887,8 @@ public sealed partial class ChatSystem : SharedChatSystem
     // ReSharper disable once InconsistentNaming
     private void SendLOOC(EntityUid source, ICommonSession player, string message, bool hideChat)
     {
-        var name = FormattedMessage.EscapeText(Identity.Name(source, EntityManager));
+        var entityName = Identity.Name(source, EntityManager);
+        var name = FormattedMessage.EscapeText(entityName);
 
         if (_adminManager.IsAdmin(player))
         {
@@ -900,6 +903,20 @@ public sealed partial class ChatSystem : SharedChatSystem
         var wrappedMessage = Loc.GetString("chat-manager-entity-looc-wrap-message",
             ("entityName", name),
             ("message", FormattedMessage.EscapeText(message)));
+
+        // AdminOOCColor only exists for OOC.  LOOC has no equivalent native staff
+        // visual to preserve, so suppressing decorations here made admin LOOC plain.
+        if (ChatManager.TryBuildDecoratedChatMessage(
+                _decorations,
+                player,
+                entityName,
+                message,
+                "chat-manager-entity-looc-decoration-markup-wrap-message",
+                "chat-manager-entity-looc-decoration-full-line",
+                out var decoratedMessage))
+        {
+            wrappedMessage = decoratedMessage;
+        }
 
         SendInVoiceRange(ChatChannel.LOOC, name, message, wrappedMessage,
             obfuscated: string.Empty,

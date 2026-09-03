@@ -39,9 +39,13 @@ chat-manager-entity-whisper-unknown-wrap-message = [font size=11][italic][Bubble
 # THE() is not used here because the entity and its name can technically be disconnected if a nameOverride is passed...
 chat-manager-entity-me-wrap-message = [italic][Name]{ $entityName }[/Name] { $message }[/italic]
 chat-manager-entity-looc-wrap-message = LOOC: [bold][Name]{ $entityName }[/Name]:[/bold] { $message }
+chat-manager-entity-looc-decoration-markup-wrap-message = LOOC: [bold][Name]{ $playerNameMarkup }[/Name][/bold] { $message }
+chat-manager-entity-looc-decoration-full-line = LOOC: { $titlePrefix }{ $playerName }: { $message }
 chat-manager-entity-looc-patron-wrap-message = LOOC: [bold][color={ $patronColor }][Name]{ $entityName }[/Name][/color]:[/bold] { $message }
 chat-manager-send-ooc-wrap-message = OOC: [bold][Name]{ $playerName }[/Name]:[/bold] { $message }
 chat-manager-send-ooc-patron-wrap-message = OOC: [bold][color={ $patronColor }][Name]{ $playerName }[/Name][/color]:[/bold] { $message }
+chat-manager-send-ooc-decoration-markup-wrap-message = OOC: [bold][Name]{ $playerNameMarkup }[/Name][/bold] { $message }
+chat-manager-send-ooc-decoration-full-line = OOC: { $titlePrefix }{ $playerName }: { $message }
 chat-manager-send-dead-chat-wrap-message = { $deadChannelName }: [bold][BubbleHeader][Name]{ $playerName }[/Name][/BubbleHeader]:[/bold] [BubbleContent]{ $message }[/BubbleContent]
 chat-manager-send-admin-dead-chat-wrap-message = { $title }: [bold]([BubbleHeader][Name]{ $userName }[/Name][/BubbleHeader]):[/bold] [BubbleContent]{ $message }[/BubbleContent]
 chat-manager-send-admin-chat-wrap-message = { $adminChannelName }: [bold][Name]{ $playerName }[/Name]:[/bold] { $message }

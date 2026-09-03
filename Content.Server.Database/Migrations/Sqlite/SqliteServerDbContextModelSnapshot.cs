@@ -1784,6 +1784,41 @@ namespace Content.Server.Database.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("Content.Server.Database.Wh40kDecorationSelection", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("SelectedGhostSkinId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("selected_ghost_skin_id");
+
+                    b.Property<string>("SelectedOocNameColorId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("selected_ooc_name_color_id");
+
+                    b.Property<string>("SelectedOocTitleId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("selected_ooc_title_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("UserId")
+                        .HasName("PK_wh40k_decoration_selection");
+
+                    b.ToTable("wh40k_decoration_selection", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Wh40kExperienceLedger", b =>
                 {
                     b.Property<long>("Id")

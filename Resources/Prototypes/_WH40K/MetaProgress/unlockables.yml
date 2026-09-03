@@ -1,0 +1,1693 @@
+- type: wh40kMetaDecoration
+  id: decor-ghost-standard
+  category: GhostSkins
+  title: w40k-dec-ghost-standard-title
+  preview: w40k-dec-ghost-standard-preview-name
+  ghostRsiPath: /Textures/Mobs/Ghosts/ghost_human.rsi
+  ghostState: animated
+  ghostTintHex: "#DFEAFF"
+  defaultSelected: true
+  sortOrder: 10
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-iron
+  category: GhostSkins
+  title: w40k-dec-ghost-iron-title
+  preview: w40k-dec-ghost-iron-preview-name
+  ghostRsiPath: /Textures/Mobs/Ghosts/ghost_human.rsi
+  ghostState: animated
+  ghostTintHex: "#B6C2D4"
+  sortOrder: 20
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-star
+  category: GhostSkins
+  title: w40k-dec-ghost-star-title
+  preview: w40k-dec-ghost-star-preview-name
+  ghostRsiPath: /Textures/Mobs/Ghosts/ghost_human.rsi
+  ghostState: animated
+  ghostTintHex: "#E3C979"
+  sortOrder: 30
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-warp
+  category: GhostSkins
+  title: w40k-dec-ghost-warp-title
+  preview: w40k-dec-ghost-warp-preview-name
+  ghostRsiPath: /Textures/Mobs/Ghosts/ghost_human.rsi
+  ghostState: animated
+  ghostTintHex: "#C090FF"
+  sortOrder: 40
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-aghost1
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-aghost1-title
+  preview: w40k-dec-ghost-pack-aghost1-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: aghost1
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 50
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-aghost3
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-aghost3-title
+  preview: w40k-dec-ghost-pack-aghost3-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: aghost3
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 60
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-aghost4
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-aghost4-title
+  preview: w40k-dec-ghost-pack-aghost4-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: aghost4
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 70
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-aghost5
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-aghost5-title
+  preview: w40k-dec-ghost-pack-aghost5-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: aghost5
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 80
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-dune
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-dune-title
+  preview: w40k-dec-ghost-pack-dune-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: dune
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 90
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-felind
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-felind-title
+  preview: w40k-dec-ghost-pack-felind-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: felind
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 100
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-kotovasu
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-kotovasu-title
+  preview: w40k-dec-ghost-pack-kotovasu-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: Kotovasu
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 110
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-kvasik
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-kvasik-title
+  preview: w40k-dec-ghost-pack-kvasik-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: kvasik
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 120
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-nubas0914
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-nubas0914-title
+  preview: w40k-dec-ghost-pack-nubas0914-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: nubas0914
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 130
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-shadowkin
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-shadowkin-title
+  preview: w40k-dec-ghost-pack-shadowkin-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: shadowkin
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 140
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-stray
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-stray-title
+  preview: w40k-dec-ghost-pack-stray-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: stray
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 150
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-vulpkin
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-vulpkin-title
+  preview: w40k-dec-ghost-pack-vulpkin-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: vulpkin
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 160
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-endr-animet
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-endr-animet-title
+  preview: w40k-dec-ghost-pack-endr-animet-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: endr_animet
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 170
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-1
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-1-title
+  preview: w40k-dec-ghost-pack-1-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "1"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 180
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-10
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-10-title
+  preview: w40k-dec-ghost-pack-10-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "10"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 190
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-11
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-11-title
+  preview: w40k-dec-ghost-pack-11-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "11"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 200
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-12
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-12-title
+  preview: w40k-dec-ghost-pack-12-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "12"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 210
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-13
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-13-title
+  preview: w40k-dec-ghost-pack-13-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "13"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 220
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-14
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-14-title
+  preview: w40k-dec-ghost-pack-14-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "14"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 230
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-15
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-15-title
+  preview: w40k-dec-ghost-pack-15-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "15"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 240
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-16
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-16-title
+  preview: w40k-dec-ghost-pack-16-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "16"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 250
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-17
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-17-title
+  preview: w40k-dec-ghost-pack-17-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "17"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 260
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-2
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-2-title
+  preview: w40k-dec-ghost-pack-2-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "2"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 270
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-3
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-3-title
+  preview: w40k-dec-ghost-pack-3-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "3"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 280
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-4
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-4-title
+  preview: w40k-dec-ghost-pack-4-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "4"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 290
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-5
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-5-title
+  preview: w40k-dec-ghost-pack-5-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "5"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 300
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-6
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-6-title
+  preview: w40k-dec-ghost-pack-6-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "6"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 310
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-7
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-7-title
+  preview: w40k-dec-ghost-pack-7-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "7"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 320
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-8
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-8-title
+  preview: w40k-dec-ghost-pack-8-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "8"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 330
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-9
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-9-title
+  preview: w40k-dec-ghost-pack-9-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "9"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 340
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated1
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated1-title
+  preview: w40k-dec-ghost-pack-animated1-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated1"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 350
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated10
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated10-title
+  preview: w40k-dec-ghost-pack-animated10-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated10"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 360
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated11
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated11-title
+  preview: w40k-dec-ghost-pack-animated11-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated11"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 370
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated12
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated12-title
+  preview: w40k-dec-ghost-pack-animated12-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated12"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 380
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated13
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated13-title
+  preview: w40k-dec-ghost-pack-animated13-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated13"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 390
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated14
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated14-title
+  preview: w40k-dec-ghost-pack-animated14-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated14"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 400
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated15
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated15-title
+  preview: w40k-dec-ghost-pack-animated15-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated15"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 410
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated16
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated16-title
+  preview: w40k-dec-ghost-pack-animated16-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated16"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 420
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated17
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated17-title
+  preview: w40k-dec-ghost-pack-animated17-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated17"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 430
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated18
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated18-title
+  preview: w40k-dec-ghost-pack-animated18-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated18"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 440
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated19
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated19-title
+  preview: w40k-dec-ghost-pack-animated19-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated19"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 450
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated2
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated2-title
+  preview: w40k-dec-ghost-pack-animated2-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated2"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 460
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated20
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated20-title
+  preview: w40k-dec-ghost-pack-animated20-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated20"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 470
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated21
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated21-title
+  preview: w40k-dec-ghost-pack-animated21-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated21"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 480
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated22
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated22-title
+  preview: w40k-dec-ghost-pack-animated22-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated22"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 490
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated23
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated23-title
+  preview: w40k-dec-ghost-pack-animated23-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated23"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 500
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated24
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated24-title
+  preview: w40k-dec-ghost-pack-animated24-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated24"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 510
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated25
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated25-title
+  preview: w40k-dec-ghost-pack-animated25-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated25"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 520
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated26
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated26-title
+  preview: w40k-dec-ghost-pack-animated26-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated26"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 530
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated27
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated27-title
+  preview: w40k-dec-ghost-pack-animated27-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated27"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 540
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated28
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated28-title
+  preview: w40k-dec-ghost-pack-animated28-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated28"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 550
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated3
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated3-title
+  preview: w40k-dec-ghost-pack-animated3-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated3"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 560
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated30
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated30-title
+  preview: w40k-dec-ghost-pack-animated30-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated30"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 570
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated31
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated31-title
+  preview: w40k-dec-ghost-pack-animated31-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated31"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 580
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated32
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated32-title
+  preview: w40k-dec-ghost-pack-animated32-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated32"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 590
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated33
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated33-title
+  preview: w40k-dec-ghost-pack-animated33-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated33"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 600
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated34
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated34-title
+  preview: w40k-dec-ghost-pack-animated34-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated34"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 610
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated4
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated4-title
+  preview: w40k-dec-ghost-pack-animated4-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated4"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 620
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated5
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated5-title
+  preview: w40k-dec-ghost-pack-animated5-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated5"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 630
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated6
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated6-title
+  preview: w40k-dec-ghost-pack-animated6-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated6"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 640
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated7
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated7-title
+  preview: w40k-dec-ghost-pack-animated7-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated7"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 650
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated8
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated8-title
+  preview: w40k-dec-ghost-pack-animated8-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated8"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 660
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-animated9
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-animated9-title
+  preview: w40k-dec-ghost-pack-animated9-preview-name
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "animated9"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 670
+
+
+- type: wh40kMetaDecoration
+  id: decor-ghost-pack-icon
+  category: GhostSkins
+  title: w40k-dec-ghost-pack-icon-title
+  preview: w40k-dec-ghost-pack-icon-preview-name
+  adminOnly: true
+  ghostRsiPath: /Textures/_WH40K/Mobs/Ghosts/ghost_pack.rsi
+  ghostState: "icon"
+  ghostTintHex: "#FFFFFF"
+  sortOrder: 680
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-none
+  category: OocTitles
+  title: w40k-dec-title-none-title
+  preview: w40k-dec-title-none-preview-name
+  defaultSelected: true
+  suppressTitlePrefix: true
+  sortOrder: 10
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-legend
+  category: OocTitles
+  title: w40k-dec-title-legend-title
+  preview: w40k-dec-title-legend-preview-name
+  oocTitleEffect: typewriter-cursor
+  oocTitleEffectRevealMs: 2200
+  oocTitleEffectHoldMs: 8500
+  oocTitleEffectDissolveMs: 1800
+  sortOrder: 185
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-vanguard
+  category: OocTitles
+  title: w40k-dec-title-vanguard-title
+  preview: w40k-dec-title-vanguard-preview-name
+  sortOrder: 30
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-marshal
+  category: OocTitles
+  title: w40k-dec-title-marshal-title
+  preview: w40k-dec-title-marshal-preview-name
+  sortOrder: 40
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-saint
+  category: OocTitles
+  title: w40k-dec-title-saint-title
+  preview: w40k-dec-title-saint-preview-name
+  sortOrder: 50
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-chromatic
+  category: OocTitles
+  title: w40k-dec-title-chromatic-title
+  preview: w40k-dec-title-chromatic-preview-name
+  sortOrder: 60
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-warpweaver
+  category: OocTitles
+  title: w40k-dec-title-warpweaver-title
+  preview: w40k-dec-title-warpweaver-preview-name
+  oocTitleEffect: wave
+  oocTitleEffectRevealMs: 1200
+  oocTitleEffectHoldMs: 10000
+  oocTitleEffectDissolveMs: 1200
+  sortOrder: 215
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-iron-oath
+  category: OocTitles
+  title: w40k-dec-title-iron-oath-title
+  preview: w40k-dec-title-iron-oath-preview-name
+  sortOrder: 80
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-void-scout
+  category: OocTitles
+  title: w40k-dec-title-void-scout-title
+  preview: w40k-dec-title-void-scout-preview-name
+  sortOrder: 90
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-storm-herald
+  category: OocTitles
+  title: w40k-dec-title-storm-herald-title
+  preview: w40k-dec-title-storm-herald-preview-name
+  oocTitleEffect: scanline
+  oocTitleEffectRevealMs: 900
+  oocTitleEffectHoldMs: 5500
+  oocTitleEffectDissolveMs: 900
+  sortOrder: 225
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-trench-lord
+  category: OocTitles
+  title: w40k-dec-title-trench-lord-title
+  preview: w40k-dec-title-trench-lord-preview-name
+  sortOrder: 110
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-radiant-sign
+  category: OocTitles
+  title: w40k-dec-title-radiant-sign-title
+  preview: w40k-dec-title-radiant-sign-preview-name
+  sortOrder: 120
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-night-warden
+  category: OocTitles
+  title: w40k-dec-title-night-warden-title
+  preview: w40k-dec-title-night-warden-preview-name
+  sortOrder: 130
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-ember-sigil
+  category: OocTitles
+  title: w40k-dec-title-ember-sigil-title
+  preview: w40k-dec-title-ember-sigil-preview-name
+  sortOrder: 140
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-relic-keeper
+  category: OocTitles
+  title: w40k-dec-title-relic-keeper-title
+  preview: w40k-dec-title-relic-keeper-preview-name
+  sortOrder: 150
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-frost-vow
+  category: OocTitles
+  title: w40k-dec-title-frost-vow-title
+  preview: w40k-dec-title-frost-vow-preview-name
+  sortOrder: 160
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-war-choir
+  category: OocTitles
+  title: w40k-dec-title-war-choir-title
+  preview: w40k-dec-title-war-choir-preview-name
+  sortOrder: 170
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-sunbreaker
+  category: OocTitles
+  title: w40k-dec-title-sunbreaker-title
+  preview: w40k-dec-title-sunbreaker-preview-name
+  sortOrder: 180
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-rune-bearer
+  category: OocTitles
+  title: w40k-dec-title-rune-bearer-title
+  preview: w40k-dec-title-rune-bearer-preview-name
+  sortOrder: 190
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-gatekeeper
+  category: OocTitles
+  title: w40k-dec-title-gatekeeper-title
+  preview: w40k-dec-title-gatekeeper-preview-name
+  sortOrder: 200
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-iron-priest
+  category: OocTitles
+  title: w40k-dec-title-iron-priest-title
+  preview: w40k-dec-title-iron-priest-preview-name
+  sortOrder: 210
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-dusk-commander
+  category: OocTitles
+  title: w40k-dec-title-dusk-commander-title
+  preview: w40k-dec-title-dusk-commander-preview-name
+  sortOrder: 220
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-hellforged
+  category: OocTitles
+  title: w40k-dec-title-hellforged-title
+  preview: w40k-dec-title-hellforged-preview-name
+  sortOrder: 230
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-astral-sentinel
+  category: OocTitles
+  title: w40k-dec-title-astral-sentinel-title
+  preview: w40k-dec-title-astral-sentinel-preview-name
+  sortOrder: 240
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-blood-banner
+  category: OocTitles
+  title: w40k-dec-title-blood-banner-title
+  preview: w40k-dec-title-blood-banner-preview-name
+  sortOrder: 250
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-sigil-master
+  category: OocTitles
+  title: w40k-dec-title-sigil-master-title
+  preview: w40k-dec-title-sigil-master-preview-name
+  oocTitleEffect: scramble-decode
+  oocTitleEffectRevealMs: 2600
+  oocTitleEffectHoldMs: 7000
+  oocTitleEffectDissolveMs: 2200
+  sortOrder: 260
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-warp-seer
+  category: OocTitles
+  title: w40k-dec-title-warp-seer-title
+  preview: w40k-dec-title-warp-seer-preview-name
+  sortOrder: 270
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-bone-guard
+  category: OocTitles
+  title: w40k-dec-title-bone-guard-title
+  preview: w40k-dec-title-bone-guard-preview-name
+  sortOrder: 280
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-star-archon
+  category: OocTitles
+  title: w40k-dec-title-star-archon-title
+  preview: w40k-dec-title-star-archon-preview-name
+  oocTitleEffect: noise-dissolve
+  oocTitleEffectRevealMs: 2200
+  oocTitleEffectHoldMs: 8000
+  oocTitleEffectDissolveMs: 2200
+  sortOrder: 290
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-pyre-marshal
+  category: OocTitles
+  title: w40k-dec-title-pyre-marshal-title
+  preview: w40k-dec-title-pyre-marshal-preview-name
+  sortOrder: 300
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-black-cantor
+  category: OocTitles
+  title: w40k-dec-title-black-cantor-title
+  preview: w40k-dec-title-black-cantor-preview-name
+  oocTitleEffect: glitch-slice
+  oocTitleEffectRevealMs: 700
+  oocTitleEffectHoldMs: 4500
+  oocTitleEffectDissolveMs: 700
+  sortOrder: 310
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-red-omen
+  category: OocTitles
+  title: w40k-dec-title-red-omen-title
+  preview: w40k-dec-title-red-omen-preview-name
+  sortOrder: 320
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-binary-oracle
+  category: OocTitles
+  title: w40k-dec-title-binary-oracle-title
+  preview: w40k-dec-title-binary-oracle-preview-name
+  oocTitleEffect: binary
+  oocTitleEffectRevealMs: 2500
+  oocTitleEffectHoldMs: 10000
+  oocTitleEffectDissolveMs: 2500
+  sortOrder: 330
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-perevertysh
+  category: OocTitles
+  title: w40k-dec-title-perevertysh-title
+  preview: w40k-dec-title-perevertysh-preview-name
+  oocTitleEffect: flip
+  oocTitleEffectRevealMs: 2500
+  oocTitleEffectHoldMs: 10000
+  oocTitleEffectDissolveMs: 2500
+  sortOrder: 340
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-void-halo
+  category: OocTitles
+  title: w40k-dec-color-void-halo-aura-title
+  preview: w40k-dec-color-void-halo-aura-title
+  oocColorHex: "#8FD0FF"
+  oocTitleOutlineHex: "#5FB8FF"
+  oocTitleOutlineWidth: 1
+  oocTitleOutlineAlphaPercent: 62
+  sortOrder: 350
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-blood-crown
+  category: OocTitles
+  title: w40k-dec-color-blood-crown-aura-title
+  preview: w40k-dec-color-blood-crown-aura-title
+  oocColorHex: "#FF4B4B"
+  oocGradientColors:
+  - "#FF4B4B"
+  - "#B70032"
+  - "#1A0000"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 1900
+  oocTitleOutlineHex: "#FF1A1A"
+  oocTitleOutlineWidth: 1
+  oocTitleOutlineAlphaPercent: 72
+  sortOrder: 360
+
+
+- type: wh40kMetaDecoration
+  id: decor-title-discord-envoy
+  category: OocTitles
+  title: w40k-dec-title-discord-envoy-title
+  preview: w40k-dec-title-discord-envoy-preview-name
+  oocTitleEffect: scan
+  oocTitleEffectRevealMs: 900
+  oocTitleEffectHoldMs: 4500
+  oocTitleEffectDissolveMs: 900
+  sortOrder: 11
+
+- type: wh40kMetaDecoration
+  id: decor-title-fish
+  category: OocTitles
+  title: w40k-dec-title-fish-title
+  preview: w40k-dec-title-fish-preview-name
+  oocTitleEffect: fish
+  oocTitleEffectRevealMs: 1000
+  oocTitleEffectHoldMs: 10000
+  oocTitleEffectDissolveMs: 1000
+  sortOrder: 12
+
+- type: wh40kMetaDecoration
+  id: decor-color-default
+  category: OocNameColors
+  title: w40k-dec-color-default-title
+  oocColorHex: "#87CEFA"
+  defaultSelected: true
+  sortOrder: 10
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-steel
+  category: OocNameColors
+  title: w40k-dec-color-steel-title
+  oocColorHex: "#8FB4FF"
+  sortOrder: 20
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-gold
+  category: OocNameColors
+  title: w40k-dec-color-gold-title
+  oocColorHex: "#D8BC6A"
+  sortOrder: 30
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-violet
+  category: OocNameColors
+  title: w40k-dec-color-violet-title
+  oocColorHex: "#C992FF"
+  sortOrder: 40
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-red
+  category: OocNameColors
+  title: w40k-dec-color-red-title
+  oocColorHex: "#E26C6C"
+  sortOrder: 50
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-sunset-static
+  category: OocNameColors
+  title: w40k-dec-color-sunset-static-title
+  oocColorHex: "#FF9A5B"
+  oocGradientColors:
+  - "#FF9A5B"
+  - "#FF5E7A"
+  - "#C86BFF"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 255
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-aurora-static
+  category: OocNameColors
+  title: w40k-dec-color-aurora-static-title
+  oocColorHex: "#7AD1FF"
+  oocGradientColors:
+  - "#7AD1FF"
+  - "#7CFFBA"
+  - "#E9FF7A"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 265
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-prism-flow
+  category: OocNameColors
+  title: w40k-dec-color-prism-flow-title
+  oocColorHex: "#8FC8FF"
+  oocGradientColors:
+  - "#8FC8FF"
+  - "#9D8CFF"
+  - "#FF8CCC"
+  - "#FFE48A"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2800
+  sortOrder: 395
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-warp-flux
+  category: OocNameColors
+  title: w40k-dec-color-warp-flux-title
+  oocColorHex: "#B082FF"
+  oocGradientColors:
+  - "#B082FF"
+  - "#6EE7FF"
+  - "#9BFF8A"
+  - "#FFE082"
+  - "#FF84D8"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2200
+  sortOrder: 405
+
+- type: wh40kMetaDecoration
+  id: decor-color-crimson-solid
+  category: OocNameColors
+  title: w40k-dec-color-crimson-solid-title
+  oocColorHex: "#D7263D"
+  sortOrder: 100
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-cobalt-solid
+  category: OocNameColors
+  title: w40k-dec-color-cobalt-solid-title
+  oocColorHex: "#265DFF"
+  sortOrder: 110
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-jade-solid
+  category: OocNameColors
+  title: w40k-dec-color-jade-solid-title
+  oocColorHex: "#1FBF75"
+  sortOrder: 120
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-amber-solid
+  category: OocNameColors
+  title: w40k-dec-color-amber-solid-title
+  oocColorHex: "#FFB020"
+  sortOrder: 130
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-orchid-solid
+  category: OocNameColors
+  title: w40k-dec-color-orchid-solid-title
+  oocColorHex: "#B85CFF"
+  sortOrder: 140
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-coral-solid
+  category: OocNameColors
+  title: w40k-dec-color-coral-solid-title
+  oocColorHex: "#FF6F61"
+  sortOrder: 150
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-steelblue-solid
+  category: OocNameColors
+  title: w40k-dec-color-steelblue-solid-title
+  oocColorHex: "#5B84B1"
+  sortOrder: 160
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-lime-solid
+  category: OocNameColors
+  title: w40k-dec-color-lime-solid-title
+  oocColorHex: "#9BCC2E"
+  sortOrder: 170
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-cyan-solid
+  category: OocNameColors
+  title: w40k-dec-color-cyan-solid-title
+  oocColorHex: "#24C4D8"
+  sortOrder: 180
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-magenta-solid
+  category: OocNameColors
+  title: w40k-dec-color-magenta-solid-title
+  oocColorHex: "#D84AC3"
+  sortOrder: 190
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-ivory-solid
+  category: OocNameColors
+  title: w40k-dec-color-ivory-solid-title
+  oocColorHex: "#F2EEE3"
+  sortOrder: 200
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-obsidian-solid
+  category: OocNameColors
+  title: w40k-dec-color-obsidian-solid-title
+  oocColorHex: "#2B2F3A"
+  sortOrder: 210
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-sand-solid
+  category: OocNameColors
+  title: w40k-dec-color-sand-solid-title
+  oocColorHex: "#C9A36B"
+  sortOrder: 220
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-sky-solid
+  category: OocNameColors
+  title: w40k-dec-color-sky-solid-title
+  oocColorHex: "#63B3FF"
+  sortOrder: 230
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-mint-solid
+  category: OocNameColors
+  title: w40k-dec-color-mint-solid-title
+  oocColorHex: "#6EE7B7"
+  sortOrder: 240
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-dawn-static
+  category: OocNameColors
+  title: w40k-dec-color-dawn-static-title
+  oocColorHex: "#FFD27A"
+  oocGradientColors:
+  - "#FFD27A"
+  - "#FF8A5B"
+  - "#FF5E7A"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 250
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-glacier-static
+  category: OocNameColors
+  title: w40k-dec-color-glacier-static-title
+  oocColorHex: "#C7F2FF"
+  oocGradientColors:
+  - "#C7F2FF"
+  - "#7AD1FF"
+  - "#4A8DFF"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 260
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-mintwave-static
+  category: OocNameColors
+  title: w40k-dec-color-mintwave-static-title
+  oocColorHex: "#BFFFE5"
+  oocGradientColors:
+  - "#BFFFE5"
+  - "#7CFFBA"
+  - "#4BD6A4"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 270
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-royal-static
+  category: OocNameColors
+  title: w40k-dec-color-royal-static-title
+  oocColorHex: "#B89CFF"
+  oocGradientColors:
+  - "#B89CFF"
+  - "#8F7BFF"
+  - "#5D5AD8"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 280
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-ember-static
+  category: OocNameColors
+  title: w40k-dec-color-ember-static-title
+  oocColorHex: "#FFC27A"
+  oocGradientColors:
+  - "#FFC27A"
+  - "#FF8B42"
+  - "#D24A2F"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 290
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-rose-static
+  category: OocNameColors
+  title: w40k-dec-color-rose-static-title
+  oocColorHex: "#FFC1D9"
+  oocGradientColors:
+  - "#FFC1D9"
+  - "#FF8CB8"
+  - "#D95F8E"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 300
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-slate-static
+  category: OocNameColors
+  title: w40k-dec-color-slate-static-title
+  oocColorHex: "#D6DEE8"
+  oocGradientColors:
+  - "#D6DEE8"
+  - "#9FB3CC"
+  - "#6F8199"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 310
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-neonlime-static
+  category: OocNameColors
+  title: w40k-dec-color-neonlime-static-title
+  oocColorHex: "#E9FF7A"
+  oocGradientColors:
+  - "#E9FF7A"
+  - "#B6F84A"
+  - "#7CCF32"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 320
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-ocean-static
+  category: OocNameColors
+  title: w40k-dec-color-ocean-static-title
+  oocColorHex: "#8FE8FF"
+  oocGradientColors:
+  - "#8FE8FF"
+  - "#55B7FF"
+  - "#2D7DCC"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 330
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-sunreef-static
+  category: OocNameColors
+  title: w40k-dec-color-sunreef-static-title
+  oocColorHex: "#FFB86B"
+  oocGradientColors:
+  - "#FFB86B"
+  - "#FF7D6C"
+  - "#F64F8C"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 340
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-copper-static
+  category: OocNameColors
+  title: w40k-dec-color-copper-static-title
+  oocColorHex: "#F2BE8A"
+  oocGradientColors:
+  - "#F2BE8A"
+  - "#D98A4E"
+  - "#A55A2A"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 350
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-amethyst-static
+  category: OocNameColors
+  title: w40k-dec-color-amethyst-static-title
+  oocColorHex: "#D4B2FF"
+  oocGradientColors:
+  - "#D4B2FF"
+  - "#B082FF"
+  - "#7C5AD8"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 360
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-storm-static
+  category: OocNameColors
+  title: w40k-dec-color-storm-static-title
+  oocColorHex: "#C9D6FF"
+  oocGradientColors:
+  - "#C9D6FF"
+  - "#A0B8FF"
+  - "#6C87D9"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 370
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-viridian-static
+  category: OocNameColors
+  title: w40k-dec-color-viridian-static-title
+  oocColorHex: "#9FFFD4"
+  oocGradientColors:
+  - "#9FFFD4"
+  - "#5EE3B3"
+  - "#2DA87A"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 380
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-lunar-static
+  category: OocNameColors
+  title: w40k-dec-color-lunar-static-title
+  oocColorHex: "#F7F7FF"
+  oocGradientColors:
+  - "#F7F7FF"
+  - "#D7D6F5"
+  - "#AAA8D8"
+  oocGradientAnimated: false
+  oocGradientDurationMs: 3500
+  sortOrder: 390
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-red-black-pulse
+  category: OocNameColors
+  title: w40k-dec-color-red-black-pulse-title
+  oocColorHex: "#FF0000"
+  oocGradientColors:
+  - "#FF0000"
+  - "#000000"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 1600
+  sortOrder: 400
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-plasma-rain-flow
+  category: OocNameColors
+  title: w40k-dec-color-plasma-rain-flow-title
+  oocColorHex: "#00E5FF"
+  oocGradientColors:
+  - "#00E5FF"
+  - "#0077FF"
+  - "#B000FF"
+  - "#FF00C8"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2400
+  sortOrder: 410
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-inferno-flow
+  category: OocNameColors
+  title: w40k-dec-color-inferno-flow-title
+  oocColorHex: "#FF4500"
+  oocGradientColors:
+  - "#FF4500"
+  - "#FF0000"
+  - "#8B0000"
+  - "#1A0000"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2300
+  sortOrder: 420
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-neon-circuit-flow
+  category: OocNameColors
+  title: w40k-dec-color-neon-circuit-flow-title
+  oocColorHex: "#39FF14"
+  oocGradientColors:
+  - "#39FF14"
+  - "#00FFA8"
+  - "#00D1FF"
+  - "#0080FF"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2600
+  sortOrder: 430
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-eclipse-flow
+  category: OocNameColors
+  title: w40k-dec-color-eclipse-flow-title
+  oocColorHex: "#F8F9FF"
+  oocGradientColors:
+  - "#F8F9FF"
+  - "#9AA3FF"
+  - "#3A2A6A"
+  - "#0A0A0A"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2800
+  sortOrder: 440
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-toxic-aurora-flow
+  category: OocNameColors
+  title: w40k-dec-color-toxic-aurora-flow-title
+  oocColorHex: "#9BFF00"
+  oocGradientColors:
+  - "#9BFF00"
+  - "#46FF8A"
+  - "#00FFD1"
+  - "#0E7B5A"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2500
+  sortOrder: 450
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-royal-surge-flow
+  category: OocNameColors
+  title: w40k-dec-color-royal-surge-flow-title
+  oocColorHex: "#7A5CFF"
+  oocGradientColors:
+  - "#7A5CFF"
+  - "#B084FF"
+  - "#FF7AD9"
+  - "#7AD3FF"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 3000
+  sortOrder: 460
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-ember-ice-flow
+  category: OocNameColors
+  title: w40k-dec-color-ember-ice-flow-title
+  oocColorHex: "#FF6A3D"
+  oocGradientColors:
+  - "#FF6A3D"
+  - "#FFD166"
+  - "#7AD7FF"
+  - "#3D8BFF"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2700
+  sortOrder: 470
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-spectral-rift-flow
+  category: OocNameColors
+  title: w40k-dec-color-spectral-rift-flow-title
+  oocColorHex: "#62FFB0"
+  oocGradientColors:
+  - "#62FFB0"
+  - "#6AB7FF"
+  - "#B084FF"
+  - "#FF8ACF"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2600
+  sortOrder: 480
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-nightflare-flow
+  category: OocNameColors
+  title: w40k-dec-color-nightflare-flow-title
+  oocColorHex: "#FF3B3B"
+  oocGradientColors:
+  - "#FF3B3B"
+  - "#A00032"
+  - "#260000"
+  - "#000000"
+  oocGradientAnimated: true
+  oocGradientDurationMs: 2100
+  sortOrder: 490
+
+
+
+
+- type: wh40kMetaDecoration
+  id: decor-color-discord-blurple
+  category: OocNameColors
+  title: w40k-dec-color-discord-blurple-title
+  oocColorHex: "#5865F2"
+  sortOrder: 11

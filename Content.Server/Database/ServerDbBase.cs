@@ -5914,6 +5914,84 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
 
         #endregion
 
+        #region WH40K Decorations
+
+        public async Task<Wh40kDecorationSelectionData?> GetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var entry = await db.DbContext.Wh40kDecorationSelections.SingleOrDefaultAsync(
+                selection => selection.UserId == userId.UserId,
+                cancel);
+
+            return entry == null
+                ? null
+                : new Wh40kDecorationSelectionData(
+                    entry.SelectedGhostSkinId,
+                    entry.SelectedOocTitleId,
+                    entry.SelectedOocNameColorId);
+        }
+
+        public async Task SetWh40kDecorationSelectionAsync(
+            NetUserId userId,
+            Wh40kDecorationSelectionData selection,
+            CancellationToken cancel = default)
+        {
+            DbUpdateException? concurrentInsert = null;
+            await using (var db = await GetDb(cancel))
+            {
+                var entry = await db.DbContext.Wh40kDecorationSelections.SingleOrDefaultAsync(
+                    existing => existing.UserId == userId.UserId,
+                    cancel);
+
+                if (entry == null)
+                {
+                    db.DbContext.Wh40kDecorationSelections.Add(new Wh40kDecorationSelection
+                    {
+                        UserId = userId.UserId,
+                        SelectedGhostSkinId = selection.SelectedGhostSkinId,
+                        SelectedOocTitleId = selection.SelectedOocTitleId,
+                        SelectedOocNameColorId = selection.SelectedOocNameColorId,
+                        UpdatedAt = DateTime.UtcNow,
+                    });
+                }
+                else
+                {
+                    entry.SelectedGhostSkinId = selection.SelectedGhostSkinId;
+                    entry.SelectedOocTitleId = selection.SelectedOocTitleId;
+                    entry.SelectedOocNameColorId = selection.SelectedOocNameColorId;
+                    entry.UpdatedAt = DateTime.UtcNow;
+                }
+
+                try
+                {
+                    await db.DbContext.SaveChangesAsync(cancel);
+                    return;
+                }
+                catch (DbUpdateException exception) when (entry == null)
+                {
+                    // Two servers can race the initial insert. Retry with a clean context as an update.
+                    concurrentInsert = exception;
+                }
+            }
+
+            await using var retryDb = await GetDb(cancel);
+            var concurrentlyCreated = await retryDb.DbContext.Wh40kDecorationSelections.SingleOrDefaultAsync(
+                existing => existing.UserId == userId.UserId,
+                cancel);
+            if (concurrentlyCreated == null)
+                throw concurrentInsert!;
+
+            concurrentlyCreated.SelectedGhostSkinId = selection.SelectedGhostSkinId;
+            concurrentlyCreated.SelectedOocTitleId = selection.SelectedOocTitleId;
+            concurrentlyCreated.SelectedOocNameColorId = selection.SelectedOocNameColorId;
+            concurrentlyCreated.UpdatedAt = DateTime.UtcNow;
+            await retryDb.DbContext.SaveChangesAsync(cancel);
+        }
+
+        #endregion
+
         public abstract Task SendNotification(DatabaseNotification notification);
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.

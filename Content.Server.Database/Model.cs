@@ -49,6 +49,7 @@ namespace Content.Server.Database
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
         public DbSet<DialoguePersistentMemory> DialoguePersistentMemories { get; set; } = null!;
         public DbSet<GhostPermission> GhostPermissions { get; set; } = null!;
+        public DbSet<Wh40kDecorationSelection> Wh40kDecorationSelections { get; set; } = null!;
         public DbSet<Wh40kPlayerProgress> Wh40kPlayerProgresses { get; set; } = null!;
         public DbSet<Wh40kAccountRpgFoundation> Wh40kAccountRpgFoundations { get; set; } = null!;
         public DbSet<Wh40kAccountRpgProgress> Wh40kAccountRpgProgresses { get; set; } = null!;
@@ -1569,6 +1570,24 @@ namespace Content.Server.Database
         public int RemainingUses { get; set; }
 
         public DateTime? ExpiresAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(UserId))]
+    [Table("wh40k_decoration_selection")]
+    public class Wh40kDecorationSelection
+    {
+        public Guid UserId { get; set; }
+
+        [Required, MaxLength(128)]
+        public string SelectedGhostSkinId { get; set; } = string.Empty;
+
+        [Required, MaxLength(128)]
+        public string SelectedOocTitleId { get; set; } = string.Empty;
+
+        [Required, MaxLength(128)]
+        public string SelectedOocNameColorId { get; set; } = string.Empty;
 
         public DateTime UpdatedAt { get; set; }
     }

@@ -1,0 +1,28 @@
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:lobby="clr-namespace:Content.Client.Lobby.UI"
+                Title="{Loc w40k-decs-window-title}"
+                SetSize="1000 640">
+    <Control>
+        <BoxContainer Orientation="Vertical" Margin="10 10 10 10" SeparationOverride="8">
+            <lobby:HighlightedContainer>
+                <BoxContainer Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True">
+                    <Label Name="MenuHeaderLabel" StyleClasses="LabelHeadingBigger" />
+                    <PanelContainer Name="SummaryPanel" HorizontalExpand="True">
+                        <Label Name="SummaryLabel" Margin="8 4 8 4" StyleClasses="LabelHeading" />
+                    </PanelContainer>
+                </BoxContainer>
+            </lobby:HighlightedContainer>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                <Button Name="GhostSkinsTabButton" ToggleMode="True" HorizontalExpand="True" />
+                <Button Name="OocTitlesTabButton" ToggleMode="True" HorizontalExpand="True" />
+                <Button Name="OocNameColorsTabButton" ToggleMode="True" HorizontalExpand="True" />
+            </BoxContainer>
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer VerticalExpand="True">
+                    <BoxContainer Name="CardsList" Orientation="Vertical" SeparationOverride="8" />
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </Control>
+</ui:FancyWindow>
