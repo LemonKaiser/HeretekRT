@@ -8,7 +8,7 @@ public sealed partial class CCVars
     ///     Relative directory in UserData used exclusively by mapper map transfers.
     /// </summary>
     public static readonly CVarDef<string>
-        MapTransferRoot = CVarDef.Create("mapping.transfer.root", "Autosaves/MapperMaps", CVar.SERVERONLY);
+        MapTransferRoot = CVarDef.Create("mapping.transfer.root", "Mapping", CVar.SERVERONLY);
 
     /// <summary>
     ///     Allows a mapper to upload a validated map to the configured root.
