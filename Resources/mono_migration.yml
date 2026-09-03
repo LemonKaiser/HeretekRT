@@ -146,3 +146,14 @@ UraniumSecretDoorAssembly: BaseSecretDoorAssembly
 UraniumSecretDoor: SolidSecretDoor
 ShuttleSecretDoorAssembly: BaseSecretDoorAssembly
 ShuttleSecretDoor: SolidSecretDoor
+#hotplate -> thermobath
+ChemistryHotplate: MachineThermobath
+HotplateMachineCircuitboard: ThermobathMachineCircuitboard
+ChemistryHotplateFlatpack: MachineThermobathFlatpack
+
+# 2026-09-03 - Safety Deposit Boxes are intentionally excluded from HeretekRT.
+# Remove any instances still present in saved maps from older upstream versions.
+SafetyDepositConsole: null
+SafetyDepositBoxSmall: null
+SafetyDepositBoxMedium: null
+SafetyDepositBoxLarge: null

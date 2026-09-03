@@ -1,5 +1,6 @@
 # Base entries
-guide-entry-nf14 = Frontier Guide
+guide-entry-nf14 = Monolith Basics
+guide-entry-basics = Starting Guide
 guide-entry-bank = Footfall Bank
 guide-entry-piloting = Piloting
 guide-entry-startinggear = Starting Equipment
