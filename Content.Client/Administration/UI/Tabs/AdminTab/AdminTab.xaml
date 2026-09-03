@@ -19,6 +19,7 @@
             <cc:CommandButton Command="faxui" Text="{Loc admin-player-actions-window-admin-fax}"/>
             <cc:CommandButton Command="timetransferpanel" Text="{Loc admin-player-actions-window-time-transfer}"/>
             <cc:CommandButton Command="whitelistpanel" Text="{Loc admin-player-actions-window-whitelist-panel}"/>
+            <cc:CommandButton Command="maptransfer" Text="{Loc map-transfer-admin-menu-button}"/>
         </GridContainer>
     </BoxContainer>
 </Control>

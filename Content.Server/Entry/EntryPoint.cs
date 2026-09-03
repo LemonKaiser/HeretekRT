@@ -18,6 +18,7 @@ using Content.Server.GuideGenerator;
 using Content.Server.Info;
 using Content.Server.IoC;
 using Content.Server.Maps;
+using Content.Server.Mapping;
 using Content.Server.NodeContainer.NodeGroups;
 using Content.Server.Objectives;
 using Content.Server.Players;
@@ -116,6 +117,7 @@ namespace Content.Server.Entry
                  IoCManager.Resolve<ContentNetworkResourceManager>().Initialize();
                  IoCManager.Resolve<GhostKickManager>().Initialize();
                  IoCManager.Resolve<ScreenCheckManager>().Initialize();
+                 IoCManager.Resolve<MapTransferManager>().Initialize();
                  IoCManager.Resolve<ServerInfoManager>().Initialize();
                 IoCManager.Resolve<ServerApi>().Initialize();
                 IoCManager.Resolve<MiniAuthManager>();

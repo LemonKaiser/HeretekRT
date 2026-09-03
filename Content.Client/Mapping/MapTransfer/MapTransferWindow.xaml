@@ -1,0 +1,33 @@
+<ui:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="{Loc map-transfer-title}" MinSize="680 455">
+    <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="4">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+            <Label Text="{Loc map-transfer-current-folder}" />
+            <Label Name="CurrentFolder" HorizontalExpand="True" />
+            <Button Name="BackButton" Text="{Loc map-transfer-back}" />
+            <Button Name="RefreshButton" Text="{Loc map-transfer-refresh}" />
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="6">
+            <BoxContainer Orientation="Vertical" MinWidth="250" SizeFlagsStretchRatio="0.4">
+                <Label Text="{Loc map-transfer-folders}" />
+                <ItemList Name="FolderList" SelectMode="Single" VerticalExpand="True" />
+                <Button Name="OpenFolderButton" Text="{Loc map-transfer-open-folder}" />
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SizeFlagsStretchRatio="0.6">
+                <Label Text="{Loc map-transfer-maps}" />
+                <ItemList Name="MapList" SelectMode="Single" VerticalExpand="True" />
+                <Button Name="DownloadButton" Text="{Loc map-transfer-download}" />
+                <CheckBox Name="OpenDownloadFolderCheckBox" Text="{Loc map-transfer-open-download-folder-automatically}" Pressed="True" />
+                <Button Name="OpenDownloadFolderButton" Text="{Loc map-transfer-open-download-folder}" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <LineEdit Name="RenameLineEdit" HorizontalExpand="True" PlaceHolder="{Loc map-transfer-rename-placeholder}" />
+                    <Button Name="RenameButton" Text="{Loc map-transfer-rename}" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+        <Button Name="UploadButton" Text="{Loc map-transfer-upload}" HorizontalExpand="True" />
+        <Label Name="StatusLabel" />
+    </BoxContainer>
+</ui:FancyWindow>

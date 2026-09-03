@@ -12,6 +12,7 @@ using Content.Client.Input;
 using Content.Client.IoC;
 using Content.Client.Launcher;
 using Content.Client.Lobby;
+using Content.Client.Mapping.MapTransfer;
 using Content.Client.MainMenu;
 using Content.Client.Parallax.Managers;
 using Content.Client.Players.PlayTimeTracking;
@@ -136,6 +137,7 @@ namespace Content.Client.Entry
              _adminManager.Initialize();
              _screenshotHook.Initialize();
              IoCManager.Resolve<ScreenCheckClientManager>().Initialize();
+             IoCManager.Resolve<MapTransferClientManager>().Initialize();
              _fullscreenHook.Initialize();
             _changelogManager.Initialize();
             _viewportManager.Initialize();

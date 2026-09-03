@@ -10,6 +10,7 @@ using Content.Client.GhostKick;
 using Content.Client.Guidebook;
 using Content.Client.Launcher;
 using Content.Client.Mapping;
+using Content.Client.Mapping.MapTransfer;
 using Content.Client.Parallax.Managers;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Replay;
@@ -61,6 +62,7 @@ namespace Content.Client.IoC
             collection.Register<ContentReplayPlaybackManager>();
             collection.Register<ISharedPlaytimeManager, JobRequirementsManager>();
             collection.Register<MappingManager>();
+            collection.Register<MapTransferClientManager>();
             collection.Register<DebugMonitorManager>();
             collection.Register<PlayerRateLimitManager>();
             collection.Register<SharedPlayerRateLimitManager, PlayerRateLimitManager>();
