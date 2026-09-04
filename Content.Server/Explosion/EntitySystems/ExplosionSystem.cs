@@ -7,6 +7,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Destructible;
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NPC.Pathfinding;
+using Content.Server.Particles;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Atmos.Components;
 using Content.Server.GameTicking; // Mono
@@ -79,6 +80,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private DestructibleSystem _destructibleSystem = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     private EntityQuery<FlammableComponent> _flammableQuery;
     private EntityQuery<PhysicsComponent> _physicsQuery;

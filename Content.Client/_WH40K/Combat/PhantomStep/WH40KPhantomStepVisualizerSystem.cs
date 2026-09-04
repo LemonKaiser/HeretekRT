@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using Content.Client.Particles;
 using Content.Shared._WH40K.Combat.PhantomStep;
+using Content.Shared.Particles;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -24,6 +26,7 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -58,6 +61,18 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         var lifetime = MathF.Max(0.08f, ev.TrailLifetime);
         var duration = MathF.Max(0.04f, ev.Duration);
         var shaderPrototype = _prototypeManager.Index<ShaderPrototype>(Shader);
+
+        // The network event is sent only after TryTriggerDodge has found a valid end point and consumed a charge.
+        // Bursts use the start/end coordinates carried by that same event instead of the mover's interpolated centre.
+        _particles.SpawnEffect(
+            "HrtPhantomStepGloom",
+            startMap,
+            new ParticleSpawnParameters(Intensity: 0.75f));
+        Timer.Spawn(TimeSpan.FromSeconds(duration), () =>
+            _particles.SpawnEffect(
+                "HrtWarpRiftBurst",
+                endMap,
+                new ParticleSpawnParameters(Intensity: 0.85f)));
 
         for (var i = 0; i < copies; i++)
         {

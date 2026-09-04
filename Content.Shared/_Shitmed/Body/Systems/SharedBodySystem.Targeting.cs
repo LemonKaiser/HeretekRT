@@ -18,6 +18,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Map;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -164,7 +165,8 @@ public partial class SharedBodySystem
                     targetPart.Value,
                     args.Origin,
                     args.ArmorPenetration,
-                    args.Tool)
+                    args.Tool,
+                    args.ImpactCoordinates)
                 && args.CanEvade)
             {
                 if (_net.IsServer)
@@ -209,7 +211,8 @@ public partial class SharedBodySystem
         TargetBodyPart targetParts,
         EntityUid? origin,
         float armorPenetration,
-        EntityUid? tool)
+        EntityUid? tool,
+        MapCoordinates? impactCoordinates)
     {
         var landed = false;
         var targets = SharedTargetingSystem.GetValidParts();
@@ -232,7 +235,8 @@ public partial class SharedBodySystem
                     armorPenetration: armorPenetration,
                     canSever: canSever,
                     targetPart: target,
-                    tool: tool);
+                    tool: tool,
+                    impactCoordinates: impactCoordinates);
                 if (damageResult != null && damageResult.GetTotal() != 0)
                     landed = true;
             }

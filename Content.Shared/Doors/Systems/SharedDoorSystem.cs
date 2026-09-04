@@ -253,7 +253,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
     /// <summary>
     ///     Open or close a door after it has been successfully pried.
     /// </summary>
-    private void OnAfterPry(EntityUid uid, DoorComponent door, ref PriedEvent args)
+    protected virtual void OnAfterPry(EntityUid uid, DoorComponent door, ref PriedEvent args)
     {
         if (door.State == DoorState.Closed)
         {

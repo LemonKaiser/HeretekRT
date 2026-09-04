@@ -15,6 +15,7 @@ using Content.Shared.Radiation.Events;
 using Content.Shared.Rejuvenate;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameStates;
+using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -156,7 +157,8 @@ namespace Content.Shared.Damage
         ///     The damage changed event is used by other systems, such as damage thresholds.
         /// </remarks>
         public void DamageChanged(EntityUid uid, DamageableComponent component, DamageSpecifier? damageDelta = null,
-            bool interruptsDoAfters = true, EntityUid? origin = null, bool? canSever = null, float armorPenetration = 0f) // Shitmed Change
+            bool interruptsDoAfters = true, EntityUid? origin = null, bool? canSever = null, float armorPenetration = 0f,
+            TargetBodyPart? targetPart = null, MapCoordinates? impactCoordinates = null, EntityUid? tool = null) // Shitmed Change
         {
             component.Damage.GetDamagePerGroup(_prototypeManager, component.DamagePerGroup);
             component.TotalDamage = component.Damage.GetTotal();
@@ -167,7 +169,15 @@ namespace Content.Shared.Damage
                 var data = new DamageVisualizerGroupData(component.DamagePerGroup.Keys.ToList());
                 _appearance.SetData(uid, DamageVisualizerKeys.DamageUpdateGroups, data, appearance);
             }
-            RaiseLocalEvent(uid, new DamageChangedEvent(component, damageDelta, interruptsDoAfters, origin, canSever ?? true)); // Shitmed Change
+            RaiseLocalEvent(uid, new DamageChangedEvent(
+                component,
+                damageDelta,
+                interruptsDoAfters,
+                origin,
+                canSever ?? true,
+                targetPart,
+                impactCoordinates,
+                tool)); // Shitmed Change
         }
 
         // Mono: damage origin flags for if we can't or don't want to discern by UID
@@ -195,7 +205,8 @@ namespace Content.Shared.Damage
             // Shitmed Change
             bool? canSever = true, bool? canEvade = false, float? partMultiplier = 1.00f, TargetBodyPart? targetPart = null, EntityUid? tool = null,
             // Mono: arg to ID indirect damage sources
-            DamageOriginFlag? originFlag = null)
+            DamageOriginFlag? originFlag = null,
+            MapCoordinates? impactCoordinates = null)
         {
             if (!uid.HasValue || !_damageableQuery.Resolve(uid.Value, ref damageable, false))
             {
@@ -222,6 +233,7 @@ namespace Content.Shared.Damage
                 ResolvedTargetPart = targetPart,
                 ArmorPenetration = armorPenetration,
                 Tool = tool,
+                ImpactCoordinates = impactCoordinates,
             };
             RaiseLocalEvent(uid.Value, ref partDamage);
 
@@ -294,7 +306,18 @@ namespace Content.Shared.Damage
             }
 
             if (delta.DamageDict.Count > 0)
-                DamageChanged(uid.Value, damageable, delta, interruptsDoAfters, origin, canSever); // Shitmed Change
+            {
+                DamageChanged(
+                    uid.Value,
+                    damageable,
+                    delta,
+                    interruptsDoAfters,
+                    origin,
+                    canSever,
+                    targetPart: partDamage.ResolvedTargetPart,
+                    impactCoordinates: impactCoordinates,
+                    tool: tool); // Shitmed Change
+            }
 
             return delta;
         }
@@ -522,6 +545,12 @@ namespace Content.Shared.Damage
         /// This is kept separate from <see cref="TargetPart"/> so existing body damage calculations are unchanged.
         /// </summary>
         public TargetBodyPart? ResolvedTargetPart;
+
+        /// <summary>
+        /// The physical contact point when the damage source has one. This remains cosmetic context and does not
+        /// affect damage, targeting, or any other game state.
+        /// </summary>
+        public MapCoordinates? ImpactCoordinates;
 
         /// <summary>
         /// Flat armor penetration that must be preserved when damage is relayed to a concrete body part.
@@ -765,16 +794,43 @@ namespace Content.Shared.Damage
         public readonly EntityUid? Origin;
 
         /// <summary>
+        /// Concrete body part selected for this damage application, if body targeting resolved one.
+        /// </summary>
+        public readonly TargetBodyPart? TargetPart;
+
+        /// <summary>
+        /// Physical contact point supplied by the source, if known.
+        /// </summary>
+        public readonly MapCoordinates? ImpactCoordinates;
+
+        /// <summary>
+        /// The concrete weapon, projectile or thrown item that applied the damage, if known.
+        /// This is presentation metadata; <see cref="Origin"/> remains the gameplay instigator.
+        /// </summary>
+        public readonly EntityUid? Tool;
+
+        /// <summary>
         ///     Shitmed Change: Can this damage event sever parts?
         /// </summary>
         public readonly bool CanSever;
 
-        public DamageChangedEvent(DamageableComponent damageable, DamageSpecifier? damageDelta, bool interruptsDoAfters, EntityUid? origin, bool canSever = true) // Shitmed Change
+        public DamageChangedEvent(
+            DamageableComponent damageable,
+            DamageSpecifier? damageDelta,
+            bool interruptsDoAfters,
+            EntityUid? origin,
+            bool canSever = true,
+            TargetBodyPart? targetPart = null,
+            MapCoordinates? impactCoordinates = null,
+            EntityUid? tool = null) // Shitmed Change
         {
             Damageable = damageable;
             DamageDelta = damageDelta;
             Origin = origin;
             CanSever = canSever; // Shitmed Change
+            TargetPart = targetPart;
+            ImpactCoordinates = impactCoordinates;
+            Tool = tool;
             if (DamageDelta == null)
                 return;
 

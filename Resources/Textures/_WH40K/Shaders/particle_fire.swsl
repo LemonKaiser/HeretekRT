@@ -1,0 +1,30 @@
+preset raw;
+
+light_mode unshaded;
+blend_mode add;
+
+varying highp vec4 VtxModulate;
+
+void vertex()
+{
+    VERTEX = apply_mvp(aPos);
+    UV = mix(modifyUV.xy, modifyUV.zw, tCoord);
+    UV2 = tCoord2;
+    VtxModulate = zFromSrgb(modulate);
+}
+
+void fragment()
+{
+    highp vec4 sprite = zTexture(UV) * VtxModulate;
+    highp vec2 point = UV2 - vec2(0.5);
+    highp float distanceFromCentre = length(point) * 2.0;
+    highp float outerFade = 1.0 - smoothstep(0.42, 1.0, distanceFromCentre);
+    highp float core = 1.0 - smoothstep(0.0, 0.46, distanceFromCentre);
+    highp float alpha = sprite.a * outerFade;
+
+    if (alpha <= 0.001)
+        discard;
+
+    highp vec3 colour = mix(sprite.rgb, vec3(1.0), core * 0.28);
+    COLOR = vec4(colour, alpha * (0.58 + core * 0.42));
+}

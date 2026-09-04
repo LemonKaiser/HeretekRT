@@ -5,6 +5,7 @@ using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server.Particles;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._WH40K.SectorMap.Teleporters;
@@ -13,6 +14,7 @@ using Content.Shared.Database;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.UserInterface;
+using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -54,6 +56,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     private TimeSpan _nextScan;
 
@@ -112,6 +115,9 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
             entity.Comp1.ActiveUser = mob.Owner;
             entity.Comp1.CompleteAt = _timing.CurTime + SpinupTime;
             _audio.PlayPvs(_spinSound, entity.Owner);
+            RaiseNetworkEvent(
+                new KoronusPlanetaryTeleporterChargeParticlesEvent(GetNetEntity(entity.Owner), true, (float) SpinupTime.TotalSeconds),
+                Filter.Pvs(entity.Owner));
             UpdateUiState((entity.Owner, entity.Comp1));
             break;
         }
@@ -141,6 +147,16 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         if (TryGetSurfaceRuntime(targetTransform.MapID, out _))
             _maps.SetPaused(targetTransform.MapID, false);
 
+        _particles.Spawn(
+            entity.Owner,
+            "HrtTeleporterDeparture",
+            parameters: new ParticleSpawnParameters(Intensity: 0.9f),
+            cooldown: TimeSpan.FromMilliseconds(500));
+        _particles.Spawn(
+            target,
+            "HrtTeleporterArrival",
+            parameters: new ParticleSpawnParameters(Intensity: 0.9f),
+            cooldown: TimeSpan.FromMilliseconds(500));
         _audio.PlayPvs(_sendSound, entity.Owner);
         _audio.PlayPvs(_receiveSound, target);
         _transform.SetCoordinates(user, Transform(user), targetTransform.Coordinates);
@@ -153,6 +169,13 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
 
     private void Cancel(Entity<KoronusPlanetaryTeleporterComponent, TransformComponent> entity)
     {
+        if (entity.Comp1.ActiveUser != null)
+        {
+            RaiseNetworkEvent(
+                new KoronusPlanetaryTeleporterChargeParticlesEvent(GetNetEntity(entity.Owner), false, 0f),
+                Filter.Pvs(entity.Owner));
+        }
+
         entity.Comp1.ActiveUser = null;
         entity.Comp1.CompleteAt = default;
         UpdateUiState((entity.Owner, entity.Comp1));

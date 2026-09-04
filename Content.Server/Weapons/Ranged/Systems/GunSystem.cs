@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Server._Mono.FireControl;
 using Content.Server.Cargo.Systems;
+using Content.Server.Particles;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Weapons.Ranged.Components;
 using Content.Shared._Mono.Weapons.Ranged.Components;
@@ -10,6 +11,7 @@ using Content.Shared._RMC14.Weapons.Ranged.Prediction;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Projectiles;
+using Content.Shared.Particles;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged;
 using Content.Shared.Weapons.Ranged.Components;
@@ -40,6 +42,7 @@ public sealed partial class GunSystem : SharedGunSystem
     [Dependency] private PricingSystem _pricing = default!;
     [Dependency] private SharedColorFlashEffectSystem _color = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
     [Dependency] private StaminaSystem _stamina = default!;
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedMapSystem _map = default!;
@@ -324,12 +327,53 @@ public sealed partial class GunSystem : SharedGunSystem
 
     protected override void CreateEffect(EntityUid gunUid, MuzzleFlashEvent message, EntityUid? user = null)
     {
+        // MuzzleFlash is raised only after a projectile or hitscan has actually been fired. The event contains the
+        // final firing angle, but the legacy muzzle-effect contract has no local muzzle offset. Use a small forward
+        // offset from the weapon rather than its centre, which is the closest available spatial fallback.
+        var gunCoordinates = _transform.GetMapCoordinates(gunUid);
+        var muzzleCoordinates = new MapCoordinates(
+            gunCoordinates.Position + message.Angle.ToVec() * 0.35f,
+            gunCoordinates.MapId);
+        var energy = IsEnergyMuzzle(message.Prototype);
+        var parameters = new ParticleSpawnParameters(EmitAngle: message.Angle);
+
+        _particles.Spawn(
+            muzzleCoordinates,
+            energy ? "HrtMuzzleFlashEnergy" : "HrtMuzzleFlashBallistic",
+            parameters: parameters,
+            rateLimitSource: gunUid,
+            cooldown: TimeSpan.FromMilliseconds(65));
+
+        // Smoke is intentionally less frequent than flashes so automatic fire cannot turn one weapon into a
+        // persistent emitter. Energy weapons keep their authored flash without an arbitrary ballistic smoke trail.
+        if (!energy)
+        {
+            _particles.Spawn(
+                muzzleCoordinates,
+                "HrtMuzzleSmoke",
+                parameters: parameters,
+                rateLimitSource: gunUid,
+                cooldown: TimeSpan.FromMilliseconds(250));
+        }
+
         var filter = Robust.Shared.Player.Filter.Pvs(gunUid, 0.6f, EntityManager); // Mono - default -> 0.6f
 
         if (TryComp<ActorComponent>(user, out var actor))
             filter.RemovePlayer(actor.PlayerSession);
 
         RaiseNetworkEvent(message, filter);
+    }
+
+    private static bool IsEnergyMuzzle(string prototype)
+    {
+        return prototype.Contains("laser", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("plasma", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("energy", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("omni", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("disabler", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("taser", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("ion", StringComparison.OrdinalIgnoreCase) ||
+               prototype.Contains("xray", StringComparison.OrdinalIgnoreCase);
     }
 
     public override void PlayImpactSound(EntityUid otherEntity, DamageSpecifier? modifiedDamage, SoundSpecifier? weaponSound, bool forceWeaponSound, Robust.Shared.Player.Filter? filter = null, Entity<ProjectileComponent, PhysicsComponent>? projectile = null)

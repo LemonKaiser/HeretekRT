@@ -1,5 +1,7 @@
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
+using Robust.Shared.Map;
+using Robust.Shared.GameObjects;
 
 namespace Content.Shared.RCD;
 
@@ -25,6 +27,18 @@ public sealed class RCDConstructionGhostRotationEvent : EntityEventArgs
         NetEntity = netEntity;
         Direction = direction;
     }
+}
+
+/// <summary>
+/// Raised server-side after an RCD has successfully changed the world.
+/// Cosmetic systems may use this as a post-operation hook; it is not networked and does not affect gameplay.
+/// </summary>
+[ByRefEvent]
+public readonly record struct RCDOperationCompletedEvent(MapCoordinates Coordinates, RcdMode Mode, EntityUid? Target)
+{
+    public readonly MapCoordinates Coordinates = Coordinates;
+    public readonly RcdMode Mode = Mode;
+    public readonly EntityUid? Target = Target;
 }
 
 [Serializable, NetSerializable]

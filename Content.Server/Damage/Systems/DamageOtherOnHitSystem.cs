@@ -11,6 +11,7 @@ using Content.Shared.Effects;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Throwing;
 using Content.Shared.Wires;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Player;
 
@@ -21,6 +22,7 @@ namespace Content.Server.Damage.Systems
         [Dependency] private IAdminLogManager _adminLogger = default!;
         [Dependency] private GunSystem _guns = default!;
         [Dependency] private DamageableSystem _damageable = default!;
+        [Dependency] private SharedTransformSystem _transform = default!;
         [Dependency] private DamageExamineSystem _damageExamine = default!;
         [Dependency] private SharedCameraRecoilSystem _sharedCameraRecoil = default!;
         [Dependency] private SharedColorFlashEffectSystem _color = default!;
@@ -37,7 +39,13 @@ namespace Content.Server.Damage.Systems
             if (TerminatingOrDeleted(args.Target))
                 return;
 
-            var dmg = _damageable.TryChangeDamage(args.Target, component.Damage * _damageable.UniversalThrownDamageModifier, component.IgnoreResistances, origin: args.Component.Thrower);
+            var dmg = _damageable.TryChangeDamage(
+                args.Target,
+                component.Damage * _damageable.UniversalThrownDamageModifier,
+                component.IgnoreResistances,
+                origin: args.Component.Thrower,
+                tool: uid,
+                impactCoordinates: _transform.GetMapCoordinates(uid));
 
             // Log damage only for mobs. Useful for when people throw spears at each other, but also avoids log-spam when explosions send glass shards flying.
             if (dmg != null && HasComp<MobStateComponent>(args.Target))

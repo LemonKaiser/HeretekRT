@@ -6,6 +6,7 @@ using Content.Server.Construction; // Frontier
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Lathe.Components;
 using Content.Server.Materials;
+using Content.Server.Particles;
 using Content.Server.Popups;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
@@ -64,6 +65,7 @@ namespace Content.Server.Lathe
         [Dependency] private ContrabandTurnInSystem _contraband = default!; // Mono
         [Dependency] private TransformSystem _transform = default!;
         [Dependency] private DeviceLinkSystem _deviceLink = default!; // Mono
+        [Dependency] private ParticleSpawnSystem _particles = default!;
 
         /// <summary>
         /// Per-tick cache
@@ -378,6 +380,13 @@ namespace Content.Server.Lathe
 
                             // Mono: Handle printable contraband
                             _contraband.HandleContrabandValueByCompany(result, prodComp.Actor);
+
+                            // This is the first point at which the result exists, so cancelled and resource-starved
+                            // jobs never create a cosmetic effect. The per-lathe cooldown also bounds looped batches.
+                            _particles.Spawn(
+                                uid,
+                                "HrtPrinterSparksBurst",
+                                cooldown: TimeSpan.FromMilliseconds(300));
                         }
 
                         _stack.TryMergeToContacts(result);

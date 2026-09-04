@@ -189,7 +189,7 @@ public sealed partial class PryingSystem : EntitySystem
             _audioSystem.PlayPredicted(comp.UseSound, args.Used.Value, args.User);
         }
 
-        var ev = new PriedEvent(args.User);
+        var ev = new PriedEvent(args.User, args.Used);
         RaiseLocalEvent(uid, ref ev);
 
         if (TryComp(args.Used, out UseDelayComponent? delay)) // Goobstation

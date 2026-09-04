@@ -6,6 +6,7 @@ using Content.Server.Popups;
 using Content.Shared.Repairable;
 using Content.Server.Stack;
 using Content.Server.Wires;
+using Content.Server.Particles;
 using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -20,6 +21,7 @@ using Content.Shared.Materials;
 using Content.Shared.Mind;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Power;
+using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -43,6 +45,7 @@ public sealed partial class MaterialReclaimerSystem : SharedMaterialReclaimerSys
     [Dependency] private StackSystem _stack = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private IAdminLogManager _adminLogger = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -211,6 +214,14 @@ public sealed partial class MaterialReclaimerSystem : SharedMaterialReclaimerSys
         {
             SpawnChemicalsFromComposition(uid, item, completion, true, component, xform);
         }
+
+        // Reclaiming has completed and the output has been committed. One short burst communicates the
+        // machine's cutter without creating a continuous emitter for every recycler on the station.
+        _particles.Spawn(
+            uid,
+            "HrtMetalChips",
+            parameters: new ParticleSpawnParameters(Intensity: Math.Clamp(completion, 0.45f, 1f)),
+            cooldown: TimeSpan.FromMilliseconds(225));
 
         QueueDel(item);
     }

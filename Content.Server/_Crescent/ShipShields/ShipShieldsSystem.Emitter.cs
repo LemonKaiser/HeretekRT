@@ -9,7 +9,9 @@ using Content.Server.Station.Systems;
 using Robust.Shared.Audio.Systems;
 using Content.Shared.Examine;
 using Content.Server.Explosion.Components;
+using Content.Server.Particles;
 using Content.Shared.Explosion.Components;
+using Content.Shared.Particles;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Crescent.ShipShields;
@@ -21,6 +23,7 @@ public partial class ShipShieldsSystem
     [Dependency] private StationSystem _station = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
     public void InitializeEmitters()
     {
         SubscribeLocalEvent<ShipShieldEmitterComponent, ShieldDeflectedEvent>(OnShieldDeflected);
@@ -39,6 +42,15 @@ public partial class ShipShieldsSystem
 
     private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
     {
+        // The projectile has reached the shield boundary and will be consumed below, so this is the
+        // authoritative deflection point rather than a speculative collision response.
+        _particles.Spawn(
+            _transformSystem.GetMapCoordinates(args.Deflected),
+            "HrtShieldHit",
+            parameters: new ParticleSpawnParameters(Intensity: 0.8f),
+            rateLimitSource: uid,
+            cooldown: TimeSpan.FromMilliseconds(90));
+
         if (TryComp<EmpOnTriggerComponent>(args.Deflected, out var emp))
         {
             component.Damage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);

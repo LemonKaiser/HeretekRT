@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Linq;
 using Content.Shared._WH40K.HeavyBolter;
+using Content.Server.Particles;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Events;
 using Content.Shared.Buckle;
@@ -15,6 +16,7 @@ using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
+using Content.Shared.Particles;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Localization;
@@ -51,6 +53,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -62,6 +65,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
         SubscribeLocalEvent<WH40KHeavyBolterComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
         SubscribeLocalEvent<WH40KHeavyBolterComponent, AnchorStateChangedEvent>(OnAnchorStateChanged);
         SubscribeLocalEvent<WH40KHeavyBolterComponent, AttemptShootEvent>(OnAttemptShoot);
+        SubscribeLocalEvent<WH40KHeavyBolterComponent, AmmoShotEvent>(OnAmmoShot);
         SubscribeLocalEvent<WH40KHeavyBolterComponent, StrappedEvent>(OnStrapped);
         SubscribeLocalEvent<WH40KHeavyBolterComponent, UnstrappedEvent>(OnUnstrapped);
         SubscribeLocalEvent<BuckleComponent, MobStateChangedEvent>(OnOperatorMobStateChanged);
@@ -215,6 +219,27 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
 
         args.Cancelled = true;
         args.Message = Loc.GetString("wh40k-heavy-bolter-arc-limit");
+    }
+
+    private void OnAmmoShot(Entity<WH40KHeavyBolterComponent> bolter, ref AmmoShotEvent args)
+    {
+        // AmmoShotEvent is raised only when GunSystem has created projectile entities. The ordinary gun flash and
+        // smoke are handled centrally; the bolter adds a restrained hot-spark burst at its real mounted muzzle.
+        if (args.FiredProjectiles.Count == 0 ||
+            !TryComp<GunComponent>(bolter, out var gun) ||
+            !TryGetShotDirection(bolter, gun, out var shotDirection))
+        {
+            return;
+        }
+
+        _particles.Spawn(
+            GetShotOriginMapCoordinates(bolter),
+            "HrtWeldingBurst",
+            parameters: new ParticleSpawnParameters(
+                EmitAngle: Angle.FromWorldVec(shotDirection),
+                Intensity: 0.55f),
+            rateLimitSource: bolter.Owner,
+            cooldown: TimeSpan.FromMilliseconds(140));
     }
 
     private void OnStrapAttempt(Entity<WH40KHeavyBolterComponent> bolter, ref StrapAttemptEvent args)

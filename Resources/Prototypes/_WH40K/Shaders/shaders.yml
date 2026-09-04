@@ -4,6 +4,11 @@
   path: "/Textures/_WH40K/Shaders/wave.swsl"
 
 - type: shader
+  id: HrtParticleFire
+  kind: source
+  path: "/Textures/_WH40K/Shaders/particle_fire.swsl"
+
+- type: shader
   id: WH40KLauncherCrt
   kind: source
   path: "/Textures/_WH40K/Shaders/launcher_crt.swsl"

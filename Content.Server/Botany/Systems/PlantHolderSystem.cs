@@ -24,7 +24,9 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Server.Labels.Components;
+using Content.Server.Particles;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Particles;
 
 namespace Content.Server.Botany.Systems;
 
@@ -43,6 +45,7 @@ public sealed partial class PlantHolderSystem : EntitySystem
     [Dependency] private RandomHelperSystem _randomHelper = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
 
     public const float HydroponicsSpeedMultiplier = 1f;
@@ -710,6 +713,7 @@ public sealed partial class PlantHolderSystem : EntitySystem
             }
 
             _botany.Harvest(component.Seed, user, component.YieldMod);
+            SpawnHarvestParticles(plantholder);
             AfterHarvest(plantholder, component);
             return true;
         }
@@ -744,6 +748,7 @@ public sealed partial class PlantHolderSystem : EntitySystem
             return;
 
         _botany.AutoHarvest(component.Seed, Transform(uid).Coordinates);
+        SpawnHarvestParticles(uid);
         AfterHarvest(uid, component);
     }
 
@@ -890,7 +895,21 @@ public sealed partial class PlantHolderSystem : EntitySystem
         {
             EnsureUniqueSeed(uid, component);
             _mutation.MutateSeed(uid, ref component.Seed, severity);
+            _particles.Spawn(
+                uid,
+                "HrtPollenBurst",
+                parameters: new ParticleSpawnParameters(Intensity: Math.Clamp(0.55f + severity * 0.03f, 0.55f, 1f)),
+                cooldown: TimeSpan.FromSeconds(1));
         }
+    }
+
+    private void SpawnHarvestParticles(EntityUid plantholder)
+    {
+        _particles.Spawn(
+            plantholder,
+            "HrtPollenBurst",
+            parameters: new ParticleSpawnParameters(Intensity: 0.8f),
+            cooldown: TimeSpan.FromMilliseconds(400));
     }
 
     public void UpdateSprite(EntityUid uid, PlantHolderComponent? component = null)

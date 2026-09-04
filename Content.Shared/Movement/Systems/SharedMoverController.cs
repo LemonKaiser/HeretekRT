@@ -9,6 +9,7 @@ using Content.Shared.Maps;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
+using Content.Shared.Fluids.Components;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Tag;
 using Robust.Shared.Audio;
@@ -348,8 +349,9 @@ public abstract partial class SharedMoverController : VirtualController
             }
 
             if (!weightless && MobMoverQuery.TryGetComponent(uid, out var mobMover) &&
-                TryGetSound(weightless, uid, mover, mobMover, xform, out var sound, tileDef: tileDef))
+                TryGetSound(weightless, uid, mover, mobMover, xform, out var sound, out var wetSurface, tileDef: tileDef))
             {
+                OnFootstep(uid, mover, mobMover, xform, tileDef, wetSurface);
                 var soundModifier = mover.Sprinting ? InputMoverComponent.SprintingSoundModifier
                     : InputMoverComponent.WalkingSoundModifier;
 
@@ -503,6 +505,20 @@ public abstract partial class SharedMoverController : VirtualController
 
     protected abstract bool CanSound();
 
+    /// <summary>
+    /// Runs after an authoritative movement step has passed the normal footstep-distance and surface checks.
+    /// Client movement keeps the default no-op; the server can attach PVS-only cosmetic feedback here.
+    /// </summary>
+    protected virtual void OnFootstep(
+        EntityUid uid,
+        InputMoverComponent mover,
+        MobMoverComponent mobMover,
+        TransformComponent xform,
+        ContentTileDefinition? tileDef,
+        bool wetSurface)
+    {
+    }
+
     private bool TryGetSound(
         bool weightless,
         EntityUid uid,
@@ -510,9 +526,11 @@ public abstract partial class SharedMoverController : VirtualController
         MobMoverComponent mobMover,
         TransformComponent xform,
         [NotNullWhen(true)] out SoundSpecifier? sound,
+        out bool wetSurface,
         ContentTileDefinition? tileDef = null)
     {
         sound = null;
+        wetSurface = false;
 
         if (!CanSound() || !_tags.HasTag(uid, FootstepSoundTag))
             return false;
@@ -562,7 +580,7 @@ public abstract partial class SharedMoverController : VirtualController
             return sound != null;
         }
 
-        return TryGetFootstepSound(uid, xform, shoes != null, out sound, tileDef: tileDef);
+        return TryGetFootstepSound(uid, xform, shoes != null, out sound, out wetSurface, tileDef: tileDef);
     }
 
     private bool TryGetFootstepSound(
@@ -570,9 +588,11 @@ public abstract partial class SharedMoverController : VirtualController
         TransformComponent xform,
         bool haveShoes,
         [NotNullWhen(true)] out SoundSpecifier? sound,
+        out bool wetSurface,
         ContentTileDefinition? tileDef = null)
     {
         sound = null;
+        wetSurface = false;
 
         // Fallback to the map?
         if (!MapGridQuery.TryComp(xform.GridUid, out var grid))
@@ -599,6 +619,7 @@ public abstract partial class SharedMoverController : VirtualController
             if (soundEv.Sound != null)
             {
                 sound = soundEv.Sound;
+                wetSurface = HasComp<PuddleComponent>(maybeFootstep);
                 return true;
             }
 

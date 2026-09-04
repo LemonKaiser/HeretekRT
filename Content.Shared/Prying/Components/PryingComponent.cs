@@ -79,9 +79,10 @@ public record struct BeforePryEvent(EntityUid User, bool PryPowered, bool Force,
 /// Raised directed on an entity that has been pried.
 /// </summary>
 [ByRefEvent]
-public readonly record struct PriedEvent(EntityUid User)
+public readonly record struct PriedEvent(EntityUid User, EntityUid? Tool)
 {
     public readonly EntityUid User = User;
+    public readonly EntityUid? Tool = Tool;
 }
 
 /// <summary>

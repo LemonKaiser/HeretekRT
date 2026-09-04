@@ -1,5 +1,6 @@
 using Content.Shared._Goobstation.Tools;
 using Content.Shared._Goobstation.Tools.Components;
+using Content.Server.Particles;
 using Content.Server.Tools;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.DoAfter;
@@ -14,6 +15,7 @@ namespace Content.Server._Goobstation.Tools;
 public sealed class WeldingSparksSystem : EntitySystem
 {
     [Dependency] private readonly ToolSystem _toolSystem = default!;
+    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -71,6 +73,15 @@ public sealed class WeldingSparksSystem : EntitySystem
     {
         if (!ent.Comp.SpawnedEffects.TryGetValue(args.DoAfter.Id, out var effect))
             return;
+
+        // Doors and shutters have their own deliberately authored sweep animation. Keep it intact;
+        // the particle burst only supplements static welding visuals on walls, tiles and other objects.
+        var hasAnimatedTarget = args.OriginalTarget is { } target &&
+                                HasComp<WeldingSparksAnimationComponent>(GetEntity(target));
+        if (!args.Cancelled && !hasAnimatedTarget)
+        {
+            _particles.Spawn(effect, "HrtWeldingBurst", cooldown: TimeSpan.FromMilliseconds(100));
+        }
 
         QueueDel(effect);
         ent.Comp.SpawnedEffects.Remove(args.DoAfter.Id);

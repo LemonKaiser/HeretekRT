@@ -1,0 +1,665 @@
+# These entities are deliberate authoring tools. Search for "Частицы HRT" in the
+# ordinary admin spawn menu, place one marker, and delete the marker when finished.
+
+- type: entity
+  id: HrtParticleSpawnerBase
+  abstract: true
+  categories: [Particles]
+  name: Частицы HRT
+  description: Косметический спавнер для предпросмотра эффекта частиц.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+    visible: false
+  - type: ParticleEffectSpawner
+    effect: HrtSparkles
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+# Existing Goob/HRT effects.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFireCore
+  name: "Частицы HRT: ядро огня"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFireContinuous
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFireSmoke
+  name: "Частицы HRT: дым огня"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFireSmoke
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerWeldingSparks
+  name: "Частицы HRT: сварочные искры"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtWeldingSparks
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerGibMist
+  name: "Частицы HRT: кровавый туман"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtGibMist
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerWeldingBurst
+  name: "Частицы HRT: всплеск сварки"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtWeldingBurst
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSmoke
+  name: "Частицы HRT: обычный дым"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSmoke
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFireEmbers
+  name: "Частицы HRT: угли огня"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFireEmbers
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFootstepDust
+  name: "Частицы HRT: пыль шагов"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFootstepDust
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFireEmbersContinuous
+  name: "Частицы HRT: постоянные угли"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFireEmbersContinuous
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSparkles
+  name: "Частицы HRT: искрящийся блеск"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSparkles
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSpectralEmbers
+  name: "Частицы HRT: спектральные угли"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSpectralEmbers
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerEctoplasm
+  name: "Частицы HRT: эктоплазма"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtEctoplasm
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFrost
+  name: "Частицы HRT: иней"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFrost
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerGloom
+  name: "Частицы HRT: мрак"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtGloom
+
+# Materials, impacts and debris.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactMetal
+  name: "Частицы HRT: попадание в металл"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactMetal
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactStone
+  name: "Частицы HRT: попадание в камень"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactStone
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactConcrete
+  name: "Частицы HRT: попадание в бетон"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactConcrete
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactGlass
+  name: "Частицы HRT: попадание в стекло"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactGlass
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactWood
+  name: "Частицы HRT: попадание в дерево"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactWood
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactPlastic
+  name: "Частицы HRT: попадание в пластик"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactPlastic
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactFlesh
+  name: "Частицы HRT: попадание в плоть"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactFlesh
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerImpactIce
+  name: "Частицы HRT: попадание в лёд"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtImpactIce
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerRicochet
+  name: "Частицы HRT: рикошет"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtRicochet
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerDustLight
+  name: "Частицы HRT: лёгкая пыль"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtDustLight
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerDustHeavy
+  name: "Частицы HRT: тяжёлая пыль"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtDustHeavy
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMetalChips
+  name: "Частицы HRT: металлическая стружка"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMetalChips
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerGlassShards
+  name: "Частицы HRT: осколки стекла"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtGlassShards
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerWoodSplinters
+  name: "Частицы HRT: щепки"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtWoodSplinters
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerConcreteDebris
+  name: "Частицы HRT: обломки бетона"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtConcreteDebris
+
+# Liquids, chemistry and engineering.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerBloodSpray
+  name: "Частицы HRT: брызги крови"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtBloodSpray
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerOilSpray
+  name: "Частицы HRT: брызги масла"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtOilSpray
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerWaterSplash
+  name: "Частицы HRT: всплеск воды"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtWaterSplash
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerAcidSpray
+  name: "Частицы HRT: кислота"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtAcidSpray
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerCoolantMist
+  name: "Частицы HRT: туман хладагента"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtCoolantMist
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMedfoamBubbles
+  name: "Частицы HRT: пузырьки медпены"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMedfoamBubbles
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSteamJet
+  name: "Частицы HRT: струя пара"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSteamJet
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerToxicFumes
+  name: "Частицы HRT: токсичные испарения"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtToxicFumes
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerPlasmaVapor
+  name: "Частицы HRT: пары плазмы"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtPlasmaVapor
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerChemicalPuff
+  name: "Частицы HRT: химическое облако"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtChemicalPuff
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerFireExtinguishMist
+  name: "Частицы HRT: облако огнетушителя"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtFireExtinguishMist
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerEngineExhaust
+  name: "Частицы HRT: выхлоп двигателя"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtEngineExhaust
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMachineSteam
+  name: "Частицы HRT: пар машины"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMachineSteam
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerElectricalSmoke
+  name: "Частицы HRT: электрический дым"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtElectricalSmoke
+
+# Weapons and explosions.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMuzzleFlashBallistic
+  name: "Частицы HRT: дульная вспышка (баллистика)"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMuzzleFlashBallistic
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMuzzleFlashEnergy
+  name: "Частицы HRT: дульная вспышка (энергия)"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMuzzleFlashEnergy
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMuzzleSmoke
+  name: "Частицы HRT: дульный дым"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMuzzleSmoke
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTracerBallistic
+  name: "Частицы HRT: трассер (баллистика)"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTracerBallistic
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTracerLaser
+  name: "Частицы HRT: трассер (лазер)"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTracerLaser
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTracerPlasma
+  name: "Частицы HRT: трассер (плазма)"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTracerPlasma
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerExplosionFlash
+  name: "Частицы HRT: вспышка взрыва"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtExplosionFlash
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerExplosionFireball
+  name: "Частицы HRT: огненный шар"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtExplosionFireball
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerExplosionDebris
+  name: "Частицы HRT: обломки взрыва"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtExplosionDebris
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerExplosionSmoke
+  name: "Частицы HRT: дым взрыва"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtExplosionSmoke
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerElectricArcBurst
+  name: "Частицы HRT: электрическая дуга"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtElectricArcBurst
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerEmpSparks
+  name: "Частицы HRT: ЭМИ-искры"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtEmpSparks
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerCasingEject
+  name: "Частицы HRT: выброс гильзы"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtCasingEject
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerMeleeSlash
+  name: "Частицы HRT: дуга удара"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtMeleeSlash
+
+# Medical, anomalous and WH40K effects.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerHealingMotes
+  name: "Частицы HRT: лечебные огоньки"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtHealingMotes
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerDefibArc
+  name: "Частицы HRT: разряд дефибриллятора"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtDefibArc
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerCryoMist
+  name: "Частицы HRT: крио-туман"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtCryoMist
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTeleporterCharge
+  name: "Частицы HRT: заряд телепортера"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTeleporterCharge
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTeleporterDeparture
+  name: "Частицы HRT: уход телепортера"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTeleporterDeparture
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerTeleporterArrival
+  name: "Частицы HRT: прибытие телепортера"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtTeleporterArrival
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerWarpRift
+  name: "Частицы HRT: варп-разлом"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtWarpRift
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerPsykerMotes
+  name: "Частицы HRT: искры псайкера"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtPsykerMotes
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerHolyMotes
+  name: "Частицы HRT: святые огоньки"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtHolyMotes
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerVoidWisps
+  name: "Частицы HRT: пустотные призраки"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtVoidWisps
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerForceFieldCharge
+  name: "Частицы HRT: заряд силового поля"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtForceFieldCharge
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerShieldHit
+  name: "Частицы HRT: попадание в щит"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtShieldHit
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerStasisShards
+  name: "Частицы HRT: осколки стазиса"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtStasisShards
+
+# World and machine ambience.
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerAshFall
+  name: "Частицы HRT: пеплопад"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtAshFall
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSnow
+  name: "Частицы HRT: снег"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSnow
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerRain
+  name: "Частицы HRT: дождь"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtRain
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSandSpray
+  name: "Частицы HRT: песчаная струя"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSandSpray
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerSporeCloud
+  name: "Частицы HRT: облако спор"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtSporeCloud
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerPollen
+  name: "Частицы HRT: пыльца"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtPollen
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerThrusterPlume
+  name: "Частицы HRT: факел двигателя"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtThrusterPlume
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerPrinterSparks
+  name: "Частицы HRT: искры принтера"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtPrinterSparks
+
+- type: entity
+  parent: HrtParticleSpawnerBase
+  id: HrtParticleSpawnerReactorRadiance
+  name: "Частицы HRT: свечение реактора"
+  components:
+  - type: ParticleEffectSpawner
+    effect: HrtReactorRadiance

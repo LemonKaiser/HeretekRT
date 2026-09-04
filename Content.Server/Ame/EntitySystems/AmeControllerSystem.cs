@@ -6,12 +6,14 @@ using Content.Server.Ame.Components;
 using Content.Server.Chat.Managers;
 using Content.Server.NodeContainer;
 using Content.Server.Power.Components;
+using Content.Server.Particles;
 using Content.Shared.Ame.Components;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Database;
 using Content.Shared.Mind.Components;
 using Content.Shared.NodeContainer;
 using Content.Shared.Power;
+using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -29,6 +31,7 @@ public sealed partial class AmeControllerSystem : EntitySystem
     [Dependency] private SharedAudioSystem _audioSystem = default!;
     [Dependency] private UserInterfaceSystem _userInterfaceSystem = default!;
     [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -110,7 +113,14 @@ public sealed partial class AmeControllerSystem : EntitySystem
                 fuelContainer.FuelAmount -= availableInject;
                 // only play audio if we actually had an injection
                 if (availableInject > 0)
+                {
                     _audioSystem.PlayPvs(controller.InjectSound, uid, AudioParams.Default.WithVolume(overloading ? 5f : -5f));
+                    _particles.Spawn(
+                        uid,
+                        "HrtReactorPulse",
+                        parameters: new ParticleSpawnParameters(Intensity: Math.Clamp(availableInject / 4f, 0.35f, 1f)),
+                        cooldown: TimeSpan.FromMilliseconds(800));
+                }
                 UpdateUi(uid, controller);
             }
         }

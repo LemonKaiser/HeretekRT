@@ -1,6 +1,7 @@
 using Content.Server.Abilities.Chitinid;
 using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
+using Content.Server.Particles;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -15,6 +16,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Stacks;
 using Content.Shared.Nutrition.EntitySystems;
+using Content.Shared.Particles;
 using System.Linq; // Frontier
 
 namespace Content.Server.Chemistry.EntitySystems;
@@ -24,6 +26,8 @@ public sealed partial class InjectorSystem : SharedInjectorSystem
     [Dependency] private BloodstreamSystem _blood = default!;
     [Dependency] private ReactiveSystem _reactiveSystem = default!;
     [Dependency] private OpenableSystem _openable = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -254,6 +258,8 @@ public sealed partial class InjectorSystem : SharedInjectorSystem
 
         _reactiveSystem.DoEntityReaction(target, removedSolution, ReactionMethod.Injection);
 
+        SpawnInjectionParticles(injector.Owner, target.Owner);
+
         Popup.PopupEntity(Loc.GetString("injector-component-inject-success-message",
             ("amount", removedSolution.Volume),
             ("target", Identity.Entity(target, EntityManager))), injector.Owner, user);
@@ -300,6 +306,8 @@ public sealed partial class InjectorSystem : SharedInjectorSystem
         else
             SolutionContainers.Refill(targetEntity, targetSolution, removedSolution);
 
+        SpawnInjectionParticles(injector.Owner, targetEntity);
+
         Popup.PopupEntity(Loc.GetString("injector-component-transfer-success-message",
             ("amount", removedSolution.Volume),
             ("target", Identity.Entity(targetEntity, EntityManager))), injector.Owner, user);
@@ -321,6 +329,17 @@ public sealed partial class InjectorSystem : SharedInjectorSystem
         // Leave some DNA from the injectee on it
         var ev = new TransferDnaEvent { Donor = target, Recipient = injector };
         RaiseLocalEvent(target, ref ev);
+    }
+
+    private void SpawnInjectionParticles(EntityUid injector, EntityUid target)
+    {
+        _particles.Spawn(
+            _transform.GetMapCoordinates(target),
+            "HrtHealingBurst",
+            parameters: new ParticleSpawnParameters(Intensity: 0.5f),
+            attachedEntity: target,
+            rateLimitSource: injector,
+            cooldown: TimeSpan.FromMilliseconds(250));
     }
 
     private void AfterDraw(Entity<InjectorComponent> injector, EntityUid target)

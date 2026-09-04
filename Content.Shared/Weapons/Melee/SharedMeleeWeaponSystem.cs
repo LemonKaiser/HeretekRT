@@ -580,10 +580,22 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         RaiseLocalEvent(target.Value, attackedEvent);
 
         var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEvent.BonusDamage, hitEvent.ModifiersList);
-        var damageResult = Damageable.TryChangeDamage(target, modifiedDamage, origin: user, armorPenetration: component.ArmorPenetration, partMultiplier: component.ClickPartDamageMultiplier); // Shitmed Change
+        var damageResult = Damageable.TryChangeDamage(
+            target,
+            modifiedDamage,
+            origin: user,
+            tool: meleeUid,
+            armorPenetration: component.ArmorPenetration,
+            partMultiplier: component.ClickPartDamageMultiplier,
+            impactCoordinates: TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates))); // Shitmed Change
 
         if (damageResult is {Empty: false})
         {
+            RaiseLocalEvent(meleeUid, new MeleeDamageAppliedEvent(
+                user,
+                target.Value,
+                TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates))));
+
             // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
             if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
             {
@@ -727,6 +739,7 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         }
 
         var appliedDamage = new DamageSpecifier();
+        var impactCoordinates = TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates));
 
         for (var i = targets.Count - 1; i >= 0; i--)
         {
@@ -745,10 +758,19 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
             RaiseLocalEvent(entity, attackedEvent);
             var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEvent.BonusDamage, hitEvent.ModifiersList);
 
-            var damageResult = Damageable.TryChangeDamage(entity, modifiedDamage, origin: user, armorPenetration: component.ArmorPenetration, partMultiplier: component.HeavyPartDamageMultiplier); // Shitmed Change
+            var damageResult = Damageable.TryChangeDamage(
+                entity,
+                modifiedDamage,
+                origin: user,
+                tool: meleeUid,
+                armorPenetration: component.ArmorPenetration,
+                partMultiplier: component.HeavyPartDamageMultiplier,
+                impactCoordinates: impactCoordinates); // Shitmed Change
 
             if (damageResult != null && damageResult.GetTotal() > FixedPoint2.Zero)
             {
+                RaiseLocalEvent(meleeUid, new MeleeDamageAppliedEvent(user, entity, impactCoordinates));
+
                 // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
                 if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
                 {

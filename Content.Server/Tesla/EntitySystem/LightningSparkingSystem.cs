@@ -1,5 +1,7 @@
 using Content.Server.Tesla.Components;
 using Content.Server.Lightning;
+using Content.Server.Particles;
+using Content.Shared.Particles;
 using Content.Shared.Power;
 using Robust.Shared.Timing;
 
@@ -12,6 +14,7 @@ public sealed partial class LightningSparkingSystem : EntitySystem
 {
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -25,6 +28,11 @@ public sealed partial class LightningSparkingSystem : EntitySystem
         _appearance.SetData(uid.Owner, TeslaCoilVisuals.Lightning, true);
         uid.Comp.LightningEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(uid.Comp.LightningTime);
         uid.Comp.IsSparking = true;
+        _particles.Spawn(
+            uid.Owner,
+            "HrtEmpSparks",
+            parameters: new ParticleSpawnParameters(Intensity: 0.7f),
+            cooldown: TimeSpan.FromMilliseconds(120));
     }
 
     public override void Update(float frameTime)

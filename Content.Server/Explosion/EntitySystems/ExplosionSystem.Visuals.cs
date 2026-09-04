@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared.Explosion;
 using Content.Shared.Explosion.Components;
 using Content.Shared.Explosion.EntitySystems;
+using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
@@ -62,6 +63,26 @@ public sealed partial class ExplosionSystem
         var appearance = AddComp<AppearanceComponent>(explosionEntity);
         _appearance.SetData(explosionEntity, ExplosionAppearanceData.Progress, 1, appearance);
 
+        SpawnParticleVisuals(epicenter, explosionEntity, iterationIntensity.Count);
+
         return explosionEntity;
+    }
+
+    /// <summary>
+    /// Adds a bounded cosmetic layer to an explosion that has already completed its server-side tile calculation.
+    /// Damage, fire, debris entities and the existing explosion overlay remain authoritative systems of their own.
+    /// </summary>
+    private void SpawnParticleVisuals(MapCoordinates epicenter, EntityUid source, int iterationCount)
+    {
+        // Iterations correlate with the resolved explosion radius, but this is presentation only and stays inside a
+        // small safe range. The five effects together have a maximum of 70 live particles before quality reduction.
+        var intensity = Math.Clamp(0.65f + iterationCount * 0.035f, 0.65f, 1.2f);
+        var parameters = new ParticleSpawnParameters(Intensity: intensity);
+
+        _particles.Spawn(epicenter, "HrtExplosionFlash", parameters: parameters, rateLimitSource: source);
+        _particles.Spawn(epicenter, "HrtExplosionFireball", parameters: parameters, rateLimitSource: source);
+        _particles.Spawn(epicenter, "HrtExplosionDebris", parameters: parameters, rateLimitSource: source);
+        _particles.Spawn(epicenter, "HrtExplosionSmoke", parameters: parameters, rateLimitSource: source);
+        _particles.Spawn(epicenter, "HrtDustLight", parameters: parameters, rateLimitSource: source);
     }
 }

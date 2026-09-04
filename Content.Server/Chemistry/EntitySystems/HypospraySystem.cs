@@ -13,6 +13,8 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Timing;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Server.Body.Components;
+using Content.Server.Particles;
+using Content.Shared.Particles;
 using System.Linq;
 using Robust.Server.Audio;
 using Content.Shared.DoAfter; // Frontier
@@ -23,6 +25,7 @@ public sealed partial class HypospraySystem : SharedHypospraySystem
 {
     [Dependency] private AudioSystem _audio = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!; // Frontier - Upstream: #30704 - MIT
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -212,6 +215,14 @@ public sealed partial class HypospraySystem : SharedHypospraySystem
             return true;
         _reactiveSystem.DoEntityReaction(target, removedSolution, ReactionMethod.Injection);
         _solutionContainers.TryAddSolution(targetSoln.Value, removedSolution);
+
+        // The solution has passed every eligibility and capacity check and was just transferred.
+        _particles.Spawn(
+            target,
+            "HrtHealingBurst",
+            parameters: new ParticleSpawnParameters(Intensity: 0.55f),
+            attached: true,
+            cooldown: TimeSpan.FromMilliseconds(250));
 
         var ev = new TransferDnaEvent { Donor = target, Recipient = uid };
         RaiseLocalEvent(target, ref ev);

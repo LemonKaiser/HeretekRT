@@ -1,10 +1,12 @@
 using Content.Server.NodeContainer;
 using Content.Server.Power.Components;
 using Content.Server.Power.NodeGroups;
+using Content.Server.Particles;
 using Content.Server.Tools;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.NodeContainer;
+using Content.Shared.Particles;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Verbs;
 using JetBrains.Annotations;
@@ -18,6 +20,8 @@ namespace Content.Server.Power.EntitySystems
         [Dependency] private ToolSystem _toolSystem = default!;
         [Dependency] private PowerNetSystem _pnSystem = default!;
         [Dependency] private ExamineSystemShared _examineSystem = default!;
+        [Dependency] private ParticleSpawnSystem _particles = default!;
+        [Dependency] private SharedTransformSystem _transform = default!;
 
         public override void Initialize()
         {
@@ -34,6 +38,12 @@ namespace Content.Server.Power.EntitySystems
 
             var markup = FormattedMessage.FromMarkupOrThrow(GenerateCableMarkup(uid));
             _examineSystem.SendExamineTooltip(args.User, uid, markup, false, false);
+            _particles.Spawn(
+                _transform.GetMapCoordinates(uid),
+                "HrtEmpSparks",
+                parameters: new ParticleSpawnParameters(Intensity: 0.35f),
+                rateLimitSource: args.Used,
+                cooldown: TimeSpan.FromMilliseconds(250));
             args.Handled = true;
         }
 

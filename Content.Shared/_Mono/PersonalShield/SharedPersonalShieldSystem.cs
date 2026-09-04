@@ -49,6 +49,7 @@ public sealed partial class SharedPersonalShieldSystem : EntitySystem
         shield.Runtime.Charge -= soaked;
 
         args.Args.Damage *= (incoming - soaked) / incoming;
+        RaiseLocalEvent(ent.Owner, new PersonalShieldAbsorbedEvent(soaked, args.Args.Origin));
 
         if (shield.Runtime.Charge <= 0f)
             Fracture(ent); // Uh oh.

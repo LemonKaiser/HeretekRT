@@ -5,6 +5,7 @@ using Content.Server.Electrocution;
 using Content.Server.EUI;
 using Content.Server.Ghost;
 using Content.Server.Popups;
+using Content.Server.Particles;
 using Content.Server.PowerCell;
 using Content.Shared.Chat; // Einstein Engines - Languages
 using Content.Shared.Traits.Assorted;
@@ -19,6 +20,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Particles;
 using Content.Shared.PowerCell;
 using Content.Shared.Timing;
 using Content.Shared.Toggleable;
@@ -42,6 +44,7 @@ public sealed partial class DefibrillatorSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private MobThresholdSystem _mobThreshold = default!;
     [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
     [Dependency] private PowerCellSystem _powerCell = default!;
     [Dependency] private RottingSystem _rotting = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -183,6 +186,15 @@ public sealed partial class DefibrillatorSystem : EntitySystem
 
         _audio.PlayPvs(component.ZapSound, uid);
         _electrocution.TryDoElectrocution(target, null, component.ZapDamage, component.WritheDuration, true, ignoreInsulation: true);
+        // This point is reached only after power was spent and the defibrillator has applied its authoritative zap.
+        // Keep the cosmetic arc on the patient, rather than on the defibrillator's centre.
+        _particles.Spawn(
+            target,
+            "HrtDefibArc",
+            parameters: new ParticleSpawnParameters(Intensity: 0.85f),
+            attached: true,
+            cooldown: TimeSpan.FromMilliseconds(400));
+
         if (!TryComp<UseDelayComponent>(uid, out var useDelay))
             return;
         _useDelay.SetLength((uid, useDelay), component.ZapDelay, component.DelayId);

@@ -1,5 +1,6 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Electrocution;
+using Content.Server.Particles;
 using Content.Server.Power.Components;
 using Content.Server.Stack;
 using Content.Shared.Database;
@@ -17,6 +18,7 @@ public sealed partial class CableSystem : EntitySystem
     [Dependency] private SharedToolSystem _toolSystem = default!;
     [Dependency] private StackSystem _stack = default!;
     [Dependency] private ElectrocutionSystem _electrocutionSystem = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -51,7 +53,12 @@ public sealed partial class CableSystem : EntitySystem
         RaiseLocalEvent(uid, ref ev);
 
         if (_electrocutionSystem.TryDoElectrifiedAct(uid, args.User))
+        {
+            _particles.Spawn(uid, "HrtElectricArcBurst", cooldown: TimeSpan.FromMilliseconds(100));
             return;
+        }
+
+        _particles.Spawn(uid, "HrtMetalChips", cooldown: TimeSpan.FromMilliseconds(100));
 
         _adminLogger.Add(LogType.CableCut, LogImpact.Medium, $"The {ToPrettyString(uid)} at {xform.Coordinates} was cut by {ToPrettyString(args.User)}.");
 

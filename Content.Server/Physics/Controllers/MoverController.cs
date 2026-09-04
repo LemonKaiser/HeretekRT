@@ -3,8 +3,11 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
+using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
+using Content.Shared.Maps;
+using Content.Shared.Particles;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.Ghost; // Frontier
@@ -14,6 +17,8 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
 using DependencyAttribute = Robust.Shared.IoC.DependencyAttribute;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Map;
+using Content.Server.Particles;
 using Prometheus;
 using DroneConsoleComponent = Content.Server.Shuttles.DroneConsoleComponent;
 
@@ -27,6 +32,9 @@ public sealed partial class MoverController : SharedMoverController
 
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private ThrusterSystem _thruster = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private PuddleSystem _puddles = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
 
     private Dictionary<EntityUid, (ShuttleComponent, List<(EntityUid, PilotComponent, InputMoverComponent, TransformComponent)>)> _shuttlePilots = new();
 
@@ -181,6 +189,83 @@ public sealed partial class MoverController : SharedMoverController
     protected override bool CanSound()
     {
         return true;
+    }
+
+    protected override void OnFootstep(
+        EntityUid uid,
+        InputMoverComponent mover,
+        MobMoverComponent mobMover,
+        TransformComponent xform,
+        ContentTileDefinition? tileDef,
+        bool wetSurface)
+    {
+        // A puddle needs a low, solution-coloured disturbance at foot level. The large splash is emitted from
+        // PuddleSystem only on SlipEvent, never by normal movement.
+        if (wetSurface)
+        {
+            SpawnPuddleFootstep(uid, mover, xform);
+            return;
+        }
+
+        var effect = ResolveFootstepEffect(tileDef);
+        if (effect == null)
+            return;
+
+        var coordinates = _transform.GetMapCoordinates((uid, xform));
+        var direction = _transform.GetWorldRotation(xform).ToWorldVec();
+        if (direction.LengthSquared() > 0.0001f)
+            coordinates = new MapCoordinates(coordinates.Position - direction.Normalized() * 0.12f, coordinates.MapId);
+
+        _particles.Spawn(
+            coordinates,
+            effect,
+            parameters: new ParticleSpawnParameters(Intensity: mover.Sprinting ? 0.7f : 0.5f),
+            rateLimitSource: uid,
+            cooldown: TimeSpan.FromMilliseconds(mover.Sprinting ? 160 : 260));
+    }
+
+    private void SpawnPuddleFootstep(EntityUid uid, InputMoverComponent mover, TransformComponent xform)
+    {
+        if (xform.GridUid is not { } gridUid ||
+            !TryComp<MapGridComponent>(gridUid, out var grid))
+        {
+            return;
+        }
+
+        var tile = _maps.GetTileRef(gridUid, grid, xform.Coordinates);
+        if (!_puddles.TryGetPuddle(tile, out var puddle) ||
+            !_puddles.TryGetPuddleVisualColor(puddle, out var color))
+        {
+            return;
+        }
+
+        _particles.Spawn(
+            _transform.GetMapCoordinates((uid, xform)),
+            "HrtPuddleFootstep",
+            parameters: new ParticleSpawnParameters(
+                Color: color.WithAlpha(0.65f),
+                Intensity: mover.Sprinting ? 0.65f : 0.45f),
+            rateLimitSource: uid,
+            cooldown: TimeSpan.FromMilliseconds(mover.Sprinting ? 220 : 320));
+    }
+
+    private static string? ResolveFootstepEffect(ContentTileDefinition? tileDef)
+    {
+
+        var tileId = tileDef?.ID ?? string.Empty;
+        if (tileId.Contains("sand", StringComparison.OrdinalIgnoreCase))
+            return "HrtSandSpray";
+
+        if (tileId.Contains("ice", StringComparison.OrdinalIgnoreCase) ||
+            tileId.Contains("snow", StringComparison.OrdinalIgnoreCase))
+        {
+            return "HrtFrost";
+        }
+
+        return tileId.Contains("dirt", StringComparison.OrdinalIgnoreCase) ||
+               tileId.Contains("ash", StringComparison.OrdinalIgnoreCase)
+            ? "HrtFootstepDust"
+            : null;
     }
 
     public override void UpdateBeforeSolve(bool prediction, float frameTime)

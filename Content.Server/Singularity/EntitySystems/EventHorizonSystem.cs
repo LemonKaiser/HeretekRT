@@ -1,12 +1,14 @@
 using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Singularity.Events;
+using Content.Server.Particles;
 using Content.Shared.Database;
 using Content.Shared.Mind.Components;
 using Content.Shared.Singularity.Components;
 using Content.Shared.Singularity.EntitySystems;
 using Content.Shared.Station.Components;
 using Content.Shared.Tag;
+using Content.Shared.Particles;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -34,6 +36,7 @@ public sealed partial class EventHorizonSystem : SharedEventHorizonSystem
     [Dependency] private SharedTransformSystem _xformSystem = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private TagSystem _tagSystem = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
     #endregion Dependencies
 
     private static readonly ProtoId<TagPrototype> HighRiskItemTag = "HighRiskItem";
@@ -54,10 +57,23 @@ public sealed partial class EventHorizonSystem : SharedEventHorizonSystem
         SubscribeLocalEvent<EventHorizonContainedEvent>(OnEventHorizonContained);
         SubscribeLocalEvent<EventHorizonComponent, EventHorizonAttemptConsumeEntityEvent>(OnAnotherEventHorizonAttemptConsumeThisEventHorizon);
         SubscribeLocalEvent<EventHorizonComponent, EventHorizonConsumedEntityEvent>(OnAnotherEventHorizonConsumedThisEventHorizon);
+        SubscribeLocalEvent<EventHorizonComponent, EntityConsumedByEventHorizonEvent>(OnConsumed);
         SubscribeLocalEvent<ContainerManagerComponent, EventHorizonConsumedEntityEvent>(OnContainerConsumed);
 
         var vvHandle = Vvm.GetTypeHandler<EventHorizonComponent>();
         vvHandle.AddPath(nameof(EventHorizonComponent.TargetConsumePeriod), (_, comp) => comp.TargetConsumePeriod, SetConsumePeriod);
+    }
+
+    private void OnConsumed(Entity<EventHorizonComponent> horizon, ref EntityConsumedByEventHorizonEvent args)
+    {
+        // Raised after the target has passed all consume checks and has been queued for deletion.
+        // Its transform is still valid here and is closer to the actual intake point than the horizon centre.
+        _particles.Spawn(
+            _xformSystem.GetMapCoordinates(args.Entity),
+            "HrtSingularityConsume",
+            parameters: new ParticleSpawnParameters(Intensity: 0.6f),
+            rateLimitSource: horizon.Owner,
+            cooldown: TimeSpan.FromMilliseconds(180));
     }
 
     private void OnHorizonMapInit(EntityUid uid, EventHorizonComponent component, MapInitEvent args)

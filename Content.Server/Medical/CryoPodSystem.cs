@@ -26,7 +26,9 @@ using Content.Shared.Interaction;
 using Content.Shared.Medical.Cryogenics;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Power;
+using Content.Shared.Particles;
 using Content.Shared.Verbs;
+using Content.Server.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
@@ -50,6 +52,7 @@ public sealed partial class CryoPodSystem : SharedCryoPodSystem
     [Dependency] private ReactiveSystem _reactiveSystem = default!;
     [Dependency] private IAdminLogManager _adminLogger = default!;
     [Dependency] private NodeContainerSystem _nodeContainer = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     // Frontier: keep a list of cryogenics reagents. The pod will only filter these out from the provided solution.
     private static readonly string[] CryogenicsReagents = ["Cryoxadone", "Aloxadone", "Doxarubixadone", "Opporozidone", "Necrosol", "Traumoxadone", "Stelloxadone"];
@@ -124,7 +127,17 @@ public sealed partial class CryoPodSystem : SharedCryoPodSystem
                 solutionToInject.ScaleSolution(cryoPod.PotencyMultiplier);
                 // End Frontier
 
-                _bloodstreamSystem.TryAddToChemicals(patient.Value, solutionToInject, bloodstream);
+                if (_bloodstreamSystem.TryAddToChemicals(patient.Value, solutionToInject, bloodstream))
+                {
+                    // The chemical transfer has completed. This is deliberately tied to the existing
+                    // low-frequency treatment tick instead of adding an always-on server emitter.
+                    _particles.Spawn(
+                        patient.Value,
+                        "HrtCryoMistBurst",
+                        attached: true,
+                        cooldown: TimeSpan.FromMilliseconds(900));
+                }
+
                 _reactiveSystem.DoEntityReaction(patient.Value, solutionToInject, ReactionMethod.Injection);
             }
         }

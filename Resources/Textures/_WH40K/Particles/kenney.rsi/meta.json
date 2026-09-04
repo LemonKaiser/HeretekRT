@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "license": "CC0",
+  "copyright": "Kenney — Particle Pack (https://kenney.nl/assets/particle-pack)",
+  "states": [
+    { "name": "arc" },
+    { "name": "ash" },
+    { "name": "bubble" },
+    { "name": "burst" },
+    { "name": "chip" },
+    { "name": "dot" },
+    { "name": "droplet" },
+    { "name": "ember" },
+    { "name": "flake" },
+    { "name": "frost" },
+    { "name": "glow" },
+    { "name": "mist" },
+    { "name": "puff" },
+    { "name": "rift" },
+    { "name": "shard" },
+    { "name": "slash" },
+    { "name": "smoke" },
+    { "name": "spark" },
+    { "name": "sparkle" },
+    { "name": "spore" },
+    { "name": "streak" }
+  ]
+}

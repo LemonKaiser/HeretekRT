@@ -1,0 +1,1491 @@
+# Reusable visual library. These prototypes only describe client cosmetics; gameplay systems
+# decide when to emit them through ParticleSpawnSystem or a state-driven visualizer.
+
+- type: particleEffect
+  id: HrtParticleBaseImpact
+  abstract: true
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: dot
+  shader: unshaded
+  priority: Decorative
+  cost: 0.55
+  maxDistance: 18
+  boundsRadius: 1.5
+  startColor: "#FFFFFFFF"
+  endColor: "#FFFFFF00"
+  lifetime: 0.42
+  lifetimeVariance: 0.16
+  speed: 3.5
+  speedVariance: 1.2
+  particleSize: 0.16
+  sizeVariance: 0.35
+  emissionRate: 0
+  maxCount: 16
+  burst: true
+  gravity: 4.5
+  drag: 0.12
+  spreadAngle: 150
+  shape:
+    type: CircleFill
+    radius: 0.08
+
+- type: particleEffect
+  id: HrtParticleBaseDebris
+  abstract: true
+  parent: HrtParticleBaseImpact
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: curl
+  cost: 0.7
+  maxDistance: 16
+  boundsRadius: 1.8
+  lifetime: 0.7
+  lifetimeVariance: 0.25
+  speed: 3.1
+  speedVariance: 1.1
+  particleSize: 0.19
+  stretchFactor: 0.15
+  maxCount: 14
+  gravity: 7
+  drag: 0.08
+  startRotationVariance: 180
+  rotationSpeedVariance: 540
+
+- type: particleEffect
+  id: HrtParticleBaseFluid
+  abstract: true
+  parent: HrtParticleBaseImpact
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: drop
+  cost: 0.65
+  maxDistance: 16
+  boundsRadius: 1.7
+  lifetime: 0.75
+  lifetimeVariance: 0.25
+  speed: 2.7
+  speedVariance: 0.9
+  particleSize: 0.18
+  sizeVariance: 0.25
+  maxCount: 18
+  gravity: 5.5
+  drag: 0.12
+  spreadAngle: 110
+
+- type: particleEffect
+  id: HrtParticleBaseSmokeBurst
+  abstract: true
+  sprite:
+    sprite: Effects/chemsmoke.rsi
+    state: chemsmoke
+  priority: Decorative
+  cost: 1.35
+  maxDistance: 18
+  boundsRadius: 2.5
+  startColor: "#BFC4C6B0"
+  endColor: "#BFC4C600"
+  alphaOverLifetime:
+    - time: 0.0
+      value: 0.0
+    - time: 0.12
+      value: 1.0
+    - time: 0.8
+      value: 0.8
+    - time: 1.0
+      value: 0.0
+  sizeOverLifetime:
+    - time: 0.0
+      value: 0.35
+    - time: 1.0
+      value: 1.4
+  lifetime: 1.3
+  lifetimeVariance: 0.4
+  speed: 0.75
+  speedVariance: 0.3
+  particleSize: 0.33
+  sizeVariance: 0.35
+  emissionRate: 0
+  maxCount: 14
+  burst: true
+  gravity: -0.24
+  drag: 0.38
+  noiseStrength: 0.1
+  noiseFrequency: 0.65
+  spreadAngle: 150
+  startRotationVariance: 180
+  rotationSpeedVariance: 35
+  shape:
+    type: CircleFill
+    radius: 0.14
+
+- type: particleEffect
+  id: HrtParticleBaseSmokeContinuous
+  abstract: true
+  parent: HrtParticleBaseSmokeBurst
+  emissionRate: 4
+  maxCount: 18
+  burst: false
+  duration: 0
+
+- type: particleEffect
+  id: HrtParticleBaseEnergy
+  abstract: true
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: soft_dot
+  shader: unshaded
+  priority: Important
+  cost: 0.65
+  maxDistance: 22
+  boundsRadius: 1.5
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.35
+      color: "#9BE7FFFF"
+    - time: 1.0
+      color: "#38A8FF00"
+  lifetime: 0.45
+  lifetimeVariance: 0.15
+  speed: 2.4
+  speedVariance: 0.8
+  particleSize: 0.22
+  sizeVariance: 0.25
+  emissionRate: 0
+  maxCount: 14
+  burst: true
+  drag: 0.1
+  spreadAngle: 180
+  shape:
+    type: CircleFill
+    radius: 0.1
+
+- type: particleEffect
+  id: HrtParticleBaseMote
+  abstract: true
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  priority: Decorative
+  cost: 0.45
+  maxDistance: 18
+  lifetime: 1.25
+  lifetimeVariance: 0.35
+  speed: 0.35
+  speedVariance: 0.2
+  particleSize: 0.22
+  maxCount: 14
+  gravity: -0.18
+  noiseStrength: 0.1
+  noiseFrequency: 0.7
+  startRotationVariance: 180
+  rotationSpeedVariance: 90
+
+# Surface impacts and fragments.
+
+- type: particleEffect
+  id: HrtImpactMetal
+  parent: HrtParticleBaseDebris
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.18
+      color: "#FFE08AFF"
+    - time: 0.7
+      color: "#FF7A00AA"
+    - time: 1.0
+      color: "#FF360000"
+  speed: 5.1
+  speedVariance: 1.8
+  stretchFactor: 0.45
+  maxCount: 20
+
+- type: particleEffect
+  id: HrtImpactStone
+  parent: HrtParticleBaseImpact
+  startColor: "#AAA59AFF"
+  endColor: "#746F6500"
+  speed: 2.9
+  particleSize: 0.18
+  maxCount: 15
+  gravity: 5.8
+
+- type: particleEffect
+  id: HrtImpactConcrete
+  parent: HrtParticleBaseImpact
+  startColor: "#B7B4AEFF"
+  endColor: "#77746E00"
+  speed: 3.2
+  particleSize: 0.17
+  maxCount: 16
+  gravity: 6.2
+
+- type: particleEffect
+  id: HrtImpactGlass
+  parent: HrtParticleBaseDebris
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  colorOverLifetime:
+    - time: 0.0
+      color: "#E8FCFFFF"
+    - time: 0.55
+      color: "#70D8F4BB"
+    - time: 1.0
+      color: "#70D8F400"
+  speed: 4.4
+  particleSize: 0.16
+  maxCount: 13
+  gravity: 6.4
+
+- type: particleEffect
+  id: HrtImpactWood
+  parent: HrtParticleBaseDebris
+  startColor: "#D39B59FF"
+  endColor: "#6A3E1E00"
+  speed: 3.6
+  particleSize: 0.19
+  maxCount: 13
+
+- type: particleEffect
+  id: HrtImpactPlastic
+  parent: HrtParticleBaseDebris
+  startColor: "#8EC9E8FF"
+  endColor: "#3F739100"
+  speed: 3.2
+  particleSize: 0.16
+  maxCount: 12
+
+- type: particleEffect
+  id: HrtImpactFlesh
+  parent: HrtParticleBaseFluid
+  startColor: "#C93436FF"
+  endColor: "#67141B00"
+  speed: 3.4
+  speedVariance: 1.2
+  particleSize: 0.2
+  maxCount: 20
+  gravity: 6.2
+
+- type: particleEffect
+  id: HrtImpactIce
+  parent: HrtParticleBaseDebris
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  startColor: "#E4FBFFFF"
+  endColor: "#6BCBEF00"
+  speed: 4.1
+  particleSize: 0.17
+  maxCount: 15
+  gravity: 4.3
+
+# Contact profiles reuse the material-specific colours and sprites above. Their velocity, range and particle count
+# communicate the source: a hand weapon has a compact medium burst, while a thrown item only chips the surface.
+- type: particleEffect
+  id: HrtImpactMeleeMetal
+  parent: HrtImpactMetal
+  boundsRadius: 0.95
+  lifetime: 0.30
+  lifetimeVariance: 0.10
+  speed: 2.7
+  speedVariance: 0.8
+  particleSize: 0.13
+  maxCount: 11
+
+- type: particleEffect
+  id: HrtImpactMeleeStone
+  parent: HrtImpactStone
+  boundsRadius: 0.8
+  lifetime: 0.30
+  lifetimeVariance: 0.10
+  speed: 1.65
+  speedVariance: 0.5
+  particleSize: 0.13
+  maxCount: 9
+
+- type: particleEffect
+  id: HrtImpactMeleeConcrete
+  parent: HrtImpactConcrete
+  boundsRadius: 0.85
+  lifetime: 0.30
+  lifetimeVariance: 0.10
+  speed: 1.8
+  speedVariance: 0.55
+  particleSize: 0.12
+  maxCount: 10
+
+- type: particleEffect
+  id: HrtImpactMeleeGlass
+  parent: HrtImpactGlass
+  boundsRadius: 0.9
+  lifetime: 0.32
+  lifetimeVariance: 0.10
+  speed: 2.2
+  speedVariance: 0.7
+  particleSize: 0.12
+  maxCount: 8
+
+- type: particleEffect
+  id: HrtImpactMeleeWood
+  parent: HrtImpactWood
+  boundsRadius: 0.85
+  lifetime: 0.32
+  lifetimeVariance: 0.10
+  speed: 1.9
+  speedVariance: 0.6
+  particleSize: 0.13
+  maxCount: 8
+
+- type: particleEffect
+  id: HrtImpactMeleePlastic
+  parent: HrtImpactPlastic
+  boundsRadius: 0.8
+  lifetime: 0.28
+  lifetimeVariance: 0.09
+  speed: 1.7
+  speedVariance: 0.5
+  particleSize: 0.12
+  maxCount: 8
+
+- type: particleEffect
+  id: HrtImpactMeleeFlesh
+  parent: HrtImpactFlesh
+  boundsRadius: 0.85
+  lifetime: 0.34
+  lifetimeVariance: 0.11
+  speed: 2.0
+  speedVariance: 0.65
+  particleSize: 0.15
+  maxCount: 10
+
+- type: particleEffect
+  id: HrtImpactMeleeIce
+  parent: HrtImpactIce
+  boundsRadius: 0.85
+  lifetime: 0.32
+  lifetimeVariance: 0.10
+  speed: 2.1
+  speedVariance: 0.65
+  particleSize: 0.12
+  maxCount: 9
+
+- type: particleEffect
+  id: HrtImpactThrownMetal
+  parent: HrtImpactMetal
+  boundsRadius: 0.48
+  lifetime: 0.20
+  lifetimeVariance: 0.06
+  speed: 1.2
+  speedVariance: 0.35
+  particleSize: 0.08
+  maxCount: 5
+
+- type: particleEffect
+  id: HrtImpactThrownStone
+  parent: HrtImpactStone
+  boundsRadius: 0.42
+  lifetime: 0.20
+  lifetimeVariance: 0.06
+  speed: 0.85
+  speedVariance: 0.25
+  particleSize: 0.08
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtImpactThrownConcrete
+  parent: HrtImpactConcrete
+  boundsRadius: 0.45
+  lifetime: 0.20
+  lifetimeVariance: 0.06
+  speed: 0.95
+  speedVariance: 0.28
+  particleSize: 0.08
+  maxCount: 5
+
+- type: particleEffect
+  id: HrtImpactThrownGlass
+  parent: HrtImpactGlass
+  boundsRadius: 0.5
+  lifetime: 0.22
+  lifetimeVariance: 0.07
+  speed: 1.1
+  speedVariance: 0.32
+  particleSize: 0.08
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtImpactThrownWood
+  parent: HrtImpactWood
+  boundsRadius: 0.46
+  lifetime: 0.22
+  lifetimeVariance: 0.07
+  speed: 1.0
+  speedVariance: 0.30
+  particleSize: 0.09
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtImpactThrownPlastic
+  parent: HrtImpactPlastic
+  boundsRadius: 0.42
+  lifetime: 0.20
+  lifetimeVariance: 0.06
+  speed: 0.9
+  speedVariance: 0.25
+  particleSize: 0.08
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtImpactThrownFlesh
+  parent: HrtImpactFlesh
+  boundsRadius: 0.5
+  lifetime: 0.24
+  lifetimeVariance: 0.08
+  speed: 1.05
+  speedVariance: 0.32
+  particleSize: 0.10
+  maxCount: 5
+
+- type: particleEffect
+  id: HrtImpactThrownIce
+  parent: HrtImpactIce
+  boundsRadius: 0.48
+  lifetime: 0.22
+  lifetimeVariance: 0.07
+  speed: 1.1
+  speedVariance: 0.32
+  particleSize: 0.08
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtRicochet
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: curl
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.16
+      color: "#FFE98FFF"
+    - time: 1.0
+      color: "#FF6D0000"
+  lifetime: 0.22
+  speed: 7.5
+  speedVariance: 2.3
+  particleSize: 0.17
+  stretchFactor: 0.7
+  maxCount: 9
+  gravity: 3.5
+  spreadAngle: 75
+
+- type: particleEffect
+  id: HrtDustLight
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#B7A58B99"
+  endColor: "#B7A58B00"
+  lifetime: 0.72
+  speed: 0.55
+  particleSize: 0.24
+  maxCount: 8
+  gravity: -0.04
+
+- type: particleEffect
+  id: HrtDustHeavy
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#8E8273BB"
+  endColor: "#8E827300"
+  lifetime: 1.05
+  speed: 0.8
+  particleSize: 0.36
+  maxCount: 16
+  gravity: -0.12
+
+- type: particleEffect
+  id: HrtMetalChips
+  parent: HrtParticleBaseDebris
+  startColor: "#C4D1D8FF"
+  endColor: "#61727D00"
+  speed: 4.3
+  particleSize: 0.14
+  maxCount: 14
+
+- type: particleEffect
+  id: HrtGlassShards
+  parent: HrtImpactGlass
+  speed: 5.2
+  particleSize: 0.14
+  maxCount: 18
+
+- type: particleEffect
+  id: HrtWoodSplinters
+  parent: HrtImpactWood
+  speed: 4.4
+  particleSize: 0.15
+  maxCount: 17
+
+- type: particleEffect
+  id: HrtConcreteDebris
+  parent: HrtImpactConcrete
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: curl
+  speed: 4.1
+  particleSize: 0.2
+  maxCount: 18
+  rotationSpeedVariance: 460
+
+# Liquids, gases and machine exhaust.
+
+- type: particleEffect
+  id: HrtBloodSpray
+  parent: HrtImpactFlesh
+  startColor: "#B51E2CFF"
+  endColor: "#4B081000"
+  speed: 4.1
+  speedVariance: 1.5
+  particleSize: 0.17
+  maxCount: 24
+  spreadAngle: 85
+
+- type: particleEffect
+  id: HrtOilSpray
+  parent: HrtParticleBaseFluid
+  startColor: "#3B3431EE"
+  endColor: "#130F0D00"
+  speed: 3.1
+  particleSize: 0.18
+  maxCount: 16
+
+- type: particleEffect
+  id: HrtWaterSplash
+  parent: HrtParticleBaseFluid
+  startColor: "#B4EDFFFF"
+  endColor: "#5CB6E600"
+  speed: 3.8
+  particleSize: 0.16
+  maxCount: 18
+  gravity: 6.5
+
+# Puddles use their replicated solution colour at runtime. Footsteps stay tight to the floor. A slip produces a
+# short directional skid; the strong water splash is reserved for crossing into a water tile.
+- type: particleEffect
+  id: HrtPuddleFootstep
+  parent: HrtParticleBaseFluid
+  priority: Decorative
+  cost: 0.3
+  maxDistance: 12
+  boundsRadius: 0.45
+  startColor: "#FFFFFFFF"
+  endColor: "#FFFFFF00"
+  lifetime: 0.22
+  lifetimeVariance: 0.05
+  speed: 0.34
+  speedVariance: 0.12
+  particleSize: 0.09
+  sizeVariance: 0.2
+  maxCount: 5
+  gravity: 0.55
+  drag: 5
+  terminalSpeed: 0.42
+  spreadAngle: 180
+  shape:
+    type: CircleFill
+    radius: 0.16
+
+- type: particleEffect
+  id: HrtPuddleSlipSkid
+  parent: HrtPuddleFootstep
+  priority: Normal
+  cost: 0.45
+  maxDistance: 14
+  boundsRadius: 0.8
+  lifetime: 0.34
+  lifetimeVariance: 0.08
+  speed: 0.82
+  speedVariance: 0.24
+  particleSize: 0.11
+  sizeVariance: 0.32
+  stretchFactor: 0.65
+  maxCount: 9
+  gravity: 1.4
+  drag: 4.2
+  terminalSpeed: 0.88
+  spreadAngle: 58
+  shape:
+    type: CircleFill
+    radius: 0.2
+
+- type: particleEffect
+  id: HrtAcidSpray
+  parent: HrtParticleBaseFluid
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: drop
+  startColor: "#C6FF45EE"
+  endColor: "#548C1200"
+  lifetime: 0.62
+  speed: 2.9
+  particleSize: 0.23
+  maxCount: 15
+
+- type: particleEffect
+  id: HrtCoolantMist
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#B6F5FFFF"
+  endColor: "#4FC3DF00"
+  lifetime: 1.4
+  particleSize: 0.29
+  maxCount: 13
+  gravity: -0.18
+
+- type: particleEffect
+  id: HrtMedfoamBubbles
+  parent: HrtParticleBaseFluid
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: bubble
+  startColor: "#E8FFFFDD"
+  endColor: "#A6E8F000"
+  lifetime: 1.0
+  speed: 1.2
+  particleSize: 0.16
+  maxCount: 8
+
+- type: particleEffect
+  id: HrtFoamBubblesContinuous
+  parent: HrtMedfoamBubbles
+  emissionRate: 1.5
+  maxCount: 4
+  burst: false
+  duration: 0
+  gravity: -0.05
+
+- type: particleEffect
+  id: HrtSteamJet
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#E7F6F0B8"
+  endColor: "#C3E4DA00"
+  lifetime: 1.15
+  speed: 1.4
+  speedVariance: 0.35
+  particleSize: 0.27
+  emissionRate: 9
+  maxCount: 20
+  gravity: -0.42
+  spreadAngle: 26
+
+- type: particleEffect
+  id: HrtToxicFumes
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#9FCC52A8"
+  endColor: "#507A2800"
+  lifetime: 1.75
+  speed: 0.38
+  particleSize: 0.33
+  emissionRate: 4
+  maxCount: 18
+  gravity: -0.16
+
+- type: particleEffect
+  id: HrtPlasmaVapor
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#E28BFFFF"
+  endColor: "#883AC700"
+  lifetime: 1.45
+  speed: 0.6
+  particleSize: 0.31
+  emissionRate: 5
+  maxCount: 18
+  gravity: -0.28
+  noiseStrength: 0.16
+
+- type: particleEffect
+  id: HrtChemicalPuff
+  parent: HrtParticleBaseSmokeBurst
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: puff
+  startColor: "#E7FF85CC"
+  endColor: "#8FC44B00"
+  lifetime: 0.65
+  speed: 1.1
+  particleSize: 0.24
+  maxCount: 5
+
+- type: particleEffect
+  id: HrtFireExtinguishMist
+  parent: HrtParticleBaseSmokeBurst
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: mist
+  startColor: "#D9F6FFFF"
+  endColor: "#90CFE000"
+  lifetime: 0.7
+  speed: 2.2
+  particleSize: 0.2
+  maxCount: 8
+  gravity: -0.08
+  spreadAngle: 55
+
+- type: particleEffect
+  id: HrtEngineExhaust
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#4F5053C0"
+  endColor: "#1D1E2200"
+  lifetime: 1.8
+  speed: 1.0
+  particleSize: 0.37
+  emissionRate: 7
+  maxCount: 22
+  gravity: -0.22
+  spreadAngle: 32
+
+- type: particleEffect
+  id: HrtMachineSteam
+  parent: HrtSteamJet
+  startColor: "#DCE9E9AA"
+  endColor: "#98B4B400"
+  emissionRate: 5
+  maxCount: 14
+
+- type: particleEffect
+  id: HrtElectricalSmoke
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#596268C0"
+  endColor: "#1C222800"
+  lifetime: 1.2
+  speed: 0.55
+  particleSize: 0.28
+  emissionRate: 3
+  maxCount: 12
+
+# Weapons, explosions and direct combat feedback.
+
+- type: particleEffect
+  id: HrtMuzzleFlashBallistic
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.15
+      color: "#FFE9A0FF"
+    - time: 1.0
+      color: "#FF8C0000"
+  lifetime: 0.12
+  speed: 1.5
+  particleSize: 0.38
+  maxCount: 5
+  spreadAngle: 38
+
+- type: particleEffect
+  id: HrtMuzzleFlashEnergy
+  parent: HrtMuzzleFlashBallistic
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.2
+      color: "#8AEBFFFF"
+    - time: 1.0
+      color: "#318CFF00"
+  particleSize: 0.42
+  maxCount: 6
+
+- type: particleEffect
+  id: HrtMuzzleSmoke
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#B5B1A9AA"
+  endColor: "#66625B00"
+  lifetime: 0.95
+  speed: 0.75
+  particleSize: 0.2
+  maxCount: 7
+  spreadAngle: 34
+
+- type: particleEffect
+  id: HrtTracerBallistic
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: dot
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFF7BCFF"
+    - time: 1.0
+      color: "#FF9A1800"
+  lifetime: 0.16
+  speed: 26
+  speedVariance: 0
+  particleSize: 0.055
+  stretchFactor: 1.8
+  maxCount: 1
+  spreadAngle: 0
+
+- type: particleEffect
+  id: HrtTracerLaser
+  parent: HrtTracerBallistic
+  colorOverLifetime:
+    - time: 0.0
+      color: "#B6F9FFFF"
+    - time: 1.0
+      color: "#20B5FF00"
+  particleSize: 0.075
+
+- type: particleEffect
+  id: HrtTracerPlasma
+  parent: HrtTracerBallistic
+  colorOverLifetime:
+    - time: 0.0
+      color: "#F3B2FFFF"
+    - time: 1.0
+      color: "#B53CFF00"
+  particleSize: 0.1
+  stretchFactor: 1.4
+
+- type: particleEffect
+  id: HrtExplosionFlash
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: burst
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.5
+      color: "#FFE39CBB"
+    - time: 1.0
+      color: "#FF7B0000"
+  lifetime: 0.26
+  speed: 0
+  particleSize: 1.1
+  maxCount: 1
+  spreadAngle: 0
+
+- type: particleEffect
+  id: HrtExplosionFireball
+  parent: HrtExplosionFlash
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.35
+      color: "#FFB638E8"
+    - time: 1.0
+      color: "#C7370000"
+  lifetime: 0.48
+  particleSize: 1.65
+
+- type: particleEffect
+  id: HrtExplosionDebris
+  parent: HrtParticleBaseDebris
+  startColor: "#8A7464FF"
+  endColor: "#3D302900"
+  lifetime: 0.9
+  speed: 5.4
+  speedVariance: 2.4
+  particleSize: 0.22
+  maxCount: 30
+  gravity: 8
+
+- type: particleEffect
+  id: HrtExplosionSmoke
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#625E5ACC"
+  endColor: "#24232100"
+  lifetime: 2.1
+  speed: 1.35
+  particleSize: 0.45
+  maxCount: 22
+  gravity: -0.32
+
+- type: particleEffect
+  id: HrtElectricArcBurst
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: arc
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.55
+      color: "#5ACDFFFF"
+    - time: 1.0
+      color: "#2685FF00"
+  lifetime: 0.32
+  speed: 1.6
+  particleSize: 0.24
+  maxCount: 3
+  spreadAngle: 160
+
+- type: particleEffect
+  id: HrtEmpSparks
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  colorOverLifetime:
+    - time: 0.0
+      color: "#C6D8FFFF"
+    - time: 1.0
+      color: "#6C7CFF00"
+  lifetime: 0.55
+  speed: 1.1
+  particleSize: 0.28
+  maxCount: 8
+
+- type: particleEffect
+  id: HrtCasingEject
+  parent: HrtParticleBaseDebris
+  startColor: "#FFD475FF"
+  endColor: "#8E5A1900"
+  lifetime: 0.85
+  speed: 4.7
+  speedVariance: 0.8
+  particleSize: 0.11
+  maxCount: 1
+  gravity: 8
+  spreadAngle: 24
+
+- type: particleEffect
+  id: HrtMeleeSlash
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: slash
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 1.0
+      color: "#D7E5FF00"
+  lifetime: 0.24
+  speed: 0
+  particleSize: 0.55
+  maxCount: 1
+  spreadAngle: 25
+
+# Medicine, cryo, teleportation and WH40K energy.
+
+- type: particleEffect
+  id: HrtHealingMotes
+  parent: HrtParticleBaseMote
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.5
+      color: "#84FFB5FF"
+    - time: 1.0
+      color: "#38C87800"
+  emissionRate: 6
+  maxCount: 14
+  burst: false
+  duration: 0
+
+- type: particleEffect
+  id: HrtHealingBurst
+  parent: HrtHealingMotes
+  emissionRate: 0
+  maxCount: 7
+  burst: true
+  duration: 0
+  lifetime: 0.85
+
+- type: particleEffect
+  id: HrtDefibArc
+  parent: HrtElectricArcBurst
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: arc
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.45
+      color: "#82F6FFFF"
+    - time: 1.0
+      color: "#28ADFF00"
+  lifetime: 0.38
+  speed: 2.5
+  particleSize: 0.22
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtCryoMist
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#D8F9FFFF"
+  endColor: "#87CBF000"
+  lifetime: 1.45
+  speed: 0.55
+  particleSize: 0.31
+  emissionRate: 6
+  maxCount: 18
+  gravity: -0.25
+
+- type: particleEffect
+  id: HrtCryoMistBurst
+  parent: HrtCryoMist
+  emissionRate: 0
+  maxCount: 5
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtTeleporterCharge
+  parent: HrtParticleBaseMote
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.5
+      color: "#B38EFFFF"
+    - time: 1.0
+      color: "#6338DD00"
+  emissionRate: 9
+  maxCount: 20
+  burst: false
+  duration: 0
+  gravity: -0.35
+
+- type: particleEffect
+  id: HrtTeleporterDeparture
+  parent: HrtParticleBaseEnergy
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.45
+      color: "#BE94FFFF"
+    - time: 1.0
+      color: "#6338DD00"
+  lifetime: 0.65
+  speed: 3.3
+  particleSize: 0.28
+  maxCount: 20
+
+- type: particleEffect
+  id: HrtTeleporterArrival
+  parent: HrtTeleporterDeparture
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.35
+      color: "#7BE5FFFF"
+    - time: 1.0
+      color: "#3C76FF00"
+  speed: 2.6
+  gravity: -0.2
+
+- type: particleEffect
+  id: HrtWarpRift
+  parent: HrtParticleBaseMote
+  sprite:
+    sprite: _WH40K/Particles/kenney.rsi
+    state: rift
+  colorOverLifetime:
+    - time: 0.0
+      color: "#C67CFFFF"
+    - time: 1.0
+      color: "#4D176E00"
+  cost: 1.1
+  maxDistance: 24
+  boundsRadius: 2.2
+  lifetime: 1.3
+  speed: 0.18
+  particleSize: 0.34
+  emissionRate: 0.8
+  maxCount: 1
+  burst: false
+  duration: 0
+  gravity: -0.08
+
+- type: particleEffect
+  id: HrtWarpRiftBurst
+  parent: HrtWarpRift
+  emissionRate: 0
+  maxCount: 9
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtPsykerMotes
+  parent: HrtParticleBaseMote
+  colorOverLifetime:
+    - time: 0.0
+      color: "#F5DCFFFF"
+    - time: 0.5
+      color: "#D06DFFFF"
+    - time: 1.0
+      color: "#6B169E00"
+  emissionRate: 5
+  maxCount: 14
+  burst: false
+  duration: 0
+
+- type: particleEffect
+  id: HrtHolyMotes
+  parent: HrtParticleBaseMote
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.55
+      color: "#FFE696FF"
+    - time: 1.0
+      color: "#D99B2500"
+  emissionRate: 5
+  maxCount: 14
+  burst: false
+  duration: 0
+
+- type: particleEffect
+  id: HrtVoidWisps
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#40588DBC"
+  endColor: "#10152D00"
+  lifetime: 1.9
+  speed: 0.28
+  particleSize: 0.35
+  emissionRate: 4
+  maxCount: 15
+  gravity: -0.1
+
+- type: particleEffect
+  id: HrtAnomalyPulse
+  parent: HrtVoidWisps
+  emissionRate: 0
+  maxCount: 10
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtAnomalySurge
+  parent: HrtAnomalyPulse
+  startColor: "#D9A8FFFF"
+  endColor: "#4B1F7500"
+  maxCount: 22
+  lifetime: 2.2
+  particleSize: 0.46
+
+- type: particleEffect
+  id: HrtForceFieldCharge
+  parent: HrtParticleBaseEnergy
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.45
+      color: "#77DDFFFF"
+    - time: 1.0
+      color: "#247AFF00"
+  lifetime: 0.75
+  speed: 0.8
+  particleSize: 0.23
+  emissionRate: 5
+  maxCount: 12
+  burst: false
+  duration: 0
+  gravity: 0
+
+- type: particleEffect
+  id: HrtShieldHit
+  parent: HrtForceFieldCharge
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  lifetime: 0.45
+  speed: 2.2
+  particleSize: 0.28
+  emissionRate: 0
+  maxCount: 14
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtStasisShards
+  parent: HrtParticleBaseDebris
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: cross
+  startColor: "#D1FAFFFF"
+  endColor: "#5CA9DB00"
+  lifetime: 1.1
+  speed: 1.8
+  particleSize: 0.2
+  maxCount: 16
+  gravity: 0.12
+  drag: 0.35
+
+# Environment and equipment ambience.
+
+- type: particleEffect
+  id: HrtAshFall
+  parent: HrtParticleBaseMote
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: dot
+  startColor: "#C2B9AA99"
+  endColor: "#776E6300"
+  lifetime: 2.4
+  speed: 0.25
+  particleSize: 0.23
+  emissionRate: 6
+  maxCount: 24
+  burst: false
+  duration: 0
+  gravity: 0.55
+  spreadAngle: 35
+
+- type: particleEffect
+  id: HrtSnow
+  parent: HrtAshFall
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: dot
+  startColor: "#F2FEFFFF"
+  endColor: "#BCE4F000"
+  lifetime: 2.2
+  speed: 0.2
+  particleSize: 0.18
+  gravity: 0.45
+
+- type: particleEffect
+  id: HrtRain
+  parent: HrtParticleBaseImpact
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: drop
+  startColor: "#B6E9FFFF"
+  endColor: "#61A8CE00"
+  lifetime: 0.55
+  speed: 6
+  speedVariance: 1
+  particleSize: 0.12
+  stretchFactor: 0.45
+  emissionRate: 12
+  maxCount: 28
+  burst: false
+  duration: 0
+  gravity: 1
+  spreadAngle: 14
+
+- type: particleEffect
+  id: HrtSandSpray
+  parent: HrtParticleBaseImpact
+  startColor: "#D4B16CFF"
+  endColor: "#7D5D2D00"
+  lifetime: 0.85
+  speed: 3.8
+  particleSize: 0.16
+  maxCount: 18
+  gravity: 2.2
+  drag: 0.4
+
+- type: particleEffect
+  id: HrtSporeCloud
+  parent: HrtParticleBaseSmokeContinuous
+  startColor: "#BCD768AA"
+  endColor: "#6F923500"
+  lifetime: 1.85
+  speed: 0.32
+  particleSize: 0.27
+  emissionRate: 4
+  maxCount: 16
+  gravity: -0.08
+
+- type: particleEffect
+  id: HrtPollen
+  parent: HrtParticleBaseMote
+  startColor: "#FFF19AE6"
+  endColor: "#D6B92700"
+  lifetime: 1.65
+  speed: 0.48
+  particleSize: 0.12
+  emissionRate: 6
+  maxCount: 16
+  burst: false
+  duration: 0
+  gravity: -0.05
+
+- type: particleEffect
+  id: HrtPollenBurst
+  parent: HrtPollen
+  emissionRate: 0
+  maxCount: 11
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtPhantomStepGloom
+  parent: HrtParticleBaseSmokeBurst
+  startColor: "#4B2D6BAA"
+  endColor: "#1A0F2E00"
+  lifetime: 1.05
+  speed: 0.45
+  particleSize: 0.28
+  maxCount: 9
+  gravity: -0.12
+
+- type: particleEffect
+  id: HrtThrusterPlume
+  parent: HrtParticleBaseEnergy
+  sprite:
+    sprite: _WH40K/Particles/generic.rsi
+    state: soft_dot_big
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.22
+      color: "#8CDDFFFF"
+    - time: 0.65
+      color: "#3268FFFF"
+    - time: 1.0
+      color: "#14225900"
+  cost: 1.05
+  lifetime: 0.7
+  speed: 3.2
+  speedVariance: 0.7
+  particleSize: 0.26
+  emissionRate: 8
+  maxCount: 14
+  burst: false
+  duration: 0
+  stretchFactor: 0.25
+  spreadAngle: 22
+
+- type: particleEffect
+  id: HrtPrinterSparks
+  parent: HrtImpactMetal
+  lifetime: 0.35
+  speed: 2.4
+  speedVariance: 0.7
+  particleSize: 0.11
+  maxCount: 8
+  burst: false
+  duration: 0
+  emissionRate: 3
+  gravity: 2.2
+
+- type: particleEffect
+  id: HrtPrinterSparksBurst
+  parent: HrtPrinterSparks
+  emissionRate: 0
+  maxCount: 5
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtReactorRadiance
+  parent: HrtParticleBaseEnergy
+  colorOverLifetime:
+    - time: 0.0
+      color: "#FFFFFFFF"
+    - time: 0.4
+      color: "#9BFF8AFF"
+    - time: 1.0
+      color: "#37B84900"
+  lifetime: 0.9
+  speed: 0.55
+  particleSize: 0.23
+  emissionRate: 6
+  maxCount: 16
+  burst: false
+  duration: 0
+  gravity: -0.3
+
+- type: particleEffect
+  id: HrtReactorPulse
+  parent: HrtReactorRadiance
+  emissionRate: 0
+  maxCount: 8
+  burst: true
+  duration: 0
+
+- type: particleEffect
+  id: HrtSingularityConsume
+  parent: HrtVoidWisps
+  emissionRate: 0
+  maxCount: 8
+  burst: true
+  duration: 0
+  speed: 1.1
+  particleSize: 0.26
+
+# Ready-made selectors for impact, tools and terrain interactions.
+
+- type: particleEffectSet
+  id: HrtParticleImpactSet
+  effects:
+    Default: HrtImpactConcrete
+    Flesh: HrtImpactFlesh
+    Metal: HrtImpactMetal
+    Stone: HrtImpactStone
+    Concrete: HrtImpactConcrete
+    Glass: HrtImpactGlass
+    Wood: HrtImpactWood
+    Plastic: HrtImpactPlastic
+    Ice: HrtImpactIce
+    Liquid: HrtWaterSplash
+    Energy: HrtElectricArcBurst
+    Shield: HrtShieldHit
+
+- type: particleEffectSet
+  id: HrtParticleImpactMelee
+  effects:
+    Default: HrtImpactMeleeConcrete
+    Flesh: HrtImpactMeleeFlesh
+    Metal: HrtImpactMeleeMetal
+    Stone: HrtImpactMeleeStone
+    Concrete: HrtImpactMeleeConcrete
+    Glass: HrtImpactMeleeGlass
+    Wood: HrtImpactMeleeWood
+    Plastic: HrtImpactMeleePlastic
+    Ice: HrtImpactMeleeIce
+    Liquid: HrtPuddleFootstep
+    Energy: HrtElectricArcBurst
+    Shield: HrtShieldHit
+
+- type: particleEffectSet
+  id: HrtParticleImpactThrown
+  effects:
+    Default: HrtImpactThrownConcrete
+    Flesh: HrtImpactThrownFlesh
+    Metal: HrtImpactThrownMetal
+    Stone: HrtImpactThrownStone
+    Concrete: HrtImpactThrownConcrete
+    Glass: HrtImpactThrownGlass
+    Wood: HrtImpactThrownWood
+    Plastic: HrtImpactThrownPlastic
+    Ice: HrtImpactThrownIce
+    Liquid: HrtPuddleFootstep
+    Energy: HrtEmpSparks
+    Shield: HrtShieldHit
+
+- type: particleEffectSet
+  id: HrtParticleDebrisSet
+  effects:
+    Default: HrtDustLight
+    Flesh: HrtBloodSpray
+    Metal: HrtMetalChips
+    Stone: HrtConcreteDebris
+    Concrete: HrtConcreteDebris
+    Glass: HrtGlassShards
+    Wood: HrtWoodSplinters
+    Plastic: HrtImpactPlastic
+    Ice: HrtStasisShards
+    Liquid: HrtWaterSplash
+    Energy: HrtEmpSparks
+    Shield: HrtShieldHit
+
+- type: particleEffectSet
+  id: HrtParticleToolSet
+  effects:
+    Default: HrtWeldingBurst
+    Metal: HrtWeldingBurst
+    Stone: HrtDustHeavy
+    Concrete: HrtConcreteDebris
+    Glass: HrtGlassShards
+    Wood: HrtWoodSplinters
+    Plastic: HrtImpactPlastic
+    Ice: HrtImpactIce
+    Liquid: HrtSteamJet
+    Energy: HrtElectricArcBurst
+    Shield: HrtShieldHit

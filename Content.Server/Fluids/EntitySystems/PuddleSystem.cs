@@ -4,6 +4,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Chemistry.TileReactions;
 using Content.Server.DoAfter;
 using Content.Server.Fluids.Components;
+using Content.Server.Particles;
 using Content.Server.Spreader;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
@@ -22,6 +23,7 @@ using Content.Shared.Maps;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Particles;
 using Content.Shared.Slippery;
 using Content.Shared.StepTrigger.Components;
 using Content.Shared.StepTrigger.Systems;
@@ -31,6 +33,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -59,6 +62,7 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     [ValidatePrototypeId<ReagentPrototype>]
     private const string Blood = "Blood";
@@ -242,6 +246,35 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
 
     private void OnPuddleSlip(Entity<PuddleComponent> entity, ref SlipEvent args)
     {
+        // A puddle slip is not a water entry. It gets a short, solution-coloured skid that follows the mover's
+        // direction, while the large HrtWaterSplash belongs exclusively to entering a water tile.
+        if (!_solutionContainerSystem.ResolveSolution(entity.Owner, entity.Comp.SolutionName, ref entity.Comp.Solution,
+                out var solution))
+        {
+            return;
+        }
+
+        var parameters = new ParticleSpawnParameters(
+            Color: GetSolutionVisualColor(solution).WithAlpha(0.85f),
+            Intensity: 0.85f);
+
+        if (TryComp(args.Slipped, out PhysicsComponent? physics) &&
+            physics.LinearVelocity.LengthSquared() > 0.04f)
+        {
+            parameters = parameters with
+            {
+                EmitAngle = Angle.FromWorldVec(physics.LinearVelocity),
+                Velocity = physics.LinearVelocity * 0.12f,
+            };
+        }
+
+        _particles.Spawn(
+            _transform.GetMapCoordinates(args.Slipped),
+            "HrtPuddleSlipSkid",
+            parameters: parameters,
+            rateLimitSource: args.Slipped,
+            cooldown: TimeSpan.FromMilliseconds(450));
+
         // Reactive entities have a chance to get a touch reaction from slipping on a puddle
         // (i.e. it is implied they fell face first onto it or something)
         if (!HasComp<ReactiveComponent>(args.Slipped) || HasComp<SlidingComponent>(args.Slipped))
@@ -252,16 +285,48 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         if (!_random.Prob(0.5f))
             return;
 
-        if (!_solutionContainerSystem.ResolveSolution(entity.Owner, entity.Comp.SolutionName, ref entity.Comp.Solution,
-                out var solution))
-            return;
-
         _popups.PopupEntity(Loc.GetString("puddle-component-slipped-touch-reaction", ("puddle", entity.Owner)),
             args.Slipped, args.Slipped, PopupType.SmallCaution);
 
         // Take 15% of the puddle solution
         var splitSol = _solutionContainerSystem.SplitSolution(entity.Comp.Solution.Value, solution.Volume * 0.15f);
         _reactive.DoEntityReaction(args.Slipped, splitSol, ReactionMethod.Touch);
+    }
+
+    /// <summary>
+    /// Gets the same mixture-derived tint that the puddle renderer uses. This is kept server-side so replicated
+    /// particle bursts cannot be coloured by client guesses about a chemical solution.
+    /// </summary>
+    public bool TryGetPuddleVisualColor(EntityUid puddle, out Color color)
+    {
+        color = Color.White;
+        if (!TryComp<PuddleComponent>(puddle, out var component) ||
+            !_solutionContainerSystem.ResolveSolution(puddle, component.SolutionName, ref component.Solution,
+                out var solution))
+        {
+            return false;
+        }
+
+        color = GetSolutionVisualColor(solution);
+        return true;
+    }
+
+    private Color GetSolutionVisualColor(Solution solution)
+    {
+        var color = solution.GetColorWithout(_prototypeManager, _standoutReagents).WithAlpha(0.7f);
+
+        foreach (var standout in _standoutReagents)
+        {
+            var quantity = solution.GetTotalPrototypeQuantity(standout);
+            if (quantity <= FixedPoint2.Zero)
+                continue;
+
+            var interpolateValue = quantity.Float() / solution.Volume.Float();
+            color = Color.InterpolateBetween(color,
+                _prototypeManager.Index<ReagentPrototype>(standout).SubstanceColor, interpolateValue);
+        }
+
+        return color;
     }
 
     /// <inheritdoc/>
@@ -330,23 +395,7 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         {
             volume = solution.Volume / puddleComponent.OverflowVolume;
 
-            // Make blood stand out more
-            // Kinda EH
-            // Could potentially do alpha per-solution but future problem.
-
-            color = solution.GetColorWithout(_prototypeManager, _standoutReagents);
-            color = color.WithAlpha(0.7f);
-
-            foreach (var standout in _standoutReagents)
-            {
-                var quantity = solution.GetTotalPrototypeQuantity(standout);
-                if (quantity <= FixedPoint2.Zero)
-                    continue;
-
-                var interpolateValue = quantity.Float() / solution.Volume.Float();
-                color = Color.InterpolateBetween(color,
-                    _prototypeManager.Index<ReagentPrototype>(standout).SubstanceColor, interpolateValue);
-            }
+            color = GetSolutionVisualColor(solution);
         }
 
         _appearance.SetData(uid, PuddleVisuals.CurrentVolume, volume.Float(), appearance);

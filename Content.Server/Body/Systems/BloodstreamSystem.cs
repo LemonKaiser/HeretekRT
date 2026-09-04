@@ -3,6 +3,7 @@ using Content.Server.EntityEffects.Effects;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Forensics;
 using Content.Server.Popups;
+using Content.Server.Particles;
 using Content.Shared.Alert;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -17,12 +18,18 @@ using Content.Shared.Forensics.Components;
 using Content.Shared.HealthExaminable;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Particles;
+using Content.Shared.Projectiles;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Speech.EntitySystems;
+using Content.Shared.Throwing;
+using Content.Shared.Weapons.Melee;
+using Content.Shared.Weapons.Ranged.Components;
 using Robust.Server.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Maths;
 
 namespace Content.Server.Body.Systems;
 
@@ -41,6 +48,8 @@ public sealed partial class BloodstreamSystem : EntitySystem
     [Dependency] private SharedStutteringSystem _stutteringSystem = default!;
     [Dependency] private AlertsSystem _alertsSystem = default!;
     [Dependency] private ForensicsSystem _forensicsSystem = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -229,6 +238,35 @@ public sealed partial class BloodstreamSystem : EntitySystem
         var totalFloat = total.Float();
         TryModifyBleedAmount(ent, totalFloat, ent);
 
+        // Bloodstream has already accepted the post-mitigation damage at this point. Emit once only when it
+        // truly increased the bleeding state; the normal periodic blood-loss update stays particle-free.
+        if (totalFloat > 0f && ent.Comp.BleedAmount > oldBleedAmount)
+        {
+            var coordinates = args.ImpactCoordinates ?? _transform.GetMapCoordinates(ent);
+            Color? tint = null;
+            if (_prototypeManager.TryIndex<ReagentPrototype>(ent.Comp.BloodReagent, out var reagent))
+                tint = reagent.SubstanceColor;
+
+            Angle? angle = null;
+            if (args.Origin is { } origin)
+            {
+                var originCoordinates = _transform.GetMapCoordinates(origin);
+                var direction = originCoordinates.Position - coordinates.Position;
+                if (originCoordinates.MapId == coordinates.MapId && direction.LengthSquared() > 0.0001f)
+                    angle = Angle.FromWorldVec(direction);
+            }
+
+            _particles.Spawn(
+                coordinates,
+                "HrtBloodSpray",
+                parameters: new ParticleSpawnParameters(
+                    Color: tint,
+                    EmitAngle: angle,
+                    Intensity: GetBloodImpactIntensity(args, totalFloat)),
+                rateLimitSource: ent.Owner,
+                cooldown: TimeSpan.FromMilliseconds(250));
+        }
+
         /// <summary>
         ///     Critical hit. Causes target to lose blood, using the bleed rate modifier of the weapon, currently divided by 5
         ///     The crit chance is currently the bleed rate modifier divided by 25.
@@ -252,6 +290,23 @@ public sealed partial class BloodstreamSystem : EntitySystem
             _popupSystem.PopupEntity(Loc.GetString("bloodstream-component-wounds-cauterized"), ent,
                 ent, PopupType.Medium);
         }
+    }
+
+    private float GetBloodImpactIntensity(DamageChangedEvent args, float damage)
+    {
+        if (args.Tool is { } tool && Exists(tool))
+        {
+            if (HasComp<ThrownItemComponent>(tool))
+                return Math.Clamp(0.10f + damage * 0.012f, 0.10f, 0.25f);
+
+            if (HasComp<ProjectileComponent>(tool) || HasComp<GunComponent>(tool))
+                return Math.Clamp(0.25f + damage * 0.04f, 0.25f, 0.65f);
+
+            if (HasComp<MeleeWeaponComponent>(tool))
+                return Math.Clamp(0.16f + damage * 0.02f, 0.16f, 0.42f);
+        }
+
+        return Math.Clamp(0.18f + damage * 0.025f, 0.18f, 0.50f);
     }
     /// <summary>
     ///     Shows text on health examine, based on bleed rate and blood level.

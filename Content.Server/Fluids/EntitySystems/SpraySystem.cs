@@ -3,12 +3,14 @@ using Content.Server.Chemistry.EntitySystems;
 using Content.Server.Fluids.Components;
 using Content.Server.Gravity;
 using Content.Server.Popups;
+using Content.Server.Particles;
 using Content.Shared.FixedPoint;
 using Content.Shared.Fluids;
 using Content.Shared.Interaction;
 using Content.Shared.Timing;
 using Content.Shared.Vapor;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Physics.Components;
@@ -30,6 +32,7 @@ public sealed partial class SpraySystem : EntitySystem
     [Dependency] private VaporSystem _vapor = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -109,6 +112,7 @@ public sealed partial class SpraySystem : EntitySystem
 
         var amount = Math.Max(Math.Min((solution.Volume / entity.Comp.TransferAmount).Int(), entity.Comp.VaporAmount), 1);
         var spread = entity.Comp.VaporSpread / amount;
+        var sprayed = false;
 
         for (var i = 0; i < amount; i++)
         {
@@ -152,6 +156,7 @@ public sealed partial class SpraySystem : EntitySystem
             var time = diffLength / entity.Comp.SprayVelocity;
 
             _vapor.Start(ent, vaporXform, impulseDirection * diffLength, entity.Comp.SprayVelocity, target, time, user);
+            sprayed = true;
 
             if (TryComp<PhysicsComponent>(user, out var body))
             {
@@ -161,6 +166,22 @@ public sealed partial class SpraySystem : EntitySystem
         }
 
         _audio.PlayPvs(entity.Comp.SpraySound, entity, entity.Comp.SpraySound.Params.WithVariation(0.125f));
+
+        if (sprayed)
+        {
+            // The nozzle is not exposed by SprayComponent; use the authoritative user's map point plus the known
+            // shot direction as the closest visual source, only after a vapor entity was actually started.
+            var sprayOrigin = userMapPos.Offset(diffNorm * 0.35f);
+            _particles.Spawn(
+                sprayOrigin,
+                "HrtChemicalPuff",
+                parameters: new ParticleSpawnParameters(
+                    Color: solution.GetColor(_proto),
+                    EmitAngle: diffAngle,
+                    Intensity: 0.55f),
+                rateLimitSource: entity.Owner,
+                cooldown: TimeSpan.FromMilliseconds(200));
+        }
 
         if (useDelay != null)
             _useDelay.TryResetDelay((entity, useDelay));

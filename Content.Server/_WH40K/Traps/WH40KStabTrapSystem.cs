@@ -4,6 +4,8 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Throwing;
 using Content.Shared._WH40K.Traps;
+using Content.Server.Particles;
+using Content.Shared.Particles;
 using Content.Shared.Maps;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
@@ -21,6 +23,7 @@ public sealed partial class WH40KStabTrapSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
+    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
 
     private readonly HashSet<EntityUid> _strikeTargets = new();
 
@@ -149,14 +152,22 @@ public sealed partial class WH40KStabTrapSystem : EntitySystem
                 if (target == uid || !IsLivingMob(target) || !HasComp<DamageableComponent>(target))
                     continue;
 
-                dealtDamage |= _damageable.TryChangeDamage(
+                var damageResult = _damageable.TryChangeDamage(
                     target,
                     new DamageSpecifier(component.Damage),
-                    origin: uid) is not null;
+                    origin: uid);
+                dealtDamage |= damageResult is { Empty: false };
             }
 
             if (dealtDamage)
+            {
                 _audio.PlayPvs(component.StrikeSound, uid);
+                _particles.Spawn(
+                    uid,
+                    "HrtMetalChips",
+                    parameters: new ParticleSpawnParameters(Intensity: 0.7f),
+                    cooldown: TimeSpan.FromMilliseconds(350));
+            }
         }
     }
 

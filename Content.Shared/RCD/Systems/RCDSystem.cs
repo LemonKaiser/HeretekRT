@@ -283,6 +283,15 @@ public partial class RCDSystem : EntitySystem
         // Finalize the operation
         FinalizeRCDOperation(uid, component, mapGridData.Value, args.Direction, args.Target, args.User);
 
+        if (_net.IsServer)
+        {
+            var completed = new RCDOperationCompletedEvent(
+                _transform.ToMapCoordinates(location),
+                component.CachedPrototype.Mode,
+                args.Target);
+            RaiseLocalEvent(uid, ref completed);
+        }
+
         // Play audio and consume charges
         _audio.PlayPredicted(component.SuccessSound, uid, args.User);
         _charges.UseCharges(uid, args.Cost);

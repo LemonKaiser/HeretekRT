@@ -156,6 +156,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         var coordinates = collisionCoordinates != null
             ? _transform.ToCoordinates(collisionCoordinates.Value)
             : Transform(projectile).Coordinates;
+        var impactCoordinates = collisionCoordinates ?? _transform.GetMapCoordinates(uid);
         var otherName = ToPrettyString(target);
         var direction = ourBody.LinearVelocity.Normalized();
         DamageSpecifier modifiedDamage;
@@ -166,7 +167,8 @@ public abstract partial class SharedProjectileSystem : EntitySystem
                 component.IgnoreResistances,
                 origin: component.Shooter,
                 tool: uid,
-                armorPenetration: component.ArmorPenetration) ?? new DamageSpecifier();
+                armorPenetration: component.ArmorPenetration,
+                impactCoordinates: impactCoordinates) ?? new DamageSpecifier();
         }
         else
         {

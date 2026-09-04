@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Audio;
+using Robust.Shared.Map;
 
 namespace Content.Shared.Weapons.Melee.Events;
 
@@ -73,6 +74,25 @@ public sealed class MeleeHitEvent : HandledEntityEventArgs
         Weapon = weapon;
         BaseDamage = baseDamage;
         Direction = direction;
+    }
+}
+
+/// <summary>
+/// Raised on the weapon after a melee hit has applied non-zero damage.
+/// This differs from <see cref="MeleeHitEvent"/>: cancelled attacks, misses and fully
+/// absorbed hits never produce this event.
+/// </summary>
+public sealed class MeleeDamageAppliedEvent : EntityEventArgs
+{
+    public EntityUid User { get; }
+    public EntityUid Target { get; }
+    public MapCoordinates ImpactCoordinates { get; }
+
+    public MeleeDamageAppliedEvent(EntityUid user, EntityUid target, MapCoordinates impactCoordinates)
+    {
+        User = user;
+        Target = target;
+        ImpactCoordinates = impactCoordinates;
     }
 }
 

@@ -60,6 +60,7 @@
     blacklist:
       tags:
         - Catwalk
+  - type: WaterEntryParticle
   - type: TileEntityEffect
     effects:
     - !type:ExtinguishReaction
@@ -132,6 +133,7 @@
     blacklist:
       tags:
       - Catwalk
+  - type: WaterEntryParticle
   - type: TileEntityEffect
     effects:
     - !type:ExtinguishReaction
