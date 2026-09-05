@@ -1,7 +1,6 @@
 using Content.Shared.Atmos.Components;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameStates;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Atmos.EntitySystems;
@@ -12,7 +11,6 @@ public abstract partial class SharedGasTileOverlaySystem : EntitySystem
     protected float AccumulatedFrameTime;
     protected bool PvsEnabled;
 
-    [Dependency] protected IPrototypeManager ProtoMan = default!;
     [Dependency] protected IConfigurationManager ConfMan = default!;
     [Dependency] private SharedAtmosphereSystem _atmosphere = default!;
 

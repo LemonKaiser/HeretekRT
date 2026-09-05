@@ -4,7 +4,7 @@
     "x": 64,
     "y": 64
   },
-  "license": "CC0",
+  "license": "CC0-1.0",
   "copyright": "Kenney — Particle Pack (https://kenney.nl/assets/particle-pack)",
   "states": [
     { "name": "arc" },
