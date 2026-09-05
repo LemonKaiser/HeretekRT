@@ -1,0 +1,8 @@
+# Ported from ADT
+
+- type: decal
+  id: ADTWhiteConcreteTrimBox
+  tags: ["planet", "markings"]
+  sprite:
+    sprite: _WH40K/Imported/ADT/Decals/concretetrim.rsi
+    state: whiteconcrete_box

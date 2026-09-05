@@ -1,6 +1,8 @@
 - type: entity
   parent: ClothingHandsBase
   id: ClothingHandsGlovesArbites
+  name: тактические перчатки Адептус Арбитес
+  description: Изолированные перчатки служителя имперского закона.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite

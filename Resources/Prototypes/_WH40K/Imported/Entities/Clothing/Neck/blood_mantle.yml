@@ -1,0 +1,13 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckWH40KBloodMantle
+  name: blood mantle
+  description: A dark mantle that ripples like fresh blood.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Arcane/Clothing/Neck/Mantles/blood_mantle.rsi
+  - type: Clothing
+    sprite: _WH40K/Imported/Cult/Arcane/Clothing/Neck/Mantles/blood_mantle.rsi
+    equippedPrefix: on
+    slots:
+    - Neck

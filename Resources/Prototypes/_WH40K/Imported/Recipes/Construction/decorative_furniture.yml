@@ -1,0 +1,186 @@
+- type: construction
+  name: construction-name-wh40k-leather-sofa-left
+  id: WH40KLeatherSofaLeftRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: leatherSofaLeft
+  category: construction-category-furniture
+  description: construction-desc-wh40k-leather-sofa-left
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_left
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-leather-sofa-middle
+  id: WH40KLeatherSofaMiddleRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: leatherSofaMiddle
+  category: construction-category-furniture
+  description: construction-desc-wh40k-leather-sofa-middle
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_middle
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-leather-sofa-right
+  id: WH40KLeatherSofaRightRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: leatherSofaRight
+  category: construction-category-furniture
+  description: construction-desc-wh40k-leather-sofa-right
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_right
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-leather-armchair
+  id: WH40KLeatherArmchairRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: leatherArmchair
+  category: construction-category-furniture
+  description: construction-desc-wh40k-leather-armchair
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/armchairsyuna.rsi
+    state: brown_armchair
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-throne-chair
+  id: WH40KThroneChairRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: throneChair
+  category: construction-category-furniture
+  description: construction-desc-wh40k-throne-chair
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: king
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-rich-chair
+  id: WH40KRichChairRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: richChair
+  category: construction-category-furniture
+  description: construction-desc-wh40k-rich-chair
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: rich
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-rich-white-chair
+  id: WH40KRichWhiteChairRecipe
+  graph: WH40KImportedSeat
+  startNode: start
+  targetNode: richWhiteChair
+  category: construction-category-furniture
+  description: construction-desc-wh40k-rich-white-chair
+  icon:
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: rich_white
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-clockwork-altar
+  id: WH40KClockworkDecorativeAltarRecipe
+  graph: WH40KImportedDecorativeAltars
+  startNode: start
+  targetNode: clockworkAltar
+  category: construction-category-furniture
+  description: construction-desc-wh40k-decorative-altar
+  icon:
+    sprite: _WH40K/Imported/ShitChap/Structures/clockaltar.rsi
+    state: clock
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-draconic-altar
+  id: WH40KDraconicDecorativeAltarRecipe
+  graph: WH40KImportedDecorativeAltars
+  startNode: start
+  targetNode: draconicAltar
+  category: construction-category-furniture
+  description: construction-desc-wh40k-decorative-altar
+  icon:
+    sprite: _WH40K/Imported/ShitChap/Structures/dragonaltar.rsi
+    state: dragonaltar
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-imperial-altar
+  id: WH40KImperialDecorativeAltarRecipe
+  graph: WH40KImportedDecorativeAltars
+  startNode: start
+  targetNode: imperialAltar
+  category: construction-category-furniture
+  description: construction-desc-wh40k-decorative-altar
+  icon:
+    sprite: _WH40K/Imported/ShitChap/Structures/empirealtar.rsi
+    state: empire
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-wall-torch
+  id: WH40KWallTorchRecipe
+  graph: WH40KWallTorchGraph
+  startNode: start
+  targetNode: wallTorch
+  category: construction-category-furniture
+  description: construction-desc-wh40k-wall-torch
+  icon:
+    sprite: _WH40K/Imported/Goobstation/Structures/Wallmounts/torch.rsi
+    state: torch
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

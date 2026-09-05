@@ -474,5 +474,6 @@
         - BulletImpassable
   - type: Sprite
     state: commissar_statue
+    drawdepth: Objects
   - type: StaticPrice
     price: 120

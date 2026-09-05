@@ -44,6 +44,11 @@
   path: "/Textures/_WH40K/Shaders/death_transition.swsl"
 
 - type: shader
+  id: HeretekScreenSaturation
+  kind: source
+  path: "/Textures/_WH40K/Shaders/screen_saturation.swsl"
+
+- type: shader
   id: WH40KPhantomAfterimage
   kind: source
   path: "/Textures/_WH40K/Shaders/phantom_afterimage.swsl"

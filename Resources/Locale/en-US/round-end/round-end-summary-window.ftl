@@ -1,6 +1,7 @@
 round-end-summary-window-title = Round End Summary
 round-end-summary-window-round-end-summary-tab-title = Round Information
 round-end-summary-window-player-manifest-tab-title = Player Manifest
+round-end-summary-window-player-manifest-search = Search by ckey, character name, or role
 round-end-summary-window-round-id-label = Round [color=white]#{$roundId}[/color] has ended.
 # Frontier
 round-end-summary-window-gamemode-name-label = {""}

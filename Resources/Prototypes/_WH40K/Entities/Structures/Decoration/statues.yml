@@ -7,7 +7,7 @@
     noRot: true
     sprite: _WH40K/Structures/Decorations/statues.rsi
     state: statue
-    drawdepth: Mobs
+    drawdepth: Objects
     offset: "0.0,0.5"
 
 - type: entity
@@ -35,7 +35,7 @@
     noRot: true
     sprite: _WH40K/Structures/Decorations/candlebearer_statue.rsi
     state: statue
-    drawdepth: Mobs
+    drawdepth: Objects
     offset: "0.0,0.5"
   - type: PointLight
     radius: 0.8

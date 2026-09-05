@@ -1,6 +1,8 @@
 - type: entity
   parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMinoris
+  name: шлем Арбитес «Минорис»
+  description: Стандартный шлем рядового исполнителя Lex Imperialis.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite
@@ -55,6 +57,8 @@
 - type: entity
   parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMedius
+  name: шлем Арбитес «Медиус»
+  description: Усиленный шлем старшего исполнителя Lex Imperialis.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite
@@ -133,6 +137,8 @@
 - type: entity
   parent: [WH40KDurableHelmet, ClothingHeadHelmetBasic]
   id: ClothingHeadHelmetArbiteMajoris
+  name: шлем Арбитес «Майорис»
+  description: Командирский шлем, созданный для тех, кто приводит приговор в исполнение.
   suffix: WH40K, Арбитры, Arbites, Admin
   components:
   - type: Sprite

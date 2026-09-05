@@ -4,6 +4,12 @@ namespace Content.Shared.CCVar;
 
 public sealed partial class CCVars
 {
+    /// <summary>
+    ///     Whether client-side saturation effects on the local player's screen are shown.
+    /// </summary>
+    public static readonly CVarDef<bool> HudScreenSaturationEffects =
+        CVarDef.Create("hud.screen_saturation_effects", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     public static readonly CVarDef<int> HudTheme =
         CVarDef.Create("hud.theme", 0, CVar.ARCHIVE | CVar.CLIENTONLY);
 

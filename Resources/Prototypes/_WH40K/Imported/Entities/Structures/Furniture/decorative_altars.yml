@@ -1,0 +1,72 @@
+# Visual-only altars. In particular, these deliberately do not inherit AltarBase
+# and have no AltarSource, prayer or sacrifice effects.
+
+- type: entity
+  id: WH40KImportedDecorativeAltarBase
+  abstract: true
+  parent: BaseStructure
+  description: A ceremonial altar.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Anchorable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+        density: 190
+        mask:
+        - TableMask
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KClockworkDecorativeAltar
+  parent: WH40KImportedDecorativeAltarBase
+  name: clockwork altar
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ShitChap/Structures/clockaltar.rsi
+    state: clock
+  - type: Construction
+    graph: WH40KImportedDecorativeAltars
+    node: clockworkAltar
+
+- type: entity
+  id: WH40KDraconicDecorativeAltar
+  parent: WH40KImportedDecorativeAltarBase
+  name: draconic altar
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ShitChap/Structures/dragonaltar.rsi
+    state: dragonaltar
+  - type: Construction
+    graph: WH40KImportedDecorativeAltars
+    node: draconicAltar
+
+- type: entity
+  id: WH40KImperialDecorativeAltar
+  parent: WH40KImportedDecorativeAltarBase
+  name: imperial altar
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ShitChap/Structures/empirealtar.rsi
+    state: empire
+  - type: Construction
+    graph: WH40KImportedDecorativeAltars
+    node: imperialAltar

@@ -1,0 +1,203 @@
+- type: construction
+  name: construction-name-wh40k-blood-rune
+  id: WH40KBloodRitualRuneRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodRune
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-rune
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Heretic/ritual_rune.rsi
+    state: icon
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-animated-blood-rune
+  id: WH40KBloodRitualRuneAnimatedRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: animatedBloodRune
+  category: construction-category-furniture
+  description: construction-desc-wh40k-animated-blood-rune
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Heretic/ritual_rune.rsi
+    state: icon_ritualanim
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-circle-1
+  id: WH40KBloodRitualCircle1Recipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle1
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-circle
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_1
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-circle-2
+  id: WH40KBloodRitualCircle2Recipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle2
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-circle
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_2
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-circle-3
+  id: WH40KBloodRitualCircle3Recipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle3
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-circle
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_3
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-circle-4
+  id: WH40KBloodRitualCircle4Recipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle4
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-circle
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_4
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-circle-5
+  id: WH40KBloodRitualCircle5Recipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle5
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-circle
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_5
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-symbol-circle
+  id: WH40KBloodWritingCircleRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodCircle
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-writing
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/bloodwriting.rsi
+    state: Circle
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-symbol-heart
+  id: WH40KBloodWritingHeartRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodHeart
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-writing
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/bloodwriting.rsi
+    state: Heart
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-symbol-pentagram
+  id: WH40KBloodWritingPentagramRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodPentagram
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-writing
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/bloodwriting.rsi
+    state: Pentagram
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-symbol-skull
+  id: WH40KBloodWritingSkullRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodSkull
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-writing
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/bloodwriting.rsi
+    state: Skull
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+
+- type: construction
+  name: construction-name-wh40k-blood-symbol-star
+  id: WH40KBloodWritingStarRecipe
+  graph: WH40KBloodDecorations
+  startNode: start
+  targetNode: bloodStar
+  category: construction-category-furniture
+  description: construction-desc-wh40k-blood-writing
+  icon:
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/bloodwriting.rsi
+    state: Star
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked

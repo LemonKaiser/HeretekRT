@@ -1,6 +1,8 @@
 - type: entity
   parent: ClothingShoesBootsworkTechpriest
   id: ClothingShoesBootsArbites
+  name: боевые сапоги Адептус Арбитес
+  description: Усиленные сапоги для патрулирования и штурмовых операций.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite

@@ -1,6 +1,14 @@
 - type: entity
-  id: WH40KDecorOmnissiahShrine
+  id: WH40KImperialDecorSolidBase
+  abstract: true
   parent: WH40KDecorPropBase
+  components:
+  - type: Physics
+    canCollide: true
+
+- type: entity
+  id: WH40KDecorOmnissiahShrine
+  parent: WH40KImperialDecorSolidBase
   name: придорожный алтарь Омниссии
   description: Небольшой алтарь машинного божества. Его ржавые шестерни помнят молитвы техножрецов и гул давно ушедших караванов.
   suffix: WH40K, Декорация
@@ -8,10 +16,22 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/imperial_altar.rsi
     state: altar
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.32,-0.45,0.32,0.20"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
 
 - type: entity
   id: WH40KDecorCogitatorDesk
-  parent: WH40KDecorPropBase
+  parent: WH40KImperialDecorSolidBase
   name: архивный когитаторный стол
   description: Пыльный рабочий стол писца. В его памяти ещё могут храниться приказы, которым уже несколько столетий.
   suffix: WH40K, Декорация
@@ -19,10 +39,22 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/cogitator_desk.rsi
     state: cogitator_desk
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.90,-0.38,0.90,0.38"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
 
 - type: entity
   id: WH40KDecorAuspexTerminal
-  parent: WH40KDecorPropBase
+  parent: WH40KImperialDecorSolidBase
   name: терминал ауспика
   description: Компактный пост наблюдения, сверяющий сигнатуры с давно устаревшими литаниями допуска.
   suffix: WH40K, Декорация
@@ -30,10 +62,22 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/imperial_terminals.rsi
     state: auspex_terminal
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.38,-0.40,0.38,0.25"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
 
 - type: entity
   id: WH40KDecorCommandConsole
-  parent: WH40KDecorPropBase
+  parent: WH40KImperialDecorSolidBase
   name: консоль тактического хора
   description: Панель связи, где приказы офицера превращались в машинные гимны для всего корабля.
   suffix: WH40K, Декорация
@@ -41,10 +85,22 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/imperial_terminals.rsi
     state: command_console
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.38,-0.40,0.38,0.25"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
 
 - type: entity
   id: WH40KDecorCartographTable
-  parent: WH40KDecorPropBase
+  parent: WH40KImperialDecorSolidBase
   name: стол картографа крестового похода
   description: Длинный стол для звёздных карт и планов высадки. На его поверхности легко представить следы воска и крови.
   suffix: WH40K, Декорация
@@ -56,10 +112,22 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/cartograph_table.rsi
     state: cartograph_table
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.90,-0.42,0.90,0.42"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
 
 - type: entity
   id: WH40KDecorFieldTable
-  parent: WH40KDecorPropBase
+  parent: WH40KImperialDecorSolidBase
   name: походный стол писца
   description: Скромный стол для донесений и печатей. Даже на передовой бюрократия Империума не знает пощады.
   suffix: WH40K, Декорация
@@ -71,3 +139,15 @@
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/field_table.rsi
     state: field_table
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.42,-0.42,0.42,0.42"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable

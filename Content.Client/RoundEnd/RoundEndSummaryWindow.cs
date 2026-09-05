@@ -114,6 +114,13 @@ namespace Content.Client.RoundEnd
 
             //Put observers at the bottom of the list. Put antags on top.
             var sortedPlayersInfo = playersInfo.OrderBy(p => p.Observer).ThenBy(p => !p.Antag);
+            var playerEntries = new List<(PanelContainer Panel, string SearchText)>();
+            var searchBar = new LineEdit
+            {
+                PlaceHolder = Loc.GetString("round-end-summary-window-player-manifest-search"),
+                HorizontalExpand = true,
+                Margin = new Thickness(10, 6, 10, 2),
+            };
 
             //Create labels for each player info.
             foreach (var playerInfo in sortedPlayersInfo)
@@ -313,9 +320,26 @@ namespace Content.Client.RoundEnd
                 hBox.AddChild(textVBox);
                 panel.AddChild(hBox);
                 playerInfoContainer.AddChild(panel);
+
+                var searchText = string.Join(' ', new[]
+                {
+                    playerInfo.PlayerOOCName,
+                    playerInfo.PlayerICName,
+                    Loc.GetString(playerInfo.Role),
+                });
+                playerEntries.Add((panel, searchText));
             }
 
+            searchBar.OnTextChanged += args =>
+            {
+                foreach (var (panel, searchText) in playerEntries)
+                {
+                    panel.Visible = searchText.Contains(args.Text, StringComparison.OrdinalIgnoreCase);
+                }
+            };
+
             playerInfoContainerScrollbox.AddChild(playerInfoContainer);
+            playerManifestTab.AddChild(searchBar);
             playerManifestTab.AddChild(playerInfoContainerScrollbox);
 
             return playerManifestTab;

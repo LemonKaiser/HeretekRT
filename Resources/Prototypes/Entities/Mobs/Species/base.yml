@@ -159,6 +159,9 @@
     sprite: Objects/Misc/ensnare.rsi
     state: icon
   - type: AnimationPlayer
+  - type: SpecialScreenAnimationViewer
+  - type: OfferingItem
+  - type: OfferedItem
   - type: Buckle
   - type: CombatMode
     canDisarm: true

@@ -1,0 +1,50 @@
+- type: entity
+  id: WH40KWallTorch
+  parent: BaseStructure
+  name: wall torch
+  description: A torch fixed to the wall.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wallmount
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _WH40K/Imported/Goobstation/Structures/Wallmounts/torch.rsi
+    state: torch
+  - type: PointLight
+    enabled: true
+    color: "#E25822"
+    radius: 4.0
+    energy: 5.0
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,0.5,0.4,0.35"
+        density: 190
+        mask:
+        - TabletopMachineMask
+        layer:
+        - TabletopMachineLayer
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WoodDestroyHeavy
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: Construction
+    graph: WH40KWallTorchGraph
+    node: wallTorch

@@ -1,5 +1,8 @@
 offer-item-empty-hand = У вас в руках ничего нет!
 
+offer-item-verb-offer = Предложить предмет
+offer-item-verb-accept = Принять предложенный предмет
+
 offer-item-full-hand = Ваши руки заняты!
 
 offer-item-try-give = Вы предлагаете {$item} {$target}

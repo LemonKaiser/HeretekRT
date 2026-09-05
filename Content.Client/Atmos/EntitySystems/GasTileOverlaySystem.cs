@@ -2,10 +2,12 @@ using Content.Client.Atmos.Overlays;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Atmos.EntitySystems;
+using Content.Shared.CCVar;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
+using Robust.Shared.Configuration;
 using Robust.Shared.GameStates;
 
 namespace Content.Client.Atmos.EntitySystems
@@ -17,6 +19,7 @@ namespace Content.Client.Atmos.EntitySystems
         [Dependency] private IOverlayManager _overlayMan = default!;
         [Dependency] private SpriteSystem _spriteSys = default!;
         [Dependency] private SharedTransformSystem _xformSys = default!;
+        [Dependency] private IConfigurationManager _cfg = default!;
 
         private GasTileOverlay _overlay = default!;
 
@@ -28,6 +31,11 @@ namespace Content.Client.Atmos.EntitySystems
 
             _overlay = new GasTileOverlay(this, EntityManager, _resourceCache, ProtoMan, _spriteSys, _xformSys);
             _overlayMan.AddOverlay(_overlay);
+            Subs.CVar(
+                _cfg,
+                CCVars.GasOverlaySmoothingSubdivisionsPerAxis,
+                _overlay.SetSmoothingSubdivisionsPerAxis,
+                true);
         }
 
         public override void Shutdown()

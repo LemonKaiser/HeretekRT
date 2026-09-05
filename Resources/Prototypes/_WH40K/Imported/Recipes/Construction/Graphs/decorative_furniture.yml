@@ -1,0 +1,133 @@
+- type: constructionGraph
+  id: WH40KImportedSeat
+  start: start
+  graph:
+  - node: start
+    actions:
+    - !type:DestroyEntity {}
+    edges:
+    - to: leatherSofaLeft
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: leatherSofaMiddle
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: leatherSofaRight
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: leatherArmchair
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: throneChair
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: richChair
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+    - to: richWhiteChair
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Cloth
+        amount: 2
+        doAfter: 1
+  - node: leatherSofaLeft
+    entity: WH40KLeatherSofaLeft
+  - node: leatherSofaMiddle
+    entity: WH40KLeatherSofaMiddle
+  - node: leatherSofaRight
+    entity: WH40KLeatherSofaRight
+  - node: leatherArmchair
+    entity: WH40KLeatherArmchair
+  - node: throneChair
+    entity: WH40KThroneChair
+  - node: richChair
+    entity: WH40KRichChair
+  - node: richWhiteChair
+    entity: WH40KRichWhiteChair
+
+- type: constructionGraph
+  id: WH40KImportedDecorativeAltars
+  start: start
+  graph:
+  - node: start
+    actions:
+    - !type:DestroyEntity {}
+    edges:
+    - to: clockworkAltar
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: draconicAltar
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: imperialAltar
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+      - material: Glass
+        amount: 2
+        doAfter: 1
+  - node: clockworkAltar
+    entity: WH40KClockworkDecorativeAltar
+  - node: draconicAltar
+    entity: WH40KDraconicDecorativeAltar
+  - node: imperialAltar
+    entity: WH40KImperialDecorativeAltar
+
+- type: constructionGraph
+  id: WH40KWallTorchGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: wallTorch
+      completed:
+      - !type:SnapToGrid {}
+      steps:
+      - material: WoodPlank
+        amount: 2
+        doAfter: 4
+  - node: wallTorch
+    entity: WH40KWallTorch

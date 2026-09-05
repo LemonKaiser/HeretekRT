@@ -117,6 +117,9 @@
   - type: BodyEmotes
     soundsId: DionaBodyEmotes
   - type: IgnoreKudzu
+  - type: SeeOverLayer
+    layers:
+    - kudzu
   - type: IgniteOnHeatDamage
     fireStacks: 1
     threshold: 12

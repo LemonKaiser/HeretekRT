@@ -1,0 +1,130 @@
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseHeretekAugment
+  components:
+  - type: Augment
+  - type: Organ
+    intCap: 150
+    integrity: 150
+    integrityThresholds:
+      Normal: 150
+      Damaged: 60
+      Destroyed: 0
+
+- type: entity
+  abstract: true
+  parent: BaseHeretekAugment
+  id: BaseHeretekArmAugment
+  components:
+  - type: Sprite
+    sprite: _Mono/Objects/Misc/cybernetics.rsi
+    state: muscule
+  - type: Item
+    size: Huge
+  - type: Organ
+    slotId: armImplant
+  - type: AugmentArm
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: HeretekAugmentPowerCellSlot
+  name: augment power cell slot
+  description: An internal power-cell compartment that supplies installed augments.
+  components:
+  - type: Sprite
+    sprite: _Mono/Objects/Misc/cybernetics.rsi
+    state: circuit
+  - type: Organ
+    slotId: powerCell
+    onAdd:
+    - type: HasAugmentPowerCellSlot
+  - type: AugmentPowerCellSlot
+  - type: ContainerContainer
+    containers:
+      cell_slot: !type:ContainerSlot { }
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+  - type: PowerCellDraw
+    drawRate: 0
+    enabled: false
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        whitelist:
+          components:
+          - PowerCell
+        blacklist:
+          tags:
+          - PowerCage
+
+- type: entity
+  parent: BaseHeretekArmAugment
+  id: HeretekAugmentStrength
+  name: strength augment
+  description: Reinforces the arm's muscles. While enabled it improves melee damage, consuming internal power.
+  components:
+  - type: Sprite
+    state: skeletal_bracing
+  - type: ItemToggle
+    onUse: false
+    onActivate: false
+  - type: AugmentStrength
+    modifier: 1.25
+  - type: AugmentPowerDraw
+    draw: 20
+  - type: AugmentAction
+    action: ActionHeretekAugmentToggleStrength
+
+- type: entity
+  abstract: true
+  parent: BaseHeretekArmAugment
+  id: BaseHeretekAugmentToolPanel
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/Toolboxes/toolbox_blue.rsi
+    state: icon
+  - type: Storage
+    maxItemSize: Normal
+    defaultStorageOrientation: Vertical
+    grid:
+    - 0,0,9,1
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: ItemToggle
+    activated: true
+    onUse: false
+    onActivate: false
+  - type: AugmentPowerDraw
+    draw: 6
+  - type: AugmentToolPanel
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.AugmentToolPanelUiKey.Key:
+        type: AugmentToolPanelMenuBoundUserInterface
+        interactionRange: 0
+  - type: AugmentActivatableUI
+    key: enum.AugmentToolPanelUiKey.Key
+  - type: AugmentAction
+    action: ActionHeretekAugmentOpenToolsPanel
+
+- type: entity
+  parent: BaseHeretekAugmentToolPanel
+  id: HeretekAugmentToolPanel
+  name: utility tools panel augment
+  description: An arm implant with space for basic tools, deployable directly into the matching hand.
+  components:
+  - type: Storage
+    whitelist:
+      tags:
+      - Wirecutter
+      - Crowbar
+      - Screwdriver
+      - Wrench
+      - Multitool
+      - Welder

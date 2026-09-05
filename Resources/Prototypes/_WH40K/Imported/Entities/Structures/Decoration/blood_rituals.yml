@@ -1,0 +1,149 @@
+# Visual cult decorations adapted from Arcane. They intentionally omit Wraith,
+# Heretic and portal components, so they cannot summon mobs or perform rituals.
+
+- type: entity
+  id: WH40KBloodRitualBase
+  abstract: true
+  parent: BaseStructure
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  # Blood writing and ritual markings are floor decorations, not solid structures.
+  # Do not inherit BaseStructure's default blocking fixture.
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures: {}
+  - type: Sprite
+    noRot: true
+    drawdepth: FloorObjects
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+
+- type: entity
+  id: WH40KBloodRitualRune
+  parent: WH40KBloodRitualBase
+  name: blood ritual rune
+  description: A sinister rune drawn in fresh blood.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Heretic/ritual_rune.rsi
+    state: icon
+    drawdepth: WallMountedItems
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodRune
+
+- type: entity
+  id: WH40KBloodRitualRuneAnimated
+  parent: WH40KBloodRitualBase
+  name: animated blood ritual rune
+  description: A blood rune repeatedly draws itself in an unsettling pattern.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Heretic/ritual_rune.rsi
+    state: icon_ritualanim
+    drawdepth: WallMountedItems
+  - type: PointLight
+    radius: 2
+    energy: 0.8
+    color: "#990000"
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: animatedBloodRune
+
+- type: entity
+  id: WH40KBloodRitualCircle1
+  parent: WH40KBloodRitualBase
+  name: lesser blood ritual circle
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_1
+  - type: PointLight
+    radius: 1
+    energy: 1
+    color: "#9e1717"
+    castShadows: false
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodCircle1
+
+- type: entity
+  id: WH40KBloodRitualCircle2
+  parent: WH40KBloodRitualBase
+  name: blood ritual circle
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_2
+  - type: PointLight
+    radius: 2
+    energy: 1
+    color: "#9e1717"
+    castShadows: false
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodCircle2
+
+- type: entity
+  id: WH40KBloodRitualCircle3
+  parent: WH40KBloodRitualBase
+  name: greater blood ritual circle
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_3
+  - type: PointLight
+    radius: 3
+    energy: 1
+    color: "#9e1717"
+    castShadows: false
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodCircle3
+
+- type: entity
+  id: WH40KBloodRitualCircle4
+  parent: WH40KBloodRitualBase
+  name: grand blood ritual circle
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_4
+  - type: PointLight
+    radius: 4
+    energy: 1
+    color: "#9e1717"
+    castShadows: false
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodCircle4
+
+- type: entity
+  id: WH40KBloodRitualCircle5
+  parent: WH40KBloodRitualBase
+  name: master blood ritual circle
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Wraith/Objects/ritualcircle.rsi
+    state: harbinger_circle_5
+  - type: PointLight
+    radius: 5
+    energy: 2
+    color: "#9e1717"
+    castShadows: false
+  - type: Construction
+    graph: WH40KBloodDecorations
+    node: bloodCircle5

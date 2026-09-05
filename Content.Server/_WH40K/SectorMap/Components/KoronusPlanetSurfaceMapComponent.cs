@@ -7,7 +7,8 @@ namespace Content.Server._WH40K.SectorMap.Components;
 /// Server-only identity and distinct gameplay/generation boundaries of one preloaded planetary
 /// surface map.
 /// </summary>
-[RegisterComponent, Access(typeof(KoronusPlanetarySystem), typeof(KoronusSectorResidencySystem))]
+[RegisterComponent, Access(typeof(KoronusPlanetarySystem), typeof(KoronusSectorResidencySystem),
+    typeof(Content.Server._WH40K.DeployableFieldBase.DeployableFieldBaseSystem))]
 public sealed partial class KoronusPlanetSurfaceMapComponent : Component
 {
     [ViewVariables]

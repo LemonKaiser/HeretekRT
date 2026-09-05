@@ -1,0 +1,30 @@
+- type: entity
+  parent: BaseItem
+  id: FishingRod
+  name: fishing rod
+  description: Use it on a fishing spot and keep it steady until something bites.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/cane.rsi
+    state: cane-empty
+  - type: Item
+    size: Normal
+  - type: FishingRod
+    catchTime: 4
+
+- type: entity
+  id: FishingSpotPond
+  name: fishing spot
+  description: Something moves beneath the water. Use a fishing rod here.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Objects/Consumable/Food/meat.rsi
+    state: fish
+    drawdepth: FloorObjects
+  - type: Clickable
+  - type: FishingSpot
+    catch: FoodMeatFish

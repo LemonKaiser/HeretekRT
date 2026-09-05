@@ -1,0 +1,13 @@
+- type: entity
+  id: ActionHeretekSlimeRegrowLimb
+  categories: [ HideSpawnMenu ]
+  name: Regrow limb
+  description: Regrow one missing limb by consuming your stored food and water.
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    icon:
+      sprite: Objects/Consumable/Food/meat.rsi
+      state: slime
+    useDelay: 120
+    event: !type:SlimeRegrowLimbEvent

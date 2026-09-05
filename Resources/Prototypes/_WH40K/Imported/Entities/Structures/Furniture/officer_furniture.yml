@@ -1,0 +1,114 @@
+# Imported decorative furniture. Kept free of the healing behavior present in the source fork.
+
+- type: entity
+  id: WH40KImportedSeatBase
+  abstract: true
+  parent: [SeatBase, BaseStructure]
+  description: A comfortable piece of furniture.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Anchorable
+  - type: Rotatable
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+        density: 190
+        mask:
+        - TableMask
+  - type: Strap
+    position: Down
+    rotation: 0
+
+- type: entity
+  id: WH40KImportedSofaBase
+  abstract: true
+  parent: WH40KImportedSeatBase
+
+- type: entity
+  id: WH40KLeatherSofaLeft
+  parent: WH40KImportedSofaBase
+  name: leather sofa, left section
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_left
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: leatherSofaLeft
+
+- type: entity
+  id: WH40KLeatherSofaMiddle
+  parent: WH40KImportedSofaBase
+  name: leather sofa, middle section
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_middle
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: leatherSofaMiddle
+
+- type: entity
+  id: WH40KLeatherSofaRight
+  parent: WH40KImportedSofaBase
+  name: leather sofa, right section
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Sofas/leather_sofa.rsi
+    state: sofa_right
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: leatherSofaRight
+
+- type: entity
+  id: WH40KLeatherArmchair
+  parent: WH40KImportedSeatBase
+  name: leather armchair
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/armchairsyuna.rsi
+    state: brown_armchair
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: leatherArmchair
+
+- type: entity
+  id: WH40KThroneChair
+  parent: WH40KImportedSeatBase
+  name: throne chair
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: king
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: throneChair
+
+- type: entity
+  id: WH40KRichChair
+  parent: WH40KImportedSeatBase
+  name: ornate chair
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: rich
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: richChair
+
+- type: entity
+  id: WH40KRichWhiteChair
+  parent: WH40KImportedSeatBase
+  name: white ornate chair
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/ADT/Structures/Furniture/Chairs/chairs.rsi
+    state: rich_white
+  - type: Construction
+    graph: WH40KImportedSeat
+    node: richWhiteChair

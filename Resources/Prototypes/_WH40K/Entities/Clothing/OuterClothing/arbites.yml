@@ -1,6 +1,8 @@
 - type: entity
   parent: ClothingOuterArmorBasic
   id: ClothingOuterArmorArbiteMinoris
+  name: бронежилет Арбитес «Минорис»
+  description: Стандартный бронежилет служителя Lex Imperialis.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite
@@ -26,6 +28,8 @@
 - type: entity
   parent: ClothingOuterArmorBasic
   id: ClothingOuterArmorArbiteMedius
+  name: бронежилет Арбитес «Медиус»
+  description: Усиленный бронежилет для исполнения имперского закона.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite
@@ -57,6 +61,8 @@
 - type: entity
   parent: ClothingOuterArmorArbiteMedius
   id: ClothingOuterArmorArbiteMajoris
+  name: бронежилет Арбитес «Майорис»
+  description: Командирский бронежилет Адептус Арбитес.
   suffix: WH40K, Арбитры, Arbites, Admin
   components:
   - type: Sprite

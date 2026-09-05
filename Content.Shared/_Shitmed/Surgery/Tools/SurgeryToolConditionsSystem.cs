@@ -4,6 +4,7 @@ using Content.Shared.Smoking;
 using Content.Shared.Weapons.Ranged;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
+using Content.Shared._WH40K.Augments;
 
 namespace Content.Shared._Shitmed.Medical.Surgery.Tools;
 
@@ -24,6 +25,11 @@ public sealed partial class SurgeryToolConditionsSystem : EntitySystem
 
     private void OnToggleUsed(Entity<ItemToggleComponent> ent, ref SurgeryToolUsedEvent args)
     {
+        // Augments use ItemToggle for their installed ability. Requiring the item to be
+        // activated before implantation would make inactive implants impossible to install.
+        if (HasComp<AugmentComponent>(ent))
+            return;
+
         if (ent.Comp.Activated)
             return;
 

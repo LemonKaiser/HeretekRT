@@ -1,0 +1,130 @@
+- type: entity
+  abstract: true
+  parent: SurgeryBase
+  id: HeretekSurgeryOpenAugmentCavityBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenRibcage
+    steps:
+    - SurgeryStepSawBones
+    - SurgeryStepOpenOrganSlot
+  - type: SurgeryOrganSlotCondition
+    inverse: true
+  - type: SurgeryBodyCondition
+    accepted: [ IPC ]
+    inverse: true
+
+- type: entity
+  abstract: true
+  parent: SurgeryBase
+  id: HeretekSurgeryInstallAugmentBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenRibcage
+  - type: SurgeryOrganCondition
+    inverse: true
+    reattaching: true
+
+- type: entity
+  abstract: true
+  parent: SurgeryBase
+  id: HeretekSurgeryRemoveAugmentBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenRibcage
+    steps:
+    - SurgeryStepSawBones
+    - SurgeryStepClampInternalBleeders
+    - SurgeryStepRemoveOrgan
+
+- type: entity
+  parent: HeretekSurgeryOpenAugmentCavityBase
+  id: HeretekSurgeryOpenPowerCellSlot
+  name: Open cavity for power cell slot
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SurgeryPartCondition
+    part: Torso
+  - type: SurgeryOrganSlotCondition
+    organSlot: powerCell
+
+- type: entity
+  parent: HeretekSurgeryInstallAugmentBase
+  id: HeretekSurgeryInsertPowerCellSlot
+  name: Insert power cell slot
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    steps:
+    - SurgeryStepSawBones
+    - SurgeryStepInsertOrgan
+    - SurgeryStepSealOrganWound
+  - type: SurgeryPartCondition
+    part: Torso
+  - type: SurgeryOrganCondition
+    organ:
+    - type: AugmentPowerCellSlot
+  - type: SurgeryOrganSlotCondition
+    organSlot: powerCell
+
+- type: entity
+  parent: HeretekSurgeryRemoveAugmentBase
+  id: HeretekSurgeryRemovePowerCellSlot
+  name: Remove power cell slot
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SurgeryPartCondition
+    part: Torso
+  - type: SurgeryOrganCondition
+    organ:
+    - type: AugmentPowerCellSlot
+
+- type: entity
+  parent: HeretekSurgeryOpenAugmentCavityBase
+  id: HeretekSurgeryOpenArmAugment
+  name: Open cavity for arm augment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenIncision
+  - type: SurgeryPartCondition
+    part: Arm
+  - type: SurgeryOrganSlotCondition
+    organSlot: armImplant
+
+- type: entity
+  parent: HeretekSurgeryInstallAugmentBase
+  id: HeretekSurgeryInsertArmAugment
+  name: Insert arm augment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenIncision
+    steps:
+    - SurgeryStepSawBones
+    - SurgeryStepInsertOrgan
+    - SurgeryStepSealOrganWound
+  - type: SurgeryPartCondition
+    part: Arm
+  - type: SurgeryOrganCondition
+    organ:
+    - type: AugmentArm
+  - type: SurgeryOrganSlotCondition
+    organSlot: armImplant
+
+- type: entity
+  parent: HeretekSurgeryRemoveAugmentBase
+  id: HeretekSurgeryRemoveArmAugment
+  name: Remove arm augment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Surgery
+    requirement: SurgeryOpenIncision
+  - type: SurgeryPartCondition
+    part: Arm
+  - type: SurgeryOrganCondition
+    organ:
+    - type: AugmentArm

@@ -65,6 +65,33 @@ public abstract partial class SharedGasTileOverlaySystem : EntitySystem
         return new Vector2i((int)MathF.Floor((float)indices.X / ChunkSize), (int)MathF.Floor((float)indices.Y / ChunkSize));
     }
 
+    /// <summary>
+    /// Attempts to fetch overlay data for a specific tile index from a chunk dictionary.
+    /// </summary>
+    public static bool TryGetOverlayData(
+        Dictionary<Vector2i, GasOverlayChunk> chunks,
+        Vector2i tileIndices,
+        out GasOverlayData data)
+    {
+        var chunkIndices = GetGasChunkIndices(tileIndices);
+        if (!chunks.TryGetValue(chunkIndices, out var chunk))
+        {
+            data = default;
+            return false;
+        }
+
+        var localX = tileIndices.X - chunk.Origin.X;
+        var localY = tileIndices.Y - chunk.Origin.Y;
+        if ((uint) localX >= ChunkSize || (uint) localY >= ChunkSize)
+        {
+            data = default;
+            return false;
+        }
+
+        data = chunk.TileData[localX + localY * ChunkSize];
+        return true;
+    }
+
     [Serializable, NetSerializable]
     public readonly struct GasOverlayData : IEquatable<GasOverlayData>
     {

@@ -1,0 +1,119 @@
+- type: constructionGraph
+  id: WH40KBloodDecorations
+  start: start
+  graph:
+  - node: start
+    actions:
+    - !type:DestroyEntity {}
+    edges:
+    - to: bloodRune
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: animatedBloodRune
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: bloodCircle1
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodCircle2
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodCircle3
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: bloodCircle4
+      steps:
+      - material: Steel
+        amount: 3
+        doAfter: 1
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: bloodCircle5
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 1
+      - material: Glass
+        amount: 2
+        doAfter: 1
+    - to: bloodCircle
+      steps:
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodHeart
+      steps:
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodPentagram
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodSkull
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 1
+      - material: Glass
+        amount: 1
+        doAfter: 1
+    - to: bloodStar
+      steps:
+      - material: Glass
+        amount: 1
+        doAfter: 1
+  - node: bloodRune
+    entity: WH40KBloodRitualRune
+  - node: animatedBloodRune
+    entity: WH40KBloodRitualRuneAnimated
+  - node: bloodCircle1
+    entity: WH40KBloodRitualCircle1
+  - node: bloodCircle2
+    entity: WH40KBloodRitualCircle2
+  - node: bloodCircle3
+    entity: WH40KBloodRitualCircle3
+  - node: bloodCircle4
+    entity: WH40KBloodRitualCircle4
+  - node: bloodCircle5
+    entity: WH40KBloodRitualCircle5
+  - node: bloodCircle
+    entity: BloodWritingCircle
+  - node: bloodHeart
+    entity: BloodWritingHeart
+  - node: bloodPentagram
+    entity: BloodWritingPentagram
+  - node: bloodSkull
+    entity: BloodWritingSkull
+  - node: bloodStar
+    entity: BloodWritingStar

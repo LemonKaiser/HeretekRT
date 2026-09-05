@@ -1,0 +1,27 @@
+- type: entity
+  abstract: true
+  id: BaseHeretekAugmentAction
+  components:
+  - type: InstantAction
+    event: !type:AugmentActionEvent
+
+- type: entity
+  parent: BaseHeretekAugmentAction
+  id: ActionHeretekAugmentOpenToolsPanel
+  name: Open tools panel
+  description: Access the tools implanted within you.
+  components:
+  - type: InstantAction
+    icon: { sprite: Objects/Tools/Toolboxes/toolbox_blue.rsi, state: icon }
+    iconOn: Interface/Default/blocked.png
+
+- type: entity
+  parent: BaseHeretekAugmentAction
+  id: ActionHeretekAugmentToggleStrength
+  name: Toggle strength augment
+  description: Increases melee damage by 25% while consuming 20 W from the internal cell.
+  components:
+  - type: InstantAction
+    icon: Interface/Default/blocked.png
+    iconOn: { sprite: _Mono/Objects/Misc/cybernetics.rsi, state: skeletal_bracing }
+    event: !type:ToggleActionEvent

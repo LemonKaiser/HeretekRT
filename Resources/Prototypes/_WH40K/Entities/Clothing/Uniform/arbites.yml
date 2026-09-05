@@ -1,6 +1,8 @@
 - type: entity
   parent: UnsensoredClothingUniformBase
   id: ClothingUniformJumpsuitArbites
+  name: униформа Адептус Арбитес
+  description: Прочная служебная форма исполнителя Lex Imperialis.
   suffix: WH40K, Арбитры, Arbites
   components:
   - type: Sprite

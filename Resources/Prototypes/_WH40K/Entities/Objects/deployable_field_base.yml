@@ -1,0 +1,16 @@
+- type: entity
+  parent: BaseItem
+  id: DeployableFieldBaseCapsule
+  name: field base capsule
+  description: A one-use projector that deploys a small enclosed field base on a planetary surface.
+  components:
+  - type: Sprite
+    sprite: _NF/Objects/Misc/mail_capsule.rsi
+    state: icon-empty
+  - type: Item
+    size: Small
+  - type: UseDelay
+    delay: 5
+  - type: DeployableFieldBase
+    deployTime: 5
+    size: 5,5
