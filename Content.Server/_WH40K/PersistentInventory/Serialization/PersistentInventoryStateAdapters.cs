@@ -1711,7 +1711,7 @@ public sealed class PaperItemStateAdapter : IItemStateAdapter
                     out var stampedName) ||
                 stampedName == null ||
                 !state.Fields.TryGetValue($"stamp.{index}.color", out var colorText) ||
-                Color.TryFromHex(colorText) is not { } color ||
+                !Color.TryFromHex(colorText, out var color) ||
                 !state.Fields.TryGetValue($"stamp.{index}.type", out var typeText) ||
                 !int.TryParse(typeText, NumberStyles.None, CultureInfo.InvariantCulture, out var rawType) ||
                 !Enum.IsDefined(typeof(StampType), rawType) ||
@@ -1883,12 +1883,13 @@ public sealed class RandomSpriteItemStateAdapter : IItemStateAdapter
             Color? color = null;
             if (hasColorText == "1")
             {
-                color = Color.TryFromHex(colorText);
-                if (color == null)
+                if (!Color.TryFromHex(colorText, out var parsedColor))
                 {
                     error = "Random sprite color is invalid.";
                     return false;
                 }
+
+                color = parsedColor;
             }
             else if (colorText != "-")
             {

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using Content.Client.Particles;
+using Content.Client.Graphics;
 using Content.Shared._WH40K.Combat.PhantomStep;
 using Content.Shared.Particles;
 using Robust.Client.Animations;
@@ -116,9 +117,12 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         var baseColor = TrailTint.WithAlpha(baseAlpha);
         _sprite.SetColor((clone, cloneSprite), baseColor);
 
-        cloneSprite.PostShader = CreateShaderInstance(shaderPrototype, normalized, duration);
-        cloneSprite.GetScreenTexture = false;
-        cloneSprite.RaiseShaderEvent = false;
+        _sprite.SetPostShader((clone, cloneSprite), new SpriteComponent.PostShaderArgs(
+            ContentPostShaderIds.PhantomStep,
+            CreateShaderInstance(shaderPrototype, normalized, duration))
+        {
+            Before = ContentPostShaderIds.BeforeOutlines,
+        });
 
         var despawn = EnsureComp<TimedDespawnComponent>(clone);
         despawn.Lifetime = lifetime + 0.05f;

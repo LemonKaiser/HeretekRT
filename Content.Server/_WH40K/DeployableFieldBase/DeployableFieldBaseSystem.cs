@@ -15,7 +15,6 @@ namespace Content.Server._WH40K.DeployableFieldBase;
 public sealed class DeployableFieldBaseSystem : SharedDeployableFieldBaseSystem
 {
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly SharedMapSystem _maps = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly ITileDefinitionManager _tiles = default!;
@@ -42,7 +41,7 @@ public sealed class DeployableFieldBaseSystem : SharedDeployableFieldBaseSystem
         if (transform.MapID == MapId.Nullspace)
             return false;
 
-        var map = _mapManager.GetMapEntityId(transform.MapID);
+        var map = _maps.GetMapOrInvalid(transform.MapID);
         if (!TryComp<KoronusPlanetSurfaceMapComponent>(map, out var surface) ||
             transform.GridUid != surface.TerrainGrid ||
             !TryComp<MapGridComponent>(surface.TerrainGrid, out var terrain))
@@ -81,7 +80,7 @@ public sealed class DeployableFieldBaseSystem : SharedDeployableFieldBaseSystem
     {
         var transform = Transform(ent);
         var mapCoordinates = _transform.ToMapCoordinates(transform.Coordinates);
-        var grid = _mapManager.CreateGridEntity(transform.MapID);
+        var grid = _maps.CreateGridEntity(transform.MapID);
         var origin = mapCoordinates.Position - new Vector2(ent.Comp.Size.X / 2f, ent.Comp.Size.Y / 2f);
         _transform.SetMapCoordinates(grid, new MapCoordinates(origin, transform.MapID));
 

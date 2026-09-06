@@ -112,7 +112,7 @@ public sealed class WH40KGhostDecorationSystem : EntitySystem
         }
         else
         {
-            var tint = Color.TryFromHex(decoration.GhostTintHex) ?? Color.White;
+            var tint = Color.TryFromHex(decoration.GhostTintHex, out var parsedTint) ? parsedTint : Color.White;
             _ghosts.SetGhostDecorationColor(ghost, tint);
         }
 

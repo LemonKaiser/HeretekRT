@@ -321,7 +321,7 @@ public sealed partial class PlayerDecorationsWindow : FancyWindow
             HorizontalAlignment = HAlignment.Center,
             VerticalAlignment = VAlignment.Center,
         };
-        var tint = Color.TryFromHex(entry.GhostTintHex) ?? Color.White;
+        var tint = Color.TryFromHex(entry.GhostTintHex, out var parsedTint) ? parsedTint : Color.White;
         var added = 0;
         foreach (var direction in new[] { Direction.South, Direction.East, Direction.North, Direction.West })
         {

@@ -33,7 +33,6 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     private static readonly ResPath ColdSnapshotBase = new("/Koronus/ColdSnapshots");
 
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private MapLoaderSystem _mapLoader = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
@@ -673,7 +672,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             var position = GetCelestialBodyPosition(system, body, angle);
             var clear = true;
 
-            foreach (var grid in _mapManager.GetAllGrids(mapId))
+            foreach (var grid in _maps.GetAllGrids(mapId))
             {
                 var transform = Transform(grid.Owner);
                 var gridOrigin = _transform.GetWorldPosition(transform);

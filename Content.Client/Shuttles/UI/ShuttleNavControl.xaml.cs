@@ -46,7 +46,6 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 {
     private const int KoronusBoundaryBandSegments = 128;
 
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IUserInterfaceManager _uiManager = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     private readonly DetectionSystem _detection; // Mono
@@ -54,6 +53,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private readonly SharedShuttleSystem _shuttles;
     private readonly ShuttleSystem _clientShuttles;
     private readonly SharedTransformSystem _transform;
+    private readonly SharedMapSystem _mapSystem;
     private readonly RadarBlipsSystem _blips;
     private readonly IGameTiming _timing;
     private readonly KoronusPlanetVisualRenderer _planetRenderer;
@@ -179,6 +179,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _shuttles = EntManager.System<SharedShuttleSystem>();
         _clientShuttles = EntManager.System<ShuttleSystem>();
         _transform = EntManager.System<SharedTransformSystem>();
+        _mapSystem = EntManager.System<SharedMapSystem>();
         _station = EntManager.System<StationSystem>(); // Frontier
         _blips = EntManager.System<RadarBlipsSystem>();
         _timing = IoCManager.Resolve<IGameTiming>();
@@ -874,7 +875,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         DrawStarSystem(handle, worldToShuttle, shuttleToView, xform.MapUid); // Far Horizons
 
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
+        _mapSystem.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
 
         // Draw our grid's fill.
         var ourGridId = xform.GridUid ?? _shuttleEntity;
@@ -1772,7 +1773,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         Vector2 observerPosition,
         Matrix3x2 worldToView)
     {
-        var mapUid = _mapManager.GetMapEntityId(mapId);
+        var mapUid = _mapSystem.GetMap(mapId);
         if (!EntManager.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
             return;
 

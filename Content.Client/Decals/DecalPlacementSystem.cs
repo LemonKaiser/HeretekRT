@@ -21,6 +21,7 @@ public sealed partial class DecalPlacementSystem : EntitySystem
     [Dependency] private IPrototypeManager _protoMan = default!;
     [Dependency] private InputSystem _inputSystem = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SpriteSystem _sprite = default!;
 
@@ -45,7 +46,7 @@ public sealed partial class DecalPlacementSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        _overlay.AddOverlay(new DecalPlacementOverlay(this, _transform, _sprite));
+        _overlay.AddOverlay(new DecalPlacementOverlay(this, _maps, _transform, _sprite));
 
         CommandBinds.Builder.Bind(EngineKeyFunctions.EditorPlaceObject, new PointerStateInputCmdHandler(
             (session, coords, uid) =>

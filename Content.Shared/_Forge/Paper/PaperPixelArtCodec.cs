@@ -499,10 +499,9 @@ public static class PaperPixelArtCodec
 
         if (value[0] == '#')
         {
-            var parsed = Color.TryFromHex(value);
-            if (parsed != null)
+            if (Color.TryFromHex(value, out var parsed))
             {
-                color = parsed.Value;
+                color = parsed;
                 return true;
             }
 
@@ -513,10 +512,9 @@ public static class PaperPixelArtCodec
         if (Color.TryFromName(value, out color))
             return true;
 
-        var fallback = Color.TryFromHex("#" + value);
-        if (fallback != null)
+        if (Color.TryFromHex("#" + value, out var fallback))
         {
-            color = fallback.Value;
+            color = fallback;
             return true;
         }
 
@@ -623,21 +621,18 @@ public static class PaperPixelArtCodec
 
         if (hex[0] == '#')
         {
-            var parsedPrefixed = Color.TryFromHex(hex);
-            if (parsedPrefixed == null)
+            if (!Color.TryFromHex(hex, out var parsedPrefixed))
                 return false;
-            color = parsedPrefixed.Value;
+            color = parsedPrefixed;
             return true;
         }
 
         if (hex.Length > 8)
             return false;
 
-        var parsed = Color.TryFromHex("#" + hex);
-        if (parsed == null)
+        if (!Color.TryFromHex("#" + hex, out var parsed))
             return false;
-
-        color = parsed.Value;
+        color = parsed;
         return true;
     }
 

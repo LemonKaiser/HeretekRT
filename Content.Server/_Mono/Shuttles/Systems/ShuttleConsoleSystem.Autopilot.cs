@@ -33,7 +33,6 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private DockingSystem _docking = default!;
     [Dependency] private HTNSystem _htn = default!;
     [Dependency] private MoverController _mover = default!;
@@ -737,7 +736,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
                 continue;
 
             _intersectingGrids.Clear();
-            _mapManager.FindGridsIntersecting(
+            _maps.FindGridsIntersecting(
                 mapId,
                 fixture.Shape,
                 pose,

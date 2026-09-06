@@ -237,6 +237,12 @@ public sealed partial class PathfindingSystem
 
     private void OnCollisionChange(ref CollisionChangeEvent ev)
     {
+        if (!_fixturesQuery.TryGetComponent(ev.BodyUid, out var fixtures) ||
+            !IsBodyRelevant(fixtures))
+        {
+            return;
+        }
+
         var xform = Transform(ev.BodyUid);
 
         if (xform.GridUid == null)
@@ -249,6 +255,12 @@ public sealed partial class PathfindingSystem
 
     private void OnCollisionLayerChange(ref CollisionLayerChangeEvent ev)
     {
+        if (!_fixturesQuery.TryGetComponent(ev.Body, out var fixtures) ||
+            !IsBodyRelevant(fixtures))
+        {
+            return;
+        }
+
         var xform = Transform(ev.Body);
 
         if (xform.GridUid == null)
@@ -260,7 +272,9 @@ public sealed partial class PathfindingSystem
 
     private void OnBodyTypeChange(ref PhysicsBodyTypeChangedEvent ev)
     {
-        if (TryComp(ev.Entity, out TransformComponent? xform) &&
+        if (_fixturesQuery.TryGetComponent(ev.Entity, out var fixtures) &&
+            IsBodyRelevant(fixtures) &&
+            TryComp(ev.Entity, out TransformComponent? xform) &&
             xform.GridUid != null)
         {
             var aabb = _lookup.GetAABBNoContainer(ev.Entity, xform.Coordinates.Position, xform.LocalRotation);

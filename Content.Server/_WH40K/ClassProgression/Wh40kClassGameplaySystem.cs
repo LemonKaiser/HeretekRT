@@ -87,7 +87,6 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
     private static readonly EntProtoId CommandBeaconPrototype = "Wh40kClassCommandBeacon";
 
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private AudioSystem _audio = default!;
@@ -2486,7 +2485,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         coordinates = EntityCoordinates.Invalid;
         if (candidate.MapId == MapId.Nullspace ||
             _safety.HasRule(candidate.MapId, candidate.Position, KoronusSafetyRule.ClassMobilityActions) ||
-            !_mapManager.TryFindGridAt(candidate, out var gridUid, out var grid))
+            !_map.TryFindGridAt(candidate, out var gridUid, out var grid))
         {
             return false;
         }

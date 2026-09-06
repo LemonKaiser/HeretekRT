@@ -40,12 +40,12 @@ public sealed partial class NavScreen : BoxContainer
 
     [Dependency] private IEntityManager _entManager = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     private DetectionSystem _detection;
     private SharedAudioSystem _audio;
     private ShuttleSystem _shuttles;
     private SharedTransformSystem _xformSystem;
+    private SharedMapSystem _maps;
 
     private EntityUid? _consoleEntity; // Entity of controlling console
     private EntityUid? _shuttleEntity;
@@ -81,6 +81,7 @@ public sealed partial class NavScreen : BoxContainer
         _audio = _entManager.System<SharedAudioSystem>();
         _shuttles = _entManager.System<ShuttleSystem>();
         _xformSystem = _entManager.System<SharedTransformSystem>();
+        _maps = _entManager.System<SharedMapSystem>();
         NavRadar.ForcePannable = true;
 
         var navigationModeGroup = new ButtonGroup();
@@ -219,7 +220,7 @@ public sealed partial class NavScreen : BoxContainer
 
         var mapId = shuttleXform.MapID;
         _bssObjectMap = mapId;
-        var mapUid = _mapManager.GetMapEntityId(mapId);
+        var mapUid = _maps.GetMap(mapId);
         var mapName = _entManager.TryGetComponent(mapUid, out MetaDataComponent? metadata) &&
                       !string.IsNullOrWhiteSpace(metadata.EntityName)
             ? metadata.EntityName
@@ -241,7 +242,7 @@ public sealed partial class NavScreen : BoxContainer
             HorizontalExpand = true,
         };
         var entries = new List<IMapObject>();
-        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        foreach (var grid in _maps.GetAllGrids(mapId))
         {
             _entManager.TryGetComponent(grid.Owner, out IFFComponent? iff);
             var hideLabel = iff != null &&

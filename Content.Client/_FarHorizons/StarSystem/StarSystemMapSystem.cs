@@ -13,7 +13,7 @@ public sealed partial class StarSystemMapSystem : SharedStarSystemMapSystem
     [Dependency] private IOverlayManager _overlayMan = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
 
-    [Dependency] private IMapManager _mapMan = default!;
+    [Dependency] private SharedMapSystem _mapMan = default!;
     [Dependency] private IClyde _clyde = default!;
 
     private StarOverlay _starOverlay = default!;

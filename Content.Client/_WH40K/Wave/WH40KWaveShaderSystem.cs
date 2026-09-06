@@ -1,3 +1,4 @@
+using Content.Client.Graphics;
 using Content.Shared._WH40K.Wave;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -13,6 +14,7 @@ public sealed class WH40KWaveShaderSystem : EntitySystem
     private static readonly ProtoId<ShaderPrototype> ShaderId = "WH40KWave";
 
     [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, ShaderInstance> _shaderInstances = new();
@@ -41,18 +43,28 @@ public sealed class WH40KWaveShaderSystem : EntitySystem
         if (!Resolve(ent, ref ent.Comp, false))
             return;
 
-        ent.Comp.PostShader = instance;
-        ent.Comp.GetScreenTexture = false;
-        ent.Comp.RaiseShaderEvent = instance != null;
+        if (instance != null)
+        {
+            _sprite.SetPostShader(ent, new SpriteComponent.PostShaderArgs(ContentPostShaderIds.Wave, instance)
+            {
+                RaiseShaderEvent = true,
+                Before = ContentPostShaderIds.BeforeOutlines,
+            });
+        }
+        else
+        {
+            _sprite.RemovePostShader(ent, ContentPostShaderIds.Wave);
+        }
     }
 
     private void OnBeforePostShaderRender(Entity<WH40KWaveShaderComponent> ent, ref BeforePostShaderRenderEvent args)
     {
         EnsureResolvedWaveProfile(ent);
 
-        if (args.Sprite.PostShader is not { } shader)
+        if (args.Id != ContentPostShaderIds.Wave)
             return;
 
+        var shader = args.Shader;
         shader.SetParameter("Speed", ent.Comp.Speed * ent.Comp.ResolvedSpeedMultiplier);
         shader.SetParameter("Dis", ent.Comp.Dis * ent.Comp.ResolvedDisMultiplier);
         shader.SetParameter("Offset", ent.Comp.ResolvedPhaseOffset);

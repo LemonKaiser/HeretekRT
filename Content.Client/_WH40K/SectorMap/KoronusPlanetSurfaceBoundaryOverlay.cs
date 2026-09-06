@@ -19,18 +19,19 @@ public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
     private const float EdgeMaxAlpha = 0.96f;
 
     [Dependency] private IEntityManager _entities = default!;
-    [Dependency] private IMapManager _maps = default!;
+    private readonly SharedMapSystem _maps;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
     public KoronusPlanetSurfaceBoundaryOverlay()
     {
         IoCManager.InjectDependencies(this);
+        _maps = _entities.System<SharedMapSystem>();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
+        var mapUid = _maps.GetMap(args.MapId);
         if (args.Viewport.Eye is not { } eye ||
             !_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(mapUid, out var boundary))
         {
@@ -42,7 +43,7 @@ public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
+        var mapUid = _maps.GetMap(args.MapId);
         if (!_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(mapUid, out var boundary))
             return;
 

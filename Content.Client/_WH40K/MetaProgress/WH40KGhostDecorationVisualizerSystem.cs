@@ -79,6 +79,6 @@ public sealed class WH40KGhostDecorationVisualizerSystem : EntitySystem
         if (!TryComp<SpriteComponent>(uid, out var sprite))
             return;
 
-        _sprite.LayerSetColor((uid, sprite), 0, Color.TryFromHex(tintHex) ?? Color.White);
+        _sprite.LayerSetColor((uid, sprite), 0, Color.TryFromHex(tintHex, out var tint) ? tint : Color.White);
     }
 }

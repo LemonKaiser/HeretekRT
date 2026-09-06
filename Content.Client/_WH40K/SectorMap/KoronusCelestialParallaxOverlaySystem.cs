@@ -21,7 +21,7 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
 
     [Dependency] private IEyeManager _eyes = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IMapManager _maps = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private IOverlayManager _overlays = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private SharedPointLightSystem _lights = default!;
@@ -46,7 +46,7 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
             return;
         }
 
-        var mapUid = _maps.GetMapEntityId(eyePosition.MapId);
+        var mapUid = _maps.GetMap(eyePosition.MapId);
         if (!TryComp<KoronusPlanetarySystemVisualComponent>(mapUid, out var visual) ||
             !_prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system) ||
             system.SpaceMode != KoronusSpaceMode.Planetary)

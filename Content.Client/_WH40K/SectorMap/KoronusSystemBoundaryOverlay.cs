@@ -15,7 +15,7 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
     private const int BandSegments = 128;
 
     [Dependency] private IEntityManager _entities = default!;
-    [Dependency] private IMapManager _maps = default!;
+    private readonly SharedMapSystem _maps;
     private static readonly Vector2[] BandDirections = CreateBandDirections();
     private readonly Vector2[] _dangerBandVertices = new Vector2[(BandSegments + 1) * 2];
 
@@ -24,11 +24,12 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
     public KoronusSystemBoundaryOverlay()
     {
         IoCManager.InjectDependencies(this);
+        _maps = _entities.System<SharedMapSystem>();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
+        var mapUid = _maps.GetMap(args.MapId);
         if (args.Viewport.Eye is not { } eye ||
             !_entities.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
         {
@@ -41,7 +42,7 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
+        var mapUid = _maps.GetMap(args.MapId);
         if (!_entities.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
             return;
 

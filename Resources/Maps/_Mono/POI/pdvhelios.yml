@@ -5322,7 +5322,6 @@ entities:
     - type: ThermalSignature
     - type: ImplicitRoof
     - type: ExplosionAirtightGrid
-    - type: CEZLevelsLaddersCache
   - uid: 4
     mapInit: true
     paused: true

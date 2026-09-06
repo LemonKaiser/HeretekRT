@@ -73,7 +73,6 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     };
 
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private MapLoaderSystem _mapLoader = default!;
     [Dependency] private PlanetSystem _planetMaps = default!;
@@ -661,7 +660,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
 
         var bounds = shuttle.LocalAABB.Translated(origin);
         var grids = new List<Entity<MapGridComponent>>();
-        _mapManager.FindGridsIntersecting(surfaceMap, bounds, ref grids, includeMap: false);
+        _maps.FindGridsIntersecting(surfaceMap, bounds, ref grids, includeMap: false);
         return grids.All(grid => grid.Owner == terrainGrid || grid.Owner == shuttleGrid);
     }
 
@@ -919,7 +918,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         }
 
         session.CoveredPadTiles.Clear();
-        var tiles = _mapSystem.GetAllTilesEnumerator(shuttleGrid, shuttle);
+        var tiles = _mapSystem.GetAllTiles(shuttleGrid, shuttle);
         while (tiles.MoveNext(out var tileRef))
         {
             if (tileRef == null)
