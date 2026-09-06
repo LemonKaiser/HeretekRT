@@ -378,7 +378,7 @@ public sealed partial class BankSystem : SharedBankSystem
         // Update preferences in cache if the player data exists
         if (_prefsManager.TryGetCachedPreferences(userId, out var cachedPrefs))
         {
-            _prefsManager.SetProfile(userId, index, newProfile);
+            await _prefsManager.SetProfile(userId, index, newProfile);
         }
         else
         {
@@ -420,7 +420,7 @@ public sealed partial class BankSystem : SharedBankSystem
         // Update preferences in cache if the player data exists
         if (_prefsManager.TryGetCachedPreferences(userId, out var cachedPrefs))
         {
-            _prefsManager.SetProfile(userId, index, newProfile);
+            await _prefsManager.SetProfile(userId, index, newProfile);
         }
         else
         {

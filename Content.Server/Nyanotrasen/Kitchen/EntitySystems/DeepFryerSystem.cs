@@ -648,7 +648,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
     {
         var user = args.Actor;
 
-        if (user == null ||
+        if (!user.IsValid() ||
             !TryGetActiveHandSolutionContainer(uid, user, out var heldItem, out var heldSolution,
                 out var transferAmount))
             return;

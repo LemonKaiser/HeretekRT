@@ -14,8 +14,8 @@ public sealed partial class ChatEmojiTag : IMarkupTagHandler
 {
     private const string TypewriterHiddenAttribute = "typewriterhidden";
 
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly ChatEmojiCatalog _emojiCatalog = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
+    [Dependency] private ChatEmojiCatalog _emojiCatalog = default!;
 
     public string Name => ChatEmojiRichText.EmojiMarkupTag;
 

@@ -43,7 +43,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Dialogue;
 
-public sealed class DialogueSystem : EntitySystem
+public sealed partial class DialogueSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private SharedGodmodeSystem _godmode = default!;

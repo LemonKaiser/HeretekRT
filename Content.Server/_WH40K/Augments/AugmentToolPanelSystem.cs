@@ -12,14 +12,14 @@ namespace Content.Server._WH40K.Augments;
 /// <summary>
 /// Presents tools stored in an arm implant and temporarily places the chosen one in the matching hand.
 /// </summary>
-public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
+public sealed partial class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
 {
-    [Dependency] private readonly AugmentPowerCellSystem _power = default!;
-    [Dependency] private readonly AugmentSystem _augment = default!;
-    [Dependency] private readonly ItemToggleSystem _toggle = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly SharedStorageSystem _storage = default!;
+    [Dependency] private AugmentPowerCellSystem _power = default!;
+    [Dependency] private AugmentSystem _augment = default!;
+    [Dependency] private ItemToggleSystem _toggle = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private SharedStorageSystem _storage = default!;
 
     private EntityQuery<HandsComponent> _handsQuery;
     private EntityQuery<BodyPartComponent> _partQuery;

@@ -18,11 +18,11 @@ namespace Content.Client.Interaction.Systems;
 
 public sealed partial class HandheldEntityPlacementSystem : EntitySystem
 {
-    [Dependency] private readonly HandsSystem _hands = default!;
-    [Dependency] private readonly IPlacementManager _placement = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private HandsSystem _hands = default!;
+    [Dependency] private IPlacementManager _placement = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private EntityUid? _pendingBeginPlacementItem;
     private readonly Dictionary<EntityUid, PendingPlacementRequest> _pendingPlacementRequests = new();

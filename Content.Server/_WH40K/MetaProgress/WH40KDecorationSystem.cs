@@ -23,14 +23,14 @@ namespace Content.Server._WH40K.MetaProgress;
 ///     Серверный источник истины для каталога и выбранных игроком украшений.
 ///     Все операции одного игрока последовательно выполняются через его состояние.
 /// </summary>
-public sealed class WH40KDecorationSystem : EntitySystem
+public sealed partial class WH40KDecorationSystem : EntitySystem
 {
-    [Dependency] private readonly IAdminManager _admins = default!;
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly UserDbDataManager _userDb = default!;
+    [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private UserDbDataManager _userDb = default!;
 
     private readonly ConcurrentDictionary<NetUserId, PlayerSelectionState> _playerStates = new();
     private DecorationCatalog _catalog = DecorationCatalog.Empty;

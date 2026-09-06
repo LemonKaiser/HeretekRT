@@ -47,7 +47,7 @@ public sealed record PersistentInventoryRestoreOutcome(
 /// Restores the graph in isolation, atomically places it on a body that has not been issued yet,
 /// and only then transitions the durable snapshot from Active to Bound.
 /// </summary>
-public sealed class PersistentInventoryRestoreSystem : EntitySystem
+public sealed partial class PersistentInventoryRestoreSystem : EntitySystem
 {
     private static readonly Counter RestoreOutcomes = Metrics.CreateCounter(
         "wh40k_persistent_inventory_restore_total",
@@ -62,17 +62,17 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
             Buckets = Histogram.ExponentialBuckets(0.01, 2, 14),
         });
 
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly PersistentInventoryManager _manager = default!;
-    [Dependency] private readonly PersistentInventoryLifecycleSystem _lifecycle = default!;
-    [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly PdaSystem _pda = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private PersistentInventoryManager _manager = default!;
+    [Dependency] private PersistentInventoryLifecycleSystem _lifecycle = default!;
+    [Dependency] private PersistentInventorySnapshotSerializer _serializer = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private PdaSystem _pda = default!;
 
     public bool TryReserveRestore(
         NetUserId userId,

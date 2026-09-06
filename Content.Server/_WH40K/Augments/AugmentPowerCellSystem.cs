@@ -14,16 +14,16 @@ namespace Content.Server._WH40K.Augments;
 /// <summary>
 /// Server-only battery use and status alert for installed augment power-cell slots.
 /// </summary>
-public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
+public sealed partial class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
 {
     private static readonly TimeSpan AlertUpdateDelay = TimeSpan.FromSeconds(2);
 
-    [Dependency] private readonly AlertsSystem _alerts = default!;
-    [Dependency] private readonly BatterySystem _battery = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly MobStateSystem _mobs = default!;
-    [Dependency] private readonly PowerCellSystem _powerCell = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
+    [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private BatterySystem _battery = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private MobStateSystem _mobs = default!;
+    [Dependency] private PowerCellSystem _powerCell = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
 
     private TimeSpan _nextAlertUpdate;
 

@@ -4,9 +4,9 @@ using Content.Shared.Interaction.Events;
 
 namespace Content.Shared._WH40K.DeployableFieldBase;
 
-public abstract class SharedDeployableFieldBaseSystem : EntitySystem
+public abstract partial class SharedDeployableFieldBaseSystem : EntitySystem
 {
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
 
     public override void Initialize()
     {

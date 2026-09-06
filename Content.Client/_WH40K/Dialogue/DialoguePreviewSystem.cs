@@ -20,7 +20,7 @@ namespace Content.Client._WH40K.Dialogue;
 /// Creates isolated local entities for dialogue portraits so scene-mode previews do not depend on live PVS, lighting or
 /// mutable UI state.
 /// </summary>
-public sealed class DialoguePreviewSystem : EntitySystem
+public sealed partial class DialoguePreviewSystem : EntitySystem
 {
     private const SlotFlags PreviewVisualSlotFlags =
         SlotFlags.HEAD
@@ -42,13 +42,13 @@ public sealed class DialoguePreviewSystem : EntitySystem
         | SlotFlags.HELMETCOVER
         | SlotFlags.HELMETATTACHMENT;
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly ClientClothingSystem _clothing = default!;
-    [Dependency] private readonly ClientInventorySystem _inventory = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoid = default!;
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly ItemSystem _item = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private ClientClothingSystem _clothing = default!;
+    [Dependency] private ClientInventorySystem _inventory = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private ItemSystem _item = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public EntityUid? TryCreatePreview(EntityUid source)
     {

@@ -20,7 +20,7 @@ namespace Content.Server.Whitelist;
 /// <summary>
 /// Server-authoritative administrative panel for the manual server whitelist.
 /// </summary>
-public sealed class WhitelistPanelEui : BaseEui
+public sealed partial class WhitelistPanelEui : BaseEui
 {
     private const int MaximumPlayerIdentifierLength = 64;
 

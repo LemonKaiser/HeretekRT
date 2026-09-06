@@ -30,7 +30,7 @@ namespace Content.Server.Mapping;
 /// <summary>
 ///     Server authority for the mapper map-transfer panel and transfer streams.
 /// </summary>
-public sealed class MapTransferManager
+public sealed partial class MapTransferManager
 {
     private const int CopyBufferSize = 64 * 1024;
     private const int MaxFileMiB = 16;

@@ -573,7 +573,21 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             angle,
             docks,
             _shuttle.NfGetInertiaDampeningMode(entity), // Frontier: inertia dampening
-            portNames);
+            portNames,
+            GetPlanetaryNavigationState(entity.Comp2.GridUid));
+    }
+
+    /// <summary>
+    /// All consoles that use <see cref="NavInterfaceState"/> share the same celestial NAV layer.
+    /// The map state is resolved from the console's actual grid, never from client-provided
+    /// coordinates, so radar and fire-control receive the same authoritative system snapshot as
+    /// the main shuttle console.
+    /// </summary>
+    private KoronusPlanetaryInterfaceState GetPlanetaryNavigationState(EntityUid? shuttleGrid)
+    {
+        return shuttleGrid is { } grid
+            ? _koronusPlanetary.GetInterfaceState(grid)
+            : KoronusPlanetaryInterfaceState.Unavailable();
     }
 
     /// <summary>

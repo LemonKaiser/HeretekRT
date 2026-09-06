@@ -72,7 +72,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// Executes body-local class mechanics. Every entry point resolves an immutable active effect and repeats
 /// equipment, target, range, line-of-sight, cooldown, mob-state and Safeguard checks.
 /// </summary>
-public sealed class Wh40kClassGameplaySystem : EntitySystem
+public sealed partial class Wh40kClassGameplaySystem : EntitySystem
 {
     private const float MaximumPassiveBonus = 0.5f;
     private const float MaximumDamageReduction = 0.75f;

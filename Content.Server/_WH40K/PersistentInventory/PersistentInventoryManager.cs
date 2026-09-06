@@ -45,7 +45,7 @@ public sealed record PersistentInventoryLifeLossReservation(
 /// <summary>
 /// Loads only the server-side account header before spawn authorization and does not access ECS.
 /// </summary>
-public sealed class PersistentInventoryManager : IPostInjectInit
+public sealed partial class PersistentInventoryManager : IPostInjectInit
 {
     [Dependency] private ILogManager _logManager = default!;
 

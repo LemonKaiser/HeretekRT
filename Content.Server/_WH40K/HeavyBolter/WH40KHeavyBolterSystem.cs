@@ -38,22 +38,22 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
     private const string AirlockTag = "Airlock";
     private const string MagazineSlot = "gun_magazine";
 
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedBuckleSystem _buckle = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-    [Dependency] private readonly FixtureSystem _fixture = default!;
-    [Dependency] private readonly SharedGunSystem _gun = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private ActionContainerSystem _actionContainer = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedBuckleSystem _buckle = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
+    [Dependency] private FixtureSystem _fixture = default!;
+    [Dependency] private SharedGunSystem _gun = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private TagSystem _tag = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {

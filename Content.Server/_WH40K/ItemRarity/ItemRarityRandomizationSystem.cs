@@ -20,7 +20,7 @@ namespace Content.Server._WH40K.ItemRarity;
 /// Performs the one-time, server-authoritative rarity roll for profiled items.
 /// A profile caps the result but never changes the global rarity weights.
 /// </summary>
-public sealed class ItemRarityRandomizationSystem : EntitySystem
+public sealed partial class ItemRarityRandomizationSystem : EntitySystem
 {
     private static readonly ProtoId<ItemRarityPrototype>[] RarityIds =
     [
@@ -32,8 +32,8 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
         ItemRarityPrototypeIds.Archeotech,
     ];
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     public override void Initialize()
     {

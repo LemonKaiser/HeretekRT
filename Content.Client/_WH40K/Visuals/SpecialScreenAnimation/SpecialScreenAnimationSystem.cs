@@ -4,9 +4,9 @@ using Robust.Client.Graphics;
 
 namespace Content.Client._WH40K.Visuals.SpecialScreenAnimation;
 
-public sealed class SpecialScreenAnimationSystem : SharedSpecialScreenAnimationSystem
+public sealed partial class SpecialScreenAnimationSystem : SharedSpecialScreenAnimationSystem
 {
-    [Dependency] private readonly IOverlayManager _overlays = default!;
+    [Dependency] private IOverlayManager _overlays = default!;
 
     private SpecialScreenAnimationOverlay _overlay = default!;
 

@@ -14,7 +14,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Mapping;
 
-public sealed class MapTransferEui : BaseEui
+public sealed partial class MapTransferEui : BaseEui
 {
     [Dependency] private IAdminManager _admins = default!;
     [Dependency] private MapTransferManager _transfers = default!;

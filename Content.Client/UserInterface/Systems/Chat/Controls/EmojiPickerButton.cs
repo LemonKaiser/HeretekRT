@@ -10,10 +10,10 @@ namespace Content.Client.UserInterface.Systems.Chat.Controls;
 
 public sealed partial class EmojiPickerButton : ChatPopupButton<EmojiPickerPopup>
 {
-    [Dependency] private readonly IResourceCache _resources = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
-    [Dependency] private readonly ChatEmojiCatalog _emojiCatalog = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private IUserInterfaceManager _ui = default!;
+    [Dependency] private ChatEmojiCatalog _emojiCatalog = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public event Action<string>? OnEmojiPicked;
     private static readonly TimeSpan IconRefreshCooldown = TimeSpan.FromSeconds(0.5);

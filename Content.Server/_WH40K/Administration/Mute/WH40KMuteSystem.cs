@@ -27,7 +27,7 @@ namespace Content.Server._WH40K.Administration.Mute;
 /// Authoritative persistent administrative mutes. Chat and ahelp scopes are loaded before the player enters the
 /// lobby and every client-facing snapshot is informational only; all message blocking happens on the server.
 /// </summary>
-public sealed class WH40KMuteSystem : EntitySystem
+public sealed partial class WH40KMuteSystem : EntitySystem
 {
     [Dependency] private IAdminLogManager _adminLogs = default!;
     [Dependency] private IAdminHierarchyManager _adminHierarchy = default!;

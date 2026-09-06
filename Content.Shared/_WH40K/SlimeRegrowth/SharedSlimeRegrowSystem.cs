@@ -16,19 +16,19 @@ using Robust.Shared.Random;
 
 namespace Content.Shared._WH40K.SlimeRegrowth;
 
-public abstract class SharedSlimeRegrowSystem : EntitySystem
+public abstract partial class SharedSlimeRegrowSystem : EntitySystem
 {
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly HungerSystem _hunger = default!;
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly ThirstSystem _thirst = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private HungerSystem _hunger = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ThirstSystem _thirst = default!;
 
     public override void Initialize()
     {

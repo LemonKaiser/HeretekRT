@@ -44,7 +44,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Owns preloaded planetary maps and performs controlled, non-docking atmospheric transfers
 /// between an orbital system and a reserved surface landing site.
 /// </summary>
-public sealed class KoronusPlanetarySystem : EntitySystem
+public sealed partial class KoronusPlanetarySystem : EntitySystem
 {
     private const float LandingPadding = 1f;
     private const float BoundaryPadding = 1f;

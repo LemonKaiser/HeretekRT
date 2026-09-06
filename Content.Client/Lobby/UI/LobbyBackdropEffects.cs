@@ -11,11 +11,11 @@ namespace Content.Client.Lobby.UI;
 /// Presentation-only overlays for the static lobby artwork.
 /// The background texture itself is never translated, recoloured or replaced.
 /// </summary>
-public sealed class LobbyBackdropEffects : Control
+public sealed partial class LobbyBackdropEffects : Control
 {
     private static readonly ProtoId<ShaderPrototype> ShadeShaderId = "HeretekLobbyBackdropShade";
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private readonly ShaderInstance _shadeShader;
 

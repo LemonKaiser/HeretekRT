@@ -14,7 +14,7 @@ namespace Content.Client.Mapping.MapTransfer;
 /// <summary>
 ///     Owns the local file stream selected by the mapper. The server never receives a local path.
 /// </summary>
-public sealed class MapTransferClientManager
+public sealed partial class MapTransferClientManager
 {
     private const int CopyBufferSize = 64 * 1024;
     private const int MaxLocalNameAttempts = 16;

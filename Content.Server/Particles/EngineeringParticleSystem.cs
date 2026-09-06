@@ -7,10 +7,10 @@ namespace Content.Server.Particles;
 /// Adds small, authoritative cosmetic feedback to completed engineering actions.
 /// Each burst stays local to the action's PVS and is never emitted for a cancelled do-after.
 /// </summary>
-public sealed class EngineeringParticleSystem : EntitySystem
+public sealed partial class EngineeringParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly MaterialParticleSystem _materialParticles = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private MaterialParticleSystem _materialParticles = default!;
 
     public override void Initialize()
     {

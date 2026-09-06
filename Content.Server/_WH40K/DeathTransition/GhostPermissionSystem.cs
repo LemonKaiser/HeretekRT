@@ -30,7 +30,7 @@ namespace Content.Server._WH40K.DeathTransition;
 /// Enforces the one-character policy around observer ghosts. The server owns every decision here;
 /// the client only receives a boolean for its lobby button and a visual death transition.
 /// </summary>
-public sealed class GhostPermissionSystem : EntitySystem
+public sealed partial class GhostPermissionSystem : EntitySystem
 {
     private static readonly TimeSpan AuthorizationLifetime = TimeSpan.FromSeconds(5);
 

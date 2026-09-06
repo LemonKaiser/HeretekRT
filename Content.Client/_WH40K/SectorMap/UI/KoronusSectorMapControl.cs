@@ -16,7 +16,7 @@ namespace Content.Client._WH40K.SectorMap.UI;
 /// <summary>
 /// Interactive presentation of the fixed Koronus graph. It contains no authority over routes or FTL.
 /// </summary>
-public sealed class KoronusSectorMapControl : Control
+public sealed partial class KoronusSectorMapControl : Control
 {
     private const float MinimumZoom = 0.35f;
     private const float MaximumZoom = 3f;

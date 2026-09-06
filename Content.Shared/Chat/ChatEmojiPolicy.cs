@@ -9,8 +9,8 @@ namespace Content.Shared.Chat;
 /// </summary>
 public sealed partial class ChatEmojiPolicy
 {
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly ChatEmojiCatalog _catalog = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private ChatEmojiCatalog _catalog = default!;
 
     private ChatSelectChannel _allowedChannels = ChatEmoji.DefaultAllowedChannels;
     private int _maxPerMessage;

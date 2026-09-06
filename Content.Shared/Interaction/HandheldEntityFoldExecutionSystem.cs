@@ -10,8 +10,8 @@ namespace Content.Shared.Interaction;
 /// </summary>
 public sealed partial class HandheldEntityFoldExecutionSystem : EntitySystem
 {
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly INetManager _net = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private INetManager _net = default!;
 
     public override void Initialize()
     {

@@ -21,8 +21,8 @@ namespace Content.Server.Durability;
 /// </summary>
 public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     public override void Initialize()
     {

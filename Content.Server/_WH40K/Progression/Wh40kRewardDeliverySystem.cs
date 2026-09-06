@@ -28,7 +28,7 @@ namespace Content.Server._WH40K.Progression;
 /// entity carries a delivery/index marker and remains non-interactable until the DB
 /// acknowledges the delivery, allowing retries to reconcile instead of spawning twice.
 /// </summary>
-public sealed class Wh40kRewardDeliverySystem : EntitySystem
+public sealed partial class Wh40kRewardDeliverySystem : EntitySystem
 {
     private static readonly EntProtoId CashPrototype = "SpaceCash";
 

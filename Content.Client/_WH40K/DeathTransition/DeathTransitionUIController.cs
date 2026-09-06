@@ -17,7 +17,7 @@ namespace Content.Client._WH40K.DeathTransition;
 /// <summary>
 /// Coordinates the presentational part of an already server-authorized death transition.
 /// </summary>
-public sealed class DeathTransitionUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
+public sealed partial class DeathTransitionUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
 {
     private static readonly SoundPathSpecifier DeathStartSound = new("/Audio/_WH40K/DeathTransition/deathstart.wav");
     private static readonly SoundPathSpecifier DeathNameSound = new("/Audio/_WH40K/DeathTransition/deathname.wav");

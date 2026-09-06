@@ -12,7 +12,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// Shows the outside of the square planetary play area as a local red danger band, matching the
 /// sector boundary treatment without adding a warning or an extra marker to NAV.
 /// </summary>
-public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
+public sealed partial class KoronusPlanetSurfaceBoundaryOverlay : Overlay
 {
     private const float WarningDistance = 3f;
     private const float BandMaxAlpha = 0.78f;

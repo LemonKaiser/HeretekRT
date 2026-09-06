@@ -49,6 +49,7 @@ public sealed partial class RadCollectorSignalSystem : EntitySystem
     {
         RadCollectorState.Empty => EmptyPort,
         RadCollectorState.Low => LowPort,
-        RadCollectorState.Full => FullPort
+        RadCollectorState.Full => FullPort,
+        _ => EmptyPort
     };
 }

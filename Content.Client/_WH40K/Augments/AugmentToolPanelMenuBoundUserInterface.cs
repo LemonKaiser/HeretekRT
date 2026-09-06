@@ -5,11 +5,11 @@ using Robust.Client.UserInterface;
 
 namespace Content.Client._WH40K.Augments;
 
-public sealed class AugmentToolPanelMenuBoundUserInterface : BoundUserInterface
+public sealed partial class AugmentToolPanelMenuBoundUserInterface : BoundUserInterface
 {
-    [Dependency] private readonly IClyde _clyde = default!;
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private IClyde _clyde = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IInputManager _input = default!;
 
     private AugmentToolPanelMenu? _menu;
 

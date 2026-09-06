@@ -10,7 +10,6 @@ using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Utility;
 
 using static Content.Shared._Mono.Shipyard.SharedPreview;
 
@@ -19,11 +18,10 @@ namespace Content.Server._Mono.Shipyard;
 /// <summary>
 /// This handles preview map and preview observer.
 /// </summary>
-public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
+public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 {
     [Dependency] private MapSystem _map = default!;
     [Dependency] private MetaDataSystem _meta = default!;
-    [Dependency] private TransformSystem _xform = default!;
     [Dependency] private MindSystem _mind = default!;
 
     public override void Initialize()
@@ -42,16 +40,19 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 
     private void OnPreview(Entity<ShipyardConsoleComponent> ev, ref ShipyardConsolePreviewMessage evMsg)
     {
-        CachePreviewMap();
-
+        EnsureMap();
         TryPreviewEntity(evMsg.Actor);
     }
 
     private void EnsureMap()
     {
-        var mapUid = _map.CreateMap();
+        if (TryGetPreviewMap(out _))
+            return;
+
+        var mapUid = _map.CreateMap(out var mapId);
         var pMap = EnsureComp<PreviewMapComponent>(mapUid);
 
+        _previewMap = mapId;
         _meta.SetEntityName(mapUid, "Shuttle preview map.");
 
         Dirty(mapUid, pMap);

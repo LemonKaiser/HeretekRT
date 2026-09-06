@@ -16,7 +16,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// Adapts class progression to private, actor-addressed PDA BUI messages.
 /// No account or runtime class data is stored on a networked PDA component.
 /// </summary>
-public sealed class Wh40kClassPdaSystem : EntitySystem
+public sealed partial class Wh40kClassPdaSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;

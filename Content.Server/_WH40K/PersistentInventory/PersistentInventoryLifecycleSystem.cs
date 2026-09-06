@@ -29,7 +29,7 @@ public sealed record PersistentInventoryAdminMutationResult(bool Success, string
 /// Completes the lifecycle of a snapshot that has already been materialized.
 /// Ordinary physical death is intentionally not considered a loss event here.
 /// </summary>
-public sealed class PersistentInventoryLifecycleSystem : EntitySystem
+public sealed partial class PersistentInventoryLifecycleSystem : EntitySystem
 {
     private static readonly Counter LifeLossOutcomes = Metrics.CreateCounter(
         "wh40k_persistent_inventory_life_loss_total",
@@ -37,14 +37,14 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
         "result",
         "reason");
 
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ITaskManager _taskManager = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly PersistentInventoryManager _manager = default!;
-    [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ITaskManager _taskManager = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private PersistentInventoryManager _manager = default!;
+    [Dependency] private PersistentInventorySnapshotSerializer _serializer = default!;
 
     private readonly Dictionary<NetUserId, EntityUid> _boundBodies = new();
     private readonly Dictionary<NetUserId, PendingDisconnect> _disconnects = new();

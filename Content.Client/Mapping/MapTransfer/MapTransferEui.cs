@@ -9,7 +9,7 @@ using Robust.Client.UserInterface;
 namespace Content.Client.Mapping.MapTransfer;
 
 [UsedImplicitly]
-public sealed class MapTransferEui : BaseEui
+public sealed partial class MapTransferEui : BaseEui
 {
     [Dependency] private IFileDialogManager _files = default!;
     [Dependency] private MapTransferClientManager _transfers = default!;

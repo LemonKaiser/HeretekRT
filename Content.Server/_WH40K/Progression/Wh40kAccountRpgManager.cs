@@ -13,7 +13,7 @@ namespace Content.Server._WH40K.Progression;
 /// Owns the immutable account foundation cache and performs the one-time legacy data migration.
 /// Mutable progression is owned separately by <see cref="Wh40kProgressManager"/>.
 /// </summary>
-public sealed class Wh40kAccountRpgManager
+public sealed partial class Wh40kAccountRpgManager
 {
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;

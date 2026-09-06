@@ -483,7 +483,7 @@ public static class Wh40kClassProgressionValidator
 /// <summary>
 /// Fails server startup when the production catalog is structurally invalid.
 /// </summary>
-public sealed class Wh40kClassProgressionValidationSystem : EntitySystem
+public sealed partial class Wh40kClassProgressionValidationSystem : EntitySystem
 {
     [Dependency] private ILocalizationManager _localization = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;

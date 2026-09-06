@@ -11,13 +11,13 @@ namespace Content.Server.Particles;
 /// <summary>
 /// Validates and sends cosmetic particle bursts only to clients in the source coordinates' PVS.
 /// </summary>
-public sealed class ParticleSpawnSystem : EntitySystem
+public sealed partial class ParticleSpawnSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedMapSystem _mapManager = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedMapSystem _mapManager = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private readonly Dictionary<(EntityUid Source, ProtoId<ParticleEffectPrototype> Effect), TimeSpan> _nextAllowed = new();
     private readonly List<(EntityUid Source, ProtoId<ParticleEffectPrototype> Effect)> _expiredRateLimits = new();

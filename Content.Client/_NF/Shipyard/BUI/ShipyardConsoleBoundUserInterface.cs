@@ -7,7 +7,7 @@ using static Robust.Client.UserInterface.Controls.BaseButton;
 
 namespace Content.Client._NF.Shipyard.BUI;
 
-public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
+public sealed partial class ShipyardConsoleBoundUserInterface : BoundUserInterface
 {
     private ShipyardConsoleMenu? _menu;
     private ShipyardRulesPopup? _rulesWindow;
@@ -114,7 +114,9 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         }
 
         var vessel = row.Vessel;
+        if (!_preview.BeginPreview(vessel))
+            return;
+
         SendMessage(new ShipyardConsolePreviewMessage());
-        _preview.TryPreviewGrid(vessel);
     }
 }

@@ -19,7 +19,7 @@ namespace Content.Client._WH40K.Progression;
 /// Mouse and keyboard driven presentation of the two prototype-authored skill branches.
 /// It never predicts purchases or mutates a server snapshot.
 /// </summary>
-public sealed class Wh40kClassTreeGraphControl : Control
+public sealed partial class Wh40kClassTreeGraphControl : Control
 {
     private const float MinimumZoom = 0.32f;
     private const float MaximumZoom = 1.65f;

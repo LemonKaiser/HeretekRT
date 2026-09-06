@@ -10,7 +10,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Applies the local anti-flooding rule without changing ordinary puddle behaviour elsewhere.
 /// </summary>
-public sealed class KoronusSafetyPuddleSystem : EntitySystem
+public sealed partial class KoronusSafetyPuddleSystem : EntitySystem
 {
     private static readonly TimeSpan CleanupDelay = TimeSpan.FromMinutes(1);
 

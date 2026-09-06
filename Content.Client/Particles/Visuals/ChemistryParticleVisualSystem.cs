@@ -11,11 +11,11 @@ namespace Content.Client.Particles.Visuals;
 /// exactly as long as the existing smoke or foam visual components, so no per-tile state
 /// is created on the server.
 /// </summary>
-public sealed class ChemistryParticleVisualSystem : EntitySystem
+public sealed partial class ChemistryParticleVisualSystem : EntitySystem
 {
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly ParticleSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private static readonly ProtoId<ParticleEffectPrototype> SmokeEffect = "HrtToxicFumes";
     private static readonly ProtoId<ParticleEffectPrototype> FoamEffect = "HrtFoamBubblesContinuous";

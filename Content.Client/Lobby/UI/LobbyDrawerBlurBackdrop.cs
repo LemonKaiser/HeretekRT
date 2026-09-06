@@ -11,9 +11,9 @@ namespace Content.Client.Lobby.UI;
 /// Repaints the portion of the active lobby image behind the drawer through a small
 /// blur shader. This is the UI-safe equivalent of CSS backdrop-filter.
 /// </summary>
-public sealed class LobbyDrawerBlurBackdrop : Control
+public sealed partial class LobbyDrawerBlurBackdrop : Control
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private readonly ShaderInstance _blurShader;
 

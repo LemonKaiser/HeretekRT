@@ -6,7 +6,7 @@ namespace Content.Client._Mono.Shipyard.UI;
 public sealed class ShipyardPreviewBoundUserInterface : BoundUserInterface
 {
     private ShipyardPreviewMenu? _menu;
-    [Dependency] private ShipyardPreviewSystem _preview = default!;
+    private bool _exitRequested;
 
     public ShipyardPreviewBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -22,6 +22,7 @@ public sealed class ShipyardPreviewBoundUserInterface : BoundUserInterface
         _menu.UpdateMenu();
 
         _menu.OnExit += Exit;
+        _menu.OnClose += RequestExit;
     }
 
     protected override void Dispose(bool disposing)
@@ -29,12 +30,28 @@ public sealed class ShipyardPreviewBoundUserInterface : BoundUserInterface
         base.Dispose(disposing);
         if (!disposing)
             return;
+
+        if (_menu != null)
+        {
+            _menu.OnExit -= Exit;
+            _menu.OnClose -= RequestExit;
+        }
+
         _menu?.Dispose();
+        _menu = null;
     }
 
     private void Exit(ButtonEventArgs args)
     {
+        RequestExit();
+    }
+
+    private void RequestExit()
+    {
+        if (_exitRequested)
+            return;
+
+        _exitRequested = true;
         SendMessage(new ShipyardPreviewExitMessage());
-        _preview.Dispose();
     }
 }

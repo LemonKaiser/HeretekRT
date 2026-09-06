@@ -39,7 +39,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// Projects permanent class entitlements onto the currently attached living body.
 /// The projection is rebuilt from cached records and reconciled by effect id, never applied as a blind delta.
 /// </summary>
-public sealed class Wh40kClassRuntimeSystem : EntitySystem
+public sealed partial class Wh40kClassRuntimeSystem : EntitySystem
 {
     private static readonly TimeSpan MaximumTemporaryEffectDuration = TimeSpan.FromMinutes(10);
 

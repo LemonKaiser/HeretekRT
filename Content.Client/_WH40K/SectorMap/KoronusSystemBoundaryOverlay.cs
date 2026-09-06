@@ -10,7 +10,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// <summary>
 /// Draws the red danger band at the edge of an authored Koronus system.
 /// </summary>
-public sealed class KoronusSystemBoundaryOverlay : Overlay
+public sealed partial class KoronusSystemBoundaryOverlay : Overlay
 {
     private const int BandSegments = 128;
 

@@ -8,7 +8,7 @@ namespace Content.Server._WH40K.Progression;
 /// <summary>
 /// Converts data-driven level reward prototypes into deterministic database outbox entries.
 /// </summary>
-public sealed class Wh40kLevelRewardCatalog
+public sealed partial class Wh40kLevelRewardCatalog
 {
     public const string CurrencyRewardType = "currency";
     public const string ItemRewardType = "item";

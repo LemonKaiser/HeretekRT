@@ -27,14 +27,14 @@ public sealed record PersistentInventoryShutdownResult(
 /// A server epoch is marked clean only after every save completed and the database
 /// confirms that this epoch has no remaining bound lives.
 /// </summary>
-public sealed class PersistentInventoryShutdownSystem : EntitySystem
+public sealed partial class PersistentInventoryShutdownSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly PersistentInventoryManager _manager = default!;
-    [Dependency] private readonly PersistentInventorySaveSystem _save = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private PersistentInventoryManager _manager = default!;
+    [Dependency] private PersistentInventorySaveSystem _save = default!;
 
     private readonly object _preparationLock = new();
     private Task<PersistentInventoryShutdownResult>? _preparation;

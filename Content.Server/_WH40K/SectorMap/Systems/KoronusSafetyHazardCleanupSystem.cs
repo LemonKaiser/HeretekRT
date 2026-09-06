@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Cleans up temporary high-risk entities only on grids with the corresponding local safety rule.
 /// The delay lets ordinary spawning and gameplay complete before Footfall removes the hazard.
 /// </summary>
-public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
+public sealed partial class KoronusSafetyHazardCleanupSystem : EntitySystem
 {
     private static readonly TimeSpan CleanupDelay = TimeSpan.FromMinutes(1);
     private static readonly TimeSpan ScanInterval = TimeSpan.FromSeconds(1);

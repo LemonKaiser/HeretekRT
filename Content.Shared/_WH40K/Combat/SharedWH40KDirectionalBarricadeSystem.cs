@@ -13,8 +13,8 @@ namespace Content.Shared._WH40K.Combat;
 /// </summary>
 public sealed partial class SharedWH40KDirectionalBarricadeSystem : EntitySystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

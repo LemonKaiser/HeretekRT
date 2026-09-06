@@ -12,7 +12,7 @@ using Content.Shared.Throwing;
 
 namespace Content.Shared._WH40K.Dialogue;
 
-public abstract class SharedDialogueInputLockSystem : EntitySystem
+public abstract partial class SharedDialogueInputLockSystem : EntitySystem
 {
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private PullingSystem _pulling = default!;

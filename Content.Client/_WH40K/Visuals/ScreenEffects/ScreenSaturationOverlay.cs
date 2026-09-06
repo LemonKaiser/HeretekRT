@@ -8,11 +8,11 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.Visuals.ScreenEffects;
 
-public sealed class ScreenSaturationOverlay : Overlay
+public sealed partial class ScreenSaturationOverlay : Overlay
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     private readonly ShaderInstance _shader;
     private float _currentSaturation = 1f;

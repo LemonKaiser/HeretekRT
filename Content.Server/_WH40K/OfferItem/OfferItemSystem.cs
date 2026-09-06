@@ -13,15 +13,15 @@ namespace Content.Server._WH40K.OfferItem;
 /// <summary>
 /// Server-authoritative consent item transfer. Client requests are treated only as intent.
 /// </summary>
-public sealed class OfferItemSystem : EntitySystem
+public sealed partial class OfferItemSystem : EntitySystem
 {
     private static readonly TimeSpan OfferLifetime = TimeSpan.FromSeconds(10);
 
-    [Dependency] private readonly ActionBlockerSystem _blocker = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private ActionBlockerSystem _blocker = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public override void Initialize()
     {

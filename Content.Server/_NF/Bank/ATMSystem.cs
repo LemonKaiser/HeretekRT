@@ -223,7 +223,7 @@ public sealed partial class BankSystem
     {
         var player = args.Actor;
 
-        if (player == null)
+        if (!player.IsValid())
             return;
 
         GetInsertedCashAmount(component, out var deposit);

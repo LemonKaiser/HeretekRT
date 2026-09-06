@@ -28,7 +28,7 @@ namespace Content.Server.Particles;
 /// Turns completed physical damage and destruction into local, material-aware particle bursts.
 /// This system observes post-mitigation damage only, so cancelled hits and fully absorbed damage stay silent.
 /// </summary>
-public sealed class MaterialParticleSystem : EntitySystem
+public sealed partial class MaterialParticleSystem : EntitySystem
 {
     private static readonly HashSet<string> PhysicalDamageTypes = new(StringComparer.Ordinal)
     {
@@ -38,10 +38,10 @@ public sealed class MaterialParticleSystem : EntitySystem
         "Structural",
     };
 
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {

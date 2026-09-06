@@ -18,12 +18,12 @@ namespace Content.Server._WH40K.Traps;
 /// </summary>
 public sealed partial class WH40KStabTrapSystem : EntitySystem
 {
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     private readonly HashSet<EntityUid> _strikeTargets = new();
 

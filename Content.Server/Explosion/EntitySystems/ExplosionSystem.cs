@@ -207,7 +207,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         if (explosive.DetonationAlert != null)
             while (query.MoveNext(out var ent, out var component))
             {
-                if (ent != null)
+                if (ent.IsValid())
                 {
                     _alertLevel.SetLevel(ent, explosive.DetonationAlert, true, true, true, true);
                 }
@@ -295,7 +295,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     /// <summary>
     ///     Queue an explosions, centered on some entity.
     /// </summary>
-    public void QueueExplosion(EntityUid uid,
+    public override void QueueExplosion(EntityUid uid,
         string typeId,
         float totalIntensity,
         float slope,

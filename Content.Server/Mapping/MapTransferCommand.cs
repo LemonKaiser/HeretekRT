@@ -5,7 +5,7 @@ using Robust.Shared.Console;
 namespace Content.Server.Mapping;
 
 [AdminCommand(AdminFlags.Mapping)]
-public sealed class MapTransferCommand : IConsoleCommand
+public sealed partial class MapTransferCommand : IConsoleCommand
 {
     [Dependency] private MapTransferManager _transfers = default!;
 

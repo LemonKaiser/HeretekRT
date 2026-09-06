@@ -17,7 +17,7 @@ namespace Content.Server._WH40K.Administration;
 /// <summary>
 /// Approved additive account-level RPG administration with persistent and round admin audit trails.
 /// </summary>
-public sealed class Wh40kRpgAdminService
+public sealed partial class Wh40kRpgAdminService
 {
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IEntityManager _entities = default!;

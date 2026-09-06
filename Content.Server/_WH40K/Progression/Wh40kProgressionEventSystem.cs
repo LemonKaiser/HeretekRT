@@ -13,7 +13,7 @@ namespace Content.Server._WH40K.Progression;
 /// <summary>
 /// Converts trusted gameplay events into the Stage 3 XP pipeline and cleans expired runtime state.
 /// </summary>
-public sealed class Wh40kProgressionEventSystem : EntitySystem
+public sealed partial class Wh40kProgressionEventSystem : EntitySystem
 {
     private static readonly ProtoId<Wh40kExperienceSourcePrototype> SalvageSource =
         "Wh40kSalvageExpeditionCompleted";

@@ -10,10 +10,10 @@ namespace Content.Client._WH40K.SectorMap.Teleporters;
 /// Owns short client-side teleporter charge emitters. They are bounded by the server-authoritative spin-up duration
 /// so a missed stop notification cannot leave a permanent effect behind.
 /// </summary>
-public sealed class KoronusPlanetaryTeleporterParticleSystem : EntitySystem
+public sealed partial class KoronusPlanetaryTeleporterParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private sealed class ChargeState
     {

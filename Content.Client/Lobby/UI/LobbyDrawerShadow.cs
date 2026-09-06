@@ -11,11 +11,11 @@ namespace Content.Client.Lobby.UI;
 /// A separate sibling surface for the drawer's soft exterior shadow.
 /// The drawer itself clips its contents, so this deliberately lives behind it.
 /// </summary>
-public sealed class LobbyDrawerShadow : Control
+public sealed partial class LobbyDrawerShadow : Control
 {
     private static readonly ProtoId<ShaderPrototype> ShadowShaderId = "HeretekLobbyDrawerShadow";
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private readonly ShaderInstance _shadowShader;
 

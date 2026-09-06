@@ -13,7 +13,7 @@ using Robust.Shared.Input;
 
 namespace Content.Client.UserInterface.Controls
 {
-    public abstract class SlotControl : Control, IEntityControl
+    public abstract partial class SlotControl : Control, IEntityControl
     {
         public static int DefaultButtonSize = 64;
 

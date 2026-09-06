@@ -21,7 +21,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Resolves authored landing-pad entities into runtime pads. Resolution is performed only when a
 /// console state or planetary transfer needs it, avoiding a per-frame scan of every placed tile.
 /// </summary>
-public sealed class KoronusLandingPadSystem : EntitySystem
+public sealed partial class KoronusLandingPadSystem : EntitySystem
 {
     private static readonly Vector2i[] CardinalDirections =
     {

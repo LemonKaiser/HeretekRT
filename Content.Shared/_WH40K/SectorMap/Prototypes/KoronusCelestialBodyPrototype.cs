@@ -13,6 +13,22 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 [Prototype("koronusCelestialBody")]
 public sealed partial class KoronusCelestialBodyPrototype : IPrototype
 {
+    /// <summary>
+    /// The procedural sun renderer extends its corona beyond the authored radius. Keep this in
+    /// shared data so server-side orbital placement uses the same outer edge as the client.
+    /// </summary>
+    public const float StarCoronaRadiusMultiplier = 1.9f;
+
+    /// <summary>
+    /// The atmospheric pass is the widest rendered part of a planet body.
+    /// </summary>
+    public const float PlanetAtmosphereRadiusMultiplier = 1.25f;
+
+    /// <summary>
+    /// The textured surface is slightly wider than its nominal radius even without an atmosphere.
+    /// </summary>
+    public const float PlanetSurfaceRadiusMultiplier = 1.02f;
+
     [IdDataField]
     public string ID { get; private set; } = default!;
 
@@ -139,6 +155,26 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     /// </summary>
     [DataField]
     public float BackgroundParallaxSlowness = 0.82f;
+
+    /// <summary>
+    /// Largest author-space radius occupied by the rendered body. This intentionally uses both
+    /// NAV and background radii: a facility must not be placed inside a corona that is only large
+    /// in the space backdrop.
+    /// </summary>
+    public float PlacementVisualRadius
+    {
+        get
+        {
+            var radius = MathF.Max(MathF.Max(0f, NavVisualRadius), MathF.Max(0f, BackgroundVisualRadius));
+            return BodyType switch
+            {
+                KoronusCelestialBodyType.Star => radius * StarCoronaRadiusMultiplier,
+                KoronusCelestialBodyType.Planet or KoronusCelestialBodyType.Moon or KoronusCelestialBodyType.Asteroid =>
+                    radius * (AtmosphereIntensity > 0f ? PlanetAtmosphereRadiusMultiplier : PlanetSurfaceRadiusMultiplier),
+                _ => radius,
+            };
+        }
+    }
 
     /// <summary>
     /// Additional clearance beyond the NAV visual radius in which a shuttle may begin a

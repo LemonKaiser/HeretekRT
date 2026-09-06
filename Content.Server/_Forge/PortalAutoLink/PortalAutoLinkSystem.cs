@@ -5,8 +5,8 @@ namespace Content.Server._Forge.PortalAutoLink
 {
     public sealed partial class PortalAutoLinkSystem : EntitySystem
     {
-        [Dependency] private readonly LinkedEntitySystem _linkedEntitySystem = default!;
-        [Dependency] private readonly IEntityManager _entityMgr = default!;
+        [Dependency] private LinkedEntitySystem _linkedEntitySystem = default!;
+        [Dependency] private IEntityManager _entityMgr = default!;
 
         public override void Initialize()
         {

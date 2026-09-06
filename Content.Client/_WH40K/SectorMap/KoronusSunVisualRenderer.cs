@@ -14,7 +14,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// </summary>
 public sealed class KoronusSunVisualRenderer
 {
-    private const float CoronaDiameterScale = 3.8f;
+    private const float CoronaDiameterScale = KoronusCelestialBodyPrototype.StarCoronaRadiusMultiplier * 2f;
     private const float SurfaceDiameterScale = 2.08f;
 
     private static readonly ProtoId<ShaderPrototype> SurfaceShaderId = "KoronusProceduralSun";

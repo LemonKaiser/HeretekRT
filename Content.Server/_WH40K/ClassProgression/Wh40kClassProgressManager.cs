@@ -13,7 +13,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// <summary>
 /// Server-authoritative account class tree facade. The client only receives its own class snapshot.
 /// </summary>
-public sealed class Wh40kClassProgressManager
+public sealed partial class Wh40kClassProgressManager
 {
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -323,7 +323,7 @@ public sealed record Wh40kClassTreeOperationResult(
     Wh40kAccountRpgRecord? Account,
     Wh40kAccountClassProgressRecord? ClassProgress);
 
-public sealed class Wh40kClassProgressNetworkSystem : EntitySystem
+public sealed partial class Wh40kClassProgressNetworkSystem : EntitySystem
 {
     [Dependency] private Wh40kClassProgressManager _progress = default!;
 

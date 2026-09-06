@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Administration.Commands;
 
 [AdminCommand(AdminFlags.Admin)]
 [AdminCommand(AdminFlags.Moderator)]
-public sealed class WH40KUnmuteCommand : LocalizedCommands
+public sealed partial class WH40KUnmuteCommand : LocalizedCommands
 {
     [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private IEntityManager _entities = default!;

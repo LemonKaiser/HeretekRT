@@ -7,7 +7,7 @@ namespace Content.Client._WH40K.DeathTransition;
 /// <summary>
 /// Applies the world-space part of the death transition over the last frame of gameplay.
 /// </summary>
-public sealed class DeathTransitionOverlay : Overlay
+public sealed partial class DeathTransitionOverlay : Overlay
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
 

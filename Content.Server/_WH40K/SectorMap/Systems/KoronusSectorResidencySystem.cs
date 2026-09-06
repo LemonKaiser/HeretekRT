@@ -14,7 +14,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Keeps populated systems running and pauses empty remote systems after their configured grace period.
 /// </summary>
-public sealed class KoronusSectorResidencySystem : EntitySystem
+public sealed partial class KoronusSectorResidencySystem : EntitySystem
 {
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IGameTiming _timing = default!;

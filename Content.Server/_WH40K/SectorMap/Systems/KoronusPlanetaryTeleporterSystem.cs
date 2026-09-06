@@ -32,7 +32,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// system. A source handles one mob at a time and revalidates power, range, target and deed access
 /// both before and after the five-second spin-up.
 /// </summary>
-public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
+public sealed partial class KoronusPlanetaryTeleporterSystem : EntitySystem
 {
     private const float UseRadius = 0.7f;
     private static readonly TimeSpan SpinupTime = TimeSpan.FromSeconds(5);

@@ -52,9 +52,10 @@ public sealed partial class StartableMachineSystem : EntitySystem
             args.Data?.TryGetValue<SignalState>("logic_state", out state);
             ent.Comp.AutoStart = state switch
             {
-                SignalState.Momentary => !ent.Comp.AutoStart,
-                SignalState.High => true,
-                SignalState.Low => false
+            SignalState.Momentary => !ent.Comp.AutoStart,
+            SignalState.High => true,
+            SignalState.Low => false,
+            _ => ent.Comp.AutoStart
             };
         }
     }

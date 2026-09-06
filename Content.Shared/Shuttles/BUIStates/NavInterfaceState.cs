@@ -1,6 +1,7 @@
 using Robust.Shared.Map;
 using Robust.Shared.Serialization;
 using Content.Shared._NF.Shuttles.Events; // Frontier - InertiaDampeningMode access
+using Content.Shared._WH40K.SectorMap.BUI;
 
 namespace Content.Shared.Shuttles.BUIStates;
 
@@ -44,13 +45,21 @@ public sealed class NavInterfaceState
     public bool HideCoords = false;
     // End Frontier fields
 
+    /// <summary>
+    /// Read-only celestial layer for every consumer of the shared NAV control.
+    /// Keeping it in the common state prevents radar, fire-control and drone consoles from
+    /// silently losing planets while the shuttle console still displays them.
+    /// </summary>
+    public KoronusPlanetaryInterfaceState PlanetaryState;
+
     public NavInterfaceState(
         float maxRange,
         NetCoordinates? coordinates,
         Angle? angle,
         Dictionary<NetEntity, List<DockingPortState>> docks,
         InertiaDampeningMode dampeningMode, // Frontier: add dampeningMode
-        Dictionary<string, string>? networkPortNames = null)
+        Dictionary<string, string>? networkPortNames = null,
+        KoronusPlanetaryInterfaceState? planetaryState = null)
     {
         MaxRange = maxRange;
         Coordinates = coordinates;
@@ -58,6 +67,7 @@ public sealed class NavInterfaceState
         Docks = docks;
         DampeningMode = dampeningMode; // Frontier
         NetworkPortNames = networkPortNames ?? new Dictionary<string, string>();
+        PlanetaryState = planetaryState ?? KoronusPlanetaryInterfaceState.Unavailable();
     }
 }
 

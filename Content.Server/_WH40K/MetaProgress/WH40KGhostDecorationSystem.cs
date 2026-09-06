@@ -15,18 +15,18 @@ using Robust.Shared.Player;
 
 namespace Content.Server._WH40K.MetaProgress;
 
-public sealed class WH40KGhostDecorationSystem : EntitySystem
+public sealed partial class WH40KGhostDecorationSystem : EntitySystem
 {
     private const string DefaultGhostRsiPath = "/Textures/Mobs/Ghosts/ghost_human.rsi";
     private const string DefaultGhostState = "animated";
 
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly GhostSpriteStateSystem _ghostSprites = default!;
-    [Dependency] private readonly GhostSystem _ghosts = default!;
-    [Dependency] private readonly WH40KDecorationSystem _decorations = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly SharedMindSystem _minds = default!;
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private GhostSpriteStateSystem _ghostSprites = default!;
+    [Dependency] private GhostSystem _ghosts = default!;
+    [Dependency] private WH40KDecorationSystem _decorations = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private SharedMindSystem _minds = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
 
     public override void Initialize()
     {

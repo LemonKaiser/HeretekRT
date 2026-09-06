@@ -749,6 +749,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // End Frontier
 
         _docks = state.Docks;
+        UpdatePlanetaryState(state.PlanetaryState);
 
         NfUpdateState(state); // Frontier Update State
     }

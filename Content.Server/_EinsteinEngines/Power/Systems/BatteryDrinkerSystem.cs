@@ -104,13 +104,11 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
             return;
 
         var container = _container.GetContainer(uid, batterySlot.CellSlotId);
-        var drinkerBattery = container.ContainedEntities.First();
+        var drinkerBattery = container.ContainedEntities.FirstOrDefault();
 
         TryComp<BatteryDrinkerSourceComponent>(source, out var sourceComp);
 
-        DebugTools.AssertNotNull(drinkerBattery);
-
-        if (drinkerBattery == null)
+        if (!drinkerBattery.IsValid())
             return;
 
         var amountToDrink = drinkerComp.DrinkMultiplier * 1000;

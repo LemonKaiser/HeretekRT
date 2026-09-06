@@ -11,7 +11,7 @@ namespace Content.Client._WH40K.ClassProgression;
 /// Client-only presentation of the Soldier's personal priority mark. The server sends it solely to its owner;
 /// nothing is replicated onto the marked entity itself.
 /// </summary>
-public sealed class Wh40kClassTargetMarkVisualizerSystem : EntitySystem
+public sealed partial class Wh40kClassTargetMarkVisualizerSystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlays = default!;
     [Dependency] private IGameTiming _timing = default!;

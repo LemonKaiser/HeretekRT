@@ -88,7 +88,7 @@ public sealed record PersistentInventorySaveResult(
 /// Unified server-authoritative save pipeline for physical cryo and admin cryosave.
 /// All ECS operations run on the main thread, while database phases are linked by optimistic revisions.
 /// </summary>
-public sealed class PersistentInventorySaveSystem : EntitySystem
+public sealed partial class PersistentInventorySaveSystem : EntitySystem
 {
     private static readonly Counter SaveOutcomes = Metrics.CreateCounter(
         "wh40k_persistent_inventory_save_total",
@@ -112,20 +112,20 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
             Buckets = Histogram.ExponentialBuckets(256, 2, 14),
         });
 
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly ITaskManager _taskManager = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly GameTicker _gameTicker = default!;
-    [Dependency] private readonly MindSystem _mind = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
-    [Dependency] private readonly PullingSystem _pulling = default!;
-    [Dependency] private readonly PersistentInventoryManager _manager = default!;
-    [Dependency] private readonly PersistentInventoryLifecycleSystem _lifecycle = default!;
-    [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
-    [Dependency] private readonly CryoSleepSystem _cryo = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private ITaskManager _taskManager = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private GameTicker _gameTicker = default!;
+    [Dependency] private MindSystem _mind = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private PullingSystem _pulling = default!;
+    [Dependency] private PersistentInventoryManager _manager = default!;
+    [Dependency] private PersistentInventoryLifecycleSystem _lifecycle = default!;
+    [Dependency] private PersistentInventorySnapshotSerializer _serializer = default!;
+    [Dependency] private CryoSleepSystem _cryo = default!;
 
     private readonly ConcurrentDictionary<NetUserId, byte> _accountLocks = new();
     private readonly ConcurrentDictionary<NetUserId, DateTime> _cooldowns = new();

@@ -12,12 +12,12 @@ namespace Content.Server._WH40K.DeployableFieldBase;
 /// Builds a small self-contained grid. It intentionally avoids runtime map loading on a live
 /// planetary surface, which would otherwise cause a hitch when the grid preloader has no spare copy.
 /// </summary>
-public sealed class DeployableFieldBaseSystem : SharedDeployableFieldBaseSystem
+public sealed partial class DeployableFieldBaseSystem : SharedDeployableFieldBaseSystem
 {
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly SharedMapSystem _maps = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly ITileDefinitionManager _tiles = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private ITileDefinitionManager _tiles = default!;
 
     public override void Initialize()
     {

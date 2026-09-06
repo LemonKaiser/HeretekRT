@@ -9,11 +9,11 @@ namespace Content.Shared._WH40K.Augments;
 /// Common bookkeeping for a battery installed as an organ. Concrete client/server systems are
 /// used so the dependency resolves correctly in both content assemblies.
 /// </summary>
-public abstract class SharedAugmentPowerCellSystem : EntitySystem
+public abstract partial class SharedAugmentPowerCellSystem : EntitySystem
 {
-    [Dependency] protected readonly AugmentSystem Augment = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] protected readonly SharedPowerCellSystem PowerCell = default!;
+    [Dependency] protected AugmentSystem Augment = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] protected SharedPowerCellSystem PowerCell = default!;
 
     private EntityQuery<PowerCellDrawComponent> _drawQuery;
 

@@ -27,10 +27,10 @@ public sealed partial class SharedWH40KHeavyBolterOperatorSystem : EntitySystem
     private const string WindowTag = "Window";
     private const string AirlockTag = "Airlock";
 
-    [Dependency] private readonly SharedBuckleSystem _buckle = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private SharedBuckleSystem _buckle = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private TagSystem _tag = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

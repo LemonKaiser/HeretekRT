@@ -6,11 +6,11 @@ using Robust.Shared.Player;
 
 namespace Content.Client._WH40K.Visuals.ScreenEffects;
 
-public sealed class ScreenSaturationSystem : EntitySystem
+public sealed partial class ScreenSaturationSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _config = default!;
-    [Dependency] private readonly IOverlayManager _overlays = default!;
-    [Dependency] private readonly ISharedPlayerManager _players = default!;
+    [Dependency] private IConfigurationManager _config = default!;
+    [Dependency] private IOverlayManager _overlays = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
 
     private ScreenSaturationOverlay _overlay = default!;
     private bool _enabled;

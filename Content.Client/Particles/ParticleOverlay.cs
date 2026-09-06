@@ -12,10 +12,10 @@ namespace Content.Client.Particles;
 /// Draws live particles after their world-space position has been resolved by <see cref="ParticleSystem"/>.
 /// Particles sharing a material are batched even when they belong to different emitters.
 /// </summary>
-public sealed class ParticleOverlay : Overlay
+public sealed partial class ParticleOverlay : Overlay
 {
-    [Dependency] private readonly IEyeManager _eye = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private IEyeManager _eye = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
 
     private readonly ParticleSystem _system;
     private readonly Dictionary<string, ShaderInstance?> _shaderCache = new();

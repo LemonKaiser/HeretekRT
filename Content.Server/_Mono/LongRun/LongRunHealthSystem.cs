@@ -29,7 +29,7 @@ namespace Content.Server._Mono.LongRun;
 /// Collects low-frequency, read-only health information for long-running rounds.
 /// The system deliberately keeps a bounded sample buffer and never mutates gameplay state.
 /// </summary>
-public sealed class LongRunHealthSystem : EntitySystem
+public sealed partial class LongRunHealthSystem : EntitySystem
 {
     private const int FrameSampleCapacity = 512;
     private const double BytesPerMebibyte = 1024d * 1024d;

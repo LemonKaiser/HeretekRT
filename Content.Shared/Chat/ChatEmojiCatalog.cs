@@ -13,8 +13,8 @@ namespace Content.Shared.Chat;
 /// </summary>
 public sealed partial class ChatEmojiCatalog
 {
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     private static readonly ChatEmojiCategory[] CategoryOrder =
     [

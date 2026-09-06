@@ -17,7 +17,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// same authored orbit phase and speed as the shuttle NAV layer, but use parallax interpolation so
 /// an orbital body reads as distant scenery rather than as a physical map object.
 /// </summary>
-public sealed class KoronusCelestialParallaxOverlay : Overlay
+public sealed partial class KoronusCelestialParallaxOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> FlatBodyShaderId = "KoronusCelestialTexture";
 

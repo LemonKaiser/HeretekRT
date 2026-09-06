@@ -11,11 +11,11 @@ namespace Content.Server._Forge.Barks;
 /// <summary>
 ///     Sends a selected bark to clients when an entity speaks.
 /// </summary>
-public sealed class BarkSystem : EntitySystem
+public sealed partial class BarkSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     private bool _enabled;
 

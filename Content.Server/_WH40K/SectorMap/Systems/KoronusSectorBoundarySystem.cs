@@ -21,7 +21,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Enforces the authored system radius independently of physics collisions, including for ghosts.
 /// </summary>
-public sealed class KoronusSectorBoundarySystem : EntitySystem
+public sealed partial class KoronusSectorBoundarySystem : EntitySystem
 {
     private const float GridSafetyMargin = 5f;
     private const float EmergencyDeletionMargin = 1f;

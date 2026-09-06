@@ -61,7 +61,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Infrastructure protection is deliberately separate: only explicit ProtectedGrid entities are
 /// made immune, so generated asteroids and procedural terrain remain destructible.
 /// </summary>
-public sealed class KoronusSafetyPolicySystem : EntitySystem
+public sealed partial class KoronusSafetyPolicySystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private SharedTransformSystem _transform = default!;

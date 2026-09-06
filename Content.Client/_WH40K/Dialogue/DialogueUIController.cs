@@ -20,7 +20,7 @@ using AudioComponent = Robust.Shared.Audio.Components.AudioComponent;
 
 namespace Content.Client._WH40K.Dialogue;
 
-public sealed class DialogueUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
+public sealed partial class DialogueUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
 {
     private const float DialogueMusicSidechainDuckDb = 8f;
     private const float DialogueMusicSidechainTail = 0.2f;

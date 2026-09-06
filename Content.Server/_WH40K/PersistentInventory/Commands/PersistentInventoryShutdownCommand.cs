@@ -8,8 +8,8 @@ namespace Content.Server._WH40K.PersistentInventory.Commands;
 [AdminCommand(AdminFlags.Host)]
 public sealed partial class PersistentInventoryShutdownCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IBaseServer _server = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IBaseServer _server = default!;
 
     public string Command => "persistentinv_shutdown";
     public string Description =>

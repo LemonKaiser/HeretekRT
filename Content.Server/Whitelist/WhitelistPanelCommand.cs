@@ -6,7 +6,7 @@ using Robust.Shared.Console;
 namespace Content.Server.Whitelist;
 
 [AdminCommand(AdminFlags.Whitelist)]
-public sealed class WhitelistPanelCommand : LocalizedCommands
+public sealed partial class WhitelistPanelCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _euis = default!;
 

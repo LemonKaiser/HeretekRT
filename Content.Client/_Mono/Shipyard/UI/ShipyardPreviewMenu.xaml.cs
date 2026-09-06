@@ -28,13 +28,14 @@ public sealed partial class ShipyardPreviewMenu : FancyWindow
 
     public void UpdateMenu()
     {
-        if (!_previewSystem.CurrentGrid.HasValue)
+        if (!_previewSystem.TryGetCurrentGrid(out var grid) ||
+            !_entityMan.TryGetComponent<MetaDataComponent>(grid.Owner, out var metadata))
             return;
 
         var msg = new FormattedMessage(_previewSystem.GetGridData());
 
         ShipData.Text = msg.ToString();
-        ShipName.Text = _entityMan.MetaQuery.Comp(_previewSystem.CurrentGrid.Value).EntityName;
+        ShipName.Text = metadata.EntityName;
     }
 }
 

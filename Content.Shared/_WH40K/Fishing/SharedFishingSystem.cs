@@ -8,11 +8,11 @@ namespace Content.Shared._WH40K.Fishing;
 /// <summary>
 /// Starts fishing from a map-authored spot. Catch creation is server-authoritative.
 /// </summary>
-public sealed class SharedFishingSystem : EntitySystem
+public sealed partial class SharedFishingSystem : EntitySystem
 {
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
 
     public override void Initialize()
     {

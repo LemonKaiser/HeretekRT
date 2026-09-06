@@ -112,7 +112,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
             return;
 
         HandleHighestLowestEarners(allScores);
-        ReportLedger();
+        ReportWebhook(ReportLedger());
     }
 
     private void GetBuiltRoundEndSummary(ref RoundEndTextAppendEvent ev, ref List<BankData> bankData)
@@ -224,7 +224,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         builder.AppendLine(highestLosses);
 
         var finalRelayText = FormattedMessage.RemoveMarkupPermissive(builder.ToString());
-        ReportRound(finalRelayText);
+        ReportWebhook(ReportRound(finalRelayText));
     }
 
     private void OnPlayerSpawningEvent(PlayerSpawnCompleteEvent ev)
@@ -470,7 +470,24 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         var reply = await request.Content.ReadAsStringAsync();
         if (!request.IsSuccessStatusCode)
         {
-            Logger.ErrorS("mining", $"Discord returned bad status code when posting message: {request.StatusCode}\nResponse: {reply}");
+            Logger.ErrorS("discord", $"Discord returned bad status code when posting message: {request.StatusCode}\nResponse: {reply}");
+        }
+    }
+
+    private void ReportWebhook(Task task)
+    {
+        _ = ObserveWebhookAsync(task);
+    }
+
+    private async Task ObserveWebhookAsync(Task task)
+    {
+        try
+        {
+            await task;
+        }
+        catch (Exception exception)
+        {
+            Logger.ErrorS("discord", $"Failed to post Discord leaderboard webhook: {exception}");
         }
     }
 

@@ -9,10 +9,10 @@ namespace Content.Server._Mono.PersonalShield;
 /// <summary>
 /// Replicates the short shield-hit response only after PersonalShield has spent charge.
 /// </summary>
-public sealed class PersonalShieldParticleSystem : EntitySystem
+public sealed partial class PersonalShieldParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

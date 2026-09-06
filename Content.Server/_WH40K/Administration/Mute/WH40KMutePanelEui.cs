@@ -13,7 +13,7 @@ using Robust.Shared.Network;
 
 namespace Content.Server._WH40K.Administration.Mute;
 
-public sealed class WH40KMutePanelEui : BaseEui
+public sealed partial class WH40KMutePanelEui : BaseEui
 {
     [Dependency] private IAdminActionGuard _adminActionGuard = default!;
     [Dependency] private IAdminManager _admins = default!;

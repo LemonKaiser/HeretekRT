@@ -10,7 +10,7 @@ namespace Content.Client._WH40K.Augments;
 [GenerateTypedNameReferences]
 public sealed partial class AugmentToolPanelMenu : RadialMenu
 {
-    [Dependency] private readonly EntityManager _entities = default!;
+    [Dependency] private EntityManager _entities = default!;
 
     public event Action<EntityUid?>? SendSwitchMessage;
 

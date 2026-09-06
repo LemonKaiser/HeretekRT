@@ -26,7 +26,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Replaces the round's main map with Footfall and preloads every configured remote system on a paused map.
 /// </summary>
-public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleComponent>
+public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleComponent>
 {
     private const int AngularPlacementAttempts = 360;
     private const float ObjectPlacementPadding = 300f;
@@ -741,7 +741,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
     private static float GetBodyPlacementRadius(KoronusCelestialBodyPrototype body)
     {
-        return MathF.Max(MathF.Max(0f, body.NavVisualRadius), MathF.Max(0f, body.LandingApproachRadius));
+        return MathF.Max(body.PlacementVisualRadius, MathF.Max(0f, body.LandingApproachRadius));
     }
 
     private static float GetGridHalfDiagonal(MapGridComponent grid)

@@ -4,7 +4,8 @@
   sector: KoronusExpanse
   displayName: Furibundus (Footfall)
   uiPosition: 0.541, 0.871
-  initialGridSpawnDistance: 3000
+  # Keep the starter grid beyond Furibundus and the two local orbital bodies.
+  initialGridSpawnDistance: 7000
   initialGridDisplayName: Футфол
   # The round-start Footfall grid is moved to a random angle at this radius from Furibundus.
   spaceMode: Planetary
@@ -46,8 +47,8 @@
   displayName: Sotto's Tomb
   uiPosition: 0.496, 0.841
   initialGridPath: /Maps/_Mono/POI/sevastopol.yml
-  # The facility is kept away from the stellar centre and the planet's outer orbit.
-  initialGridSpawnDistance: 3000
+  # The facility clears the enlarged cold star while remaining inside the Ice World's orbit.
+  initialGridSpawnDistance: 4000
   spaceMode: Planetary
   stellarCenter: 0, 4000
   # The Ice World's 5800 m orbit, its navigation marker and orbital launch point fit inside this boundary.
@@ -65,11 +66,12 @@
   displayName: Trinnitos (Foulstone)
   uiPosition: 0.529, 0.731
   initialGridPath: /Maps/_NF/POI/trade.yml
-  initialGridSpawnDistance: 3000
-  # Each round the trade station is placed at a random angle 3000 m from the star.
+  # Keep the trade station beyond Foulstone's outer ring and the red giant's corona.
+  initialGridSpawnDistance: 12000
+  # Each round the trade station is placed at a random angle outside all planetary rings.
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  # Внешняя орбита Фоулстоуна — 5700 м; запас включает его радиус, площадку подхода
+  # Внешняя орбита Фоулстоуна — 9800 м; запас включает его радиус, площадку подхода
   # и точку выхода шаттла на орбиту.
   boundaryRadius: 24000
   enabled: true

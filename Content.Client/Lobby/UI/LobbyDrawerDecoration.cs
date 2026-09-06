@@ -10,12 +10,12 @@ namespace Content.Client.Lobby.UI;
 /// <summary>
 /// Fine animated accents painted above the real SS14 chat without replacing its controls.
 /// </summary>
-internal sealed class LobbyDrawerDecoration : Control
+internal sealed partial class LobbyDrawerDecoration : Control
 {
     private static readonly Color Gold = Color.FromHex("#E5C879");
     private static readonly ProtoId<ShaderPrototype> RuleShaderId = "HeretekLobbyDrawerRule";
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
     private readonly ShaderInstance _ruleShader;
 
     public float Pulse { get; set; }

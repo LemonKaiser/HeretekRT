@@ -13,7 +13,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client.UserInterface.Systems.Storage.Controls;
 
-public sealed class ItemGridPiece : Control, IEntityControl
+public sealed partial class ItemGridPiece : Control, IEntityControl
 {
     private readonly IEntityManager _entityManager;
     private readonly StorageUIController _storageController;
