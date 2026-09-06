@@ -223,7 +223,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_netManager.IsServer)
         {
             _popup.PopupEntity(Loc.GetString("reflect-shot"), user);
-            _audio.PlayPvs(reflect.SoundOnReflect, user, AudioHelpers.WithVariation(0.05f, _random));
+            _audio.PlayPvs(reflect.SoundOnReflect, user, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.05f));
         }
 
         if (Resolve(projectile, ref projectileComp, false))
@@ -285,7 +285,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_netManager.IsServer)
         {
             _popup.PopupEntity(Loc.GetString("reflect-shot"), user);
-            _audio.PlayPvs(reflect.SoundOnReflect, user, AudioHelpers.WithVariation(0.05f, _random));
+            _audio.PlayPvs(reflect.SoundOnReflect, user, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.05f));
         }
 
         // WD EDIT START

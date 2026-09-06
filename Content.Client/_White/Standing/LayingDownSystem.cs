@@ -15,6 +15,7 @@ public sealed partial class LayingDownSystem : SharedLayingDownSystem
     [Dependency] private StandingStateSystem _standing = default!;
     [Dependency] private AnimationPlayerSystem _animation = default!;
     [Dependency] private SharedBuckleSystem _buckle = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {
@@ -39,7 +40,7 @@ public sealed partial class LayingDownSystem : SharedLayingDownSystem
         if (_animation.HasRunningAnimation(uid, "rotate"))
             return;
 
-        if (!TryComp<TransformComponent>(uid, out var transform)
+        if (!TryComp(uid, out TransformComponent? transform)
             || !TryComp<SpriteComponent>(uid, out var sprite)
             || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
         {
@@ -51,12 +52,12 @@ public sealed partial class LayingDownSystem : SharedLayingDownSystem
         if (rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North)
         {
             rotationVisuals.HorizontalRotation = Angle.FromDegrees(270);
-            sprite.Rotation = Angle.FromDegrees(270);
+            _sprite.SetRotation((uid, sprite), Angle.FromDegrees(270));
             return;
         }
 
         rotationVisuals.HorizontalRotation = Angle.FromDegrees(90);
-        sprite.Rotation = Angle.FromDegrees(90);
+        _sprite.SetRotation((uid, sprite), Angle.FromDegrees(90));
     }
 
     private void OnCheckAutoGetUp(CheckAutoGetUpEvent ev, EntitySessionEventArgs args)
@@ -66,7 +67,7 @@ public sealed partial class LayingDownSystem : SharedLayingDownSystem
 
         var uid = GetEntity(ev.User);
 
-        if (!TryComp<TransformComponent>(uid, out var transform) || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
+        if (!TryComp(uid, out TransformComponent? transform) || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
             return;
 
         var rotation = transform.LocalRotation + (_eyeManager.CurrentEye.Rotation - (transform.LocalRotation - transform.WorldRotation));

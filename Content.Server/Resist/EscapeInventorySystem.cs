@@ -7,18 +7,12 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Server.Storage.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.DoAfter;
-using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
-using Content.Shared.Inventory;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Resist;
-using Content.Shared.Storage;
 using Robust.Shared.Containers;
-using Content.Server.Storage.Components;
-using Content.Server.Carrying;
 using Content.Shared.Actions;
-using Content.Shared.Movement.Systems;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Resist;
@@ -35,8 +29,7 @@ public sealed partial class EscapeInventorySystem : EntitySystem
     [Dependency] private  EntityManager _entityManager = default!;
 
     // Frontier - cancel inventory escape
-    [ValidatePrototypeId<EntityPrototype>]
-    private readonly string _escapeCancelAction = "ActionCancelEscape";
+    private readonly EntProtoId _escapeCancelAction = "ActionCancelEscape";
 
     /// <summary>
     /// You can't escape the hands of an entity this many times more massive than you.

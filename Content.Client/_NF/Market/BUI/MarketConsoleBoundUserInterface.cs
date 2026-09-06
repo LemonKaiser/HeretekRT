@@ -1,4 +1,4 @@
-﻿using Content.Client._NF.Market.UI;
+using Content.Client._NF.Market.UI;
 using Content.Shared._NF.Market.BUI;
 using Content.Shared._NF.Market.Events;
 using JetBrains.Annotations;
@@ -78,6 +78,6 @@ public sealed class MarketConsoleBoundUserInterface : BoundUserInterface
         base.Dispose(disposing);
         if (!disposing)
             return;
-        _menu?.Dispose();
+        _menu?.Orphan();
     }
 }

@@ -75,8 +75,7 @@ public sealed partial class ChatUIController : UIController
     [UISystemDependency] private readonly RoleCodewordSystem? _roleCodewordSystem = default!;
     [UISystemDependency] private readonly WH40KMuteSystem? _muteSystem = default;
 
-    [ValidatePrototypeId<ColorPalettePrototype>]
-    private const string ChatNamePalette = "ChatNames";
+    private static readonly ProtoId<ColorPalettePrototype> ChatNamePalette = "ChatNames";
     private string[] _chatNameColors = default!;
     private bool _chatNameColorsEnabled;
 
@@ -511,7 +510,7 @@ public sealed partial class ChatUIController : UIController
     private void EnqueueSpeechBubble(EntityUid entity, ChatMessage message, SpeechBubble.SpeechType speechType)
     {
         // Don't enqueue speech bubbles for other maps. TODO: Support multiple viewports/maps?
-        if (EntityManager.GetComponent<TransformComponent>(entity).MapID != _eye.CurrentMap)
+        if (EntityManager.GetComponent<TransformComponent>(entity).MapID != _eye.CurrentEye.Position.MapId)
             return;
 
         if (!_queuedSpeechBubbles.TryGetValue(entity, out var queueData))
@@ -527,7 +526,7 @@ public sealed partial class ChatUIController : UIController
     {
         bubble.OnDied -= SpeechBubbleDied;
         bubble.OnContentSizeChanged -= SpeechBubbleContentSizeChanged;
-        bubble.Dispose();
+        bubble.Orphan();
 
         if (!_activeSpeechBubbles.TryGetValue(entityUid, out var list))
             return;

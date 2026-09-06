@@ -55,7 +55,7 @@ namespace Content.Client.Atmos.Overlays
             _entManager = entManager;
             _mapSystem = entManager.System<SharedMapSystem>();
             _xformSys = xformSys;
-            _shader = protoMan.Index<ShaderPrototype>("unshaded").Instance();
+            _shader = protoMan.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance();
             ZIndex = GasOverlayZIndex;
 
             _gasCount = system.VisibleGasId.Length;

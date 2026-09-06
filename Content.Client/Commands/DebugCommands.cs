@@ -50,11 +50,12 @@ internal sealed partial class ShowSubFloorForever : LocalizedCommands
         _entitySystemManager.GetEntitySystem<SubFloorHideSystem>().ShowAll = true;
 
         var entMan = IoCManager.Resolve<IEntityManager>();
-        var components = entMan.EntityQuery<SubFloorHideComponent, SpriteComponent>(true);
+        var components = entMan.EntityQueryEnumerator<SubFloorHideComponent, SpriteComponent>();
+        var spriteSystem = entMan.System<SpriteSystem>();
 
-        foreach (var (_, sprite) in components)
+        while (components.MoveNext(out var uid, out _, out var sprite))
         {
-            sprite.DrawDepth = (int) DrawDepth.Overlays;
+            spriteSystem.SetDrawDepth((uid, sprite), (int) DrawDepth.Overlays);
         }
     }
 }

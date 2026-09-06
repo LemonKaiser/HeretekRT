@@ -52,6 +52,12 @@ flavor-base-horrible = horrible
 flavor-base-terrible = terrible
 flavor-base-mindful = mindful
 flavor-base-chewy = chewy
+flavor-base-raw = raw
+flavor-base-cooked = cooked
+flavor-base-floury = floury
+flavor-base-greasey = greasy
+flavor-base-metal = metallic
+flavor-base-salt = salty
 flavor-base-trashy = trashy
 
 # Complex flavors. Put a flavor here when you want something that's more
@@ -59,6 +65,15 @@ flavor-base-trashy = trashy
 
 flavor-complex-nothing = like nothing
 flavor-complex-honey = like honey
+flavor-complex-antiseptic = like antiseptic
+flavor-complex-carrots = like carrots
+flavor-complex-cheese = like cheese
+flavor-complex-chili = like chili
+flavor-complex-eggs = like eggs
+flavor-complex-meat = like meat
+flavor-complex-mushrooms = like mushrooms
+flavor-complex-oil = like oil
+flavor-complex-potato = like potato
 
 # Condiments
 

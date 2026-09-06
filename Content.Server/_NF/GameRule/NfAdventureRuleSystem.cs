@@ -390,7 +390,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
 
     private async Task ReportRound(string message, int color = 0x77DDE7)
     {
-        Logger.InfoS("discord", message);
+            Logger.GetSawmill("discord").Info(message);
         var webhookUrl = _cfg.GetCVar(NFCCVars.DiscordLeaderboardWebhook);
 
         if (webhookUrl == string.Empty)
@@ -432,7 +432,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         var ledgerPrintout = _bank.GetLedgerPrintout();
         if (string.IsNullOrEmpty(ledgerPrintout))
             return;
-        Logger.InfoS("discord", ledgerPrintout);
+            Logger.GetSawmill("discord").Info(ledgerPrintout);
 
         var serverName = _baseServer.ServerName;
         var gameTicker = _entSys.GetEntitySystemOrNull<GameTicker>();
@@ -470,7 +470,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         var reply = await request.Content.ReadAsStringAsync();
         if (!request.IsSuccessStatusCode)
         {
-            Logger.ErrorS("discord", $"Discord returned bad status code when posting message: {request.StatusCode}\nResponse: {reply}");
+            Logger.GetSawmill("discord").Error($"Discord returned bad status code when posting message: {request.StatusCode}\nResponse: {reply}");
         }
     }
 
@@ -487,7 +487,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         }
         catch (Exception exception)
         {
-            Logger.ErrorS("discord", $"Failed to post Discord leaderboard webhook: {exception}");
+            Logger.GetSawmill("discord").Error($"Failed to post Discord leaderboard webhook: {exception}");
         }
     }
 

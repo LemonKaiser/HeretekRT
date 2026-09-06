@@ -99,12 +99,11 @@ public sealed partial class PlayerTab : Control
         RefreshPlayerList(_players);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        base.Dispose(disposing);
+        base.ExitedTree();
 
-        if (disposing)
-        {
+
             _adminSystem.PlayerListChanged -= RefreshPlayerList;
             _adminSystem.OverlayEnabled -= OverlayEnabled;
             _adminSystem.OverlayDisabled -= OverlayDisabled;
@@ -112,7 +111,7 @@ public sealed partial class PlayerTab : Control
             OverlayButton.OnPressed -= OverlayButtonPressed;
 
             ListHeader.OnHeaderClicked -= HeaderClicked;
-        }
+
     }
 
     #region ListContainer

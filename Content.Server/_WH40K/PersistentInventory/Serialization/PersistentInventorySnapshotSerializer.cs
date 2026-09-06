@@ -482,7 +482,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                      .Select(pair => pair.Value))
         {
             if (!TerminatingOrDeleted(uid))
-                EntityManager.DeleteEntity(uid);
+                Del(uid);
         }
     }
 
@@ -517,7 +517,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         state.EntityIds.Add(uid, entityId);
 
         var componentStates = new List<PersistentInventoryComponentState>();
-        foreach (var component in EntityManager.GetComponents(uid)
+        foreach (var component in AllComps(uid)
                      .OrderBy(component => _componentFactory.GetComponentName(component.GetType()), StringComparer.Ordinal))
         {
             var componentId = _componentFactory.GetComponentName(component.GetType());
@@ -545,7 +545,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
 
         var children = new List<PersistentInventoryChild>();
         var persistedContainers = new List<(string Id, BaseContainer Container)>();
-        if (EntityManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager))
+        if (TryComp(uid, out ContainerManagerComponent? containerManager))
         {
             foreach (var container in _containers.GetAllContainers(uid, containerManager))
             {
@@ -680,7 +680,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         var protectedComponent =
             TryComp(uid, out MindContainerComponent? mindContainer) && mindContainer.HasMind
                 ? "MindContainer"
-                : EntityManager.GetComponents(uid)
+                : AllComps(uid)
                     .Select(component => _componentFactory.GetComponentName(component.GetType()))
                     .Order(StringComparer.Ordinal)
                     .FirstOrDefault(IsProtectedGraphComponent);
@@ -739,7 +739,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                      .OrderBy(pair => pair.Key)
                      .Select(pair => pair.Value))
         {
-            if (!EntityManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager))
+            if (!TryComp(uid, out ContainerManagerComponent? containerManager))
                 continue;
 
             foreach (var container in _containers.GetAllContainers(uid, containerManager).ToArray())
@@ -749,7 +749,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                     continue;
 
                 foreach (var child in container.ContainedEntities.ToArray())
-                    EntityManager.DeleteEntity(child);
+                    Del(child);
             }
         }
     }
@@ -1057,7 +1057,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         foreach (var uid in spawned.OrderByDescending(pair => pair.Key).Select(pair => pair.Value))
         {
             if (!TerminatingOrDeleted(uid))
-                EntityManager.DeleteEntity(uid);
+                Del(uid);
         }
 
         return RestoreFailed(error);

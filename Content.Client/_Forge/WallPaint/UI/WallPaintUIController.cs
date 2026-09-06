@@ -30,7 +30,7 @@ public sealed partial class WallPaintUIController : UIController, IOnStateExited
         if (_window == null)
             return;
 
-        _window.Dispose();
+        _window.Orphan();
         _window = null;
     }
 

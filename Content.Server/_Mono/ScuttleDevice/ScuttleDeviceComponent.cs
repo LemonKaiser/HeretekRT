@@ -115,7 +115,7 @@ public sealed partial class ScuttleDeviceComponent : Component
 
     public TimeSpan NukeSongLength;
 
-    public ResolvedSoundSpecifier SelectedNukeSong = String.Empty;
+    public ResolvedSoundSpecifier SelectedNukeSong = null!;
 
     /// <summary>
     ///     Check if nuke has already played last alert sound

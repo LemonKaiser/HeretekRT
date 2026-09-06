@@ -100,29 +100,29 @@ public sealed partial class DockingScreen : BoxContainer
     {
         if (ToggleFTLLockRequest == null)
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but ToggleFTLLockRequest is null");
+            Logger.GetSawmill("shuttle").Debug($"FTL Lock button pressed but ToggleFTLLockRequest is null");
             return;
         }
 
         if (DockingControl.GridEntity == null)
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but GridEntity is null");
+            Logger.GetSawmill("shuttle").Debug($"FTL Lock button pressed but GridEntity is null");
             return;
         }
 
         // Find all docks that belong to the current shuttle
         var currentGrid = DockingControl.GridEntity.Value;
         var netEntity = _entManager.GetNetEntity(currentGrid);
-        Logger.DebugS("shuttle", $"FTL Lock button pressed with enabled={enabled}, GridEntity={currentGrid}, NetEntity={netEntity}");
+        Logger.GetSawmill("shuttle").Debug($"FTL Lock button pressed with enabled={enabled}, GridEntity={currentGrid}, NetEntity={netEntity}");
 
         if (!Docks.TryGetValue(netEntity, out var shuttleDocks))
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but no docks found for NetEntity={netEntity}");
+            Logger.GetSawmill("shuttle").Debug($"FTL Lock button pressed but no docks found for NetEntity={netEntity}");
 
             // Even if there are no docks, we still want to toggle FTL for the main grid
             var emptyList = new List<NetEntity> { netEntity };
             ToggleFTLLockRequest.Invoke(emptyList, enabled);
-            Logger.DebugS("shuttle", $"FTL Lock request sent with enabled={enabled} for main grid only");
+            Logger.GetSawmill("shuttle").Debug($"FTL Lock request sent with enabled={enabled} for main grid only");
             return;
         }
 
@@ -138,12 +138,12 @@ public sealed partial class DockingScreen : BoxContainer
             dockedShuttles.Add(netEntity);
         }
 
-        Logger.DebugS("shuttle", $"FTL Lock button pressed, found {dockedShuttles.Count} total grids (including main grid)");
+        Logger.GetSawmill("shuttle").Debug($"FTL Lock button pressed, found {dockedShuttles.Count} total grids (including main grid)");
 
         // Pass the enabled parameter to the event handler
         // The server-side will handle setting this state on the current entity and any docked shuttles
         ToggleFTLLockRequest.Invoke(dockedShuttles, enabled);
-        Logger.DebugS("shuttle", $"FTL Lock request sent with enabled={enabled}");
+        Logger.GetSawmill("shuttle").Debug($"FTL Lock request sent with enabled={enabled}");
 
         // Immediately update the lock indicators to give immediate visual feedback
         // This ensures the UI is consistent with the button the user just pressed
@@ -322,7 +322,7 @@ public sealed partial class DockingScreen : BoxContainer
             // Log the actual state we're seeing vs what we're showing
             if (_entManager.TryGetComponent<FTLLockComponent>(dockedEntity, out var lockComp))
             {
-                Logger.DebugS("shuttle", $"UpdateDockLockIndicators: Entity {dockedEntity} component says FTLLock.Enabled = {lockComp.Enabled}, UI showing = {isLocked}");
+                Logger.GetSawmill("shuttle").Debug($"UpdateDockLockIndicators: Entity {dockedEntity} component says FTLLock.Enabled = {lockComp.Enabled}, UI showing = {isLocked}");
             }
 
             // Get or create lock indicator
@@ -355,8 +355,8 @@ public sealed partial class DockingScreen : BoxContainer
     {
         DockingControl.BuildDocks(shuttle);
         var currentDock = DockingControl.ViewedDock;
-        // DockedWith.DisposeAllChildren();
-        DockPorts.DisposeAllChildren();
+        // DockedWith.RemoveAllChildren();
+        DockPorts.RemoveAllChildren();
         _ourDockButtons.Clear();
 
         if (shuttle == null)
@@ -416,7 +416,7 @@ public sealed partial class DockingScreen : BoxContainer
                 var dockedEntity = _entManager.GetEntity(dock.GridDockedWith.Value);
                 if (_entManager.TryGetComponent<FTLLockComponent>(dockedEntity, out var lockComp))
                 {
-                    Logger.DebugS("shuttle", $"Dock {dock.Name} connected to entity {dockedEntity}: Component says FTLLock.Enabled = {lockComp.Enabled}, UI button state = {isLocked}");
+                    Logger.GetSawmill("shuttle").Debug($"Dock {dock.Name} connected to entity {dockedEntity}: Component says FTLLock.Enabled = {lockComp.Enabled}, UI button state = {isLocked}");
                 }
 
                 // Add a lock icon/indicator for the connected grid

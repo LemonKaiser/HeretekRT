@@ -84,15 +84,13 @@ namespace Content.Client.Lobby.UI
             _adminManager.AdminStatusUpdated += RefreshDecorationsButton;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void ExitedTree()
         {
-            base.Dispose(disposing);
-            if (!disposing)
-                return;
+            base.ExitedTree();
 
             _cfg.UnsubValueChanged(CCVars.Wh40kDecorationsMode, OnDecorationsModeChanged);
             _adminManager.AdminStatusUpdated -= RefreshDecorationsButton;
-            _decorationsWindow?.Dispose();
+            _decorationsWindow?.Orphan();
             _decorationsWindow = null;
         }
 
@@ -114,7 +112,7 @@ namespace Content.Client.Lobby.UI
         public void ReloadCharacterPickers()
         {
             _createNewCharacterButton.Orphan();
-            Characters.DisposeAllChildren();
+            Characters.RemoveAllChildren();
 
             var numberOfFullSlots = 0;
             var characterButtonsGroup = new ButtonGroup();

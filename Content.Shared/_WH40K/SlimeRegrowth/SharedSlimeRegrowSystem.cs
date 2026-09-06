@@ -126,7 +126,7 @@ public abstract partial class SharedSlimeRegrowSystem : EntitySystem
 
                 if (childSlot.Part is not { } partId ||
                     !_prototypes.TryIndex<EntityPrototype>(partId, out var partPrototype) ||
-                    !partPrototype.TryGetComponent<BodyPartComponent>(out var part, _componentFactory) ||
+                    !partPrototype.TryComp<BodyPartComponent>(out var part, _componentFactory) ||
                     part.IsVital)
                 {
                     continue;

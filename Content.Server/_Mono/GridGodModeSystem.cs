@@ -131,7 +131,7 @@ public sealed partial class GridGodModeSystem : EntitySystem
             foreach (var entity in component.ProtectedEntities)
             {
                 if (TerminatingOrDeleted(entity) ||
-                    !TryComp<TransformComponent>(entity, out var transform) ||
+                    !TryComp(entity, out TransformComponent? transform) ||
                     !ev.MapIds.Contains(transform.MapID) ||
                     !TryComp<GodmodeComponent>(entity, out var godmode))
                 {
@@ -165,7 +165,7 @@ public sealed partial class GridGodModeSystem : EntitySystem
 
     private void RefreshEntityProtection(EntityUid entity)
     {
-        if (!TryComp<TransformComponent>(entity, out var transform))
+        if (!TryComp(entity, out TransformComponent? transform))
             return;
 
         var currentGrid = transform.GridUid;
@@ -187,7 +187,7 @@ public sealed partial class GridGodModeSystem : EntitySystem
         // When the component is removed, remove GodMode from all protected entities
         foreach (var entity in component.ProtectedEntities.ToList())
         {
-            if (EntityManager.EntityExists(entity))
+            if (Exists(entity))
             {
                 RemoveGodMode(entity);
             }
@@ -203,7 +203,7 @@ public sealed partial class GridGodModeSystem : EntitySystem
     {
         // Spatial lookup can include an overlapping shuttle or a neighbouring grid. Protection
         // belongs only to entities actually parented to this authored facility grid.
-        if (!TryComp<TransformComponent>(entityUid, out var transform) || transform.GridUid != gridUid)
+        if (!TryComp(entityUid, out TransformComponent? transform) || transform.GridUid != gridUid)
             return;
 
         // Don't apply GodMode to organic entities, ghosts, npcs, or kudzu

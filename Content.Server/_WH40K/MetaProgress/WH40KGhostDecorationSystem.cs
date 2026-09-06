@@ -172,13 +172,15 @@ public sealed partial class WH40KGhostDecorationSystem : EntitySystem
 
     private bool IsDecoratableGhost(EntityUid uid)
     {
-        return TryComp<MetaDataComponent>(uid, out var metadata) &&
-               metadata.EntityPrototype?.ID is GameTicker.ObserverPrototypeName or GameTicker.AdminObserverPrototypeName;
+        return TryComp(uid, out MetaDataComponent? metadata) &&
+               metadata.EntityPrototype is { } prototype &&
+               (prototype == GameTicker.ObserverPrototypeName || prototype == GameTicker.AdminObserverPrototypeName);
     }
 
     private bool IsAdminObserverGhost(EntityUid uid)
     {
-        return TryComp<MetaDataComponent>(uid, out var metadata) &&
-               metadata.EntityPrototype?.ID == GameTicker.AdminObserverPrototypeName;
+        return TryComp(uid, out MetaDataComponent? metadata) &&
+               metadata.EntityPrototype is { } prototype &&
+               prototype == GameTicker.AdminObserverPrototypeName;
     }
 }

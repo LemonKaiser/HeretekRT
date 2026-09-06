@@ -45,7 +45,7 @@ namespace Content.Shared.Throwing
 
         private void ThrowItem(EntityUid uid, ThrownItemComponent component, ref ThrownEvent @event)
         {
-            if (!EntityManager.TryGetComponent(uid, out FixturesComponent? fixturesComponent) ||
+            if (!TryComp(uid, out FixturesComponent? fixturesComponent) ||
                 fixturesComponent.Fixtures.Count != 1 ||
                 !TryComp<PhysicsComponent>(uid, out var body))
             {
@@ -84,7 +84,7 @@ namespace Content.Shared.Throwing
         private void HandlePullStarted(PullStartedMessage message)
         {
             // TODO: this isn't directed so things have to be done the bad way
-            if (EntityManager.TryGetComponent(message.PulledUid, out ThrownItemComponent? thrownItemComponent))
+            if (TryComp(message.PulledUid, out ThrownItemComponent? thrownItemComponent))
                 StopThrow(message.PulledUid, thrownItemComponent);
         }
 
@@ -98,7 +98,7 @@ namespace Content.Shared.Throwing
                     _broadphase.RegenerateContacts((uid, physics));
             }
 
-            if (EntityManager.TryGetComponent(uid, out FixturesComponent? manager))
+            if (TryComp(uid, out FixturesComponent? manager))
             {
                 var fixture = _fixtures.GetFixtureOrNull(uid, ThrowingFixture, manager: manager);
 
@@ -109,7 +109,7 @@ namespace Content.Shared.Throwing
             }
 
             EntityManager.EventBus.RaiseLocalEvent(uid, new StopThrowEvent { User = thrownItemComponent.Thrower }, true);
-            EntityManager.RemoveComponent<ThrownItemComponent>(uid);
+            RemComp<ThrownItemComponent>(uid);
         }
 
         public void LandComponent(EntityUid uid, ThrownItemComponent thrownItem, PhysicsComponent physics, bool playSound)

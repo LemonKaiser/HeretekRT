@@ -52,12 +52,26 @@ flavor-base-horrible = ужасно
 flavor-base-terrible = ужасающе
 flavor-base-mindful = разумно
 flavor-base-chewy = жевательно
+flavor-base-raw = сыро
+flavor-base-cooked = приготовленно
+flavor-base-floury = мучнисто
+flavor-base-greasey = жирно
+flavor-base-metal = металлически
+flavor-base-salt = солёно
 
 # Complex flavors. Put a flavor here when you want something that's more
 # specific.
 
 flavor-complex-nothing = как ничто
 flavor-complex-honey = как мёд
+flavor-complex-carrots = как морковь
+flavor-complex-cheese = как сыр
+flavor-complex-chili = как чили
+flavor-complex-eggs = как яйца
+flavor-complex-meat = как мясо
+flavor-complex-mushrooms = как грибы
+flavor-complex-oil = как масло
+flavor-complex-potato = как картофель
 
 # Condiments
 

@@ -111,7 +111,7 @@ public sealed partial class XenoborgCoreSystem : EntitySystem
             _soundTime = null;
 
             _audio.PlayGlobal(
-                "/Audio/Machines/warning_buzzer_xenoborg.ogg",
+                new Robust.Shared.Audio.SoundPathSpecifier("/Audio/Machines/warning_buzzer_xenoborg.ogg"),
                 Filter.Broadcast(),
                 false);
         }
@@ -140,7 +140,7 @@ public sealed partial class XenoborgCoreSystem : EntitySystem
             _pinpointerWarningTime = null;
 
             _audio.PlayGlobal(
-                "/Audio/Machines/warning_buzzer_xenoborg.ogg",
+                new Robust.Shared.Audio.SoundPathSpecifier("/Audio/Machines/warning_buzzer_xenoborg.ogg"),
                 Filter.Broadcast(),
                 false);
         }

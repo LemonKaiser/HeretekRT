@@ -25,7 +25,7 @@ public sealed partial class BlackFlashOverlay : Overlay
     public BlackFlashOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _baseShader = _proto.Index<ShaderPrototype>("BlackFlash").Instance().Duplicate();
+        _baseShader = _proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("BlackFlash")).Instance().Duplicate();
     }
 
     protected override void Draw(in OverlayDrawArgs args)

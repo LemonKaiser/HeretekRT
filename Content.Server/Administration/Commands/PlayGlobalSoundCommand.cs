@@ -3,6 +3,7 @@ using Content.Server.Audio;
 using Content.Shared.Administration;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Console;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Player;
@@ -99,7 +100,8 @@ public sealed partial class PlayGlobalSoundCommand : IConsoleCommand
         }
 
         audio = audio.AddVolume(-8);
-        _entManager.System<ServerGlobalSoundSystem>().PlayAdminGlobal(filter, args[0], audio, replay);
+        var sound = _entManager.System<SharedAudioSystem>().ResolveSound(new Robust.Shared.Audio.SoundPathSpecifier(args[0]));
+        _entManager.System<ServerGlobalSoundSystem>().PlayAdminGlobal(filter, sound, audio, replay);
     }
 
     public CompletionResult GetCompletion(IConsoleShell shell, string[] args)

@@ -131,7 +131,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
             HasComp<MindContainerComponent>(@using))
         {
             var name = "Unknown";
-            if (TryComp<MetaDataComponent>(args.Using.Value, out var metadata))
+            if (TryComp(args.Using.Value, out MetaDataComponent? metadata))
                 name = metadata.EntityName;
 
             InteractionVerb verb = new()
@@ -495,7 +495,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
                     // Check if any of the station's grids have ForceAnchor
                     bool stationHasForceAnchor = false;
 
-                    if (playerStation != null && EntityManager.EntityExists(playerStation.Value) &&
+                    if (playerStation != null && Exists(playerStation.Value) &&
                         _entityManager.TryGetComponent<StationDataComponent>(playerStation.Value, out var stationData))
                     {
                         foreach (var gridUid in stationData.Grids)
@@ -515,7 +515,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
                     }
 
                     // Only proceed if we found a valid station for this player and it has ForceAnchor
-                    if (playerStation != null && EntityManager.EntityExists(playerStation.Value) &&
+                    if (playerStation != null && Exists(playerStation.Value) &&
                         _entityManager.TryGetComponent<StationJobsComponent>(playerStation.Value, out var stationJobs) &&
                         stationHasForceAnchor)
                     {
@@ -548,7 +548,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
             // Get the job title if available
             jobTitle = _jobs.MindTryGetJobName(mindEntity);
         }
-        else if (TryComp<MetaDataComponent>(bodyId, out var metadata))
+        else if (TryComp(bodyId, out MetaDataComponent? metadata))
         {
             characterName = metadata.EntityName;
         }
@@ -615,7 +615,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         if (isPirate)
         {
             // Use Freelancer channel for pirates
-            if (_prototypeManager.TryIndex<RadioChannelPrototype>("Freelance", out var freelanceChannel))
+            if (_prototypeManager.TryIndex<RadioChannelPrototype>(new Robust.Shared.Prototypes.ProtoId<RadioChannelPrototype>("Freelance"), out var freelanceChannel))
             {
                 _radioSystem.SendRadioMessage(cryopod, message, freelanceChannel, cryopod);
             }
@@ -623,7 +623,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         else if (isTSF)
         {
             // Use TSF channel for TSF - Mono
-            if (_prototypeManager.TryIndex<RadioChannelPrototype>("Nfsd", out var nfsdChannel))
+            if (_prototypeManager.TryIndex<RadioChannelPrototype>(new Robust.Shared.Prototypes.ProtoId<RadioChannelPrototype>("Nfsd"), out var nfsdChannel))
             {
                 _radioSystem.SendRadioMessage(cryopod, message, nfsdChannel, cryopod);
             }

@@ -3,6 +3,8 @@ using Content.Server.Administration.Logs;
 using Content.Server.Construction.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared.Construction;
+using Content.Shared.Tools;
+using Robust.Shared.Prototypes;
 using Content.Shared.Construction.Components;
 using Content.Shared.Construction.EntitySystems;
 using Content.Shared.Construction.Steps;
@@ -383,7 +385,7 @@ namespace Content.Server.Construction
                         interactUsing.User,
                         uid,
                         durationEvent.Duration,
-                        new [] { toolInsertStep.Tool },
+                        new ProtoId<ToolQualityPrototype>[] { toolInsertStep.Tool },
                         new ConstructionInteractDoAfterEvent(EntityManager, interactUsing),
                         out var doAfterId,
                         toolInsertStep.Fuel);

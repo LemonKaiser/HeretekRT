@@ -51,7 +51,7 @@ public sealed partial class MeleeWeaponSystem
         {
             if (user != weapon
                 && TryComp(weapon, out SpriteComponent? weaponSpriteComponent))
-                sprite.CopyFrom(weaponSpriteComponent);
+                _sprite.CopySprite((weapon, weaponSpriteComponent), (animationUid, sprite));
 
             spriteRotation = meleeWeaponComponent.WideAnimationRotation;
 
@@ -61,7 +61,7 @@ public sealed partial class MeleeWeaponSystem
             // This is presentation only. Combat cooldowns and weapon data stay untouched.
             animationLength = Math.Clamp(0.6f / Math.Max(GetAttackRate(weapon, user, meleeWeaponComponent), 0.1f), 0.08f, 0.6f);
         }
-        sprite.Rotation = localPos.ToWorldAngle();
+        _sprite.SetRotation((animationUid, sprite), localPos.ToWorldAngle());
         var xform = _xformQuery.GetComponent(animationUid);
         TrackUserComponent track;
 
@@ -140,7 +140,7 @@ public sealed partial class MeleeWeaponSystem
     {
         var startOffset = Vector2.Zero;
         var endOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 1.2f));
-        sprite.Comp.Rotation += spriteRotation;
+        _sprite.SetRotation(sprite.AsNullable(), sprite.Comp.Rotation + spriteRotation);
 
         return new Animation()
         {

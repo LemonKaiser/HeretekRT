@@ -62,7 +62,7 @@ public sealed partial class DeadStartupButtonSystem : SharedDeadStartupButtonSys
             return;
         }
 
-        _audio.PlayPvs(comp.BuzzSound, uid, AudioHelpers.WithVariation(0.05f, _robustRandom));
+        _audio.PlayPvs(comp.BuzzSound, uid, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.05f));
         _popup.PopupEntity(Loc.GetString("dead-startup-system-reboot-failed", ("target", MetaData(uid).EntityName)), uid);
         Spawn("EffectSparks", Transform(uid).Coordinates);
     }

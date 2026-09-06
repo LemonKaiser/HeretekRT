@@ -29,7 +29,7 @@ namespace Content.Client.Singularity
         public SingularityOverlay()
         {
             IoCManager.InjectDependencies(this);
-            _shader = _prototypeManager.Index<ShaderPrototype>("Singularity").Instance().Duplicate();
+            _shader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("Singularity")).Instance().Duplicate();
             _shader.SetParameter("maxDistance", MaxDistance * EyeManager.PixelsPerMeter);
             _entMan.EventBus.SubscribeEvent<PixelToMapEvent>(EventSource.Local, this, OnProjectFromScreenToMap);
             ZIndex = 101; // Should be drawn after the placement overlay so admins placing items near the singularity can tell where they're going.

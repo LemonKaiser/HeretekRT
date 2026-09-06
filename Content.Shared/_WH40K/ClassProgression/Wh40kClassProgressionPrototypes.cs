@@ -22,7 +22,7 @@ public static class Wh40kClassProgressionConstants
 /// <summary>
 /// One of the two skill doctrines belonging to an account class.
 /// </summary>
-[Prototype("wh40kClassSpecialization")]
+[Prototype]
 public sealed partial class Wh40kClassSpecializationPrototype : IPrototype
 {
     [IdDataField]
@@ -54,7 +54,7 @@ public sealed partial class Wh40kClassSpecializationPrototype : IPrototype
 /// <summary>
 /// Persistent entitlement described by content data. Runtime state never belongs here.
 /// </summary>
-[Prototype("wh40kClassSkill")]
+[Prototype]
 public sealed partial class Wh40kClassSkillPrototype : IPrototype
 {
     [IdDataField]
@@ -120,7 +120,7 @@ public sealed partial class Wh40kClassSkillPrototype : IPrototype
 /// <summary>
 /// Closed, data-only effect descriptor. The enum is the dispatch boundary; YAML never names a C# type.
 /// </summary>
-[Prototype("wh40kClassSkillEffect")]
+[Prototype]
 public sealed partial class Wh40kClassSkillEffectPrototype : IPrototype
 {
     [IdDataField]
@@ -251,7 +251,7 @@ public sealed partial class Wh40kClassSkillEffectPrototype : IPrototype
 /// <summary>
 /// Whitelist entry allowing one suitable held or equipped item's immutable rarity roll to scale one effect parameter.
 /// </summary>
-[Prototype("wh40kClassRarityModifier")]
+[Prototype]
 public sealed partial class Wh40kClassRarityModifierPrototype : IPrototype
 {
     [IdDataField]

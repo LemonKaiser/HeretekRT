@@ -205,7 +205,7 @@ public sealed partial class MaterialParticleSystem : EntitySystem
         PhysicalCompositionComponent composition,
         out ParticleSurfaceMaterial material)
     {
-        var ids = composition.MaterialComposition.Keys;
+        var ids = composition.MaterialComposition.Keys.Select(id => id.Id);
 
         if (ContainsMaterial(ids, "Glass"))
         {

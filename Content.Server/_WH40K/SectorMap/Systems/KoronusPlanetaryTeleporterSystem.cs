@@ -351,7 +351,7 @@ public sealed partial class KoronusPlanetaryTeleporterSystem : EntitySystem
 
         // Destination surfaces are deliberately paused while empty. They must remain selectable
         // from orbit; Complete() unpauses the chosen surface immediately before moving the mob.
-        var query = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTeleporterComponent, TransformComponent>();
+        var query = AllEntityQuery<KoronusPlanetaryTeleporterComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var component, out var transform))
         {
             if (!TryGetSurfaceRuntime(transform.MapID, out var surfaceRuntime) ||

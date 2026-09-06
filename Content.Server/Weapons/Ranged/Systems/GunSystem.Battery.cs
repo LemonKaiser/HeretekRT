@@ -123,7 +123,7 @@ public sealed partial class GunSystem
         if (component is HitscanBatteryAmmoProviderComponent hitscan)
         {
             var dmg = ProtoManager.Index(hitscan.HitscanEntityProto);
-            if (!dmg.TryGetComponent<HitscanBasicDamageComponent>(out var basicDamageComp, Factory))
+            if (!dmg.TryComp<HitscanBasicDamageComponent>(out var basicDamageComp, Factory))
                 return null;
 
             return basicDamageComp.Damage * Damageable.UniversalHitscanDamageModifier;
@@ -147,7 +147,7 @@ public sealed partial class GunSystem
 
         if (component is HitscanBatteryAmmoProviderComponent hitscan &&
             ProtoManager.TryIndex<EntityPrototype>(hitscan.HitscanEntityProto, out var hitscanProto) &&
-            hitscanProto.TryGetComponent<HitscanBasicDamageComponent>(out var hitscanDamage, Factory))
+            hitscanProto.TryComp<HitscanBasicDamageComponent>(out var hitscanDamage, Factory))
         {
             return hitscanDamage.ArmorPenetration;
         }

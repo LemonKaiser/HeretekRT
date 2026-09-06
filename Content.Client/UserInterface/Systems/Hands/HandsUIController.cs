@@ -392,7 +392,7 @@ public sealed partial class HandsUIController : UIController, IOnStateEntered<Ga
             _statusHandRight = null;
 
         _handLookup.Remove(handName);
-        handButton.Dispose();
+        handButton.Orphan();
         UpdateVisibleStatusPanels();
         return true;
     }

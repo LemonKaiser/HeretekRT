@@ -16,14 +16,14 @@ public sealed partial class BuyerDepartmentCondition : ListingCondition
     /// <summary>
     /// A whitelist of department prototypes that can purchase this listing. Only one needs to be found.
     /// </summary>
-    [DataField("whitelist", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<DepartmentPrototype>))]
-    public HashSet<string>? Whitelist;
+    [DataField("whitelist")]
+    public HashSet<ProtoId<DepartmentPrototype>>? Whitelist;
 
     /// <summary>
     /// A blacklist of department prototypes that can purchase this listing. Only one needs to be found.
     /// </summary>
-    [DataField("blacklist", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<DepartmentPrototype>))]
-    public HashSet<string>? Blacklist;
+    [DataField("blacklist")]
+    public HashSet<ProtoId<DepartmentPrototype>>? Blacklist;
 
     public override bool Condition(ListingConditionArgs args)
     {

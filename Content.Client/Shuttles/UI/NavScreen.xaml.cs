@@ -209,7 +209,7 @@ public sealed partial class NavScreen : BoxContainer
 
     private void RebuildBssObjects()
     {
-        BssDestinations.DisposeAllChildren();
+        BssDestinations.RemoveAllChildren();
         _bssObjectsDirty = false;
         if (_navigationSuppressed || _shuttleEntity == null ||
             !_entManager.TryGetComponent(_shuttleEntity.Value, out TransformComponent? shuttleXform) ||

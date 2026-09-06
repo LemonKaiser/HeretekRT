@@ -19,7 +19,6 @@ using DependencyAttribute = Robust.Shared.IoC.DependencyAttribute;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Map;
 using Content.Server.Particles;
-using Prometheus;
 using DroneConsoleComponent = Content.Server.Shuttles.DroneConsoleComponent;
 
 namespace Content.Server.Physics.Controllers;

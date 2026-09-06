@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
@@ -16,7 +16,7 @@ namespace Content.Client.Cooldown
         public CooldownGraphic()
         {
             IoCManager.InjectDependencies(this);
-            _shader = _protoMan.Index<ShaderPrototype>("CooldownAnimation").InstanceUnique();
+            _shader = _protoMan.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("CooldownAnimation")).InstanceUnique();
         }
 
         /// <summary>

@@ -30,7 +30,7 @@ public sealed partial class DrunkOverlay : Overlay
     public DrunkOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _drunkShader = _prototypeManager.Index<ShaderPrototype>("Drunk").InstanceUnique();
+        _drunkShader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("Drunk")).InstanceUnique();
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

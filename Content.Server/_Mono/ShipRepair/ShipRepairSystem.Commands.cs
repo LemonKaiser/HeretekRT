@@ -4,6 +4,7 @@ using Content.Shared._Mono.ShipRepair.Components;
 using Robust.Shared.Console;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Mono.ShipRepair;
 public sealed partial class ShipRepairSystem

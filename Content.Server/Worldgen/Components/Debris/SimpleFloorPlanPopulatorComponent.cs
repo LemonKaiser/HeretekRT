@@ -1,9 +1,10 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Worldgen.Systems.Debris;
 using Content.Server.Worldgen.Tools;
 using Content.Shared.Maps;
 using Content.Shared.Storage;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Dictionary;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Worldgen.Components.Debris;
 
@@ -14,20 +15,19 @@ namespace Content.Server.Worldgen.Components.Debris;
 [Access(typeof(SimpleFloorPlanPopulatorSystem))]
 public sealed partial class SimpleFloorPlanPopulatorComponent : Component
 {
-    private Dictionary<string, EntitySpawnCollectionCache>? _caches;
+    private Dictionary<ProtoId<ContentTileDefinition>, EntitySpawnCollectionCache>? _caches;
 
     /// <summary>
     ///     The prototype facing floor plan populator entries.
     /// </summary>
-    [DataField("entries", required: true,
-        customTypeSerializer: typeof(PrototypeIdDictionarySerializer<List<EntitySpawnEntry>, ContentTileDefinition>))]
-    private Dictionary<string, List<EntitySpawnEntry>> _entries = default!;
+    [DataField("entries", required: true)]
+    private Dictionary<ProtoId<ContentTileDefinition>, List<EntitySpawnEntry>> _entries = default!;
 
     /// <summary>
     ///     The spawn collections used to place entities on different tile types.
     /// </summary>
     [ViewVariables]
-    public Dictionary<string, EntitySpawnCollectionCache> Caches
+    public Dictionary<ProtoId<ContentTileDefinition>, EntitySpawnCollectionCache> Caches
     {
         get
         {
@@ -35,7 +35,7 @@ public sealed partial class SimpleFloorPlanPopulatorComponent : Component
             {
                 _caches = _entries
                     .Select(x =>
-                        new KeyValuePair<string, EntitySpawnCollectionCache>(x.Key,
+                        new KeyValuePair<ProtoId<ContentTileDefinition>, EntitySpawnCollectionCache>(x.Key,
                             new EntitySpawnCollectionCache(x.Value)))
                     .ToDictionary(x => x.Key, x => x.Value);
             }

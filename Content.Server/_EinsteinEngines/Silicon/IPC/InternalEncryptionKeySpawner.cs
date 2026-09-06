@@ -73,14 +73,7 @@ public sealed partial class InternalEncryptionKeySpawner : EntitySystem
             return;
 
         // Ensure earEquipProtoId.Id is not null or empty before spawning
-        var earPrototypeId = earEquipProtoId.Id;
-        if (string.IsNullOrEmpty(earPrototypeId))
-        {
-            Log.Warning($"Attempted to spawn item for slot '{slotName}' but EntProtoId had a null or empty ID.");
-            return;
-        }
-
-        var earEntity = Spawn(earPrototypeId, Comp<TransformComponent>(target).Coordinates);
+        var earEntity = Spawn(earEquipProtoId, Comp<TransformComponent>(target).Coordinates);
 
         if (!HasComp<EncryptionKeyHolderComponent>(earEntity)
             || !TryComp<ContainerFillComponent>(earEntity, out var fillComp)
@@ -94,13 +87,12 @@ public sealed partial class InternalEncryptionKeySpawner : EntitySystem
 
         foreach (var keyProtoId in defaultKeys)
         {
-            var keyToSpawn = keyProtoId;
-            if (string.IsNullOrEmpty(keyToSpawn))
+            if (string.IsNullOrEmpty(keyProtoId.Id))
             {
                 Log.Warning($"Empty key prototype ID found in ContainerFillComponent for {ToPrettyString(earEntity)}.");
                 continue;
             }
-            SpawnInContainerOrDrop(keyToSpawn, target, keyHolderComp.KeyContainer.ID);
+            SpawnInContainerOrDrop(keyProtoId, target, keyHolderComp.KeyContainer.ID);
         }
         QueueDel(earEntity);
     }

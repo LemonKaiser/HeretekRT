@@ -89,14 +89,13 @@ public sealed partial class EmojiPickerButton : ChatPopupButton<EmojiPickerPopup
         AddChild(_icon);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        if (disposing)
-        {
+
             _emojiCatalog.Changed -= OnEmojiCatalogChanged;
             Popup.OnEmojiPicked -= HandleEmojiPicked;
-        }
 
-        base.Dispose(disposing);
+
+        base.ExitedTree();
     }
 }

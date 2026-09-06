@@ -1,4 +1,4 @@
-﻿using Content.Client.Administration.Managers;
+using Content.Client.Administration.Managers;
 using Content.Client.Administration.Systems;
 using Content.Client.Administration.UI;
 using Content.Client.Administration.UI.Tabs.ObjectsTab;
@@ -80,7 +80,7 @@ public sealed partial class AdminUIController : UIController,
     public void OnSystemUnloaded(AdminSystem system)
     {
         if (_window != null)
-            _window.Dispose();
+            _window.Orphan();
 
         _admin.AdminStatusUpdated -= AdminStatusUpdated;
 

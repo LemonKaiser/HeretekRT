@@ -334,10 +334,10 @@ public sealed partial class ContentAudioSystem
                 }
 
                 // if we find a ambient music prototype for our faction, then pick that one!
-                if (_proto.TryIndex<AmbientMusicPrototype>("CombatMode" + combatFactionSuffix, out var factionCombatMusicPrototype))
+                if (_proto.TryIndex<AmbientMusicPrototype>(new Robust.Shared.Prototypes.ProtoId<AmbientMusicPrototype>("CombatMode") + combatFactionSuffix, out var factionCombatMusicPrototype))
                     _musicProto = factionCombatMusicPrototype;
                 else //if we don't ,set it to the default
-                    _musicProto = _proto.Index<AmbientMusicPrototype>("CombatModeDefault");
+                    _musicProto = _proto.Index<AmbientMusicPrototype>(new Robust.Shared.Prototypes.ProtoId<AmbientMusicPrototype>("CombatModeDefault"));
 
                 _currentlyPlaying = MusicType.Combat;
 
@@ -489,8 +489,9 @@ public sealed partial class ContentAudioSystem
             _replayCombatMusicTimer = 0;
         }
 
+        var sound = _audio.ResolveSound(new SoundPathSpecifier(path));
         var strim = _audio.PlayGlobal(
-            path,
+            sound,
             Filter.Local(),
             false,
             AudioParams.Default.WithVolume(volume))!;
@@ -501,7 +502,7 @@ public sealed partial class ContentAudioSystem
         if (fadein != 0)
             FadeIn(_ambientMusicStream, strim.Value.Component, fadein);
 
-        _timeUntilNextAmbientTrack = (float)_audio.GetAudioLength(path).TotalSeconds;
+        _timeUntilNextAmbientTrack = (float)_audio.GetAudioLength(sound).TotalSeconds;
     }
 
     /// <summary>

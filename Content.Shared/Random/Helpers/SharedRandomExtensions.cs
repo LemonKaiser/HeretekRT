@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Dataset;
 using Content.Shared.FixedPoint;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Shared.Random.Helpers
@@ -65,6 +66,30 @@ namespace Content.Shared.Random.Helpers
 
             // Shouldn't happen
             throw new InvalidOperationException($"Invalid weighted pick for {prototype.ID}!");
+        }
+
+        public static ProtoId<T> Pick<T>(this IWeightedRandomPrototype<T> prototype, System.Random random)
+            where T : class, IPrototype
+        {
+            var picks = prototype.Weights;
+            var target = (float) random.NextDouble() * picks.Values.Sum();
+            var accumulated = 0f;
+
+            foreach (var (key, weight) in picks)
+            {
+                accumulated += weight;
+                if (accumulated >= target)
+                    return key;
+            }
+
+            throw new InvalidOperationException($"Invalid weighted pick for {prototype.ID}!");
+        }
+
+        public static ProtoId<T> Pick<T>(this IWeightedRandomPrototype<T> prototype, IRobustRandom? random = null)
+            where T : class, IPrototype
+        {
+            IoCManager.Resolve(ref random);
+            return random.Pick(prototype.Weights);
         }
 
         public static T Pick<T>(this IRobustRandom random, Dictionary<T, float> weights)

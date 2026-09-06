@@ -1,4 +1,4 @@
-﻿using Content.Client.Stylesheets;
+using Content.Client.Stylesheets;
 using System;
 using Content.Shared.Chat;
 using Content.Shared.Input;
@@ -145,10 +145,9 @@ public class ChatInputBox : PanelContainer
         };
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        base.Dispose(disposing);
-        if (disposing)
+        base.ExitedTree();
             EmojiButton.OnEmojiPicked -= InsertEmoji;
     }
 }

@@ -21,7 +21,7 @@ public sealed partial class StasisOverlay : Overlay
     public StasisOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _coloredScreenBorder = _prototypeManager.Index<ShaderPrototype>("WideColoredScreenBorder").InstanceUnique();
+        _coloredScreenBorder = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("WideColoredScreenBorder")).InstanceUnique();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)

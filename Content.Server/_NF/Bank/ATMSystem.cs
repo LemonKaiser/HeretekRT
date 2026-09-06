@@ -267,12 +267,12 @@ public sealed partial class BankSystem
 
     private void PlayDenySound(EntityUid uid, BankATMComponent component)
     {
-        _audio.PlayPvs(_audio.GetSound(component.ErrorSound), uid);
+        _audio.PlayPvs(_audio.ResolveSound(component.ErrorSound), uid);
     }
 
     private void PlayConfirmSound(EntityUid uid, BankATMComponent component)
     {
-        _audio.PlayPvs(_audio.GetSound(component.ConfirmSound), uid);
+        _audio.PlayPvs(_audio.ResolveSound(component.ConfirmSound), uid);
     }
 
     private void ConsolePopup(EntityUid actor, string text)

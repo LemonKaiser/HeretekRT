@@ -110,7 +110,7 @@ public partial class MapGridControl : LayoutContainer
         var cache = IoCManager.Resolve<IResourceCache>();
         _largerFont = new VectorFont(cache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 16);
 
-        _circleMaskShader = PrototypeManager.Index<ShaderPrototype>("CircleAlphaMask").InstanceUnique(); // Mono
+        _circleMaskShader = PrototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("CircleAlphaMask")).InstanceUnique(); // Mono
     }
 
     public void ForceRecenter()

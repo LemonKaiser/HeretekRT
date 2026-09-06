@@ -12,6 +12,7 @@ using Content.Shared.Chemistry.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC;
+using Content.Shared.Nutrition;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nyanotrasen.Kitchen.Prototypes;
 using Content.Shared.Paper;
@@ -67,7 +68,7 @@ public sealed partial class DeepFryerSystem
 
             // Ensure it's Food here, so it passes the whitelist.
             var mobFoodComponent = EnsureComp<FoodComponent>(mob);
-            _solutionContainerSystem.EnsureSolution(mob, mobFoodComponent.Solution, out var alreadyHadFood);
+            _solutionContainerSystem.EnsureSolution(mob, mobFoodComponent.Solution, out var alreadyHadFood, out _);
 
             if (!_solutionContainerSystem.TryGetSolution(mob, mobFoodComponent.Solution, out var mobFoodSolution))
                 return false;
@@ -142,10 +143,10 @@ public sealed partial class DeepFryerSystem
         var extraSolution = new Solution();
         if (TryComp(item, out FlavorProfileComponent? flavorProfileComponent))
         {
-            HashSet<string> goodFlavors = new(flavorProfileComponent.Flavors);
+            HashSet<ProtoId<FlavorPrototype>> goodFlavors = new(flavorProfileComponent.Flavors);
             goodFlavors.IntersectWith(component.GoodFlavors);
 
-            HashSet<string> badFlavors = new(flavorProfileComponent.Flavors);
+            HashSet<ProtoId<FlavorPrototype>> badFlavors = new(flavorProfileComponent.Flavors);
             badFlavors.IntersectWith(component.BadFlavors);
 
             deepFriedComponent.PriceCoefficient = Math.Max(0.01f,
@@ -179,8 +180,8 @@ public sealed partial class DeepFryerSystem
         }
 
         // Make sure there's enough room for the fryer solution.
-        var foodSolution = _solutionContainerSystem.EnsureSolution(item, foodComponent.Solution);
-        if (!_solutionContainerSystem.TryGetSolution(item, foodSolution.Name, out var foodContainer))
+        if (!_solutionContainerSystem.EnsureSolution(item, foodComponent.Solution, out var foodSolution)
+            || !_solutionContainerSystem.TryGetSolution(item, foodComponent.Solution, out var foodContainer))
             return;
 
         // The solution quantity is used to give the fried food an extra

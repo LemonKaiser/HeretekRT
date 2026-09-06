@@ -18,7 +18,7 @@ public sealed partial class BlockingVisualsSystem : SharedBlockingSystem
     {
         base.Initialize();
 
-        _shader = _protoMan.Index<ShaderPrototype>("ShieldingOutline").InstanceUnique();
+        _shader = _protoMan.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("ShieldingOutline")).InstanceUnique();
 
         SubscribeLocalEvent<BlockingVisualsComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<BlockingVisualsComponent, ComponentShutdown>(OnShutdown);

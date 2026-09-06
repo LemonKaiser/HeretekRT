@@ -26,7 +26,7 @@ public sealed partial class BlackFlashImpactOverlay : Overlay
     public BlackFlashImpactOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _proto.Index<ShaderPrototype>("BlackFlashImpact").InstanceUnique();
+        _shader = _proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("BlackFlashImpact")).InstanceUnique();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)

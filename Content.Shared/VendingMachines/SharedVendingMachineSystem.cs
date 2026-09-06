@@ -121,7 +121,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         return GetAllInventory(uid, component).Where(_ => _.Amount > 0).ToList();
     }
 
-    private void AddInventoryFromPrototype(EntityUid uid, Dictionary<string, uint>? entries,
+    private void AddInventoryFromPrototype(EntityUid uid, Dictionary<EntProtoId, uint>? entries,
         InventoryType type,
         VendingMachineComponent? component = null, float restockQuality = 1.0f)
     {
@@ -161,7 +161,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
                 // New Frontiers - Unlimited vending - support items with unlimited vending stock.
                 // This code is licensed under AGPLv3. See AGPLv3.txt
-                if (inventory.TryGetValue(id, out var entry))
+                if (inventory.TryGetValue(id.Id, out var entry))
                 {
                     // Frontier: Max value is reserved for unlimited items, this should not be restocked.
                     if (entry.Amount == uint.MaxValue)
@@ -176,7 +176,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
                     entry.Amount = Math.Min(entry.Amount + amount, 3 * restock);
                 }
                 else
-                    inventory.Add(id, new VendingMachineInventoryEntry(type, id, restock));
+                    inventory.Add(id.Id, new VendingMachineInventoryEntry(type, id.Id, restock));
                 // End of modified code
             }
         }

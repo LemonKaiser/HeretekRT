@@ -1,4 +1,4 @@
-﻿using Content.Shared.MedicalScanner;
+using Content.Shared.MedicalScanner;
 using Content.Shared._Shitmed.Targeting; // Shitmed Change
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
@@ -47,7 +47,7 @@ namespace Content.Client.HealthAnalyzer.UI
             if (_window != null)
                 _window.OnBodyPartSelected -= SendBodyPartMessage;
 
-            _window?.Dispose();
+            _window?.Orphan();
         }
 
         // Shitmed Change End

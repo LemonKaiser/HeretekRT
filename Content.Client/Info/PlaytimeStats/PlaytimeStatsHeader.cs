@@ -73,14 +73,13 @@ public sealed partial class PlaytimeStatsHeader : Control
         HeaderClicked(args, Header.Playtime);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        base.Dispose(disposing);
+        base.ExitedTree();
 
-        if (disposing)
-        {
+
             RoleLabel.OnKeyBindDown -= RoleClicked;
             PlaytimeLabel.OnKeyBindDown -= PlaytimeClicked;
-        }
+
     }
 }

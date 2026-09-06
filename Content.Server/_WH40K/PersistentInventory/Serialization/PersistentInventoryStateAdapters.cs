@@ -1351,9 +1351,9 @@ public sealed class DamageItemStateAdapter : IItemStateAdapter
         };
 
         var index = 0;
-        foreach (var (damageType, value) in damageable.Damage.DamageDict.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+        foreach (var (damageType, value) in damageable.Damage.DamageDict.OrderBy(pair => pair.Key.Id, StringComparer.Ordinal))
         {
-            fields[$"{index}.type"] = damageType;
+            fields[$"{index}.type"] = damageType.Id;
             fields[$"{index}.value"] = value.Value.ToString(CultureInfo.InvariantCulture);
             index++;
         }

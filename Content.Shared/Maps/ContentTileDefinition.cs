@@ -17,9 +17,8 @@ namespace Content.Shared.Maps
     [Prototype("tile")]
     public sealed partial class ContentTileDefinition : IPrototype, IInheritingPrototype, ITileDefinition
     {
-        [ValidatePrototypeId<ToolQualityPrototype>]
-        public const string PryingToolQuality = "Prying";
-        public const string DiggingToolQuality = "Digging"; // Frontier
+        public static readonly ProtoId<ToolQualityPrototype> PryingToolQuality = "Prying";
+        public static readonly ProtoId<ToolQualityPrototype> DiggingToolQuality = "Digging"; // Frontier
 
         public const string SpaceID = "Space";
 
@@ -48,7 +47,7 @@ namespace Content.Shared.Maps
         public string BaseTurf { get; private set; } = string.Empty;
 
         [DataField]
-        public PrototypeFlags<ToolQualityPrototype> DeconstructTools { get; set; } = new();
+        public HashSet<ProtoId<ToolQualityPrototype>> DeconstructTools { get; set; } = new();
 
         /// Monolith - Goobstation
         /// Tile deconstruct do-after time multiplier

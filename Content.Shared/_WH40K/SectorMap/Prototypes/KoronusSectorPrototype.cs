@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 /// <summary>
 /// Static configuration for one authored sector map.
 /// </summary>
-[Prototype("koronusSector")]
+[Prototype]
 public sealed partial class KoronusSectorPrototype : IPrototype
 {
     [IdDataField]

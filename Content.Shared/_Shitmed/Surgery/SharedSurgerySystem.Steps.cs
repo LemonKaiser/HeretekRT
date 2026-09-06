@@ -176,7 +176,7 @@ public abstract partial class SharedSurgerySystem
         {
             if (!HasComp<SanitizedComponent>(args.User))
             {
-                var sepsis = new DamageSpecifier(_prototypes.Index<DamageTypePrototype>("Poison"), 15);
+                var sepsis = new DamageSpecifier(_prototypes.Index<DamageTypePrototype>(new Robust.Shared.Prototypes.ProtoId<DamageTypePrototype>("Poison")), 15);
                 var ev = new SurgeryStepDamageEvent(args.User, args.Body, args.Part, args.Surgery, sepsis, 1.0f); // Mono - 0.5->1.0f - Mono Part surgery damage increase
                 RaiseLocalEvent(args.Body, ref ev);
             }
@@ -320,7 +320,7 @@ public abstract partial class SharedSurgerySystem
 
     private EntProtoId? GetProtoId(EntityUid entityUid)
     {
-        if (!TryComp<MetaDataComponent>(entityUid, out var metaData))
+        if (!TryComp(entityUid, out MetaDataComponent? metaData))
             return null;
 
         return metaData.EntityPrototype?.ID;
@@ -925,7 +925,7 @@ public abstract partial class SharedSurgerySystem
     {
         foreach (var tool in tools)
         {
-            if (EntityManager.TryGetComponent(tool, component.GetType(), out var found) && found is ISurgeryToolComponent toolComp)
+            if (TryComp(tool, component.GetType(), out var found) && found is ISurgeryToolComponent toolComp)
             {
                 withComp = tool;
                 speed = toolComp.Speed;

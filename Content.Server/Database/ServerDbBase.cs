@@ -240,7 +240,7 @@ namespace Content.Server.Database
                 ? SharedHumanoidAppearanceSystem.DefaultSexVoice[sex]
                 : profile.Voice;
             var barkVoice = string.IsNullOrWhiteSpace(profile.BarkVoice)
-                ? SharedHumanoidAppearanceSystem.DefaultBarkVoice
+                ? SharedHumanoidAppearanceSystem.DefaultBarkVoice.Id
                 : profile.BarkVoice;
 
             var balance = profile.BankBalance;

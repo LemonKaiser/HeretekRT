@@ -10,7 +10,7 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 /// A body displayed in the shuttle NAV layer and in the decorative orbital-space background.
 /// Orbit values are presentation data, not a physical celestial simulation.
 /// </summary>
-[Prototype("koronusCelestialBody")]
+[Prototype]
 public sealed partial class KoronusCelestialBodyPrototype : IPrototype
 {
     /// <summary>
@@ -214,7 +214,7 @@ public enum KoronusCelestialBodyType : byte
 /// <summary>
 /// A preloaded, persistent map surface belonging to a celestial body.
 /// </summary>
-[Prototype("koronusPlanetSurface")]
+[Prototype]
 public sealed partial class KoronusPlanetSurfacePrototype : IPrototype
 {
     [IdDataField]

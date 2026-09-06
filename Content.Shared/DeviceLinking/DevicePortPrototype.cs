@@ -39,6 +39,6 @@ public sealed partial class SourcePortPrototype : DevicePortPrototype, IPrototyp
     ///     This is a set of sink ports that this source port will attempt to link to when using the
     ///     default-link functionality.
     /// </summary>
-    [DataField("defaultLinks", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<SinkPortPrototype>))]
-    public HashSet<string>? DefaultLinks;
+    [DataField("defaultLinks")]
+    public HashSet<ProtoId<SinkPortPrototype>>? DefaultLinks;
 }

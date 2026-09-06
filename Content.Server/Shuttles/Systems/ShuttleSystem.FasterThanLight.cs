@@ -267,7 +267,7 @@ public sealed partial class ShuttleSystem
         }
 
         // Check if the shuttle is in an expedition
-        if (TryComp<TransformComponent>(shuttleUid, out var xform) &&
+        if (TryComp(shuttleUid, out TransformComponent? xform) &&
             xform.MapUid != null &&
             HasComp<SalvageExpeditionComponent>(xform.MapUid))
         {
@@ -1530,7 +1530,7 @@ public sealed partial class ShuttleSystem
         LeaveNoFTLBehind((entity.Owner, xform), oldGridMatrix, oldMapUid);
 
         // Reset rotation so they always face the same direction.
-        xform.LocalRotation = Angle.Zero;
+        _transform.SetLocalRotationNoLerp(entity.Owner, Angle.Zero, xform);
         _index += width + Buffer;
 
         // Frontier: rollover coordinates

@@ -66,12 +66,12 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         // The network event is sent only after TryTriggerDodge has found a valid end point and consumed a charge.
         // Bursts use the start/end coordinates carried by that same event instead of the mover's interpolated centre.
         _particles.SpawnEffect(
-            "HrtPhantomStepGloom",
+            new ProtoId<ParticleEffectPrototype>("HrtPhantomStepGloom"),
             startMap,
             new ParticleSpawnParameters(Intensity: 0.75f));
         Timer.Spawn(TimeSpan.FromSeconds(duration), () =>
             _particles.SpawnEffect(
-                "HrtWarpRiftBurst",
+                new ProtoId<ParticleEffectPrototype>("HrtWarpRiftBurst"),
                 endMap,
                 new ParticleSpawnParameters(Intensity: 0.85f)));
 

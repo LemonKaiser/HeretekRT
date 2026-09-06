@@ -51,37 +51,14 @@ public sealed partial class GhostComponent : Component
     [DataField("booMaxTargets"), ViewVariables(VVAccess.ReadWrite)]
     public int BooMaxTargets = 3;
 
-    // TODO: instead of this funny stuff just give it access and update in system dirtying when needed
-    [ViewVariables(VVAccess.ReadWrite)]
-    public bool CanGhostInteract
-    {
-        get => _canGhostInteract;
-        set
-        {
-            if (_canGhostInteract == value) return;
-            _canGhostInteract = value;
-            Dirty();
-        }
-    }
-
     [DataField("canInteract"), AutoNetworkedField]
-    private bool _canGhostInteract;
+    public bool CanGhostInteract;
 
     /// <summary>
     ///     Changed by <see cref="SharedGhostSystem.SetCanReturnToBody"/>
     /// </summary>
-    // TODO MIRROR change this to use friend classes when thats merged
-    [ViewVariables(VVAccess.ReadWrite)]
-    public bool CanReturnToBody
-    {
-        get => _canReturnToBody;
-        set
-        {
-            if (_canReturnToBody == value) return;
-            _canReturnToBody = value;
-            Dirty();
-        }
-    }
+    [DataField("canReturnToBody"), AutoNetworkedField]
+    public bool CanReturnToBody;
 
     /// <summary>
     /// Ghost color
@@ -90,8 +67,6 @@ public sealed partial class GhostComponent : Component
     [DataField, AutoNetworkedField]
     public Color Color = Color.White;
 
-    [DataField("canReturnToBody"), AutoNetworkedField]
-    private bool _canReturnToBody;
 }
 
 /// <summary>

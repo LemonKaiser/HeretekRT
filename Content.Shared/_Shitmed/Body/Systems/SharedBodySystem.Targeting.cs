@@ -196,7 +196,7 @@ public partial class SharedBodySystem
             && TryComp(partEnt.Comp.Body.Value, out InventoryComponent? inventory))
             _inventory.RelayEvent((partEnt.Comp.Body.Value, inventory), ref args);
 
-        if (Prototypes.TryIndex<DamageModifierSetPrototype>("PartDamage", out var partModifierSet))
+        if (Prototypes.TryIndex<DamageModifierSetPrototype>(new Robust.Shared.Prototypes.ProtoId<DamageModifierSetPrototype>("PartDamage"), out var partModifierSet))
             args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, partModifierSet);
 
         args.Damage *= GetPartDamageModifier(partEnt.Comp.PartType);
@@ -444,7 +444,7 @@ public partial class SharedBodySystem
     {
         var damage = new DamageSpecifier()
         {
-            DamageDict = new Dictionary<string, FixedPoint2>()
+            DamageDict = new Dictionary<ProtoId<DamageTypePrototype>, FixedPoint2>()
             {
                 { "Blunt", -part.SelfHealingAmount },
                 { "Slash", -part.SelfHealingAmount },

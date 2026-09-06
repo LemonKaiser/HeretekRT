@@ -391,7 +391,7 @@ public sealed partial class KoronusSafetyPolicySystem : EntitySystem
     {
         if (HasRule(uid, KoronusSafetyRule.RadiationMunitions) &&
             _guns.TryNextShootPrototype((uid, component), out var ammoPrototype) &&
-            _guns.GetBulletPrototype(ammoPrototype).TryGetComponent<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
+            _guns.GetBulletPrototype(ammoPrototype).TryComp<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
         {
             args.Cancel();
             _popup.PopupCursor(Loc.GetString("koronus-safety-radiation-ammo-blocked"), args.User);
@@ -600,7 +600,7 @@ public sealed partial class KoronusSafetyPolicySystem : EntitySystem
             return true;
         }
 
-        if (TryComp<TransformComponent>(entity, out var transform) && transform.GridUid is { } gridUid)
+        if (TryComp(entity, out TransformComponent? transform) && transform.GridUid is { } gridUid)
         {
             grid = gridUid;
             return true;

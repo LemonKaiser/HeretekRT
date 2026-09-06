@@ -526,10 +526,9 @@ public sealed partial class EmojiPickerPopup : Popup
     private static string GetCategoryName(ChatEmojiCategory category)
         => Loc.GetString($"hud-chatbox-emoji-category-{category}");
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        base.Dispose(disposing);
-        if (disposing)
+        base.ExitedTree();
             _catalog.Changed -= OnCatalogChanged;
     }
 

@@ -138,17 +138,10 @@ namespace Content.Client.UserInterface.Systems.Alerts.Controls
             SetupIcon();
         }
 
+
         protected override void ExitedTree()
         {
             base.ExitedTree();
-
-            if (!_entityManager.Deleted(_spriteViewEntity))
-                _entityManager.QueueDeleteEntity(_spriteViewEntity);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
 
             if (!_entityManager.Deleted(_spriteViewEntity))
                 _entityManager.QueueDeleteEntity(_spriteViewEntity);

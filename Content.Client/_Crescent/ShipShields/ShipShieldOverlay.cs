@@ -34,7 +34,7 @@ public sealed class ShipShieldOverlay : Overlay
         _physics = _entManager.EntitySysManager.GetEntitySystem<Robust.Client.Physics.PhysicsSystem>();
         _shieldTexture = _resourceCache.GetTexture("/Textures/_Crescent/ShipShields/shieldtex.png");
 
-        _unshadedShader = prototypeManager.Index<ShaderPrototype>("unshaded").Instance();
+        _unshadedShader = prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance();
 
         ZIndex = 8;
     }

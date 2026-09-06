@@ -20,7 +20,7 @@ namespace Content.Shared.Humanoid
             // Some downstream is probably gonna have this eventually but then they can deal with fallbacks.
             if (!_prototypeManager.TryIndex(species, out SpeciesPrototype? speciesProto))
             {
-                speciesProto = _prototypeManager.Index<SpeciesPrototype>("Human");
+                speciesProto = _prototypeManager.Index<SpeciesPrototype>(new Robust.Shared.Prototypes.ProtoId<SpeciesPrototype>("Human"));
                 Log.Warning($"Unable to find species {species} for name, falling back to Human");
             }
 

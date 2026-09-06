@@ -82,7 +82,7 @@ public sealed partial class LinkedTraverseSystem : EntitySystem
         }
 
         _transform.SetCoordinates(user, coords);
-        _audio.PlayPvs("/Audio/Effects/teleport_arrival.ogg", destination.Value, AudioParams.Default.WithVolume(-3f));
+        _audio.PlayPvs(new Robust.Shared.Audio.SoundPathSpecifier("/Audio/Effects/teleport_arrival.ogg"), destination.Value, AudioParams.Default.WithVolume(-3f));
         return true;
     }
 }

@@ -15,7 +15,7 @@ public sealed partial class MutationSystem : EntitySystem
 
     public override void Initialize()
     {
-        _randomMutations = _prototypeManager.Index<RandomPlantMutationListPrototype>("RandomPlantMutations");
+        _randomMutations = _prototypeManager.Index<RandomPlantMutationListPrototype>(new Robust.Shared.Prototypes.ProtoId<RandomPlantMutationListPrototype>("RandomPlantMutations"));
     }
 
     /// <summary>

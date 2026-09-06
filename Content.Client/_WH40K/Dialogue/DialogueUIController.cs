@@ -92,7 +92,7 @@ public sealed partial class DialogueUIController : UIController, IOnStateEntered
             _overlay.ChoiceSelected -= OnChoiceSelected;
             _overlay.CancelPressed -= OnCancelPressed;
             _overlay.Orphan();
-            _overlay.Dispose();
+            _overlay.Orphan();
             _overlay = null;
         }
     }

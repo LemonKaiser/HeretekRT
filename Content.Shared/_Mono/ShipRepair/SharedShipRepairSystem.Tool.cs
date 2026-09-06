@@ -5,6 +5,7 @@ using Content.Shared.Popups;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using System.Numerics;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Mono.ShipRepair;
 
@@ -77,8 +78,8 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
             {
                 // just fail the repair if it doesn't have the comp
                 if (!_proto.TryIndex(repairData.EntityPalette[spec.ProtoIndex], out var entProto)
-                    || !entProto.TryGetComponent<ShipRepairableComponent>(out var repairable, Factory)
-                    || entProto.TryGetComponent<ShipRepairableRestrictComponent>(out var entRestrict, Factory)
+                    || !entProto.TryComp<ShipRepairableComponent>(out var repairable, Factory)
+                    || entProto.TryComp<ShipRepairableRestrictComponent>(out var entRestrict, Factory)
                         && _whitelist.IsWhitelistFail(entRestrict.ToolWhitelist, ent)
                 )
                     continue;

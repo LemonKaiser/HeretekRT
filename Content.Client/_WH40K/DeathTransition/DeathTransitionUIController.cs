@@ -54,7 +54,7 @@ public sealed partial class DeathTransitionUIController : UIController, IOnState
         if (_control != null)
         {
             _control.Orphan();
-            _control.Dispose();
+            _control.Orphan();
             _control = null;
         }
 

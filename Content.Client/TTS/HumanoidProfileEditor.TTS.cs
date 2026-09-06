@@ -30,7 +30,7 @@ public sealed partial class HumanoidProfileEditor
         TabContainer.RemoveChild(_ttsTab);
         _ttsTab.OnVoiceSelected -= OnTTSVoiceSelected;
         _ttsTab.OnPreviewRequested -= OnTTSPreviewRequested;
-        _ttsTab.Dispose();
+        _ttsTab.Orphan();
         _ttsTab = null;
     }
 

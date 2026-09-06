@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 /// <summary>
 /// One fixed Koronus Expanse system. Its presentation and runtime map are configured entirely in prototypes.
 /// </summary>
-[Prototype("koronusSystem")]
+[Prototype]
 public sealed partial class KoronusSystemPrototype : IPrototype
 {
     [IdDataField]

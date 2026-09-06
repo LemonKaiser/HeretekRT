@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Guidebook;
 

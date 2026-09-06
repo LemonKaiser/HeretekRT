@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.CharacterCreation;
 ///     An origin offered during the introductory character creation.
 ///     Its characteristic modifiers are applied to the onboarding totals; talents remain descriptive.
 /// </summary>
-[Prototype("wh40kOrigin")]
+[Prototype]
 public sealed partial class Wh40kOriginPrototype : IPrototype
 {
     [IdDataField]

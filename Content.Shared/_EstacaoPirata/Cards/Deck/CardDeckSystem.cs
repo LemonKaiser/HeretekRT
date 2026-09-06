@@ -97,7 +97,7 @@ public sealed partial class CardDeckSystem : EntitySystem
         if (_net.IsClient)
             return;
 
-        _audio.PlayPvs(comp.ShuffleSound, deck, AudioHelpers.WithVariation(0.05f, _random));
+        _audio.PlayPvs(comp.ShuffleSound, deck, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.05f));
         _popup.PopupEntity(Loc.GetString("card-verb-shuffle-success", ("target", MetaData(deck).EntityName)), deck);
     }
 
@@ -107,7 +107,7 @@ public sealed partial class CardDeckSystem : EntitySystem
             return;
         _cardStackSystem.FlipAllCards(deck, stack, isFlipped: isFlipped);
 
-        _audio.PlayPvs(comp.ShuffleSound, deck, AudioHelpers.WithVariation(0.05f, _random));
+        _audio.PlayPvs(comp.ShuffleSound, deck, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.05f));
         _popup.PopupEntity(Loc.GetString("card-verb-organize-success", ("target", MetaData(deck).EntityName), ("facedown", isFlipped)), deck);
     }
 

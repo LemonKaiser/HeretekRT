@@ -255,7 +255,7 @@ public sealed partial class AmeControllerSystem : EntitySystem
             return;
 
         var humanReadableState = value ? "Inject" : "Not inject";
-        _adminLogger.Add(LogType.Action, LogImpact.Extreme, $"{EntityManager.ToPrettyString(user.Value):player} has set the AME to {humanReadableState}");
+        _adminLogger.Add(LogType.Action, LogImpact.Extreme, $"{ToPrettyString(user.Value):player} has set the AME to {humanReadableState}");
     }
 
     public void ToggleInjecting(EntityUid uid, EntityUid? user = null, AmeControllerComponent? controller = null)
@@ -282,7 +282,7 @@ public sealed partial class AmeControllerSystem : EntitySystem
             return;
 
         var humanReadableState = controller.Injecting ? "Inject" : "Not inject";
-        _adminLogger.Add(LogType.Action, LogImpact.Extreme, $"{EntityManager.ToPrettyString(user.Value):player} has set the AME to inject {controller.InjectionAmount} while set to {humanReadableState}");
+        _adminLogger.Add(LogType.Action, LogImpact.Extreme, $"{ToPrettyString(user.Value):player} has set the AME to inject {controller.InjectionAmount} while set to {humanReadableState}");
 
         /* This needs to be information which an admin is very likely to want to be informed about in order to be an admin alert or have a sound notification.
         At the time of editing, players regularly "overclock" the AME and those cases require no admin attention.

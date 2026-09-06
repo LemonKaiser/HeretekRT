@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 /// Reusable safety policy for a Koronus system or a local protected area within it.
 /// All active profiles are additive: a restriction from any profile wins.
 /// </summary>
-[Prototype("koronusSafetyProfile")]
+[Prototype]
 public sealed partial class KoronusSafetyProfilePrototype : IPrototype
 {
     [IdDataField]

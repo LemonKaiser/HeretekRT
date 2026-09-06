@@ -813,7 +813,7 @@ public sealed partial class Wh40kClassGameplaySystem : EntitySystem
         {
             _stamina.TakeStaminaDamage(target, Math.Clamp(effect.Magnitude, 10, 60), source: ent.Owner);
         }
-        else if (_prototypes.TryIndex<DamageTypePrototype>("Piercing", out var piercing))
+        else if (_prototypes.TryIndex<DamageTypePrototype>(new Robust.Shared.Prototypes.ProtoId<DamageTypePrototype>("Piercing"), out var piercing))
         {
             _damageable.TryChangeDamage(
                 target,
@@ -1160,7 +1160,7 @@ public sealed partial class Wh40kClassGameplaySystem : EntitySystem
     {
         if (!TryComp<DamageableComponent>(target, out var damageable) ||
             damageable.TotalDamage <= 0 ||
-            !_prototypes.TryIndex<DamageTypePrototype>("Structural", out var structural))
+            !_prototypes.TryIndex<DamageTypePrototype>(new Robust.Shared.Prototypes.ProtoId<DamageTypePrototype>("Structural"), out var structural))
         {
             return false;
         }
@@ -1829,7 +1829,7 @@ public sealed partial class Wh40kClassGameplaySystem : EntitySystem
             return;
         }
 
-        _audio.PlayGlobal("/Audio/Machines/high_tech_confirm.ogg", session);
+        _audio.PlayGlobal(new Robust.Shared.Audio.SoundPathSpecifier("/Audio/Machines/high_tech_confirm.ogg"), session);
     }
 
     private void OnMove(Entity<Wh40kClassRuntimeProfileComponent> ent, ref MoveEvent args)

@@ -624,7 +624,7 @@ namespace Content.Server.GameTicking
                         mobState = mobStateComp.CurrentState;
 
                     if (TryComp<DamageableComponent>(lastMob, out var damageableComp))
-                        damagePerGroup = damageableComp.DamagePerGroup;
+                        damagePerGroup = damageableComp.DamagePerGroup.ToDictionary(entry => entry.Key.Id, entry => entry.Value);
                 }
 
                 #endregion

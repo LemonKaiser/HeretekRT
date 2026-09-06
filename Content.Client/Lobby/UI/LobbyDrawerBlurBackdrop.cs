@@ -24,7 +24,7 @@ public sealed partial class LobbyDrawerBlurBackdrop : Control
     public LobbyDrawerBlurBackdrop()
     {
         IoCManager.InjectDependencies(this);
-        _blurShader = _prototypeManager.Index<ShaderPrototype>("HeretekLobbyDrawerBlur").Instance();
+        _blurShader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("HeretekLobbyDrawerBlur")).Instance();
         MouseFilter = MouseFilterMode.Ignore;
     }
 

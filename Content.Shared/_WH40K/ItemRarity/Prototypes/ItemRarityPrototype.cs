@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.ItemRarity.Prototypes;
 /// controls and world effects. Stage 1 also stores the roll weights and bonus
 /// range used to initialize an item's persistent rarity state.
 /// </summary>
-[Prototype("itemRarity")]
+[Prototype]
 public sealed partial class ItemRarityPrototype : IPrototype
 {
     [IdDataField]

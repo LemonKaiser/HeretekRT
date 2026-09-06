@@ -1,4 +1,4 @@
-﻿using Content.Client.Gameplay;
+using Content.Client.Gameplay;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Client.UserInterface.Systems.Info;
@@ -116,7 +116,7 @@ public sealed partial class EscapeUIController : UIController, IOnStateEntered<G
     {
         if (_escapeWindow != null)
         {
-            _escapeWindow.Dispose();
+            _escapeWindow.Orphan();
             _escapeWindow = null;
         }
 

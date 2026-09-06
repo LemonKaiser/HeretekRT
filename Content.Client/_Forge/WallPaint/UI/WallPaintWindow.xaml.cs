@@ -48,9 +48,9 @@ public sealed partial class WallPaintWindow : DefaultWindow
         _wallPaint.Deactivate();
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
         _wallPaint.Deactivate();
-        base.Dispose(disposing);
+        base.ExitedTree();
     }
 }

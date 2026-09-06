@@ -40,28 +40,16 @@ namespace Content.Shared.Movement.Components
             }
         }
 
-        [ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
+        [ViewVariables]
         public float GrabRangeVV
         {
             get => GrabRange;
-            set
-            {
-                if (MathHelper.CloseToPercent(GrabRange, value)) return;
-                GrabRange = value;
-                Dirty();
-            }
         }
 
-        [ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
+        [ViewVariables]
         public float PushStrengthVV
         {
             get => PushStrength;
-            set
-            {
-                if (MathHelper.CloseToPercent(PushStrength, value)) return;
-                PushStrength = value;
-                Dirty();
-            }
         }
     }
 }

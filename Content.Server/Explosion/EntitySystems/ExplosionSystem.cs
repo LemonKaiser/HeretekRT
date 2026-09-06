@@ -14,7 +14,6 @@ using Content.Server.GameTicking; // Mono
 using Content.Server.AlertLevel; // Mono
 using Content.Server.Station.Systems; // Mono
 using Content.Server._Mono.NuclearWar.Components; // Mono
-using Content.Server.Station.Systems; // Mono
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Camera;
 using Content.Shared.CCVar;
@@ -38,7 +37,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using Content.Shared.Maps;
-using Content.Shared.GameTicking; // Mono
 using Robust.Shared.Map.Components;
 using Content.Shared.Tiles; // Frontier: safe zone
 using Robust.Shared.Timing; // Mono
@@ -105,8 +103,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     ///     find errors. However some components, like rogue arrows, or some commands like the admin-smite need to have
     ///     a "default" option specified outside of yaml data-fields. Hence this const string.
     /// </remarks>
-    [ValidatePrototypeId<ExplosionPrototype>]
-    public const string DefaultExplosionPrototypeId = "Default";
+    public static readonly ProtoId<ExplosionPrototype> DefaultExplosionPrototypeId = "Default";
     private static readonly TimeSpan AlertCooldown = TimeSpan.FromSeconds(60); // Mono: Explosion Admin Alert Cooldown
     public TimeSpan NextAlertTime; // Mono
 
@@ -237,7 +234,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             user);
 
         if (explosive.DeleteAfterExplosion ?? delete)
-            EntityManager.QueueDeleteEntity(uid);
+            QueueDel(uid);
     }
 
     /// <summary>

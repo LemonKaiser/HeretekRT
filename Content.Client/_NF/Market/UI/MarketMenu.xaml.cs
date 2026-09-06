@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._NF.Market;
 using Content.Shared._NF.Market.BUI;
@@ -14,6 +14,7 @@ namespace Content.Client._NF.Market.UI;
 [GenerateTypedNameReferences]
 public sealed partial class MarketMenu : FancyWindow
 {
+    [Dependency] private IComponentFactory _componentFactory = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
     [Dependency] private ILocalizationManager _loc = default!;
 
@@ -102,7 +103,7 @@ public sealed partial class MarketMenu : FancyWindow
             if (!IsWithinSearchQuery(prototype))
                 continue;
 
-            if (!prototype.TryGetComponent<SpriteComponent>(out var sprite))
+            if (!prototype.TryComp(out SpriteComponent? sprite, _componentFactory) || sprite == null)
             {
                 continue; // Skip this iteration if the prototype was not found
             }

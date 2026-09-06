@@ -31,6 +31,7 @@ namespace Content.Client.Examine
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private IEyeManager _eyeManager = default!;
         [Dependency] private VerbSystem _verbSystem = default!;
+        [Dependency] private SpriteSystem _sprite = default!;
 
         public const string StyleClassEntityTooltip = "entity-tooltip";
 
@@ -109,7 +110,7 @@ namespace Content.Client.Examine
         {
             var entity = args.EntityUid;
 
-            if (!args.EntityUid.IsValid() || !EntityManager.EntityExists(entity))
+            if (!args.EntityUid.IsValid() || !Exists(entity))
             {
                 return false;
             }
@@ -228,7 +229,7 @@ namespace Content.Client.Examine
             if (rarityHeader != null)
                 vBox.AddChild(rarityHeader);
 
-            if (EntityManager.HasComponent<SpriteComponent>(target))
+            if (HasComp<SpriteComponent>(target))
             {
                 var spriteView = new SpriteView
                 {
@@ -319,7 +320,7 @@ namespace Content.Client.Examine
                 if (!examine.ShowOnExamineTooltip)
                     continue;
 
-                var button = new ExamineButton(examine);
+                var button = new ExamineButton(examine, _sprite);
 
                 button.OnPressed += VerbButtonPressed;
                 buttonsHBox.AddChild(button);
@@ -328,7 +329,7 @@ namespace Content.Client.Examine
             var vbox = _examineTooltipOpen?.GetChild(0).GetChild(0);
             if (vbox == null)
             {
-                buttonsHBox.Dispose();
+                buttonsHBox.Orphan();
                 return;
             }
 
@@ -393,7 +394,7 @@ namespace Content.Client.Examine
                         button.OnPressed -= VerbButtonPressed;
                     }
                 }
-                _examineTooltipOpen.Dispose();
+                _examineTooltipOpen.Orphan();
                 _examineTooltipOpen = null;
             }
 

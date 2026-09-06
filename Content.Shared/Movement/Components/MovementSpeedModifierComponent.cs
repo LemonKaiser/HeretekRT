@@ -53,26 +53,16 @@ namespace Content.Shared.Movement.Components
         [AutoNetworkedField, DataField]
         public float BaseFriction = DefaultFriction;
 
-        [ViewVariables(VVAccess.ReadWrite)]
+        [ViewVariables]
         private float _baseWalkSpeedVV
         {
             get => BaseWalkSpeed;
-            set
-            {
-                BaseWalkSpeed = value;
-                Dirty();
-            }
         }
 
-        [ViewVariables(VVAccess.ReadWrite)]
+        [ViewVariables]
         private float _baseSprintSpeedVV
         {
             get => BaseSprintSpeed;
-            set
-            {
-                BaseSprintSpeed = value;
-                Dirty();
-            }
         }
 
         /// <summary>

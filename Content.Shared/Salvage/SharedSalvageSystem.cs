@@ -193,7 +193,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
         {
             // pick a random reward to give
             var weights = _proto.Index<WeightedRandomEntityPrototype>(id);
-            rewards.Add(weights.Pick(rand));
+            rewards.Add(weights.Pick(rand).Id);
         }
 
         return rewards;

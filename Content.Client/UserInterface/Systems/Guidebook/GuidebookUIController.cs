@@ -73,7 +73,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
         _guideWindow.OnOpen -= OnWindowOpen;
 
         // shutdown
-        _guideWindow.Dispose();
+        _guideWindow.Orphan();
         _guideWindow = null;
         CommandBinds.Unregister<GuidebookUIController>();
     }
@@ -215,7 +215,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
         {
             if (!_prototypeManager.TryIndex(guideId, out var guide))
             {
-                Logger.Error($"Encountered unknown guide prototype: {guideId}");
+                Logger.GetSawmill("client").Error($"Encountered unknown guide prototype: {guideId}");
                 continue;
             }
             guides.Add(guideId, guide);
@@ -245,7 +245,7 @@ public sealed partial class GuidebookUIController : UIController, IOnStateEntere
 
             if (!_prototypeManager.TryIndex(childId, out var child))
             {
-                Logger.Error($"Encountered unknown guide prototype: {childId} as a child of {guide.Id}. If the child is not a prototype, it must be directly provided.");
+                Logger.GetSawmill("client").Error($"Encountered unknown guide prototype: {childId} as a child of {guide.Id}. If the child is not a prototype, it must be directly provided.");
                 continue;
             }
 

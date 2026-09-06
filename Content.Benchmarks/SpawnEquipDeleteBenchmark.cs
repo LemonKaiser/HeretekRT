@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Content.IntegrationTests;
 using Content.IntegrationTests.Pair;
@@ -39,7 +39,7 @@ public class SpawnEquipDeleteBenchmark
         var mapData = await _pair.CreateTestMap();
         _coords = mapData.GridCoords;
         _spawnSys = server.System<StationSpawningSystem>();
-        _gear = server.ProtoMan.Index<StartingGearPrototype>("CaptainGear");
+        _gear = server.ProtoMan.Index<StartingGearPrototype>(new Robust.Shared.Prototypes.ProtoId<StartingGearPrototype>("CaptainGear"));
     }
 
     [GlobalCleanup]

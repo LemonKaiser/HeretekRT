@@ -53,11 +53,11 @@ public sealed partial class SurveillanceCameraMonitorWindow : DefaultWindow
 
         // This could be done better. I don't want to deal with stylesheets at the moment.
         var texture = _resourceCache.GetTexture("/Textures/Interface/Nano/square_black.png");
-        var shader = _prototypeManager.Index<ShaderPrototype>("CameraStatic").Instance().Duplicate();
+        var shader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("CameraStatic")).Instance().Duplicate();
 
         CameraView.ViewportSize = new Vector2i(500, 500);
         CameraView.Eye = _defaultEye; // sure
-        CameraView.Shader = _prototypeManager.Index<ShaderPrototype>("crt_vhs").Instance().Duplicate(); // Mono - fix shader ID
+        CameraView.Shader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("crt_vhs")).Instance().Duplicate(); // Mono - fix shader ID
         CameraViewBackground.Stretch = TextureRect.StretchMode.Scale;
         CameraViewBackground.Texture = texture;
         CameraViewBackground.ShaderOverride = shader;

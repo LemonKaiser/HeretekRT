@@ -48,7 +48,7 @@ public sealed class PopupOverlay : Overlay
         _popup = popup;
         _controller = controller;
 
-        _shader = protoManager.Index<ShaderPrototype>("unshaded").Instance();
+        _shader = protoManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance();
     }
 
     protected override void Draw(in OverlayDrawArgs args)

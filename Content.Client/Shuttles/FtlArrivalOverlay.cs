@@ -36,7 +36,7 @@ public sealed partial class FtlArrivalOverlay : Overlay
         _maps = _entManager.System<SharedMapSystem>();
         _sprites = _entManager.System<SpriteSystem>();
 
-        _shader = _protos.Index<ShaderPrototype>("unshaded").Instance();
+        _shader = _protos.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)

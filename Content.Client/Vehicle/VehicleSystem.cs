@@ -8,6 +8,7 @@ namespace Content.Client.Vehicle;
 public sealed partial class VehicleSystem : SharedVehicleSystem
 {
     [Dependency] private EyeSystem _eye = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {
@@ -60,11 +61,11 @@ public sealed partial class VehicleSystem : SharedVehicleSystem
         if (component.HideRider
             && Appearance.TryGetData<bool>(uid, VehicleVisuals.HideRider, out var hide, args.Component)
             && TryComp<SpriteComponent>(component.LastRider, out var riderSprite))
-            riderSprite.Visible = !hide;
+            _sprite.SetVisible((component.LastRider.Value, riderSprite), !hide);
 
         // First check is for the sprite itself
         if (Appearance.TryGetData<int>(uid, VehicleVisuals.DrawDepth, out var drawDepth, args.Component))
-            args.Sprite.DrawDepth = drawDepth;
+            _sprite.SetDrawDepth((uid, args.Sprite), drawDepth);
 
         // Set vehicle layer to animated or not (i.e. are the wheels turning or not)
         if (component.AutoAnimate

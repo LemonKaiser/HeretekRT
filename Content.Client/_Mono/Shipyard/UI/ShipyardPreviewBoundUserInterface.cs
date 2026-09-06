@@ -37,7 +37,7 @@ public sealed class ShipyardPreviewBoundUserInterface : BoundUserInterface
             _menu.OnClose -= RequestExit;
         }
 
-        _menu?.Dispose();
+        _menu?.Orphan();
         _menu = null;
     }
 

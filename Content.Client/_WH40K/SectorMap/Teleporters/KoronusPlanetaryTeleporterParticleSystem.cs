@@ -80,7 +80,7 @@ public sealed partial class KoronusPlanetaryTeleporterParticleSystem : EntitySys
             return;
 
         var emitter = _particles.SpawnEffect(
-            "HrtTeleporterCharge",
+            new Robust.Shared.Prototypes.ProtoId<ParticleEffectPrototype>("HrtTeleporterCharge"),
             _transform.GetMapCoordinates(teleporter),
             new ParticleSpawnParameters(Intensity: 0.8f),
             teleporter);

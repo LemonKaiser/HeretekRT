@@ -48,6 +48,6 @@ public sealed partial class SurveillanceCameraComponent : Component
     public bool NetworkSet;
 
     // This has to be device network frequency prototypes.
-    [DataField("setupAvailableNetworks", customTypeSerializer:typeof(PrototypeIdListSerializer<DeviceFrequencyPrototype>))]
-    public List<string> AvailableNetworks { get; private set; } = new();
+    [DataField("setupAvailableNetworks")]
+    public List<ProtoId<DeviceFrequencyPrototype>> AvailableNetworks { get; private set; } = new();
 }

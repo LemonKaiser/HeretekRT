@@ -90,8 +90,8 @@ public sealed partial class SpaceVillainArcadeComponent : SharedSpaceVillainArca
     /// The prototypes that can be dispensed as a reward for winning the game.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("possibleRewards", customTypeSerializer: typeof(PrototypeIdListSerializer<EntityPrototype>))]
-    public List<string> PossibleRewards = new();
+    [DataField("possibleRewards")]
+    public List<EntProtoId> PossibleRewards = new();
 
     /// <summary>
     /// The minimum number of prizes the arcade machine can have.

@@ -128,7 +128,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         _adminLogger.Add(
             LogType.Unanchor,
             LogImpact.Low,
-            $"{EntityManager.ToPrettyString(args.User):user} unanchored {EntityManager.ToPrettyString(uid):anchored} using {EntityManager.ToPrettyString(used):using}"
+            $"{ToPrettyString(args.User):user} unanchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}"
         );
     }
 
@@ -146,8 +146,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         }
 
         // Snap rotation to cardinal (multiple of 90)
-        var rot = xform.LocalRotation;
-        xform.LocalRotation = Math.Round(rot / (Math.PI / 2)) * (Math.PI / 2);
+        var rot = Math.Round(xform.LocalRotation / (Math.PI / 2)) * (Math.PI / 2);
 
         if (TryComp<PullableComponent>(uid, out var pullable) && pullable.Puller != null)
         {
@@ -165,7 +164,11 @@ public sealed partial class AnchorableSystem : EntitySystem
                 return;
             }
 
-            _transformSystem.SetCoordinates(uid, coordinates);
+            _transformSystem.SetCoordinates(uid, xform, coordinates, rotation: rot);
+        }
+        else
+        {
+            _transformSystem.SetLocalRotationNoLerp(uid, rot, xform);
         }
 
         RaiseLocalEvent(uid, new BeforeAnchoredEvent(args.User, used));
@@ -180,7 +183,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         _adminLogger.Add(
             LogType.Anchor,
             LogImpact.Low,
-            $"{EntityManager.ToPrettyString(args.User):user} anchored {EntityManager.ToPrettyString(uid):anchored} using {EntityManager.ToPrettyString(used):using}"
+            $"{ToPrettyString(args.User):user} anchored {ToPrettyString(uid):anchored} using {ToPrettyString(used):using}"
         );
     }
 

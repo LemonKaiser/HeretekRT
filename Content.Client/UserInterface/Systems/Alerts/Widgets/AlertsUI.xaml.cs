@@ -44,7 +44,7 @@ public sealed partial class AlertsUI : UIWidget
         foreach (var alertControl in _alertControls.Values)
         {
             alertControl.OnPressed -= AlertControlPressed;
-            alertControl.Dispose();
+            alertControl.Orphan();
         }
 
         _alertControls.Clear();
@@ -87,7 +87,7 @@ public sealed partial class AlertsUI : UIWidget
             var alertType = alertKey.AlertType.Value;
             if (!alertsSystem.TryGet(alertType, out var newAlert))
             {
-                Logger.ErrorS("alert", "Unrecognized alertType {0}", alertType);
+                Logger.GetSawmill("alert").Error("Unrecognized alertType {0}", alertType);
                 continue;
             }
 

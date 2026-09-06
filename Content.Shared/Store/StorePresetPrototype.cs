@@ -23,19 +23,18 @@ public sealed partial class StorePresetPrototype : IPrototype
     /// <summary>
     /// The categories that this store can access
     /// </summary>
-    [DataField("categories", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<StoreCategoryPrototype>))]
-    public HashSet<string> Categories { get; private set; } = new();
+    [DataField("categories")]
+    public HashSet<ProtoId<StoreCategoryPrototype>> Categories { get; private set; } = new();
 
     /// <summary>
     /// The inital balance that the store initializes with.
     /// </summary>
-    [DataField("initialBalance",
-        customTypeSerializer: typeof(PrototypeIdDictionarySerializer<FixedPoint2, CurrencyPrototype>))]
-    public Dictionary<string, FixedPoint2>? InitialBalance { get; private set; }
+    [DataField("initialBalance")]
+    public Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2>? InitialBalance { get; private set; }
 
     /// <summary>
     /// The currencies that are accepted in the store
     /// </summary>
-    [DataField("currencyWhitelist", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<CurrencyPrototype>))]
-    public HashSet<string> CurrencyWhitelist { get; private set; } = new();
+    [DataField("currencyWhitelist")]
+    public HashSet<ProtoId<CurrencyPrototype>> CurrencyWhitelist { get; private set; } = new();
 }

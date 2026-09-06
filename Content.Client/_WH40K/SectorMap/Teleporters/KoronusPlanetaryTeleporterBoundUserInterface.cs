@@ -42,6 +42,6 @@ public sealed class KoronusPlanetaryTeleporterBoundUserInterface : BoundUserInte
     {
         base.Dispose(disposing);
         if (disposing)
-            _window?.Dispose();
+            _window?.Orphan();
     }
 }

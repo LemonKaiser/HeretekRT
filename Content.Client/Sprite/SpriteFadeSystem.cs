@@ -17,6 +17,7 @@ public sealed partial class SpriteFadeSystem : EntitySystem
     [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private IStateManager _stateManager = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     private readonly HashSet<FadingSpriteComponent> _comps = new();
 
@@ -43,7 +44,7 @@ public sealed partial class SpriteFadeSystem : EntitySystem
         if (MetaData(uid).EntityLifeStage >= EntityLifeStage.Terminating || !TryComp<SpriteComponent>(uid, out var sprite))
             return;
 
-        sprite.Color = sprite.Color.WithAlpha(component.OriginalAlpha);
+        _sprite.SetColor((uid, sprite), sprite.Color.WithAlpha(component.OriginalAlpha));
     }
 
     public override void FrameUpdate(float frameTime)
@@ -79,12 +80,12 @@ public sealed partial class SpriteFadeSystem : EntitySystem
                 _comps.Add(fading);
                 var newColor = Math.Max(sprite.Color.A - change, TargetAlpha);
 
-                if (!sprite.Color.A.Equals(newColor))
-                {
-                    sprite.Color = sprite.Color.WithAlpha(newColor);
+                    if (!sprite.Color.A.Equals(newColor))
+                    {
+                        _sprite.SetColor((ent, sprite), sprite.Color.WithAlpha(newColor));
+                    }
                 }
             }
-        }
 
         var query = AllEntityQuery<FadingSpriteComponent>();
         while (query.MoveNext(out var uid, out var comp))
@@ -99,7 +100,7 @@ public sealed partial class SpriteFadeSystem : EntitySystem
 
             if (!newColor.Equals(sprite.Color.A))
             {
-                sprite.Color = sprite.Color.WithAlpha(newColor);
+                _sprite.SetColor((uid, sprite), sprite.Color.WithAlpha(newColor));
             }
             else
             {

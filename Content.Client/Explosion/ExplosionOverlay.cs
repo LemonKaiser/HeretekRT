@@ -26,7 +26,7 @@ public sealed partial class ExplosionOverlay : Overlay
     public ExplosionOverlay(SharedAppearanceSystem appearanceSystem)
     {
         IoCManager.InjectDependencies(this);
-        _shader = _proto.Index<ShaderPrototype>("unshaded").Instance();
+        _shader = _proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance();
         _transformSystem = _entMan.System<SharedTransformSystem>();
         _appearance = appearanceSystem;
     }

@@ -1,4 +1,4 @@
-﻿using Content.Client.UserInterface.Fragments;
+using Content.Client.UserInterface.Fragments;
 using System.Linq;
 using Content.Shared.CartridgeLoader;
 using Robust.Client.GameObjects;
@@ -70,7 +70,7 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         }
 
         _activeCartridgeUI = ui;
-        _activeUiFragment?.Dispose();
+        _activeUiFragment?.Orphan();
         _activeUiFragment = control;
     }
 
@@ -152,7 +152,7 @@ public abstract class CartridgeLoaderBoundUserInterface : BoundUserInterface
         base.Dispose(disposing);
 
         if (disposing)
-            _activeUiFragment?.Dispose();
+            _activeUiFragment?.Orphan();
     }
 
     protected CartridgeComponent? RetrieveCartridgeComponent(EntityUid? cartridgeUid)

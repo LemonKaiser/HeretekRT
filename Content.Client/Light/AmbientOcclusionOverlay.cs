@@ -88,7 +88,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
         args.WorldHandle.RenderInRenderTarget(_aoTarget,
             () =>
             {
-                worldHandle.UseShader(_proto.Index<ShaderPrototype>("unshaded").Instance());
+                worldHandle.UseShader(_proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance());
                 worldHandle.SetTransform(Matrix3x2.Identity);
                 var worldToTargetMatrix = _aoTarget.GetWorldToLocalMatrix(viewport.Eye!, scale);
 
@@ -114,7 +114,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
             () =>
             {
                 // Don't want lighting affecting it.
-                worldHandle.UseShader(_proto.Index<ShaderPrototype>("unshaded").Instance());
+                worldHandle.UseShader(_proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("unshaded")).Instance());
 
                 _cachedGrids.Clear();
                 maps.FindGridsIntersecting(mapId, worldBounds, ref _cachedGrids);
@@ -137,14 +137,14 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
             }, Color.Transparent);
 
         // Draw the stencil texture to depth buffer.
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilMask").Instance());
+        worldHandle.UseShader(_proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("StencilMask")).Instance());
         worldHandle.DrawTextureRect(_aoStencilTarget!.Texture, worldBounds);
 
         // Draw the Blurred AO texture finally.
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilEqualDraw").Instance());
+        worldHandle.UseShader(_proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("StencilEqualDraw")).Instance());
         worldHandle.DrawTextureRect(_aoTarget!.Texture, worldBounds, color);
 
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilClear").Instance());
+        worldHandle.UseShader(_proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("StencilClear")).Instance());
         worldHandle.DrawRect(worldBounds, Color.White);
 
         args.WorldHandle.SetTransform(Matrix3x2.Identity);

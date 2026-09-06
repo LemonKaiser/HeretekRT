@@ -235,7 +235,7 @@ public sealed partial class AdminSystem : EntitySystem
 
         if (session?.AttachedEntity != null)
         {
-            entityName = EntityManager.GetComponent<MetaDataComponent>(session.AttachedEntity.Value).EntityName;
+            entityName = Comp<MetaDataComponent>(session.AttachedEntity.Value).EntityName;
             identityName = Identity.Name(session.AttachedEntity.Value, EntityManager);
 
             // Frontier
@@ -406,7 +406,7 @@ public sealed partial class AdminSystem : EntitySystem
                 _popup.PopupCoordinates(Loc.GetString("admin-erase-popup", ("user", name)), coordinates, PopupType.LargeCaution);
                 var filter = Filter.Pvs(coordinates, 1, EntityManager, _playerManager);
                 var audioParams = new AudioParams().WithVolume(3);
-                _audio.PlayStatic("/Audio/_EinsteinEngines/Misc/reducedtoatmos.ogg", filter, coordinates, true, audioParams); // Mono sound edit
+                _audio.PlayStatic(new Robust.Shared.Audio.SoundPathSpecifier("/Audio/_EinsteinEngines/Misc/reducedtoatmos.ogg"), filter, coordinates, true, audioParams); // Mono sound edit
             }
 
             foreach (var item in _inventory.GetHandOrInventoryEntities(entity))

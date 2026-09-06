@@ -9,6 +9,7 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Components;
 using Content.Shared.Popups;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Goobstation.PairedExtendable;
 

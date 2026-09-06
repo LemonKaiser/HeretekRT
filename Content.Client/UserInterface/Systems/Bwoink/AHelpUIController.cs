@@ -17,6 +17,7 @@ using Content.Shared.Input;
 using Content.Shared._WH40K.Administration.Mute;
 using JetBrains.Annotations;
 using Robust.Client.Audio;
+using Robust.Shared.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -182,7 +183,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
 
     private void ReceivedBwoink(object? sender, SharedBwoinkSystem.BwoinkTextMessage message)
     {
-        Logger.InfoS("c.s.go.es.bwoink", $"@{message.UserId}: {message.Text}");
+        Logger.GetSawmill("c.s.go.es.bwoink").Info($"@{message.UserId}: {message.Text}");
         var localPlayer = _playerManager.LocalSession;
         if (localPlayer == null)
         {
@@ -191,7 +192,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
         if (message.PlaySound && localPlayer.UserId != message.TrueSender)
         {
             if (_aHelpSound != null && (_bwoinkSoundEnabled || !_adminManager.IsActive()))
-                _audio.PlayGlobal(_aHelpSound, Filter.Local(), false);
+                _audio.PlayGlobal(new SoundPathSpecifier(_aHelpSound), Filter.Local(), false);
             _clyde.RequestWindowAttention();
         }
 
@@ -275,7 +276,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
         }
 
         helper.Control.Orphan();
-        helper.Window.Dispose();
+        helper.Window.Orphan();
         helper.Window = null;
         helper.EverOpened = false;
 
@@ -437,7 +438,7 @@ public sealed class AdminAHelpUIHandler : IAHelpUIHandler
                 {
                     panel.Orphan();
                 }
-                Control?.Dispose();
+                Control?.Orphan();
             }
             // window wont be closed here so we will invoke ourselves
             OnClose?.Invoke();
@@ -551,7 +552,7 @@ public sealed class AdminAHelpUIHandler : IAHelpUIHandler
 
     public void Dispose()
     {
-        Window?.Dispose();
+        Window?.Orphan();
         Window = null;
         Control = null;
         _activePanelMap.Clear();
@@ -657,7 +658,7 @@ public sealed class UserAHelpUIHandler : IAHelpUIHandler
 
     public void Dispose()
     {
-        _window?.Dispose();
+        _window?.Orphan();
         _window = null;
         _chatPanel = null;
     }

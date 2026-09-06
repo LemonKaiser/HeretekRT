@@ -36,8 +36,7 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
     [Dependency] private SharedSalvageSystem _salvage = default!;
     [Dependency] private TileSystem _tile = default!;
 
-    [ValidatePrototypeId<LocalizedDatasetPrototype>]
-    private const string PlanetNames = "NamesBorer";
+    private static readonly ProtoId<LocalizedDatasetPrototype> PlanetNames = "NamesBorer";
 
     // TODO:
     // Fix shader some more
@@ -111,7 +110,7 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
         };
         AddComp(mapUid, restricted);
 
-        _biome.EnsurePlanet(mapUid, _protoManager.Index<BiomeTemplatePrototype>("Continental"), seed);
+        _biome.EnsurePlanet(mapUid, _protoManager.Index<BiomeTemplatePrototype>(new Robust.Shared.Prototypes.ProtoId<BiomeTemplatePrototype>("Continental")), seed);
 
         var grid = Comp<MapGridComponent>(mapUid);
 
@@ -183,7 +182,7 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
         var dungeonRotation = _dungeon.GetDungeonRotation(seed);
         var dungeonPosition = (origin + dungeonRotation.RotateVec(new Vector2i(0, dungeonDistance))).Floored();
 
-        _dungeon.GenerateDungeon(_protoManager.Index<DungeonConfigPrototype>("Experiment"), "Experiment", args.MapUid, grid, dungeonPosition, seed); // Frontier: added "Experiment"
+        _dungeon.GenerateDungeon(_protoManager.Index<DungeonConfigPrototype>(new Robust.Shared.Prototypes.ProtoId<DungeonConfigPrototype>("Experiment")), "Experiment", args.MapUid, grid, dungeonPosition, seed); // Frontier: added "Experiment"
 
         // TODO: Dungeon mobs + loot.
 

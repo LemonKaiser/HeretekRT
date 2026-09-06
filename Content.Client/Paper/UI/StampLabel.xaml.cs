@@ -26,7 +26,7 @@ public sealed partial class StampLabel : Label
         RobustXamlLoader.Load(this);
 
         var prototypes = IoCManager.Resolve<IPrototypeManager>();
-        _stampShader = prototypes.Index<ShaderPrototype>("PaperStamp").InstanceUnique();
+        _stampShader = prototypes.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("PaperStamp")).InstanceUnique();
     }
 
     protected override Vector2 MeasureOverride(Vector2 availableSize)

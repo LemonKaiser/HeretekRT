@@ -313,7 +313,7 @@ public sealed class MaterialArbitrageTest
             foreach (var (id, compositionComponent) in physicalCompositions)
             {
                 // Check cargo sell price
-                var materialPrice = await GetDeconstructedPrice(compositionComponent.MaterialComposition);
+                var materialPrice = await GetMaterialCompositionPrice(compositionComponent.MaterialComposition);
                 var chemicalPrice = await GetChemicalCompositionPrice(compositionComponent.ChemicalComposition);
                 var sumPrice = materialPrice + chemicalPrice;
                 var price = await GetPrice(id);
@@ -389,7 +389,20 @@ public sealed class MaterialArbitrageTest
 #pragma warning restore CS1998
 
 #pragma warning disable CS1998
-        async Task<double> GetChemicalCompositionPrice(Dictionary<string, FixedPoint2> mats)
+        async Task<double> GetMaterialCompositionPrice(Dictionary<ProtoId<MaterialPrototype>, int> mats)
+        {
+            double price = 0;
+            foreach (var (id, num) in mats)
+            {
+                var matProto = protoManager.Index<MaterialPrototype>(id);
+                price += num * matProto.Price;
+            }
+            return price;
+        }
+#pragma warning restore CS1998
+
+#pragma warning disable CS1998
+        async Task<double> GetChemicalCompositionPrice(Dictionary<ProtoId<ReagentPrototype>, FixedPoint2> mats)
         {
             double price = 0;
             foreach (var (id, num) in mats)

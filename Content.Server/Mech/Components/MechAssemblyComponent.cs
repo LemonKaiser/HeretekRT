@@ -1,4 +1,4 @@
-﻿using Content.Shared.Storage.Components;
+using Content.Shared.Storage.Components;
 using Content.Shared.Tag;
 using Content.Shared.Tools;
 using Robust.Shared.Containers;
@@ -25,8 +25,8 @@ public sealed partial class MechAssemblyComponent : Component
     /// stored as a tag and a bool tracking whether or not
     /// they're present.
     /// </summary>
-    [DataField("requiredParts", required: true, customTypeSerializer: typeof(PrototypeIdDictionarySerializer<bool, TagPrototype>))]
-    public Dictionary<string, bool> RequiredParts = new();
+    [DataField("requiredParts", required: true)]
+    public Dictionary<ProtoId<TagPrototype>, bool> RequiredParts = new();
 
     /// <summary>
     /// The prototype spawned when the assembly is finished

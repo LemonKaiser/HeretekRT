@@ -166,7 +166,7 @@ public sealed partial class KoronusSectorResidencySystem : EntitySystem
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { Valid: true } entity ||
-                !TryComp<TransformComponent>(entity, out var transform))
+                !TryComp(entity, out TransformComponent? transform))
             {
                 continue;
             }

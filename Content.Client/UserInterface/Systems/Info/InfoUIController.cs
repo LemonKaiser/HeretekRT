@@ -21,8 +21,7 @@ public sealed partial class InfoUIController : UIController, IOnStateExited<Game
     private RulesAndInfoWindow? _infoWindow;
     private ISawmill _sawmill = default!;
 
-    [ValidatePrototypeId<GuideEntryPrototype>]
-    private const string DefaultRuleset = "DefaultRuleset";
+    private static readonly ProtoId<GuideEntryPrototype> DefaultRuleset = "DefaultRuleset";
 
     public ProtoId<GuideEntryPrototype> RulesEntryId = DefaultRuleset;
 
@@ -56,7 +55,7 @@ public sealed partial class InfoUIController : UIController, IOnStateExited<Game
         if (_infoWindow == null)
             return;
 
-        _infoWindow.Dispose();
+        _infoWindow.Orphan();
         _infoWindow = null;
     }
 

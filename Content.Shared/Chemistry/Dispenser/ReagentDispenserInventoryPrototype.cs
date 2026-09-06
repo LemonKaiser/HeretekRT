@@ -14,8 +14,8 @@ namespace Content.Shared.Chemistry.Dispenser
     [Prototype]
     public sealed partial class ReagentDispenserInventoryPrototype : IPrototype
     {
-        [DataField("inventory", customTypeSerializer: typeof(PrototypeIdListSerializer<EntityPrototype>))]
-        public List<string> Inventory = new();
+        [DataField("inventory")]
+        public List<EntProtoId> Inventory = new();
 
         [ViewVariables, IdDataField]
         public string ID { get; private set; } = default!;

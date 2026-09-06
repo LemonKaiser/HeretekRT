@@ -189,10 +189,86 @@
   flavorType: Base
   description: flavor-base-chewy
 
+# Compatibility flavors used by inherited content packs.
+- type: flavor
+  id: raw
+  flavorType: Base
+  description: flavor-base-raw
+
+- type: flavor
+  id: cooked
+  flavorType: Base
+  description: flavor-base-cooked
+
+- type: flavor
+  id: floury
+  flavorType: Base
+  description: flavor-base-floury
+
+- type: flavor
+  id: greasey
+  flavorType: Base
+  description: flavor-base-greasey
+
+- type: flavor
+  id: metal
+  flavorType: Base
+  description: flavor-base-metal
+
+- type: flavor
+  id: salt
+  flavorType: Base
+  description: flavor-base-salt
+
 - type: flavor
   id: mustard
   flavorType: Complex
   description: flavor-complex-mustard
+
+- type: flavor
+  id: antiseptic
+  flavorType: Complex
+  description: flavor-complex-antiseptic
+
+- type: flavor
+  id: carrots
+  flavorType: Complex
+  description: flavor-complex-carrots
+
+- type: flavor
+  id: cheese
+  flavorType: Complex
+  description: flavor-complex-cheese
+
+- type: flavor
+  id: chili
+  flavorType: Complex
+  description: flavor-complex-chili
+
+- type: flavor
+  id: eggs
+  flavorType: Complex
+  description: flavor-complex-eggs
+
+- type: flavor
+  id: meat
+  flavorType: Complex
+  description: flavor-complex-meat
+
+- type: flavor
+  id: mushrooms
+  flavorType: Complex
+  description: flavor-complex-mushrooms
+
+- type: flavor
+  id: oil
+  flavorType: Complex
+  description: flavor-complex-oil
+
+- type: flavor
+  id: potato
+  flavorType: Complex
+  description: flavor-complex-potato
 
 - type: flavor
   id: mayonnaise

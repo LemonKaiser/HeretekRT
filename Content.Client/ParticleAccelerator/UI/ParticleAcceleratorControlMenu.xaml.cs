@@ -272,7 +272,7 @@ public sealed class PASegmentControl : Control
 
     public PASegmentControl()
     {
-        _greyScaleShader = IoCManager.Resolve<IPrototypeManager>().Index<ShaderPrototype>("Greyscale").Instance();
+        _greyScaleShader = IoCManager.Resolve<IPrototypeManager>().Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("Greyscale")).Instance();
 
         AddChild(_base = new TextureRect());
         AddChild(_unlit = new TextureRect());

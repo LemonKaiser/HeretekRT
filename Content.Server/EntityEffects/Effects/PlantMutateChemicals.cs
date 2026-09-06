@@ -22,7 +22,7 @@ public sealed partial class PlantMutateChemicals : EntityEffect
         var random = IoCManager.Resolve<IRobustRandom>();
         var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
         var chemicals = plantholder.Seed.Chemicals;
-        var randomChems = prototypeManager.Index<WeightedRandomFillSolutionPrototype>("RandomPickBotanyReagent").Fills;
+        var randomChems = prototypeManager.Index<WeightedRandomFillSolutionPrototype>(new Robust.Shared.Prototypes.ProtoId<WeightedRandomFillSolutionPrototype>("RandomPickBotanyReagent")).Fills;
 
         // Add a random amount of a random chemical to this set of chemicals
         if (randomChems != null)

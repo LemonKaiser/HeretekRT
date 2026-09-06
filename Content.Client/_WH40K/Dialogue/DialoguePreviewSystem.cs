@@ -206,7 +206,7 @@ public sealed partial class DialoguePreviewSystem : EntitySystem
             // Dialogue previews are local snapshots; apply profile scale directly instead of changing common humanoid code.
             var width = humanoid.Width <= 0.005f ? 1.0f : humanoid.Width;
             var height = humanoid.Height <= 0.005f ? 1.0f : humanoid.Height;
-            sprite.Scale = new Vector2(width, height);
+            _sprite.SetScale((uid, sprite), new Vector2(width, height));
         }
 
         var ev = new AfterAutoHandleStateEvent(default!);

@@ -62,7 +62,7 @@ public sealed partial class KoronusLandingPadSystem : EntitySystem
     public List<KoronusLandingPadRuntime> GetPads(EntityUid terrainGrid)
     {
         if (!TryComp<MapGridComponent>(terrainGrid, out var grid) ||
-            !TryComp<TransformComponent>(terrainGrid, out var terrainTransform))
+            !TryComp(terrainGrid, out TransformComponent? terrainTransform))
             return new List<KoronusLandingPadRuntime>();
 
         // PlanetSystem loads an authored Grid map over its biome grid. The pad markers in that
@@ -73,7 +73,7 @@ public sealed partial class KoronusLandingPadSystem : EntitySystem
         var tiles = new Dictionary<Vector2i, EntityUid>();
         // Preloaded planet surfaces are paused until somebody lands. Landing targets must still be
         // discoverable while the shuttle is in orbit, so these scans deliberately include paused entities.
-        var tileQuery = EntityManager.AllEntityQueryEnumerator<KoronusLandingPadComponent, TransformComponent>();
+        var tileQuery = AllEntityQuery<KoronusLandingPadComponent, TransformComponent>();
         while (tileQuery.MoveNext(out var uid, out _, out var transform))
         {
             if (!TryGetTileOnTerrain(
@@ -92,7 +92,7 @@ public sealed partial class KoronusLandingPadSystem : EntitySystem
             return new List<KoronusLandingPadRuntime>();
 
         var consoles = new List<(EntityUid Uid, Vector2i Tile, KoronusLandingPadConsoleComponent Component)>();
-        var consoleQuery = EntityManager.AllEntityQueryEnumerator<KoronusLandingPadConsoleComponent, TransformComponent>();
+        var consoleQuery = AllEntityQuery<KoronusLandingPadConsoleComponent, TransformComponent>();
         while (consoleQuery.MoveNext(out var uid, out var component, out var transform))
         {
             if (!TryGetTileOnTerrain(

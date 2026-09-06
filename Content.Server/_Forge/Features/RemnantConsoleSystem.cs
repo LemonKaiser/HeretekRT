@@ -39,7 +39,7 @@ public sealed partial class RemnantConsoleSystem : SharedRemnantConsoleSystem
 
         var button = component.Buttons[args.Index];
         _deviceLink.InvokePort(uid, button.Port);
-        _audio.PlayPvs("/Audio/Machines/machine_switch.ogg", uid, AudioParams.Default.WithVolume(-2f));
+        _audio.PlayPvs(new Robust.Shared.Audio.SoundPathSpecifier("/Audio/Machines/machine_switch.ogg"), uid, AudioParams.Default.WithVolume(-2f));
         UpdateUi(uid, component);
     }
 

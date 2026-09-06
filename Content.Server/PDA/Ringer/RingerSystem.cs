@@ -232,7 +232,7 @@ namespace Content.Server.PDA.Ringer
                 var ringerXform = Transform(uid);
 
                 _audio.PlayEntity(
-                    GetSound(ringer.Ringtone[ringer.NoteCount]),
+                    new Robust.Shared.Audio.SoundPathSpecifier(GetSound(ringer.Ringtone[ringer.NoteCount])),
                     Filter.Empty().AddInRange(_transform.GetMapCoordinates(uid, ringerXform), ringer.Range),
                     uid,
                     true,

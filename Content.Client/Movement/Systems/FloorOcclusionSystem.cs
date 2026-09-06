@@ -50,7 +50,7 @@ public sealed partial class FloorOcclusionSystem : SharedFloorOcclusionSystem
         if (!_spriteQuery.Resolve(sprite.Owner, ref sprite.Comp, false))
             return;
 
-        var shader = _proto.Index<ShaderPrototype>("HorizontalCut").Instance();
+        var shader = _proto.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("HorizontalCut")).Instance();
 
         if (enabled)
         {

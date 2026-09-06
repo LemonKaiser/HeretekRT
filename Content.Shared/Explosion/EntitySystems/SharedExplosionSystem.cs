@@ -1,5 +1,6 @@
 using Content.Shared.Armor;
 using Content.Shared.Explosion.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Explosion.EntitySystems;
 

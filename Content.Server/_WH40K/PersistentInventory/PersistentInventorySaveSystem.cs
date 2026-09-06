@@ -876,11 +876,11 @@ public sealed partial class PersistentInventorySaveSystem : EntitySystem
                      .Where(entity => entity != request.Body))
         {
             if (Exists(entity) && !TerminatingOrDeleted(entity))
-                EntityManager.DeleteEntity(entity);
+                Del(entity);
         }
 
         if (Exists(request.Body) && !TerminatingOrDeleted(request.Body))
-            EntityManager.DeleteEntity(request.Body);
+            Del(request.Body);
     }
 
     private async Task<PersistentInventoryMutationResult> PromoteWithRetryAsync(

@@ -32,7 +32,6 @@ using Content.Server._NF.Bank; // Frontier
 using Content.Shared._NF.Bank.BUI; // Frontier
 
 using Content.Server.Chemistry.Containers.EntitySystems;
-using Robust.Shared.Prototypes;
 // todo: remove this stinky LINQy
 
 namespace Content.Server.Forensics
@@ -103,7 +102,7 @@ namespace Content.Server.Forensics
         private void GiveReward(EntityUid uidOrigin, EntityUid target, int spesoAmount, FixedPoint2 fmcAmount, string msg)
         {
             SoundSpecifier confirmSound = new SoundPathSpecifier("/Audio/Effects/Cargo/ping.ogg");
-            _audioSystem.PlayPvs(_audioSystem.GetSound(confirmSound), uidOrigin);
+            _audioSystem.PlayPvs(_audioSystem.ResolveSound(confirmSound), uidOrigin);
 
             if (spesoAmount > 0)
                 _bank.TrySectorDeposit(SectorBankAccount.Nfsd, spesoAmount, LedgerEntryType.AntiSmugglingBonus);
@@ -122,7 +121,7 @@ namespace Content.Server.Forensics
                         int payout = sectorDD.FMCAccumulator.Int();
                         sectorDD.FMCAccumulator -= payout;
 
-                        var stackPrototype = _prototypeManager.Index<StackPrototype>("FederationMilitaryCredit");
+                        var stackPrototype = _prototypeManager.Index<StackPrototype>(new Robust.Shared.Prototypes.ProtoId<StackPrototype>("FederationMilitaryCredit"));
                         _stackSystem.Spawn(payout, stackPrototype, Transform(target).Coordinates);
                     }
                 }
@@ -130,7 +129,7 @@ namespace Content.Server.Forensics
             else
                 fmcAmount = 0;
 
-            var channel = _prototypeManager.Index<RadioChannelPrototype>("Nfsd");
+            var channel = _prototypeManager.Index<RadioChannelPrototype>(new Robust.Shared.Prototypes.ProtoId<RadioChannelPrototype>("Nfsd"));
             string msgString = Loc.GetString(msg);
             if (fmcAmount >= 1)
             {
@@ -167,7 +166,7 @@ namespace Content.Server.Forensics
             if (args.Handled || args.Cancelled)
                 return;
 
-            if (!EntityManager.TryGetComponent(uid, out ForensicScannerComponent? scanner))
+            if (!TryComp(uid, out ForensicScannerComponent? scanner))
                 return;
 
             if (args.Args.Target != null)
@@ -336,7 +335,7 @@ namespace Content.Server.Forensics
             }
 
             // Spawn a piece of paper.
-            var printed = EntityManager.SpawnEntity(component.MachineOutput, Transform(uid).Coordinates);
+            var printed = Spawn(component.MachineOutput, Transform(uid).Coordinates);
             _handsSystem.PickupOrDrop(args.Actor, printed, checkActionBlocker: false);
 
             if (!TryComp<PaperComponent>(printed, out var paperComp))

@@ -92,7 +92,7 @@ public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem
         // A preview grid is always a root directly below the preview map. SetCoordinates makes this explicit
         // instead of relying on the transient hierarchy created by the map loader.
         _xform.SetCoordinates(grid.Value.Owner, new EntityCoordinates(mapUid.Value, Vector2.Zero));
-        if (!TryComp<TransformComponent>(grid.Value.Owner, out var xform) ||
+        if (!TryComp(grid.Value.Owner, out TransformComponent? xform) ||
             !IsAttachedToPreviewMap(grid.Value, mapUid.Value, previewMap, xform))
         {
             Log.Error($"Shipyard preview grid '{vessel.ID}' was not attached to its preview map.");
@@ -112,7 +112,7 @@ public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem
             !Exists(current.Owner) ||
             TerminatingOrDeleted(current.Owner) ||
             !TryComp<MapGridComponent>(current.Owner, out var gridComponent) ||
-            !TryComp<TransformComponent>(current.Owner, out var xform) ||
+            !TryComp(current.Owner, out TransformComponent? xform) ||
             !TryGetPreviewMap(out var previewMap) ||
             !_map.TryGetMap(previewMap, out var mapUid) ||
             !IsAttachedToPreviewMap((current.Owner, gridComponent), mapUid.Value, previewMap, xform))
@@ -140,7 +140,7 @@ public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 
     private bool IsPreviewObserver(EntityUid entity)
     {
-        return TryComp<MetaDataComponent>(entity, out var metadata) &&
+        return TryComp(entity, out MetaDataComponent? metadata) &&
                metadata.EntityPrototype?.ID == "PreviewObserver";
     }
 

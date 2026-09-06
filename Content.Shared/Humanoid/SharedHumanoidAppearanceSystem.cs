@@ -44,14 +44,11 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
     [Dependency] private MarkingManager _markingManager = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
 
-    [ValidatePrototypeId<SpeciesPrototype>]
-    public const string DefaultSpecies = "Human";
+    public static readonly ProtoId<SpeciesPrototype> DefaultSpecies = "Human";
 
-    [ValidatePrototypeId<TTSVoicePrototype>]
-    public const string DefaultVoice = "TtsTechpriest";
+    public static readonly ProtoId<TTSVoicePrototype> DefaultVoice = "TtsTechpriest";
 
-    [ValidatePrototypeId<BarkPrototype>]
-    public const string DefaultBarkVoice = "BarksGoonSpeak1";
+    public static readonly ProtoId<BarkPrototype> DefaultBarkVoice = "BarksGoonSpeak1";
 
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {

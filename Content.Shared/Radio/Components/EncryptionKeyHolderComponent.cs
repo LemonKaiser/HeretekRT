@@ -2,6 +2,7 @@ using Content.Shared.Chat;
 using Content.Shared.Tools;
 using Robust.Shared.Audio;
 using Robust.Shared.Containers;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Shared.Radio.Components;
@@ -46,13 +47,13 @@ public sealed partial class EncryptionKeyHolderComponent : Component
     ///     Combined set of radio channels provided by all contained keys.
     /// </summary>
     [ViewVariables]
-    public HashSet<string> Channels = new();
+    public HashSet<ProtoId<RadioChannelPrototype>> Channels = new();
 
     /// <summary>
     ///     This is the channel that will be used when using the default/department prefix (<see cref="SharedChatSystem.DefaultChannelKey"/>).
     /// </summary>
     [ViewVariables]
-    public string? DefaultChannel;
+    public ProtoId<RadioChannelPrototype>? DefaultChannel;
 
     /// <summary>
     ///     Goobstation: Whether or not the headset can be examined to see the encryption keys while the keys aren't accessible.

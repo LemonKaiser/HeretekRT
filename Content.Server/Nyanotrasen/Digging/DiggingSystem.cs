@@ -1,5 +1,7 @@
 ﻿using Content.Shared.Interaction;
 using Content.Shared.Maps;
+using Content.Shared.Tools;
+using Robust.Shared.Prototypes;
 using Content.Shared.Nyanotrasen.Digging;
 using Content.Shared.Physics;
 using Content.Shared.Tools.Components;
@@ -94,7 +96,7 @@ public sealed partial class DiggingSystem : EntitySystem
             user,
             target: shovel,
             doAfterDelay: component.Delay,
-            toolQualitiesNeeded: new[] { component.QualityNeeded },
+            toolQualitiesNeeded: new ProtoId<ToolQualityPrototype>[] { component.QualityNeeded },
             doAfterEv: ev,
             toolComponent: tool
         );

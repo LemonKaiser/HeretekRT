@@ -46,7 +46,7 @@ public sealed partial class StencilOverlay : Overlay
         _sprite = sprite;
         _weather = weather;
         IoCManager.InjectDependencies(this);
-        _shader = _protoManager.Index<ShaderPrototype>("WorldGradientCircle").InstanceUnique();
+        _shader = _protoManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("WorldGradientCircle")).InstanceUnique();
     }
 
     protected override void Draw(in OverlayDrawArgs args)

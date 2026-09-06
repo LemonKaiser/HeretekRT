@@ -50,6 +50,6 @@ public sealed partial class CursedEntityStorageSystem : EntitySystem
             _entityStorage.AddToContents(entity, lockerEnt);
         }
 
-        _audio.PlayPvs(component.CursedSound, uid, AudioHelpers.WithVariation(0.125f, _random));
+        _audio.PlayPvs(component.CursedSound, uid, Robust.Shared.Audio.AudioParams.Default.WithVariation(0.125f));
     }
 }

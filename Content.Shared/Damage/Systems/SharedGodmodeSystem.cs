@@ -44,7 +44,7 @@ public abstract partial class SharedGodmodeSystem : EntitySystem
             if (TerminatingOrDeleted(uid))
                 continue;
 
-            if (!TryComp<MetaDataComponent>(uid, out var metadata))
+            if (!TryComp(uid, out MetaDataComponent? metadata))
                 continue;
 
             // EntityLifeStage remains Initialized while ComponentStartup is running,
@@ -92,7 +92,7 @@ public abstract partial class SharedGodmodeSystem : EntitySystem
 
         // Rejuv to cover other stuff. Do not raise it while the entity is still being
         // initialized: handlers may rely on containers created by ComponentStartup.
-        if (!TryComp<MetaDataComponent>(uid, out var metadata))
+        if (!TryComp(uid, out MetaDataComponent? metadata))
             return;
 
         if (metadata.EntityLifeStage <= EntityLifeStage.Initialized)

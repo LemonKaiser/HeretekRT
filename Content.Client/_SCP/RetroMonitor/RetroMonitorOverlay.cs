@@ -20,7 +20,7 @@ public sealed partial class RetroMonitorOverlay : Overlay
     public RetroMonitorOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _retroShader = _prototypeManager.Index<ShaderPrototype>("crt_vhs").InstanceUnique();
+        _retroShader = _prototypeManager.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("crt_vhs")).InstanceUnique();
     }
 
     // Mono start

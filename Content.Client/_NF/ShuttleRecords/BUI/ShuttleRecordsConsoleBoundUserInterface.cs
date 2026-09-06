@@ -1,4 +1,4 @@
-﻿using Content.Client._NF.ShuttleRecords.UI;
+using Content.Client._NF.ShuttleRecords.UI;
 using Content.Shared._NF.ShuttleRecords;
 using Content.Shared._NF.ShuttleRecords.Components;
 using Content.Shared._NF.ShuttleRecords.Events;
@@ -41,7 +41,7 @@ public sealed class ShuttleRecordsConsoleBoundUserInterface(
         base.Dispose(disposing);
         if (!disposing)
             return;
-        _window?.Dispose();
+        _window?.Orphan();
     }
 
     private void CopyDeed(ShuttleRecord shuttleRecord)

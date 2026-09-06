@@ -23,7 +23,7 @@ public sealed partial class ScreenSaturationOverlay : Overlay
     public ScreenSaturationOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _prototypes.Index<ShaderPrototype>("HeretekScreenSaturation").Instance().Duplicate();
+        _shader = _prototypes.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("HeretekScreenSaturation")).Instance().Duplicate();
     }
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)

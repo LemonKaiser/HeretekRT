@@ -18,7 +18,7 @@ public sealed partial class DeathTransitionOverlay : Overlay
     public DeathTransitionOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _prototypes.Index<ShaderPrototype>("HeretekDeathTransition").Instance().Duplicate();
+        _shader = _prototypes.Index<ShaderPrototype>(new Robust.Shared.Prototypes.ProtoId<ShaderPrototype>("HeretekDeathTransition")).Instance().Duplicate();
     }
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;

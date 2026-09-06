@@ -193,7 +193,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
                 return TryTargetEntityWorld(args, actionId, entMapTarget, user, comp) || !entMapTarget.InteractOnMiss;
 
             default:
-                Logger.Error($"Unknown targeting action: {actionId.GetType()}");
+                Logger.GetSawmill("client").Error($"Unknown targeting action: {actionId.GetType()}");
                 return false;
         }
     }
@@ -493,7 +493,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
 
         for (; i < existing.Count; i++)
         {
-            existing[i].Dispose();
+            existing[i].Orphan();
         }
     }
 
@@ -763,7 +763,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
             _window.SearchBar.OnTextChanged -= OnSearchChanged;
             _window.FilterButton.OnItemSelected -= OnFilterSelected;
 
-            _window.Dispose();
+            _window.Orphan();
             _window = null;
         }
     }

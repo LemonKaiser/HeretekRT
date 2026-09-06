@@ -82,8 +82,8 @@ namespace Content.Server.Nyanotrasen.Kitchen.Components
         /// What reagents are considered valid cooking oils?
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
-        [DataField("fryingOils", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<ReagentPrototype>))]
-        public HashSet<string> FryingOils { get; set; } = new();
+        [DataField("fryingOils")]
+        public HashSet<ProtoId<ReagentPrototype>> FryingOils { get; set; } = new();
 
         /// <summary>
         /// What reagents are added to tasty deep-fried food?
@@ -113,15 +113,15 @@ namespace Content.Server.Nyanotrasen.Kitchen.Components
         /// What flavors go well with deep frying?
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
-        [DataField("goodFlavors", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<FlavorPrototype>))]
-        public HashSet<string> GoodFlavors { get; set; } = new();
+        [DataField("goodFlavors")]
+        public HashSet<ProtoId<FlavorPrototype>> GoodFlavors { get; set; } = new();
 
         /// <summary>
         /// What flavors don't go well with deep frying?
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
-        [DataField("badFlavors", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<FlavorPrototype>))]
-        public HashSet<string> BadFlavors { get; set; } = new();
+        [DataField("badFlavors")]
+        public HashSet<ProtoId<FlavorPrototype>> BadFlavors { get; set; } = new();
 
         /// <summary>
         /// How much is the price coefficiency of a food changed for each good flavor?

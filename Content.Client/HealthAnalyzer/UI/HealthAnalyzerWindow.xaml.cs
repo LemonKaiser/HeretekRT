@@ -41,7 +41,6 @@ namespace Content.Client.HealthAnalyzer.UI
         public event Action<TargetBodyPart?, EntityUid>? OnBodyPartSelected;
         private EntityUid _spriteViewEntity;
 
-        [ValidatePrototypeId<EntityPrototype>]
         private readonly EntProtoId _bodyView = "AlertSpriteView";
 
         private readonly Dictionary<TargetBodyPart, TextureButton> _bodyPartControls;
@@ -208,7 +207,7 @@ namespace Content.Client.HealthAnalyzer.UI
             AlertsContainer.Visible = showAlerts;
 
             if (showAlerts)
-                AlertsContainer.DisposeAllChildren();
+                AlertsContainer.RemoveAllChildren();
 
             if (msg.Unrevivable == true)
                 AlertsContainer.AddChild(new RichTextLabel
@@ -238,13 +237,13 @@ namespace Content.Client.HealthAnalyzer.UI
 
             // Damage Groups
 
-            var displayedDamageGroups = new Dictionary<string, FixedPoint2>();
+            var displayedDamageGroups = new Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2>();
             displayedDamage.GetDamagePerGroup(_prototypes, displayedDamageGroups);
             var damageSortedGroups =
                 displayedDamageGroups.OrderByDescending(damage => damage.Value)
                     .ToDictionary(x => x.Key, x => x.Value);
 
-            IReadOnlyDictionary<string, FixedPoint2> damagePerType = displayedDamage.DamageDict;
+            IReadOnlyDictionary<ProtoId<DamageTypePrototype>, FixedPoint2> damagePerType = displayedDamage.DamageDict;
 
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
         }
@@ -324,8 +323,8 @@ namespace Content.Client.HealthAnalyzer.UI
         }
 
         private void DrawDiagnosticGroups(
-            Dictionary<string, FixedPoint2> groups,
-            IReadOnlyDictionary<string, FixedPoint2> damageDict)
+            Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2> groups,
+            IReadOnlyDictionary<ProtoId<DamageTypePrototype>, FixedPoint2> damageDict)
         {
             GroupsContainer.RemoveAllChildren();
 
@@ -346,7 +345,7 @@ namespace Content.Client.HealthAnalyzer.UI
                     Orientation = BoxContainer.LayoutOrientation.Vertical,
                 };
 
-                groupContainer.AddChild(CreateDiagnosticGroupTitle(groupTitleText, damageGroupId));
+                groupContainer.AddChild(CreateDiagnosticGroupTitle(groupTitleText, damageGroupId.Id));
 
                 GroupsContainer.AddChild(groupContainer);
 

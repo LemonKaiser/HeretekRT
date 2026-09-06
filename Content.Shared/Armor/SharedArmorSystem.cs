@@ -161,7 +161,7 @@ public abstract partial class SharedArmorSystem : EntitySystem
 
             msg.PushNewline();
 
-            var armorType = Loc.GetString("armor-damage-type-" + coefficientArmor.Key.ToLower());
+            var armorType = Loc.GetString("armor-damage-type-" + coefficientArmor.Key.Id.ToLower());
             if (coefficientArmor.Value == 0f)
             {
                 msg.AddMarkupOrThrow(Loc.GetString("armor-immunity-value", ("type", armorType)));
@@ -185,7 +185,7 @@ public abstract partial class SharedArmorSystem : EntitySystem
         {
             msg.PushNewline();
 
-            var armorType = Loc.GetString("armor-damage-type-" + flatArmor.Key.ToLower());
+            var armorType = Loc.GetString("armor-damage-type-" + flatArmor.Key.Id.ToLower());
             msg.AddMarkupOrThrow(Loc.GetString("armor-reduction-value",
                 ("type", armorType),
                 ("value", FormatExamineValue(flatArmor.Value))

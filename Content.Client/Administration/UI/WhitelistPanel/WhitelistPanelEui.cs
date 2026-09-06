@@ -33,7 +33,7 @@ public sealed class WhitelistPanelEui : BaseEui
 
         _closing = true;
         _window.Close();
-        _window.Dispose();
+        _window.Orphan();
         _window = null;
     }
 

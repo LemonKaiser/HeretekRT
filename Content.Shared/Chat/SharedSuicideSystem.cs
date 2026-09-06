@@ -58,7 +58,7 @@ public sealed partial class SharedSuicideSystem : EntitySystem
         if (!_prototypeManager.TryIndex(damageType, out var damagePrototype) || damagePrototype.ID == "Structural")
         {
             Log.Error($"{nameof(SharedSuicideSystem)} could not find the damage type prototype associated with {damageType}. Falling back to Blunt");
-            damagePrototype = _prototypeManager.Index<DamageTypePrototype>("Blunt");
+            damagePrototype = _prototypeManager.Index<DamageTypePrototype>(new Robust.Shared.Prototypes.ProtoId<DamageTypePrototype>("Blunt"));
         }
 
         var damage = new DamageSpecifier(damagePrototype, lethalAmountOfDamage);

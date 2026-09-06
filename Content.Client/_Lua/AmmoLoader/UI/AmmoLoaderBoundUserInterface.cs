@@ -5,6 +5,7 @@
 using Content.Shared._Lua.AmmoLoader;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._Lua.AmmoLoader.UI;
 

@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.CharacterCreation;
 ///     A homeworld offered during the introductory character creation.
 ///     Its characteristic modifiers are applied to the onboarding totals; features and talents remain descriptive.
 /// </summary>
-[Prototype("wh40kHomeworld")]
+[Prototype]
 public sealed partial class Wh40kHomeworldPrototype : IPrototype
 {
     [IdDataField]

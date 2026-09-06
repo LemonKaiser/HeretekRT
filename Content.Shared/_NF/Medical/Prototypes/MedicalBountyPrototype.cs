@@ -27,14 +27,14 @@ public sealed partial class MedicalBountyPrototype : IPrototype
     /// <summary>
     /// Damage types to be added to a bountied entity and the bonus/penalties associated with them
     /// </summary>
-    [DataField(required: true, customTypeSerializer: typeof(PrototypeIdDictionarySerializer<RandomDamagePreset, DamageTypePrototype>))]
-    public Dictionary<string, RandomDamagePreset> DamageSets = new();
+    [DataField(required: true)]
+    public Dictionary<ProtoId<DamageTypePrototype>, RandomDamagePreset> DamageSets = new();
 
     /// <summary>
     /// Damage types to be added to a bountied entity and the bonus/penalties associated with them
     /// </summary>
-    [DataField(customTypeSerializer: typeof(PrototypeIdDictionarySerializer<RandomReagentPreset, ReagentPrototype>))]
-    public Dictionary<string, RandomReagentPreset> Reagents = new();
+    [DataField]
+    public Dictionary<ProtoId<ReagentPrototype>, RandomReagentPreset> Reagents = new();
 
     /// <summary>
     /// Penalty for other damage types not in DamageSets on redemption.

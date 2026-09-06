@@ -10,8 +10,8 @@ namespace Content.Shared.Parallax.Biomes.Layers;
 public sealed partial class BiomeEntityLayer : IBiomeWorldLayer
 {
     /// <inheritdoc/>
-    [DataField("allowedTiles", customTypeSerializer:typeof(PrototypeIdListSerializer<ContentTileDefinition>))]
-    public List<string> AllowedTiles { get; private set; } = new();
+    [DataField("allowedTiles")]
+    public List<ProtoId<ContentTileDefinition>> AllowedTiles { get; private set; } = new();
 
     [DataField("noise")] public FastNoiseLite Noise { get; private set; } = new(0);
 
@@ -22,6 +22,6 @@ public sealed partial class BiomeEntityLayer : IBiomeWorldLayer
     /// <inheritdoc/>
     [DataField("invert")] public bool Invert { get; private set; } = false;
 
-    [DataField("entities", required: true, customTypeSerializer: typeof(PrototypeIdListSerializer<EntityPrototype>))]
-    public List<string> Entities = new();
+    [DataField("entities", required: true)]
+    public List<EntProtoId> Entities = new();
 }

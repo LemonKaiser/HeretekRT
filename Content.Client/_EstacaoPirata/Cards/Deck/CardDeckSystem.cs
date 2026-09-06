@@ -13,6 +13,7 @@ public sealed partial class CardDeckSystem : EntitySystem
 {
     private readonly Dictionary<Entity<CardDeckComponent>, int> _notInitialized = [];
     [Dependency] private CardSpriteSystem _cardSpriteSystem = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
 
     /// <inheritdoc/>
@@ -64,7 +65,7 @@ public sealed partial class CardDeckSystem : EntitySystem
     {
         layer = null;
         if (!TryComp(card, out SpriteComponent? cardSprite)
-            || !cardSprite.TryGetLayer(0, out var l))
+            || !_sprite.TryGetLayer((card, cardSprite), 0, out var l, false))
             return false;
 
         layer = l;
@@ -90,11 +91,11 @@ public sealed partial class CardDeckSystem : EntitySystem
         _cardSpriteSystem.TryHandleLayerConfiguration(
             (uid, sprite, cardStack),
             comp.CardLimit,
-            (_, cardIndex, layerIndex) =>
+            (spriteEnt, cardIndex, layerIndex) =>
             {
-                sprite.LayerSetRotation(layerIndex, Angle.FromDegrees(90));
-                sprite.LayerSetOffset(layerIndex, new Vector2(0, (comp.YOffset * cardIndex)));
-                sprite.LayerSetScale(layerIndex, new Vector2(comp.Scale, comp.Scale));
+                _sprite.LayerSetRotation(spriteEnt.AsNullable(), layerIndex, Angle.FromDegrees(90));
+                _sprite.LayerSetOffset(spriteEnt.AsNullable(), layerIndex, new Vector2(0, (comp.YOffset * cardIndex)));
+                _sprite.LayerSetScale(spriteEnt.AsNullable(), layerIndex, new Vector2(comp.Scale, comp.Scale));
                 return true;
             }
         );

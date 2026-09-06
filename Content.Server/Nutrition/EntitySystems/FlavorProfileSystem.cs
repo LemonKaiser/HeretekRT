@@ -28,7 +28,7 @@ public sealed partial class FlavorProfileSystem : EntitySystem
             return Loc.GetString(BackupFlavorMessage);
         }
 
-        var flavors = new HashSet<string>(flavorProfile.Flavors);
+        var flavors = new HashSet<ProtoId<FlavorPrototype>>(flavorProfile.Flavors);
         flavors.UnionWith(GetFlavorsFromReagents(solution, FlavorLimit - flavors.Count, flavorProfile.IgnoreReagents));
 
         var ev = new FlavorProfileModificationEvent(user, flavors);
@@ -48,17 +48,12 @@ public sealed partial class FlavorProfileSystem : EntitySystem
         return FlavorsToFlavorMessage(flavors);
     }
 
-    private string FlavorsToFlavorMessage(HashSet<string> flavorSet)
+    private string FlavorsToFlavorMessage(HashSet<ProtoId<FlavorPrototype>> flavorSet)
     {
-        var flavors = new List<FlavorPrototype>();
+        var flavors = new List<FlavorPrototype>(flavorSet.Count);
         foreach (var flavor in flavorSet)
         {
-            if (string.IsNullOrEmpty(flavor) || !_prototypeManager.TryIndex<FlavorPrototype>(flavor, out var flavorPrototype))
-            {
-                continue;
-            }
-
-            flavors.Add(flavorPrototype);
+            flavors.Add(_prototypeManager.Index(flavor));
         }
 
         flavors.Sort((a, b) => a.FlavorType.CompareTo(b.FlavorType));
@@ -78,9 +73,9 @@ public sealed partial class FlavorProfileSystem : EntitySystem
         return Loc.GetString(BackupFlavorMessage);
     }
 
-    private HashSet<string> GetFlavorsFromReagents(Solution solution, int desiredAmount, HashSet<string>? toIgnore = null)
+    private HashSet<ProtoId<FlavorPrototype>> GetFlavorsFromReagents(Solution solution, int desiredAmount, HashSet<string>? toIgnore = null)
     {
-        var flavors = new HashSet<string>();
+        var flavors = new HashSet<ProtoId<FlavorPrototype>>();
         foreach (var (reagent, quantity) in solution.GetReagentPrototypes(_prototypeManager))
         {
             if (toIgnore != null && toIgnore.Contains(reagent.ID))
@@ -100,7 +95,7 @@ public sealed partial class FlavorProfileSystem : EntitySystem
             }
 
             if (reagent.Flavor != null)
-                flavors.Add(reagent.Flavor);
+                flavors.Add(reagent.Flavor.Value);
         }
 
         return flavors;
@@ -109,12 +104,12 @@ public sealed partial class FlavorProfileSystem : EntitySystem
 
 public sealed class FlavorProfileModificationEvent : EntityEventArgs
 {
-    public FlavorProfileModificationEvent(EntityUid user, HashSet<string> flavors)
+    public FlavorProfileModificationEvent(EntityUid user, HashSet<ProtoId<FlavorPrototype>> flavors)
     {
         User = user;
         Flavors = flavors;
     }
 
     public EntityUid User { get; }
-    public HashSet<string> Flavors { get; }
+    public HashSet<ProtoId<FlavorPrototype>> Flavors { get; }
 }
