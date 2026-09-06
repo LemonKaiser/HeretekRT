@@ -1,4 +1,5 @@
 using Content.Client.Stylesheets;
+using Content.Client.Graphics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Input;
 using Content.Shared.Pinpointer;
@@ -351,7 +352,7 @@ public partial class NavMapControl : MapGridControl
             }
 
             if (lines.Count > 0)
-                handle.DrawPrimitives(DrawPrimitiveTopology.LineList, lines.Span, wallsRGB);
+                handle.DrawPrimitivesBatched(DrawPrimitiveTopology.LineList, lines.Span, wallsRGB);
         }
 
         // Draw map rects
@@ -378,7 +379,7 @@ public partial class NavMapControl : MapGridControl
             }
 
             if (rects.Count > 0)
-                handle.DrawPrimitives(DrawPrimitiveTopology.LineList, rects.Span, wallsRGB);
+                handle.DrawPrimitivesBatched(DrawPrimitiveTopology.LineList, rects.Span, wallsRGB);
         }
 
         // Invoke post wall drawing action

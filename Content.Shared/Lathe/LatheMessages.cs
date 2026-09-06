@@ -9,14 +9,14 @@ public sealed class LatheUpdateState : BoundUserInterfaceState
 {
     public List<ProtoId<LatheRecipePrototype>> Recipes;
 
-    public List<LatheRecipeBatch> Queue; // Frontier: LatheRecipePrototype<LatheRecipeBatch
+    public LatheRecipeBatch[] Queue; // Frontier: LatheRecipePrototype<LatheRecipeBatch
 
-    public LatheRecipePrototype? CurrentlyProducing;
+    public ProtoId<LatheRecipePrototype>? CurrentlyProducing;
 
     public bool Looping = false; // Mono
     public bool Skipping = false; // Mono
 
-    public LatheUpdateState(List<ProtoId<LatheRecipePrototype>> recipes, List<LatheRecipeBatch> queue, LatheRecipePrototype? currentlyProducing = null, bool looping = false, bool skipping = false) // Frontier: change queue type // Mono
+    public LatheUpdateState(List<ProtoId<LatheRecipePrototype>> recipes, LatheRecipeBatch[] queue, ProtoId<LatheRecipePrototype>? currentlyProducing = null, bool looping = false, bool skipping = false) // Frontier: change queue type // Mono
     {
         Recipes = recipes;
         Queue = queue;

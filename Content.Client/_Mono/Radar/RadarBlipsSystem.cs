@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Shared._Mono.Radar;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 using System.Linq;
 
@@ -9,7 +10,6 @@ namespace Content.Client._Mono.Radar;
 public sealed partial class RadarBlipsSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
 
     private const double BlipStaleSeconds = 3.0;
@@ -21,10 +21,12 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     private List<MissileVectorNetData> _missiles = new();
     private List<HitscanNetData> _hitscans = new();
     private List<BlipConfig> _configPalette = new();
+    private readonly Dictionary<NetEntity, BlipNetData> _blipsByNetEntity = new();
 
     // cached results to avoid allocating on every draw/frame
     private readonly List<BlipData> _cachedBlipData = new();
     private readonly List<MissileVectorData> _cachedMissileData = new();
+    private readonly List<HitscanNetData> _emptyHitscans = new();
 
     public override void Initialize()
     {
@@ -39,6 +41,11 @@ public sealed partial class RadarBlipsSystem : EntitySystem
         _blips = ev.Blips;
         _missiles = ev.Missiles;
         _hitscans = ev.HitscanLines;
+        _blipsByNetEntity.Clear();
+        foreach (var blip in _blips)
+        {
+            _blipsByNetEntity[blip.Uid] = blip;
+        }
         _lastUpdatedTime = _timing.CurTime;
     }
 
@@ -46,6 +53,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     {
         var blipid = _blips.FirstOrDefault(x => x.Uid == args.NetBlipUid);
         _blips.Remove(blipid);
+        _blipsByNetEntity.Remove(args.NetBlipUid);
     }
 
     public void RequestBlips(EntityUid console)
@@ -85,17 +93,23 @@ public sealed partial class RadarBlipsSystem : EntitySystem
 
             var predictedPos = new EntityCoordinates(coord.EntityId, coord.Position + blip.Vel * (float)(_timing.CurTime - _lastUpdatedTime).TotalSeconds);
 
-            var predictedMap = _xform.ToMapCoordinates(predictedPos);
-
             var config = _configPalette[blip.ConfigIndex];
             var rotation = blip.Rotation;
-            // hijack our shape if we're on a grid and we want to do that
-            if (_map.TryFindGridAt(predictedMap, out var grid, out _) && grid != EntityUid.Invalid)
+            // The server serializes a blip in map or grid coordinates. Its coordinate entity is
+            // consequently the authoritative grid; a physics broadphase lookup per marker and
+            // per rendered frame is unnecessary.
+            var grid = coord.EntityId;
+            if (TryComp<MapGridComponent>(grid, out _))
             {
                 if (blip.OnGridConfigIndex is { } gridIdx)
                     config = _configPalette[gridIdx];
                 rotation += Transform(grid).LocalRotation;
             }
+            else
+            {
+                grid = EntityUid.Invalid;
+            }
+
             var maybeGrid = grid != EntityUid.Invalid ? grid : (EntityUid?)null;
 
             _cachedBlipData.Add(new(blip.Uid, predictedPos, rotation, maybeGrid, config));
@@ -117,7 +131,8 @@ public sealed partial class RadarBlipsSystem : EntitySystem
         // populate the cached list instead of allocating a new one each frame
         foreach (var missile in _missiles)
         {
-            var tiedBlip = _blips.FirstOrDefault(x => x.Uid == missile.Uid);
+            if (!_blipsByNetEntity.TryGetValue(missile.Uid, out var tiedBlip))
+                continue;
             var coord = tiedBlip.Position;
             var color = Color.FromHex("#00AACC");
             var colorArcs = Color.FromHex("#FF0040");
@@ -153,7 +168,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     public List<HitscanNetData> GetHitscanLines()
     {
         if (_timing.CurTime.TotalSeconds - _lastUpdatedTime.TotalSeconds > BlipStaleSeconds)
-            return new();
+            return _emptyHitscans;
 
         return _hitscans;
     }

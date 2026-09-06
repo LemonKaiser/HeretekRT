@@ -7,7 +7,7 @@ namespace Content.Shared.Store;
 ///     Used to define different categories for a store.
 /// </summary>
 [Prototype]
-[Serializable, NetSerializable, DataDefinition]
+[DataDefinition]
 public sealed partial class StoreCategoryPrototype : IPrototype
 {
     private string _name = string.Empty;

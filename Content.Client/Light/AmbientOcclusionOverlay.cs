@@ -17,6 +17,9 @@ namespace Content.Client.Light;
 /// </summary>
 public sealed partial class AmbientOcclusionOverlay : Overlay
 {
+    // Keep indexed geometry well below Clyde's fixed per-draw vertex buffer.
+    private const int MaximumVerticesPerDraw = 3 * 4096;
+
     [Dependency] private IClyde _clyde = default!;
     [Dependency] private IConfigurationManager _cfgManager = default!;
     [Dependency] private IEntityManager _entManager = default!;
@@ -156,7 +159,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
         if (polygon.Length < 3)
             return;
 
-        if (_aoVertices.Count + polygon.Length > ushort.MaxValue)
+        if (_aoVertices.Count + polygon.Length > MaximumVerticesPerDraw)
             FlushAmbientOcclusionPolygons(worldHandle);
 
         var indexBase = (ushort) _aoVertices.Count;

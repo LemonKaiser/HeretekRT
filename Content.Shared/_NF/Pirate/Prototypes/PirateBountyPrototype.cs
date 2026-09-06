@@ -9,7 +9,7 @@ namespace Content.Shared._NF.Pirate.Prototypes;
 /// that must be sold together in a labeled container in order
 /// to receive a reward in doubloons.
 /// </summary>
-[Prototype, Serializable, NetSerializable]
+[Prototype]
 public sealed partial class PirateBountyPrototype : IPrototype
 {
     /// <inheritdoc/>

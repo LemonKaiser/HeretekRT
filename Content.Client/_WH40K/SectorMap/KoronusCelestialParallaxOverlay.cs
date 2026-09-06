@@ -81,7 +81,7 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
 
             if (body.BodyType == KoronusCelestialBodyType.Star)
             {
-                _sunRenderer.Draw(args.WorldHandle, sceneryPosition, sceneryRadius);
+                _sunRenderer.Draw(args.WorldHandle, sceneryPosition, sceneryRadius, body);
                 continue;
             }
 

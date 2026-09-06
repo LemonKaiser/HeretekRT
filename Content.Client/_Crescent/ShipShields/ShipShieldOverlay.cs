@@ -87,13 +87,16 @@ public sealed class ShipShieldOverlay : Overlay
 
         // Mono Update: Just use transform.Position for world position already for corners
 
-        for (int i = 1; i < chain.Count; i++)
+        // CreateLoop stores the first point once more at Vertices[Count]. Iterate all
+        // chain edges, including the final edge back to that point, so the rendered
+        // perimeter exactly matches the collider created by ShipShieldsSystem.
+        for (var i = 0; i < chain.Count; i++)
         {
             // top left corner
-            var leftVertex = VertexToWorldPos(chain.Vertices[i - 1], transform);
+            var leftVertex = VertexToWorldPos(chain.Vertices[i], transform);
 
             // top right corner
-            var rightVertex = VertexToWorldPos(chain.Vertices[i], transform);
+            var rightVertex = VertexToWorldPos(chain.Vertices[i + 1], transform);
 
             // bottom left corner
             var leftCorner = Corner(leftVertex, transform);

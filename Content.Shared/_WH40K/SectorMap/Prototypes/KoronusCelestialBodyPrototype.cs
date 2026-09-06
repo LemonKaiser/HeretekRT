@@ -22,6 +22,20 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     [DataField]
     public KoronusCelestialBodyType BodyType = KoronusCelestialBodyType.Planet;
 
+    /// <summary>
+    /// Spectral tint for the procedural stellar shaders. It is used only by stars; white with a
+    /// zero blend preserves the original solar palette exactly.
+    /// </summary>
+    [DataField]
+    public Color StarTint = Color.White;
+
+    /// <summary>
+    /// How strongly <see cref="StarTint"/> replaces the warm default solar spectrum, from zero
+    /// (the original palette) to one (the authored spectrum while retaining luminosity detail).
+    /// </summary>
+    [DataField]
+    public float StarTintStrength;
+
     [DataField(required: true)]
     public string DisplayName = string.Empty;
 

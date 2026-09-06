@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Maths;
@@ -32,8 +33,13 @@ public sealed class KoronusSunVisualRenderer
             resources.GetResource<TextureResource>(NoiseTexturePath).Texture);
     }
 
-    public void Draw(DrawingHandleWorld handle, Vector2 centre, float radius)
+    public void Draw(
+        DrawingHandleWorld handle,
+        Vector2 centre,
+        float radius,
+        KoronusCelestialBodyPrototype? star = null)
     {
+        ConfigureStarTint(star);
         var previousShader = handle.GetShader();
         var coronaSize = new Vector2(radius * CoronaDiameterScale);
         handle.UseShader(_coronaShader);
@@ -45,8 +51,13 @@ public sealed class KoronusSunVisualRenderer
         handle.UseShader(previousShader);
     }
 
-    public void Draw(DrawingHandleScreen handle, Vector2 centre, float radius)
+    public void Draw(
+        DrawingHandleScreen handle,
+        Vector2 centre,
+        float radius,
+        KoronusCelestialBodyPrototype? star = null)
     {
+        ConfigureStarTint(star);
         var previousShader = handle.GetShader();
         var coronaSize = new Vector2(radius * CoronaDiameterScale);
         handle.UseShader(_coronaShader);
@@ -56,5 +67,15 @@ public sealed class KoronusSunVisualRenderer
         handle.UseShader(_surfaceShader);
         handle.DrawRect(UIBox2.FromDimensions(centre - surfaceSize / 2f, surfaceSize), Color.White);
         handle.UseShader(previousShader);
+    }
+
+    private void ConfigureStarTint(KoronusCelestialBodyPrototype? star)
+    {
+        var tint = star?.StarTint ?? Color.White;
+        var strength = Math.Clamp(star?.StarTintStrength ?? 0f, 0f, 1f);
+        _surfaceShader.SetParameter("StarTint", tint);
+        _surfaceShader.SetParameter("StarTintStrength", strength);
+        _coronaShader.SetParameter("StarTint", tint);
+        _coronaShader.SetParameter("StarTintStrength", strength);
     }
 }

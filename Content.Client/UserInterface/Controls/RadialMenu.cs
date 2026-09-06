@@ -590,7 +590,7 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
         var bufferSize = segmentCount * 2;
         if (_sectorPointsForDrawing == null || _sectorPointsForDrawing.Length != bufferSize)
         {
-            _sectorPointsForDrawing ??= new Vector2[bufferSize];
+            _sectorPointsForDrawing = new Vector2[bufferSize];
         }
 
         for (var i = 0; i < segmentCount; i++)

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client.Graphics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Mono.GridEdgeMarker; // Mono
 using Content.Shared.Maps; // Mono
@@ -657,35 +658,39 @@ public partial class BaseShuttleControl : MapGridControl
             gridData.LastBuild = grid.Comp.LastTileModifiedTick;
         }
 
-        var totalData = gridData.Vertices.Count;
         var triCount = gridData.EdgeIndex;
-        var edgeCount = totalData - gridData.EdgeIndex;
-        Extensions.EnsureLength(ref _allVertices, totalData);
+        var edgeCount = gridData.Vertices.Count - gridData.EdgeIndex;
+        var vertexOffset = drawFill ? 0 : gridData.EdgeIndex;
+        var vertexCount = drawFill ? triCount : edgeCount;
+
+        if (vertexCount == 0)
+            return;
+
+        Extensions.EnsureLength(ref _allVertices, vertexCount);
 
         _drawJob.MidPoint = midpoint;
         _drawJob.Matrix = gridToView;
         _drawJob.MinimapScale = minimapScale;
         _drawJob.Vertices = gridData.Vertices;
         _drawJob.ScaledVertices = _allVertices;
+        _drawJob.VertexOffset = vertexOffset;
 
-        _parallel.ProcessNow(_drawJob, totalData);
+        _parallel.ProcessNow(_drawJob, vertexCount);
 
         if (drawFill)
         {
-            const float BatchSize = 3f * 4096;
             var fillColor = Color.ToSrgb(Color.InterpolateBetween(BackingColor, color, alpha)).WithAlpha(1f);
-
-            for (var i = 0; i < Math.Ceiling(triCount / BatchSize); i++)
-            {
-                var start = (int)(i * BatchSize);
-                var end = (int)Math.Min(triCount, start + BatchSize);
-                var count = end - start;
-                handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, new Span<Vector2>(_allVertices, start, count), fillColor);
-            }
+            handle.DrawPrimitivesBatched(
+                DrawPrimitiveTopology.TriangleList,
+                _allVertices.AsSpan(0, triCount),
+                fillColor);
         }
         else
         {
-            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, new Span<Vector2>(_allVertices, gridData.EdgeIndex, edgeCount), color);
+            handle.DrawPrimitivesBatched(
+                DrawPrimitiveTopology.LineList,
+                _allVertices.AsSpan(0, edgeCount),
+                color);
         }
     }
 
@@ -705,13 +710,14 @@ public partial class BaseShuttleControl : MapGridControl
         public float MinimapScale;
         public Vector2 MidPoint;
         public Matrix3x2 Matrix;
+        public int VertexOffset;
 
         public List<Vector2> Vertices;
         public Vector2[] ScaledVertices;
 
         public void Execute(int index)
         {
-            ScaledVertices[index] = Vector2.Transform(Vertices[index], Matrix);
+            ScaledVertices[index] = Vector2.Transform(Vertices[index + VertexOffset], Matrix);
         }
     }
 }

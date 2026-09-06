@@ -3,6 +3,9 @@
 light_mode unshaded;
 blend_mode normal;
 
+uniform highp vec4 StarTint;
+uniform highp float StarTintStrength;
+
 highp vec2 rotatePoint(highp vec2 point, highp float angle) {
     highp float sine = sin(angle);
     highp float cosine = cos(angle);
@@ -41,6 +44,12 @@ highp float prominence(highp vec2 position, highp float angle, highp float heigh
     return arc * outsideDisk * outwardHalf;
 }
 
+highp vec3 applyStarTint(highp vec3 colour) {
+    highp float luminance = dot(colour, vec3(0.2126, 0.7152, 0.0722));
+    highp vec3 spectralColour = StarTint.rgb * (0.19 + luminance * 1.25);
+    return mix(colour, spectralColour, clamp(StarTintStrength, 0.0, 1.0));
+}
+
 void fragment() {
     // Radius 1 is the disk and 1.9 is the shared corona limit used by the NAV visualization.
     highp vec2 position = (UV - vec2(0.5)) * 3.8;
@@ -75,5 +84,6 @@ void fragment() {
     highp vec3 hotCorona = vec3(1.0, 0.31, 0.018);
     highp vec3 colour = mix(deepCorona, hotCorona, clamp(innerHalo + razorRim + prominences, 0.0, 1.0));
     colour += vec3(1.0, 0.13, 0.004) * prominences * 0.65;
+    colour = applyStarTint(colour);
     COLOR = vec4(colour, alpha);
 }

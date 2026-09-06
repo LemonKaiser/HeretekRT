@@ -7,8 +7,11 @@
   bodyType: Star
   displayName: Trinnitos
   description: The star at the centre of the Trinnitos system.
-  navVisualRadius: 400
-  backgroundVisualRadius: 650
+  # Foulstone's red giant keeps its solar detail, but uses a red spectral profile.
+  starTint: "#FF2418"
+  starTintStrength: 1
+  navVisualRadius: 1600
+  backgroundVisualRadius: 2600
   backgroundParallaxSlowness: 0.82
 
 - type: koronusCelestialBody
@@ -19,7 +22,7 @@
   description: Внешний мир Триннитоса, бывший мёртвый мир и нынешний мир-святыня Ордена Молота.
   climate: koronus-planetary-climate-shrine-world
   # Фоулстоун — внешний мир Триннитоса; три внутренних тела занимают первые орбиты.
-  orbitRadius: 4700
+  orbitRadius: 5700
   orbitPhase: 215
   # One complete orbit every six hours: 360 degrees / 21600 seconds.
   orbitAngularSpeed: 0.0167
@@ -86,7 +89,7 @@
   displayName: Мир-пустыня
   description: Безымянный засушливый мир на внутренней орбите Триннитоса.
   climate: koronus-planetary-climate-arid
-  orbitRadius: 1400
+  orbitRadius: 2400
   orbitPhase: 33
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/desert-world.png
@@ -141,7 +144,7 @@
   displayName: Скалистый мир
   description: Безымянный скалистый мир на второй орбите Триннитоса.
   climate: koronus-planetary-climate-rocky
-  orbitRadius: 2500
+  orbitRadius: 3500
   orbitPhase: -42
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/rock-world.png
@@ -196,7 +199,7 @@
   displayName: Пылающий мир
   description: Безымянный вулканический мир на третьей орбите Триннитоса.
   climate: koronus-planetary-climate-volcanic
-  orbitRadius: 3600
+  orbitRadius: 4600
   orbitPhase: 118
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/flaming-world.png
@@ -246,8 +249,10 @@
   bodyType: Star
   displayName: Sotto's Tomb
   description: Звезда в центре системы Sotto's Tomb.
-  navVisualRadius: 400
-  backgroundVisualRadius: 650
+  starTint: "#85CBFF"
+  starTintStrength: 1
+  navVisualRadius: 800
+  backgroundVisualRadius: 1300
   backgroundParallaxSlowness: 0.82
 
 - type: koronusCelestialBody
@@ -257,7 +262,7 @@
   displayName: Ледяной мир
   description: Далёкий ледяной мир системы Sotto's Tomb.
   climate: koronus-planetary-climate-frozen
-  orbitRadius: 4800
+  orbitRadius: 5800
   orbitPhase: 0
   # One complete orbit every six hours.
   orbitAngularSpeed: 0.0167
@@ -315,8 +320,8 @@
   bodyType: Star
   displayName: Aivorius
   description: Звезда в центре системы Aivorius.
-  navVisualRadius: 400
-  backgroundVisualRadius: 650
+  navVisualRadius: 800
+  backgroundVisualRadius: 1300
   backgroundParallaxSlowness: 0.82
 
 - type: koronusCelestialBody
@@ -326,7 +331,7 @@
   displayName: Пылающий мир
   description: Безымянный пылающий мир на внутренней орбите Aivorius.
   climate: koronus-planetary-climate-burning
-  orbitRadius: 1400
+  orbitRadius: 2400
   orbitPhase: 125
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/aivorius-burning-world.png
@@ -375,7 +380,7 @@
   displayName: Мир джунглей
   description: Феодальный мир с тропической биосферой на второй орбите Aivorius.
   climate: koronus-planetary-climate-tropical
-  orbitRadius: 2500
+  orbitRadius: 3500
   orbitPhase: -148
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/aivorius-jungle-world.png
@@ -430,7 +435,7 @@
   displayName: Пустынный мир
   description: Безымянный степной мир на третьей орбите Aivorius.
   climate: koronus-planetary-climate-steppe
-  orbitRadius: 3600
+  orbitRadius: 4600
   orbitPhase: 10
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/aivorius-desert-world.png
@@ -485,7 +490,7 @@
   displayName: Газовый гигант
   description: Внешний газовый гигант системы Aivorius; посадка на него невозможна.
   climate: koronus-planetary-climate-gas-giant
-  orbitRadius: 4700
+  orbitRadius: 5700
   orbitPhase: 154
   orbitAngularSpeed: 0.0167
   texture: /Textures/_WH40K/Celestial/aivorius-gas-giant.png
@@ -523,8 +528,8 @@
   bodyType: Star
   displayName: Фурибундус
   description: The immense and violently active star at the centre of the Furibundus system.
-  navVisualRadius: 400
-  backgroundVisualRadius: 650
+  navVisualRadius: 1200
+  backgroundVisualRadius: 1950
   backgroundParallaxSlowness: 0.82
 
 - type: koronusCelestialBody
@@ -534,7 +539,7 @@
   displayName: Мертвый мир
   description: A lifeless volcanic world scorched by Furibundus.
   climate: koronus-planetary-climate-volcanic
-  orbitRadius: 2000
+  orbitRadius: 3000
   orbitPhase: 180
   # One complete orbit every six hours.
   orbitAngularSpeed: 0.0167
@@ -586,7 +591,7 @@
   displayName: Алтарь-Темплум-Каликсис-Экс-17
   description: An airless asteroid housing an Adeptus Mechanicus temple and a prepared landing site.
   climate: koronus-planetary-climate-airless-asteroid
-  orbitRadius: 2500
+  orbitRadius: 3500
   randomizePositionAngle: true
   texture: /Textures/_WH40K/Celestial/asteroid-texture.png
   navVisualRadius: 115

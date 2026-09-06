@@ -28,13 +28,11 @@ public abstract partial class DevicePortPrototype
 }
 
 [Prototype]
-[Serializable, NetSerializable]
 public sealed partial class SinkPortPrototype : DevicePortPrototype, IPrototype
 {
 }
 
 [Prototype]
-[Serializable, NetSerializable]
 public sealed partial class SourcePortPrototype : DevicePortPrototype, IPrototype
 {
     /// <summary>

@@ -29,20 +29,25 @@ public sealed class DeviceListUserInterfaceState : BoundUserInterfaceState
 [Serializable, NetSerializable]
 public sealed class DeviceLinkUserInterfaceState : BoundUserInterfaceState
 {
-    public readonly List<SourcePortPrototype> Sources;
-    public readonly List<SinkPortPrototype> Sinks;
+    public readonly ProtoId<SourcePortPrototype>[] Sources;
+    public readonly ProtoId<SinkPortPrototype>[] Sinks;
     public readonly HashSet<(ProtoId<SourcePortPrototype> source, ProtoId<SinkPortPrototype> sink)> Links;
     public readonly List<(string source, string sink)>? Defaults;
+    /// <summary>
+    /// Custom localization keys for source-port labels, keyed by port ID.
+    /// </summary>
+    public readonly Dictionary<string, string> SourcePortNames;
     public readonly string SourceAddress;
     public readonly string SinkAddress;
 
     public DeviceLinkUserInterfaceState(
-        List<SourcePortPrototype> sources,
-        List<SinkPortPrototype> sinks,
+        ProtoId<SourcePortPrototype>[] sources,
+        ProtoId<SinkPortPrototype>[] sinks,
         HashSet<(ProtoId<SourcePortPrototype> source, ProtoId<SinkPortPrototype> sink)> links,
         string sourceAddress,
         string sinkAddress,
-        List<(string source, string sink)>? defaults = default)
+        List<(string source, string sink)>? defaults = default,
+        Dictionary<string, string>? sourcePortNames = default)
     {
         Links = links;
         SourceAddress = sourceAddress;
@@ -50,5 +55,6 @@ public sealed class DeviceLinkUserInterfaceState : BoundUserInterfaceState
         Defaults = defaults;
         Sources = sources;
         Sinks = sinks;
+        SourcePortNames = sourcePortNames ?? new Dictionary<string, string>();
     }
 }

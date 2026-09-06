@@ -536,29 +536,26 @@ public sealed partial class NetworkConfiguratorSystem : SharedNetworkConfigurato
             return;
 
         var sources = _deviceLinkSystem.GetSourcePorts(sourceUid, sourceComponent);
+        var sourceIds = _deviceLinkSystem.GetSourcePortIds((sourceUid, sourceComponent));
+        var sinks = _deviceLinkSystem.GetSinkPortIds((sinkUid, sinkComponent));
+        var sourcePortNames = new Dictionary<string, string>();
 
-        // Check if the source entity has a ShuttleConsoleComponent with custom port names
         if (TryComp<ShuttleConsoleComponent>(sourceUid, out var shuttleConsole) && shuttleConsole.PortNames.Count > 0)
         {
-            // Apply custom port names to the source ports
             foreach (var sourcePort in sources)
             {
                 if (shuttleConsole.PortNames.TryGetValue(sourcePort.ID, out var customName))
-                {
-                    // We can't modify the prototype directly, so we create a new one with the custom name
-                    sourcePort.Name = customName;
-                }
+                    sourcePortNames[sourcePort.ID] = customName;
             }
         }
 
-        var sinks = _deviceLinkSystem.GetSinkPorts(sinkUid, sinkComponent);
         var links = _deviceLinkSystem.GetLinks(sourceUid, sinkUid, sourceComponent);
         var defaults = _deviceLinkSystem.GetDefaults(sources);
 
         var sourceAddress = Resolve(sourceUid, ref sourceNetworkComponent, false) ? sourceNetworkComponent.Address : "";
         var sinkAddress = Resolve(sinkUid, ref sinkNetworkComponent, false) ? sinkNetworkComponent.Address : "";
 
-        var state = new DeviceLinkUserInterfaceState(sources, sinks, links, sourceAddress, sinkAddress, defaults);
+        var state = new DeviceLinkUserInterfaceState(sourceIds, sinks, links, sourceAddress, sinkAddress, defaults, sourcePortNames);
         _uiSystem.SetUiState(configuratorUid, NetworkConfiguratorUiKey.Link, state);
     }
 

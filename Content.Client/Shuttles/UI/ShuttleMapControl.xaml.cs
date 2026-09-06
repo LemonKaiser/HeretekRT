@@ -1,5 +1,7 @@
 using System.Buffers;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using Content.Client.Graphics;
 using Content.Client.Shuttles.Systems;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Detection;
@@ -584,12 +586,18 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
         // really only affects forks with lots of grids.
         foreach (var (color, sendVerts) in _verts)
         {
-            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, sendVerts, color.WithAlpha(0.12f));
+            handle.DrawPrimitivesBatched(
+                DrawPrimitiveTopology.TriangleList,
+                CollectionsMarshal.AsSpan(sendVerts),
+                color.WithAlpha(0.12f));
         }
 
         foreach (var (color, sendEdges) in _edges)
         {
-            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, sendEdges, color);
+            handle.DrawPrimitivesBatched(
+                DrawPrimitiveTopology.LineList,
+                CollectionsMarshal.AsSpan(sendEdges),
+                color);
         }
 
         foreach (var (color, sendStrings) in _strings)

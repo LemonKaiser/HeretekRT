@@ -10,7 +10,7 @@
   spaceMode: Planetary
   stellarCenter: 0, 0
   enabled: true
-  boundaryRadius: 5000
+  boundaryRadius: 20000
   pauseWhenEmpty: false
   # Footfall is the newcomer system: PvP and sabotage are blocked across its whole space map.
   # Do not add a dynamic zone here, otherwise its green circle would falsely imply that safety
@@ -32,7 +32,7 @@
   # The voidship grid is authored at 0,0, four kilometres below this stellar centre.
   stellarCenter: 0, -4000
   # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
-  boundaryRadius: 6000
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -50,8 +50,8 @@
   initialGridSpawnDistance: 3000
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  # The Ice World's 4800 m orbit, its navigation marker and orbital launch point fit inside this boundary.
-  boundaryRadius: 6000
+  # The Ice World's 5800 m orbit, its navigation marker and orbital launch point fit inside this boundary.
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -69,9 +69,9 @@
   # Each round the trade station is placed at a random angle 3000 m from the star.
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  # Внешняя орбита Фоулстоуна — 4700 м; запас включает его радиус, площадку подхода
+  # Внешняя орбита Фоулстоуна — 5700 м; запас включает его радиус, площадку подхода
   # и точку выхода шаттла на орбиту.
-  boundaryRadius: 6000
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100

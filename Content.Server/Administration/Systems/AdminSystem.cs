@@ -246,7 +246,7 @@ public sealed partial class AdminSystem : EntitySystem
 
         var antag = false;
 
-        RoleTypePrototype roleType = new();
+        RoleTypePrototype? roleType = null;
         var startingRole = string.Empty;
         LocId? subtype = null;
         if (_minds.TryGetMind(session, out var mindId, out var mindComp) && mindComp is not null)
@@ -259,7 +259,7 @@ public sealed partial class AdminSystem : EntitySystem
                 subtype = mindComp.Subtype;
             }
             else
-                Log.Error($"{ToPrettyString(mindId)} has invalid Role Type '{mindComp.RoleType}'. Displaying '{Loc.GetString(roleType.Name)}' instead");
+                Log.Error($"{ToPrettyString(mindId)} has invalid Role Type '{mindComp.RoleType}'. Displaying '{Loc.GetString(RoleTypePrototype.FallbackName)}' instead");
 
             antag = _role.MindIsAntagonist(mindId);
             startingRole = _jobs.MindTryGetJobName(mindId);
@@ -280,7 +280,7 @@ public sealed partial class AdminSystem : EntitySystem
             identityName,
             startingRole,
             antag,
-            roleType,
+            roleType?.ID,
             subtype,
             sortWeight,
             GetNetEntity(session?.AttachedEntity),

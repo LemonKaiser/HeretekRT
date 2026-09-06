@@ -295,18 +295,19 @@ public sealed partial class LatheMenu : FancyWindow
     /// Populates the build queue list with all queued items
     /// </summary>
     /// <param name="queue"></param>
-    public void PopulateQueueList(List<LatheRecipeBatch> queue) // Frontier: LatheRecipePrototype<LatheRecipeBatch
+    public void PopulateQueueList(IReadOnlyCollection<LatheRecipeBatch> queue) // Frontier: LatheRecipePrototype<LatheRecipeBatch
     {
         QueueList.DisposeAllChildren();
 
         var idx = 1;
         foreach (var batch in queue) // Frontier: recipe<batch
         {
+            var recipe = _prototypeManager.Index(batch.Recipe);
             var queuedRecipeBox = new BoxContainer();
             queuedRecipeBox.Orientation = BoxContainer.LayoutOrientation.Horizontal;
 
             // Frontier: batch handling
-            queuedRecipeBox.AddChild(GetRecipeDisplayControl(batch.Recipe));
+            queuedRecipeBox.AddChild(GetRecipeDisplayControl(recipe));
 
             var queuedRecipeLabel = new Label();
             if (batch.ItemsRequested > 1)
@@ -327,11 +328,13 @@ public sealed partial class LatheMenu : FancyWindow
         }
     }
 
-    public void SetQueueInfo(LatheRecipePrototype? recipe)
+    public void SetQueueInfo(ProtoId<LatheRecipePrototype>? recipeProto)
     {
-        FabricatingContainer.Visible = recipe != null;
-        if (recipe == null)
+        FabricatingContainer.Visible = recipeProto != null;
+        if (recipeProto == null)
             return;
+
+        var recipe = _prototypeManager.Index(recipeProto.Value);
 
         FabricatingDisplayContainer.Children.Clear();
         FabricatingDisplayContainer.AddChild(GetRecipeDisplayControl(recipe));

@@ -24,7 +24,7 @@ public sealed partial class KoronusSectorPrototype : IPrototype
     public ProtoId<KoronusSystemPrototype> StartSystem;
 
     [DataField]
-    public float DefaultBoundaryRadius = 5000f;
+    public float DefaultBoundaryRadius = 20000f;
 
     [DataField]
     public float DefaultWarningFraction = 0.9f;

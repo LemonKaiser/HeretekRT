@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Computer;
+using Content.Client.Graphics;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.SensorMonitoring;
@@ -153,6 +154,11 @@ public sealed partial class SensorMonitoringWindow : FancyWindow, IComputerWindo
 
             foreach (var stream in sensor.Streams.Values)
             {
+                // Incremental updates may cull every retained sample before the sensor
+                // publishes its next value. Do not let an empty stream break the whole UI.
+                if (stream.Samples.Count == 0)
+                    continue;
+
                 var maxValue = stream.Samples.Max(x => x.Value);
 
                 // TODO: Better way to do this?
@@ -271,7 +277,7 @@ public sealed partial class SensorMonitoringWindow : FancyWindow, IComputerWindo
 
                 lastPoint = newPoint;
             }
-            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList,
+            handle.DrawPrimitivesBatched(DrawPrimitiveTopology.TriangleList,
                 vertices.AsSpan(0, countVtx),
                 Color.White.WithAlpha(0.1f));
         }

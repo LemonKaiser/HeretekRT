@@ -1,4 +1,5 @@
 using Content.Client.Pinpointer.UI;
+using Content.Client.Graphics;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Pinpointer;
 using Robust.Client.Graphics;
@@ -88,7 +89,7 @@ public sealed partial class AtmosMonitoringConsoleNavMapControl : NavMapControl
             foreach ((var color, var subNetwork) in pipeNetworks)
             {
                 if (subNetwork.Count > 0)
-                    handle.DrawPrimitives(DrawPrimitiveTopology.LineList, subNetwork.Span, color);
+                    handle.DrawPrimitivesBatched(DrawPrimitiveTopology.LineList, subNetwork.Span, color);
             }
         }
 
@@ -134,7 +135,7 @@ public sealed partial class AtmosMonitoringConsoleNavMapControl : NavMapControl
             foreach ((var color, var pipeVertexUV) in pipeVertexUVs)
             {
                 if (pipeVertexUV.Count > 0)
-                    handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, pipeVertexUV.Span, color);
+                    handle.DrawPrimitivesBatched(DrawPrimitiveTopology.TriangleList, pipeVertexUV.Span, color);
             }
         }
     }

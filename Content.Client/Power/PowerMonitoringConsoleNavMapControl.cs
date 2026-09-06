@@ -1,4 +1,5 @@
 using Content.Client.Pinpointer.UI;
+using Content.Client.Graphics;
 using Content.Shared.Pinpointer;
 using Content.Shared.Power;
 using Robust.Client.Graphics;
@@ -114,7 +115,7 @@ public sealed partial class PowerMonitoringConsoleNavMapControl : NavMapControl
                         _sRGBLookUp[color] = sRGB;
                     }
 
-                    handle.DrawPrimitives(DrawPrimitiveTopology.LineList, cableNetwork.Span, sRGB);
+                    handle.DrawPrimitivesBatched(DrawPrimitiveTopology.LineList, cableNetwork.Span, sRGB);
                 }
             }
         }
@@ -172,7 +173,7 @@ public sealed partial class PowerMonitoringConsoleNavMapControl : NavMapControl
                         _sRGBLookUp[color] = sRGB;
                     }
 
-                    handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, cableVertexUV.Span, sRGB);
+                    handle.DrawPrimitivesBatched(DrawPrimitiveTopology.TriangleList, cableVertexUV.Span, sRGB);
                 }
             }
         }

@@ -9,8 +9,8 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared.Research.Prototypes
 {
-    [NetSerializable, Serializable, Prototype]
-    public sealed partial class LatheRecipePrototype : IPrototype, IInheritingPrototype
+[Prototype]
+public sealed partial class LatheRecipePrototype : IPrototype, IInheritingPrototype
     {
         [ViewVariables]
         [IdDataField]

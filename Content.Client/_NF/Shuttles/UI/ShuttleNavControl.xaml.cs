@@ -1,20 +1,23 @@
 // New Frontiers - This file is licensed under AGPLv3
 // Copyright (c) 2024 New Frontiers Contributors
 // See AGPLv3.txt for details.
+using Content.Client.Graphics;
 using Content.Shared._NF.Shuttles.Events;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Physics.Components;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Content.Shared._Mono.Company;
 using Robust.Client.Graphics;
-using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Shuttles.UI
 {
     public partial class ShuttleNavControl // Mono
     {
+        private readonly Dictionary<Color, List<Vector2>> _blipVerticesByColor = new();
+
         public InertiaDampeningMode DampeningMode { get; set; }
 
         /// <summary>
@@ -103,70 +106,53 @@ namespace Content.Client.Shuttles.UI
          */
         private void NfDrawBlips(DrawingHandleBase handle, List<BlipData> blipDataList)
         {
-            var blipValueList = new Dictionary<Color, ValueList<Vector2>>();
+            foreach (var vertices in _blipVerticesByColor.Values)
+            {
+                vertices.Clear();
+            }
+
+            var halfWidth = RadarBlipSize * 0.5f * UIScale;
+            var thirdHeight = RadarBlipSize / 3f * UIScale;
+            var twoThirdsHeight = RadarBlipSize * 2f / 3f * UIScale;
 
             foreach (var blipData in blipDataList)
             {
-                var triangleShapeVectorPoints = new[]
-                {
-                new Vector2(0, 0),
-                new Vector2(RadarBlipSize, 0),
-                new Vector2(RadarBlipSize * 0.5f, RadarBlipSize)
-            };
+                var first = new Vector2(-halfWidth, -thirdHeight);
+                var second = new Vector2(halfWidth, -thirdHeight);
+                var third = new Vector2(0f, twoThirdsHeight);
 
                 if (blipData.IsOutsideRadarCircle)
                 {
-                    // Calculate the angle of rotation
                     var angle = (float) Math.Atan2(blipData.VectorToPosition.Y, blipData.VectorToPosition.X) + -1.6f;
-
-                    // Manually create a rotation matrix
                     var cos = (float) Math.Cos(angle);
                     var sin = (float) Math.Sin(angle);
-                    float[,] rotationMatrix = { { cos, -sin }, { sin, cos } };
-
-                    // Rotate each vertex
-                    for (var i = 0; i < triangleShapeVectorPoints.Length; i++)
-                    {
-                        var vertex = triangleShapeVectorPoints[i];
-                        var x = vertex.X * rotationMatrix[0, 0] + vertex.Y * rotationMatrix[0, 1];
-                        var y = vertex.X * rotationMatrix[1, 0] + vertex.Y * rotationMatrix[1, 1];
-                        triangleShapeVectorPoints[i] = new Vector2(x, y);
-                    }
+                    first = RotateBlipVertex(first, cos, sin);
+                    second = RotateBlipVertex(second, cos, sin);
+                    third = RotateBlipVertex(third, cos, sin);
                 }
 
-                var triangleCenterVector =
-                    (triangleShapeVectorPoints[0] + triangleShapeVectorPoints[1] + triangleShapeVectorPoints[2]) / 3;
-
-                // Calculate the vectors from the center to each vertex
-                var vectorsFromCenter = new Vector2[3];
-                for (int i = 0; i < 3; i++)
+                if (!_blipVerticesByColor.TryGetValue(blipData.Color, out var vertices))
                 {
-                    vectorsFromCenter[i] = (triangleShapeVectorPoints[i] - triangleCenterVector) * UIScale;
+                    vertices = new List<Vector2>(12);
+                    _blipVerticesByColor.Add(blipData.Color, vertices);
                 }
 
-                // Calculate the vertices of the new triangle
-                var newVerts = new Vector2[3];
-                for (var i = 0; i < 3; i++)
-                {
-                    newVerts[i] = (blipData.UiPosition * UIScale) + vectorsFromCenter[i];
-                }
-
-                if (!blipValueList.TryGetValue(blipData.Color, out var valueList))
-                {
-                    valueList = new ValueList<Vector2>();
-
-                }
-                valueList.Add(newVerts[0]);
-                valueList.Add(newVerts[1]);
-                valueList.Add(newVerts[2]);
-                blipValueList[blipData.Color] = valueList;
+                var center = blipData.UiPosition * UIScale;
+                vertices.Add(center + first);
+                vertices.Add(center + second);
+                vertices.Add(center + third);
             }
 
             // One draw call for every color we have
-            foreach (var color in blipValueList)
+            foreach (var (color, vertices) in _blipVerticesByColor)
             {
-                handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, color.Value.Span, color.Key);
+                handle.DrawPrimitivesBatched(DrawPrimitiveTopology.TriangleList, CollectionsMarshal.AsSpan(vertices), color);
             }
+        }
+
+        private static Vector2 RotateBlipVertex(Vector2 vertex, float cos, float sin)
+        {
+            return new Vector2(vertex.X * cos - vertex.Y * sin, vertex.X * sin + vertex.Y * cos);
         }
     }
 }

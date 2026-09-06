@@ -4,6 +4,7 @@ using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.Administration.Systems
 {
@@ -17,6 +18,7 @@ namespace Content.Client.Administration.Systems
         [Dependency] private IUserInterfaceManager _userInterfaceManager = default!;
         [Dependency] private IConfigurationManager _configurationManager = default!;
         [Dependency] private SharedRoleSystem _roles = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
 
         private AdminNameOverlay _adminNameOverlay = default!;
 
@@ -33,7 +35,8 @@ namespace Content.Client.Administration.Systems
                 _entityLookup,
                 _userInterfaceManager,
                 _configurationManager,
-                _roles);
+                _roles,
+                _prototypeManager);
             _adminManager.AdminStatusUpdated += OnAdminStatusUpdated;
         }
 

@@ -6,6 +6,8 @@ light_mode unshaded;
 blend_mode normal;
 
 uniform sampler2D NoiseTexture;
+uniform highp vec4 StarTint;
+uniform highp float StarTintStrength;
 
 highp vec2 rotatePoint(highp vec2 point, highp float angle) {
     highp float sine = sin(angle);
@@ -65,6 +67,14 @@ highp vec3 solarPalette(highp float heat) {
     colour = mix(colour, vec3(1.0, 0.72, 0.075), smoothstep(0.58, 0.90, heat));
     colour = mix(colour, vec3(1.0, 0.97, 0.58), smoothstep(0.86, 1.16, heat));
     return colour;
+}
+
+// Keep the animated detail as luminance, but let individual systems author a genuine stellar
+// spectrum rather than merely multiplying the default orange surface by a tint.
+highp vec3 applyStarTint(highp vec3 colour) {
+    highp float luminance = dot(colour, vec3(0.2126, 0.7152, 0.0722));
+    highp vec3 spectralColour = StarTint.rgb * (0.19 + luminance * 1.25);
+    return mix(colour, spectralColour, clamp(StarTintStrength, 0.0, 1.0));
 }
 
 void fragment() {
@@ -133,6 +143,7 @@ void fragment() {
 
     highp float chromosphere = smoothstep(0.963, 0.986, radius) * (1.0 - smoothstep(0.986, 1.0, radius));
     colour += vec3(1.0, 0.19, 0.006) * chromosphere * 0.52;
+    colour = applyStarTint(colour);
 
 #ifdef HAS_DFDX
     highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
