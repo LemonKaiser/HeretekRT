@@ -20,9 +20,11 @@ public sealed partial class ItemMapperSystem : SharedItemMapperSystem
 
     private void OnStartup(EntityUid uid, ItemMapperComponent component, ComponentStartup args)
     {
-        if (TryComp<SpriteComponent>(uid, out var sprite))
+        if (component.RSIPath is null &&
+            TryComp<SpriteComponent>(uid, out var sprite) &&
+            sprite.BaseRSI is { } baseRsi)
         {
-            component.RSIPath ??= sprite.BaseRSI!.Path;
+            component.RSIPath = baseRsi.Path;
         }
     }
 

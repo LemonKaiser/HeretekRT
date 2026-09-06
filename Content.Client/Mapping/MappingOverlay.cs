@@ -14,7 +14,7 @@ public sealed partial class MappingOverlay : Overlay
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private SpriteSystem _sprite = default!;
+    private SpriteSystem _sprite = default!;
 
     // 1 off in case something else uses these colors since we use them to compare
     private static readonly Color PickColor = new(1, 255, 0);

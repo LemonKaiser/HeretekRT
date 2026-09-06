@@ -100,6 +100,41 @@ namespace Content.Client.Entry
             _componentFactory.DoAutoRegistrations();
             _componentFactory.IgnoreMissingComponents();
 
+            _componentFactory.RegisterIgnore(
+                "ActiveRadio",
+                "Advertise",
+                "AirAlarm",
+                "AtmosMonitor",
+                "AtmosPipeColor",
+                "BecomesStation",
+                "DeltaPressure",
+                "Docking",
+                "EnergyGun",
+                "ExplosionAirtightGrid",
+                "FireControlGrid",
+                "GasFilter",
+                "GasMixer",
+                "GasValve",
+                "GasVentPump",
+                "GridAtmosphere",
+                "GridPathfinding",
+                "InternalTemperature",
+                "PowerNetworkBattery",
+                "RadarBlip",
+                "RadiationGridResistance",
+                "RadioMicrophone",
+                "RadioSpeaker",
+                "SalvageMobRestrictionsGrid",
+                "SignalTimer",
+                "SpreaderGrid",
+                "Shuttle",
+                "Summonable",
+                "SurveillanceCameraRouter",
+                "TargetSeekerAlertGrid",
+                "Temperature",
+                "TransformableContainer",
+                "WarpPoint");
+
             // Do not add to these, they are legacy.
             _componentFactory.RegisterClass<SharedGravityGeneratorComponent>();
             _componentFactory.RegisterClass<SharedAmeControllerComponent>();
