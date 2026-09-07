@@ -114,6 +114,7 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+        UpdateImpact();
         UpdateHyperspace();
     }
 

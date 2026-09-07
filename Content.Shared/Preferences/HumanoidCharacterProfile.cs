@@ -4,6 +4,7 @@ using Content.Shared._Forge.Barks;
 using Content.Shared._Mono.Company;
 using Content.Shared._NF.Bank;
 using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._WH40K.CharacterDescription;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -82,6 +83,45 @@ namespace Content.Shared.Preferences
         /// </summary>
         [DataField]
         public string FlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string OocFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string CharacterFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string GreenFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string YellowFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string RedFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string TagsFlavorText { get; set; } = string.Empty;
+
+        [DataField]
+        public string LinksFlavorText { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Whether OOC notes may be disclosed through the in-game inspection window.
+        /// </summary>
+        [DataField]
+        public bool ShareOocFlavorText { get; set; } = true;
+
+        /// <summary>
+        /// Whether external links may be disclosed through the in-game inspection window.
+        /// </summary>
+        [DataField]
+        public bool ShareLinksFlavorText { get; set; } = true;
+
+        /// <summary>
+        /// Whether roleplay preferences may be disclosed through the in-game inspection window.
+        /// </summary>
+        [DataField]
+        public bool SharePreferencesFlavorText { get; set; } = true;
 
         /// <summary>
         /// Associated <see cref="SpeciesPrototype"/> for this profile.
@@ -213,6 +253,16 @@ namespace Content.Shared.Preferences
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
+            OocFlavorText = other.OocFlavorText;
+            CharacterFlavorText = other.CharacterFlavorText;
+            GreenFlavorText = other.GreenFlavorText;
+            YellowFlavorText = other.YellowFlavorText;
+            RedFlavorText = other.RedFlavorText;
+            TagsFlavorText = other.TagsFlavorText;
+            LinksFlavorText = other.LinksFlavorText;
+            ShareOocFlavorText = other.ShareOocFlavorText;
+            ShareLinksFlavorText = other.ShareLinksFlavorText;
+            SharePreferencesFlavorText = other.SharePreferencesFlavorText;
         }
 
         /// <summary>Copy constructor</summary>
@@ -236,6 +286,16 @@ namespace Content.Shared.Preferences
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
+            OocFlavorText = other.OocFlavorText;
+            CharacterFlavorText = other.CharacterFlavorText;
+            GreenFlavorText = other.GreenFlavorText;
+            YellowFlavorText = other.YellowFlavorText;
+            RedFlavorText = other.RedFlavorText;
+            TagsFlavorText = other.TagsFlavorText;
+            LinksFlavorText = other.LinksFlavorText;
+            ShareOocFlavorText = other.ShareOocFlavorText;
+            ShareLinksFlavorText = other.ShareLinksFlavorText;
+            SharePreferencesFlavorText = other.SharePreferencesFlavorText;
         }
 
         /// <summary>
@@ -331,6 +391,56 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithFlavorText(string flavorText)
         {
             return new(this) { FlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithOocFlavorText(string flavorText)
+        {
+            return new(this) { OocFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithCharacterFlavorText(string flavorText)
+        {
+            return new(this) { CharacterFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithGreenFlavorText(string flavorText)
+        {
+            return new(this) { GreenFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithYellowFlavorText(string flavorText)
+        {
+            return new(this) { YellowFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithRedFlavorText(string flavorText)
+        {
+            return new(this) { RedFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithTagsFlavorText(string flavorText)
+        {
+            return new(this) { TagsFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithLinksFlavorText(string flavorText)
+        {
+            return new(this) { LinksFlavorText = flavorText };
+        }
+
+        public HumanoidCharacterProfile WithShareOocFlavorText(bool share)
+        {
+            return new(this) { ShareOocFlavorText = share };
+        }
+
+        public HumanoidCharacterProfile WithShareLinksFlavorText(bool share)
+        {
+            return new(this) { ShareLinksFlavorText = share };
+        }
+
+        public HumanoidCharacterProfile WithSharePreferencesFlavorText(bool share)
+        {
+            return new(this) { SharePreferencesFlavorText = share };
         }
 
         public HumanoidCharacterProfile WithAge(int age)
@@ -584,6 +694,16 @@ namespace Content.Shared.Preferences
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
             if (!_traitPreferences.SequenceEqual(other._traitPreferences)) return false;
             if (FlavorText != other.FlavorText) return false;
+            if (OocFlavorText != other.OocFlavorText) return false;
+            if (CharacterFlavorText != other.CharacterFlavorText) return false;
+            if (GreenFlavorText != other.GreenFlavorText) return false;
+            if (YellowFlavorText != other.YellowFlavorText) return false;
+            if (RedFlavorText != other.RedFlavorText) return false;
+            if (TagsFlavorText != other.TagsFlavorText) return false;
+            if (LinksFlavorText != other.LinksFlavorText) return false;
+            if (ShareOocFlavorText != other.ShareOocFlavorText) return false;
+            if (ShareLinksFlavorText != other.ShareLinksFlavorText) return false;
+            if (SharePreferencesFlavorText != other.SharePreferencesFlavorText) return false;
             if (!Appearance.MemberwiseEquals(other.Appearance)) return false;
 
             // Compare loadouts
@@ -678,6 +798,14 @@ namespace Content.Shared.Preferences
                 flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText);
             }
 
+            var oocFlavorText = SanitizeMarkupAndTruncate(OocFlavorText, configManager.GetCVar(CCVars.OocFlavorTextLength));
+            var characterFlavorText = SanitizeMarkupAndTruncate(CharacterFlavorText, configManager.GetCVar(CCVars.CharacterDescriptionLength));
+            var greenFlavorText = SanitizeMarkupAndTruncate(GreenFlavorText, configManager.GetCVar(CCVars.GreenPreferencesLength));
+            var yellowFlavorText = SanitizeMarkupAndTruncate(YellowFlavorText, configManager.GetCVar(CCVars.YellowPreferencesLength));
+            var redFlavorText = SanitizeMarkupAndTruncate(RedFlavorText, configManager.GetCVar(CCVars.RedPreferencesLength));
+            var tagsFlavorText = FormatTags(SanitizeAndTruncate(TagsFlavorText, configManager.GetCVar(CCVars.FlavorTagsLength)));
+            var linksFlavorText = SanitizeAndTruncate(LinksFlavorText, configManager.GetCVar(CCVars.FlavorLinksLength));
+
             // Frontier
             //make sure theres no funny bank stuff going on
             var bankBalance = BankBalance;
@@ -745,6 +873,13 @@ namespace Content.Shared.Preferences
 
             Name = name;
             FlavorText = flavortext;
+            OocFlavorText = oocFlavorText;
+            CharacterFlavorText = characterFlavorText;
+            GreenFlavorText = greenFlavorText;
+            YellowFlavorText = yellowFlavorText;
+            RedFlavorText = redFlavorText;
+            TagsFlavorText = tagsFlavorText;
+            LinksFlavorText = linksFlavorText;
             Age = age;
             Sex = sex;
             Gender = gender;
@@ -871,6 +1006,16 @@ namespace Content.Shared.Preferences
             hashCode.Add(_loadouts);
             hashCode.Add(Name);
             hashCode.Add(FlavorText);
+            hashCode.Add(OocFlavorText);
+            hashCode.Add(CharacterFlavorText);
+            hashCode.Add(GreenFlavorText);
+            hashCode.Add(YellowFlavorText);
+            hashCode.Add(RedFlavorText);
+            hashCode.Add(TagsFlavorText);
+            hashCode.Add(LinksFlavorText);
+            hashCode.Add(ShareOocFlavorText);
+            hashCode.Add(ShareLinksFlavorText);
+            hashCode.Add(SharePreferencesFlavorText);
             hashCode.Add(Species);
             hashCode.Add(Age);
             hashCode.Add((int)Sex);
@@ -883,6 +1028,32 @@ namespace Content.Shared.Preferences
             hashCode.Add((int)PreferenceUnavailable);
             hashCode.Add(Wh40kBuild);
             return hashCode.ToHashCode();
+        }
+
+        private static string SanitizeAndTruncate(string value, int maxLength)
+        {
+            var sanitized = FormattedMessage.RemoveMarkupOrThrow(value);
+            return sanitized[..Math.Min(sanitized.Length, Math.Max(0, maxLength))];
+        }
+
+        private static string SanitizeMarkupAndTruncate(string value, int maxLength)
+        {
+            var length = Math.Min(value.Length, Math.Max(0, maxLength));
+            return Wh40kDescriptionMarkup.SanitizeBasic(value[..length]);
+        }
+
+        private static string FormatTags(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            var tags = input.Split(new[] { ',', ' ', '\n', '\r', '\t', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(tag => tag.Trim())
+                .Where(tag => tag.Length > 0)
+                .Select(tag => tag.StartsWith('#') ? tag : $"#{tag}")
+                .Where(tag => tag.Length > 1);
+
+            return string.Join(", ", tags);
         }
 
         public void SetLoadout(RoleLoadout loadout)

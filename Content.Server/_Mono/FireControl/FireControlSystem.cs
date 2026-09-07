@@ -544,6 +544,33 @@ public sealed partial class FireControlSystem : EntitySystem
     }
 
     /// <summary>
+    /// Returns whether a weapon has a clear firing line to a map coordinate on its own grid.
+    /// Used by autonomous and signal-controlled artillery before it spends ammunition.
+    /// </summary>
+    public bool HasClearFiringLine(EntityUid weapon, EntityCoordinates targetCoordinates)
+    {
+        var weaponXform = Transform(weapon);
+        var weaponCoordinates = _xform.GetMapCoordinates(weaponXform);
+        var targetCoordinatesOnMap = targetCoordinates.ToMap(EntityManager, _xform);
+
+        if (weaponCoordinates.MapId != targetCoordinatesOnMap.MapId)
+            return false;
+
+        var weaponPosition = weaponCoordinates.Position;
+        var targetPosition = targetCoordinatesOnMap.Position;
+        var direction = targetPosition - weaponPosition;
+        if (direction.LengthSquared() <= float.Epsilon)
+            return false;
+
+        return CanFireInDirection(
+            weapon,
+            weaponPosition,
+            Vector2.Normalize(direction),
+            targetPosition,
+            weaponXform.MapID);
+    }
+
+    /// <summary>
     /// Checks if a weapon has line of sight to a target position
     /// </summary>
     /// <param name="weapon">The weapon entity</param>

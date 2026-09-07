@@ -2,7 +2,7 @@
   id: KoronusExpanse
   startGameMap: KoronusFootfall
   startSystem: Footfall
-  defaultBoundaryRadius: 5000
+  defaultBoundaryRadius: 20000
   defaultWarningFraction: 0.9
   defaultCleanupDelay: 10
   defaultWarningAnnouncementCooldown: 600

@@ -331,9 +331,18 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
 
             _humanoidSystem.LoadProfile(entity.Value, profile);
             _metaSystem.SetEntityName(entity.Value, name); // Frontier: profile.Name<name
-            if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
+            if (_configurationManager.GetCVar(CCVars.FlavorText) &&
+                (profile.FlavorText != "" ||
+                 profile.CharacterFlavorText != "" ||
+                 profile.OocFlavorText != "" ||
+                 profile.TagsFlavorText != "" ||
+                 profile.LinksFlavorText != "" ||
+                 profile.GreenFlavorText != "" ||
+                 profile.YellowFlavorText != "" ||
+                 profile.RedFlavorText != "" ||
+                 profile.Wh40kBuild.PortraitId != null))
             {
-                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
+                AddComp<DetailExaminableComponent>(entity.Value).SetProfile(profile);
             }
         }
 

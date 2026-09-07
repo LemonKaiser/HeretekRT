@@ -567,13 +567,18 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         if (!Resolve(entity, ref entity.Comp1, ref entity.Comp2, false))
             return new NavInterfaceState(SharedRadarConsoleSystem.DefaultMaxRange, GetNetCoordinates(coordinates), angle, docks, InertiaDampeningMode.Dampen); // Frontier: add inertial dampening
 
-        return new NavInterfaceState(
+        var navState = new NavInterfaceState(
             entity.Comp1.MaxRange,
             GetNetCoordinates(coordinates),
             angle,
             docks,
             _shuttle.NfGetInertiaDampeningMode(entity), // Frontier: inertia dampening
             portNames);
+
+        // All consumers of NavInterfaceState use the same celestial presentation.  Prefer the
+        // grid when available so landing capability remains accurate for ship-based consoles.
+        navState.PlanetaryState = _koronusPlanetary.GetInterfaceState(entity.Comp2.GridUid ?? entity.Owner);
+        return navState;
     }
 
     /// <summary>

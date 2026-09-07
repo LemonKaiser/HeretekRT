@@ -81,6 +81,13 @@ namespace Content.Server.Database
                 .HasIndex(p => new {p.Slot, PrefsId = p.PreferenceId})
                 .IsUnique();
 
+            modelBuilder.Entity<Profile>(entity =>
+            {
+                entity.Property(profile => profile.ShareOocFlavorText).HasDefaultValue(true);
+                entity.Property(profile => profile.ShareLinksFlavorText).HasDefaultValue(true);
+                entity.Property(profile => profile.SharePreferencesFlavorText).HasDefaultValue(true);
+            });
+
             modelBuilder.Entity<Antag>()
                 .HasIndex(p => new {HumanoidProfileId = p.ProfileId, p.AntagName})
                 .IsUnique();
@@ -592,6 +599,16 @@ namespace Content.Server.Database
         public int Slot { get; set; }
         [Column("char_name")] public string CharacterName { get; set; } = null!;
         public string FlavorText { get; set; } = null!;
+        public string OocFlavorText { get; set; } = string.Empty;
+        public string CharacterFlavorText { get; set; } = string.Empty;
+        public string GreenFlavorText { get; set; } = string.Empty;
+        public string YellowFlavorText { get; set; } = string.Empty;
+        public string RedFlavorText { get; set; } = string.Empty;
+        public string TagsFlavorText { get; set; } = string.Empty;
+        public string LinksFlavorText { get; set; } = string.Empty;
+        public bool ShareOocFlavorText { get; set; } = true;
+        public bool ShareLinksFlavorText { get; set; } = true;
+        public bool SharePreferencesFlavorText { get; set; } = true;
         public int Age { get; set; }
         public int BankBalance { get; set; }
         public string Sex { get; set; } = null!;

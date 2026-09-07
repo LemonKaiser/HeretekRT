@@ -1,0 +1,115 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+               xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+               Title="{Loc 'detail-examinable-window-title'}"
+               MinSize="900 620"
+               SetSize="1000 700">
+    <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="6">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#141715" BorderColor="#E5C87966" BorderThickness="1" />
+        </PanelContainer.PanelOverride>
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer MinWidth="244" MaxWidth="244" HorizontalExpand="False" VerticalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="8">
+                    <controls:StripeBack>
+                        <Label Name="PreviewName" HorizontalAlignment="Center" HorizontalExpand="True" ClipText="True" StyleClasses="LabelBig" Margin="8 0" />
+                    </controls:StripeBack>
+                    <PanelContainer MinSize="206 252" MaxSize="206 252" HorizontalAlignment="Center" Margin="0 8">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#080907E8" BorderColor="#E5C87977" BorderThickness="1"
+                                               ContentMarginLeftOverride="4" ContentMarginRightOverride="4"
+                                               ContentMarginTopOverride="4" ContentMarginBottomOverride="4" />
+                        </PanelContainer.PanelOverride>
+                        <TextureRect Name="PreviewPortrait" Stretch="KeepAspectCentered" />
+                    </PanelContainer>
+                    <Control MinHeight="28" />
+                    <PanelContainer MinSize="206 180" HorizontalExpand="True" VerticalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#242424" BorderColor="#E5C87955" BorderThickness="1" />
+                        </PanelContainer.PanelOverride>
+                        <SpriteView Name="PreviewSprite" Scale="6 6" />
+                    </PanelContainer>
+                    <RichTextLabel Name="PreviewSummary" HorizontalExpand="True" Margin="0 8 0 0" />
+                    <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 6 0 0">
+                        <Button Name="RotateLeft" Text="◀" StyleClasses="OpenRight" />
+                        <Button Name="RotateRight" Text="▶" StyleClasses="OpenLeft" Margin="4 0 0 0" />
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer MinWidth="1" MaxWidth="1" HorizontalExpand="False" VerticalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#E5C87955" />
+                </PanelContainer.PanelOverride>
+            </PanelContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="8 0 8 0">
+                <TabContainer Name="DescriptionTabs" HorizontalExpand="True" VerticalExpand="True">
+                    <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                        </PanelContainer.PanelOverride>
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <RichTextLabel Name="AppearanceText" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                        </ScrollContainer>
+                    </PanelContainer>
+                    <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                        </PanelContainer.PanelOverride>
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <RichTextLabel Name="CharacterText" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                        </ScrollContainer>
+                    </PanelContainer>
+                    <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                        </PanelContainer.PanelOverride>
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                                <Label Text="{Loc 'wh40k-description-preferences-green-label'}" FontColorOverride="#64D886" Margin="10 10 10 0" />
+                                <RichTextLabel Name="GreenText" HorizontalExpand="True" Margin="10 0" />
+                                <Label Text="{Loc 'wh40k-description-preferences-yellow-label'}" FontColorOverride="#F2C94C" Margin="10 10 10 0" />
+                                <RichTextLabel Name="YellowText" HorizontalExpand="True" Margin="10 0" />
+                                <Label Text="{Loc 'wh40k-description-preferences-red-label'}" FontColorOverride="#D45B5B" Margin="10 10 10 0" />
+                                <RichTextLabel Name="RedText" HorizontalExpand="True" Margin="10 0 10 10" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                    </PanelContainer>
+                </TabContainer>
+                <BoxContainer Name="SupplementaryDetails" Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="False" MinHeight="126" MaxHeight="156" Margin="0 8 0 0">
+                    <BoxContainer Name="OocSection" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="0 0 4 0">
+                        <controls:StripeBack>
+                            <Label Text="{Loc 'wh40k-description-ooc-label'}" HorizontalAlignment="Center" />
+                        </controls:StripeBack>
+                        <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
+                            <PanelContainer.PanelOverride>
+                                <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#80008077" BorderThickness="1" />
+                            </PanelContainer.PanelOverride>
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <RichTextLabel Name="OocText" HorizontalExpand="True" VerticalExpand="True" Margin="8" />
+                            </ScrollContainer>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="LinksSection" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="4 0 0 0">
+                        <controls:StripeBack>
+                            <Label Text="{Loc 'wh40k-description-links-label'}" HorizontalAlignment="Center" />
+                        </controls:StripeBack>
+                        <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
+                            <PanelContainer.PanelOverride>
+                                <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#00FA9A77" BorderThickness="1" />
+                            </PanelContainer.PanelOverride>
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="Links" Orientation="Vertical" HorizontalExpand="True" Margin="6" />
+                            </ScrollContainer>
+                        </PanelContainer>
+                    </BoxContainer>
+                </BoxContainer>
+                <controls:StripeBack Margin="0 8 0 0">
+                    <Label Name="TagsText" HorizontalAlignment="Center" HorizontalExpand="True" ClipText="True" Margin="8 0" />
+                </controls:StripeBack>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</DefaultWindow>

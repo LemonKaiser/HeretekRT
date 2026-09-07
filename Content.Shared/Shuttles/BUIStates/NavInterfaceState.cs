@@ -1,6 +1,7 @@
 using Robust.Shared.Map;
 using Robust.Shared.Serialization;
 using Content.Shared._NF.Shuttles.Events; // Frontier - InertiaDampeningMode access
+using Content.Shared._WH40K.SectorMap.BUI;
 
 namespace Content.Shared.Shuttles.BUIStates;
 
@@ -43,6 +44,13 @@ public sealed class NavInterfaceState
     /// </summary>
     public bool HideCoords = false;
     // End Frontier fields
+
+    /// <summary>
+    /// Server-authored celestial bodies for the map currently shown by this NAV screen.
+    /// Keeping this in the common NAV state makes ship controls, radar consoles, gunnery and
+    /// drone controls render the same Koronus navigation layer.
+    /// </summary>
+    public KoronusPlanetaryInterfaceState PlanetaryState = KoronusPlanetaryInterfaceState.Unavailable();
 
     public NavInterfaceState(
         float maxRange,

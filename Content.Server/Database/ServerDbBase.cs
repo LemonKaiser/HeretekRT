@@ -325,7 +325,17 @@ namespace Content.Server.Database
                 company,
                 wh40kBuild)
                 .WithVoice(voice)
-                .WithBarkVoice(barkVoice);
+                .WithBarkVoice(barkVoice)
+                .WithOocFlavorText(profile.OocFlavorText)
+                .WithCharacterFlavorText(profile.CharacterFlavorText)
+                .WithGreenFlavorText(profile.GreenFlavorText)
+                .WithYellowFlavorText(profile.YellowFlavorText)
+                .WithRedFlavorText(profile.RedFlavorText)
+                .WithTagsFlavorText(profile.TagsFlavorText)
+                .WithLinksFlavorText(profile.LinksFlavorText)
+                .WithShareOocFlavorText(profile.ShareOocFlavorText)
+                .WithShareLinksFlavorText(profile.ShareLinksFlavorText)
+                .WithSharePreferencesFlavorText(profile.SharePreferencesFlavorText);
         }
 
         private static Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
@@ -341,6 +351,16 @@ namespace Content.Server.Database
 
             profile.CharacterName = humanoid.Name;
             profile.FlavorText = humanoid.FlavorText;
+            profile.OocFlavorText = humanoid.OocFlavorText;
+            profile.CharacterFlavorText = humanoid.CharacterFlavorText;
+            profile.GreenFlavorText = humanoid.GreenFlavorText;
+            profile.YellowFlavorText = humanoid.YellowFlavorText;
+            profile.RedFlavorText = humanoid.RedFlavorText;
+            profile.TagsFlavorText = humanoid.TagsFlavorText;
+            profile.LinksFlavorText = humanoid.LinksFlavorText;
+            profile.ShareOocFlavorText = humanoid.ShareOocFlavorText;
+            profile.ShareLinksFlavorText = humanoid.ShareLinksFlavorText;
+            profile.SharePreferencesFlavorText = humanoid.SharePreferencesFlavorText;
             profile.Species = humanoid.Species;
             profile.Voice = humanoid.Voice;
             profile.BarkVoice = humanoid.BarkVoice;
@@ -4910,8 +4930,8 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             return rows
                 .Select(row => new WhitelistPlayerRecord(
                     new NetUserId(row.UserId),
-                    row.UserName ?? row.UserId.ToString()))
-                .OrderBy(record => record.UserName, StringComparer.OrdinalIgnoreCase)
+                    row.UserName))
+                .OrderBy(record => record.UserName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
                 .ToList();
         }
 

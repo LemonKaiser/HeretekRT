@@ -1,2 +1,10 @@
 ﻿detail-examinable-verb-text = Detail
 detail-examinable-verb-disabled = View the object in greater detail.
+detail-examinable-window-title = Character details
+detail-examinable-empty-flavor = No description available.
+detail-examinable-empty-character = No character traits provided.
+detail-examinable-empty-ooc = No OOC information provided.
+detail-examinable-empty-links = No links added.
+detail-examinable-empty-green = List is empty.
+detail-examinable-empty-yellow = List is empty.
+detail-examinable-empty-red = List is empty.

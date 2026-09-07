@@ -399,4 +399,13 @@ heretek-onboarding-result-complete = Complete
 heretek-onboarding-result-saving = Saving character…
 heretek-onboarding-result-save-failed = Character was not created. Try completing setup again.
 heretek-onboarding-result-invalid-build = Choose a homeworld, origin, and class before completing.
+heretek-onboarding-result-invalid-build-missing =
+    Complete the following:
+    { $requirements }
+heretek-onboarding-result-missing-homeworld = • Homeworld
+heretek-onboarding-result-missing-origin = • Origin
+heretek-onboarding-result-missing-class = • Class
+heretek-onboarding-result-missing-portrait = • Portrait
+heretek-onboarding-result-missing-characteristics = • Characteristics: { $allocated }/{ $required }
+heretek-onboarding-result-invalid-build-data = • Invalid creation data
 heretek-onboarding-result-invalid-profile = Check the character name and appearance.

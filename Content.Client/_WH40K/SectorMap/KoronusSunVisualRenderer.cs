@@ -32,27 +32,31 @@ public sealed class KoronusSunVisualRenderer
             resources.GetResource<TextureResource>(NoiseTexturePath).Texture);
     }
 
-    public void Draw(DrawingHandleWorld handle, Vector2 centre, float radius)
+    public void Draw(DrawingHandleWorld handle, Vector2 centre, float radius, Color starColor)
     {
         var previousShader = handle.GetShader();
         var coronaSize = new Vector2(radius * CoronaDiameterScale);
+        _coronaShader.SetParameter("StarColor", starColor.WithAlpha(1f));
         handle.UseShader(_coronaShader);
         handle.DrawRect(Box2.FromDimensions(centre - coronaSize / 2f, coronaSize), Color.White);
 
         var surfaceSize = new Vector2(radius * SurfaceDiameterScale);
+        _surfaceShader.SetParameter("StarColor", starColor.WithAlpha(1f));
         handle.UseShader(_surfaceShader);
         handle.DrawRect(Box2.FromDimensions(centre - surfaceSize / 2f, surfaceSize), Color.White);
         handle.UseShader(previousShader);
     }
 
-    public void Draw(DrawingHandleScreen handle, Vector2 centre, float radius)
+    public void Draw(DrawingHandleScreen handle, Vector2 centre, float radius, Color starColor)
     {
         var previousShader = handle.GetShader();
         var coronaSize = new Vector2(radius * CoronaDiameterScale);
+        _coronaShader.SetParameter("StarColor", starColor.WithAlpha(1f));
         handle.UseShader(_coronaShader);
         handle.DrawRect(UIBox2.FromDimensions(centre - coronaSize / 2f, coronaSize), Color.White);
 
         var surfaceSize = new Vector2(radius * SurfaceDiameterScale);
+        _surfaceShader.SetParameter("StarColor", starColor.WithAlpha(1f));
         handle.UseShader(_surfaceShader);
         handle.DrawRect(UIBox2.FromDimensions(centre - surfaceSize / 2f, surfaceSize), Color.White);
         handle.UseShader(previousShader);

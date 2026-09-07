@@ -143,8 +143,11 @@ public sealed class WhitelistPanelEui : BaseEui
                 return;
 
             _entries.Clear();
-            _entries.AddRange(players.Select(player =>
-                new WhitelistPanelEntryState(player.UserId.UserId, player.UserName)));
+            var entries = await Task.WhenAll(players.Select(CreateEntryAsync));
+            if (IsShutDown)
+                return;
+
+            _entries.AddRange(entries.OrderBy(entry => entry.Ckey, StringComparer.OrdinalIgnoreCase));
         }
         catch (Exception exception)
         {
@@ -153,6 +156,32 @@ public sealed class WhitelistPanelEui : BaseEui
         }
 
         MarkStateDirty();
+    }
+
+    /// <summary>
+    /// Resolves the ckey for accounts which were added before their first connection.
+    /// Such accounts have no local player record yet, but the auth service knows their ckey.
+    /// </summary>
+    private async Task<WhitelistPanelEntryState> CreateEntryAsync(WhitelistPlayerRecord player)
+    {
+        var ckey = player.UserName;
+        if (string.IsNullOrWhiteSpace(ckey))
+        {
+            try
+            {
+                ckey = (await _locator.LookupIdAsync(player.UserId))?.Username;
+            }
+            catch (Exception exception)
+            {
+                // A temporary auth-service failure must not prevent management of the
+                // rest of the whitelist. Do not expose the internal UUID as a ckey.
+                _sawmill.Warning($"Could not resolve ckey for whitelisted account {player.UserId}: {exception}");
+            }
+        }
+
+        return new WhitelistPanelEntryState(
+            player.UserId.UserId,
+            ckey ?? Loc.GetString("whitelist-panel-unknown-player"));
     }
 
     private async Task AddPlayerAsync(string playerIdentifier)

@@ -87,13 +87,15 @@ public sealed class ShipShieldOverlay : Overlay
 
         // Mono Update: Just use transform.Position for world position already for corners
 
-        for (int i = 1; i < chain.Count; i++)
+        // CreateLoop appends the first vertex after the final one, so iterating to Count
+        // includes the closing segment as well.
+        for (var i = 0; i < chain.Count; i++)
         {
             // top left corner
-            var leftVertex = VertexToWorldPos(chain.Vertices[i - 1], transform);
+            var leftVertex = VertexToWorldPos(chain.Vertices[i], transform);
 
             // top right corner
-            var rightVertex = VertexToWorldPos(chain.Vertices[i], transform);
+            var rightVertex = VertexToWorldPos(chain.Vertices[i + 1], transform);
 
             // bottom left corner
             var leftCorner = Corner(leftVertex, transform);

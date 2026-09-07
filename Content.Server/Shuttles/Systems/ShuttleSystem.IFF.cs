@@ -20,6 +20,8 @@ public sealed partial class ShuttleSystem
 
     private void OnGridSplit(ref GridSplitEvent ev)
     {
+        OnImpactGridSplit(ref ev);
+
         var splitMass = _cfg.GetCVar(CCVars.HideSplitGridsUnder);
 
         if (splitMass < 0)

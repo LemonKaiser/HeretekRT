@@ -12,10 +12,11 @@ namespace Content.Client.Lobby.UI;
 /// </summary>
 internal sealed class LobbyMenuRowStyleBox : StyleBox
 {
-    private const int GradientSteps = 32;
     private static readonly ProtoId<ShaderPrototype> DividerShaderId = "HeretekLobbyMenuDivider";
+    private static readonly ProtoId<ShaderPrototype> BackgroundShaderId = "HeretekLobbyMenuRow";
 
     private readonly ShaderInstance _dividerShader;
+    private readonly ShaderInstance _backgroundShader;
 
     public Color LeftColor { get; set; }
     public Color MiddleColor { get; set; }
@@ -28,7 +29,9 @@ internal sealed class LobbyMenuRowStyleBox : StyleBox
 
     public LobbyMenuRowStyleBox()
     {
-        _dividerShader = IoCManager.Resolve<IPrototypeManager>().Index(DividerShaderId).Instance();
+        var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
+        _dividerShader = prototypeManager.Index(DividerShaderId).Instance();
+        _backgroundShader = prototypeManager.Index(BackgroundShaderId).InstanceUnique();
     }
 
     protected override void DoDraw(DrawingHandleScreen handle, UIBox2 box, float uiScale)
@@ -37,26 +40,12 @@ internal sealed class LobbyMenuRowStyleBox : StyleBox
         if (width <= 0f || box.Height <= 0f)
             return;
 
-        // Most rows are fully transparent while idle. Drawing their invisible
-        // gradient still created hundreds of batched quads per frame.
+        // Most rows are fully transparent while idle. For visible rows the same
+        // three-stop gradient is evaluated per pixel in one draw call. The earlier
+        // 32-quad approximation made its individual bands visible on wide rows.
         if (LeftColor.A > 0f || MiddleColor.A > 0f || RightColor.A > 0f)
         {
-            for (var step = 0; step < GradientSteps; step++)
-            {
-                var start = step / (float) GradientSteps;
-                var end = (step + 1) / (float) GradientSteps;
-                var progress = (start + end) * 0.5f;
-                var color = MiddleStop is > 0f and < 1f
-                    ? progress <= MiddleStop
-                        ? Lerp(LeftColor, MiddleColor, progress / MiddleStop)
-                        : Lerp(MiddleColor, RightColor, (progress - MiddleStop) / (1f - MiddleStop))
-                    : Lerp(LeftColor, RightColor, progress);
-                handle.DrawRect(
-                    UIBox2.FromDimensions(
-                        new Vector2(box.Left + width * start, box.Top),
-                        new Vector2(width * (end - start), box.Height)),
-                    color);
-            }
+            DrawBackgroundGradient(handle, box);
         }
 
         if (DrawAccent)
@@ -89,12 +78,15 @@ internal sealed class LobbyMenuRowStyleBox : StyleBox
         handle.UseShader(previousShader);
     }
 
-    private static Color Lerp(Color from, Color to, float progress)
+    private void DrawBackgroundGradient(DrawingHandleScreen handle, UIBox2 box)
     {
-        return new Color(
-            from.R + (to.R - from.R) * progress,
-            from.G + (to.G - from.G) * progress,
-            from.B + (to.B - from.B) * progress,
-            from.A + (to.A - from.A) * progress);
+        var previousShader = handle.GetShader();
+        _backgroundShader.SetParameter("LeftColor", LeftColor);
+        _backgroundShader.SetParameter("MiddleColor", MiddleColor);
+        _backgroundShader.SetParameter("RightColor", RightColor);
+        _backgroundShader.SetParameter("MiddleStop", MiddleStop);
+        handle.UseShader(_backgroundShader);
+        handle.DrawRect(box, Color.White);
+        handle.UseShader(previousShader);
     }
 }

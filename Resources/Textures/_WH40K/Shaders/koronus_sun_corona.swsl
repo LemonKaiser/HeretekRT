@@ -3,6 +3,8 @@
 light_mode unshaded;
 blend_mode normal;
 
+uniform highp vec4 StarColor;
+
 highp vec2 rotatePoint(highp vec2 point, highp float angle) {
     highp float sine = sin(angle);
     highp float cosine = cos(angle);
@@ -41,6 +43,13 @@ highp float prominence(highp vec2 position, highp float angle, highp float heigh
     return arc * outsideDisk * outwardHalf;
 }
 
+highp float starTintStrength() {
+    highp vec3 tint = clamp(StarColor.rgb, vec3(0.0), vec3(1.0));
+    highp float maximum = max(tint.r, max(tint.g, tint.b));
+    highp float minimum = min(tint.r, min(tint.g, tint.b));
+    return clamp((maximum - minimum) * 2.0, 0.0, 1.0);
+}
+
 void fragment() {
     // Radius 1 is the disk and 1.9 is the shared corona limit used by the NAV visualization.
     highp vec2 position = (UV - vec2(0.5)) * 3.8;
@@ -71,9 +80,12 @@ void fragment() {
 
     highp float edgeFade = 1.0 - smoothstep(1.56, 1.9, radius);
     highp float alpha = clamp((razorRim + innerHalo + turbulentHalo + outerCorona + prominences) * edgeFade, 0.0, 0.96);
-    highp vec3 deepCorona = vec3(0.82, 0.008, 0.001);
-    highp vec3 hotCorona = vec3(1.0, 0.31, 0.018);
+    highp float tintStrength = starTintStrength();
+    highp vec3 tint = clamp(StarColor.rgb, vec3(0.0), vec3(1.0));
+    highp vec3 deepCorona = mix(vec3(0.82, 0.008, 0.001), tint * 0.14, tintStrength);
+    highp vec3 hotCorona = mix(vec3(1.0, 0.31, 0.018), mix(tint, vec3(1.0), 0.30), tintStrength);
     highp vec3 colour = mix(deepCorona, hotCorona, clamp(innerHalo + razorRim + prominences, 0.0, 1.0));
-    colour += vec3(1.0, 0.13, 0.004) * prominences * 0.65;
+    highp vec3 prominenceColour = mix(vec3(1.0, 0.13, 0.004), mix(tint, vec3(1.0), 0.15), tintStrength);
+    colour += prominenceColour * prominences * 0.65;
     COLOR = vec4(colour, alpha);
 }

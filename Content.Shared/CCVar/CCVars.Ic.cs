@@ -17,6 +17,51 @@ public sealed partial class CCVars
         CVarDef.Create("ic.flavor_text", true, CVar.SERVER | CVar.REPLICATED); // Frontier: true
 
     /// <summary>
+    ///     Enables the character-traits section of extended character descriptions.
+    /// </summary>
+    public static readonly CVarDef<bool> FlavorTraitsEnabled =
+        CVarDef.Create("ic.flavor_traits_enabled", true, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    ///     Enables the OOC notes, tags and links section of extended character descriptions.
+    /// </summary>
+    public static readonly CVarDef<bool> FlavorOocEnabled =
+        CVarDef.Create("ic.flavor_ooc_enabled", true, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    ///     Enables the links field of extended character descriptions.
+    /// </summary>
+    public static readonly CVarDef<bool> FlavorLinksEnabled =
+        CVarDef.Create("ic.flavor_links_enabled", true, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    ///     Enables green, yellow and red roleplay preferences.
+    /// </summary>
+    public static readonly CVarDef<bool> FlavorGyrEnabled =
+        CVarDef.Create("ic.flavor_gyr_enabled", true, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> OocFlavorTextLength =
+        CVarDef.Create("ic.oocflavor_text_length", 4500, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> CharacterDescriptionLength =
+        CVarDef.Create("ic.character_description_length", 4500, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> GreenPreferencesLength =
+        CVarDef.Create("ic.green_preferences_length", 4500, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> YellowPreferencesLength =
+        CVarDef.Create("ic.yellow_preferences_length", 4500, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> RedPreferencesLength =
+        CVarDef.Create("ic.red_preferences_length", 4500, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> FlavorTagsLength =
+        CVarDef.Create("ic.tags_length", 256, CVar.SERVER | CVar.REPLICATED);
+
+    public static readonly CVarDef<int> FlavorLinksLength =
+        CVarDef.Create("ic.links_length", 512, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
     ///     Adds a period at the end of a sentence if the sentence ends in a letter.
     /// </summary>
     public static readonly CVarDef<bool> ChatPunctuation =

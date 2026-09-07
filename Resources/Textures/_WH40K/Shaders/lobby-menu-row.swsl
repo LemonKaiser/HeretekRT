@@ -1,0 +1,18 @@
+light_mode unshaded;
+
+uniform highp vec4 LeftColor;
+uniform highp vec4 MiddleColor;
+uniform highp vec4 RightColor;
+uniform highp float MiddleStop;
+
+void fragment() {
+    highp float progress = clamp(UV.x, 0.0, 1.0);
+
+    if (MiddleStop > 0.0 && MiddleStop < 1.0) {
+        COLOR = progress <= MiddleStop
+            ? mix(LeftColor, MiddleColor, progress / MiddleStop)
+            : mix(MiddleColor, RightColor, (progress - MiddleStop) / (1.0 - MiddleStop));
+    } else {
+        COLOR = mix(LeftColor, RightColor, progress);
+    }
+}

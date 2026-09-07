@@ -17,8 +17,6 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
 {
     private const float CoronaRadiusMultiplier = 1.9f;
 
-    private static readonly Color SunlightColor = Color.FromHex("#FFAA52");
-
     [Dependency] private IEyeManager _eyes = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IMapManager _maps = default!;
@@ -92,7 +90,7 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
             _sunLight = Spawn(null, coordinates);
             var light = EnsureComp<PointLightComponent>(_sunLight.Value);
             _lights.SetCastShadows(_sunLight.Value, false, light);
-            _lights.SetColor(_sunLight.Value, SunlightColor, light);
+            _lights.SetColor(_sunLight.Value, star.StarColor, light);
             _lights.SetEnergy(_sunLight.Value, 0.85f, light);
             _lights.SetFalloff(_sunLight.Value, 2.4f, light);
             _lights.SetCurveFactor(_sunLight.Value, 0.35f, light);
@@ -102,7 +100,10 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
 
         _transform.SetMapCoordinates(_sunLight.Value, coordinates);
         if (TryComp<PointLightComponent>(_sunLight.Value, out var existingLight))
+        {
+            _lights.SetColor(_sunLight.Value, star.StarColor, existingLight);
             _lights.SetRadius(_sunLight.Value, lightRadius, existingLight);
+        }
     }
 
     public override void Shutdown()

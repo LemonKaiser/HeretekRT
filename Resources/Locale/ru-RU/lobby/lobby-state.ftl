@@ -401,4 +401,13 @@ heretek-onboarding-result-complete = Завершить
 heretek-onboarding-result-saving = Сохранение персонажа…
 heretek-onboarding-result-save-failed = Персонаж не создан. Попробуйте завершить настройку ещё раз.
 heretek-onboarding-result-invalid-build = Выберите родной мир, происхождение и класс перед завершением.
+heretek-onboarding-result-invalid-build-missing =
+    Заполните:
+    { $requirements }
+heretek-onboarding-result-missing-homeworld = • Родной мир
+heretek-onboarding-result-missing-origin = • Происхождение
+heretek-onboarding-result-missing-class = • Класс
+heretek-onboarding-result-missing-portrait = • Портрет
+heretek-onboarding-result-missing-characteristics = • Характеристики: { $allocated }/{ $required }
+heretek-onboarding-result-invalid-build-data = • Некорректные данные создания
 heretek-onboarding-result-invalid-profile = Проверьте имя и внешний вид персонажа.

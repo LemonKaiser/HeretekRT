@@ -192,6 +192,7 @@ public sealed partial class ProjectileSystem : SharedProjectileSystem
                     // this is cursed but necessary
                     var ourEv = new PreventCollideEvent(uid, hitEnt, physicsComp, otherBody, projFix, hitFix);
                     RaiseLocalEvent(uid, ref ourEv);
+
                     if (ourEv.Cancelled)
                         continue;
 

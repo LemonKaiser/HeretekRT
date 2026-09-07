@@ -3,6 +3,8 @@
          xmlns:humanoid="clr-namespace:Content.Client.Humanoid"
          xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
          xmlns:ui="clr-namespace:Content.Client.Lobby.UI"
+         xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+         xmlns:style="clr-namespace:Content.Client.Stylesheets"
          HorizontalExpand="True">
         <!-- Left side -->
         <BoxContainer Orientation="Vertical" Margin="10 10 10 10" HorizontalExpand="True">
@@ -46,7 +48,7 @@
             </BoxContainer>
             <Control MinHeight="10" />
             <!-- tabContainer -->
-            <TabContainer Name="TabContainer" VerticalExpand="True">
+            <TabContainer Name="TabContainer" HorizontalExpand="True" VerticalExpand="True">
                 <BoxContainer Orientation="Vertical">
                     <ScrollContainer VerticalExpand="True">
                         <!-- appearanceList -->
@@ -193,7 +195,18 @@
             </TabContainer>
         </BoxContainer>
         <!-- Right side -->
-        <BoxContainer Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
+        <BoxContainer Name="ProfilePreviewSidebar" Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
+            <PanelContainer Name="Wh40kPortraitFrame" Access="Public" Visible="False" SetSize="144 184"
+                            HorizontalAlignment="Center" Margin="4 10 4 0" MouseFilter="Ignore">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#080907E8" BorderColor="{x:Static style:StyleNano.NanoGold}" BorderThickness="1"
+                                       ContentMarginLeftOverride="4" ContentMarginRightOverride="4"
+                                       ContentMarginTopOverride="4" ContentMarginBottomOverride="4" />
+                </PanelContainer.PanelOverride>
+                <TextureRect Name="Wh40kPortrait" Access="Public" HorizontalExpand="True" VerticalExpand="True"
+                             MouseFilter="Ignore" Stretch="KeepAspectCentered" />
+            </PanelContainer>
+            <Control SetHeight="40" />
             <SpriteView Name="SpriteView" Scale="8 8" Margin="4" SizeFlagsStretchRatio="1" />
             <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
                 <Button Name="SpriteRotateLeft" Text="◀" StyleClasses="OpenRight" />

@@ -437,8 +437,8 @@
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="11">
                         <Button Name="OnboardingCompleteButton" Access="Public" Visible="False"
                                 Text="{Loc 'heretek-onboarding-result-complete'}" />
-                        <Label Name="OnboardingCompletionStatus" Access="Public" Visible="False" FontColorOverride="#D98B78"
-                               HorizontalAlignment="Center" />
+                        <RichTextLabel Name="OnboardingCompletionStatus" Access="Public" Visible="False"
+                                       HorizontalExpand="True" MaxWidth="220" />
                         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
                             <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
                                          Modulate="#B6975494"

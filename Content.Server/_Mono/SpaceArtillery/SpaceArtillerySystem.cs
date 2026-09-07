@@ -136,9 +136,12 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
         var worldRot = _xform.GetWorldRotation(uid) + Math.PI;
         var targetSpot = new Vector2(worldPosX - DISTANCE * (float)Math.Sin(worldRot), worldPosY + DISTANCE * (float)Math.Cos(worldRot));
 
-        // Create coordinates for the target and source positions
-        var sourceCoordinates = xform.Coordinates;
         var targetCoordinates = new EntityCoordinates(xform.MapUid!.Value, targetSpot);
+
+        // Signal-controlled artillery bypasses FireControlSystem.AttemptFire, so it needs the same
+        // source-grid line-of-fire check before consuming ammunition.
+        if (!_fireControl.HasClearFiringLine(uid, targetCoordinates))
+            return;
 
         // We need to set the ShootCoordinates for the gun component
         // This is important to ensure it uses the proper calculations in SharedGunSystem

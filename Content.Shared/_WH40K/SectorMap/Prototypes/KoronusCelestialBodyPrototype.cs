@@ -22,6 +22,13 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     [DataField]
     public KoronusCelestialBodyType BodyType = KoronusCelestialBodyType.Planet;
 
+    /// <summary>
+    /// Spectral tint for the procedural star renderer and its local light. White preserves the
+    /// original solar palette; non-stellar bodies ignore this field.
+    /// </summary>
+    [DataField]
+    public Color StarColor = Color.White;
+
     [DataField(required: true)]
     public string DisplayName = string.Empty;
 

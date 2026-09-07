@@ -384,7 +384,10 @@ namespace Content.Client.Lobby
                 var ready = _gameTicker.AreWeReady;
                 Lobby!.ReadyButton.Text = Loc.GetString(ready ? "lobby-state-player-status-ready" : "lobby-state-player-status-not-ready");
                 Lobby!.ReadyButton.ToggleMode = true;
-                Lobby!.ReadyButton.Disabled = !HasWh40kCharacterProfile;
+                // Keep the control usable even without a character.  The attempt is
+                // handled by SetReady, which can then point the player at creation
+                // instead of silently leaving them with a disabled button.
+                Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ReadyButton.Pressed = ready;
                 Lobby.UpdateReadyButtonVisual(ready, roundStarted: false);
             }
@@ -525,6 +528,13 @@ namespace Content.Client.Lobby
 
         private void ShowWh40kProfileRequiredMessage()
         {
+            Lobby?.ReadyButton.Pressed = false;
+            Lobby?.UpdateReadyButtonVisual(ready: false, roundStarted: _gameTicker.IsGameStarted);
+            Lobby?.HighlightCharacterCreation();
+            // A late-join attempt happens after the lobby chat is automatically
+            // collapsed.  Reveal it before sending the local server-style message.
+            Lobby?.SetChatExpanded(true);
+
             if (_chatController == null)
                 return;
 

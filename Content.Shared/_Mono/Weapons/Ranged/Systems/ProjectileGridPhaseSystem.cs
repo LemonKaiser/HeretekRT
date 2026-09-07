@@ -26,7 +26,8 @@ public sealed partial class ProjectileGridPhaseSystem : EntitySystem
         if (ent.Comp.SourceGrid == null)
             return;
 
-        // don't hit parent grid or projectiles with same parent grid
+        // Do not collide with the source grid or projectiles from the same ship. On the server,
+        // non-exempt source-grid collisions are consumed by ProjectileSystem before they can deal damage.
         if (ent.Comp.SourceGrid == Transform(args.OtherEntity).GridUid
             || _phaseQuery.TryComp(args.OtherEntity, out var otherPhase)
                 && otherPhase.SourceGrid == ent.Comp.SourceGrid)

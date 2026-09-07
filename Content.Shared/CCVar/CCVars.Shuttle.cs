@@ -281,5 +281,71 @@ public sealed partial class CCVars
     public static readonly CVarDef<float> ImpactInertiaScaling =
         CVarDef.Create("shuttle.impact.inertia_scaling", 0.5f, CVar.SERVERONLY);
 
+    /// <summary>
+    /// Maximum number of tiles that shuttle impact processing may commit in one server tick.
+    /// Collision impulses are applied immediately; excess tile destruction is retained in the server queue.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<int> ImpactMaxTilesPerTick =
+        CVarDef.Create("shuttle.impact.max_tiles_per_tick", 256, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Maximum number of grids whose queued impact damage may be committed in one server tick.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<int> ImpactMaxGridBatchesPerTick =
+        CVarDef.Create("shuttle.impact.max_grid_batches_per_tick", 4, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Maximum amount of client-only spark effects emitted by one grid impact.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<int> ImpactMaxVisualEffects =
+        CVarDef.Create("shuttle.impact.max_visual_effects", 16, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Distance in metres within which fixture contacts of the same pair are treated as one impact cluster.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<float> ImpactContactMergeDistance =
+        CVarDef.Create("shuttle.impact.contact_merge_distance", 1.5f, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Extra radius around the damage zone in which loose dynamic entities are knocked down and thrown by an impact.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<float> ImpactThrowRadiusPadding =
+        CVarDef.Create("shuttle.impact.throw_radius_padding", 2f, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Maximum tile count of an empty impact-created grid fragment that may be handed to accelerated cleanup.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<int> ImpactFragmentCleanupTiles =
+        CVarDef.Create("shuttle.impact.fragment_cleanup_tiles", 8, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Cleanup multiplier applied only to empty small fragments produced by a shuttle impact split.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<float> ImpactFragmentCleanupAcceleration =
+        CVarDef.Create("shuttle.impact.fragment_cleanup_acceleration", 10f, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Minimum lifetime in seconds for an empty impact fragment before cleanup may remove it.
+    /// The ordinary cleanup scan cadence can only make this longer, never shorter.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<float> ImpactFragmentMinimumLifetime =
+        CVarDef.Create("shuttle.impact.fragment_minimum_lifetime", 180f, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Speed at which the server enables its conservative swept-AABB anti-tunneling guard for shuttle grids.
+    /// Set to zero to disable the guard.
+    /// </summary>
+    [CVarControl(AdminFlags.VarEdit)]
+    public static readonly CVarDef<float> ImpactTunnelMinSpeed =
+        CVarDef.Create("shuttle.impact.tunnel_min_speed", 100f, CVar.SERVERONLY);
+
     #endregion
 }

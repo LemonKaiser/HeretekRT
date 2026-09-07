@@ -98,7 +98,7 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public bool Enabled;
 
     [DataField]
-    public float BoundaryRadius = 5000f;
+    public float BoundaryRadius = 20000f;
 
     [DataField]
     public float WarningFraction = 0.9f;

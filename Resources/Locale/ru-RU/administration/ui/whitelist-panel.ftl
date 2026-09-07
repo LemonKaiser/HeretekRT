@@ -18,6 +18,7 @@ whitelist-panel-ckey-placeholder = CKEY
 whitelist-panel-add = Добавить в ВЛ
 whitelist-panel-entries = Игроков в ВЛ: { $count }
 whitelist-panel-filter-placeholder = Фильтр
+whitelist-panel-unknown-player = Неизвестный аккаунт
 whitelist-panel-no-entries = ВЛ пуст.
 whitelist-panel-no-filter-results = По этому фильтру игроков нет.
 whitelist-panel-entries-hint = В списке указаны CKEY игроков из ВЛ. Удаление не отключает игрока с сервера.

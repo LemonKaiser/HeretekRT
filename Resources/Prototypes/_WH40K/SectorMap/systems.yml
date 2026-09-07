@@ -4,13 +4,13 @@
   sector: KoronusExpanse
   displayName: Furibundus (Footfall)
   uiPosition: 0.541, 0.871
-  initialGridSpawnDistance: 3000
+  initialGridSpawnDistance: 5200
   initialGridDisplayName: Футфол
   # The round-start Footfall grid is moved to a random angle at this radius from Furibundus.
   spaceMode: Planetary
   stellarCenter: 0, 0
   enabled: true
-  boundaryRadius: 5000
+  boundaryRadius: 20000
   pauseWhenEmpty: false
   # Footfall is the newcomer system: PvP and sabotage are blocked across its whole space map.
   # Do not add a dynamic zone here, otherwise its green circle would falsely imply that safety
@@ -29,10 +29,10 @@
   initialGridPath: /Maps/Ruins/ruined_prison_ship.yml
   initialGridDisplayName: Дрейфующий пустотный корабль
   spaceMode: Planetary
-  # The voidship grid is authored at 0,0, four kilometres below this stellar centre.
-  stellarCenter: 0, -4000
+  # The voidship grid is authored at 0,0, 6.6 kilometres below this stellar centre.
+  stellarCenter: 0, -6600
   # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
-  boundaryRadius: 6000
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -47,11 +47,11 @@
   uiPosition: 0.496, 0.841
   initialGridPath: /Maps/_Mono/POI/sevastopol.yml
   # The facility is kept away from the stellar centre and the planet's outer orbit.
-  initialGridSpawnDistance: 3000
+  initialGridSpawnDistance: 4800
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  # The Ice World's 4800 m orbit, its navigation marker and orbital launch point fit inside this boundary.
-  boundaryRadius: 6000
+  # The Ice World's 6600 m orbit, its navigation marker and orbital launch point fit inside this boundary.
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
@@ -65,13 +65,13 @@
   displayName: Trinnitos (Foulstone)
   uiPosition: 0.529, 0.731
   initialGridPath: /Maps/_NF/POI/trade.yml
-  initialGridSpawnDistance: 3000
-  # Each round the trade station is placed at a random angle 3000 m from the star.
+  initialGridSpawnDistance: 5600
+  # Each round the trade station is placed at a random angle 5600 m from the star.
   spaceMode: Planetary
   stellarCenter: 0, 4000
-  # Внешняя орбита Фоулстоуна — 4700 м; запас включает его радиус, площадку подхода
+  # Внешняя орбита Фоулстоуна — 7300 м; запас включает его радиус, площадку подхода
   # и точку выхода шаттла на орбиту.
-  boundaryRadius: 6000
+  boundaryRadius: 24000
   enabled: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100

@@ -33,6 +33,7 @@ public sealed partial class LobbyGui : UIScreen
     private static readonly Color Gold = Color.FromHex("#B69754");
     private static readonly Color BrightGold = Color.FromHex("#E5C879");
     private static readonly Color GoldBorder = Color.FromHex("#DFD7C34D");
+    private static readonly Color OnboardingCompletionStatusColor = Color.FromHex("#D98B78");
     private const float ChatSlideSpeed = 11f;
     private const float ChatContentRevealThreshold = 8f;
     private const float DesktopChatWidth = 520f;
@@ -41,6 +42,8 @@ public sealed partial class LobbyGui : UIScreen
     private const float IntroDuration = 1.45f;
     private const float LogoGlowCycleDuration = 3.8f;
     private const float ReadyPulseCycleDuration = 2.3f;
+    private const float CharacterCreationAttentionDuration = 2.8f;
+    private const float CharacterCreationAttentionCycleDuration = 0.62f;
     private const float OnboardingFadeInDuration = 0.16f;
     private const float OnboardingFadeOutDuration = 0.20f;
     private const float OnboardingPageFadeOutDuration = 0.15f;
@@ -48,6 +51,7 @@ public sealed partial class LobbyGui : UIScreen
     private const float OnboardingPortraitPreviewFadeDuration = 0.18f;
     private const float OnboardingPortraitPreviewSwitchDuration = 0.09f;
     private const float OnboardingPortraitPreviewHideDelay = 0.18f;
+    private const float OnboardingCompletionStatusDuration = 5f;
 
     private static bool _introPlayedThisProcess;
 
@@ -119,6 +123,7 @@ public sealed partial class LobbyGui : UIScreen
     private float _introElapsed;
     private float _ambientElapsed;
     private float _lastReadyPulse = -1f;
+    private float _characterCreationAttentionRemaining;
     private float _responsiveDeckWidth = 440f;
     private float _responsiveLeftInset = 72f;
     private float _lastResponsiveViewportWidth = -1f;
@@ -144,6 +149,7 @@ public sealed partial class LobbyGui : UIScreen
     private OnboardingPortraitPreviewPhase _onboardingPortraitPreviewPhase;
     private float _onboardingPortraitPreviewElapsed;
     private float _onboardingPortraitPreviewOpacity;
+    private float _onboardingCompletionStatusRemaining;
     private bool _staticVisualsApplied;
 
     public event Action<Wh40kOnboardingDraft>? OnOnboardingCompletionRequested;
@@ -511,8 +517,16 @@ public sealed partial class LobbyGui : UIScreen
             5f);
         OnboardingCompleteButton.OnPressed += _ =>
         {
-            if (_onboardingDraft is not null && !OnboardingCompleteButton.Disabled)
-                OnOnboardingCompletionRequested?.Invoke(_onboardingDraft);
+            if (_onboardingDraft is null || OnboardingCompleteButton.Disabled)
+                return;
+
+            if (!_onboardingDraft.Profile.Wh40kBuild.IsCompleteFoundation)
+            {
+                SetOnboardingCompletionResult(Wh40kOnboardingCompletionStatus.InvalidBuild);
+                return;
+            }
+
+            OnOnboardingCompletionRequested?.Invoke(_onboardingDraft);
         };
         var appearanceSections = new[]
         {
@@ -1664,6 +1678,26 @@ public sealed partial class LobbyGui : UIScreen
         SetMenuRowAvailable(PersonalizationButton, PersonalizationRow, PersonalizationIndex, available);
     }
 
+    /// <summary>
+    /// Briefly draws attention to the character-creation action after a player tries
+    /// to ready up or join without a valid character profile.
+    /// </summary>
+    public void HighlightCharacterCreation()
+    {
+        _characterCreationAttentionRemaining = CharacterCreationAttentionDuration;
+
+        foreach (var presentation in _menuRows)
+        {
+            if (presentation.Button != PersonalizationButton)
+                continue;
+
+            presentation.AttentionAmount = 1f;
+            presentation.VisualDirty = true;
+            UpdateMenuRowPresentation(presentation, reducedMotion: IsReducedMotion);
+            break;
+        }
+    }
+
     private void SetMenuRowAvailable(Button button, PanelContainer row, Label index, bool available)
     {
         button.Disabled = !available;
@@ -1727,6 +1761,7 @@ public sealed partial class LobbyGui : UIScreen
         UpdateOnboardingTransition(deltaSeconds);
         UpdateOnboardingPageTransition(deltaSeconds);
         UpdateOnboardingPortraitPreview(deltaSeconds, IsReducedMotion);
+        UpdateOnboardingCompletionStatus(deltaSeconds);
 
         if (IsReducedMotion)
         {
@@ -1861,7 +1896,7 @@ public sealed partial class LobbyGui : UIScreen
         OnboardingNavigationPanel.Visible = true;
         OnboardingContentPanel.SetWidth = 760;
         OnboardingCompleteButton.Visible = false;
-        OnboardingCompletionStatus.Visible = false;
+        ClearOnboardingCompletionStatus();
         HideOnboardingPortraitPreviewImmediately();
         OnboardingPreviewPlaceholder.Visible = true;
     }
@@ -1869,10 +1904,14 @@ public sealed partial class LobbyGui : UIScreen
     public void SetOnboardingCompletionPending(bool pending)
     {
         OnboardingCompleteButton.Disabled = pending;
-        OnboardingCompletionStatus.Visible = pending;
-        OnboardingCompletionStatus.Text = pending
-            ? Loc.GetString("heretek-onboarding-result-saving")
-            : string.Empty;
+        if (!pending)
+        {
+            ClearOnboardingCompletionStatus();
+            return;
+        }
+
+        _onboardingCompletionStatusRemaining = float.PositiveInfinity;
+        SetOnboardingCompletionStatus(Loc.GetString("heretek-onboarding-result-saving"));
     }
 
     public void SetOnboardingCompletionResult(Wh40kOnboardingCompletionStatus status)
@@ -1881,13 +1920,8 @@ public sealed partial class LobbyGui : UIScreen
         if (status == Wh40kOnboardingCompletionStatus.Success)
             return;
 
-        OnboardingCompletionStatus.Visible = true;
-        OnboardingCompletionStatus.Text = Loc.GetString(status switch
-        {
-            Wh40kOnboardingCompletionStatus.InvalidBuild => "heretek-onboarding-result-invalid-build",
-            Wh40kOnboardingCompletionStatus.InvalidProfile => "heretek-onboarding-result-invalid-profile",
-            _ => "heretek-onboarding-result-save-failed",
-        });
+        _onboardingCompletionStatusRemaining = OnboardingCompletionStatusDuration;
+        SetOnboardingCompletionStatus(GetOnboardingCompletionStatusText(status));
     }
 
     private void RefreshOnboardingResult()
@@ -1895,7 +1929,74 @@ public sealed partial class LobbyGui : UIScreen
         if (_onboardingDraft is null)
             return;
 
+        ClearOnboardingCompletionStatus();
         OnboardingResultPage.RefreshForDraft();
+    }
+
+    private string GetOnboardingCompletionStatusText(Wh40kOnboardingCompletionStatus status)
+    {
+        if (status != Wh40kOnboardingCompletionStatus.InvalidBuild || _onboardingDraft is null)
+        {
+            return Loc.GetString(status switch
+            {
+                Wh40kOnboardingCompletionStatus.InvalidBuild => "heretek-onboarding-result-invalid-build",
+                Wh40kOnboardingCompletionStatus.InvalidProfile => "heretek-onboarding-result-invalid-profile",
+                _ => "heretek-onboarding-result-save-failed",
+            });
+        }
+
+        var build = _onboardingDraft.Profile.Wh40kBuild;
+        var missing = new List<string>();
+        if (string.IsNullOrWhiteSpace(build.HomeworldId))
+            missing.Add(Loc.GetString("heretek-onboarding-result-missing-homeworld"));
+        if (string.IsNullOrWhiteSpace(build.OriginId))
+            missing.Add(Loc.GetString("heretek-onboarding-result-missing-origin"));
+        if (string.IsNullOrWhiteSpace(build.ClassId))
+            missing.Add(Loc.GetString("heretek-onboarding-result-missing-class"));
+        if (string.IsNullOrWhiteSpace(build.PortraitId))
+            missing.Add(Loc.GetString("heretek-onboarding-result-missing-portrait"));
+        if (build.AllocatedCharacteristicPoints != Wh40kCharacterBuild.MaximumAttributePoints)
+        {
+            missing.Add(Loc.GetString(
+                "heretek-onboarding-result-missing-characteristics",
+                ("allocated", build.AllocatedCharacteristicPoints),
+                ("required", Wh40kCharacterBuild.MaximumAttributePoints)));
+        }
+        if (!build.Equals(build.Validated()))
+            missing.Add(Loc.GetString("heretek-onboarding-result-invalid-build-data"));
+
+        return missing.Count == 0
+            ? Loc.GetString("heretek-onboarding-result-invalid-build")
+            : Loc.GetString(
+                "heretek-onboarding-result-invalid-build-missing",
+                ("requirements", string.Join("\n", missing)));
+    }
+
+    private void SetOnboardingCompletionStatus(string message)
+    {
+        OnboardingCompletionStatus.SetMessage(message, OnboardingCompletionStatusColor);
+        OnboardingCompletionStatus.Visible = true;
+    }
+
+    private void ClearOnboardingCompletionStatus()
+    {
+        _onboardingCompletionStatusRemaining = 0f;
+        OnboardingCompletionStatus.Clear();
+        OnboardingCompletionStatus.Visible = false;
+    }
+
+    private void UpdateOnboardingCompletionStatus(float deltaSeconds)
+    {
+        if (!OnboardingCompletionStatus.Visible ||
+            _onboardingCompletionStatusRemaining <= 0f ||
+            float.IsPositiveInfinity(_onboardingCompletionStatusRemaining))
+        {
+            return;
+        }
+
+        _onboardingCompletionStatusRemaining = Math.Max(0f, _onboardingCompletionStatusRemaining - deltaSeconds);
+        if (_onboardingCompletionStatusRemaining <= 0f)
+            ClearOnboardingCompletionStatus();
     }
 
     /// <summary>
@@ -1924,6 +2025,7 @@ public sealed partial class LobbyGui : UIScreen
     private void RefreshOnboardingPreview(Wh40kOnboardingDraft draft)
     {
         _onboardingDraft = draft;
+        ClearOnboardingCompletionStatus();
         RefreshOnboardingResultPortrait();
         if (_onboardingPreviewDummy is { } existingDummy &&
             _entityManager.EntityExists(existingDummy) &&
@@ -2270,17 +2372,24 @@ public sealed partial class LobbyGui : UIScreen
         }
         UpdateOnboardingNavigationCardVisuals(deltaSeconds, reducedMotion);
 
+        var characterCreationAttention = UpdateCharacterCreationAttention(deltaSeconds, reducedMotion);
         foreach (var presentation in _menuRows)
         {
             UpdateMenuRowHoverState(presentation);
             var previous = presentation.HoverAmount;
+            var previousAttention = presentation.AttentionAmount;
             presentation.HoverAmount = ApproachPresentation(
                 presentation.HoverAmount,
                 presentation.Hovered ? 1f : 0f,
                 deltaSeconds,
                 reducedMotion);
+            presentation.AttentionAmount = presentation.Button == PersonalizationButton
+                ? characterCreationAttention
+                : 0f;
 
-            if (presentation.HoverAmount == previous && !presentation.VisualDirty)
+            if (presentation.HoverAmount == previous &&
+                presentation.AttentionAmount == previousAttention &&
+                !presentation.VisualDirty)
                 continue;
 
             UpdateMenuRowPresentation(presentation, reducedMotion: false);
@@ -2356,6 +2465,24 @@ public sealed partial class LobbyGui : UIScreen
 
             UpdateChatControlPresentation(presentation, reducedMotion: false);
         }
+    }
+
+    private float UpdateCharacterCreationAttention(float deltaSeconds, bool reducedMotion)
+    {
+        if (_characterCreationAttentionRemaining <= 0f)
+            return 0f;
+
+        _characterCreationAttentionRemaining = Math.Max(0f, _characterCreationAttentionRemaining - deltaSeconds);
+        if (_characterCreationAttentionRemaining <= 0f)
+            return 0f;
+
+        if (reducedMotion)
+            return 1f;
+
+        var elapsed = CharacterCreationAttentionDuration - _characterCreationAttentionRemaining;
+        var pulse = 0.5f + 0.5f * MathF.Sin(
+            elapsed * MathF.Tau / CharacterCreationAttentionCycleDuration - MathF.PI * 0.5f);
+        return 0.55f + 0.45f * pulse;
     }
 
     private static float ApproachPresentation(float value, float target, float deltaSeconds, bool reducedMotion)
@@ -2458,6 +2585,7 @@ public sealed partial class LobbyGui : UIScreen
         if (presentation.Button.Disabled)
         {
             presentation.HoverAmount = 0f;
+            presentation.AttentionAmount = 0f;
             presentation.Pressed = false;
             presentation.Button.Label.Margin = default;
             presentation.Button.Label.FontColorOverride = Color.FromHex("#8A806D");
@@ -2472,7 +2600,19 @@ public sealed partial class LobbyGui : UIScreen
         presentation.Button.Label.Margin = new Thickness(8f * presentation.HoverAmount, 0f, 0f, 0f);
         presentation.Button.Label.FontColorOverride = LerpColor(Paper, Color.FromHex("#FFF4D9"), presentation.HoverAmount);
         ApplyStandardRowVisual(presentation.Row, presentation.HoverAmount, presentation.Pressed);
+        if (presentation.AttentionAmount > 0f)
+            ApplyCharacterCreationAttentionVisual(presentation.Row, presentation.AttentionAmount);
         presentation.VisualDirty = false;
+    }
+
+    private static void ApplyCharacterCreationAttentionVisual(PanelContainer row, float attentionAmount)
+    {
+        attentionAmount = Math.Clamp(attentionAmount, 0f, 1f);
+        var style = GetMenuRowStyle(row);
+        style.LeftColor = LerpColor(style.LeftColor, Color.FromHex("#8A5B1F9E"), attentionAmount);
+        style.MiddleColor = LerpColor(style.MiddleColor, Color.FromHex("#56340E73"), attentionAmount);
+        style.AccentColor = BrightGold.WithAlpha(0.75f + 0.25f * attentionAmount);
+        style.DrawAccent = true;
     }
 
     private static void UpdateUtilityPresentation(UtilityPresentation presentation, bool reducedMotion)
@@ -2980,6 +3120,7 @@ public sealed partial class LobbyGui : UIScreen
         public bool Hovered { get; set; }
         public bool Pressed { get; set; }
         public float HoverAmount { get; set; }
+        public float AttentionAmount { get; set; }
         public bool VisualDirty { get; set; } = true;
 
         public MenuRowPresentation(Button button, PanelContainer row)

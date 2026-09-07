@@ -1,2 +1,10 @@
 detail-examinable-verb-text = Подробности
 detail-examinable-verb-disabled = Детальнее осмотрите объект.
+detail-examinable-window-title = Подробности персонажа
+detail-examinable-empty-flavor = Описание отсутствует.
+detail-examinable-empty-character = Черты персонажа не указаны.
+detail-examinable-empty-ooc = OOC-информация не указана.
+detail-examinable-empty-links = Ссылки не добавлены.
+detail-examinable-empty-green = Список пуст.
+detail-examinable-empty-yellow = Список пуст.
+detail-examinable-empty-red = Список пуст.

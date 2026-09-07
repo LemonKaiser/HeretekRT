@@ -18,6 +18,7 @@ whitelist-panel-ckey-placeholder = CKEY
 whitelist-panel-add = Add to whitelist
 whitelist-panel-entries = Whitelisted players: { $count }
 whitelist-panel-filter-placeholder = Filter
+whitelist-panel-unknown-player = Unknown account
 whitelist-panel-no-entries = The whitelist is empty.
 whitelist-panel-no-filter-results = No players match this filter.
 whitelist-panel-entries-hint = The list shows whitelisted players' CKEYs. Removing a player does not disconnect them.

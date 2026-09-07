@@ -734,6 +734,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // End Frontier
 
         _docks = state.Docks;
+        UpdatePlanetaryState(state.PlanetaryState);
 
         NfUpdateState(state); // Frontier Update State
     }
@@ -1674,7 +1675,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var star = _planetaryState.Bodies.FirstOrDefault(body => body.BodyType == "Star");
         var sunRadius = star?.NavVisualRadius * MinimapScale ?? 0f;
         if (sunRadius > 0f)
-            _sunRenderer.Draw(handle, stellarPosition, sunRadius);
+        {
+            var starColor = Color.White;
+            if (star != null && _prototypeManager.TryIndex<KoronusCelestialBodyPrototype>(star.Id, out var starPrototype))
+                starColor = starPrototype.StarColor;
+
+            _sunRenderer.Draw(handle, stellarPosition, sunRadius, starColor);
+        }
 
         var phaseTime = (float) IoCManager.Resolve<IGameTiming>().CurTime.TotalSeconds;
         foreach (var body in _planetaryState.Bodies)
@@ -2074,14 +2081,16 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
             var center = _transform.WithEntityId(xform.Coordinates, xform.GridUid.Value).Position;
 
-            for (int i = 1; i < count; i++)
+            // CreateLoop appends the first vertex after the final one, so iterating to Count
+            // includes the closing segment as well.
+            for (var i = 0; i < count; i++)
             {
-                var v1 = Vector2.Add(center, verticies[i - 1]);
+                var v1 = Vector2.Add(center, verticies[i]);
                 v1 = Vector2.Transform(v1, parentXform.WorldMatrix); // transform to world matrix
                 v1 = Vector2.Transform(v1, matrix); // get back to local matrix for drawing
                 v1.Y = -v1.Y;
                 v1 = ScalePosition(v1);
-                var v2 = Vector2.Add(center, verticies[i]);
+                var v2 = Vector2.Add(center, verticies[i + 1]);
                 v2 = Vector2.Transform(v2, parentXform.WorldMatrix);
                 v2 = Vector2.Transform(v2, matrix);
                 v2.Y = -v2.Y;
