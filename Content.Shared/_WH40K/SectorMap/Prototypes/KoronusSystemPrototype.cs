@@ -94,8 +94,29 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     [DataField]
     public bool ProtectInitialGrid;
 
+    /// <summary>
+    /// Additional authored facility grids loaded alongside the initial grid on this system map.
+    /// Each facility owns its placement, name and safeguards, so one system can host several bases.
+    /// </summary>
+    [DataField]
+    public List<KoronusAdditionalGridDefinition> AdditionalGrids = new();
+
     [DataField]
     public bool Enabled;
+
+    /// <summary>
+    /// Allows only data-only Rogue Trader sector activities to use this system as a marker target.
+    /// The protected Footfall system intentionally leaves this disabled.
+    /// </summary>
+    [DataField]
+    public bool ActivityEligible;
+
+    /// <summary>
+    /// Optional finite asteroid field for an external, activity-eligible system. It is generated
+    /// once when the system map is first created and is never used for Footfall.
+    /// </summary>
+    [DataField]
+    public KoronusAsteroidFieldDefinition? AsteroidField;
 
     [DataField]
     public float BoundaryRadius = 20000f;
@@ -159,4 +180,49 @@ public enum KoronusSpaceMode : byte
 {
     Standard,
     Planetary,
+}
+
+/// <summary>
+/// Finite ring of pre-existing mining asteroids. The definition intentionally exposes no map,
+/// entity or reward input: the server selects from its closed audited pool.
+/// </summary>
+[DataDefinition]
+public sealed partial class KoronusAsteroidFieldDefinition
+{
+    [DataField(required: true)]
+    public int Count;
+
+    [DataField]
+    public float InnerRadius = 8000f;
+
+    [DataField]
+    public float OuterRadius = 10000f;
+}
+
+/// <summary>
+/// One supplementary authored facility on a Koronus system map.
+/// </summary>
+[DataDefinition]
+public sealed partial class KoronusAdditionalGridDefinition
+{
+    [DataField(required: true)]
+    public ResPath MapPath;
+
+    [DataField]
+    public float SpawnDistance;
+
+    [DataField]
+    public string? DisplayName;
+
+    [DataField]
+    public ProtoId<KoronusSafetyProfilePrototype>? SafetyProfile;
+
+    [DataField]
+    public float SafetyRadius;
+
+    [DataField]
+    public ProtoId<KoronusSafetyProfilePrototype>? LocalSafetyProfile;
+
+    [DataField]
+    public bool ProtectGrid;
 }

@@ -34,6 +34,11 @@
   # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
   boundaryRadius: 24000
   enabled: true
+  activityEligible: true
+  asteroidField:
+    count: 4
+    innerRadius: 8800
+    outerRadius: 10400
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
@@ -46,6 +51,14 @@
   displayName: Sotto's Tomb
   uiPosition: 0.496, 0.841
   initialGridPath: /Maps/_Mono/POI/sevastopol.yml
+  # The original station remains in orbit; the Citadel is a separate Adeptus Administratum hub.
+  additionalGrids:
+  - mapPath: /Maps/_WH40K/Citadel.yml
+    displayName: Цитадель Адептус Администратум
+    spawnDistance: 3300
+    safetyProfile: KoronusStationSafeZone
+    safetyRadius: 100
+    protectGrid: true
   # The facility is kept away from the stellar centre and the planet's outer orbit.
   initialGridSpawnDistance: 4800
   spaceMode: Planetary
@@ -53,6 +66,11 @@
   # The Ice World's 6600 m orbit, its navigation marker and orbital launch point fit inside this boundary.
   boundaryRadius: 24000
   enabled: true
+  activityEligible: true
+  asteroidField:
+    count: 4
+    innerRadius: 8200
+    outerRadius: 9800
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
@@ -73,6 +91,11 @@
   # и точку выхода шаттла на орбиту.
   boundaryRadius: 24000
   enabled: true
+  activityEligible: true
+  asteroidField:
+    count: 4
+    innerRadius: 9000
+    outerRadius: 10800
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true

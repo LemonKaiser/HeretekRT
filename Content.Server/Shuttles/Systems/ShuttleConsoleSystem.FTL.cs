@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server.Power.EntitySystems; // Mono
+using Content.Server._WH40K.Activities;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
@@ -31,6 +32,7 @@ public sealed partial class ShuttleConsoleSystem
     [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private KoronusSectorResidencySystem _koronusResidency = default!;
+    [Dependency] private KoronusActivityDirectorSystem _koronusActivities = default!;
     [Dependency] private IRobustRandom _random = default!;
 
     private const float ShuttleFTLRange = 512f;
@@ -387,6 +389,7 @@ public sealed partial class ShuttleConsoleSystem
         MapId shuttleMap,
         ShuttleMapInterfaceState mapState)
     {
+        KoronusSectorInterfaceState sectorState;
         if (_pendingKoronusJumps.TryGetValue(shuttleUid, out var jump) &&
             mapState.FTLState is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
         {
@@ -395,10 +398,16 @@ public sealed partial class ShuttleConsoleSystem
                 jump.TargetSystem,
                 mapState.FTLState,
                 mapState.FTLTime);
-            return _koronusSector.GetInterfaceState(jump.SourceSystem, false, travel);
+            sectorState = _koronusSector.GetInterfaceState(jump.SourceSystem, false, travel);
+        }
+        else
+        {
+            sectorState = _koronusSector.GetInterfaceState(shuttleMap, mapState.FTLState == FTLState.Available);
         }
 
-        return _koronusSector.GetInterfaceState(shuttleMap, mapState.FTLState == FTLState.Available);
+        sectorState.ActivityMarkers = _koronusActivities.GetMarkers();
+        sectorState.ActivityDossiers = _koronusActivities.GetDossiers();
+        return sectorState;
     }
 
     private bool IsInsideKoronusSystemBoundary(

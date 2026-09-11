@@ -27,6 +27,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     private readonly HashSet<MapId> _playerMaps = new();
     private readonly HashSet<MapId> _adminGhostMaps = new();
     private readonly HashSet<MapId> _planetaryTransitMaps = new();
+    private readonly Dictionary<string, HashSet<long>> _activityLeases = new(StringComparer.Ordinal);
     private readonly List<string> _coldUnloadCandidates = new();
     private static readonly TimeSpan ColdUnloadRetryDelay = TimeSpan.FromMinutes(1);
 
@@ -108,9 +109,44 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         runtime.IncomingSectorJumps = int.Max(runtime.IncomingSectorJumps - 1, 0);
     }
 
+    /// <summary>
+    /// Keeps a materialized orbital activity awake until its terminal cleanup. This cannot create
+    /// a map: callers must already have reached a loaded target system.
+    /// </summary>
+    public bool BeginActivityLease(string systemId, long instanceId)
+    {
+        if (!TryGetRuntime(systemId, out var runtime, out var mapId))
+            return false;
+
+        if (!_activityLeases.TryGetValue(systemId, out var leases))
+        {
+            leases = new HashSet<long>();
+            _activityLeases.Add(systemId, leases);
+        }
+
+        leases.Add(instanceId);
+        runtime.EmptySince = null;
+        runtime.ColdUnloadRetryAt = null;
+        _maps.SetPaused(mapId, false);
+        return true;
+    }
+
+    /// <summary>
+    /// Releases exactly one activity lease. Releasing an already removed lease is safe.
+    /// </summary>
+    public void EndActivityLease(string systemId, long instanceId)
+    {
+        if (!_activityLeases.TryGetValue(systemId, out var leases))
+            return;
+
+        leases.Remove(instanceId);
+        if (leases.Count == 0)
+            _activityLeases.Remove(systemId);
+    }
+
     private void UpdateSystem(KoronusSystemMapComponent runtime, MapId mapId, KoronusSystemPrototype system, bool occupied)
     {
-        if (occupied || runtime.IncomingSectorJumps > 0 || !system.PauseWhenEmpty)
+        if (occupied || runtime.IncomingSectorJumps > 0 || HasActivityLease(system.ID) || !system.PauseWhenEmpty)
         {
             runtime.EmptySince = null;
             runtime.ColdUnloadRetryAt = null;
@@ -208,5 +244,10 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
 
         runtime = foundRuntime!;
         return true;
+    }
+
+    private bool HasActivityLease(string systemId)
+    {
+        return _activityLeases.TryGetValue(systemId, out var leases) && leases.Count > 0;
     }
 }

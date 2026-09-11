@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Linq;
 using System.Text;
+using Content.Shared._WH40K.Activities;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared.Shuttles.Systems;
 using Robust.Client.Graphics;
@@ -245,6 +246,7 @@ public sealed class KoronusSectorMapControl : Control
         foreach (var node in _state.Systems)
             DrawNode(handle, node);
 
+        DrawActivityMarkers(handle);
         DrawSystemLabels(handle);
         if (_state.WarpTravel != null)
             DrawWarpTravelStatus(handle, systems, _state.WarpTravel);
@@ -252,6 +254,34 @@ public sealed class KoronusSectorMapControl : Control
             DrawSelectedSystemCard(handle);
         DrawLegend(handle);
         DrawControlsHint(handle);
+    }
+
+    private void DrawActivityMarkers(DrawingHandleScreen handle)
+    {
+        foreach (var marker in _state.ActivityMarkers)
+        {
+            if (!_systemsById.TryGetValue(marker.SystemId, out var system))
+                continue;
+
+            var position = NormalizedToScreen(system.Position);
+            var radius = (NodeRadius + 5f) * UIScale;
+            var color = GetActivityMarkerColor(marker.Risk);
+
+            handle.DrawCircle(position, radius, color.WithAlpha(0.85f), filled: false);
+            handle.DrawCircle(position, Math.Max(radius - 3f * UIScale, 1f), color.WithAlpha(0.25f), filled: false);
+        }
+    }
+
+    private static Color GetActivityMarkerColor(KoronusActivityRisk risk)
+    {
+        return risk switch
+        {
+            KoronusActivityRisk.Informational => Color.FromHex("#65B8E8"),
+            KoronusActivityRisk.Low => Color.FromHex("#8DD66A"),
+            KoronusActivityRisk.Moderate => Color.FromHex("#E0AC39"),
+            KoronusActivityRisk.High => Color.FromHex("#C95043"),
+            _ => Color.White,
+        };
     }
 
     private void DrawNode(DrawingHandleScreen handle, KoronusSectorNodeState node)
@@ -764,7 +794,7 @@ public sealed class KoronusSectorMapControl : Control
         if (node == null)
             return;
 
-        var cardSize = new Vector2(210f, 100f) * UIScale;
+        var cardSize = new Vector2(210f, 138f) * UIScale;
         var nodePosition = NormalizedToScreen(node.Position);
         // Keep the dossier visually attached to its beacon; it should read as an inspection popup, not a remote panel.
         var cardPosition = nodePosition + new Vector2(20f, -18f) * UIScale;
@@ -860,6 +890,32 @@ public sealed class KoronusSectorMapControl : Control
 
     private string GetSystemCardDetail(KoronusSectorNodeState node)
     {
+        var activity = _state.ActivityDossiers
+            .Where(dossier => dossier.SystemId == node.Id &&
+                              dossier.State is KoronusActivityState.Available or KoronusActivityState.Engaged)
+            .OrderByDescending(dossier => dossier.Risk)
+            .ThenBy(dossier => dossier.ExpiresAt)
+            .FirstOrDefault();
+        if (activity != null)
+        {
+            var remaining = Math.Max(0, (int) Math.Ceiling((activity.ExpiresAt - _timing.CurTime).TotalMinutes));
+            var threat = activity.ThreatFamily == KoronusActivityThreatFamily.None
+                ? string.Empty
+                : Loc.GetString(
+                    "koronus-sector-card-threat",
+                    ("family", Loc.GetString(GetActivityThreatFamilyLocId(activity.ThreatFamily))),
+                    ("level", Loc.GetString(GetActivityThreatLevelLocId(activity.ThreatLevel))),
+                    ("state", Loc.GetString(GetActivityThreatStateLocId(activity.ThreatState))));
+            return Loc.GetString(
+                "koronus-sector-card-activity",
+                ("title", Loc.GetString(activity.TitleLocId)),
+                ("summary", Loc.GetString(activity.SummaryLocId)),
+                ("risk", Loc.GetString(GetActivityRiskLocId(activity.Risk))),
+                ("reliability", Loc.GetString(GetActivityReliabilityLocId(activity.Reliability))),
+                ("threat", threat),
+                ("remaining", remaining));
+        }
+
         if (node.Current)
             return Loc.GetString("koronus-sector-card-current");
         if (!_state.CanJump)
@@ -878,6 +934,67 @@ public sealed class KoronusSectorMapControl : Control
             _ => Loc.GetString("koronus-sector-card-route-stable"),
         };
         return Loc.GetString("koronus-sector-card-route", ("route", routeName));
+    }
+
+    private static string GetActivityRiskLocId(KoronusActivityRisk risk)
+    {
+        return risk switch
+        {
+            KoronusActivityRisk.Informational => "koronus-sector-activity-risk-informational",
+            KoronusActivityRisk.Low => "koronus-sector-activity-risk-low",
+            KoronusActivityRisk.Moderate => "koronus-sector-activity-risk-moderate",
+            KoronusActivityRisk.High => "koronus-sector-activity-risk-high",
+            _ => "koronus-sector-activity-risk-informational",
+        };
+    }
+
+    private static string GetActivityReliabilityLocId(KoronusActivityReliability reliability)
+    {
+        return reliability switch
+        {
+            KoronusActivityReliability.Verified => "koronus-sector-activity-reliability-verified",
+            KoronusActivityReliability.Partial => "koronus-sector-activity-reliability-partial",
+            KoronusActivityReliability.Suspicious => "koronus-sector-activity-reliability-suspicious",
+            KoronusActivityReliability.Stale => "koronus-sector-activity-reliability-stale",
+            _ => "koronus-sector-activity-reliability-partial",
+        };
+    }
+
+    private static string GetActivityThreatFamilyLocId(KoronusActivityThreatFamily family)
+    {
+        return family switch
+        {
+            KoronusActivityThreatFamily.Warp => "koronus-sector-activity-threat-family-warp",
+            KoronusActivityThreatFamily.Tyranid => "koronus-sector-activity-threat-family-tyranid",
+            KoronusActivityThreatFamily.Raider => "koronus-sector-activity-threat-family-raider",
+            _ => "koronus-sector-activity-threat-family-none",
+        };
+    }
+
+    private static string GetActivityThreatLevelLocId(KoronusActivityThreatLevel level)
+    {
+        return level switch
+        {
+            KoronusActivityThreatLevel.Intel => "koronus-sector-activity-threat-level-intel",
+            KoronusActivityThreatLevel.Contained => "koronus-sector-activity-threat-level-contained",
+            KoronusActivityThreatLevel.Combat => "koronus-sector-activity-threat-level-combat",
+            KoronusActivityThreatLevel.Vessel => "koronus-sector-activity-threat-level-vessel",
+            _ => "koronus-sector-activity-threat-level-none",
+        };
+    }
+
+    private static string GetActivityThreatStateLocId(KoronusActivityThreatState state)
+    {
+        return state switch
+        {
+            KoronusActivityThreatState.Intel => "koronus-sector-activity-threat-state-intel",
+            KoronusActivityThreatState.Active => "koronus-sector-activity-threat-state-active",
+            KoronusActivityThreatState.Contained => "koronus-sector-activity-threat-state-contained",
+            KoronusActivityThreatState.Defeated => "koronus-sector-activity-threat-state-defeated",
+            KoronusActivityThreatState.Evaded => "koronus-sector-activity-threat-state-evaded",
+            KoronusActivityThreatState.SafetyViolation => "koronus-sector-activity-threat-state-safety",
+            _ => "koronus-sector-activity-threat-state-none",
+        };
     }
 
     private void WrapCardText(DrawingHandleScreen handle, string text, float scale, float maxWidth, List<string> lines)

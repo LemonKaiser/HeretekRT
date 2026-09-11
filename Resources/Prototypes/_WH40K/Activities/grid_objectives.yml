@@ -1,0 +1,127 @@
+# Stage 5 objective roots. Each is a single static entity; the executor creates and owns the
+# temporary grid at runtime only after the map, system, and protected-area audit has succeeded.
+
+- type: entity
+  id: KoronusActivitySecureCache
+  parent: BaseStructure
+  name: sealed void-cache recorder
+  description: A sealed cache exposes only a manual recovery port; it contains no automatic loot or role.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_pack
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#72B8FF"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusActivitySalvageBlackBox
+  parent: BaseStructure
+  name: derelict black box
+  description: The recorder can be read without claiming the wreck or altering a nearby vessel.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_point
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#E6B75F"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusActivityRescuePodLog
+  parent: BaseStructure
+  name: rescue pod log terminal
+  description: The pod is empty; its last log can be recovered without spawning a survivor or a ghost role.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/flare.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: flare_burn
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#8FE8C8"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusActivityLostCargoManifest
+  parent: BaseStructure
+  name: lost cargo manifest beacon
+  description: The sealed freight manifest can be read, but the activity does not create unowned cargo or a market reward.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_pack
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#DDA85D"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusActivityDerelictCogitator
+  parent: BaseStructure
+  name: derelict cogitator core
+  description: A dead wreck's cogitator offers telemetry only; no map spawner or combat encounter is embedded in it.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_point
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#C17DFF"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusActivityRaiderCutterCache
+  parent: BaseStructure
+  name: raider cutter signal cache
+  description: A disabled raider relay can be read and the temporary cutter will be removed afterwards.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_pack
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#D66A5B"
+    radius: 3
+    energy: 2
+  - type: KoronusActivityObjective
+
+# This NPC is a server-spawned non-ghost hostile for the cutter's manual acceptance gate. The
+# executor removes its inherited prying/tool/door-bump capabilities before enabling the instance.
+
+- type: entity
+  id: MobWH40KActivityRaiderDeckhand
+  parent: MobHumanoidHostileBase
+  name: void raider deckhand
+  description: A raider guarding a stranded cutter. It has no ship controls, gun, ghost role or takeover.
+  components:
+  - type: PressureImmunity

@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.Timing;
+using Content.Shared._WH40K.Activities;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._WH40K.SectorMap.BUI;
@@ -16,6 +17,8 @@ public sealed class KoronusSectorInterfaceState
     public string? CurrentSystem;
     public List<KoronusSectorNodeState> Systems;
     public List<KoronusSectorRouteState> Routes;
+    public List<KoronusActivityMarkerState> ActivityMarkers;
+    public List<KoronusActivityDossierState> ActivityDossiers;
     public KoronusSectorTravelState? WarpTravel;
 
     public KoronusSectorInterfaceState(
@@ -24,13 +27,17 @@ public sealed class KoronusSectorInterfaceState
         string? currentSystem,
         List<KoronusSectorNodeState> systems,
         List<KoronusSectorRouteState> routes,
-        KoronusSectorTravelState? warpTravel = null)
+        KoronusSectorTravelState? warpTravel = null,
+        List<KoronusActivityMarkerState>? activityMarkers = null,
+        List<KoronusActivityDossierState>? activityDossiers = null)
     {
         Available = available;
         CanJump = canJump;
         CurrentSystem = currentSystem;
         Systems = systems;
         Routes = routes;
+        ActivityMarkers = activityMarkers ?? [];
+        ActivityDossiers = activityDossiers ?? [];
         WarpTravel = warpTravel;
     }
 

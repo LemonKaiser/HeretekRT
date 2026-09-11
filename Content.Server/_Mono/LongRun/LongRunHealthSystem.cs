@@ -9,6 +9,7 @@ using Content.Server.NPC.HTN;
 using Content.Server.NPC.Pathfinding;
 using Content.Server.RoundEnd;
 using Content.Server.Worldgen.Components;
+using Content.Server._WH40K.Activities;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.CCVar;
@@ -17,6 +18,7 @@ using Content.Shared.GameTicking.Components;
 using Content.Shared.NPC;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared._Mono.CCVar;
+using Content.Shared._WH40K.Activities;
 using Prometheus;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
@@ -136,12 +138,43 @@ public sealed class LongRunHealthSystem : EntitySystem
     private static readonly Gauge BoundaryWarningHistoryCount = Metrics.CreateGauge(
         "longrun_health_boundary_warning_history_count",
         "Retained Koronus boundary warning cooldown entries.");
+    private static readonly Gauge ActivityAvailableCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_available_count",
+        "Available Koronus activity instances observed by the long-run sampler.");
+    private static readonly Gauge ActivityEngagedCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_engaged_count",
+        "Engaged Koronus activity instances observed by the long-run sampler.");
+    private static readonly Gauge ActivityLeaseCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_lease_count",
+        "System residency leases held by Koronus activities.");
+    private static readonly Gauge ActivityOwnedEntityCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_owned_entity_count",
+        "Entities explicitly owned by currently active Koronus activities.");
+    private static readonly Gauge ActivityOwnedGridCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_owned_grid_count",
+        "Temporary grids explicitly owned by currently active Koronus activities.");
+    private static readonly Gauge ActivityOrphanCandidateCount = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_orphan_candidate_count",
+        "Activity-owned entities whose instance is no longer active.");
+    private static readonly Gauge ActivityOldestLeaseSeconds = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_oldest_lease_seconds",
+        "Age of the oldest active Koronus activity lease.");
+    private static readonly Gauge ActivityTerminalsLast24Hours = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_terminals_last_24_hours",
+        "Koronus activity terminal entries retained from the last 24 hours.");
+    private static readonly Gauge ActivityTerminalsLast96Hours = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_terminals_last_96_hours",
+        "Koronus activity terminal entries retained from the last 96 hours.");
+    private static readonly Gauge ActivityDistinctFamiliesLast24Hours = Metrics.CreateGauge(
+        "longrun_health_koronus_activity_distinct_families_last_24_hours",
+        "Distinct Koronus activity families completed in the last 24 hours.");
 
     [Dependency] private IConfigurationManager _configuration = default!;
     [Dependency] private DeviceNetworkSystem _deviceNetwork = default!;
     [Dependency] private ExplosionSystem _explosions = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private KoronusSectorBoundarySystem _sectorBoundaries = default!;
+    [Dependency] private KoronusActivityDirectorSystem _activities = default!;
     [Dependency] private PathfindingSystem _pathfinding = default!;
 
     private readonly float[] _frameSamples = new float[FrameSampleCapacity];
@@ -217,6 +250,7 @@ public sealed class LongRunHealthSystem : EntitySystem
             $"sector={snapshot.KnownSystemCount}/{snapshot.KnownSurfaceCount}",
             $"landing={snapshot.LandingReservationCount}/{snapshot.LandingSessionCount}/{snapshot.PlanetaryTransitCount}",
             $"boundary={snapshot.BoundaryCleanupCandidateCount}/{snapshot.BoundaryWarningHistoryCount}",
+            $"activities={snapshot.ActivityAvailableInstances}/{snapshot.ActivityEngagedInstances};leases={snapshot.ActivityLeaseCount};leaseAge={snapshot.ActivityOldestLeaseSeconds.ToString("F0", CultureInfo.InvariantCulture)}s;owned={snapshot.ActivityOwnedEntityCount}/{snapshot.ActivityOwnedGridCount}/{snapshot.ActivityOwnedNpcCount};orphans={snapshot.ActivityOrphanCandidateCount};terminal={snapshot.ActivityTerminalEntriesLast24Hours}/{snapshot.ActivityTerminalEntriesLast96Hours};families24={snapshot.ActivityDistinctFamiliesLast24Hours};day={snapshot.ActivityDayIndex}:{snapshot.ActivityDayFocus}",
             $"biomeModified={snapshot.BiomeModifiedChunkCount}",
             $"biomeLoaded={snapshot.BiomeLoadedChunkCount}",
             $"worldgen={snapshot.WorldgenChunkCount}",
@@ -248,6 +282,7 @@ public sealed class LongRunHealthSystem : EntitySystem
         var (coldSystems, knownSystems, knownSurfaces, landingReservations, landingSessions) = CountSectorMaps();
         var planetaryTransits = Count<KoronusPlanetaryTransitComponent>();
         var boundaryStatus = _sectorBoundaries.GetLongRunStatus();
+        var activityStatus = _activities.GetLongRunStatus();
         var (modifiedBiomeChunks, loadedBiomeChunks) = CountBiomeChunks();
         var worldgenChunks = CountWorldgenChunks();
         var activeNpcs = Count<ActiveNPCComponent>();
@@ -264,7 +299,7 @@ public sealed class LongRunHealthSystem : EntitySystem
             entityCount,
             loadedBiomeChunks,
             worldgenChunks);
-        var warnings = GetLongRunWarnings(trend, out var trendWarnings);
+        var warnings = GetLongRunWarnings(trend, activityStatus, out var trendWarnings);
         LogTrendWarnings(trendWarnings);
 
         var snapshot = new LongRunHealthSnapshot(
@@ -309,7 +344,21 @@ public sealed class LongRunHealthSystem : EntitySystem
             landingSessions,
             planetaryTransits,
             boundaryStatus.CleanupCandidates,
-            boundaryStatus.WarningHistory);
+            boundaryStatus.WarningHistory,
+            activityStatus.DirectorActive,
+            activityStatus.DayIndex,
+            activityStatus.DayFocus,
+            activityStatus.AvailableInstances,
+            activityStatus.EngagedInstances,
+            activityStatus.ActivityLeases,
+            activityStatus.OwnedEntities,
+            activityStatus.OwnedGrids,
+            activityStatus.OwnedNpcs,
+            activityStatus.OrphanCandidates,
+            activityStatus.OldestLeaseAge.TotalSeconds,
+            activityStatus.TerminalEntriesLast24Hours,
+            activityStatus.TerminalEntriesLast96Hours,
+            activityStatus.DistinctFamiliesLast24Hours);
 
         lock (_snapshotLock)
         {
@@ -349,6 +398,16 @@ public sealed class LongRunHealthSystem : EntitySystem
         PlanetaryTransitCount.Set(planetaryTransits);
         BoundaryCleanupCandidateCount.Set(boundaryStatus.CleanupCandidates);
         BoundaryWarningHistoryCount.Set(boundaryStatus.WarningHistory);
+        ActivityAvailableCount.Set(activityStatus.AvailableInstances);
+        ActivityEngagedCount.Set(activityStatus.EngagedInstances);
+        ActivityLeaseCount.Set(activityStatus.ActivityLeases);
+        ActivityOwnedEntityCount.Set(activityStatus.OwnedEntities + activityStatus.OwnedGrids + activityStatus.OwnedNpcs);
+        ActivityOwnedGridCount.Set(activityStatus.OwnedGrids);
+        ActivityOrphanCandidateCount.Set(activityStatus.OrphanCandidates);
+        ActivityOldestLeaseSeconds.Set(activityStatus.OldestLeaseAge.TotalSeconds);
+        ActivityTerminalsLast24Hours.Set(activityStatus.TerminalEntriesLast24Hours);
+        ActivityTerminalsLast96Hours.Set(activityStatus.TerminalEntriesLast96Hours);
+        ActivityDistinctFamiliesLast24Hours.Set(activityStatus.DistinctFamiliesLast24Hours);
     }
 
     private (int Loaded, int Paused) CountMaps()
@@ -503,7 +562,10 @@ public sealed class LongRunHealthSystem : EntitySystem
         return _trends.GetTrend();
     }
 
-    private string[] GetLongRunWarnings(LongRunTrendSnapshot trend, out string[] trendWarnings)
+    private string[] GetLongRunWarnings(
+        LongRunTrendSnapshot trend,
+        KoronusActivityLongRunStatus activityStatus,
+        out string[] trendWarnings)
     {
         var warnings = new List<string>(10);
 
@@ -525,6 +587,15 @@ public sealed class LongRunHealthSystem : EntitySystem
         var roundEndQuery = EntityQueryEnumerator<RoundEndTimeRuleComponent, ActiveGameRuleComponent>();
         while (roundEndQuery.MoveNext(out _, out var rule, out _))
             warnings.Add($"RoundEndTime={rule.EndAt.TotalHours.ToString("F1", CultureInfo.InvariantCulture)}h");
+
+        if (activityStatus.OrphanCandidates > 0)
+            warnings.Add($"activities.orphans={activityStatus.OrphanCandidates}");
+
+        if (activityStatus.ActivityLeases > 0 && activityStatus.OldestLeaseAge > TimeSpan.FromHours(2))
+        {
+            warnings.Add(
+                $"activities.oldest_lease={activityStatus.OldestLeaseAge.TotalHours.ToString("F1", CultureInfo.InvariantCulture)}h");
+        }
 
         trendWarnings = GetTrendWarnings(trend);
         warnings.AddRange(trendWarnings);
@@ -587,7 +658,7 @@ public sealed class LongRunHealthSystem : EntitySystem
         _nextTrendWarningLog = TimeSpan.Zero;
         _trends.Clear();
 
-        foreach (var warning in GetLongRunWarnings(LongRunTrendSnapshot.Empty, out _))
+        foreach (var warning in GetLongRunWarnings(LongRunTrendSnapshot.Empty, _activities.GetLongRunStatus(), out _))
             Log.Warning($"Long-run configuration warning: {warning}");
     }
 
@@ -694,7 +765,21 @@ public sealed record LongRunHealthSnapshot(
     int LandingSessionCount,
     int PlanetaryTransitCount,
     int BoundaryCleanupCandidateCount,
-    int BoundaryWarningHistoryCount)
+    int BoundaryWarningHistoryCount,
+    bool ActivityDirectorActive,
+    int ActivityDayIndex,
+    KoronusActivityDayFocus ActivityDayFocus,
+    int ActivityAvailableInstances,
+    int ActivityEngagedInstances,
+    int ActivityLeaseCount,
+    int ActivityOwnedEntityCount,
+    int ActivityOwnedGridCount,
+    int ActivityOwnedNpcCount,
+    int ActivityOrphanCandidateCount,
+    double ActivityOldestLeaseSeconds,
+    int ActivityTerminalEntriesLast24Hours,
+    int ActivityTerminalEntriesLast96Hours,
+    int ActivityDistinctFamiliesLast24Hours)
 {
     public static LongRunHealthSnapshot Empty { get; } = new(
         DateTime.UtcNow,
@@ -736,6 +821,20 @@ public sealed record LongRunHealthSnapshot(
         0,
         0,
         0,
+        0,
+        0,
+        0,
+        false,
+        0,
+        KoronusActivityDayFocus.Neutral,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0d,
         0,
         0,
         0);

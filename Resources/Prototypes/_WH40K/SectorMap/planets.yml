@@ -46,9 +46,8 @@
   # Its central 85 x 85 m clearing is reserved before the biome can place flora or other features.
   mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
   planet: FoulstoneForestWorld
-  # Gameplay boundary: a 100 x 100 m square. The biome may extend only 25 tiles further so
-  # the view has no abrupt edge; people and shuttles are still clamped to the inner square.
-  playableSize: 100, 100
+  # The authored landing grid is 256 x 192 m. Leave 100 m of playable terrain beyond every edge.
+  playableSize: 456, 392
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -559,7 +558,8 @@
   id: FootfallDeadWorldSurface
   mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
   planet: FootfallDeadWorldProfile
-  playableSize: 200, 200
+  # The authored landing grid is 288 x 288 m. Leave 100 m of playable terrain beyond every edge.
+  playableSize: 488, 488
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true

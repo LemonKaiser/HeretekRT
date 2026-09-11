@@ -1,0 +1,554 @@
+# Stage 2 is deliberately data-only: these templates are markers and dossiers, not entity or map spawners.
+# Their target systems are selected only from koronusSystem.activityEligible, which excludes Footfall.
+
+- type: koronusActivityTemplate
+  id: AuspexTriage
+  family: State
+  lane: Ambient
+  risk: Low
+  reliability: Partial
+  titleLocId: koronus-activity-auspex-triage-title
+  summaryLocId: koronus-activity-auspex-triage-summary
+  preferredDayFocus: [ Exploration, Neutral ]
+  weight: 10
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 2100
+
+- type: koronusActivityTemplate
+  id: RouteSurveyWindow
+  family: Route
+  lane: Route
+  risk: Informational
+  reliability: Verified
+  titleLocId: koronus-activity-route-survey-window-title
+  summaryLocId: koronus-activity-route-survey-window-summary
+  preferredDayFocus: [ Exploration, Trade ]
+  weight: 9
+  minimumLifetime: 1800
+  maximumLifetime: 3300
+  cooldown: 2400
+
+- type: koronusActivityTemplate
+  id: WeakDistressRelay
+  family: VesselSignal
+  lane: Vessel
+  risk: Moderate
+  reliability: Suspicious
+  titleLocId: koronus-activity-weak-distress-relay-title
+  summaryLocId: koronus-activity-weak-distress-relay-summary
+  preferredDayFocus: [ Rescue, Warp ]
+  weight: 6
+  minimumLifetime: 1200
+  maximumLifetime: 2100
+  cooldown: 3000
+
+- type: koronusActivityTemplate
+  id: TrafficPattern
+  family: State
+  lane: Ambient
+  risk: Informational
+  reliability: Partial
+  titleLocId: koronus-activity-traffic-pattern-title
+  summaryLocId: koronus-activity-traffic-pattern-summary
+  preferredDayFocus: [ Trade, Neutral ]
+  weight: 9
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 2400
+
+- type: koronusActivityTemplate
+  id: ChartFragment
+  family: Route
+  lane: Route
+  risk: Low
+  reliability: Stale
+  titleLocId: koronus-activity-chart-fragment-title
+  summaryLocId: koronus-activity-chart-fragment-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 7
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 2700
+
+- type: koronusActivityTemplate
+  id: WarpWeatherWindow
+  family: Route
+  lane: Route
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-warp-weather-window-title
+  summaryLocId: koronus-activity-warp-weather-window-summary
+  preferredDayFocus: [ Warp, Exploration ]
+  weight: 7
+  minimumLifetime: 1200
+  maximumLifetime: 2400
+  cooldown: 3000
+
+- type: koronusActivityTemplate
+  id: HostileWarpTrace
+  family: Threat
+  lane: Threat
+  risk: Moderate
+  reliability: Suspicious
+  titleLocId: koronus-activity-hostile-warp-trace-title
+  summaryLocId: koronus-activity-hostile-warp-trace-summary
+  threatFamily: Warp
+  threatLevel: Intel
+  preferredDayFocus: [ Warp, Raiders ]
+  weight: 2
+  minimumLifetime: 1200
+  maximumLifetime: 2100
+  cooldown: 4200
+
+- type: koronusActivityTemplate
+  id: HostileRaiderScout
+  family: Threat
+  lane: Threat
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-hostile-raider-scout-title
+  summaryLocId: koronus-activity-hostile-raider-scout-summary
+  threatFamily: Raider
+  threatLevel: Intel
+  preferredDayFocus: [ Raiders, Trade ]
+  weight: 2
+  minimumLifetime: 1200
+  maximumLifetime: 2100
+  cooldown: 4200
+
+- type: koronusActivityTemplate
+  id: HostileXenoSporeWarning
+  family: Threat
+  lane: Threat
+  risk: High
+  reliability: Suspicious
+  titleLocId: koronus-activity-hostile-xeno-spore-warning-title
+  summaryLocId: koronus-activity-hostile-xeno-spore-warning-summary
+  threatFamily: Tyranid
+  threatLevel: Intel
+  preferredDayFocus: [ TyranidTrace, Rescue ]
+  weight: 1
+  minimumLifetime: 1200
+  maximumLifetime: 2100
+  cooldown: 4800
+
+# Stage 3 materializes an objective only after a living player reaches this system or surface.
+# These templates cannot name a map, a grid, a role, a reward, or a ghost takeover.
+
+- type: koronusActivityTemplate
+  id: SurfaceVoxBeacon
+  family: VesselSignal
+  lane: Surface
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-surface-vox-beacon-title
+  summaryLocId: koronus-activity-surface-vox-beacon-summary
+  preferredDayFocus: [ Exploration, Trade ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 3600
+  execution: SurfaceVoxBeacon
+  objectivePrototype: KoronusActivityVoxBeacon
+
+- type: koronusActivityTemplate
+  id: SurfaceRescueFlare
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-surface-rescue-flare-title
+  summaryLocId: koronus-activity-surface-rescue-flare-summary
+  preferredDayFocus: [ Rescue, Exploration ]
+  weight: 2
+  minimumLifetime: 1500
+  maximumLifetime: 3000
+  cooldown: 4200
+  execution: SurfaceRescueFlare
+  objectivePrototype: KoronusActivityRescueFlare
+
+- type: koronusActivityTemplate
+  id: OrbitAuspexProbe
+  family: State
+  lane: Orbit
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-orbit-auspex-probe-title
+  summaryLocId: koronus-activity-orbit-auspex-probe-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 3600
+  execution: OrbitAuspexProbe
+  objectivePrototype: KoronusActivityAuspexProbe
+
+# Stage 4 controlled hostile contacts. Only the doppelganger is enabled in the first live
+# rollout. The following two have a complete executor configuration but intentionally remain at
+# zero weight until the previous contact has passed the manual safety acceptance in ReworkPlan.
+# Every executor is population-gated, surface/orbit restricted and rejects Footfall by policy.
+
+- type: koronusActivityTemplate
+  id: HostileDoppelgangerEcho
+  family: Threat
+  lane: Threat
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-hostile-doppelganger-echo-title
+  summaryLocId: koronus-activity-hostile-doppelganger-echo-summary
+  preferredDayFocus: [ Warp, AncientSignal ]
+  weight: 1
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 5400
+  execution: HostileDoppelgangerEcho
+  objectivePrototype: KoronusActivityWarpThreatBeacon
+  threatFamily: Warp
+  threatLevel: Contained
+  hostilePrototype: MobWH40KWarpDoppelganger
+  minimumLivingParticipants: 2
+  minimumHostiles: 1
+  maximumHostiles: 1
+  participantRadius: 60
+  threatLeashRadius: 32
+  threatAbandonDelay: 45
+
+- type: koronusActivityTemplate
+  id: HostileHormagauntProbe
+  family: Threat
+  lane: Threat
+  risk: High
+  reliability: Suspicious
+  titleLocId: koronus-activity-hostile-hormagaunt-probe-title
+  summaryLocId: koronus-activity-hostile-hormagaunt-probe-summary
+  preferredDayFocus: [ TyranidTrace, Rescue ]
+  weight: 0
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 6000
+  execution: HostileHormagauntProbe
+  objectivePrototype: KoronusActivityBiosignalNode
+  threatFamily: Tyranid
+  threatLevel: Contained
+  hostilePrototype: MobHormagaunt
+  minimumLivingParticipants: 2
+  minimumHostiles: 2
+  maximumHostiles: 3
+  participantRadius: 60
+  threatLeashRadius: 36
+  threatAbandonDelay: 45
+
+- type: koronusActivityTemplate
+  id: HostileWarpRunnerPack
+  family: Threat
+  lane: Threat
+  risk: High
+  reliability: Suspicious
+  titleLocId: koronus-activity-hostile-warp-runner-pack-title
+  summaryLocId: koronus-activity-hostile-warp-runner-pack-summary
+  preferredDayFocus: [ Warp, Raiders ]
+  weight: 0
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 6600
+  execution: HostileWarpRunnerPack
+  objectivePrototype: KoronusActivityRiftProbe
+  threatFamily: Warp
+  threatLevel: Combat
+  hostilePrototype: MobWH40KWarpRunner
+  minimumLivingParticipants: 3
+  minimumHostiles: 1
+  maximumHostiles: 2
+  participantRadius: 70
+  threatLeashRadius: 40
+  threatAbandonDelay: 45
+
+# Stage 5 generated grid opportunities. The executor has a closed objective/profile allow-list
+# and never reads a map path. The first two are passive manual readouts; the cutter is complete
+# but remains disabled until dedicated live safety acceptance.
+
+- type: koronusActivityTemplate
+  id: OrbitSecureCacheGrid
+  family: VesselSignal
+  lane: Grid
+  risk: Low
+  reliability: Partial
+  titleLocId: koronus-activity-orbit-secure-cache-title
+  summaryLocId: koronus-activity-orbit-secure-cache-summary
+  preferredDayFocus: [ Trade, Exploration ]
+  weight: 2
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 4200
+  execution: OrbitSecureCacheGrid
+  objectivePrototype: KoronusActivitySecureCache
+  minimumLivingParticipants: 1
+  participantRadius: 80
+
+- type: koronusActivityTemplate
+  id: OrbitSalvageClusterGrid
+  family: VesselSignal
+  lane: Grid
+  risk: Moderate
+  reliability: Stale
+  titleLocId: koronus-activity-orbit-salvage-cluster-title
+  summaryLocId: koronus-activity-orbit-salvage-cluster-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 1
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 4800
+  execution: OrbitSalvageClusterGrid
+  objectivePrototype: KoronusActivitySalvageBlackBox
+  minimumLivingParticipants: 1
+  participantRadius: 80
+
+- type: koronusActivityTemplate
+  id: OrbitRescuePodGrid
+  family: VesselSignal
+  lane: Grid
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-orbit-rescue-pod-title
+  summaryLocId: koronus-activity-orbit-rescue-pod-summary
+  preferredDayFocus: [ Rescue, Exploration ]
+  weight: 1
+  minimumLifetime: 1500
+  maximumLifetime: 2400
+  cooldown: 4500
+  execution: OrbitRescuePodGrid
+  objectivePrototype: KoronusActivityRescuePodLog
+  minimumLivingParticipants: 1
+  participantRadius: 80
+
+- type: koronusActivityTemplate
+  id: OrbitLostCargoGrid
+  family: VesselSignal
+  lane: Grid
+  risk: Low
+  reliability: Partial
+  titleLocId: koronus-activity-orbit-lost-cargo-title
+  summaryLocId: koronus-activity-orbit-lost-cargo-summary
+  preferredDayFocus: [ Trade, Rescue ]
+  weight: 1
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 4500
+  execution: OrbitLostCargoGrid
+  objectivePrototype: KoronusActivityLostCargoManifest
+  minimumLivingParticipants: 1
+  participantRadius: 80
+
+- type: koronusActivityTemplate
+  id: OrbitDerelictWreckGrid
+  family: VesselSignal
+  lane: Grid
+  risk: Moderate
+  reliability: Stale
+  titleLocId: koronus-activity-orbit-derelict-wreck-title
+  summaryLocId: koronus-activity-orbit-derelict-wreck-summary
+  preferredDayFocus: [ AncientSignal, Exploration ]
+  weight: 1
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 5400
+  execution: OrbitDerelictWreckGrid
+  objectivePrototype: KoronusActivityDerelictCogitator
+  minimumLivingParticipants: 1
+  participantRadius: 80
+
+- type: koronusActivityTemplate
+  id: RaiderCutterCacheGrid
+  family: Threat
+  lane: Grid
+  risk: High
+  reliability: Suspicious
+  titleLocId: koronus-activity-raider-cutter-cache-title
+  summaryLocId: koronus-activity-raider-cutter-cache-summary
+  preferredDayFocus: [ Raiders, Trade ]
+  weight: 0
+  minimumLifetime: 1800
+  maximumLifetime: 3000
+  cooldown: 7200
+  execution: RaiderCutterCacheGrid
+  objectivePrototype: KoronusActivityRaiderCutterCache
+  hostilePrototype: MobWH40KActivityRaiderDeckhand
+  threatFamily: Raider
+  threatLevel: Contained
+  minimumLivingParticipants: 2
+  minimumHostiles: 2
+  maximumHostiles: 2
+  participantRadius: 80
+
+# Stage 6 broadens only the external data-only catalogue. These markers do not materialize a map,
+# NPC, grid, player-ship effect, reward, ghost role, or faction combat. They still target only an
+# eligible external system, so Footfall remains an information-only harbour.
+
+- type: koronusActivityTemplate
+  id: AmbientWarpEcho
+  family: State
+  lane: Ambient
+  risk: Informational
+  reliability: Suspicious
+  titleLocId: koronus-activity-ambient-warp-echo-title
+  summaryLocId: koronus-activity-ambient-warp-echo-summary
+  preferredDayFocus: [ Warp, AncientSignal ]
+  weight: 5
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 3000
+
+- type: koronusActivityTemplate
+  id: AmbientAuspexSweep
+  family: State
+  lane: Ambient
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-ambient-auspex-sweep-title
+  summaryLocId: koronus-activity-ambient-auspex-sweep-summary
+  preferredDayFocus: [ Exploration, Neutral ]
+  weight: 6
+  minimumLifetime: 1500
+  maximumLifetime: 3000
+  cooldown: 3000
+
+- type: koronusActivityTemplate
+  id: AmbientPriceRumour
+  family: State
+  lane: Ambient
+  risk: Informational
+  reliability: Partial
+  titleLocId: koronus-activity-ambient-price-rumour-title
+  summaryLocId: koronus-activity-ambient-price-rumour-summary
+  preferredDayFocus: [ Trade, Neutral ]
+  weight: 5
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 3600
+
+- type: koronusActivityTemplate
+  id: AmbientBountyWhisper
+  family: State
+  lane: Ambient
+  risk: Low
+  reliability: Stale
+  titleLocId: koronus-activity-ambient-bounty-whisper-title
+  summaryLocId: koronus-activity-ambient-bounty-whisper-summary
+  preferredDayFocus: [ Raiders, Trade ]
+  weight: 4
+  minimumLifetime: 1200
+  maximumLifetime: 2400
+  cooldown: 4200
+
+- type: koronusActivityTemplate
+  id: AmbientChoirMessage
+  family: State
+  lane: Ambient
+  risk: Informational
+  reliability: Verified
+  titleLocId: koronus-activity-ambient-choir-message-title
+  summaryLocId: koronus-activity-ambient-choir-message-summary
+  preferredDayFocus: [ Rescue, Neutral ]
+  weight: 4
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 3600
+
+- type: koronusActivityTemplate
+  id: AmbientImperialEdict
+  family: State
+  lane: Ambient
+  risk: Informational
+  reliability: Verified
+  titleLocId: koronus-activity-ambient-imperial-edict-title
+  summaryLocId: koronus-activity-ambient-imperial-edict-summary
+  preferredDayFocus: [ Trade, AncientSignal ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3300
+  cooldown: 4800
+
+- type: koronusActivityTemplate
+  id: AmbientDistantSkirmish
+  family: State
+  lane: Ambient
+  risk: Moderate
+  reliability: Suspicious
+  titleLocId: koronus-activity-ambient-distant-skirmish-title
+  summaryLocId: koronus-activity-ambient-distant-skirmish-summary
+  preferredDayFocus: [ Raiders, TyranidTrace ]
+  weight: 2
+  minimumLifetime: 1200
+  maximumLifetime: 2400
+  cooldown: 5400
+
+- type: koronusActivityTemplate
+  id: NavigatorWarning
+  family: Route
+  lane: Route
+  risk: Low
+  reliability: Partial
+  titleLocId: koronus-activity-navigator-warning-title
+  summaryLocId: koronus-activity-navigator-warning-summary
+  preferredDayFocus: [ Warp, Exploration ]
+  weight: 5
+  minimumLifetime: 1500
+  maximumLifetime: 3000
+  cooldown: 3300
+
+- type: koronusActivityTemplate
+  id: PilgrimRouteMessage
+  family: Route
+  lane: Route
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-pilgrim-route-message-title
+  summaryLocId: koronus-activity-pilgrim-route-message-summary
+  preferredDayFocus: [ Rescue, Trade ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3300
+  cooldown: 4800
+
+- type: koronusActivityTemplate
+  id: OrbitSensorPhantom
+  family: VesselSignal
+  lane: Orbit
+  risk: Low
+  reliability: Stale
+  titleLocId: koronus-activity-orbit-sensor-phantom-title
+  summaryLocId: koronus-activity-orbit-sensor-phantom-summary
+  preferredDayFocus: [ Warp, AncientSignal ]
+  weight: 4
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 4200
+
+- type: koronusActivityTemplate
+  id: ImperialPatrolNotice
+  family: State
+  lane: Vessel
+  risk: Informational
+  reliability: Verified
+  titleLocId: koronus-activity-imperial-patrol-notice-title
+  summaryLocId: koronus-activity-imperial-patrol-notice-summary
+  preferredDayFocus: [ Trade, Raiders ]
+  weight: 3
+  minimumLifetime: 1500
+  maximumLifetime: 2700
+  cooldown: 4800
+
+- type: koronusActivityTemplate
+  id: ArcPhantomFleetPrelude
+  family: State
+  lane: Arc
+  risk: Moderate
+  reliability: Suspicious
+  titleLocId: koronus-activity-arc-phantom-fleet-title
+  summaryLocId: koronus-activity-arc-phantom-fleet-summary
+  preferredDayFocus: [ Warp, Raiders ]
+  weight: 1
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 7200

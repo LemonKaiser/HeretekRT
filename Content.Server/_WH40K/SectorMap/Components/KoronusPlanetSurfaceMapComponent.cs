@@ -8,7 +8,8 @@ namespace Content.Server._WH40K.SectorMap.Components;
 /// surface map.
 /// </summary>
 [RegisterComponent, Access(typeof(KoronusPlanetarySystem), typeof(KoronusSectorResidencySystem),
-    typeof(Content.Server._WH40K.DeployableFieldBase.DeployableFieldBaseSystem))]
+    typeof(Content.Server._WH40K.DeployableFieldBase.DeployableFieldBaseSystem),
+    typeof(Content.Server._WH40K.Activities.KoronusActivityMaterializationSystem))]
 public sealed partial class KoronusPlanetSurfaceMapComponent : Component
 {
     [ViewVariables]

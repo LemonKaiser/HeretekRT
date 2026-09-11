@@ -40,6 +40,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private StationSystem _stations = default!;
     [Dependency] private KoronusPlanetarySystem _planetary = default!;
+    [Dependency] private KoronusAsteroidFieldSystem _asteroidFields = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
 
@@ -124,6 +125,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
             _metaData.SetEntityName(loadedMap.Value.Owner, system.DisplayName);
             ConfigureSystemMap(loadedMap.Value.Owner, system);
+            _asteroidFields.EnsureField(loadedMap.Value.Owner, system);
             rule.Comp.ColdUnloadedSystems.Remove(systemId);
             DeleteSnapshotBestEffort(snapshotPath, systemId);
             DeleteSnapshotBestEffort(GetColdSnapshotTempPath(systemId), systemId);
@@ -440,6 +442,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             ConfigureStartSystemGrids(startMap.Value, ev.Grids, startSystem);
             _metaData.SetEntityName(startMap.Value, startSystem.DisplayName);
             ConfigureSystemMap(startMap.Value, startSystem);
+            _asteroidFields.EnsureField(startMap.Value, startSystem);
         }
         else
             Log.Error($"Could not resolve Footfall map {ev.Map} for Koronus boundary setup.");
@@ -490,9 +493,30 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         _metaData.SetEntityName(mapUid, system.DisplayName);
         if (grid != null)
             _metaData.SetEntityName(grid.Value.Owner, GetInitialGridDisplayName(system));
+
+        foreach (var additionalGrid in system.AdditionalGrids)
+        {
+            if (!_mapLoader.TryLoadGrid(mapId, additionalGrid.MapPath, out var loadedGrid, options))
+            {
+                QueueDel(mapUid);
+                Log.Error($"Failed to load additional grid for Koronus system {system.ID} from {additionalGrid.MapPath}.");
+                return;
+            }
+
+            if (additionalGrid.SpawnDistance > 0f)
+            {
+                var halfDiagonal = GetGridHalfDiagonal(loadedGrid.Value.Comp);
+                var position = GetSafeGridSpawnPosition(system, additionalGrid.SpawnDistance, halfDiagonal);
+                _transform.SetCoordinates(loadedGrid.Value.Owner, new EntityCoordinates(mapUid, position));
+            }
+
+            _metaData.SetEntityName(loadedGrid.Value.Owner, GetGridDisplayName(system, additionalGrid.DisplayName));
+            ConfigureAdditionalGrid(loadedGrid.Value.Owner, additionalGrid);
+        }
         ConfigureSystemMap(mapUid, system);
         _maps.SetPaused(mapId, true);
         RegisterSystemMap(rule, system.ID, mapId);
+        _asteroidFields.EnsureField(mapUid, system);
     }
 
     internal static Vector2 GetInitialGridSpawnPosition(KoronusSystemPrototype system, Angle angle)
@@ -555,7 +579,32 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     private void ConfigureInitialGrid(EntityUid grid, KoronusSystemPrototype system)
     {
-        if (system.InitialGridLocalSafetyProfile is { } localProfile)
+        ConfigureGrid(
+            grid,
+            system.InitialGridLocalSafetyProfile,
+            system.InitialGridSafetyProfile,
+            system.InitialGridSafetyRadius,
+            system.ProtectInitialGrid);
+    }
+
+    private void ConfigureAdditionalGrid(EntityUid grid, KoronusAdditionalGridDefinition additionalGrid)
+    {
+        ConfigureGrid(
+            grid,
+            additionalGrid.LocalSafetyProfile,
+            additionalGrid.SafetyProfile,
+            additionalGrid.SafetyRadius,
+            additionalGrid.ProtectGrid);
+    }
+
+    private void ConfigureGrid(
+        EntityUid grid,
+        ProtoId<KoronusSafetyProfilePrototype>? localSafetyProfile,
+        ProtoId<KoronusSafetyProfilePrototype>? safetyProfile,
+        float safetyRadius,
+        bool protectGrid)
+    {
+        if (localSafetyProfile is { } localProfile)
         {
             var localSafety = EnsureComp<KoronusGridSafetyProfileComponent>(grid);
             localSafety.Profile = localProfile;
@@ -564,16 +613,16 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             // dirtied separately when a client-visible boundary is configured.
         }
 
-        if (system.InitialGridSafetyProfile is { } profile && system.InitialGridSafetyRadius > 0f)
+        if (safetyProfile is { } profile && safetyRadius > 0f)
         {
             var zone = EnsureComp<KoronusSafetyZoneComponent>(grid);
             zone.Profile = profile;
-            zone.Radius = system.InitialGridSafetyRadius;
+            zone.Radius = safetyRadius;
             zone.ShowBoundary = true;
             Dirty(grid, zone);
         }
 
-        if (!system.ProtectInitialGrid)
+        if (!protectGrid)
             return;
 
         var protectedGrid = EnsureComp<ProtectedGridComponent>(grid);
@@ -587,24 +636,37 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
     private static string GetInitialGridDisplayName(KoronusSystemPrototype system)
     {
-        return string.IsNullOrWhiteSpace(system.InitialGridDisplayName)
+        return GetGridDisplayName(system, system.InitialGridDisplayName);
+    }
+
+    private static string GetGridDisplayName(KoronusSystemPrototype system, string? gridDisplayName)
+    {
+        return string.IsNullOrWhiteSpace(gridDisplayName)
             ? system.DisplayName
-            : system.InitialGridDisplayName;
+            : gridDisplayName;
     }
 
     private Vector2 GetSafeInitialGridSpawnPosition(KoronusSystemPrototype system, float facilityRadius)
+    {
+        return GetSafeGridSpawnPosition(system, system.InitialGridSpawnDistance, facilityRadius);
+    }
+
+    private Vector2 GetSafeGridSpawnPosition(
+        KoronusSystemPrototype system,
+        float spawnDistance,
+        float facilityRadius)
     {
         var startingAngle = _random.NextFloat(0f, 360f);
         for (var attempt = 0; attempt < AngularPlacementAttempts; attempt++)
         {
             var angle = (startingAngle + attempt) % 360f;
-            var position = GetInitialGridSpawnPosition(system, Angle.FromDegrees(angle));
+            var position = system.NavigationCenter + Angle.FromDegrees(angle).ToWorldVec() * Math.Max(0f, spawnDistance);
             if (IsInitialGridPositionClear(system, position, facilityRadius))
                 return position;
         }
 
-        Log.Warning($"No collision-free initial-grid angle was found in system {system.ID}; using the authored random fallback.");
-        return GetInitialGridSpawnPosition(system, Angle.FromDegrees(startingAngle));
+        Log.Warning($"No collision-free authored-grid angle was found in system {system.ID}; using the random fallback.");
+        return system.NavigationCenter + Angle.FromDegrees(startingAngle).ToWorldVec() * Math.Max(0f, spawnDistance);
     }
 
     private bool IsInitialGridPositionClear(

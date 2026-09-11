@@ -31,6 +31,7 @@ using Content.Server.Station.Components;
 using Content.Shared._Mono.FireControl;
 using Content.Shared._Mono.Shuttles;
 using Content.Shared._WH40K.SectorMap.BUI;
+using Content.Shared._WH40K.Activities;
 using Content.Shared._WH40K.SectorMap.Events;
 using Content.Shared._Mono.Ships.Components;
 using Content.Shared.Verbs;
@@ -104,6 +105,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
 
         SubscribeLocalEvent<DockEvent>(OnDock);
         SubscribeLocalEvent<UndockEvent>(OnUndock);
+        SubscribeLocalEvent<KoronusActivityPresentationChangedEvent>(OnKoronusActivityPresentationChanged);
 
         SubscribeLocalEvent<PilotComponent, ComponentGetState>(OnGetState);
         SubscribeLocalEvent<PilotComponent, StopPilotingAlertEvent>(OnStopPilotingAlert);
@@ -132,6 +134,11 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     }
 
     private void OnUndock(UndockEvent ev)
+    {
+        RefreshShuttleConsoles();
+    }
+
+    private void OnKoronusActivityPresentationChanged(KoronusActivityPresentationChangedEvent args)
     {
         RefreshShuttleConsoles();
     }

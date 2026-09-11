@@ -82,7 +82,10 @@ public sealed partial class PlanetSystem : EntitySystem
 
         // don't want rocks spawning inside the base
         _setTiles.Clear();
-        var aabb = Comp<MapGridComponent>(grid.Value).LocalAABB;
+        // An authored planet grid can be offset to centre it within the playable surface.
+        // Reserve its map-space bounds, otherwise biome features may spawn beneath that grid.
+        var aabb = Comp<MapGridComponent>(grid.Value).LocalAABB
+            .Translated(Transform(grid.Value).LocalPosition);
         _biome.ReserveTiles(map, aabb.Enlarged(0.2f), _setTiles);
 
         _map.InitializeMap(map);

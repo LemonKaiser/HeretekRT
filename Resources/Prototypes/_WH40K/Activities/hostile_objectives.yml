@@ -1,0 +1,59 @@
+# Stage 4 hostile anchors are single static roots. They contain no map, grid, spawner, loot,
+# ghost role or reward. The server assigns activity identity only after the safe spawn audit.
+
+- type: entity
+  id: KoronusActivityWarpThreatBeacon
+  parent: BaseStructure
+  name: warp echo containment beacon
+  description: A volatile relay can be sealed manually before the echo spreads.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_point
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#B279FF"
+    radius: 4
+    energy: 2.5
+  - type: KoronusActivityThreatAnchor
+
+- type: entity
+  id: KoronusActivityBiosignalNode
+  parent: BaseStructure
+  name: xeno biosignal node
+  description: A pulsing biosignal can be quarantined without entering any protected facility.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/flare.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: flare_burn
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#7FCB62"
+    radius: 4
+    energy: 2.5
+  - type: KoronusActivityThreatAnchor
+
+- type: entity
+  id: KoronusActivityRiftProbe
+  parent: BaseStructure
+  name: rift telemetry probe
+  description: A distant probe marks a volatile warp disturbance outside the ship's perimeter.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_pack
+  - type: InteractionOutline
+  - type: PointLight
+    enabled: true
+    color: "#D65AFF"
+    radius: 4
+    energy: 2.5
+  - type: KoronusActivityThreatAnchor
