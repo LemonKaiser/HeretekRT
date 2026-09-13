@@ -47,6 +47,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 using Content.Shared.Damage.Systems;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Disposal.Components;
@@ -70,6 +71,8 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// </summary>
 public sealed class KoronusSafetyPolicySystem : EntitySystem
 {
+    private static readonly TimeSpan EnvironmentalSafetySweepInterval = TimeSpan.FromMilliseconds(250);
+
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
@@ -84,8 +87,10 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private TemperatureSystem _temperature = default!;
     [Dependency] private SharedIgnitionSourceSystem _ignitionSource = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private EntityQuery<TransformComponent> _transformQuery;
+    private TimeSpan _nextEnvironmentalSafetySweep;
 
     public override void Initialize()
     {
@@ -127,6 +132,13 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     {
         base.Update(frameTime);
 
+        // These queries cover every fire-capable entity and atmosphere grid. The event gates above
+        // still reject new ignition and heat immediately, so a short periodic cleanup is enough for
+        // legacy state without performing the same full-world scans every frame.
+        if (_timing.CurTime < _nextEnvironmentalSafetySweep)
+            return;
+
+        _nextEnvironmentalSafetySweep = _timing.CurTime + EnvironmentalSafetySweepInterval;
         SuppressProtectedIgnitionSources();
         SuppressProtectedCombustion();
         SuppressProtectedTemperatures();

@@ -55,6 +55,8 @@
   name: servo skull
   description: A preserved floating servo skull shell for later reuse.
   suffix: WH40K
+  components:
+  - type: WH40KDroneVision
 
 - type: entity
   id: WH40KServoSkullMob

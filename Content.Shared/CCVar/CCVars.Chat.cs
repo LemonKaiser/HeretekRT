@@ -44,6 +44,18 @@ public sealed partial class CCVars
         CVarDef.Create("chat.show_typing_indicator", true, CVar.ARCHIVE | CVar.REPLICATED | CVar.SERVER);
 
     /// <summary>
+    ///     Maximum length of a directed emote sent to another nearby player.
+    /// </summary>
+    public static readonly CVarDef<int> DirectionalEmoteMaxLength =
+        CVarDef.Create("directional_emote.max_length", 256, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    ///     Maximum unobstructed distance between the sender and recipient of a directed emote.
+    /// </summary>
+    public static readonly CVarDef<float> DirectionalEmoteMaxDistance =
+        CVarDef.Create("directional_emote.max_distance", 2.3f, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
     /// A comma-separated list of regular player-facing channels where emoji are allowed. Console, radio and whisper
     /// are intentionally excluded from this picker policy.
     /// </summary>

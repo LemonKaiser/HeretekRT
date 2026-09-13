@@ -321,6 +321,7 @@
   - type: CombatMode
     canDisarm: true
   - type: ExaminableCharacter # WWDP
+  - type: WH40KDirectionalEmote
   - type: CanEnterCryostorage # Goobstation
   - type: StatusIcon # Goobstation
     bounds: -0.5,-0.5,0.5,0.5

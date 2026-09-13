@@ -20,10 +20,6 @@ public sealed class WH40KBleedingVisualSystem : EntitySystem
         (HumanoidVisualLayers.RArm, "RArm"),
         (HumanoidVisualLayers.LLeg, "LLeg"),
         (HumanoidVisualLayers.RLeg, "RLeg"),
-        (HumanoidVisualLayers.LHand, "LHand"),
-        (HumanoidVisualLayers.RHand, "RHand"),
-        (HumanoidVisualLayers.LFoot, "LFoot"),
-        (HumanoidVisualLayers.RFoot, "RFoot"),
     ];
 
     public override void Initialize()

@@ -1,0 +1,26 @@
+- type: marking
+  id: WH40KPiercingRightEar
+  bodyPart: HeadSide
+  markingCategory: Overlay
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/wh40k_piercing.rsi
+    state: piercing_right_ear
+
+- type: marking
+  id: WH40KPiercingLeftEar
+  bodyPart: HeadSide
+  markingCategory: Overlay
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/wh40k_piercing.rsi
+    state: piercing_left_ear
+
+- type: marking
+  id: WH40KPiercingNose
+  bodyPart: Head
+  markingCategory: Overlay
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/wh40k_piercing.rsi
+    state: piercing_nose

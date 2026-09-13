@@ -53,6 +53,9 @@ public static class ChatJobIconMarkup
     /// </summary>
     public static void ReserveOutputLineHeight(FormattedMessage message)
     {
+        if (message.ToMarkup().Contains(OutputLineHeightSpacer, StringComparison.Ordinal))
+            return;
+
         foreach (var node in message)
         {
             if (node.Name != TagName || node.Closing)

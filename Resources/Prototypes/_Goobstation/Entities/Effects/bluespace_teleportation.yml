@@ -1,12 +1,14 @@
 - type: entity
-  parent: BluespaceLifeline
+  parent: EffectFlashBluespace
   id: BluespaceTeleportationEffect
   categories: [ HideSpawnMenu ]
   components:
   - type: Tag
     tags:
     - HideContextMenu
-  - type: SpawnOnDespawn
-    prototype: AdminInstantEffectFlash
-  - type: Transform
-    anchored: False
+  - type: Sprite
+    sprite: /Textures/_Goobstation/Effects/bluespace_lifeline.rsi
+    noRot: true
+    layers:
+    - state: bluespace_lifeline
+      shader: unshaded

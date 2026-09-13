@@ -48,10 +48,10 @@
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:
-        sprite: Mobs/Effects/brute_damage.rsi
+        sprite: _WH40K/Effects/brute_damage.rsi
         color: "#7a8bf2"
       Burn:
-        sprite: Mobs/Effects/burn_damage.rsi
+        sprite: _WH40K/Effects/burn_damage.rsi
   - type: Bloodstream
     bloodReagent: AmmoniaBlood
   - type: MeleeWeapon

@@ -301,6 +301,7 @@
     voice: BarksCitadelSynthetic2
   - type: TTS
     voice: Glados
+  - type: WH40KDirectionalEmote
   # </Mono>
 
 - type: entity

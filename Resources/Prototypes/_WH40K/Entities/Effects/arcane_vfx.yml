@@ -1,0 +1,273 @@
+- type: entity
+  abstract: true
+  id: WH40KBaseArcaneVfx
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: false
+  - type: TimedDespawn
+    lifetime: 1
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KEnergyMuzzlePulseEffect
+  components:
+  - type: TimedDespawn
+    lifetime: 0.4
+  - type: Sprite
+    netsync: false
+    drawdepth: Effects
+    layers:
+    - shader: unshaded
+      map: ["enum.EffectLayers.Unshaded"]
+      sprite: _WH40K/Effects/arcane_vfx/pulse.rsi
+      state: muzzle_pulse
+  - type: EffectVisuals
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KPulseImpactEffect
+  components:
+  - type: TimedDespawn
+    lifetime: 0.25
+  - type: Sprite
+    netsync: false
+    drawdepth: Effects
+    layers:
+    - shader: unshaded
+      map: ["enum.EffectLayers.Unshaded"]
+      sprite: _WH40K/Effects/arcane_vfx/pulse.rsi
+      state: impact_pulse
+  - type: EffectVisuals
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KEnergyDivetMuzzleEffect
+  components:
+  - type: TimedDespawn
+    lifetime: 0.25
+  - type: Sprite
+    netsync: false
+    drawdepth: Effects
+    layers:
+    - shader: unshaded
+      map: ["enum.EffectLayers.Unshaded"]
+      sprite: _WH40K/Effects/arcane_vfx/divet.rsi
+      state: projectiles_divet
+  - type: EffectVisuals
+  - type: PointLight
+    color: "#ffd25c"
+    radius: 1.5
+    energy: 3
+    castShadows: false
+  - type: LightFade
+    duration: 0.24
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KCosmicArcImpactVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 0.66
+  - type: Sprite
+    netsync: false
+    drawdepth: Effects
+    layers:
+    - shader: unshaded
+      map: ["enum.EffectLayers.Unshaded"]
+      sprite: _WH40K/Effects/arcane_vfx/weaponarcs.rsi
+      state: arc_cosmic
+  - type: EffectVisuals
+  - type: PointLight
+    color: "#42a4ae"
+    radius: 1.5
+    energy: 6
+    castShadows: false
+  - type: LightBehaviour
+    behaviours:
+    - !type:FadeBehaviour
+      interpolate: Linear
+      minDuration: 0.64
+      maxDuration: 0.65
+      startValue: 0.1
+      endValue: 6
+      property: Energy
+      enabled: true
+      reverseWhenFinished: true
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KEnergyCosmicGlyphVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 1.275
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    netsync: false
+    drawdepth: Mobs
+    layers:
+    - shader: unshaded
+      sprite: _WH40K/Effects/arcane_vfx/effect_glyphvfx.rsi
+      state: vfx
+  - type: PointLight
+    color: "#42a4ae"
+    radius: 1.5
+    energy: 2.5
+    castShadows: false
+  - type: LightBehaviour
+    behaviours:
+    - !type:FadeBehaviour
+      interpolate: Linear
+      minDuration: 1.275
+      maxDuration: 1.275
+      startValue: 0.1
+      endValue: 2
+      property: Energy
+      enabled: true
+      isLooped: true
+      reverseWhenFinished: true
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KCosmicLapseVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 1.75
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    netsync: false
+    drawdepth: Mobs
+    layers:
+    - shader: unshaded
+      sprite: _WH40K/Effects/arcane_vfx/ability_lapsevfx.rsi
+      state: vfx
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KCosmicGlareVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 1.1
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    netsync: false
+    drawdepth: Mobs
+    layers:
+    - shader: unshaded
+      sprite: _WH40K/Effects/arcane_vfx/ability_glarevfx.rsi
+      state: vfx
+  - type: PointLight
+    color: "#42a4ae"
+    radius: 10
+    energy: 10
+    castShadows: true
+  - type: LightBehaviour
+    behaviours:
+    - !type:FadeBehaviour
+      interpolate: Linear
+      minDuration: 1.1
+      maxDuration: 1.1
+      startValue: 0.1
+      endValue: 10
+      property: Energy
+      enabled: true
+      isLooped: true
+      reverseWhenFinished: true
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KCosmicImpositionVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 1.92
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    netsync: false
+    drawdepth: Mobs
+    layers:
+    - shader: unshaded
+      sprite: _WH40K/Effects/arcane_vfx/ability_impositionvfx.rsi
+      state: vfx
+  - type: PointLight
+    color: "#42a4ae"
+    radius: 10
+    energy: 6
+    castShadows: true
+  - type: LightBehaviour
+    behaviours:
+    - !type:FadeBehaviour
+      interpolate: Linear
+      minDuration: 1.92
+      maxDuration: 1.92
+      startValue: 0.1
+      endValue: 6
+      property: Energy
+      enabled: true
+      isLooped: true
+      reverseWhenFinished: true
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KShadowGlareVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 0.35
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    noRot: false
+    netsync: false
+    drawdepth: Effects
+    sprite: _WH40K/Effects/arcane_vfx/glare.rsi
+    state: glare
+  - type: PointLight
+    color: "#e3432a"
+    radius: 7
+    energy: 2
+  - type: LightFade
+    duration: 0.34
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KShadowWalkInVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 0.5
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    noRot: true
+    netsync: false
+    drawdepth: Effects
+    sprite: _WH40K/Effects/arcane_vfx/shadow_walk.rsi
+    state: shadow_walk_in
+  - type: PointLight
+    color: "#8A9A5B"
+    radius: 1.13
+    energy: 2
+
+- type: entity
+  parent: WH40KBaseArcaneVfx
+  id: WH40KShadowWalkOutVfx
+  components:
+  - type: TimedDespawn
+    lifetime: 0.5
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    noRot: true
+    netsync: false
+    drawdepth: Effects
+    sprite: _WH40K/Effects/arcane_vfx/shadow_walk.rsi
+    state: shadow_walk_out
+  - type: PointLight
+    color: "#8A9A5B"
+    radius: 1.13
+    energy: 2

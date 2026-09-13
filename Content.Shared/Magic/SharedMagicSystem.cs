@@ -313,7 +313,7 @@ public abstract partial class SharedMagicSystem : EntitySystem
     /// Teleports the user to the clicked location
     /// </summary>
     /// <param name="args"></param>
-    private void OnTeleportSpell(TeleportSpellEvent args)
+    protected virtual void OnTeleportSpell(TeleportSpellEvent args)
     {
         if (args.Handled || !PassesSpellPrerequisites(args.Action, args.Performer))
             return;

@@ -10,14 +10,17 @@
     radius: 2.4
     energy: 3
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    sprite: _WH40K/Effects/arcane_vfx/weaponprojectiles.rsi
     layers:
-    - state: fireball
+    - state: razor
       shader: unshaded
   - type: Projectile
+    impactEffect: WH40KShadowGlareVfx
     damage:
       types:
         Heat: 9
+  - type: Ammo
+    muzzleFlash: WH40KEnergyMuzzlePulseEffect
   - type: IgnitionSource
     temperature: 900
     ignited: true
@@ -42,6 +45,7 @@
       shader: unshaded
       color: "#ff4500"
   - type: Projectile
+    impactEffect: WH40KCosmicGlareVfx
     damage:
       types:
         Heat: 25
@@ -79,9 +83,12 @@
       shader: unshaded
       color: "#00ff66"
   - type: Projectile
+    impactEffect: WH40KCosmicLapseVfx
     damage:
       types:
         Blunt: 2
+  - type: Ammo
+    muzzleFlash: WH40KEnergyCosmicGlyphVfx
   - type: Solution
     solution:
       maxVol: 10
@@ -104,11 +111,12 @@
     radius: 2
     energy: 2
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    sprite: _WH40K/Effects/arcane_vfx/pulse.rsi
     layers:
-    - state: magicm_cyan
+    - state: pulse
       shader: unshaded
   - type: Projectile
+    impactEffect: WH40KCosmicArcImpactVfx
     damage:
       types:
         Blunt: 4
@@ -116,6 +124,8 @@
     soundHit:
       path: /Audio/Weapons/Guns/Hits/taser_hit.ogg
     forceSound: true
+  - type: Ammo
+    muzzleFlash: WH40KEnergyMuzzlePulseEffect
   - type: StunOnCollide
     stunAmount: 0
     knockdownAmount: 0
@@ -135,14 +145,17 @@
     radius: 1.8
     energy: 1.6
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Projectiles/magic.rsi
+    sprite: _WH40K/Effects/arcane_vfx/divet.rsi
     layers:
-    - state: magicm_yellow
+    - state: projectiles_divet
       shader: unshaded
   - type: Projectile
+    impactEffect: WH40KCosmicImpositionVfx
     damage:
       types:
         Blunt: 7
+  - type: Ammo
+    muzzleFlash: WH40KEnergyDivetMuzzleEffect
   - type: StunOnCollide
     stunAmount: 0
     knockdownAmount: 1

@@ -1,4 +1,5 @@
-﻿using Content.Shared.Actions;
+using Content.Shared.Actions;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Magic.Events;
 
@@ -16,4 +17,10 @@ public sealed partial class TeleportSpellEvent : WorldTargetActionEvent, ISpeakS
     /// </summary>
     [DataField]
     public float BlinkVolume = 5f;
+
+    /// <summary>
+    ///     Optional visual spawned at both the departure and destination of a successful teleport.
+    /// </summary>
+    [DataField]
+    public EntProtoId? Effect;
 }

@@ -44,6 +44,22 @@ public sealed partial class MagicSystem : SharedMagicSystem
         Spawn(ev.Effect, targetXForm.Coordinates);
     }
 
+    protected override void OnTeleportSpell(TeleportSpellEvent ev)
+    {
+        if (ev.Handled)
+            return;
+
+        var departure = Transform(ev.Performer).Coordinates;
+        var arrival = ev.Target;
+        base.OnTeleportSpell(ev);
+
+        if (!ev.Handled || ev.Effect is not { } effect)
+            return;
+
+        Spawn(effect, departure);
+        Spawn(effect, arrival);
+    }
+
     protected override void OnRandomGlobalSpawnSpell(RandomGlobalSpawnSpellEvent ev)
     {
         base.OnRandomGlobalSpawnSpell(ev);

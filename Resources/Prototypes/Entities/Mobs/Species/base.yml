@@ -239,6 +239,7 @@
   - type: Targeting # Shitmed Change
   - type: SurgeryTarget # Shitmed Change
   - type: ExaminableCharacter # WWDP
+  - type: WH40KDirectionalEmote
   # Mono
   - type: ShipNpcTarget
     needGrid: NoGrid

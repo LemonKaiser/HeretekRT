@@ -57,10 +57,10 @@
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:
-        sprite: Mobs/Effects/brute_damage.rsi
+        sprite: _WH40K/Effects/brute_damage.rsi
         color: "#162581"
       Burn:
-        sprite: Mobs/Effects/burn_damage.rsi
+        sprite: _WH40K/Effects/burn_damage.rsi
   - type: Speech
     speechVerb: Arachnid
     speechSounds: Arachnid

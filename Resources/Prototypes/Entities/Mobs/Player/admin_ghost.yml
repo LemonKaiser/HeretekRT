@@ -116,6 +116,8 @@
     - Biological
     - Inorganic
   - type: ShowSyndicateIcons # Monolith
+  - type: WH40KDirectionalEmote
+    canHideName: true
 
 - type: entity
   id: ActionAGhostShowSolar

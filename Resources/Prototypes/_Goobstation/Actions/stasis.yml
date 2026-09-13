@@ -9,6 +9,7 @@
       sprite: _Goobstation/Actions/chronoblink.rsi
       state: effect
     event: !type:TeleportSpellEvent
+      effect: EffectDesynchronizer
     range: 15
     useDelay: 15
     itemIconStyle: NoItem
