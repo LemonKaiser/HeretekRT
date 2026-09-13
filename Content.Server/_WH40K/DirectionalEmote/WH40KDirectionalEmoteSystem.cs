@@ -1,6 +1,7 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
 using Content.Shared._WH40K.DirectionalEmote;
+using Content.Shared.ActionBlocker;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Database;
@@ -15,6 +16,7 @@ namespace Content.Server._WH40K.DirectionalEmote;
 public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
 {
     [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
@@ -35,6 +37,11 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
     private void OnAttempt(WH40KDirectionalEmoteAttemptEvent args, EntitySessionEventArgs eventArgs)
     {
         if (eventArgs.SenderSession.AttachedEntity is not { } source)
+            return;
+
+        // Directed emotes are still emotes: honor the same authoritative restrictions as
+        // ordinary emotes, including persistent chat mutes and status-effect blockers.
+        if (!_actionBlocker.CanEmote(source))
             return;
 
         var target = GetEntity(args.Target);

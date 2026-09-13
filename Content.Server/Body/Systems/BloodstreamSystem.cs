@@ -16,6 +16,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Forensics;
 using Content.Shared.Forensics.Components;
 using Content.Shared.HealthExaminable;
+using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Particles;
@@ -57,7 +58,9 @@ public sealed partial class BloodstreamSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<BloodstreamComponent, ComponentInit>(OnComponentInit);
+        SubscribeLocalEvent<BloodstreamComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<BloodstreamComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<BloodstreamComponent, ComponentShutdown>(OnComponentShutdown);
         SubscribeLocalEvent<BloodstreamComponent, EntityUnpausedEvent>(OnUnpaused);
         SubscribeLocalEvent<BloodstreamComponent, DamageChangedEvent>(OnDamageChanged);
         SubscribeLocalEvent<BloodstreamComponent, HealthBeingExaminedEvent>(OnHealthBeingExamined);
@@ -72,6 +75,17 @@ public sealed partial class BloodstreamSystem : EntitySystem
     private void OnMapInit(Entity<BloodstreamComponent> ent, ref MapInitEvent args)
     {
         ent.Comp.NextUpdate = _gameTiming.CurTime + ent.Comp.UpdateInterval;
+        UpdateBleedingVisual(ent.Owner, ent.Comp);
+    }
+
+    private void OnComponentStartup(Entity<BloodstreamComponent> ent, ref ComponentStartup args)
+    {
+        UpdateBleedingVisual(ent.Owner, ent.Comp);
+    }
+
+    private void OnComponentShutdown(Entity<BloodstreamComponent> ent, ref ComponentShutdown args)
+    {
+        RemComp<WH40KBleedingVisualComponent>(ent.Owner);
     }
 
     private void OnUnpaused(Entity<BloodstreamComponent> ent, ref EntityUnpausedEvent args)
@@ -481,7 +495,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
 
     private void UpdateBleedingVisual(EntityUid uid, BloodstreamComponent bloodstream)
     {
-        if (bloodstream.BleedAmount <= 0f)
+        if (bloodstream.BleedAmount <= 0f || !HasComp<HumanoidAppearanceComponent>(uid))
         {
             RemComp<WH40KBleedingVisualComponent>(uid);
             return;
