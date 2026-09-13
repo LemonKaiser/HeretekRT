@@ -25,6 +25,7 @@ using Content.Shared.Speech.EntitySystems;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
+using Content.Shared._WH40K.Blood;
 using Robust.Server.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -465,6 +466,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
 
         component.BleedAmount += amount;
         component.BleedAmount = Math.Clamp(component.BleedAmount, 0, component.MaxBleedAmount);
+        UpdateBleedingVisual(uid, component);
 
         if (component.BleedAmount == 0)
             _alertsSystem.ClearAlert(uid, component.BleedingAlert);
@@ -475,6 +477,26 @@ public sealed partial class BloodstreamSystem : EntitySystem
         }
 
         return true;
+    }
+
+    private void UpdateBleedingVisual(EntityUid uid, BloodstreamComponent bloodstream)
+    {
+        if (bloodstream.BleedAmount <= 0f)
+        {
+            RemComp<WH40KBleedingVisualComponent>(uid);
+            return;
+        }
+
+        var visual = EnsureComp<WH40KBleedingVisualComponent>(uid);
+        var severity = bloodstream.BleedAmount >= bloodstream.MaxBleedAmount / 2f
+            ? WH40KBleedingVisualSeverity.Severe
+            : WH40KBleedingVisualSeverity.Minor;
+
+        if (visual.Severity == severity)
+            return;
+
+        visual.Severity = severity;
+        Dirty(uid, visual);
     }
 
     /// <summary>

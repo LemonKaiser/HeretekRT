@@ -98,12 +98,11 @@ public sealed class GhostPermissionSystem : EntitySystem
 
         foreach (var (userId, transition) in _pendingTransitions.ToArray())
         {
-            if (now < transition.ReturnAt)
+            if (transition.Completing || now < transition.ReturnAt)
                 continue;
 
-            _pendingTransitions.Remove(userId);
-
-            _ = CompleteDeathTransitionAsync(userId);
+            _pendingTransitions[userId] = transition with { Completing = true };
+            _ = CompleteDeathTransitionAsync(userId, transition.Id);
         }
     }
 
@@ -486,11 +485,12 @@ public sealed class GhostPermissionSystem : EntitySystem
         RaiseNetworkEvent(new DeathTransitionStartEvent(transition.Id, DeathTransitionTiming.TotalDuration), session.Channel);
     }
 
-    private async System.Threading.Tasks.Task CompleteDeathTransitionAsync(NetUserId userId)
+    private async System.Threading.Tasks.Task CompleteDeathTransitionAsync(NetUserId userId, int transitionId)
     {
         try
         {
-            if (!_players.TryGetSessionById(userId, out var session) ||
+            if (!IsCurrentDeathTransition(userId, transitionId) ||
+                !_players.TryGetSessionById(userId, out var session) ||
                 session.AttachedEntity is not { } body ||
                 !_mobState.IsDead(body) ||
                 !_minds.TryGetMind(body, out _, out var mind) ||
@@ -510,8 +510,10 @@ public sealed class GhostPermissionSystem : EntitySystem
 
             await RunOnMainThread(() =>
             {
-                if (!_players.TryGetSessionById(userId, out var currentSession))
+                if (!IsCurrentDeathTransition(userId, transitionId) ||
+                    !_players.TryGetSessionById(userId, out var currentSession))
                     return;
+
                 if (currentSession.AttachedEntity is { } currentBody &&
                     _mobState.IsDead(currentBody))
                 {
@@ -532,6 +534,14 @@ public sealed class GhostPermissionSystem : EntitySystem
                 $"Persistent inventory surrender transition failed for {userId}: " +
                 $"{exception.GetType().Name}.");
         }
+        finally
+        {
+            await RunOnMainThread(() =>
+            {
+                if (IsCurrentDeathTransition(userId, transitionId))
+                    _pendingTransitions.Remove(userId);
+            });
+        }
     }
 
     private void CancelDeathTransition(ICommonSession session)
@@ -547,6 +557,12 @@ public sealed class GhostPermissionSystem : EntitySystem
         _pendingTransitions.Remove(session.UserId);
         _deathScreenEligible.Remove(session.UserId);
         _ticker.ReturnPlayerToLobby(session);
+    }
+
+    private bool IsCurrentDeathTransition(NetUserId userId, int transitionId)
+    {
+        return _pendingTransitions.TryGetValue(userId, out var transition) &&
+               transition.Id == transitionId;
     }
 
     private void SendPermissionStatus(NetUserId userId)
@@ -585,5 +601,5 @@ public sealed class GhostPermissionSystem : EntitySystem
         await completion.Task;
     }
 
-    private readonly record struct PendingDeathLobbyTransition(int Id, TimeSpan ReturnAt);
+    private readonly record struct PendingDeathLobbyTransition(int Id, TimeSpan ReturnAt, bool Completing = false);
 }

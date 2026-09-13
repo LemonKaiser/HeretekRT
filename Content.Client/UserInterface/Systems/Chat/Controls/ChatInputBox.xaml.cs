@@ -35,7 +35,6 @@ public class ChatInputBox : PanelContainer
             StyleClasses = {"chatFilterOptionButton"}
         };
         EmojiButton.OnEmojiPicked += InsertEmoji;
-        Container.AddChild(EmojiButton);
 
         ChannelSelector = new ChannelSelectorButton
         {
@@ -53,6 +52,12 @@ public class ChatInputBox : PanelContainer
             StyleClasses = {"chatLineEdit"}
         };
         Container.AddChild(Input);
+
+        // Keep the text field adjacent to its channel selector.  This is a trailing
+        // utility control, so placing it before the selector needlessly shifts every
+        // typed message to the right.
+        Container.AddChild(EmojiButton);
+
         FilterButton = new ChannelFilterButton
         {
             Name = "FilterButton",

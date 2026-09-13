@@ -431,7 +431,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     {
         sender ??= Loc.GetString("chat-manager-sender-announcement");
 
-        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
         _chatManager.ChatMessageToAll(ChatChannel.Radio, message, wrappedMessage, default, false, true, colorOverride);
         if (playSound)
         {
@@ -461,7 +461,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     {
         sender ??= Loc.GetString("chat-manager-sender-announcement");
 
-        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
         _chatManager.ChatMessageToManyFiltered(filter, ChatChannel.Radio, message, wrappedMessage, source ?? default, false, true, colorOverride);
         if (playSound)
         {
@@ -488,7 +488,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     {
         sender ??= Loc.GetString("chat-manager-sender-announcement");
 
-        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
         var station = _stationSystem.GetOwningStation(source);
 
         if (station == null)
@@ -938,8 +938,8 @@ public sealed partial class ChatSystem : SharedChatSystem
         {
             var title = string.IsNullOrEmpty(data.ShortTitle) ? Loc.GetString("chat-manager-admin-channel-name") : data.ShortTitle;
             wrappedMessage = Loc.GetString("chat-manager-send-admin-dead-chat-wrap-message",
-                ("title", title),
-                ("userName", player.Channel.UserName),
+                ("title", FormattedMessage.EscapeText(title)),
+                ("userName", FormattedMessage.EscapeText(player.Channel.UserName)),
                 ("message", FormattedMessage.EscapeText(message)));
             _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Admin dead chat from {player:Player}: {message}");
         }
@@ -947,7 +947,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         {
             wrappedMessage = Loc.GetString("chat-manager-send-dead-chat-wrap-message",
                 ("deadChannelName", Loc.GetString("chat-manager-dead-channel-name")),
-                ("playerName", (playerName)),
+                ("playerName", FormattedMessage.EscapeText(playerName)),
                 ("message", FormattedMessage.EscapeText(message)));
             _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Dead chat from {player:Player}: {message}");
         }

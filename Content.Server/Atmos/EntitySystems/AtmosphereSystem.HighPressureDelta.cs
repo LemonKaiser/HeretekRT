@@ -7,6 +7,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
@@ -14,6 +15,8 @@ namespace Content.Server.Atmos.EntitySystems
 {
     public sealed partial class AtmosphereSystem
     {
+        private static readonly EntProtoId SpaceWindVisual = "SpaceWindVisual";
+
         private const int SpaceWindSoundCooldownCycles = 75;
 
         private int _spaceWindSoundCooldown = 0;
@@ -101,6 +104,20 @@ namespace Content.Server.Atmos.EntitySystems
                 {
                     var coordinates = _mapSystem.ToCenterCoordinates(tile.GridIndex, tile.GridIndices);
                     _audio.PlayPvs(SpaceWindSound, coordinates, AudioParams.Default.WithVariation(0.125f).WithVolume(MathHelper.Clamp(tile.PressureDifference / 10, 10, 100)));
+                }
+
+                if (SpaceWindVisuals && _spaceWindSoundCooldown == 0)
+                {
+                    var location = _mapSystem.ToCenterCoordinates(tile.GridIndex, tile.GridIndices);
+                    var visual = SpawnAtPosition(SpaceWindVisual, location);
+
+                    if (tile.PressureDirection != AtmosDirection.Invalid)
+                    {
+                        var rotation = tile.PressureDirection.ToAngle()
+                                       + _transformSystem.GetWorldRotation(gridAtmosphere)
+                                       - Angle.FromDegrees(90);
+                        _transformSystem.SetLocalRotation(visual, rotation);
+                    }
                 }
             }
 

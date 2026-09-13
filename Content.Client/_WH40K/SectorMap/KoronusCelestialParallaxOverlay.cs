@@ -72,7 +72,7 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
                 ? overrideAngle
                 : body.OrbitPhase;
             var orbitalPosition = GetOrbitalPosition(system, body, time, positionAngle);
-            var slowness = Math.Clamp(body.BackgroundParallaxSlowness, 0f, 1f);
+            var slowness = GetSceneryParallaxSlowness(body);
             var sceneryPosition = GetSceneryPosition(orbitalPosition, eyePosition, slowness);
             var sceneryRadius = GetSceneryRadius(body);
             if (sceneryRadius <= 0f)
@@ -139,8 +139,24 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
         return Vector2.Lerp(orbitalPosition, eyePosition, Math.Clamp(parallaxSlowness, 0f, 1f));
     }
 
+    /// <summary>
+    /// Stars are rendered at their actual system coordinates. Unlike decorative planetary bodies,
+    /// a star's size and distance in the world must match the shuttle NAV geometry exactly.
+    /// </summary>
+    internal static float GetSceneryParallaxSlowness(KoronusCelestialBodyPrototype body)
+    {
+        return body.BodyType == KoronusCelestialBodyType.Star
+            ? 0f
+            : Math.Clamp(body.BackgroundParallaxSlowness, 0f, 1f);
+    }
+
     internal static float GetSceneryRadius(KoronusCelestialBodyPrototype body)
     {
+        // The procedural sun renderer is shared with NAV, including its corona. Keeping this
+        // radius in system-space avoids a second, presentation-only stellar size.
+        if (body.BodyType == KoronusCelestialBodyType.Star)
+            return MathF.Max(0f, body.NavVisualRadius);
+
         var authoredRadius = body.BackgroundVisualRadius > 0f
             ? body.BackgroundVisualRadius
             : body.NavVisualRadius;

@@ -59,7 +59,7 @@
       state: "creampie_human"
       visible: false
   - type: DamageVisuals
-    thresholds: [ 10, 20, 30, 50, 70, 100 ]
+    thresholds: [ 10, 20, 30, 40, 50, 70, 100 ]
     targetLayers:
     - "enum.HumanoidVisualLayers.Chest"
     - "enum.HumanoidVisualLayers.Head"
@@ -67,12 +67,16 @@
     - "enum.HumanoidVisualLayers.LLeg"
     - "enum.HumanoidVisualLayers.RArm"
     - "enum.HumanoidVisualLayers.RLeg"
+    - "enum.HumanoidVisualLayers.LHand"
+    - "enum.HumanoidVisualLayers.RHand"
+    - "enum.HumanoidVisualLayers.LFoot"
+    - "enum.HumanoidVisualLayers.RFoot"
     damageOverlayGroups:
       Brute:
-        sprite: Mobs/Effects/brute_damage.rsi
+        sprite: _WH40K/Effects/brute_damage.rsi
         color: "#FF0000"
       Burn:
-        sprite: Mobs/Effects/burn_damage.rsi
+        sprite: _WH40K/Effects/burn_damage.rsi
   - type: GenericVisualizer
     visuals:
       enum.CreamPiedVisuals.Creamed:

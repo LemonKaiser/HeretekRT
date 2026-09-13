@@ -12,6 +12,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server.Teleportation;
@@ -68,10 +69,19 @@ public sealed partial class TeleportSystem : EntitySystem
                        specifier.TeleportSound,
                        specifier.TeleportAttempts,
                        specifier.AvoidSpace,
-                       specifier.ForceSafe);
+                       specifier.ForceSafe,
+                       specifier.TeleportEffect);
     }
 
-    public void RandomTeleport(EntityUid uid, float minRadius, float radius, SoundSpecifier sound, int attempts, bool avoidSpace, bool forceSafe)
+    public void RandomTeleport(
+        EntityUid uid,
+        float minRadius,
+        float radius,
+        SoundSpecifier sound,
+        int attempts,
+        bool avoidSpace,
+        bool forceSafe,
+        EntProtoId? teleportEffect = null)
     {
         // We need stop the user from being pulled so they don't just get "attached" with whoever is pulling them.
         // This can for example happen when the user is cuffed and being pulled.
@@ -122,7 +132,14 @@ public sealed partial class TeleportSystem : EntitySystem
                 break;
         }
 
+        if (teleportEffect != null && entityCoords != targetCoords)
+            Spawn(teleportEffect, entityCoords);
+
         _xform.SetWorldPosition(uid, targetCoords.Position);
+
+        if (teleportEffect != null && entityCoords != targetCoords)
+            Spawn(teleportEffect, targetCoords);
+
         _audio.PlayPvs(sound, uid);
     }
 }

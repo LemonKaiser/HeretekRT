@@ -6,11 +6,14 @@ using Content.Shared.Teleportation.Systems;
 using Content.Server.Particles;
 using Content.Shared.Particles;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Teleportation;
 
 public sealed partial class PortalSystem : SharedPortalSystem
 {
+    private static readonly EntProtoId TeleportationEffect = "BluespaceTeleportationEffect";
+
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -21,6 +24,9 @@ public sealed partial class PortalSystem : SharedPortalSystem
     {
         // LogTeleport is reached only after SharedPortalSystem has validated the route and immediately before
         // it moves the subject. The two supplied coordinates are consequently the real departure and arrival.
+        SpawnAtPosition(TeleportationEffect, source);
+        SpawnAtPosition(TeleportationEffect, target);
+
         _particles.Spawn(
             _transform.ToMapCoordinates(source),
             "HrtWarpRiftBurst",

@@ -197,7 +197,7 @@ internal sealed partial class ChatManager : IChatManager
         {
             return;
         }
-        var wrappedMessage = Loc.GetString("chat-manager-send-hook-ooc-wrap-message", ("senderName", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-send-hook-ooc-wrap-message", ("senderName", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
         ChatMessageToAll(ChatChannel.OOC, message, wrappedMessage, source: EntityUid.Invalid, hideChat: false, recordReplay: true);
         _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Hook OOC from {sender}: {message}");
     }
@@ -205,7 +205,7 @@ internal sealed partial class ChatManager : IChatManager
     public void SendHookAdmin(string sender, string message)
     {
         var clients = _adminManager.ActiveAdmins.Select(p => p.Channel);
-        var wrappedMessage = Loc.GetString("chat-manager-send-hook-admin-wrap-message", ("senderName", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-send-hook-admin-wrap-message", ("senderName", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
 
         ChatMessageToMany(ChatChannel.AdminChat, message, wrappedMessage, source: EntityUid.Invalid, hideChat: false, recordReplay: false, clients);
         _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Hook admin from {sender}: {message}");
@@ -214,7 +214,7 @@ internal sealed partial class ChatManager : IChatManager
     public void SendHookDead(string sender, string message)
     {
         var clients = GetDeadChatClients();
-        var wrappedMessage = Loc.GetString("chat-manager-send-hook-dead-wrap-message", ("senderName", sender), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-send-hook-dead-wrap-message", ("senderName", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
 
         ChatMessageToMany(ChatChannel.Dead, message, wrappedMessage, source: EntityUid.Invalid, hideChat: false, recordReplay: true, clients);
         _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Hook dead chat from {sender}: {message}");
@@ -308,7 +308,7 @@ internal sealed partial class ChatManager : IChatManager
         }
 
         Color? colorOverride = null;
-        var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName",player.Name), ("message", FormattedMessage.EscapeText(message)));
+        var wrappedMessage = Loc.GetString("chat-manager-send-ooc-wrap-message", ("playerName", FormattedMessage.EscapeText(player.Name)), ("message", FormattedMessage.EscapeText(message)));
         if (_configurationManager.GetCVar(CCVars.Wh40kDecorationsAdminVisualPriority) &&
             _adminManager.HasAdminFlag(player, AdminFlags.Admin))
         {
@@ -320,7 +320,7 @@ internal sealed partial class ChatManager : IChatManager
             PatronOocColors.TryGetValue(patron, out var patronColor) &&
             !string.IsNullOrEmpty(patronColor))
         {
-            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", patronColor),("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
+            wrappedMessage = Loc.GetString("chat-manager-send-ooc-patron-wrap-message", ("patronColor", patronColor), ("playerName", FormattedMessage.EscapeText(player.Name)), ("message", FormattedMessage.EscapeText(message)));
         }
 
         // The administrator colour remains authoritative only when explicitly configured.
@@ -348,7 +348,7 @@ internal sealed partial class ChatManager : IChatManager
         var clients = _adminManager.ActiveAdmins.Select(p => p.Channel);
         var wrappedMessage = Loc.GetString("chat-manager-send-admin-chat-wrap-message",
                                         ("adminChannelName", Loc.GetString("chat-manager-admin-channel-name")),
-                                        ("playerName", player.Name), ("message", FormattedMessage.EscapeText(message)));
+                                        ("playerName", FormattedMessage.EscapeText(player.Name)), ("message", FormattedMessage.EscapeText(message)));
 
         foreach (var client in clients)
         {

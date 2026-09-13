@@ -2,16 +2,21 @@ using System.Numerics;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server.Atmos.Components;
 using Content.Server.Fluids.Components;
+using Content.Server.IgnitionSource;
 using Content.Server._Mono.SpaceArtillery.Components;
 using Content.Server._Mono.FireControl;
 using Content.Server.Shuttles.Systems;
+using Content.Server.Temperature.Components;
+using Content.Server.Temperature.Systems;
 using Content.Shared._Mono;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._WH40K.ClassProgression;
 using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos;
 using Content.Shared.Atmos.Events;
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Actions.Events;
@@ -48,8 +53,10 @@ using Content.Shared.Disposal.Components;
 using Content.Shared.DragDrop;
 using Content.Shared.Fluids;
 using Content.Shared.Interaction.Components;
+using Content.Shared.IgnitionSource;
 using Content.Shared.Popups;
 using Content.Shared.Radiation.Components;
+using Content.Shared.Temperature;
 using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Server.Player;
 
@@ -72,12 +79,23 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private SharedGunSystem _guns = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kPartyManager _wh40kParties = default!;
+    [Dependency] private FlammableSystem _flammable = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
+    [Dependency] private SharedIgnitionSourceSystem _ignitionSource = default!;
+    [Dependency] private SharedMapSystem _mapSystem = default!;
 
     private EntityQuery<TransformComponent> _transformQuery;
 
     public override void Initialize()
     {
         base.Initialize();
+
+        // Process sources before they can create another atmospheric hotspot, but sweep
+        // entities after the normal flammability update has handled legacy fire state.
+        UpdatesAfter.Add(typeof(FlammableSystem));
+        UpdatesBefore.Add(typeof(IgnitionSourceSystem));
+        UpdatesBefore.Add(typeof(TemperatureSystem));
 
         _transformQuery = GetEntityQuery<TransformComponent>();
 
@@ -102,6 +120,17 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         SubscribeLocalEvent<BodyComponent, DragDropDraggedEvent>(OnBodyDragDrop);
         SubscribeLocalEvent<GasTankComponent, GasTankValveAttemptEvent>(OnGasTankValveAttempt);
         SubscribeLocalEvent<GasCanisterComponent, GasCanisterValveAttemptEvent>(OnGasCanisterValveAttempt);
+        SubscribeLocalEvent<TemperatureComponent, ModifyChangedTemperatureEvent>(OnTemperatureChangeAttempt);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        SuppressProtectedIgnitionSources();
+        SuppressProtectedCombustion();
+        SuppressProtectedTemperatures();
+        SuppressProtectedHotspots();
     }
 
     /// <summary>
@@ -410,6 +439,18 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (args.Cancelled)
             return;
 
+        // The normal damage gate can attribute attacks to players, but fire and thermal
+        // damage are often environmental and deliberately have no origin. Remove Heat
+        // directly so burning, atmospheric heat and delayed effects cannot bypass a
+        // protected station through that missing attribution.
+        if (HasRule(uid, KoronusSafetyRule.FireAndHighTemperature) &&
+            args.Damage.DamageDict.Remove("Heat") &&
+            args.Damage.Empty)
+        {
+            args.Cancelled = true;
+            return;
+        }
+
         if (_players.TryGetSessionByEntity(uid, out var target))
         {
             NetUserId? attacker = args.Origin is { Valid: true } origin &&
@@ -513,9 +554,112 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     private void OnIgniteAttempt(EntityUid uid, FlammableComponent component, ref TryIgniteEvent args)
     {
+        if (HasRule(uid, KoronusSafetyRule.FireAndHighTemperature))
+        {
+            args.Cancelled = true;
+            SuppressCombustion(uid, component);
+            return;
+        }
+
         var source = args.User ?? args.Source;
         if (ShouldBlockHarmfulInteraction(source, uid))
             args.Cancelled = true;
+    }
+
+    private void OnTemperatureChangeAttempt(
+        Entity<TemperatureComponent> entity,
+        ref ModifyChangedTemperatureEvent args)
+    {
+        if (args.TemperatureDelta > 0f && HasRule(entity.Owner, KoronusSafetyRule.FireAndHighTemperature))
+            args.TemperatureDelta = 0f;
+    }
+
+    private void SuppressProtectedIgnitionSources()
+    {
+        var sources = EntityQueryEnumerator<IgnitionSourceComponent>();
+        while (sources.MoveNext(out var uid, out var source))
+        {
+            if (source.Ignited && HasRule(uid, KoronusSafetyRule.FireAndHighTemperature))
+                _ignitionSource.SetIgnited((uid, source), false);
+        }
+    }
+
+    private void SuppressProtectedCombustion()
+    {
+        var flammables = EntityQueryEnumerator<FlammableComponent>();
+        while (flammables.MoveNext(out var uid, out var flammable))
+        {
+            if (HasRule(uid, KoronusSafetyRule.FireAndHighTemperature))
+                SuppressCombustion(uid, flammable);
+        }
+    }
+
+    private void SuppressProtectedTemperatures()
+    {
+        var temperatures = EntityQueryEnumerator<TemperatureComponent>();
+        while (temperatures.MoveNext(out var uid, out var temperature))
+        {
+            if (!HasRule(uid, KoronusSafetyRule.FireAndHighTemperature))
+                continue;
+
+            var threshold = temperature.ParentHeatDamageThreshold ?? temperature.HeatDamageThreshold;
+            if (temperature.CurrentTemperature >= threshold)
+                _temperature.ForceChangeTemperature(uid, threshold - 0.01f, temperature);
+        }
+    }
+
+    private void SuppressCombustion(EntityUid uid, FlammableComponent flammable)
+    {
+        if (!flammable.OnFire && flammable.FireStacks <= 0f)
+            return;
+
+        var wasOnFire = flammable.OnFire;
+        _flammable.Extinguish(uid, flammable);
+
+        // A few decorative fire sources deliberately opt out of normal extinguishing.
+        // A safety profile is stronger than that content flag: it must leave no flame
+        // behind that can light another entity or atmospheric gas.
+        if (flammable.OnFire || flammable.FireStacks > 0f)
+        {
+            flammable.OnFire = false;
+            flammable.FireStacks = 0f;
+            flammable.ResistCompleteTime = null;
+            _ignitionSource.SetIgnited(uid, false);
+
+            if (wasOnFire)
+            {
+                var extinguished = new ExtinguishedEvent();
+                RaiseLocalEvent(uid, ref extinguished);
+            }
+
+            _flammable.UpdateAppearance(uid, flammable);
+        }
+    }
+
+    private void SuppressProtectedHotspots()
+    {
+        var grids = EntityQueryEnumerator<GridAtmosphereComponent>();
+        while (grids.MoveNext(out var gridUid, out var gridAtmosphere))
+        {
+            foreach (var hotspot in gridAtmosphere.HotspotTiles)
+            {
+                var coordinates = _mapSystem.ToCenterCoordinates(gridUid, hotspot.GridIndices);
+                var mapCoordinates = _transform.ToMapCoordinates(coordinates);
+                if (!HasRule(mapCoordinates.MapId, mapCoordinates.Position, KoronusSafetyRule.FireAndHighTemperature))
+                    continue;
+
+                _atmosphere.HotspotExtinguish(gridUid, hotspot.GridIndices);
+
+                // Hot plasma or tritium would otherwise recreate the hotspot next tick.
+                // Normalizing the tile temperature makes the safe zone stable without
+                // modifying gas composition outside of its protected boundary.
+                if (_atmosphere.GetTileMixture(gridUid, null, hotspot.GridIndices, excite: true) is { } mixture &&
+                    mixture.Temperature > Atmospherics.T20C)
+                {
+                    mixture.Temperature = Atmospherics.T20C;
+                }
+            }
+        }
     }
 
     private void OnAnchorAttempt(EntityUid uid, AnchorableComponent component, AnchorAttemptEvent args)

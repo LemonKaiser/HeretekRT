@@ -30,7 +30,9 @@ public static class ChatEmojiRichText
         ChatEmojiCatalog catalog,
         int maxEmoji)
     {
-        var parsed = FormattedMessage.FromMarkupOrThrow(markup);
+        // Wrapped chat messages cross the network boundary and can also be produced by extensions.
+        // Preserve valid rich text, but treat a malformed tag as text instead of aborting the message handler.
+        var parsed = FormattedMessage.FromMarkupPermissive(markup);
         var emojis = ReplaceEmojiText(parsed, allowEmojiMarkup, catalog, maxEmoji);
         var result = new FormattedMessage(emojis.Count + 2);
         result.PushColor(color);

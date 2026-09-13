@@ -517,7 +517,12 @@ public abstract partial class SharedProjectileSystem : EntitySystem
 
         if (component.DeleteOnRemove)
         {
-            QueueDel(uid);
+            // Networked entities are deleted by the server. This path also runs while a client
+            // is recursively terminating an embedded target, so queueing the projectile here
+            // would be an invalid client-side deletion prediction.
+            if (!_net.IsClient)
+                QueueDel(uid);
+
             return;
         }
 

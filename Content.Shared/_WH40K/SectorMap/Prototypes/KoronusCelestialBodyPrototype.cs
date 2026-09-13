@@ -112,23 +112,24 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     public float AtmosphereIntensity = 0.85f;
 
     /// <summary>
-    /// Visual radius in system-space metres used by NAV and its interaction target.
+    /// Authoritative visual radius in system-space metres. It is used by NAV and by stars in the
+    /// world renderer, so a star's apparent boundary remains consistent between both views.
     /// </summary>
     [DataField]
     public float NavVisualRadius = 12f;
 
     /// <summary>
-    /// Decorative radius before parallax projection. The client applies the same parallax scale to
-    /// this radius and the body's displacement, keeping their geometry consistent. Zero falls back
-    /// to <see cref="NavVisualRadius"/>. This remains independently authorable from the NAV radius.
+    /// Decorative radius before parallax projection for non-stellar bodies. The client applies the
+    /// same parallax scale to this radius and the body's displacement, keeping their geometry
+    /// consistent. Zero falls back to <see cref="NavVisualRadius"/>. Stars always use
+    /// <see cref="NavVisualRadius"/> so their world and NAV geometry cannot diverge.
     /// </summary>
     [DataField]
     public float BackgroundVisualRadius;
 
     /// <summary>
-    /// Amount by which the decorative body follows the camera: zero is world-anchored and one is
-    /// screen-anchored. Values below one keep the orbital direction while retaining visible motion
-    /// against the star field.
+    /// Amount by which a non-stellar decorative body follows the camera: zero is world-anchored
+    /// and one is screen-anchored. Stars remain world-anchored so their distance agrees with NAV.
     /// </summary>
     [DataField]
     public float BackgroundParallaxSlowness = 0.82f;

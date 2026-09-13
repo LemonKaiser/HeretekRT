@@ -204,7 +204,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         }
 
         if (!TryGetLandingOrigin(shuttleGrid, site, out var landingOrigin, out failure) ||
-            !IsLandingAreaClear(shuttleGrid, surfaceMap, surfaceRuntime.TerrainGrid, landingOrigin))
+            !IsLandingAreaClear(shuttleGrid, surfaceMap, surfaceRuntime.TerrainGrid, site, landingOrigin))
         {
             failure = failure == KoronusPlanetaryTransferFailure.None
                 ? KoronusPlanetaryTransferFailure.LandingAreaBlocked
@@ -654,15 +654,36 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         return true;
     }
 
-    private bool IsLandingAreaClear(EntityUid shuttleGrid, MapId surfaceMap, EntityUid terrainGrid, Vector2 origin)
+    private bool IsLandingAreaClear(
+        EntityUid shuttleGrid,
+        MapId surfaceMap,
+        EntityUid terrainGrid,
+        ResolvedLandingSite site,
+        Vector2 origin)
     {
         if (!TryComp<MapGridComponent>(shuttleGrid, out var shuttle))
             return false;
 
+        // A procedural planet has its biome grid and the authored base grid on the same map.
+        // The latter is normally an obstruction, but the grid that supplies this specific pad's
+        // marker tiles is the ground the shuttle is meant to overlap. Do not permit unrelated
+        // grids merely because the selected site is on an authored surface.
+        var padGrids = new HashSet<EntityUid>();
+        if (site.TileEntities != null)
+        {
+            foreach (var tile in site.TileEntities.Values)
+            {
+                if (Transform(tile).GridUid is { } grid)
+                    padGrids.Add(grid);
+            }
+        }
+
         var bounds = shuttle.LocalAABB.Translated(origin);
         var grids = new List<Entity<MapGridComponent>>();
         _mapManager.FindGridsIntersecting(surfaceMap, bounds, ref grids, includeMap: false);
-        return grids.All(grid => grid.Owner == terrainGrid || grid.Owner == shuttleGrid);
+        return grids.All(grid => grid.Owner == terrainGrid ||
+                                 grid.Owner == shuttleGrid ||
+                                 padGrids.Contains(grid.Owner));
     }
 
     private bool TryGetOrbitalLaunchOrigin(
@@ -760,26 +781,30 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     /// <summary>
     /// Authored infrastructure is loaded before a procedural planet has materialised terrain.
     /// Its prototype requests anchoring, but the engine correctly refuses while no supporting tile
-    /// exists. The landing clearance now has real tiles, so retry anchoring only our infrastructure.
+    /// exists. A planet's generated terrain and its authored base are separate grids on one map,
+    /// so infrastructure must be re-anchored on the grid it was loaded on, not on the terrain grid.
     /// </summary>
     private void AnchorPlanetaryInfrastructure(EntityUid terrainGrid)
     {
-        var grid = Comp<MapGridComponent>(terrainGrid);
-        AnchorPlanetaryInfrastructure<KoronusLandingPadComponent>(terrainGrid, grid);
-        AnchorPlanetaryInfrastructure<KoronusLandingPadConsoleComponent>(terrainGrid, grid);
-        AnchorPlanetaryInfrastructure<KoronusPlanetaryTeleporterComponent>(terrainGrid, grid);
+        var mapId = Transform(terrainGrid).MapID;
+        AnchorPlanetaryInfrastructure<KoronusLandingPadComponent>(mapId);
+        AnchorPlanetaryInfrastructure<KoronusLandingPadConsoleComponent>(mapId);
+        AnchorPlanetaryInfrastructure<KoronusPlanetaryTeleporterComponent>(mapId);
     }
 
-    private void AnchorPlanetaryInfrastructure<T>(EntityUid terrainGrid, MapGridComponent grid)
+    private void AnchorPlanetaryInfrastructure<T>(MapId mapId)
         where T : IComponent
     {
         var query = EntityManager.AllEntityQueryEnumerator<T, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
-            if (transform.Anchored || transform.GridUid != terrainGrid)
+            if (transform.Anchored ||
+                transform.MapID != mapId ||
+                transform.GridUid is not { } gridUid ||
+                !TryComp<MapGridComponent>(gridUid, out var grid))
                 continue;
 
-            _transform.AnchorEntity((uid, transform), (terrainGrid, grid));
+            _transform.AnchorEntity((uid, transform), (gridUid, grid));
         }
     }
 

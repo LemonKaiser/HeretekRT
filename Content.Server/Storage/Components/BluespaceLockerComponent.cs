@@ -133,7 +133,7 @@ public partial record BluespaceLockerBehaviorProperties
     /// Defines prototype to spawn for bluespace effect
     /// </summary>
     [DataField("bluespaceEffectPrototype"), ViewVariables(VVAccess.ReadWrite)]
-    public string BluespaceEffectPrototype { get; set; } = "EffectFlashBluespace";
+    public string BluespaceEffectPrototype { get; set; } = "BluespaceTeleportationEffect";
 
     /// <summary>
     /// Determines if bluespace effect is show on teleport at the source

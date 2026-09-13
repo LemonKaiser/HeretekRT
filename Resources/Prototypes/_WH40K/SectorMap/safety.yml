@@ -14,6 +14,7 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockFireAndHighTemperature: true
   blockClassOffensiveActions: true
   blockClassDeviceInteractions: true
   blockClassAreaEffects: true
@@ -33,6 +34,7 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockFireAndHighTemperature: true
   blockClassOffensiveActions: true
   blockClassDeviceInteractions: true
   blockClassAreaEffects: true
@@ -51,6 +53,7 @@
   autoCleanupHostileNpcs: true
   blockPlayerDisposal: true
   blockAtmosphericRelease: true
+  blockFireAndHighTemperature: true
   blockClassDeviceInteractions: true
   blockClassAreaEffects: true
 
@@ -68,6 +71,7 @@
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
   protectNonHostileMobs: true
+  blockFireAndHighTemperature: true
   blockClassOffensiveActions: true
   blockClassDeviceInteractions: true
   blockClassAreaEffects: true

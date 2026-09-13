@@ -48,17 +48,19 @@ public static class ChatJobIconMarkup
     /// <summary>
     ///     OutputPanel measures the first rich-text line before it accounts for an inline control's height.
     ///     This invisible short line reserves the missing space for the full-size icon without modifying the
-    ///     message used by speech bubbles.
+    ///     message used by speech bubbles. It is appended after all visible output, otherwise a later suffix
+    ///     would start a new line at the icon's left edge.
     /// </summary>
-    public static string ReserveOutputLineHeight(string wrappedMessage)
+    public static void ReserveOutputLineHeight(FormattedMessage message)
     {
-        if (!wrappedMessage.Contains($"[{TagName}", StringComparison.Ordinal) ||
-            wrappedMessage.EndsWith(OutputLineHeightSpacer, StringComparison.Ordinal))
+        foreach (var node in message)
         {
-            return wrappedMessage;
-        }
+            if (node.Name != TagName || node.Closing)
+                continue;
 
-        return wrappedMessage + OutputLineHeightSpacer;
+            message.AddMarkupOrThrow(OutputLineHeightSpacer);
+            return;
+        }
     }
 }
 

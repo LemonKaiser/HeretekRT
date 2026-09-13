@@ -11,6 +11,12 @@ public sealed partial class CCVars
         CVarDef.Create("atmos.space_wind", true, CVar.SERVERONLY); // Frontier: true
 
     /// <summary>
+    ///     Whether space wind creates visual indicators for active air currents.
+    /// </summary>
+    public static readonly CVarDef<bool> SpaceWindVisuals =
+        CVarDef.Create("atmos.space_wind_visuals", true, CVar.SERVERONLY);
+
+    /// <summary>
     ///     Divisor from maxForce (pressureDifference * 2.25f) to force applied on objects.
     /// </summary>
     public static readonly CVarDef<float> SpaceWindPressureForceDivisorThrow =

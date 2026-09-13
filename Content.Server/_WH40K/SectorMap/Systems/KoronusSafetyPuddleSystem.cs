@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// </summary>
 public sealed class KoronusSafetyPuddleSystem : EntitySystem
 {
-    private static readonly TimeSpan CleanupDelay = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan CleanupDelay = TimeSpan.FromSeconds(30);
 
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private KoronusSafetyPolicySystem _safety = default!;

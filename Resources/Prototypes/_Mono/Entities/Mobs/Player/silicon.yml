@@ -259,6 +259,7 @@
       teleportAttempts: 5 # will only slightly aim for grids
       forceSafe: false
       minRadiusFraction: 0.75 # force teleport 30-40 tiles
+      teleportEffect: BluespaceTeleportationEffect
   # lower HP to compensate for scram
   - type: MobThresholds
     thresholds:

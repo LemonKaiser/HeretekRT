@@ -130,6 +130,13 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
     [DataField]
     public bool BlockAtmosphericRelease;
 
+    /// <summary>
+    /// Suppresses combustion, fire damage and damaging heat. This is for fully protected
+    /// public facilities, where an existing fire must not be able to spread through a crowd.
+    /// </summary>
+    [DataField]
+    public bool BlockFireAndHighTemperature;
+
     [DataField]
     public bool BlockClassOffensiveActions;
 
@@ -195,6 +202,8 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
                 rules |= KoronusSafetyRule.PlayerDisposal;
             if (BlockAtmosphericRelease)
                 rules |= KoronusSafetyRule.AtmosphericRelease;
+            if (BlockFireAndHighTemperature)
+                rules |= KoronusSafetyRule.FireAndHighTemperature;
             if (BlockClassOffensiveActions)
                 rules |= KoronusSafetyRule.ClassOffensiveActions;
             if (BlockClassDeviceInteractions)
@@ -256,4 +265,5 @@ public enum KoronusSafetyRule : uint
     ClassDeviceInteractions = 1 << 25,
     ClassAreaEffects = 1 << 26,
     ClassMobilityActions = 1 << 27,
+    FireAndHighTemperature = 1 << 28,
 }

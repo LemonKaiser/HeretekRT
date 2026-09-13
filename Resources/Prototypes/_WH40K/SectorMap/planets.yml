@@ -1,5 +1,5 @@
-# NAV and decorative radii are authored independently. The latter is projected by the same
-# parallax factor as body position, so crossing a body's visual edge stays spatially coherent.
+# Planets may have decorative parallax radii. Stars always use their NAV radius and world-space
+# centre, so their size and distance remain identical in both views.
 
 - type: koronusCelestialBody
   id: TrinnitosStar
@@ -8,8 +8,6 @@
   displayName: Trinnitos
   description: The star at the centre of the Trinnitos system.
   navVisualRadius: 1600
-  backgroundVisualRadius: 2600
-  backgroundParallaxSlowness: 0.82
   starColor: "#FF5E4A"
 
 - type: koronusCelestialBody
@@ -247,8 +245,6 @@
   displayName: Sotto's Tomb
   description: Звезда в центре системы Sotto's Tomb.
   navVisualRadius: 800
-  backgroundVisualRadius: 1300
-  backgroundParallaxSlowness: 0.82
   starColor: "#7FC4FF"
 
 - type: koronusCelestialBody
@@ -317,8 +313,6 @@
   displayName: Aivorius
   description: Звезда в центре системы Aivorius.
   navVisualRadius: 1600
-  backgroundVisualRadius: 2600
-  backgroundParallaxSlowness: 0.82
   starColor: "#FF5E4A"
 
 - type: koronusCelestialBody
@@ -526,8 +520,6 @@
   displayName: Фурибундус
   description: The immense and violently active star at the centre of the Furibundus system.
   navVisualRadius: 1200
-  backgroundVisualRadius: 1950
-  backgroundParallaxSlowness: 0.82
   starColor: "#FFFFFF"
 
 - type: koronusCelestialBody

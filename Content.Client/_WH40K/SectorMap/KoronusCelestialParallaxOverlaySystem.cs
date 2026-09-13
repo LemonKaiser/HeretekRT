@@ -71,7 +71,7 @@ public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
 
         var time = (float) _timing.CurTime.TotalSeconds;
         var orbitalPosition = KoronusCelestialParallaxOverlay.GetOrbitalPosition(system, star, time);
-        var slowness = Math.Clamp(star.BackgroundParallaxSlowness, 0f, 1f);
+        var slowness = KoronusCelestialParallaxOverlay.GetSceneryParallaxSlowness(star);
         var sceneryPosition = KoronusCelestialParallaxOverlay.GetSceneryPosition(
             orbitalPosition,
             eyePosition.Position,

@@ -1,4 +1,5 @@
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 
 // Mono - whole file
 namespace Content.Shared.Teleportation;
@@ -20,6 +21,12 @@ public sealed partial class TeleportSpecifier
 
     [DataField]
     public SoundSpecifier TeleportSound = new SoundPathSpecifier("/Audio/Effects/teleport_arrival.ogg");
+
+    /// <summary>
+    ///     Optional visual entity spawned at both the departure and arrival positions.
+    /// </summary>
+    [DataField]
+    public EntProtoId? TeleportEffect;
 
     [DataField]
     public bool AvoidSpace = true;

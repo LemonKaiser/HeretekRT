@@ -8,12 +8,15 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Teleportation.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Collections;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server.Anomaly.Effects;
 
 public sealed partial class BluespaceAnomalySystem : EntitySystem
 {
+    private static readonly EntProtoId TeleportationEffect = "BluespaceTeleportationEffect";
+
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -50,7 +53,9 @@ public sealed partial class BluespaceAnomalySystem : EntitySystem
         for (var i = 0; i < allEnts.Count; i++)
         {
             _adminLogger.Add(LogType.Teleport, $"{ToPrettyString(allEnts[i])} has been shuffled to {coords[i]} by the {ToPrettyString(uid)} at {xform.Coordinates}");
+            Spawn(TeleportationEffect, _xform.GetMapCoordinates(allEnts[i]));
             _xform.SetWorldPosition(allEnts[i], coords[i]);
+            Spawn(TeleportationEffect, _xform.GetMapCoordinates(allEnts[i]));
         }
     }
 
@@ -72,7 +77,9 @@ public sealed partial class BluespaceAnomalySystem : EntitySystem
 
             _adminLogger.Add(LogType.Teleport, $"{ToPrettyString(ent)} has been teleported to {pos} by the supercritical {ToPrettyString(uid)} at {mapPos}");
 
+            Spawn(TeleportationEffect, _xform.GetMapCoordinates(ent));
             _xform.SetWorldPosition(ent, pos);
+            Spawn(TeleportationEffect, _xform.GetMapCoordinates(ent));
             _audio.PlayPvs(component.TeleportSound, ent);
         }
     }

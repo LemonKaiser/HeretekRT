@@ -1,4 +1,6 @@
 using Content.Shared._WH40K.OfferItem;
+using Robust.Client.Graphics;
+using Robust.Client.Player;
 using Content.Shared.Hands.Components;
 using Content.Shared.Verbs;
 
@@ -9,10 +11,34 @@ namespace Content.Client._WH40K.OfferItem;
 /// </summary>
 public sealed class OfferItemSystem : EntitySystem
 {
+    [Dependency] private readonly IOverlayManager _overlayManager = default!;
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
+
+    private OfferItemCursorOverlay? _cursorOverlay;
+
     public override void Initialize()
     {
+        _cursorOverlay = new OfferItemCursorOverlay(this);
+        _overlayManager.AddOverlay(_cursorOverlay);
+
         SubscribeLocalEvent<OfferedItemComponent, GetVerbsEvent<InteractionVerb>>(OnReceiverVerbs);
         SubscribeLocalEvent<OfferingItemComponent, GetVerbsEvent<InteractionVerb>>(OnOffererVerbs);
+    }
+
+    public override void Shutdown()
+    {
+        if (_cursorOverlay != null)
+            _overlayManager.RemoveOverlay(_cursorOverlay);
+
+        base.Shutdown();
+    }
+
+    public bool IsLocalOfferPending()
+    {
+        return _playerManager.LocalEntity is { } local &&
+               TryComp<OfferingItemComponent>(local, out var offer) &&
+               offer.Target != null &&
+               offer.Item != null;
     }
 
     private void OnReceiverVerbs(Entity<OfferedItemComponent> ent, ref GetVerbsEvent<InteractionVerb> args)

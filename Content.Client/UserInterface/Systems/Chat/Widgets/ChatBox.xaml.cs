@@ -160,8 +160,6 @@ public partial class ChatBox : UIWidget
 
     public void AddLine(string message, Color color, int repeat = 0, bool allowAliasMarkup = true) // WD EDIT
     {
-        // The spacer is output-only: speech bubbles continue to receive the original message markup.
-        message = ChatJobIconMarkup.ReserveOutputLineHeight(message);
         var formatted = ChatEmojiRichText.BuildChatLine(
             message,
             color,
@@ -172,11 +170,14 @@ public partial class ChatBox : UIWidget
         {
             int displayRepeat = repeat + 1;
             int sizeIncrease = Math.Min(displayRepeat / 6, 5);
-            formatted.AddMarkup(_loc.GetString("chat-system-repeated-message-counter",
+            formatted.AddMarkupOrThrow(_loc.GetString("chat-system-repeated-message-counter",
                 ("count", displayRepeat),
                 ("size", 8+sizeIncrease)
             ));
         } // WD EDIT END
+
+        // The spacer is output-only, so it belongs after every visible suffix and never affects speech bubbles.
+        ChatJobIconMarkup.ReserveOutputLineHeight(formatted);
         Contents.AddMessage(formatted, tagsAllowed: null);
     }
 
