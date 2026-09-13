@@ -27,7 +27,6 @@ public sealed class WH40KBleedingVisualSystem : EntitySystem
         SubscribeLocalEvent<WH40KBleedingVisualComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<WH40KBleedingVisualComponent, AfterAutoHandleStateEvent>(OnState);
         SubscribeLocalEvent<WH40KBleedingVisualComponent, ComponentShutdown>(OnShutdown);
-        SubscribeLocalEvent<HumanoidAppearanceComponent, AfterAutoHandleStateEvent>(OnHumanoidAppearanceState);
     }
 
     private void OnStartup(Entity<WH40KBleedingVisualComponent> entity, ref ComponentStartup args)
@@ -38,12 +37,6 @@ public sealed class WH40KBleedingVisualSystem : EntitySystem
     private void OnState(Entity<WH40KBleedingVisualComponent> entity, ref AfterAutoHandleStateEvent args)
     {
         Apply(entity);
-    }
-
-    private void OnHumanoidAppearanceState(Entity<HumanoidAppearanceComponent> entity, ref AfterAutoHandleStateEvent args)
-    {
-        if (TryComp<WH40KBleedingVisualComponent>(entity, out var bleeding))
-            Apply((entity.Owner, bleeding));
     }
 
     private void OnShutdown(Entity<WH40KBleedingVisualComponent> entity, ref ComponentShutdown args)
