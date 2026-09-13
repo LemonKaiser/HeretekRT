@@ -8,6 +8,7 @@ using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Detection;
 using Content.Shared._Mono.Radar;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.SectorMap.Prototypes;
@@ -44,8 +45,6 @@ public enum ShuttleNavTargetingMode : byte
 [Virtual]
 public partial class ShuttleNavControl : BaseShuttleControl // Mono
 {
-    private const int KoronusBoundaryBandSegments = 128;
-
     [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IUserInterfaceManager _uiManager = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
@@ -84,11 +83,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     // temporary buffers to avoid per-frame heap churn
     private readonly List<BlipData> _tempBlipDataList = new();
     private readonly HashSet<EntityUid> _visibleGridsSet = new();
-    private readonly Vector2[] _koronusBoundaryBandVertices = new Vector2[(KoronusBoundaryBandSegments + 1) * 2];
+    private readonly Vector2[] _koronusBoundaryOutlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
+    private readonly Vector2[] _koronusBoundaryDangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
     private readonly Vector2[] _radarPositionVertices = new Vector2[RadarPosVertsCache.Length];
     private static readonly Color KoronusOrbitShadowColor = Color.FromHex("#14211E").WithAlpha(0.92f);
     private static readonly Color KoronusOrbitColor = Color.FromHex("#83B7A5").WithAlpha(0.82f);
-    private static readonly Vector2[] KoronusBoundaryBandDirections = CreateKoronusBoundaryBandDirections();
     private static readonly Vector2[] RadarPosVertsCache =
     [
         new Vector2(0f, -2f),
@@ -1785,9 +1784,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
         var center = Vector2.Transform(boundary.Origin, worldToView);
         var boundaryRadius = boundary.Radius * MinimapScale;
-        var warningRadius = boundary.Radius * boundary.WarningFraction;
-        if (boundaryRadius <= 0f ||
-            Vector2.DistanceSquared(observerPosition, boundary.Origin) < warningRadius * warningRadius)
+        if (!KoronusSystemBoundaryMath.IsInWarningArea(
+                observerPosition,
+                boundary.Origin,
+                boundary.Radius,
+                boundary.WarningFraction))
             return;
 
         var outerRadius = MathF.Max(
@@ -1798,39 +1799,17 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                                   Vector2.Distance(center, new Vector2(0f, PixelSize.Y)),
                                   Vector2.Distance(center, PixelSize))) + 2f;
 
-        DrawKoronusDangerBand(handle, center, boundaryRadius, outerRadius);
-        handle.DrawCircle(center, boundaryRadius, Color.FromHex("#E02828").WithAlpha(0.96f), filled: false);
-    }
-
-    private void DrawKoronusDangerBand(DrawingHandleScreen handle, Vector2 center, float innerRadius, float outerRadius)
-    {
-        if (outerRadius <= innerRadius)
-            return;
-
-        for (var i = 0; i <= KoronusBoundaryBandSegments; i++)
-        {
-            var direction = KoronusBoundaryBandDirections[i];
-            var vertex = i * 2;
-            _koronusBoundaryBandVertices[vertex] = center + direction * innerRadius;
-            _koronusBoundaryBandVertices[vertex + 1] = center + direction * outerRadius;
-        }
-
-        handle.DrawPrimitives(
-            DrawPrimitiveTopology.TriangleStrip,
-            _koronusBoundaryBandVertices,
-            Color.FromHex("#4A0606").WithAlpha(0.78f));
-    }
-
-    private static Vector2[] CreateKoronusBoundaryBandDirections()
-    {
-        var directions = new Vector2[KoronusBoundaryBandSegments + 1];
-        for (var i = 0; i <= KoronusBoundaryBandSegments; i++)
-        {
-            var angle = MathF.Tau * i / KoronusBoundaryBandSegments;
-            directions[i] = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
-        }
-
-        return directions;
+        KoronusSystemBoundaryRenderer.DrawDangerBand(
+            handle,
+            center,
+            boundaryRadius,
+            outerRadius,
+            _koronusBoundaryDangerBandVertices);
+        KoronusSystemBoundaryRenderer.DrawOutline(
+            handle,
+            center,
+            boundaryRadius,
+            _koronusBoundaryOutlineVertices);
     }
 
     private void DrawBlipShape(DrawingHandleScreen handle, Vector2 position, Box2Rotated bounds, Color color, RadarBlipShape shape)

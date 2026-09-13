@@ -35,10 +35,6 @@
   boundaryRadius: 24000
   enabled: true
   activityEligible: true
-  asteroidField:
-    count: 4
-    innerRadius: 8800
-    outerRadius: 10400
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
@@ -67,10 +63,6 @@
   boundaryRadius: 24000
   enabled: true
   activityEligible: true
-  asteroidField:
-    count: 4
-    innerRadius: 8200
-    outerRadius: 9800
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
@@ -92,10 +84,6 @@
   boundaryRadius: 24000
   enabled: true
   activityEligible: true
-  asteroidField:
-    count: 4
-    innerRadius: 9000
-    outerRadius: 10800
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true

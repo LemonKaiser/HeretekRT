@@ -361,6 +361,12 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         runtime.SurfaceId = surfaceId;
         runtime.SystemId = systemId;
         runtime.TerrainGrid = terrainGrid;
+        runtime.AuthoredBaseGrids.Clear();
+        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        {
+            if (grid.Owner != terrainGrid)
+                runtime.AuthoredBaseGrids.Add(grid.Owner);
+        }
         if (_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(surfaceId, out var surface))
         {
             runtime.PlayableBounds = GetPlayableBounds(surface);
@@ -536,7 +542,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
 
     private List<ResolvedLandingSite> GetLandingSites(KoronusPlanetSurfaceMapComponent runtime)
     {
-        return _landingPads.GetPads(runtime.TerrainGrid)
+        return _landingPads.GetPads(runtime.TerrainGrid, runtime.AuthoredBaseGrids)
             .Select(pad => new ResolvedLandingSite(
                     pad.Id,
                     pad.Name,

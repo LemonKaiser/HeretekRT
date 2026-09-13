@@ -111,13 +111,6 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     [DataField]
     public bool ActivityEligible;
 
-    /// <summary>
-    /// Optional finite asteroid field for an external, activity-eligible system. It is generated
-    /// once when the system map is first created and is never used for Footfall.
-    /// </summary>
-    [DataField]
-    public KoronusAsteroidFieldDefinition? AsteroidField;
-
     [DataField]
     public float BoundaryRadius = 20000f;
 
@@ -180,23 +173,6 @@ public enum KoronusSpaceMode : byte
 {
     Standard,
     Planetary,
-}
-
-/// <summary>
-/// Finite ring of pre-existing mining asteroids. The definition intentionally exposes no map,
-/// entity or reward input: the server selects from its closed audited pool.
-/// </summary>
-[DataDefinition]
-public sealed partial class KoronusAsteroidFieldDefinition
-{
-    [DataField(required: true)]
-    public int Count;
-
-    [DataField]
-    public float InnerRadius = 8000f;
-
-    [DataField]
-    public float OuterRadius = 10000f;
 }
 
 /// <summary>

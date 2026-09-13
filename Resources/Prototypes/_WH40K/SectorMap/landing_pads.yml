@@ -18,6 +18,10 @@
   description: Configures and monitors an adjacent planetary landing pad.
   components:
   - type: KoronusLandingPadConsole
+  # A planetary landing beacon must remain reachable before a crew has restored a surface power
+  # network. Individual maps can explicitly override this for a deliberately disabled pad.
+  - type: ApcPowerReceiver
+    needsPower: false
   - type: ActivatableUI
     key: enum.KoronusLandingPadUiKey.Key
   - type: UserInterface

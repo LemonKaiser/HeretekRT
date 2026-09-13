@@ -1,5 +1,6 @@
 using Content.Server._WH40K.SectorMap.Systems;
 using Robust.Shared.Maths;
+using System.Collections.Generic;
 
 namespace Content.Server._WH40K.SectorMap.Components;
 
@@ -19,10 +20,18 @@ public sealed partial class KoronusPlanetSurfaceMapComponent : Component
     public string SystemId = string.Empty;
 
     /// <summary>
-    /// The authored terrain grid is allowed to overlap a landed shuttle; other grids are not.
+    /// Procedural biome grid that owns the surface terrain and provides its coordinate space.
     /// </summary>
     [ViewVariables]
     public EntityUid TerrainGrid;
+
+    /// <summary>
+    /// Grids loaded from the authored surface map. Planet setup gives static grids a shuttle
+    /// component too, so this explicit set is the authority for distinguishing the permanent base
+    /// from actual visiting shuttles.
+    /// </summary>
+    [ViewVariables]
+    public HashSet<EntityUid> AuthoredBaseGrids = new();
 
     /// <summary>
     /// Square gameplay perimeter. Shuttles, players and loose objects are safely stopped and moved

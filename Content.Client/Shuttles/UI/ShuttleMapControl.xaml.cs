@@ -1,8 +1,10 @@
 using System.Buffers;
 using System.Numerics;
 using Content.Client.Shuttles.Systems;
+using Content.Client._WH40K.SectorMap;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Detection;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared.Station.Components;
 using Content.Shared.Shuttles.Components;
@@ -121,6 +123,8 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
     private readonly Dictionary<Color, List<Vector2>> _edges = new();
     private readonly Dictionary<Color, List<(Vector2, string, bool)>> _strings = new();
     private readonly List<ShuttleExclusionObject> _viewportExclusions = new();
+    private readonly Vector2[] _koronusBoundaryOutlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
+    private readonly Vector2[] _koronusBoundaryDangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
 
     public ShuttleMapControl() : base(256f, 4096f, 512f)
     {
@@ -434,16 +438,36 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
 
         if (_shuttleEntity is { } shuttle &&
             EntManager.TryGetComponent<TransformComponent>(shuttle, out var shuttleTransform) &&
+            shuttleTransform.MapID == ViewingMap &&
             EntManager.TryGetComponent<KoronusSystemBoundaryComponent>(viewedMapUid, out var sectorBoundary) &&
-            Vector2.DistanceSquared(_xformSystem.GetWorldPosition(shuttleTransform), sectorBoundary.Origin) >=
-            sectorBoundary.Radius * sectorBoundary.WarningFraction *
-            (sectorBoundary.Radius * sectorBoundary.WarningFraction))
+            KoronusSystemBoundaryMath.IsInWarningArea(
+                _xformSystem.GetWorldPosition(shuttleTransform),
+                sectorBoundary.Origin,
+                sectorBoundary.Radius,
+                sectorBoundary.WarningFraction))
         {
             var boundaryPosition = Vector2.Transform(sectorBoundary.Origin, matty);
             var boundaryCenter = ScalePosition(boundaryPosition with { Y = -boundaryPosition.Y });
             var boundaryRadius = sectorBoundary.Radius * MinimapScale;
+            var outerRadius = MathF.Max(
+                                  MathF.Max(
+                                      Vector2.Distance(boundaryCenter, Vector2.Zero),
+                                      Vector2.Distance(boundaryCenter, new Vector2(PixelSize.X, 0f))),
+                                  MathF.Max(
+                                      Vector2.Distance(boundaryCenter, new Vector2(0f, PixelSize.Y)),
+                                      Vector2.Distance(boundaryCenter, PixelSize))) + 2f;
 
-            handle.DrawCircle(boundaryCenter, boundaryRadius, Color.Red.WithAlpha(0.9f), filled: false);
+            KoronusSystemBoundaryRenderer.DrawDangerBand(
+                handle,
+                boundaryCenter,
+                boundaryRadius,
+                outerRadius,
+                _koronusBoundaryDangerBandVertices);
+            KoronusSystemBoundaryRenderer.DrawOutline(
+                handle,
+                boundaryCenter,
+                boundaryRadius,
+                _koronusBoundaryOutlineVertices);
         }
 
         var exclusionColor = Color.Red;

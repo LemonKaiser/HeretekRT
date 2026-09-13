@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -8,16 +9,14 @@ using Robust.Shared.Map;
 namespace Content.Client._WH40K.SectorMap;
 
 /// <summary>
-/// Draws the red danger band at the edge of an authored Koronus system.
+/// Draws the shared red danger area outside the system edge when the viewer enters its warning area.
 /// </summary>
 public sealed class KoronusSystemBoundaryOverlay : Overlay
 {
-    private const int BandSegments = 128;
-
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IMapManager _maps = default!;
-    private static readonly Vector2[] BandDirections = CreateBandDirections();
-    private readonly Vector2[] _dangerBandVertices = new Vector2[(BandSegments + 1) * 2];
+    private readonly Vector2[] _outlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
+    private readonly Vector2[] _dangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -35,8 +34,11 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
             return false;
         }
 
-        var warningRadius = boundary.Radius * boundary.WarningFraction;
-        return Vector2.DistanceSquared(eye.Position.Position, boundary.Origin) >= warningRadius * warningRadius;
+        return KoronusSystemBoundaryMath.IsInWarningArea(
+            eye.Position.Position,
+            boundary.Origin,
+            boundary.Radius,
+            boundary.WarningFraction);
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -45,7 +47,6 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
         if (!_entities.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
             return;
 
-        var handle = args.WorldHandle;
         var outerRadius = MathF.Max(
                               MathF.Max(
                                   Vector2.Distance(boundary.Origin, args.WorldAABB.BottomLeft),
@@ -54,35 +55,16 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
                                   Vector2.Distance(boundary.Origin, args.WorldAABB.TopLeft),
                                   Vector2.Distance(boundary.Origin, args.WorldAABB.TopRight))) + 1f;
 
-        DrawDangerBand(handle, boundary.Origin, boundary.Radius, outerRadius);
-        handle.DrawCircle(boundary.Origin, boundary.Radius, Color.FromHex("#E02828").WithAlpha(0.96f), filled: false);
-    }
-
-    private void DrawDangerBand(DrawingHandleWorld handle, Vector2 origin, float innerRadius, float outerRadius)
-    {
-        if (innerRadius <= 0f || outerRadius <= innerRadius)
-            return;
-
-        for (var i = 0; i <= BandSegments; i++)
-        {
-            var direction = BandDirections[i];
-            var vertex = i * 2;
-            _dangerBandVertices[vertex] = origin + direction * innerRadius;
-            _dangerBandVertices[vertex + 1] = origin + direction * outerRadius;
-        }
-
-        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, _dangerBandVertices, Color.FromHex("#4A0606").WithAlpha(0.78f));
-    }
-
-    private static Vector2[] CreateBandDirections()
-    {
-        var directions = new Vector2[BandSegments + 1];
-        for (var i = 0; i <= BandSegments; i++)
-        {
-            var angle = MathF.Tau * i / BandSegments;
-            directions[i] = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
-        }
-
-        return directions;
+        KoronusSystemBoundaryRenderer.DrawDangerBand(
+            args.WorldHandle,
+            boundary.Origin,
+            boundary.Radius,
+            outerRadius,
+            _dangerBandVertices);
+        KoronusSystemBoundaryRenderer.DrawOutline(
+            args.WorldHandle,
+            boundary.Origin,
+            boundary.Radius,
+            _outlineVertices);
     }
 }

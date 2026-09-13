@@ -1,6 +1,6 @@
 using System.Numerics;
 using System.Linq;
-using Content.Server._Mono.Planets;
+using System.Collections.Generic;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
@@ -59,17 +59,14 @@ public sealed class KoronusLandingPadSystem : EntitySystem
             UpdateUi((uid, component));
     }
 
-    public List<KoronusLandingPadRuntime> GetPads(EntityUid terrainGrid)
+    public List<KoronusLandingPadRuntime> GetPads(
+        EntityUid terrainGrid,
+        IReadOnlySet<EntityUid>? authoredBaseGrids = null)
     {
         if (!TryComp<MapGridComponent>(terrainGrid, out var grid) ||
             !TryComp<TransformComponent>(terrainGrid, out var terrainTransform))
             return new List<KoronusLandingPadRuntime>();
 
-        // PlanetSystem loads an authored Grid map over its biome grid. The pad markers in that
-        // authored map therefore belong to a separate, stationary grid even though their world
-        // coordinates describe the biome terrain. Include those grids only when resolving a real
-        // planet map; ordinary grids retain strict per-grid grouping.
-        var includePlanetMapGrids = HasComp<PlanetMapComponent>(terrainGrid);
         var tiles = new Dictionary<Vector2i, EntityUid>();
         // Preloaded planet surfaces are paused until somebody lands. Landing targets must still be
         // discoverable while the shuttle is in orbit, so these scans deliberately include paused entities.
@@ -81,7 +78,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
                     grid,
                     terrainTransform,
                     transform,
-                    includePlanetMapGrids,
+                    authoredBaseGrids,
                     out var tile))
                 continue;
 
@@ -100,7 +97,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
                     grid,
                     terrainTransform,
                     transform,
-                    includePlanetMapGrids,
+                    authoredBaseGrids,
                     out var tile))
                 continue;
 
@@ -165,7 +162,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         MapGridComponent grid,
         TransformComponent terrainTransform,
         TransformComponent transform,
-        bool includePlanetMapGrids,
+        IReadOnlySet<EntityUid>? authoredBaseGrids,
         out Vector2i tile)
     {
         tile = default;
@@ -179,9 +176,10 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         }
         else
         {
-            if (!includePlanetMapGrids ||
+            if (authoredBaseGrids == null ||
+                !authoredBaseGrids.Contains(sourceGrid) ||
                 transform.MapID != terrainTransform.MapID ||
-                HasComp<ShuttleComponent>(sourceGrid))
+                TerminatingOrDeleted(sourceGrid))
             {
                 return false;
             }
