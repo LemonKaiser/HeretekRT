@@ -1,6 +1,7 @@
 using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
+using Content.Server.Shuttles.Systems;
 using Content.Server.GameTicking.Rules;
 using System.Numerics;
 using System.Linq;
@@ -38,6 +39,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     [Dependency] private KoronusSectorResidencySystem _residency = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private DockingSystem _docking = default!;
 
     private EntityUid? _activeDirector;
 
@@ -236,6 +238,27 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     /// </summary>
     public bool TryCompleteObjective(long instanceId, EntityUid objective)
     {
+        return TryFinalizeObjective(instanceId, objective, preserveObjective: false);
+    }
+
+    /// <summary>
+    /// Completes a stage-two recovery only after its item has reached a living player's hand. The
+    /// item is deliberately detached from activity cleanup so it remains a physical record for a
+    /// later redemption stage; it has no reward or special authority by itself.
+    /// </summary>
+    public bool TryCompleteExtractedObjective(long instanceId, EntityUid objective)
+    {
+        if (!TryComp<KoronusActivityObjectiveComponent>(objective, out var objectiveComponent) ||
+            !KoronusActivityRuntimePolicy.IsSetPieceExecution(objectiveComponent.Execution))
+        {
+            return false;
+        }
+
+        return TryFinalizeObjective(instanceId, objective, preserveObjective: true);
+    }
+
+    private bool TryFinalizeObjective(long instanceId, EntityUid objective, bool preserveObjective)
+    {
         if (!TryGetActiveComponent(out var component))
             return false;
 
@@ -249,8 +272,15 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         }
 
         instance.State = KoronusActivityState.Resolving;
-        if (!Archive(component, instance, KoronusActivityTerminalReason.Completed))
+        if (!Archive(component, instance, KoronusActivityTerminalReason.Completed,
+                preserveObjective ? objective : null))
             return false;
+
+        if (preserveObjective && Exists(objective))
+        {
+            RemComp<KoronusActivityOwnedComponent>(objective);
+            RemComp<KoronusActivityObjectiveComponent>(objective);
+        }
 
         EnsureMinimumPopulation(component);
         RebuildPresentation(component);
@@ -630,7 +660,15 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         string systemId;
         string? routeFrom = null;
         string? routeTo = null;
-        if (selected.Family == KoronusActivityFamily.Route)
+        if (KoronusActivityRuntimePolicy.TryGetSetPieceSystem(selected.Execution, out var setPieceSystemId))
+        {
+            var setPieceSystem = systems.FirstOrDefault(system => system.ID == setPieceSystemId);
+            if (setPieceSystem == null)
+                return false;
+
+            systemId = setPieceSystem.ID;
+        }
+        else if (selected.Family == KoronusActivityFamily.Route)
         {
             if (routes.Count == 0)
                 return false;
@@ -842,7 +880,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     private bool Archive(
         KoronusActivityDirectorComponent component,
         KoronusActivityRuntimeInstance instance,
-        KoronusActivityTerminalReason reason)
+        KoronusActivityTerminalReason reason,
+        EntityUid? preservedObjective = null)
     {
         if (!KoronusActivityLifecycle.CanTransition(instance.State, KoronusActivityState.CleanupPending))
             return false;
@@ -852,7 +891,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return false;
 
         instance.State = KoronusActivityState.Archived;
-        CleanupOwnedEntities(instance);
+        CleanupOwnedEntities(instance, preservedObjective);
         component.Instances.Remove(instance);
         var family = KoronusActivityFamily.State;
         var lane = KoronusActivityMarkerLane.Ambient;
@@ -887,9 +926,9 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     /// cannot delete or orphan a player body. It never addresses a map, shuttle, surface, or a
     /// nearby unowned entity.
     /// </summary>
-    private void CleanupOwnedEntities(KoronusActivityRuntimeInstance instance)
+    private void CleanupOwnedEntities(KoronusActivityRuntimeInstance instance, EntityUid? preservedObjective = null)
     {
-        CleanupOwnedEntities(instance.Id);
+        CleanupOwnedEntities(instance.Id, preservedObjective);
 
         if (instance.HasSystemLease)
         {
@@ -901,20 +940,26 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         instance.Objective = null;
     }
 
-    private int CleanupOwnedEntities(long instanceId)
+    private int CleanupOwnedEntities(long instanceId, EntityUid? preservedObjective = null)
     {
         var toDelete = new List<(EntityUid Uid, KoronusActivityOwnedKind Kind)>();
         var owned = EntityQueryEnumerator<KoronusActivityOwnedComponent>();
         while (owned.MoveNext(out var uid, out var marker))
         {
-            if (marker.InstanceId == instanceId)
+            if (marker.InstanceId == instanceId && uid != preservedObjective)
                 toDelete.Add((uid, marker.Kind));
         }
 
         foreach (var (uid, kind) in toDelete)
         {
             if (kind == KoronusActivityOwnedKind.Grid)
+            {
+                // The sole dockable profile is a static wreck. Detaching only its own ports before
+                // removal leaves the other, player-owned grid intact and lets its FTL workflow
+                // proceed independently.
+                _docking.UndockDocks(uid);
                 EvacuateAttachedPlayers(uid);
+            }
         }
 
         foreach (var (uid, _) in toDelete)
@@ -928,7 +973,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return;
 
         var gridPosition = _transform.ToMapCoordinates(gridTransform.Coordinates);
-        // Stage-five grids reserve an empty 36 m band on creation. Thirty metres puts a body
+        // Activity grids reserve an empty 36 m band on creation. Thirty metres puts a body
         // outside even the cutter hull while retaining a known-safe system map rather than a map
         // or grid selected by player input.
         var fallback = new MapCoordinates(gridPosition.Position + Vector2.UnitX * 30f, gridPosition.MapId);

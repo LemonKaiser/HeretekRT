@@ -1,0 +1,14 @@
+# The only real docking port admitted to a Koronus activity map. It is receive-only, has no
+# shuttle, FTL or console component, and its marker is accepted only by the fixed survey-cutter
+# profile in KoronusActivitySetPieceExecutorSystem.
+
+- type: entity
+  id: KoronusAivoriusSurveyCutterDockingPort
+  parent: AirlockShuttle
+  name: damaged survey cutter docking collar
+  description: A single receive-only collar on an abandoned Aivorius survey cutter.
+  components:
+  - type: Docking
+    receiveOnly: true
+    name: Aivorius survey cutter collar
+  - type: KoronusDockableActivityPort

@@ -149966,4 +149966,53 @@ entities:
     - type: Transform
       pos: 7.188237,-20.291098
       parent: 2
+- proto: KoronusFootfallAivoriusArchive
+  entities:
+  - uid: 24227
+    components:
+    - type: Transform
+      pos: 82.5,-15.5
+      parent: 2
+- proto: KoronusFootfallFoulstoneSurveyIntake
+  entities:
+  - uid: 24228
+    components:
+    - type: Transform
+      pos: 80.5,-16.5
+      parent: 2
+- proto: KoronusFootfallCargoOfficio
+  entities:
+  - uid: 24229
+    components:
+    - type: Transform
+      pos: 78.5,-16.5
+      parent: 2
+- proto: KoronusFootfallMinersGuild
+  entities:
+  - uid: 24230
+    components:
+    - type: Transform
+      pos: 75.5,-17.5
+      parent: 2
+- proto: KoronusFootfallMedicaeIntake
+  entities:
+  - uid: 24231
+    components:
+    - type: Transform
+      pos: 74.5,-18.5
+      parent: 2
+- proto: KoronusFootfallAstropathicRelay
+  entities:
+  - uid: 24232
+    components:
+    - type: Transform
+      pos: 79.5,-18.5
+      parent: 2
+- proto: DeployableFieldBaseCapsule
+  entities:
+  - uid: 24233
+    components:
+    - type: Transform
+      pos: 81.5,-20.5
+      parent: 2
 ...

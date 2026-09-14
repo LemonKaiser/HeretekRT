@@ -1,5 +1,5 @@
-# Stage 2 is deliberately data-only: these templates are markers and dossiers, not entity or map spawners.
-# Their target systems are selected only from koronusSystem.activityEligible, which excludes Footfall.
+# Dossier-only templates are deliberately lighter than authored locations. Their target systems are
+# selected only from koronusSystem.activityEligible, which excludes Footfall.
 
 - type: koronusActivityTemplate
   id: AuspexTriage
@@ -10,7 +10,7 @@
   titleLocId: koronus-activity-auspex-triage-title
   summaryLocId: koronus-activity-auspex-triage-summary
   preferredDayFocus: [ Exploration, Neutral ]
-  weight: 10
+  weight: 7
   minimumLifetime: 1500
   maximumLifetime: 2700
   cooldown: 2100
@@ -24,7 +24,7 @@
   titleLocId: koronus-activity-route-survey-window-title
   summaryLocId: koronus-activity-route-survey-window-summary
   preferredDayFocus: [ Exploration, Trade ]
-  weight: 9
+  weight: 6
   minimumLifetime: 1800
   maximumLifetime: 3300
   cooldown: 2400
@@ -38,7 +38,7 @@
   titleLocId: koronus-activity-weak-distress-relay-title
   summaryLocId: koronus-activity-weak-distress-relay-summary
   preferredDayFocus: [ Rescue, Warp ]
-  weight: 6
+  weight: 4
   minimumLifetime: 1200
   maximumLifetime: 2100
   cooldown: 3000
@@ -52,7 +52,7 @@
   titleLocId: koronus-activity-traffic-pattern-title
   summaryLocId: koronus-activity-traffic-pattern-summary
   preferredDayFocus: [ Trade, Neutral ]
-  weight: 9
+  weight: 6
   minimumLifetime: 1800
   maximumLifetime: 3000
   cooldown: 2400
@@ -66,7 +66,7 @@
   titleLocId: koronus-activity-chart-fragment-title
   summaryLocId: koronus-activity-chart-fragment-summary
   preferredDayFocus: [ Exploration, AncientSignal ]
-  weight: 7
+  weight: 5
   minimumLifetime: 1500
   maximumLifetime: 2700
   cooldown: 2700
@@ -80,7 +80,7 @@
   titleLocId: koronus-activity-warp-weather-window-title
   summaryLocId: koronus-activity-warp-weather-window-summary
   preferredDayFocus: [ Warp, Exploration ]
-  weight: 7
+  weight: 5
   minimumLifetime: 1200
   maximumLifetime: 2400
   cooldown: 3000
@@ -133,8 +133,184 @@
   maximumLifetime: 2100
   cooldown: 4800
 
-# Stage 3 materializes an objective only after a living player reaches this system or surface.
-# These templates cannot name a map, a grid, a role, a reward, or a ghost takeover.
+# Stages 2 and 3 authored set pieces. The executor owns a closed system/surface/map/objective catalogue;
+# YAML provides only presentation and pacing, never a map path, target grid, role, NPC or reward.
+
+- type: koronusActivityTemplate
+  id: AivoriusBlackBoxSetPiece
+  family: VesselSignal
+  lane: Grid
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-aivorius-black-box-title
+  summaryLocId: koronus-activity-aivorius-black-box-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: AivoriusBlackBoxSetPiece
+  objectivePrototype: KoronusMissionBlackBox
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+- type: koronusActivityTemplate
+  id: FoulstoneSurveySetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Low
+  reliability: Verified
+  titleLocId: koronus-activity-foulstone-survey-title
+  summaryLocId: koronus-activity-foulstone-survey-summary
+  preferredDayFocus: [ Exploration, Trade ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: FoulstoneSurveySetPiece
+  objectivePrototype: KoronusFoulstoneSurveyCase
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+- type: koronusActivityTemplate
+  id: SottosIceRescueSetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-sottos-ice-rescue-title
+  summaryLocId: koronus-activity-sottos-ice-rescue-summary
+  preferredDayFocus: [ Rescue, Exploration ]
+  weight: 3
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: SottosIceRescueSetPiece
+  objectivePrototype: KoronusSottosRescuePatient
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+# Stage 3 routes use the same closed authored-map executor. Their YAML still cannot name a map,
+# a grid, role, NPC, reward or ghost takeover: code fixes each route's system, surface and root.
+
+- type: koronusActivityTemplate
+  id: AivoriusCargoSetPiece
+  family: VesselSignal
+  lane: Grid
+  risk: Low
+  reliability: Partial
+  titleLocId: koronus-activity-aivorius-cargo-title
+  summaryLocId: koronus-activity-aivorius-cargo-summary
+  preferredDayFocus: [ Trade, Exploration ]
+  weight: 2
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: AivoriusCargoSetPiece
+  objectivePrototype: KoronusAivoriusCargoManifest
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+- type: koronusActivityTemplate
+  id: FoulstoneMineshaftSetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Partial
+  titleLocId: koronus-activity-foulstone-mineshaft-title
+  summaryLocId: koronus-activity-foulstone-mineshaft-summary
+  preferredDayFocus: [ Exploration, Trade ]
+  weight: 2
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: FoulstoneMineshaftSetPiece
+  objectivePrototype: KoronusFoulstoneMineCore
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+- type: koronusActivityTemplate
+  id: SottosColdRelaySetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Verified
+  titleLocId: koronus-activity-sottos-cold-relay-title
+  summaryLocId: koronus-activity-sottos-cold-relay-summary
+  preferredDayFocus: [ Rescue, AncientSignal ]
+  weight: 2
+  minimumLifetime: 1800
+  maximumLifetime: 3600
+  cooldown: 5400
+  execution: SottosColdRelaySetPiece
+  objectivePrototype: KoronusSottosRelayCipher
+  minimumLivingParticipants: 1
+  participantRadius: 96
+
+# Stage 4 admits only this two-preset manual dungeon pool. Both routes have inert scientific
+# samples and use the same closed authored-map executor; YAML cannot select rooms, maps, artifacts,
+# NPCs, rewards, player ships or ghost takeovers.
+
+- type: koronusActivityTemplate
+  id: FoulstoneAssayAnnexSetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Verified
+  titleLocId: koronus-activity-foulstone-assay-annex-title
+  summaryLocId: koronus-activity-foulstone-assay-annex-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 1
+  minimumLifetime: 2100
+  maximumLifetime: 3900
+  cooldown: 7200
+  execution: FoulstoneAssayAnnexSetPiece
+  objectivePrototype: KoronusFoulstoneAssaySample
+  minimumLivingParticipants: 1
+  participantRadius: 112
+
+- type: koronusActivityTemplate
+  id: SottosCryoArchiveSetPiece
+  family: VesselSignal
+  lane: Surface
+  risk: Moderate
+  reliability: Stale
+  titleLocId: koronus-activity-sottos-cryo-archive-title
+  summaryLocId: koronus-activity-sottos-cryo-archive-summary
+  preferredDayFocus: [ AncientSignal, Rescue ]
+  weight: 1
+  minimumLifetime: 2100
+  maximumLifetime: 3900
+  cooldown: 7200
+  execution: SottosCryoArchiveSetPiece
+  objectivePrototype: KoronusSottosCryoSample
+  minimumLivingParticipants: 1
+  participantRadius: 112
+
+# Stage 5 deliberately adds one, and only one, dockable profile. Code fixes the Aivorius map,
+# static wreck, receive-only port, objective and cleanup; this template controls only presentation
+# and pacing. It cannot create a shuttle, target Footfall, or select arbitrary docking content.
+
+- type: koronusActivityTemplate
+  id: AivoriusSurveyCutterDockSetPiece
+  family: VesselSignal
+  lane: Grid
+  risk: Moderate
+  reliability: Stale
+  titleLocId: koronus-activity-aivorius-survey-cutter-title
+  summaryLocId: koronus-activity-aivorius-survey-cutter-summary
+  preferredDayFocus: [ Exploration, AncientSignal ]
+  weight: 1
+  minimumLifetime: 2100
+  maximumLifetime: 3900
+  cooldown: 7200
+  execution: AivoriusSurveyCutterDockSetPiece
+  objectivePrototype: KoronusAivoriusCutterFlightLog
+  minimumLivingParticipants: 1
+  participantRadius: 112
+
+# The remaining stage-3 marker objectives only materialize after a living player reaches their
+# system or surface. They cannot name a map, a grid, a role, a reward, or a ghost takeover.
 
 - type: koronusActivityTemplate
   id: SurfaceVoxBeacon

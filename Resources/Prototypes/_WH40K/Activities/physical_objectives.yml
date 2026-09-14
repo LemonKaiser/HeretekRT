@@ -1,6 +1,134 @@
 # Physical roots for stage 3. They are static single entities only: no temporary map, grid,
 # player role, ghost takeover, NPC, loot or reward is embedded in a prototype.
 
+# Stage 2 recoverables. They are ordinary carryable records: taking one into a hand resolves its
+# set piece, while the item itself persists without a payout for the later redemption stage.
+
+- type: entity
+  id: KoronusMissionBlackBox
+  parent: BaseItem
+  name: sealed mission black box
+  description: A void-scorched recorder from the Aivorius wreck. It is evidence, not an automatic reward.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusFoulstoneSurveyCase
+  parent: BaseItem
+  name: Foulstone survey case
+  description: A weathered survey case recovered from the ruins. Its contents can be delivered later.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusSottosRescuePod
+  parent: BaseItem
+  name: Sotto's Tomb rescue pod recorder
+  description: A compact emergency recorder from an earlier ice expedition. It can be archived, but grants no direct reward.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+# A rescue patient is intentionally distinct from the Frontier medical bounty. It has no random
+# bounty profile, no cash payout and no ghost role; an activity instance supplies its runtime id.
+
+- type: entity
+  id: KoronusSottosRescuePatient
+  parent: MobHuman
+  name: cryo-bound Sotto surveyor
+  description: A living but unresponsive surveyor recovered from the ice. Carry them to Footfall's Medicae intake.
+  save: false
+  components:
+  - type: Carriable
+    pickupDuration: 4
+    minPickupDuration: 2
+    maxPickupDuration: 6
+  - type: KnockedDown
+  - type: KoronusActivityRecoveryPatient
+
+# Stage 3 recovery records. They remain ordinary carryable evidence until a matching Footfall
+# counter accepts them; they contain no loot table or automatic currency payout.
+
+- type: entity
+  id: KoronusAivoriusCargoManifest
+  parent: BaseItem
+  name: Aivorius cargo manifest cylinder
+  description: A sealed cargo ledger recovered from the drifting hold. Deliver it to the Officio counter on Footfall.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusFoulstoneMineCore
+  parent: BaseItem
+  name: Foulstone assay core
+  description: A labelled ore core from the mine shaft. The Miners' Guild can log the sample on Footfall.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusSottosRelayCipher
+  parent: BaseItem
+  name: Sotto cold-relay cipher case
+  description: A hardened cipher case from a restored polar relay. The astropathic counter can archive it.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+# Stage 4 science roots are inert evidence samples, not generic artifacts. Their exact execution
+# pairing is closed in KoronusActivityRuntimePolicy; they have no anomaly, loot, bounty or AI path.
+
+- type: entity
+  id: KoronusFoulstoneAssaySample
+  parent: BaseItem
+  name: Foulstone sealed assay sample
+  description: An inert mineral sample from the annex's sealed core. Deliver it to the Foulstone survey intake.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+- type: entity
+  id: KoronusSottosCryoSample
+  parent: BaseItem
+  name: Sotto cryo-archive specimen
+  description: A sealed ice-core specimen from the archive. Deliver it to the astropathic archive intake.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
+# Stage 5 has one dockable wreck profile. Its flight log remains a hand-carried archive record;
+# docking opens access but never confers shuttle ownership, money, a role, or automatic loot.
+
+- type: entity
+  id: KoronusAivoriusCutterFlightLog
+  parent: BaseItem
+  name: Aivorius survey cutter flight log
+  description: A sealed record from a docked survey cutter. Deliver it to the Aivorius archive intake.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    state: extraction_pack
+  - type: KoronusActivityObjective
+
 - type: entity
   id: KoronusActivityVoxBeacon
   parent: BaseStructure

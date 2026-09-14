@@ -1,0 +1,88 @@
+# Footfall delivery counters are deliberate sinks. They have no vending, bank, cargo sell, ghost
+# or spawning component; KoronusFootfallTrophyReceiverSystem accepts a fixed objective catalogue.
+
+- type: entity
+  id: KoronusFootfallTrophyReceiverBase
+  parent: BaseStructure
+  abstract: true
+  name: expedition intake counter
+  description: A protected Footfall counter for logging recovered expedition property.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_point
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures: {}
+  - type: KoronusActivityTrophyReceiver
+
+- type: entity
+  id: KoronusFootfallAivoriusArchive
+  parent: KoronusFootfallTrophyReceiverBase
+  name: Aivorius archive intake
+  description: The archive logs sealed voidship records recovered from Aivorius.
+  components:
+  - type: KoronusActivityTrophyReceiver
+    consumer: AivoriusArchive
+
+- type: entity
+  id: KoronusFootfallFoulstoneSurveyIntake
+  parent: KoronusFootfallTrophyReceiverBase
+  name: Foulstone survey intake
+  description: The cartography office records cases recovered from Foulstone's ruins.
+  components:
+  - type: KoronusActivityTrophyReceiver
+    consumer: FoulstoneSurvey
+
+- type: entity
+  id: KoronusFootfallCargoOfficio
+  parent: KoronusFootfallTrophyReceiverBase
+  name: cargo Officio intake
+  description: The Officio records manifests recovered from drifting cargo holds.
+  components:
+  - type: KoronusActivityTrophyReceiver
+    consumer: CargoOfficio
+
+- type: entity
+  id: KoronusFootfallMinersGuild
+  parent: KoronusFootfallTrophyReceiverBase
+  name: Miners' Guild assay intake
+  description: The guild catalogues labelled cores recovered from approved mine sites.
+  components:
+  - type: KoronusActivityTrophyReceiver
+    consumer: MinersGuild
+
+- type: entity
+  id: KoronusFootfallMedicaeIntake
+  parent: KoronusFootfallTrophyReceiverBase
+  name: Medicae rescue intake
+  description: A protected Medicae transfer cradle for recovered expedition patients.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    noRot: true
+    state: extraction_point
+  - type: ContainerContainer
+    containers:
+      patient: !type:ContainerSlot
+  - type: DragInsertContainer
+    containerId: patient
+  - type: ExitContainerOnMove
+    containerId: patient
+  - type: KoronusActivityTrophyReceiver
+    consumer: Medicae
+    patientContainerId: patient
+
+- type: entity
+  id: KoronusFootfallAstropathicRelay
+  parent: KoronusFootfallTrophyReceiverBase
+  name: astropathic relay archive intake
+  description: The choir archives cipher cases and legacy rescue-pod recordings.
+  components:
+  - type: KoronusActivityTrophyReceiver
+    consumer: AstropathicRelay

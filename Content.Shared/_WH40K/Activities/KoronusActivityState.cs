@@ -82,6 +82,29 @@ public enum KoronusActivityExecutionKind : byte
     OrbitLostCargoGrid,
     OrbitDerelictWreckGrid,
     RaiderCutterCacheGrid,
+    AivoriusBlackBoxSetPiece,
+    FoulstoneSurveySetPiece,
+    SottosIceRescueSetPiece,
+    AivoriusCargoSetPiece,
+    FoulstoneMineshaftSetPiece,
+    SottosColdRelaySetPiece,
+    FoulstoneAssayAnnexSetPiece,
+    SottosCryoArchiveSetPiece,
+    AivoriusSurveyCutterDockSetPiece,
+}
+
+/// <summary>
+/// The six small, fixed Footfall consumers for recovered expedition property. This is deliberately
+/// not a price table: each consumer accepts a short exact catalogue and never creates currency.
+/// </summary>
+public enum KoronusActivityTrophyConsumer : byte
+{
+    AivoriusArchive,
+    FoulstoneSurvey,
+    CargoOfficio,
+    MinersGuild,
+    Medicae,
+    AstropathicRelay,
 }
 
 /// <summary>
@@ -170,7 +193,8 @@ public static class KoronusActivityRuntimePolicy
 
     public static bool IsPhysicalExecution(KoronusActivityExecutionKind execution)
     {
-        return IsObjectiveExecution(execution) || IsHostileExecution(execution) || IsGridExecution(execution);
+        return IsObjectiveExecution(execution) || IsHostileExecution(execution) || IsGridExecution(execution) ||
+               IsSetPieceExecution(execution);
     }
 
     public static bool IsObjectiveExecution(KoronusActivityExecutionKind execution)
@@ -201,6 +225,34 @@ public static class KoronusActivityRuntimePolicy
             KoronusActivityExecutionKind.RaiderCutterCacheGrid;
     }
 
+    /// <summary>
+    /// Stages two through five admit exactly nine authored map set pieces. The stage-five profile
+    /// is the sole exception that can create one receive-only docking port after its map is
+    /// audited; no generic room generator can select arbitrary maps or content. Their location,
+    /// map path and recoverable item are all closed by code, not supplied by activity YAML.
+    /// </summary>
+    public static bool IsSetPieceExecution(KoronusActivityExecutionKind execution)
+    {
+        return execution is KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
+            KoronusActivityExecutionKind.FoulstoneSurveySetPiece or
+            KoronusActivityExecutionKind.SottosIceRescueSetPiece or
+            KoronusActivityExecutionKind.AivoriusCargoSetPiece or
+            KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece or
+            KoronusActivityExecutionKind.SottosColdRelaySetPiece or
+            KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece or
+            KoronusActivityExecutionKind.SottosCryoArchiveSetPiece or
+            KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece;
+    }
+
+    /// <summary>
+    /// Only the Aivorius survey cutter may retain a real docking port. Keeping this separate from
+    /// the broader set-piece predicate makes a future map profile opt in explicitly.
+    /// </summary>
+    public static bool IsDockableSetPieceExecution(KoronusActivityExecutionKind execution)
+    {
+        return execution == KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece;
+    }
+
     public static bool RequiresSurface(KoronusActivityExecutionKind execution)
     {
         return execution is KoronusActivityExecutionKind.SurfaceVoxBeacon or
@@ -218,7 +270,16 @@ public static class KoronusActivityRuntimePolicy
             KoronusActivityExecutionKind.OrbitRescuePodGrid or
             KoronusActivityExecutionKind.OrbitLostCargoGrid or
             KoronusActivityExecutionKind.OrbitDerelictWreckGrid or
-            KoronusActivityExecutionKind.RaiderCutterCacheGrid;
+            KoronusActivityExecutionKind.RaiderCutterCacheGrid or
+            KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
+            KoronusActivityExecutionKind.FoulstoneSurveySetPiece or
+            KoronusActivityExecutionKind.SottosIceRescueSetPiece or
+            KoronusActivityExecutionKind.AivoriusCargoSetPiece or
+            KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece or
+            KoronusActivityExecutionKind.SottosColdRelaySetPiece or
+            KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece or
+            KoronusActivityExecutionKind.SottosCryoArchiveSetPiece or
+            KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece;
     }
 
     public static bool IsThreatTerminalReason(KoronusActivityTerminalReason reason)
@@ -259,8 +320,8 @@ public static class KoronusActivityRuntimePolicy
     }
 
     /// <summary>
-    /// Stage five has a deliberately closed grid-objective catalogue. A template cannot redirect
-    /// the grid executor to arbitrary map content merely by changing a prototype id in YAML.
+    /// The grid executor has a deliberately closed objective catalogue. A template cannot redirect
+    /// it to arbitrary map content merely by changing a prototype id in YAML.
     /// </summary>
     public static bool IsApprovedGridObjective(
         KoronusActivityExecutionKind execution,
@@ -280,6 +341,132 @@ public static class KoronusActivityRuntimePolicy
                 objectivePrototypeId == "KoronusActivityDerelictCogitator",
             KoronusActivityExecutionKind.RaiderCutterCacheGrid =>
                 objectivePrototypeId == "KoronusActivityRaiderCutterCache",
+            _ => false,
+        };
+    }
+
+    /// <summary>
+    /// Returns the only sector system in which an authored set piece can be advertised. This
+    /// prevents a broad template weight or a future selector change from moving a surface ruin
+    /// into Footfall or an unrelated system.
+    /// </summary>
+    public static bool TryGetSetPieceSystem(
+        KoronusActivityExecutionKind execution,
+        out string systemId)
+    {
+        switch (execution)
+        {
+            case KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece:
+                systemId = "Aivorius";
+                return true;
+            case KoronusActivityExecutionKind.FoulstoneSurveySetPiece:
+                systemId = "Trinnitos";
+                return true;
+            case KoronusActivityExecutionKind.SottosIceRescueSetPiece:
+                systemId = "SottosTomb";
+                return true;
+            case KoronusActivityExecutionKind.AivoriusCargoSetPiece:
+                systemId = "Aivorius";
+                return true;
+            case KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece:
+                systemId = "Trinnitos";
+                return true;
+            case KoronusActivityExecutionKind.SottosColdRelaySetPiece:
+                systemId = "SottosTomb";
+                return true;
+            case KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece:
+                systemId = "Trinnitos";
+                return true;
+            case KoronusActivityExecutionKind.SottosCryoArchiveSetPiece:
+                systemId = "SottosTomb";
+                return true;
+            case KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece:
+                systemId = "Aivorius";
+                return true;
+            default:
+                systemId = string.Empty;
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Surface-only set pieces have a second fixed boundary. Aivorius is intentionally orbit-only
+    /// so the black box cannot cause an unrelated planetary surface to load or receive content.
+    /// </summary>
+    public static bool IsApprovedSetPieceSurface(
+        KoronusActivityExecutionKind execution,
+        string? surfaceId)
+    {
+        return execution switch
+        {
+            KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece => surfaceId == null,
+            KoronusActivityExecutionKind.FoulstoneSurveySetPiece => surfaceId == "FoulstoneSurface",
+            KoronusActivityExecutionKind.SottosIceRescueSetPiece => surfaceId == "SottosTombIceSurface",
+            KoronusActivityExecutionKind.AivoriusCargoSetPiece => surfaceId == null,
+            KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece => surfaceId == "FoulstoneSurface",
+            KoronusActivityExecutionKind.SottosColdRelaySetPiece => surfaceId == "SottosTombIceSurface",
+            KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece => surfaceId == "FoulstoneSurface",
+            KoronusActivityExecutionKind.SottosCryoArchiveSetPiece => surfaceId == "SottosTombIceSurface",
+            KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece => surfaceId == null,
+            _ => false,
+        };
+    }
+
+    /// <summary>
+    /// The recovered item is an objective, not a loot table. Pairing execution and prototype here
+    /// ensures a YAML edit cannot turn a set-piece marker into an arbitrary item spawn.
+    /// </summary>
+    public static bool IsApprovedSetPieceObjective(
+        KoronusActivityExecutionKind execution,
+        string objectivePrototypeId)
+    {
+        return execution switch
+        {
+            KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece =>
+                objectivePrototypeId == "KoronusMissionBlackBox",
+            KoronusActivityExecutionKind.FoulstoneSurveySetPiece =>
+                objectivePrototypeId == "KoronusFoulstoneSurveyCase",
+            KoronusActivityExecutionKind.SottosIceRescueSetPiece =>
+                objectivePrototypeId == "KoronusSottosRescuePatient",
+            KoronusActivityExecutionKind.AivoriusCargoSetPiece =>
+                objectivePrototypeId == "KoronusAivoriusCargoManifest",
+            KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece =>
+                objectivePrototypeId == "KoronusFoulstoneMineCore",
+            KoronusActivityExecutionKind.SottosColdRelaySetPiece =>
+                objectivePrototypeId == "KoronusSottosRelayCipher",
+            KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece =>
+                objectivePrototypeId == "KoronusFoulstoneAssaySample",
+            KoronusActivityExecutionKind.SottosCryoArchiveSetPiece =>
+                objectivePrototypeId == "KoronusSottosCryoSample",
+            KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece =>
+                objectivePrototypeId == "KoronusAivoriusCutterFlightLog",
+            _ => false,
+        };
+    }
+
+    /// <summary>
+    /// Footfall never grants an automatic payout. A hand-off is accepted only by its designated
+    /// counter, and only after the recovered root has been detached from its activity instance.
+    /// </summary>
+    public static bool IsApprovedFootfallTrophy(
+        KoronusActivityTrophyConsumer consumer,
+        string prototypeId,
+        bool isRecoveryPatient)
+    {
+        return consumer switch
+        {
+            KoronusActivityTrophyConsumer.AivoriusArchive =>
+                prototypeId is "KoronusMissionBlackBox" or "KoronusAivoriusCutterFlightLog",
+            KoronusActivityTrophyConsumer.FoulstoneSurvey =>
+                prototypeId is "KoronusFoulstoneSurveyCase" or "KoronusFoulstoneAssaySample",
+            KoronusActivityTrophyConsumer.CargoOfficio =>
+                prototypeId == "KoronusAivoriusCargoManifest",
+            KoronusActivityTrophyConsumer.MinersGuild =>
+                prototypeId == "KoronusFoulstoneMineCore",
+            KoronusActivityTrophyConsumer.Medicae =>
+                isRecoveryPatient && prototypeId == "KoronusSottosRescuePatient",
+            KoronusActivityTrophyConsumer.AstropathicRelay =>
+                prototypeId is "KoronusSottosRescuePod" or "KoronusSottosRelayCipher" or "KoronusSottosCryoSample",
             _ => false,
         };
     }
