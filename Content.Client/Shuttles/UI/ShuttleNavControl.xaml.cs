@@ -85,9 +85,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private readonly HashSet<EntityUid> _visibleGridsSet = new();
     private readonly Vector2[] _koronusBoundaryOutlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
     private readonly Vector2[] _koronusBoundaryDangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
+    private readonly Vector2[] _koronusSafetyZoneBandVertices = new Vector2[(KoronusSafetyZoneBandSegments + 1) * 2];
     private readonly Vector2[] _radarPositionVertices = new Vector2[RadarPosVertsCache.Length];
     private static readonly Color KoronusOrbitShadowColor = Color.FromHex("#14211E").WithAlpha(0.92f);
     private static readonly Color KoronusOrbitColor = Color.FromHex("#83B7A5").WithAlpha(0.82f);
+    private static readonly Color KoronusSafetyZoneColor = Color.FromHex("#35D07F");
+    private const int KoronusSafetyZoneBandSegments = 128;
+    private const float KoronusSafetyZoneBandWidth = 1.5f;
     private static readonly Vector2[] RadarPosVertsCache =
     [
         new Vector2(0f, -2f),
@@ -892,6 +896,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         DrawGrids(_grids, handle, (ourGrid != null && ourGridId.HasValue) ? (ourGridId.Value, ourGrid) : null, true);
 
         DrawCircles(handle);
+        DrawKoronusSafetyZones(handle, xform.MapID, worldToView);
 
         DrawIFFBeacons(handle, worldToView, mapPos, xform.MapUid); // Far Horizons
 
@@ -1810,6 +1815,39 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             center,
             boundaryRadius,
             _koronusBoundaryOutlineVertices);
+    }
+
+    /// <summary>
+    /// Mirrors the world-space safety overlay in the shuttle NAV view. The zone belongs to the
+    /// grid, so its world transform remains authoritative when an authored station is relocated.
+    /// </summary>
+    private void DrawKoronusSafetyZones(DrawingHandleScreen handle, MapId mapId, Matrix3x2 worldToView)
+    {
+        var zones = EntManager.EntityQueryEnumerator<KoronusSafetyZoneComponent, TransformComponent>();
+        while (zones.MoveNext(out _, out var zone, out var transform))
+        {
+            if (!zone.ShowBoundary || zone.Radius <= 0f || transform.MapID != mapId)
+                continue;
+
+            var center = Vector2.Transform(_transform.GetWorldPosition(transform), worldToView);
+            var outerRadius = zone.Radius * MinimapScale;
+            var innerRadius = MathF.Max(0f, outerRadius - KoronusSafetyZoneBandWidth * MinimapScale);
+
+            for (var i = 0; i <= KoronusSafetyZoneBandSegments; i++)
+            {
+                var angle = MathF.Tau * i / KoronusSafetyZoneBandSegments;
+                var direction = new Vector2(MathF.Cos(angle), MathF.Sin(angle));
+                var vertex = i * 2;
+                _koronusSafetyZoneBandVertices[vertex] = center + direction * innerRadius;
+                _koronusSafetyZoneBandVertices[vertex + 1] = center + direction * outerRadius;
+            }
+
+            handle.DrawPrimitives(
+                DrawPrimitiveTopology.TriangleStrip,
+                _koronusSafetyZoneBandVertices,
+                KoronusSafetyZoneColor.WithAlpha(0.28f));
+            handle.DrawCircle(center, outerRadius, KoronusSafetyZoneColor.WithAlpha(0.95f), filled: false);
+        }
     }
 
     private void DrawBlipShape(DrawingHandleScreen handle, Vector2 position, Box2Rotated bounds, Color color, RadarBlipShape shape)

@@ -208,7 +208,10 @@ internal sealed partial class WH40KGradientNameControl : Control
     {
         // The actual, transparent text is measured by RichTextEntry and provides normal word wrapping.
         // This control is an overlay and must not participate in that layout as one huge inline glyph.
-        _availableWidthPixels = availableSize.X;
+        // Rich text is initially measured with an unbounded width by speech bubbles. Do not retain that
+        // value: DrawWrapped must use the final width of the parent label instead.
+        if (float.IsFinite(availableSize.X) && availableSize.X > 0f)
+            _availableWidthPixels = availableSize.X;
         return Vector2.Zero;
     }
 
@@ -247,8 +250,18 @@ internal sealed partial class WH40KGradientNameControl : Control
 
     private void DrawWrapped(Font font, Action<Rune, int, Vector2> drawRune)
     {
-        var lineLeft = Parent?.PixelSizeBox.Left ?? SizeBox.Left;
-        var lineRight = lineLeft + Math.Max(1f, _availableWidthPixels);
+        // RichTextEntry arranges an inline control at the exact source-text position. Starting at the
+        // parent's left edge discarded that position, while the previously cached measure width could be
+        // infinite. Together those two conditions made decorated LOOC lines overlap and ignore wrapping.
+        var lineLeft = SizeBox.Left;
+        var lineWidth = _availableWidthPixels;
+        if (Parent is { } parent && float.IsFinite(parent.PixelSizeBox.Width) && parent.PixelSizeBox.Width > 0f)
+        {
+            lineLeft = parent.PixelSizeBox.Left;
+            lineWidth = parent.PixelSizeBox.Width;
+        }
+
+        var lineRight = lineLeft + Math.Max(1f, lineWidth);
         var baseline = SizeBox.TopLeft + new Vector2(0f, font.GetAscent(UIScale));
         var lineHeight = font.GetLineHeight(UIScale);
         var index = 0;

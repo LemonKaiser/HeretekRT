@@ -16,7 +16,11 @@ public sealed class WH40KDirectionalEmoteUIController : UIController
     public void OpenWindow(NetEntity source, NetEntity target)
     {
         if (!_entityManager.TryGetEntity(source, out var sourceEntity) ||
-            !_entityManager.TryGetComponent<WH40KDirectionalEmoteComponent>(sourceEntity, out var emoteComp))
+            !_entityManager.TryGetEntity(target, out var targetEntity) ||
+            !_entityManager.TryGetComponent<WH40KDirectionalEmoteComponent>(sourceEntity, out var emoteComp) ||
+            !_entityManager.TryGetComponent<WH40KDirectionalEmoteComponent>(targetEntity, out var targetEmote) ||
+            !emoteComp.CanSendEmotes ||
+            !targetEmote.CanReceiveEmotes)
         {
             return;
         }
@@ -27,18 +31,22 @@ public sealed class WH40KDirectionalEmoteUIController : UIController
         _emoteWindow.Target = target;
         _emoteWindow.SetText(string.Empty);
 
-        _entityManager.TryGetComponent<MetaDataComponent>(_entityManager.GetEntity(target), out var targetMeta);
+        _entityManager.TryGetComponent<MetaDataComponent>(targetEntity, out var targetMeta);
         var targetName = targetMeta?.EntityName ?? Loc.GetString("wh40k-directional-emote-unknown-target");
         _emoteWindow.Title = Loc.GetString("wh40k-directional-emote-title", ("target", targetName));
         _emoteWindow.UpdateHideNameVisibility(emoteComp.CanHideName);
 
         _emoteWindow.AcceptPressed = () =>
         {
-            _directionalEmoteSystem.TrySendEmote(
-                _emoteWindow.Source,
-                _emoteWindow.Target,
-                _emoteWindow.Text,
-                _emoteWindow.HideName);
+            if (!_directionalEmoteSystem.TrySendEmote(
+                    _emoteWindow.Source,
+                    _emoteWindow.Target,
+                    _emoteWindow.Text,
+                    _emoteWindow.HideName))
+            {
+                return;
+            }
+
             _emoteWindow.Close();
             _emoteWindow.SetText(string.Empty);
         };

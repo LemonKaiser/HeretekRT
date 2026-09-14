@@ -44,24 +44,28 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
         if (!_actionBlocker.CanEmote(source))
             return;
 
-        var target = GetEntity(args.Target);
-        if (!IsValid(args, source, target))
+        if (!TryGetEntity(args.Target, out var target) || target is not { } targetUid)
+            return;
+
+        if (!IsValid(args, source, targetUid))
             return;
 
         if (!TryComp<ActorComponent>(source, out var sourceActor) ||
-            !TryComp<ActorComponent>(target, out var targetActor) ||
+            !TryComp<ActorComponent>(targetUid, out var targetActor) ||
             !TryComp<WH40KDirectionalEmoteComponent>(source, out var sourceEmote))
         {
             return;
         }
 
         var escapedText = FormattedMessage.EscapeText(args.Text);
-        var wrappedMessage = args.HideName
-            ? escapedText
-            : Loc.GetString(
-                "wh40k-directional-emote-wrap-message",
-                ("source", FormattedMessage.EscapeText(MetaData(source).EntityName)),
-                ("message", escapedText));
+        var targetName = FormattedMessage.EscapeText(MetaData(targetUid).EntityName);
+        var wrappedMessage = Loc.GetString(
+            args.HideName
+                ? "wh40k-directional-emote-hidden-wrap-message"
+                : "wh40k-directional-emote-wrap-message",
+            ("source", FormattedMessage.EscapeText(MetaData(source).EntityName)),
+            ("target", targetName),
+            ("message", escapedText));
 
         _chatManager.ChatMessageToMany(
             ChatChannel.Emotes,
@@ -72,7 +76,7 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
             true,
             [sourceActor.PlayerSession.Channel, targetActor.PlayerSession.Channel]);
         _adminLog.Add(LogType.Chat, LogImpact.Low,
-            $"{ToPrettyString(source):source} sent directed emote to {ToPrettyString(target):target}: {args.Text}");
+            $"{ToPrettyString(source):source} sent directed emote to {ToPrettyString(targetUid):target}: {args.Text}");
 
         sourceEmote.LastSendAt = _timing.CurTime;
         sourceEmote.LastEmote = args.Text;

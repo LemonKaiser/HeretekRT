@@ -39,13 +39,21 @@ public sealed partial class ForceAnchorSystem : EntitySystem
 
     private void OnForceAnchorMapInit(Entity<ForceAnchorComponent> ent, ref MapInitEvent args)
     {
-        _shuttle.Disable(ent, force: true); // Mono
-        EnsureComp<PreventGridAnchorChangesComponent>(ent);
+        EnsureGridAnchored(ent);
     }
 
     private void OnForceAnchorPostFTLCompleted(Entity<ForceAnchorPostFTLComponent> ent, ref FTLCompletedEvent args)
     {
-        _shuttle.Disable(ent, force: true); // Mono
-        EnsureComp<PreventGridAnchorChangesComponent>(ent);
+        EnsureGridAnchored(ent);
+    }
+
+    /// <summary>
+    /// Immediately anchors a grid and prevents a shuttle console from changing that state.
+    /// This is also used by systems which add <see cref="ForceAnchorComponent"/> after map initialization.
+    /// </summary>
+    public void EnsureGridAnchored(EntityUid grid)
+    {
+        _shuttle.Disable(grid, force: true);
+        EnsureComp<PreventGridAnchorChangesComponent>(grid);
     }
 }

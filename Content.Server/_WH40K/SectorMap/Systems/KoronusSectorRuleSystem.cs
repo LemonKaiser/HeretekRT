@@ -2,6 +2,8 @@ using System.Numerics;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
+using Content.Server._NF.Shuttles.Components;
+using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.BUI;
@@ -41,6 +43,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private StationSystem _stations = default!;
     [Dependency] private KoronusPlanetarySystem _planetary = default!;
     [Dependency] private KoronusAsteroidFieldSystem _asteroidFields = default!;
+    [Dependency] private ForceAnchorSystem _forceAnchor = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
 
@@ -632,6 +635,11 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         protectedGrid.PreventEmpEvents = true;
         protectedGrid.PreventExplosions = true;
 
+        // Facility maps are loaded before their Koronus safeguards are attached. Merely adding
+        // ForceAnchor here would miss its MapInit handler, leaving an otherwise protected station
+        // dynamic and vulnerable to being pushed by another shuttle.
+        EnsureComp<ForceAnchorComponent>(grid);
+        _forceAnchor.EnsureGridAnchored(grid);
     }
 
     private static string GetInitialGridDisplayName(KoronusSystemPrototype system)

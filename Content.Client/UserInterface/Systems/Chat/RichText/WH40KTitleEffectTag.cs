@@ -304,7 +304,10 @@ internal sealed partial class WH40KTitleEffectControl : Control
     protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
         // The transparent source text owns rich-text layout and line height.
-        _availableWidthPixels = availableSize.X;
+        // Speech bubbles first reserve their content with an unbounded measurement. Drawing must use
+        // the final parent-label width, not that provisional value.
+        if (float.IsFinite(availableSize.X) && availableSize.X > 0f)
+            _availableWidthPixels = availableSize.X;
         return Vector2.Zero;
     }
 
@@ -424,8 +427,17 @@ internal sealed partial class WH40KTitleEffectControl : Control
 
     private void DrawWrapped(Font font, IReadOnlyList<Rune> runes, Action<Rune, int, Vector2> drawRune)
     {
-        var lineLeft = Parent?.PixelSizeBox.Left ?? SizeBox.Left;
-        var lineRight = lineLeft + Math.Max(1f, _availableWidthPixels);
+        // Keep the first glyph at the inline control's arranged position. New lines begin at the
+        // parent label's left edge, exactly like RichTextEntry's own layout.
+        var lineLeft = SizeBox.Left;
+        var lineWidth = _availableWidthPixels;
+        if (Parent is { } parent && float.IsFinite(parent.PixelSizeBox.Width) && parent.PixelSizeBox.Width > 0f)
+        {
+            lineLeft = parent.PixelSizeBox.Left;
+            lineWidth = parent.PixelSizeBox.Width;
+        }
+
+        var lineRight = lineLeft + Math.Max(1f, lineWidth);
         var baseline = SizeBox.TopLeft + new Vector2(0f, font.GetAscent(UIScale));
         var lineHeight = font.GetLineHeight(UIScale);
         var index = 0;

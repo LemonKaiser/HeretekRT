@@ -32,16 +32,25 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
         SubscribeLocalEvent<WH40KDirectionalEmoteComponent, GetVerbsEvent<Verb>>(OnGetVerbs);
     }
 
-    public void TrySendEmote(NetEntity source, NetEntity target, string message, bool hideName = false)
+    public bool TrySendEmote(NetEntity source, NetEntity target, string message, bool hideName = false)
     {
-        var sourceEntity = GetEntity(source);
-        var targetEntity = GetEntity(target);
+        if (!TryGetEntity(source, out var sourceEntity) ||
+            !TryGetEntity(target, out var targetEntity) ||
+            sourceEntity is not { } sourceUid ||
+            targetEntity is not { } targetUid)
+        {
+            return false;
+        }
 
-        if (sourceEntity == targetEntity ||
-            !TryComp<WH40KDirectionalEmoteComponent>(sourceEntity, out var sourceEmote) ||
+        if (sourceUid == targetUid ||
+            !TryComp<WH40KDirectionalEmoteComponent>(sourceUid, out var sourceEmote) ||
+            !TryComp<WH40KDirectionalEmoteComponent>(targetUid, out var targetEmote) ||
+            !sourceEmote.CanSendEmotes ||
+            !targetEmote.CanReceiveEmotes ||
+            hideName && !sourceEmote.CanHideName ||
             sourceEmote.LastSendAt + sourceEmote.Cooldown > _gameTiming.CurTime)
         {
-            return;
+            return false;
         }
 
         if (message.Length > _maxEmoteLength || string.IsNullOrWhiteSpace(message))
@@ -49,19 +58,20 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
             _popupSystem.PopupCursor(
                 Loc.GetString("wh40k-directional-emote-length-error", ("limit", _maxEmoteLength)),
                 PopupType.MediumCaution);
-            return;
+            return false;
         }
 
-        if (!_examine.InRangeUnOccluded(sourceEntity, targetEntity, _maxEmoteDistance))
+        if (!_examine.InRangeUnOccluded(sourceUid, targetUid, _maxEmoteDistance))
         {
             _popupSystem.PopupCursor(
                 Loc.GetString("wh40k-directional-emote-too-far", ("range", Math.Round(_maxEmoteDistance, 1))),
                 PopupType.MediumCaution);
-            return;
+            return false;
         }
 
         sourceEmote.LastSendAt = _gameTiming.CurTime;
         RaiseNetworkEvent(new WH40KDirectionalEmoteAttemptEvent(target, message, hideName));
+        return true;
     }
 
     private void OnGetVerbs(EntityUid uid, WH40KDirectionalEmoteComponent component, GetVerbsEvent<Verb> args)
