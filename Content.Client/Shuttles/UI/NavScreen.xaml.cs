@@ -401,6 +401,7 @@ public sealed partial class NavScreen : BoxContainer
         var previousState = _ftlState;
         _ftlState = state.FTLState;
         _ftlTime = state.FTLTime;
+        NavRadar.UpdateFtlState(_ftlState);
         _bssBeacons = state.Destinations;
         _bssExclusions = state.Exclusions;
         _bssObjectsDirty |= objectsChanged;

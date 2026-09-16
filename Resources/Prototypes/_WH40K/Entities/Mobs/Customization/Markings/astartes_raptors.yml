@@ -1,0 +1,35 @@
+- type: marking
+  id: AstartesFacialHairShortBeard
+  bodyPart: FacialHair
+  markingCategory: FacialHair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: beard
+
+- type: marking
+  id: AstartesFacialHairLongBeard
+  bodyPart: FacialHair
+  markingCategory: FacialHair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: longbeard
+
+- type: marking
+  id: AstartesFacialHairMoustache
+  bodyPart: FacialHair
+  markingCategory: FacialHair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: mustaches
+
+- type: marking
+  id: AstartesHairLong
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: longhair

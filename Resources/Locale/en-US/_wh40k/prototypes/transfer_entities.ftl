@@ -60,6 +60,9 @@ ent-BaseMobWH40KNecron = { ent-MobSiliconBase }
 ent-BaseMobWH40KSlaaneshDaemon = slaanesh daemon
     .desc = A daemonette-shaped horror clawing its way into realspace through excess and pain.
 
+ent-BaseMobWH40KKhorneDaemon = daemon of Khorne
+    .desc = A blood-mad lesser daemon of the Blood God, dragged into realspace to take skulls in His name.
+
 ent-BaseMobWH40KWarpDaemon = warp daemon
     .desc = A hostile thing pulled out of the immaterium by a failed ritual.
 
@@ -1669,6 +1672,12 @@ ent-MobWH40KNecronDeathmark = necron deathmark
 ent-MobWH40KNecronSpirit = necron spirit
     .desc = A spectral Necron construct lit by cold emerald energy.
 
+ent-MobWH40KKhorneBloodletter = bloodletter of Khorne
+    .desc = A lesser daemon sent to harvest skulls. Its talons burn with the Blood God's hunger for slaughter.
+
+ent-MobWH40KKhorneBloodreaper = Bloodreaper of Khorne
+    .desc = A Bloodletter champion bearing a hellblade. The daemon bellows for blood and charges the strongest prey first.
+
 ent-MobWH40KSlaaneshAlluress = alluress of Slaanesh
     .desc = A champion among daemonettes, every motion equal parts invitation and execution.
 
@@ -3249,3 +3258,142 @@ ent-offbelt = officer's belt
 
 ent-psybelt = psyker belt
     .desc = Belt belonging to a sanctioned psyker
+ent-ClothingBackpackAstartesAquilaRaptorsPowerpack = Raptors Chapter Aquila power pack
+    .desc = A compact power pack in Raptors Chapter livery, supplying the armour while leaving its wearer’s hands free for the hunt.
+    .desc = A Mk.VII Aquila-pattern helmet in the muted livery of the Raptors Chapter. Its autosenses serve the patient hunter in void and shadow alike.
+
+ent-ClothingBeltImperialFleetOfficer = Imperial Navy officer's dress belt
+    .desc = A gold-trimmed cap that signals command authority from the bridge to the lowest gun deck.
+
+ent-ClothingHeadHatImperialCitizen = hive citizen's cap
+    .desc = Durable workwear for docks and manufactorums. It has neither armor nor a vacuum seal.
+
+ent-ClothingHeadHatImperialFleetOfficer = Imperial Navy officer's peaked cap
+    .desc = A formal greatcoat of the Imperial Navy. Fold it in hand to wear it as a mantle around the neck, leaving the armour slot free.
+    .desc = A dark, sharply tailored uniform whose gold trim is meant to be seen before its wearer speaks.
+
+ent-ClothingHeadHelmetAstartesAquilaRaptors = Raptors Chapter Aquila helmet
+
+ent-ClothingHeadHelmetLithosMining = "Lithos" mining helmet
+    .desc = A hard-wearing miner's helmet with a lamp for dust-choked tunnels and a lining that keeps out more than falling stone.
+    .desc = A formal belt with a polished buckle, worn by officers who must look composed while the void tries to kill them.
+
+ent-ClothingHeadHoodImperialPilgrim = Imperial pilgrim's hood
+    .desc = A modest hood that keeps dust and unwelcome attention away from a pilgrim's face.
+    .desc = Hard-wearing shoes made for the next thousand steps towards a distant shrine.
+
+ent-ClothingOuterArmorAstartesAquilaRaptors = Raptors Chapter Aquila power armor
+    .desc = Camouflaged Mk.VII Aquila-pattern power armor worn by the loyal Raptors Chapter. Its muted colors favour the patient hunter over the parade ground.
+
+ent-ClothingOuterArmorLithosMining = "Lithos" mining carapace
+    .desc = A reinforced work carapace built from flak plates, shock padding and rad-lined seals. Issued to crews who cut deeper than a sensible overseer would permit.
+
+ent-ClothingOuterCoatImperialCitizen = hive citizen's coat
+
+ent-ClothingOuterCoatImperialFleetOfficer = Imperial Navy officer's greatcoat
+
+ent-ClothingOuterRobeImperialPilgrim = Imperial pilgrim's robe
+    .desc = A plain robe worn thin by dust roads, shrine stairs and long prayers to the God-Emperor.
+
+ent-ClothingOuterWorkSuitImperialCitizen = hive citizen's work coveralls
+    .desc = A modest coat that protects only against drafts in the hive's corridors.
+
+ent-ClothingShoesImperialPilgrim = Imperial pilgrim's shoes
+
+ent-ClothingUniformJumpsuitImperialCitizen = hive citizen's clothes
+    .desc = An unassuming shirt and vest. It will not protect against the dangers of the Imperium, but it is tidier than workwear.
+
+ent-ClothingUniformJumpsuitImperialCitizenVest = hive citizen's vest
+    .desc = A simple shirt and trousers made for everyday life in the cramped quarters of a hive.
+
+ent-ClothingUniformJumpsuitImperialFleetOfficer = Imperial Navy officer's uniform
+
+ent-WH40KBarrelBioWaste = bio-waste barrel
+    .desc = A compact reservoir for transporting liquids through the manufactorum. It can stop incoming fire.
+
+ent-WH40KBarrelIndustrial = industrial liquid barrel
+
+ent-WH40KBarrelIrradiatedWaste = irradiated waste barrel
+
+ent-WH40KBarrelPromethium = promethium barrel
+    .desc = A sealed barrel for organic waste. It can be refilled, but its contents are best left untouched.
+
+ent-WH40KBarrelTrash1 = scrap barrel
+    .desc = A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+
+ent-WH40KBarrelTrash2 = scrap barrel
+    .desc = A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+    .desc = A shielded barrel for radioactive waste. Its reservoir is small, but its contents remain dangerous.
+    .desc = A compact fuel reservoir. It is useful for refilling tools and sturdy enough to serve as cover.
+
+ent-WH40KBarrelTrash3 = scrap barrel
+    .desc = A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+
+ent-WH40KClothingEyesGogglesKoronusMercenary = Koronus Free Company tactical goggles
+
+ent-WH40KClothingHandsGlovesKoronusMercenary = Koronus Free Company gloves
+    .desc = Rugged goggles that protect the wearer's eyes from grit and battlefield flashes.
+
+ent-WH40KClothingHandsGlovesKoronusMercenaryMedic = Koronus Free Company medic gloves
+    .desc = Field medic gloves with flexible fingertips for emergency surgery.
+
+ent-WH40KClothingHeadBeretKoronusMercenarySergeant = Koronus Free Company sergeant beret
+    .desc = A flak helmet bearing the colors of a field medic; its wearer is still a target on the line.
+
+ent-WH40KClothingHeadCapKoronusMercenaryRecruit = Koronus Free Company recruit cap
+
+ent-WH40KClothingHeadCapKoronusMercenarySergeant = Koronus Free Company sergeant cap
+    .desc = A sergeant's beret, kept neat enough to make the rest of the squad feel underdressed.
+
+ent-WH40KClothingHeadHelmetKoronusMercenaryMedic = Koronus Free Company medic helmet
+    .desc = A basic flak helmet for a recruit who has finally made it off the training deck.
+    .desc = A close-fitting helmet for pilots and vehicle crews.
+
+ent-WH40KClothingHeadHelmetKoronusMercenaryPilot = Koronus Free Company pilot helmet
+    .desc = A peaked field cap reserved for a squad leader away from the front.
+
+ent-WH40KClothingHeadHelmetKoronusMercenaryRecruit = Koronus Free Company recruit helmet
+
+ent-WH40KClothingHeadHelmetKoronusMercenarySergeant = Koronus Free Company sergeant helmet
+
+ent-WH40KClothingHeadHelmetKoronusMercenarySergeantVoidsuit = Koronus Free Company sergeant voidsuit helmet
+    .desc = The separate sealed helmet for the sergeant's voidsuit, reinforced around the visor and neck ring.
+    .desc = A standard flak helmet worn by the company's line soldiers.
+    .desc = A soft cap marking a new hire who has not yet earned a proper helmet.
+
+ent-WH40KClothingHeadHelmetKoronusMercenarySoldier = Koronus Free Company combat helmet
+    .desc = A hardened flak helmet with extra plating and command markings.
+
+ent-WH40KClothingHeadHelmetKoronusMercenaryVoidsuit = Koronus Free Company voidsuit helmet
+    .desc = The separate sealed helmet for a Koronus Free Company voidsuit. Without it, the suit cannot protect its wearer from vacuum.
+
+ent-WH40KClothingOuterHardsuitKoronusMercenary = Koronus Free Company voidsuit
+    .desc = A sealed boarding suit for mercenaries who work beyond a shuttle's hull. Wear its helmet separately to complete vacuum protection.
+
+ent-WH40KClothingOuterHardsuitKoronusMercenarySergeant = Koronus Free Company sergeant voidsuit
+    .desc = A sealed boarding suit reinforced for the sergeant who leads the first breach.
+
+ent-WH40KClothingOuterVestKoronusMercenaryMedic = Koronus Free Company medic vest
+    .desc = A light flak vest with medical markings and a layout that leaves room for field supplies.
+
+ent-WH40KClothingOuterVestKoronusMercenaryPilot = Koronus Free Company pilot vest
+    .desc = A compact flak vest for shuttle crews; it protects without restricting access to the controls.
+    .desc = A well-maintained flak vest worn by the company's line soldiers.
+
+ent-WH40KClothingOuterVestKoronusMercenaryRecruit = Koronus Free Company recruit vest
+    .desc = Light flak protection issued to a recruit before they have earned a better contract.
+
+ent-WH40KClothingOuterVestKoronusMercenarySergeant = Koronus Free Company sergeant vest
+    .desc = A veteran's flak vest with additional plates over the heart and spine.
+    .desc = Durable gloves with reinforced palms for handling weapons, cables and rough cargo.
+
+ent-WH40KClothingOuterVestKoronusMercenarySoldier = Koronus Free Company flak vest
+
+ent-WH40KClothingShoesBootsKoronusMercenary = Koronus Free Company boots
+    .desc = Hard-wearing boarding boots that hold their grip on shuttle decks and hive ferrocrete.
+
+ent-WH40KClothingUniformJumpsuitKoronusMercenary = Koronus Free Company field uniform
+    .desc = Practical uniform worn by the free companies that sell their services across the Koronus Expanse.
+
+ent-WH40KClothingUniformJumpsuitKoronusMercenaryPilot = Koronus Free Company flight uniform
+    .desc = A reinforced flight suit for pilots who need to leave their cockpit under fire.

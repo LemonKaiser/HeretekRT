@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Linq;
 using Content.Server._NF.Trade;
 using Content.Server.GameTicking;
 using Content.Shared._NF.Trade;
@@ -25,10 +26,16 @@ public sealed partial class CargoSystem
 
     private void OnTradeCrateGetPriceEvent(Entity<TradeCrateComponent> ent, ref PriceCalculationEvent ev)
     {
-        var owningStation = _station.GetOwningStation(ent);
-        var atDestination = ent.Comp.DestinationStation != EntityUid.Invalid
-                           && owningStation == ent.Comp.DestinationStation
-                           || HasComp<TradeCrateWildcardDestinationComponent>(owningStation);
+        var domainOwner = EntityUid.Invalid;
+        var atDestination = false;
+        if (TryResolveCargoDomain(ent, out var domain))
+        {
+            domainOwner = domain.Owner;
+            atDestination = ent.Comp.DestinationStation != EntityUid.Invalid &&
+                            domainOwner == ent.Comp.DestinationStation ||
+                            HasComp<TradeCrateWildcardDestinationComponent>(domainOwner);
+        }
+
         ev.Price = atDestination ? ent.Comp.ValueAtDestination : ent.Comp.ValueElsewhere;
         if (ent.Comp.ExpressDeliveryTime != null)
         {
@@ -39,7 +46,7 @@ public sealed partial class CargoSystem
         }
         // Mono Begin
         var valueMultiplier = 1f;
-        if (TryComp<TradeCrateWildcardDestinationComponent>(owningStation, out var wildcardComp))
+        if (TryComp<TradeCrateWildcardDestinationComponent>(domainOwner, out var wildcardComp))
         {
             valueMultiplier = wildcardComp.ValueMultiplier;
         }
@@ -51,17 +58,24 @@ public sealed partial class CargoSystem
     private void OnTradeCrateInit(Entity<TradeCrateComponent> ent, ref ComponentInit ev)
     {
         // If there are no available destinations, tough luck.
-        if (_destinations.Count > 0)
+        var sourceOwner = TryResolveCargoDomain(ent, out var sourceDomain)
+            ? sourceDomain.Owner
+            : EntityUid.Invalid;
+        var destinations = new List<(EntityUid Entity, EntityUid Owner)>();
+        foreach (var destination in _destinations)
         {
-            var randomIndex = _random.Next(_destinations.Count);
-            // Better have more than one destination.
-            if (_station.GetOwningStation(ent) == _destinations[randomIndex])
-            {
-                randomIndex = (randomIndex + 1 + _random.Next(_destinations.Count - 1)) % _destinations.Count;
-            }
-            var destination = _destinations[randomIndex];
-            ent.Comp.DestinationStation = destination;
-            if (TryComp<TradeCrateDestinationComponent>(destination, out var destComp))
+            if (TryResolveCargoDomain(destination, out var destinationDomain))
+                destinations.Add((destination, destinationDomain.Owner));
+        }
+
+        // If there are no available domains, tough luck. Prefer a different domain if one exists.
+        if (destinations.Count > 0)
+        {
+            var alternatives = destinations.Where(destination => destination.Owner != sourceOwner).ToList();
+            var choices = alternatives.Count > 0 ? alternatives : destinations;
+            var destination = choices[_random.Next(choices.Count)];
+            ent.Comp.DestinationStation = destination.Owner;
+            if (TryComp<TradeCrateDestinationComponent>(destination.Entity, out var destComp))
                 _appearance.SetData(ent, TradeCrateVisuals.DestinationIcon, destComp.DestinationProto.Id);
         }
 

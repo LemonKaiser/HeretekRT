@@ -6,6 +6,7 @@ using Content.Server.Chat.Managers;
 using Content.Server.Instruments;
 using Content.Server.PDA.Ringer;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server.Store.Systems;
 using Content.Server.Traitor.Uplink;
 using Content.Shared._DV.CCVars; // DeltaV - PDA date
@@ -34,9 +35,10 @@ namespace Content.Server.PDA
     public sealed partial class PdaSystem : SharedPdaSystem
     {
         [Dependency] private CartridgeLoaderSystem _cartridgeLoader = default!;
+        [Dependency] private AlertLevelSystem _alertLevelSystem = default!;
         [Dependency] private InstrumentSystem _instrument = default!;
         [Dependency] private RingerSystem _ringer = default!;
-        [Dependency] private StationSystem _station = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
         [Dependency] private StoreSystem _store = default!;
         [Dependency] private IChatManager _chatManager = default!;
         [Dependency] private UserInterfaceSystem _ui = default!;
@@ -359,15 +361,14 @@ namespace Content.Server.PDA
 
         private void UpdateStationName(EntityUid uid, PdaComponent pda)
         {
-            var station = _station.GetOwningStation(uid);
-            pda.StationName = station is null ? null : Name(station.Value);
+            pda.StationName = _operationalDomains.TryResolveOperationalDomain(uid, out var domain)
+                ? Name(domain.Owner)
+                : null;
         }
 
         private void UpdateAlertLevel(EntityUid uid, PdaComponent pda)
         {
-            //var station = _station.GetOwningStation(uid); // Frontier
-            var station = _sectorService.GetServiceEntity(); // Frontier
-            if (!TryComp(station, out AlertLevelComponent? alertComp) ||
+            if (!_alertLevelSystem.TryGetDomainAlertLevel(uid, out _, out var alertComp) ||
                 alertComp.AlertLevels == null)
                 return;
             pda.StationAlertLevel = alertComp.CurrentLevel;

@@ -2,7 +2,7 @@ using Content.Server._NF.Contraband.Components;
 using Content.Server.Cargo.Components;
 using Content.Server.Cargo.Systems;
 using Content.Server.Stack;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared._NF.Contraband;
 using Content.Shared._NF.Contraband.BUI;
 using Content.Shared._NF.Contraband.Components;
@@ -25,7 +25,7 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
     [Dependency] private IPrototypeManager _protoMan = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private StackSystem _stack = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
 
     private EntityQuery<MobStateComponent> _mobQuery;
@@ -108,14 +108,13 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
         return pads;
     }
 
-    private void SellPallets(EntityUid gridUid, ContrabandPalletConsoleComponent component, EntityUid? station, out int amount)
+    private void SellPallets(EntityUid gridUid, ContrabandPalletConsoleComponent component, out int amount)
     {
-        station ??= _station.GetOwningStation(gridUid);
         GetPalletGoods(gridUid, component, out var toSell, out amount);
 
         Log.Debug($"{component.Faction} sold {toSell.Count} contraband items for {amount}");
 
-        if (station != null)
+        if (_operationalDomains.TryResolveOperationalDomain(gridUid, out _))
         {
             var ev = new EntitySoldEvent(toSell, gridUid);
             RaiseLocalEvent(ref ev);
@@ -210,7 +209,7 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
             return;
         }
 
-        SellPallets(gridUid, component, null, out var price);
+        SellPallets(gridUid, component, out var price);
 
         var stackPrototype = _protoMan.Index<StackPrototype>(component.RewardType);
         _stack.Spawn(price, stackPrototype, uid.ToCoordinates());

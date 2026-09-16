@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Administration.Logs;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.Access.Systems;
 using Content.Shared.Popups;
@@ -10,6 +10,7 @@ using Content.Shared.Research.Systems;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
 using Robust.Shared.Timing;
+using OperationalDomainData = Content.Shared._WH40K.OperationalDomain.OperationalDomain;
 
 namespace Content.Server.Research.Systems
 {
@@ -22,7 +23,7 @@ namespace Content.Server.Research.Systems
         [Dependency] private UserInterfaceSystem _uiSystem = default!;
         [Dependency] private SharedPopupSystem _popup = default!;
         [Dependency] private RadioSystem _radio = default!;
-        [Dependency] private StationSystem _station = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
         [Dependency] private EntityLookupSystem _lookup = default!;
 
         public override void Initialize()
@@ -39,25 +40,41 @@ namespace Content.Server.Research.Systems
         /// <summary>
         /// Gets a server based on it's unique numeric id.
         /// </summary>
+        /// <param name="client">The client requesting a server.</param>
         /// <param name="id"></param>
         /// <param name="serverUid"></param>
         /// <param name="serverComponent"></param>
         /// <returns></returns>
-        public bool TryGetServerById(int id, [NotNullWhen(true)] out EntityUid? serverUid, [NotNullWhen(true)] out ResearchServerComponent? serverComponent)
+        public bool TryGetServerById(EntityUid client, int id, [NotNullWhen(true)] out EntityUid? serverUid, [NotNullWhen(true)] out ResearchServerComponent? serverComponent)
         {
             serverUid = null;
             serverComponent = null;
 
+            if (!_operationalDomains.TryResolveOperationalDomain(client, out var clientDomain))
+                return false;
+
             var query = EntityQueryEnumerator<ResearchServerComponent>();
             while (query.MoveNext(out var uid, out var server))
             {
-                if (server.Id != id)
+                if (server.Id != id || !IsInSameOperationalDomain(clientDomain, uid))
                     continue;
                 serverUid = uid;
                 serverComponent = server;
                 return true;
             }
             return false;
+        }
+
+        private bool IsInSameOperationalDomain(EntityUid first, EntityUid second)
+        {
+            return _operationalDomains.TryResolveOperationalDomain(first, out var firstDomain) &&
+                   IsInSameOperationalDomain(firstDomain, second);
+        }
+
+        private bool IsInSameOperationalDomain(OperationalDomainData firstDomain, EntityUid second)
+        {
+            return _operationalDomains.TryResolveOperationalDomain(second, out var secondDomain) &&
+                   firstDomain.Owner == secondDomain.Owner;
         }
 
         /// <summary>
@@ -95,21 +112,21 @@ namespace Content.Server.Research.Systems
         }
 
         /// <summary>
-        /// Frontier copies of the original get servers. We need our research system to be isolated on a per-grid basis.
+        /// Frontier copies of the original get servers. Research servers are isolated by operational domain.
         /// </summary>
-        /// <param name="gridUid"></param>
+        /// <param name="domainEntity">An entity in the domain whose servers are requested.</param>
         /// <returns></returns>
-        public string[] GetNFServerNames(EntityUid gridUid)
+        public string[] GetNFServerNames(EntityUid domainEntity)
         {
             var allServers = EntityQueryEnumerator<ResearchServerComponent>();
             var list = new List<string>();
-            var station = _station.GetOwningStation(gridUid);
 
-            if (station is { } stationUid)
+            if (_operationalDomains.TryResolveOperationalDomain(domainEntity, out var requestedDomain))
             {
                 while (allServers.MoveNext(out var uid, out var comp))
                 {
-                    if (_station.GetOwningStation(uid) == stationUid)
+                    if (_operationalDomains.TryResolveOperationalDomain(uid, out var serverDomain) &&
+                        serverDomain.Owner == requestedDomain.Owner)
                         list.Add(comp.ServerName);
                 }
             }
@@ -118,17 +135,17 @@ namespace Content.Server.Research.Systems
             return serverList;
         }
 
-        public int[] GetNFServerIds(EntityUid gridUid)
+        public int[] GetNFServerIds(EntityUid domainEntity)
         {
             var allServers = EntityQueryEnumerator<ResearchServerComponent>();
             var list = new List<int>();
-            var station = _station.GetOwningStation(gridUid);
 
-            if (station is { } stationUid)
+            if (_operationalDomains.TryResolveOperationalDomain(domainEntity, out var requestedDomain))
             {
                 while (allServers.MoveNext(out var uid, out var comp))
                 {
-                    if (_station.GetOwningStation(uid) == stationUid)
+                    if (_operationalDomains.TryResolveOperationalDomain(uid, out var serverDomain) &&
+                        serverDomain.Owner == requestedDomain.Owner)
                         list.Add(comp.Id);
                 }
             }

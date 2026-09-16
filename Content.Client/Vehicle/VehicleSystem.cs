@@ -16,6 +16,7 @@ public sealed partial class VehicleSystem : SharedVehicleSystem
         SubscribeLocalEvent<RiderComponent, ComponentStartup>(OnRiderStartup);
         SubscribeLocalEvent<RiderComponent, ComponentShutdown>(OnRiderShutdown);
         SubscribeLocalEvent<RiderComponent, ComponentHandleState>(OnRiderHandleState);
+        SubscribeLocalEvent<RiderComponent, EntParentChangedMessage>(OnRiderParentChanged);
         SubscribeLocalEvent<VehicleComponent, AppearanceChangeEvent>(OnVehicleAppearanceChange);
     }
 
@@ -50,6 +51,17 @@ public sealed partial class VehicleSystem : SharedVehicleSystem
         }
 
         component.Vehicle = entity;
+    }
+
+    private void OnRiderParentChanged(EntityUid uid, RiderComponent component, ref EntParentChangedMessage args)
+    {
+        // A rider is a direct child of their vehicle. Reset the camera as soon as that stops being true,
+        // instead of waiting for the RiderComponent removal to arrive from the server.
+        if (component.Vehicle is not { } vehicle || args.Transform.ParentUid == vehicle)
+            return;
+
+        if (TryComp(uid, out EyeComponent? eyeComp) && eyeComp.Target == vehicle)
+            _eye.SetTarget(uid, null, eyeComp);
     }
 
     private void OnVehicleAppearanceChange(EntityUid uid, VehicleComponent component, ref AppearanceChangeEvent args)

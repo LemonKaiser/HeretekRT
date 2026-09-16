@@ -12,6 +12,7 @@ using Content.Shared.Power;
 using Content.Shared.Stacks;
 using Content.Shared.Storage;
 using Content.Shared.Materials;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.Prototypes;
 
 
@@ -42,12 +43,8 @@ public sealed partial class MarketSystem
     /// <param name="entitySoldEvent">The details of the event</param>
     private void OnEntitySoldEvent(ref EntitySoldEvent entitySoldEvent)
     {
-        var station = _station.GetOwningStation(entitySoldEvent.Grid);
-        if (station is null ||
-            !_entityManager.TryGetComponent<CargoMarketDataComponent>(station, out var market))
-        {
+        if (!TryResolveMarketData(entitySoldEvent.Grid, out _, out var market))
             return;
-        }
 
         foreach (var sold in entitySoldEvent.Sold)
         {
@@ -284,8 +281,7 @@ public sealed partial class MarketSystem
         }
 
         // No data set for market data, can't update cart, no data.
-        var stationUid = _station.GetOwningStation(consoleUid);
-        if (!TryComp<CargoMarketDataComponent>(stationUid, out var market))
+        if (!TryResolveMarketData(consoleUid, out _, out var market))
             return;
 
         var marketData = market.MarketDataList;
@@ -396,8 +392,7 @@ public sealed partial class MarketSystem
         var marketData = new List<MarketData>();
 
         // Get station and the market data attached to it.
-        var consoleStationUid = _station.GetOwningStation(consoleUid);
-        if (TryComp<CargoMarketDataComponent>(consoleStationUid, out var market))
+        if (TryResolveMarketData(consoleUid, out _, out var market))
         {
             marketData = market.MarketDataList;
         }
@@ -414,5 +409,31 @@ public sealed partial class MarketSystem
             CalculateEntityAmount(cartData)
         );
         _ui.SetUiState(consoleUid, MarketConsoleUiKey.Default, newState);
+    }
+
+    /// <summary>
+    /// Market stock belongs to the operational owner of the selling grid or market console.
+    /// Existing stations retain their authored data component; an independent vessel creates its
+    /// local stock only when it actually uses a market device.
+    /// </summary>
+    internal bool TryResolveMarketData(EntityUid entity, out EntityUid owner, out CargoMarketDataComponent market)
+    {
+        owner = EntityUid.Invalid;
+        market = default!;
+        if (!_operationalDomains.TryResolveOperationalDomain(entity, out var domain))
+            return false;
+
+        owner = domain.Owner;
+        if (_entityManager.TryGetComponent<CargoMarketDataComponent>(owner, out var existing) && existing != null)
+        {
+            market = existing;
+            return true;
+        }
+
+        if (domain.Kind != OperationalDomainKind.Vessel)
+            return false;
+
+        market = _entityManager.EnsureComponent<CargoMarketDataComponent>(owner);
+        return true;
     }
 }

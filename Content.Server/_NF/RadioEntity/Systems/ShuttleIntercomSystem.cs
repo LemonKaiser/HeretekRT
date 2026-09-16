@@ -4,8 +4,7 @@ using Robust.Server.GameObjects;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
 using Content.Shared.Radio;
-using Content.Server.Station.Systems;
-using Content.Server.Station.Components;
+using Content.Server._WH40K.OperationalDomain;
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -15,7 +14,7 @@ namespace Content.Server.Radio.EntitySystems;
 public sealed partial class ShuttleIntercomSystem : EntitySystem
 {
     [Dependency] private UserInterfaceSystem _ui = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
@@ -56,23 +55,17 @@ public sealed partial class ShuttleIntercomSystem : EntitySystem
             return;
         }
 
-        var station = _station.GetOwningStation(uid);
-        if (station is null || !TryComp<MetaDataComponent>(station, out var metadata))
+        // Use the current operational owner first: a station keeps its station name and an
+        // independent vessel uses its grid name. The legacy override only names sources
+        // that have no operational domain at all.
+        if (_operationalDomains.TryResolveOperationalDomain(uid, out var domain))
         {
+            args.Name += $" ({Name(domain.Owner)})";
+            args.MessageSource = domain.Owner;
             return;
         }
 
-        // Get the name of the ship we're on, if there is one.
-        string nameToAppend;
         if (component.OverrideName != null)
-        {
-            nameToAppend = component.OverrideName;
-        }
-        else
-        {
-            nameToAppend = metadata.EntityName;
-        }
-        args.Name += $" ({nameToAppend})";
-        args.MessageSource = station.Value;
+            args.Name += $" ({component.OverrideName})";
     }
 }

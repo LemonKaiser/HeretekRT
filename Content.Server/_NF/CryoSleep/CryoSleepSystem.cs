@@ -45,6 +45,7 @@ using Content.Server.Ghost;
 using Content.Shared.Roles;
 using Content.Server._NF.Shuttles.Components;
 using Content.Server._WH40K.PersistentInventory;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.CCVar;
 using Robust.Shared.Asynchronous;
 
@@ -73,7 +74,7 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
     [Dependency] private IConfigurationManager _configurationManager = default!;
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private StationJobsSystem _stationJobs = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private ITaskManager _taskManager = default!;
     [Dependency] private PersistentInventorySaveSystem _persistentInventorySave = default!;
 
@@ -425,26 +426,26 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
         var jobPrototype = currentJobPrototype;
         if (!TryComp<PlayerJobComponent>(bodyId, out var job) ||
             job.SpawnStation is not { } playerStation ||
-            !Exists(playerStation) ||
-            !TryComp<StationDataComponent>(playerStation, out var stationData) ||
-            !stationData.Grids.Any(grid => HasComp<ForceAnchorComponent>(grid)) ||
-            !TryComp<StationJobsComponent>(playerStation, out var stationJobs))
+            !_operationalDomains.TryResolveOperationalDomain(playerStation, out var domain) ||
+            !HasComp<ForceAnchorComponent>(domain.PrimaryGrid) ||
+            !TryComp<StationJobsComponent>(domain.Owner, out var stationJobs))
             return;
 
-        if (_stationJobs.TryGetPlayerJobs(playerStation, userId, out var jobs, stationJobs!) &&
+        if (_stationJobs.TryGetPlayerJobs(domain.Owner, userId, out var jobs, stationJobs) &&
             jobs.Contains(jobPrototype))
         {
-            _stationJobs.TryAdjustJobSlot(playerStation, jobPrototype, 1, clamp: true);
-            _stationJobs.TryRemovePlayerJobs(playerStation, userId, stationJobs!);
+            _stationJobs.TryAdjustJobSlot(domain.Owner, jobPrototype, 1, clamp: true, stationJobs: stationJobs);
+            _stationJobs.TryRemovePlayerJobs(domain.Owner, userId, stationJobs);
         }
         else
         {
             _stationJobs.TryAdjustJobSlot(
-                playerStation,
+                domain.Owner,
                 jobPrototype,
                 1,
                 clamp: true,
-                createSlot: true);
+                createSlot: true,
+                stationJobs: stationJobs);
         }
     }
 
@@ -492,51 +493,29 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
                         playerStation = playerJob.SpawnStation;
                     }
 
-                    // Check if any of the station's grids have ForceAnchor
-                    bool stationHasForceAnchor = false;
-
-                    if (playerStation != null && EntityManager.EntityExists(playerStation.Value) &&
-                        _entityManager.TryGetComponent<StationDataComponent>(playerStation.Value, out var stationData))
-                    {
-                        foreach (var gridUid in stationData.Grids)
-                        {
-                            if (HasComp<ForceAnchorComponent>(gridUid))
-                            {
-                                stationHasForceAnchor = true;
-                                //Log.Info($"Found ForceAnchor on grid {ToPrettyString(gridUid)} for station {ToPrettyString(playerStation.Value)}");
-                                break;
-                            }
-                        }
-                        //Log.Info($"Station {ToPrettyString(playerStation.Value)} has ForceAnchor: {stationHasForceAnchor} (checked {stationData.Grids.Count} grids)");
-                    }
-                    else
-                    {
-                        //Log.Info($"Could not get StationDataComponent for station {(playerStation != null ? ToPrettyString(playerStation.Value) : "null")}");
-                    }
-
-                    // Only proceed if we found a valid station for this player and it has ForceAnchor
-                    if (playerStation != null && EntityManager.EntityExists(playerStation.Value) &&
-                        _entityManager.TryGetComponent<StationJobsComponent>(playerStation.Value, out var stationJobs) &&
-                        stationHasForceAnchor)
+                    if (playerStation != null &&
+                        _operationalDomains.TryResolveOperationalDomain(playerStation.Value, out var domain) &&
+                        HasComp<ForceAnchorComponent>(domain.PrimaryGrid) &&
+                        TryComp<StationJobsComponent>(domain.Owner, out var stationJobs))
                     {
                         // For connected players, we check their job assignments
-                        if (id != null && _stationJobs.TryGetPlayerJobs(playerStation.Value, id.Value, out var jobs, stationJobs))
+                        if (id != null && _stationJobs.TryGetPlayerJobs(domain.Owner, id.Value, out var jobs, stationJobs))
                         {
                             // Only adjust the slot for their current job - increasing the available slots by 1
                             if (jobs.Contains(currentJobPrototype))
                             {
-                                _stationJobs.TryAdjustJobSlot(playerStation.Value, currentJobPrototype, 1, clamp: true);
-                                Log.Debug($"Reopened job slot '{currentJobPrototype}' on station {ToPrettyString(playerStation.Value)} after {characterName} entered cryosleep");
+                                _stationJobs.TryAdjustJobSlot(domain.Owner, currentJobPrototype, 1, clamp: true, stationJobs: stationJobs);
+                                Log.Debug($"Reopened job slot '{currentJobPrototype}' on domain {ToPrettyString(domain.Owner)} after {characterName} entered cryosleep");
                             }
 
                             // Still need to remove the player from all job assignments
-                            _stationJobs.TryRemovePlayerJobs(playerStation.Value, id.Value, stationJobs);
+                            _stationJobs.TryRemovePlayerJobs(domain.Owner, id.Value, stationJobs);
                         }
                         // For disconnected players or other cases, we just try to reopen the job slot directly
                         else
                         {
-                            _stationJobs.TryAdjustJobSlot(playerStation.Value, currentJobPrototype, 1, clamp: true, createSlot: true);
-                            Log.Debug($"Reopened job slot '{currentJobPrototype}' on station {ToPrettyString(playerStation.Value)} after {characterName} entered cryosleep (direct adjustment)");
+                            _stationJobs.TryAdjustJobSlot(domain.Owner, currentJobPrototype, 1, clamp: true, createSlot: true, stationJobs: stationJobs);
+                            Log.Debug($"Reopened job slot '{currentJobPrototype}' on domain {ToPrettyString(domain.Owner)} after {characterName} entered cryosleep (direct adjustment)");
                         }
                     }
                 }

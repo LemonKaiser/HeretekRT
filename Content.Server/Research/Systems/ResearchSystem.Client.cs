@@ -12,6 +12,7 @@ public sealed partial class ResearchSystem
     {
         SubscribeLocalEvent<ResearchClientComponent, MapInitEvent>(OnClientMapInit);
         SubscribeLocalEvent<ResearchClientComponent, ComponentShutdown>(OnClientShutdown);
+        SubscribeLocalEvent<ResearchClientComponent, EntParentChangedMessage>(OnClientParentChanged);
         SubscribeLocalEvent<ResearchClientComponent, BoundUIOpenedEvent>(OnClientUIOpen);
         SubscribeLocalEvent<ResearchClientComponent, ConsoleServerSelectionMessage>(OnConsoleSelect);
 
@@ -25,7 +26,7 @@ public sealed partial class ResearchSystem
 
     private void OnClientSelected(EntityUid uid, ResearchClientComponent component, ResearchClientServerSelectedMessage args)
     {
-        if (!TryGetServerById(args.ServerId, out var serveruid, out var serverComponent))
+        if (!TryGetServerById(uid, args.ServerId, out var serveruid, out var serverComponent))
             return;
 
         UnregisterClient(uid, component);
@@ -76,6 +77,12 @@ public sealed partial class ResearchSystem
         UnregisterClient(uid, component);
     }
 
+    private void OnClientParentChanged(EntityUid uid, ResearchClientComponent component, ref EntParentChangedMessage args)
+    {
+        if (component.Server is { } server && !IsInSameOperationalDomain(uid, server))
+            UnregisterClient(uid, component);
+    }
+
     private void OnClientUIOpen(EntityUid uid, ResearchClientComponent component, BoundUIOpenedEvent args)
     {
         UpdateClientInterface(uid, component);
@@ -119,6 +126,13 @@ public sealed partial class ResearchSystem
 
         if (!TryComp(component.Server, out serverComponent))
             return false;
+
+        if (!IsInSameOperationalDomain(uid, component.Server.Value))
+        {
+            UnregisterClient(uid, component);
+            serverComponent = null;
+            return false;
+        }
 
         server = component.Server;
         return true;

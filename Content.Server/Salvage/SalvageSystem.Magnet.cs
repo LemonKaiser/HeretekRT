@@ -6,6 +6,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Procedural;
 using Content.Shared.Radio;
 using Content.Shared.Salvage.Magnet;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.Exceptions;
 using Robust.Shared.Map;
 
@@ -37,9 +38,7 @@ public sealed partial class SalvageSystem
 
     private void OnMagnetClaim(EntityUid uid, SalvageMagnetComponent component, ref MagnetClaimOfferEvent args)
     {
-        var station = _station.GetOwningStation(uid);
-
-        if (!TryComp(station, out SalvageMagnetDataComponent? dataComp) ||
+        if (!TryGetMagnetOwner(uid, out var owner, out var dataComp) ||
             dataComp.EndTime != null)
         {
             return;
@@ -50,7 +49,7 @@ public sealed partial class SalvageSystem
         {
             try
             {
-                await TakeMagnetOffer((station.Value, dataComp), index, (uid, component));
+                await TakeMagnetOffer((owner, dataComp), index, (uid, component));
             }
             catch (Exception e)
             {
@@ -210,9 +209,7 @@ public sealed partial class SalvageSystem
 
         while (query.MoveNext(out var magnetUid, out var magnet, out var xform))
         {
-            var stationUid = _station.GetOwningStation(magnetUid, xform);
-
-            if (stationUid != data.Owner)
+            if (!TryGetMagnetOwner(magnetUid, out var owner, out _) || owner != data.Owner)
                 continue;
 
             return (magnetUid, magnet);
@@ -223,9 +220,7 @@ public sealed partial class SalvageSystem
 
     private void UpdateMagnetUI(Entity<SalvageMagnetComponent> entity, TransformComponent xform)
     {
-        var station = _station.GetOwningStation(entity, xform);
-
-        if (!TryComp(station, out SalvageMagnetDataComponent? dataComp))
+        if (!TryGetMagnetOwner(entity.Owner, out _, out var dataComp))
             return;
 
         _ui.SetUiState(entity.Owner, SalvageMagnetUiKey.Key,
@@ -245,9 +240,7 @@ public sealed partial class SalvageSystem
 
         while (query.MoveNext(out var magnetUid, out var magnet, out var xform))
         {
-            var station = _station.GetOwningStation(magnetUid, xform);
-
-            if (station != data.Owner)
+            if (!TryGetMagnetOwner(magnetUid, out var owner, out _) || owner != data.Owner)
                 continue;
 
             _ui.SetUiState(magnetUid, SalvageMagnetUiKey.Key,
@@ -260,6 +253,27 @@ public sealed partial class SalvageSystem
                     ActiveSeed = data.Comp.ActiveSeed,
                 });
         }
+    }
+
+    private bool TryGetMagnetOwner(EntityUid entity, out EntityUid owner, out SalvageMagnetDataComponent data)
+    {
+        owner = EntityUid.Invalid;
+        data = default!;
+        if (!_operationalDomains.TryResolveOperationalDomain(entity, out var domain))
+            return false;
+
+        owner = domain.Owner;
+        if (TryComp<SalvageMagnetDataComponent>(owner, out var existing) && existing != null)
+        {
+            data = existing;
+            return true;
+        }
+
+        if (domain.Kind != OperationalDomainKind.Vessel)
+            return false;
+
+        data = EnsureComp<SalvageMagnetDataComponent>(owner);
+        return true;
     }
 
     private async Task TakeMagnetOffer(Entity<SalvageMagnetDataComponent> data, int index, Entity<SalvageMagnetComponent> magnet)

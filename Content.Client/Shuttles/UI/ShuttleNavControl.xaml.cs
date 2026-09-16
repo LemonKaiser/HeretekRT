@@ -74,6 +74,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
     private Dictionary<NetEntity, List<DockingPortState>> _docks = new();
     private KoronusPlanetaryInterfaceState _planetaryState = KoronusPlanetaryInterfaceState.Unavailable();
+    private FTLState _ftlState;
     private readonly List<PlanetHitTarget> _planetHitTargets = new();
     private bool _planetClickPressed;
     private bool _rightMousePanning;
@@ -746,6 +747,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     {
         _planetaryState = state;
         if (!state.Available)
+            _planetHitTargets.Clear();
+    }
+
+    public void UpdateFtlState(FTLState state)
+    {
+        _ftlState = state;
+        if (state is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
             _planetHitTargets.Clear();
     }
 
@@ -1653,7 +1661,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private void DrawCelestialNavigation(DrawingHandleScreen handle, Matrix3x2 worldToView)
     {
         _planetHitTargets.Clear();
-        if (!_planetaryState.Available)
+        if (!_planetaryState.Available ||
+            _planetaryState.NavigationSuppressed ||
+            _ftlState is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
             return;
 
         var stellarPosition = Vector2.Transform(_planetaryState.StellarCenter, worldToView);

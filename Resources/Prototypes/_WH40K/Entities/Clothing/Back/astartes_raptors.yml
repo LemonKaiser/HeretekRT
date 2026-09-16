@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingBackpackAstartesAquilaPowerpack
+  id: ClothingBackpackAstartesAquilaRaptorsPowerpack
+  name: Raptors Chapter Aquila power pack
+  description: A compact power pack in Raptors Chapter livery, supplying the armour while leaving its wearer’s hands free for the hunt.
+  suffix: WH40K, Astartes, Imperium, Raptors
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/astartes_aquila_raptors_powerpack.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/astartes_aquila_raptors_powerpack.rsi

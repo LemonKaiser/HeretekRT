@@ -16,6 +16,7 @@ using Content.Shared.Security.Components;
 using System.Linq;
 using Content.Shared.Roles.Jobs;
 using Content.Server._NF.SectorServices; // Frontier
+using Content.Server._WH40K.OperationalDomain;
 
 namespace Content.Server.CriminalRecords.Systems;
 
@@ -32,6 +33,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
     // [Dependency] private StationSystem _station = default!; // Frontier
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
@@ -58,18 +60,26 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
     private void OnKeySelected(Entity<CriminalRecordsConsoleComponent> ent, ref SelectStationRecord msg)
     {
-        // no concern of sus client since record retrieval will fail if invalid id is given
+        if (!IsActorInConsoleDomain(ent.Owner, msg.Actor))
+            return;
+
         ent.Comp.ActiveKey = msg.SelectedKey;
         UpdateUserInterface(ent);
     }
     private void OnStatusFilterPressed(Entity<CriminalRecordsConsoleComponent> ent, ref CriminalRecordSetStatusFilter msg)
     {
+        if (!IsActorInConsoleDomain(ent.Owner, msg.Actor))
+            return;
+
         ent.Comp.FilterStatus = msg.FilterStatus;
         UpdateUserInterface(ent);
     }
 
     private void OnFiltersChanged(Entity<CriminalRecordsConsoleComponent> ent, ref SetStationRecordFilter msg)
     {
+        if (!IsActorInConsoleDomain(ent.Owner, msg.Actor))
+            return;
+
         if (ent.Comp.Filter == null ||
             ent.Comp.Filter.Type != msg.Type || ent.Comp.Filter.Value != msg.Value)
         {
@@ -254,7 +264,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         key = null;
         mob = null;
 
-        if (!_access.IsAllowed(user, ent))
+        if (!IsActorInConsoleDomain(ent.Owner, user) || !_access.IsAllowed(user, ent))
         {
             _popup.PopupEntity(Loc.GetString("criminal-records-permission-denied"), ent, user);
             return false;
@@ -276,6 +286,17 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         key = new StationRecordKey(id, station);
         mob = user;
         return true;
+    }
+
+    /// <summary>
+    /// Sector records are readable from any properly placed terminal, but a terminal's BUI actions
+    /// must still originate from the terminal's own station or vessel domain.
+    /// </summary>
+    public bool IsActorInConsoleDomain(EntityUid console, EntityUid actor)
+    {
+        return _operationalDomains.TryResolveOperationalDomain(console, out var consoleDomain)
+               && _operationalDomains.TryResolveOperationalDomain(actor, out var actorDomain)
+               && consoleDomain.Owner == actorDomain.Owner;
     }
 
     /// <summary>

@@ -11,6 +11,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.Random.Helpers;
 using Content.Server._NF.SectorServices; // Frontier
+using Content.Server._WH40K.OperationalDomain;
 
 namespace Content.Server.CriminalRecords.Systems;
 
@@ -23,6 +24,7 @@ public sealed partial class CriminalRecordsHackerSystem : SharedCriminalRecordsH
     // [Dependency] private StationSystem _station = default!; // Frontier
     [Dependency] private StationRecordsSystem _records = default!;
     [Dependency] private SectorServiceSystem _sectorService = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
@@ -35,6 +37,13 @@ public sealed partial class CriminalRecordsHackerSystem : SharedCriminalRecordsH
     {
         if (args.Cancelled || args.Handled || args.Target == null)
             return;
+
+        if (!_operationalDomains.TryResolveOperationalDomain(args.User, out var userDomain) ||
+            !_operationalDomains.TryResolveOperationalDomain(args.Target.Value, out var targetDomain) ||
+            userDomain.Owner != targetDomain.Owner)
+        {
+            return;
+        }
 
         // Frontier: sector-wide records
         // if (_station.GetOwningStation(ent) is not {} station)

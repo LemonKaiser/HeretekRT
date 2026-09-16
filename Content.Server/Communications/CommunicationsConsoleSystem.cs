@@ -6,7 +6,7 @@ using Content.Server.Popups;
 using Content.Server.RoundEnd;
 using Content.Server.Screens.Components;
 using Content.Server.Shuttles.Systems;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
@@ -19,7 +19,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
-using Content.Server._NF.SectorServices; // Frontier
 
 namespace Content.Server.Communications
 {
@@ -32,11 +31,10 @@ namespace Content.Server.Communications
         [Dependency] private EmergencyShuttleSystem _emergency = default!;
         [Dependency] private PopupSystem _popupSystem = default!;
         [Dependency] private RoundEndSystem _roundEndSystem = default!;
-        [Dependency] private StationSystem _stationSystem = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
         [Dependency] private UserInterfaceSystem _uiSystem = default!;
         [Dependency] private IConfigurationManager _cfg = default!;
         [Dependency] private IAdminLogManager _adminLogger = default!;
-        [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier: sector-wide alerts
 
         private const float UIUpdateInterval = 5.0f;
 
@@ -102,7 +100,7 @@ namespace Content.Server.Communications
         }
 
         /// <summary>
-        /// Updates all comms consoles belonging to the station that the alert level was set on
+        /// Updates comms consoles in the domain whose alert level changed.
         /// </summary>
         /// <param name="args">Alert level changed event arguments</param>
         private void OnAlertLevelChanged(AlertLevelChangedEvent args)
@@ -110,9 +108,11 @@ namespace Content.Server.Communications
             var query = EntityQueryEnumerator<CommunicationsConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
-                // var entStation = _stationSystem.GetOwningStation(uid); // Frontier: sector-wide alerts
-                // if (args.Station == entStation) // Frontier: sector-wide alerts
-                UpdateCommsConsoleInterface(uid, comp);
+                if (_operationalDomains.TryResolveOperationalDomain(uid, out var domain) &&
+                    domain.Owner == args.Station)
+                {
+                    UpdateCommsConsoleInterface(uid, comp);
+                }
             }
         }
 
@@ -133,16 +133,13 @@ namespace Content.Server.Communications
         /// </summary>
         public void UpdateCommsConsoleInterface(EntityUid uid, CommunicationsConsoleComponent comp)
         {
-            //var stationUid = _stationSystem.GetOwningStation(uid); // Frontier: sector-wide alerts
-            var stationUid = _sectorService.GetServiceEntity(); // Frontier: sector-wide alerts
             List<string>? levels = null;
             string currentLevel = default!;
             float currentDelay = 0;
 
-            if (stationUid.Valid) // Frontier: != null < .Valid
+            if (_alertLevelSystem.TryGetDomainAlertLevel(uid, out var alertOwner, out var alertComp))
             {
-                if (TryComp(stationUid, out AlertLevelComponent? alertComp) && // Frontier: stationUid.Value<stationUid
-                    alertComp.AlertLevels != null)
+                if (alertComp.AlertLevels != null)
                 {
                     if (alertComp.IsSelectable)
                     {
@@ -157,7 +154,7 @@ namespace Content.Server.Communications
                     }
 
                     currentLevel = alertComp.CurrentLevel;
-                    currentDelay = _alertLevelSystem.GetAlertLevelDelay(stationUid, alertComp); // Frontier: stationUid.Value<stationUid
+                    currentDelay = _alertLevelSystem.GetAlertLevelDelay(alertOwner, alertComp);
                 }
             }
 
@@ -178,6 +175,13 @@ namespace Content.Server.Communications
 
         private bool CanUse(EntityUid user, EntityUid console)
         {
+            if (!_operationalDomains.TryResolveOperationalDomain(user, out var userDomain) ||
+                !_operationalDomains.TryResolveOperationalDomain(console, out var consoleDomain) ||
+                userDomain.Owner != consoleDomain.Owner)
+            {
+                return false;
+            }
+
             if (TryComp<AccessReaderComponent>(console, out var accessReaderComponent))
             {
                 return _accessReaderSystem.IsAllowed(user, console, accessReaderComponent);
@@ -221,11 +225,7 @@ namespace Content.Server.Communications
                 return;
             }
 
-            var stationUid = _stationSystem.GetOwningStation(uid);
-            if (stationUid != null)
-            {
-                _alertLevelSystem.SetLevel(stationUid.Value, message.Level, true, true);
-            }
+            _alertLevelSystem.SetLevel(uid, message.Level, true, true);
         }
 
         private void OnAnnounceMessage(EntityUid uid, CommunicationsConsoleComponent comp,

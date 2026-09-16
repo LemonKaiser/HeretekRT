@@ -42,6 +42,7 @@ public sealed partial class ShuttleConsoleSystem
     private const float MassMultiplierMin = 0.5f;
     private const float MassMultiplierMax = 5f;
     private readonly Dictionary<EntityUid, KoronusPendingJump> _pendingKoronusJumps = new();
+    private readonly Dictionary<EntityUid, string> _externalKoronusJumpReservations = new();
 
     private sealed record KoronusPendingJump(string SourceSystem, string TargetSystem);
 
@@ -370,6 +371,25 @@ public sealed partial class ShuttleConsoleSystem
         }
 
         _pendingKoronusJumps.Clear();
+
+        foreach (var targetSystem in _externalKoronusJumpReservations.Values)
+        {
+            _koronusResidency.EndIncomingSectorJump(targetSystem);
+        }
+
+        _externalKoronusJumpReservations.Clear();
+    }
+
+    /// <summary>
+    /// Tracks a residency lock acquired by a system which starts FTL without the shuttle console.
+    /// The common FTL shutdown and completion paths release it together with console-originated locks.
+    /// </summary>
+    public void TrackExternalKoronusJumpReservation(EntityUid shuttleUid, string targetSystem)
+    {
+        if (_externalKoronusJumpReservations.Remove(shuttleUid, out var previousTarget))
+            _koronusResidency.EndIncomingSectorJump(previousTarget);
+
+        _externalKoronusJumpReservations[shuttleUid] = targetSystem;
     }
 
     /// <summary>
@@ -379,6 +399,9 @@ public sealed partial class ShuttleConsoleSystem
     {
         if (_pendingKoronusJumps.Remove(shuttleUid, out var jump))
             _koronusResidency.EndIncomingSectorJump(jump.TargetSystem);
+
+        if (_externalKoronusJumpReservations.Remove(shuttleUid, out var targetSystem))
+            _koronusResidency.EndIncomingSectorJump(targetSystem);
     }
 
     /// <summary>

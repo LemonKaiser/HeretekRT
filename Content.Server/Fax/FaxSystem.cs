@@ -6,6 +6,7 @@ using Content.Server.Labels;
 using Content.Server.Popups;
 using Content.Server.Power.Components;
 using Content.Server.Tools;
+using Content.Server.Station.Systems;
 using Content.Shared.UserInterface;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Containers.ItemSlots;
@@ -53,6 +54,7 @@ public sealed partial class FaxSystem : EntitySystem
     [Dependency] private FaxecuteSystem _faxecute = default!;
     [Dependency] private EmagSystem _emag = default!;
     [Dependency] private TagSystem _tag = default!; // Frontier
+    [Dependency] private StationRenameFaxesSystem _renameFaxes = default!;
 
     private const string PaperSlotId = "Paper";
 
@@ -171,6 +173,7 @@ public sealed partial class FaxSystem : EntitySystem
     {
         // Load all faxes on map in cache each other to prevent taking same name by user created fax
         Refresh(uid, component);
+        _renameFaxes.SyncFaxName((uid, component));
     }
 
     private void OnItemSlotChanged(EntityUid uid, FaxMachineComponent component, ContainerModifiedMessage args)

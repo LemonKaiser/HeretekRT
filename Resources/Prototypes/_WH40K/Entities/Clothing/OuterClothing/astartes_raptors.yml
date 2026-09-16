@@ -1,0 +1,12 @@
+- type: entity
+  parent: ClothingOuterArmorAstartesAquila
+  id: ClothingOuterArmorAstartesAquilaRaptors
+  name: Raptors Chapter Aquila power armor
+  description: Camouflaged Mk.VII Aquila-pattern power armor worn by the loyal Raptors Chapter. Its muted colors favour the patient hunter over the parade ground.
+  suffix: WH40K, Astartes, Imperium, Raptors
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_aquila_raptors.rsi
+    scale: 0.5, 0.5
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_aquila_raptors.rsi

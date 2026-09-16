@@ -47,7 +47,8 @@ public sealed partial class TradeCrateComponent : Component
     public int ExpressLatePenalty;
 
     /// <summary>
-    /// This crate's destination.
+    /// The owner of this crate's destination operational domain.
+    /// The legacy field name is retained for serialization compatibility.
     /// </summary>
     [ViewVariables]
     public EntityUid DestinationStation;

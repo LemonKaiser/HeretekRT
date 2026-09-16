@@ -2,19 +2,21 @@ using System.Linq;
 using Content.Server.Station.Components;
 using Content.Server.Station.Events;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server.Warps;
 
 namespace Content.Server._NF.Station.Systems;
 
 public sealed partial class StationRenameWarpsSystems : EntitySystem
 {
-    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<StationRenameWarpsComponent, StationRenamedEvent>(OnRenamed);
         SubscribeLocalEvent<StationRenameWarpsComponent, StationPostInitEvent>(OnPostInit);
+        SubscribeLocalEvent<EntityRenamedEvent>(OnDomainRenamed);
     }
 
     private void OnPostInit(EntityUid uid, StationRenameWarpsComponent component, ref StationPostInitEvent args)
@@ -30,12 +32,11 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
     public List<Entity<WarpPointComponent>> SyncWarpPointsToStation(EntityUid stationUid, bool? forceAdminOnly = null)
     {
         List<Entity<WarpPointComponent>> ret = new();
-        // update all warp points that belong to this station grid
         var query = AllEntityQuery<WarpPointComponent>();
         while (query.MoveNext(out var uid, out var warp))
         {
-            var warpStationUid = _stationSystem.GetOwningStation(uid) ?? EntityUid.Invalid;
-            if (!warpStationUid.Valid || warpStationUid != stationUid)
+            if (!_operationalDomains.TryResolveOperationalDomain(uid, out var domain) ||
+                domain.Owner != stationUid)
                 continue;
 
             if (forceAdminOnly != null)
@@ -44,8 +45,7 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
             if (!warp.UseStationName)
                 continue;
 
-            var stationName = Name(warpStationUid);
-            warp.Location = stationName;
+            warp.Location = Name(domain.Owner);
             ret.Add((uid, warp));
         }
         return ret;
@@ -54,12 +54,11 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
     public List<Entity<WarpPointComponent>> SyncWarpPointsToStations(IEnumerable<EntityUid> stationUids, bool? forceAdminOnly = null)
     {
         List<Entity<WarpPointComponent>> ret = new();
-        // update all warp points that belong to this station grid
         var query = AllEntityQuery<WarpPointComponent>();
         while (query.MoveNext(out var uid, out var warp))
         {
-            var warpStationUid = _stationSystem.GetOwningStation(uid) ?? EntityUid.Invalid;
-            if (!warpStationUid.Valid || !stationUids.Contains(warpStationUid))
+            if (!_operationalDomains.TryResolveOperationalDomain(uid, out var domain) ||
+                !stationUids.Contains(domain.Owner))
                 continue;
 
             if (forceAdminOnly != null)
@@ -68,8 +67,7 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
             if (!warp.UseStationName)
                 continue;
 
-            var stationName = Name(warpStationUid);
-            warp.Location = stationName;
+            warp.Location = Name(domain.Owner);
             ret.Add((uid, warp));
         }
         return ret;
@@ -79,7 +77,6 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
     public List<Entity<WarpPointComponent>> SyncWarpPointsToGrid(EntityUid gridUid, bool? forceAdminOnly = null)
     {
         List<Entity<WarpPointComponent>> ret = new();
-        // update all warp points that belong to this station grid
         var query = AllEntityQuery<WarpPointComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var warp, out var xform))
         {
@@ -94,8 +91,9 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
             if (!warp.UseStationName)
                 continue;
 
-            var gridName = Name(warpGridUid);
-            warp.Location = gridName;
+            warp.Location = _operationalDomains.TryResolveOperationalDomain(uid, out var domain)
+                ? Name(domain.Owner)
+                : Name(warpGridUid);
             ret.Add((uid, warp));
         }
         return ret;
@@ -104,7 +102,6 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
     public List<Entity<WarpPointComponent>> SyncWarpPointsToGrids(IEnumerable<EntityUid> gridUids, bool? forceAdminOnly = null)
     {
         List<Entity<WarpPointComponent>> ret = new();
-        // update all warp points that belong to this station grid
         var query = AllEntityQuery<WarpPointComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var warp, out var xform))
         {
@@ -119,10 +116,43 @@ public sealed partial class StationRenameWarpsSystems : EntitySystem
             if (!warp.UseStationName)
                 continue;
 
-            var gridName = Name(warpGridUid);
-            warp.Location = gridName;
+            warp.Location = _operationalDomains.TryResolveOperationalDomain(uid, out var domain)
+                ? Name(domain.Owner)
+                : Name(warpGridUid);
             ret.Add((uid, warp));
         }
         return ret;
+    }
+
+    /// <summary>
+    /// Sets the initial automatic location from the explicit operational owner.
+    /// Called by <see cref="WarpPointSystem"/>, which owns the warp startup subscription.
+    /// </summary>
+    public void SetInitialWarpPointLocation(Entity<WarpPointComponent> warp)
+    {
+        if (!(warp.Comp.UseStationName || warp.Comp.QueryStationName || warp.Comp.QueryGridName))
+            return;
+
+        if (_operationalDomains.TryResolveOperationalDomain(warp, out var domain))
+        {
+            warp.Comp.Location = Name(domain.Owner);
+            return;
+        }
+
+        if (warp.Comp.QueryGridName &&
+            TryComp(warp, out TransformComponent? transform) &&
+            transform.GridUid is { Valid: true } grid)
+        {
+            warp.Comp.Location = Name(grid);
+        }
+    }
+
+    private void OnDomainRenamed(ref EntityRenamedEvent ev)
+    {
+        if (_operationalDomains.TryResolveOperationalDomain(ev.Uid, out var domain) &&
+            domain.Owner == ev.Uid)
+        {
+            SyncWarpPointsToStation(domain.Owner);
+        }
     }
 }

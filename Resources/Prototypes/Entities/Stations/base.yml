@@ -107,6 +107,7 @@
   id: BaseStationExpeditions
   abstract: true
   components:
+    - type: SalvageExpeditionOwner
     - type: SalvageExpeditionData
 
 - type: entity

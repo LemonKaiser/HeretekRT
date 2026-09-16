@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server._NF.SectorServices;
 using Content.Server._NF.ShuttleRecords.Components;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server.Administration.Logs;
 using Content.Server.GameTicking;
 using Content.Server.Popups;
@@ -24,6 +25,7 @@ public sealed partial class ShuttleRecordsSystem : SharedShuttleRecordsSystem
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private GameTicker _gameTicker = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
 
     public override void Initialize()
@@ -78,9 +80,14 @@ public sealed partial class ShuttleRecordsSystem : SharedShuttleRecordsSystem
 
     private bool TryGetShuttleRecordsDataComponent([NotNullWhen(true)] out SectorShuttleRecordsComponent? component)
     {
-        if (_entityManager.EnsureComponent<SectorShuttleRecordsComponent>(
-                uid: _sectorService.GetServiceEntity(),
-                out var shuttleRecordsComponent))
+        var service = _sectorService.GetServiceEntity();
+        if (!service.Valid || !_entityManager.EntityExists(service))
+        {
+            component = null;
+            return false;
+        }
+
+        if (_entityManager.EnsureComponent<SectorShuttleRecordsComponent>(service, out var shuttleRecordsComponent))
         {
             component = shuttleRecordsComponent;
             return true;
@@ -88,5 +95,17 @@ public sealed partial class ShuttleRecordsSystem : SharedShuttleRecordsSystem
 
         component = null;
         return false;
+    }
+
+    /// <summary>
+    /// The registry remains sector-wide, but a console may be used only by someone in its own
+    /// operational domain. This prevents a stale or forged BUI message from operating a terminal
+    /// on another vessel.
+    /// </summary>
+    public bool IsActorInConsoleDomain(EntityUid console, EntityUid actor)
+    {
+        return _operationalDomains.TryResolveOperationalDomain(console, out var consoleDomain)
+               && _operationalDomains.TryResolveOperationalDomain(actor, out var actorDomain)
+               && consoleDomain.Owner == actorDomain.Owner;
     }
 }

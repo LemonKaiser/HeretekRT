@@ -647,6 +647,16 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         var candidates = new List<(KoronusActivityTemplatePrototype Template, int Weight)>();
         foreach (var template in templates)
         {
+            // A set piece has a code-fixed destination. Exclude it before the deterministic
+            // weighted pick when that system is disabled or outside the active sector; otherwise
+            // the same NextInstanceId keeps selecting the unusable template and population can
+            // remain permanently below its minimum.
+            if (KoronusActivityRuntimePolicy.TryGetSetPieceSystem(template.Execution, out var fixedSystemId) &&
+                systems.All(system => system.ID != fixedSystemId))
+            {
+                continue;
+            }
+
             if (!CanUseTemplate(component, template, routes.Count > 0))
                 continue;
 

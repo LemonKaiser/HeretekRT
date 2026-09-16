@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Provided by HeretekRT contributor",
+  "size": {
+    "x": 80,
+    "y": 80
+  },
+  "states": [
+    {
+      "name": "base"
+    },
+    {
+      "name": "damaged"
+    },
+    {
+      "name": "damaged2"
+    },
+    {
+      "name": "dead"
+    }
+  ]
+}

@@ -52,6 +52,9 @@ public sealed partial class CargoSystem
 
     private void UpdateCargoShuttleConsoles(EntityUid shuttleUid, CargoShuttleComponent _)
     {
+        if (!TryResolveCargoDomain(shuttleUid, out var shuttleDomain))
+            return;
+
         // Update pilot consoles that are already open.
         _console.RefreshDroneConsoles();
 
@@ -60,11 +63,13 @@ public sealed partial class CargoSystem
 
         while (shuttleConsoleQuery.MoveNext(out var uid, out var _))
         {
-            var stationUid = _station.GetOwningStation(uid);
-            if (stationUid != shuttleUid)
+            if (!TryResolveCargoDomain(uid, out var consoleDomain) ||
+                consoleDomain.Owner != shuttleDomain.Owner)
+            {
                 continue;
+            }
 
-            UpdateShuttleState(uid, stationUid);
+            UpdateShuttleState(uid, consoleDomain.Owner);
         }
     }
 
@@ -85,11 +90,11 @@ public sealed partial class CargoSystem
         // End Frontier
 
         // Monolith: display multiplier
-        var station = _station.GetOwningStation(uid);
+        var owner = TryResolveCargoDomain(uid, out var domain) ? domain.Owner : EntityUid.Invalid;
         var tradeCrateMultiplier = 1D;
         var otherMultiplier = 1D;
 
-        if (TryComp<TradeCrateWildcardDestinationComponent>(station, out var wildcard))
+        if (owner != EntityUid.Invalid && TryComp<TradeCrateWildcardDestinationComponent>(owner, out var wildcard))
             tradeCrateMultiplier = wildcard.ValueMultiplier;
 
         if (TryComp<MarketModifierComponent>(uid, out var marketModifier) && !marketModifier.Buy)
@@ -121,8 +126,8 @@ public sealed partial class CargoSystem
 
     private void OnCargoShuttleConsoleStartup(EntityUid uid, CargoShuttleConsoleComponent component, ComponentStartup args)
     {
-        var station = _station.GetOwningStation(uid);
-        UpdateShuttleState(uid, station);
+        if (TryResolveCargoDomain(uid, out var domain))
+            UpdateShuttleState(uid, domain.Owner);
     }
 
     private void UpdateShuttleState(EntityUid uid, EntityUid? station = null)
@@ -348,6 +353,7 @@ public sealed partial class CargoSystem
         nfsdTaxAmount = 0;
         medicalTaxAmount = 0;
         toSell = new HashSet<EntityUid>();
+        var owner = TryResolveCargoDomain(consoleUid, out var domain) ? domain.Owner : EntityUid.Invalid;
 
         foreach (var (palletUid, _, _) in GetCargoPallets(consoleUid, gridUid, BuySellType.Sell))
         {
@@ -384,11 +390,10 @@ public sealed partial class CargoSystem
                     continue;
                 toSell.Add(ent);
 
-                var station = _station.GetOwningStation(ent);
                 double multiplier = 1;
 
-                if (station != null
-                    && !HasComp<TradeCrateWildcardDestinationComponent>(station)
+                if (owner != EntityUid.Invalid
+                    && !HasComp<TradeCrateWildcardDestinationComponent>(owner)
                     && TryComp<MarketModifierComponent>(consoleUid, out var marketModifier)
                     && !HasComp<IgnoreMarketModifierComponent>(ent)
                     && !marketModifier.Buy
@@ -397,8 +402,8 @@ public sealed partial class CargoSystem
                     multiplier = marketModifier.Mod;
                 }
 
-                if (station != null
-                    && TryComp<TradeCrateWildcardDestinationComponent>(station, out var wildcard)
+                if (owner != EntityUid.Invalid
+                    && TryComp<TradeCrateWildcardDestinationComponent>(owner, out var wildcard)
                     && HasComp<TradeCrateComponent>(ent))
                 {
                     multiplier = wildcard.ValueMultiplier;

@@ -24,7 +24,6 @@ using Content.Server.Weather;
 using Content.Shared.Weather;
 using Robust.Shared.Random;
 using Robust.Shared.Map;
-using Content.Shared.Shuttles.Components; // Frontier
 using Robust.Shared.Configuration; // Frontier
 
 namespace Content.Server.Salvage;
@@ -172,8 +171,12 @@ public sealed partial class SalvageSystem
             if (comp.NextOffer > currentTime || comp.Claimed)
                 continue;
 
-            if (!HasComp<FTLComponent>(_station.GetLargestGrid((uid, Comp<StationDataComponent>(uid))))) // Frontier
-                comp.Cooldown = false;
+            // Do not start a new offer timer while the owner cannot launch an expedition.
+            // Otherwise a short FTL trip can leave the console on cooldown for the entire offer interval.
+            if (!TryGetExpeditionGrid(uid, out var grid) || IsFtlActive(grid))
+                continue;
+
+            comp.Cooldown = false;
             //comp.NextOffer += TimeSpan.FromSeconds(_cooldown); // Frontier
             comp.NextOffer = currentTime + TimeSpan.FromSeconds(_cooldown); // Frontier
             GenerateMissions(comp);
@@ -183,8 +186,6 @@ public sealed partial class SalvageSystem
 
     private void FinishExpedition(SalvageExpeditionDataComponent component, EntityUid uid, SalvageExpeditionComponent expedition, EntityUid? shuttle)
     {
-        component.NextOffer = _timing.CurTime + TimeSpan.FromSeconds(_cooldown);
-        Announce(uid, Loc.GetString("salvage-expedition-mission-completed"));
         // Finish mission cleanup.
         switch (expedition.MissionParams.MissionType)
         {
@@ -229,6 +230,7 @@ public sealed partial class SalvageSystem
 
         component.ActiveMission = 0;
         component.Cooldown = true;
+        component.CanFinish = false;
         if (shuttle != null) // Frontier
             UpdateConsoles(shuttle.Value, component); // Frontier
     }
@@ -308,8 +310,14 @@ public sealed partial class SalvageSystem
         return new SalvageExpeditionConsoleState(component.NextOffer, component.Claimed, component.Cooldown, component.CanFinish, component.ActiveMission, missions); // Frontier
     }
 
-    private void SpawnMission(SalvageMissionParams missionParams, EntityUid station, EntityUid? coordinatesDisk)
+    private void SpawnMission(SalvageMissionParams missionParams, EntityUid owner, EntityUid primaryGrid, EntityUid? coordinatesDisk)
     {
+        var primaryTransform = Transform(primaryGrid);
+        var returnMap = primaryTransform.MapUid;
+        string? returnSystemId = null;
+        if (_koronusSector.TryGetSystemId(primaryTransform.MapID, out var systemId))
+            returnSystemId = systemId;
+
         var cancelToken = new CancellationTokenSource();
         var job = new SpawnSalvageMissionJob(
             SalvageJobTime,
@@ -322,12 +330,14 @@ public sealed partial class SalvageSystem
             _weather,
             _dungeon,
             _shuttle,
-            _station,
             _metaData,
             this,
             _transform,
             _mapSystem,
-            station,
+            owner,
+            primaryGrid,
+            returnMap,
+            returnSystemId,
             coordinatesDisk,
             missionParams,
             cancelToken.Token);
@@ -347,10 +357,10 @@ public sealed partial class SalvageSystem
             return;
 
         var palletList = new List<EntityUid>();
-        var pallets = EntityQueryEnumerator<SalvageExpeditionConsoleComponent>(); // Frontier CargoPalletComponent<SalvageExpeditionConsoleComponent
-        while (pallets.MoveNext(out var pallet, out var palletComp))
+        var pallets = EntityQueryEnumerator<SalvageExpeditionConsoleComponent, TransformComponent>(); // Frontier CargoPalletComponent<SalvageExpeditionConsoleComponent
+        while (pallets.MoveNext(out var pallet, out _, out _))
         {
-            if (_station.GetOwningStation(pallet) == comp.Station)
+            if (TryGetExpeditionOwner(pallet, out var owner, out _, out _) && owner == comp.Station)
             {
                 palletList.Add(pallet);
             }
@@ -361,7 +371,8 @@ public sealed partial class SalvageSystem
 
         foreach (var reward in comp.Rewards)
         {
-            Spawn(reward, (Transform(_random.Pick(palletList)).MapPosition));
+            // Keep the reward parented to the owner's grid while it is travelling through FTL.
+            Spawn(reward, Transform(_random.Pick(palletList)).Coordinates);
         }
     }
 
@@ -372,6 +383,7 @@ public sealed partial class SalvageSystem
         {
             component.ActiveMission = 0;
             component.Cooldown = false;
+            component.CanFinish = false;
             UpdateConsoles(uid, component);
         }
     }

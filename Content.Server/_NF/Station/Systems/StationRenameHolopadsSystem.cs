@@ -2,19 +2,22 @@ using Content.Server.Labels;
 using Content.Server.Station.Components;
 using Content.Server.Station.Events;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Holopad;
 
 namespace Content.Server._NF.Station.Systems;
 
 public sealed partial class StationRenameHolopadsSystem : EntitySystem
 {
-    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private LabelSystem _label = default!; // TODO: use LabelSystem directly instead of this.
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<StationRenameHolopadsComponent, StationPostInitEvent>(OnPostInit);
+        SubscribeLocalEvent<HolopadComponent, ComponentStartup>(OnHolopadStartup);
+        SubscribeLocalEvent<EntityRenamedEvent>(OnDomainRenamed);
     }
 
     private void OnPostInit(EntityUid uid, StationRenameHolopadsComponent component, ref StationPostInitEvent args)
@@ -24,28 +27,46 @@ public sealed partial class StationRenameHolopadsSystem : EntitySystem
 
     private void SyncHolopadsNames(EntityUid stationUid)
     {
-        // update all holopads that belong to this station grid
         var query = EntityQueryEnumerator<HolopadComponent>();
         while (query.MoveNext(out var uid, out var pad))
         {
             if (!pad.UseStationName)
                 continue;
 
-            var padStationUid = _stationSystem.GetOwningStation(uid);
-            if (padStationUid != stationUid)
+            if (!_operationalDomains.TryResolveOperationalDomain(uid, out var domain) ||
+                domain.Owner != stationUid)
                 continue;
 
-            SyncHolopad((uid, pad), padStationUid);
+            SyncHolopad((uid, pad), domain.Owner);
         }
     }
 
-    public void SyncHolopad(Entity<HolopadComponent> holopad, EntityUid? padStationUid = null)
+    private void OnHolopadStartup(EntityUid uid, HolopadComponent component, ComponentStartup args)
+    {
+        SyncHolopad((uid, component));
+    }
+
+    private void OnDomainRenamed(ref EntityRenamedEvent ev)
+    {
+        if (_operationalDomains.TryResolveOperationalDomain(ev.Uid, out var domain) &&
+            domain.Owner == ev.Uid)
+        {
+            SyncHolopadsNames(domain.Owner);
+        }
+    }
+
+    public void SyncHolopad(Entity<HolopadComponent> holopad, EntityUid? domainOwner = null)
     {
         if (!holopad.Comp.UseStationName)
             return;
 
-        padStationUid ??= _stationSystem.GetOwningStation(holopad);
-        if (padStationUid == null)
+        if (domainOwner == null &&
+            _operationalDomains.TryResolveOperationalDomain(holopad, out var domain))
+        {
+            domainOwner = domain.Owner;
+        }
+
+        if (domainOwner == null)
         {
             return;
         }
@@ -57,7 +78,7 @@ public sealed partial class StationRenameHolopadsSystem : EntitySystem
             padName += holopad.Comp.StationNamePrefix + " ";
         }
 
-        padName += Name(padStationUid.Value);
+        padName += Name(domainOwner.Value);
 
         if (!string.IsNullOrEmpty(holopad.Comp.StationNameSuffix))
         {

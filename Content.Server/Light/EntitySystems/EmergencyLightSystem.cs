@@ -3,16 +3,14 @@ using Content.Server.Audio;
 using Content.Server.Light.Components;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Examine;
 using Content.Shared.Light;
 using Content.Shared.Light.Components;
 using Content.Shared.Power;
 using Content.Shared.Power.Components;
-using Content.Shared.Station.Components;
 using Robust.Server.GameObjects;
 using Color = Robust.Shared.Maths.Color;
-using Content.Server._NF.SectorServices; // Frontier: sector services
 
 namespace Content.Server.Light.EntitySystems;
 
@@ -22,8 +20,8 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
     [Dependency] private BatterySystem _battery = default!;
     [Dependency] private PointLightSystem _pointLight = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
-    [Dependency] private StationSystem _station = default!;
-    [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier: sector-wide alerts
+    [Dependency] private AlertLevelSystem _alertLevelSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
@@ -34,7 +32,7 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
         SubscribeLocalEvent<EmergencyLightComponent, ExaminedEvent>(OnEmergencyExamine);
         SubscribeLocalEvent<EmergencyLightComponent, PowerChangedEvent>(OnEmergencyPower);
 
-        SubscribeLocalEvent<EmergencyLightComponent, MapInitEvent>(OnMapInit); // Frontier
+        SubscribeLocalEvent<EmergencyLightComponent, MapInitEvent>(OnMapInit);
     }
 
     private void OnEmergencyPower(Entity<EmergencyLightComponent> entity, ref PowerChangedEvent args)
@@ -60,11 +58,9 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
                     ("batteryStateText",
                         Loc.GetString(component.BatteryStateText[component.State]))));
 
-            // Show alert level on the light itself.
-            // Frontier: sector-wide alerts
-            if (!TryComp<AlertLevelComponent>(_sectorService.GetServiceEntity(), out var alerts))
+            // Show the alert level owned by this light's operational domain.
+            if (!_alertLevelSystem.TryGetDomainAlertLevel(uid, out _, out var alerts))
                 return;
-            // End Frontier: sector-wide alerts
 
             if (alerts.AlertLevels == null)
                 return;
@@ -101,21 +97,18 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
 
     private void OnAlertLevelChanged(AlertLevelChangedEvent ev)
     {
-        // Frontier: sector-wide alerts
-        // if (!TryComp<AlertLevelComponent>(ev.Station, out var alert))
-        //     return;
-        if (!TryComp<AlertLevelComponent>(_sectorService.GetServiceEntity(), out var alert))
+        if (!TryComp<AlertLevelComponent>(ev.Station, out var alert))
             return;
-        // End Frontier
 
         if (alert.AlertLevels == null || !alert.AlertLevels.Levels.TryGetValue(ev.AlertLevel, out var details))
             return;
 
-        var query = EntityQueryEnumerator<EmergencyLightComponent, PointLightComponent, AppearanceComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out var light, out var pointLight, out var appearance, out var xform))
+        var query = EntityQueryEnumerator<EmergencyLightComponent, PointLightComponent, AppearanceComponent>();
+        while (query.MoveNext(out var uid, out var light, out var pointLight, out var appearance))
         {
-            // if (CompOrNull<StationMemberComponent>(xform.GridUid)?.Station != ev.Station) // Frontier: sector-wide alerts
-            //     continue; // Frontier: sector-wide alerts
+            if (!_operationalDomains.TryResolveOperationalDomain(uid, out var domain) ||
+                domain.Owner != ev.Station)
+                continue;
 
             _pointLight.SetColor(uid, details.EmergencyLightColor, pointLight);
             _appearance.SetData(uid, EmergencyLightVisuals.Color, details.EmergencyLightColor, appearance);
@@ -184,12 +177,8 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
         if (!TryComp<ApcPowerReceiverComponent>(entity.Owner, out var receiver))
             return;
 
-        // Frontier: sector-wide alerts
-        // if (!TryComp<AlertLevelComponent>(_station.GetOwningStation(entity.Owner), out var alerts))
-        //     return;
-        if (!TryComp<AlertLevelComponent>(_sectorService.GetServiceEntity(), out var alerts))
+        if (!_alertLevelSystem.TryGetDomainAlertLevel(entity.Owner, out _, out var alerts))
             return;
-        // End Frontier
 
         if (alerts.AlertLevels == null || !alerts.AlertLevels.Levels.TryGetValue(alerts.CurrentLevel, out var details))
         {
@@ -253,10 +242,9 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
         _ambient.SetAmbience(entity.Owner, true);
     }
 
-    // Frontier: ensure the lights are accurate to the station
     private void OnMapInit(Entity<EmergencyLightComponent> entity, ref MapInitEvent ev)
     {
-        if (!TryComp<AlertLevelComponent>(_sectorService.GetServiceEntity(), out var alert))
+        if (!_alertLevelSystem.TryGetDomainAlertLevel(entity.Owner, out _, out var alert))
             return;
 
         if (alert.AlertLevels == null || !alert.AlertLevels.Levels.TryGetValue(alert.CurrentLevel, out var details))
@@ -268,5 +256,4 @@ public sealed partial class EmergencyLightSystem : SharedEmergencyLightSystem
         else
             TurnOff(entity, details.EmergencyLightColor);
     }
-    // End Frontier
 }

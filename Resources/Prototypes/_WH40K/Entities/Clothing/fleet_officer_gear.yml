@@ -1,0 +1,89 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitImperialFleetOfficer
+  suffix: WH40K, Имперский Военный Флот
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/fleet_officer_uniform.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/fleet_officer_uniform.rsi
+    clothingVisuals:
+      innerClothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  parent: [ClothingOuterBase, BaseFoldable]
+  id: ClothingOuterCoatImperialFleetOfficer
+  suffix: WH40K, Имперский Военный Флот
+  components:
+  - type: Appearance
+  - type: Foldable
+    canFoldInsideContainer: true
+  - type: FoldableClothing
+    foldedSlots: [ NECK ]
+    unfoldedSlots: [ OUTERCLOTHING ]
+    foldedEquippedPrefix: cape
+    foldedHeldPrefix: cape
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/fleet_officer_coat.rsi
+    layers:
+    - state: icon
+      map: [ "unfoldedLayer" ]
+    - state: cape-icon
+      map: [ "foldedLayer" ]
+      visible: false
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/fleet_officer_coat.rsi
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatImperialFleetOfficer
+  suffix: WH40K, Имперский Военный Флот
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/fleet_officer_cap.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/fleet_officer_cap.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+
+- type: entity
+  parent: ClothingBeltBase
+  id: ClothingBeltImperialFleetOfficer
+  suffix: WH40K, Имперский Военный Флот
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Belt/fleet_officer_belt.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Belt/fleet_officer_belt.rsi
+    clothingVisuals:
+      belt:
+      - state: equipped-BELT

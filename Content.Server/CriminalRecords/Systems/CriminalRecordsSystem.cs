@@ -43,6 +43,11 @@ public sealed partial class CriminalRecordsSystem : SharedCriminalRecordsSystem
 
     private void OnGeneralRecordCreated(AfterGeneralRecordCreatedEvent ev)
     {
+        // Criminal records are sector-wide. Vessel and station manifests may create their own
+        // general records, but must not become parallel criminal databases.
+        if (_sectorService.GetServiceEntity() != ev.Key.OriginStation)
+            return;
+
         _records.AddRecordEntry(ev.Key, new CriminalRecord());
         _records.Synchronize(ev.Key);
     }

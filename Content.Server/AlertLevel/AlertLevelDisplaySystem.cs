@@ -1,16 +1,15 @@
 using Content.Server.Power.Components;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.AlertLevel;
 using Content.Shared.Power;
-using Content.Server._NF.SectorServices; // Frontier
 
 namespace Content.Server.AlertLevel;
 
 public sealed partial class AlertLevelDisplaySystem : EntitySystem
 {
-    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private AlertLevelSystem _alertLevelSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
-    [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier
 
     public override void Initialize()
     {
@@ -24,7 +23,11 @@ public sealed partial class AlertLevelDisplaySystem : EntitySystem
         var query = EntityQueryEnumerator<AlertLevelDisplayComponent, AppearanceComponent>();
         while (query.MoveNext(out var uid, out _, out var appearance))
         {
-            _appearance.SetData(uid, AlertLevelDisplay.CurrentLevel, args.AlertLevel, appearance);
+            if (_operationalDomains.TryResolveOperationalDomain(uid, out var domain) &&
+                domain.Owner == args.Station)
+            {
+                _appearance.SetData(uid, AlertLevelDisplay.CurrentLevel, args.AlertLevel, appearance);
+            }
         }
     }
 
@@ -32,9 +35,7 @@ public sealed partial class AlertLevelDisplaySystem : EntitySystem
     {
         if (TryComp(uid, out AppearanceComponent? appearance))
         {
-            //var stationUid = _stationSystem.GetOwningStation(uid); // Frontier: sector-wide alerts
-            var stationUid = _sectorService.GetServiceEntity(); // Frontier: sector-wide alerts
-            if (stationUid.Valid && TryComp(stationUid, out AlertLevelComponent? alert)) // Frontier: uid != null < uid.Valid
+            if (_alertLevelSystem.TryGetDomainAlertLevel(uid, out _, out var alert))
             {
                 _appearance.SetData(uid, AlertLevelDisplay.CurrentLevel, alert.CurrentLevel, appearance);
             }

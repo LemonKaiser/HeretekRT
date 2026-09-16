@@ -5,7 +5,11 @@ using Content.Server.GameTicking.Rules;
 using Content.Server._NF.Shuttles.Components;
 using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Shared._Mono.Ships.Components;
+using Content.Shared._NF.Shipyard.Components;
+using Content.Shared._WH40K.OperationalDomain.Components;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
@@ -43,6 +47,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private StationSystem _stations = default!;
     [Dependency] private KoronusPlanetarySystem _planetary = default!;
     [Dependency] private KoronusAsteroidFieldSystem _asteroidFields = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private ForceAnchorSystem _forceAnchor = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
@@ -572,8 +577,27 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             if (_stations.GetOwningStation(grid) is { } station && renamedStations.Add(station))
                 _stations.RenameStation(station, gridName, false);
 
+            TryMarkKoronusBootstrapVesselDomain(grid);
             ConfigureInitialGrid(grid, system);
         }
+    }
+
+    /// <summary>
+    /// The Koronus start-map bootstrap is the only map-loading path allowed to promote an authored
+    /// starting ship. A normal shuttle is intentionally ignored unless it has an explicit vessel
+    /// marker or one of the existing ship ownership markers.
+    /// </summary>
+    internal bool TryMarkKoronusBootstrapVesselDomain(EntityUid grid)
+    {
+        if (_stations.GetOwningStation(grid) != null ||
+            (!HasComp<OperationalDomainVesselComponent>(grid) &&
+             !HasComp<VesselComponent>(grid) &&
+             !HasComp<ShipOwnershipComponent>(grid)))
+        {
+            return false;
+        }
+
+        return _operationalDomains.TryMarkVesselDomain(grid);
     }
 
     /// <summary>
@@ -703,14 +727,21 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         runtime.SystemId = system.ID;
 
         KoronusPlanetarySystemVisualComponent? visual = null;
-        foreach (var body in _prototypes.EnumeratePrototypes<KoronusCelestialBodyPrototype>())
+        if (system.SpaceMode == KoronusSpaceMode.Planetary)
         {
-            if (body.System != system.ID)
-                continue;
+            foreach (var body in _prototypes.EnumeratePrototypes<KoronusCelestialBodyPrototype>())
+            {
+                if (body.System != system.ID)
+                    continue;
 
-            visual ??= EnsureComp<KoronusPlanetarySystemVisualComponent>(mapUid);
-            if (body.RandomizePositionAngle && !visual.PositionAngleOverrides.ContainsKey(body.ID))
-                visual.PositionAngleOverrides[body.ID] = GetRandomBodyPositionAngle(mapUid, system, body, visual);
+                visual ??= EnsureComp<KoronusPlanetarySystemVisualComponent>(mapUid);
+                if (body.RandomizePositionAngle && !visual.PositionAngleOverrides.ContainsKey(body.ID))
+                    visual.PositionAngleOverrides[body.ID] = GetRandomBodyPositionAngle(mapUid, system, body, visual);
+            }
+        }
+        else
+        {
+            RemComp<KoronusPlanetarySystemVisualComponent>(mapUid);
         }
 
         if (visual != null)

@@ -1,0 +1,184 @@
+- type: entity
+  id: WH40KBarrelTankBase
+  parent: StorageTank
+  abstract: true
+  suffix: WH40K
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.32
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:SpillBehavior
+        solution: tank
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        maxVol: 300
+  - type: RefillableSolution
+    solution: tank
+  - type: ExaminableSolution
+    solution: tank
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/barrels.rsi
+  - type: StaticPrice
+    price: 80
+  - type: RequireProjectileTarget
+
+- type: entity
+  id: WH40KBarrelIndustrial
+  parent: WH40KBarrelTankBase
+  name: industrial liquid barrel
+  description: A compact reservoir for transporting liquids through the manufactorum. It can stop incoming fire.
+  components:
+  - type: Sprite
+    state: basebarrel
+
+- type: entity
+  id: WH40KBarrelBioWaste
+  parent: WH40KBarrelTankBase
+  name: bio-waste barrel
+  description: A sealed barrel for organic waste. It can be refilled, but its contents are best left untouched.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        reagents:
+        - ReagentId: Blood
+          Quantity: 300
+  - type: Sprite
+    state: biobarrel
+
+- type: entity
+  id: WH40KBarrelPromethium
+  parent: WH40KBarrelTankBase
+  name: promethium barrel
+  description: A compact fuel reservoir. It is useful for refilling tools and sturdy enough to serve as cover.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        reagents:
+        - ReagentId: WeldingFuel
+          Quantity: 300
+  - type: ReagentTank
+    tankType: Fuel
+  - type: Sprite
+    state: fuelbarrel
+
+- type: entity
+  id: WH40KBarrelIrradiatedWaste
+  parent: WH40KBarrelTankBase
+  name: irradiated waste barrel
+  description: A shielded barrel for radioactive waste. Its reservoir is small, but its contents remain dangerous.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        reagents:
+        - ReagentId: Radium
+          Quantity: 300
+  - type: Sprite
+    state: radbarrel
+
+- type: entity
+  id: WH40KBarrelTrashBase
+  parent: BaseStructure
+  abstract: true
+  suffix: WH40K, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.32
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+          params:
+            volume: 1
+  - type: Sprite
+    sprite: _WH40K/Structures/Storage/barrels.rsi
+  - type: StaticPrice
+    price: 40
+  - type: RequireProjectileTarget
+
+- type: entity
+  id: WH40KBarrelTrash1
+  parent: WH40KBarrelTrashBase
+  name: scrap barrel
+  description: A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+  components:
+  - type: Sprite
+    state: trashbarrel1
+
+- type: entity
+  id: WH40KBarrelTrash2
+  parent: WH40KBarrelTrashBase
+  name: scrap barrel
+  description: A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+  components:
+  - type: Sprite
+    state: trashbarrel2
+
+- type: entity
+  id: WH40KBarrelTrash3
+  parent: WH40KBarrelTrashBase
+  name: scrap barrel
+  description: A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
+  components:
+  - type: Sprite
+    state: trashbarrel3

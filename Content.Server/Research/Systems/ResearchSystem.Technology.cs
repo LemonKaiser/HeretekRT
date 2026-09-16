@@ -38,10 +38,11 @@ public sealed partial class ResearchSystem
         if (!Resolve(uid, ref databaseComponent, ref clientComponent, false))
             return;
 
-        if (!TryComp<TechnologyDatabaseComponent>(clientComponent.Server, out var serverDatabase))
+        if (!TryGetClientServer(uid, out var server, out _, clientComponent) ||
+            !TryComp<TechnologyDatabaseComponent>(server, out var serverDatabase))
             return;
 
-        Sync(uid, clientComponent.Server.Value, databaseComponent, serverDatabase);
+        Sync(uid, server.Value, databaseComponent, serverDatabase);
     }
 
     /// <summary>

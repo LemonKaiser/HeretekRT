@@ -25,6 +25,13 @@ public sealed partial class GatewayComponent : Component
     public bool Interactable = true;
 
     /// <summary>
+    /// Gateways on vessel domains are opt-in content. Existing station and remote-destination
+    /// gateways keep their behaviour; a ship must explicitly declare this capability.
+    /// </summary>
+    [DataField]
+    public bool AllowVesselDomain;
+
+    /// <summary>
     /// Name as it shows up on the ui of station gateways.
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]

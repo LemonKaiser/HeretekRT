@@ -1,5 +1,4 @@
 using System.Numerics;
-using Content.Server.GameTicking;
 using Content.Server.Salvage.Expeditions;
 using Content.Server.Salvage.Expeditions.Structure;
 using Content.Server.Shuttles.Components;
@@ -12,6 +11,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Salvage.Expeditions;
 using Robust.Shared.Map;
 using Content.Shared.Shuttles.Components;
+using Content.Shared.Shuttles.Systems;
 using Content.Shared.Localizations;
 using Content.Shared.Station.Components;
 using Robust.Shared.Map.Components;
@@ -28,10 +28,9 @@ public sealed partial class SalvageSystem
      */
 
     [Dependency] private MobStateSystem _mobState = default!;
-    [Dependency] private GameTicker _gameTicker = default!;
     private void InitializeRunner()
     {
-        SubscribeLocalEvent<FTLRequestEvent>(OnFTLRequest);
+        SubscribeLocalEvent<ShuttleComponent, FTLRequestEvent>(OnFTLRequest);
         SubscribeLocalEvent<FTLStartedEvent>(OnFTLStarted);
         SubscribeLocalEvent<FTLCompletedEvent>(OnFTLCompleted);
         SubscribeLocalEvent<ConsoleFTLAttemptEvent>(OnConsoleFTLAttempt);
@@ -86,9 +85,11 @@ public sealed partial class SalvageSystem
             null);
     }
 
-    private void OnFTLRequest(ref FTLRequestEvent ev)
+    private void OnFTLRequest(Entity<ShuttleComponent> shuttle, ref FTLRequestEvent ev)
     {
-        if (!HasComp<SalvageExpeditionComponent>(ev.MapUid) ||
+        if (!TryComp<SalvageExpeditionComponent>(ev.MapUid, out var expedition) ||
+            !TryGetExpeditionGrid(expedition.Station, out var ownerGrid) ||
+            ownerGrid != shuttle.Owner ||
             !TryComp<FTLDestinationComponent>(ev.MapUid, out var dest))
         {
             return;
@@ -102,6 +103,9 @@ public sealed partial class SalvageSystem
     private void OnFTLCompleted(ref FTLCompletedEvent args)
     {
         if (!TryComp<SalvageExpeditionComponent>(args.MapUid, out var component))
+            return;
+
+        if (!TryGetExpeditionGrid(component.Station, out var ownerGrid) || ownerGrid != args.Entity)
             return;
 
         // Frontier
@@ -141,6 +145,8 @@ public sealed partial class SalvageSystem
         }
 
         if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition) ||
+            !TryGetExpeditionGrid(expedition.Station, out var ownerGrid) ||
+            ownerGrid != ev.Entity ||
             !TryComp<SalvageExpeditionDataComponent>(expedition.Station, out var station))
         {
             return;
@@ -170,6 +176,12 @@ public sealed partial class SalvageSystem
         // Run the basic mission timers (e.g. announcements, auto-FTL, completion, etc)
         while (query.MoveNext(out var uid, out var comp))
         {
+            if (!TryGetExpeditionGrid(comp.Station, out _))
+            {
+                QueueDel(uid);
+                continue;
+            }
+
             var remaining = comp.EndTime - _timing.CurTime;
             var audioLength = _audio.GetAudioLength(comp.SelectedSong);
 
@@ -194,82 +206,81 @@ public sealed partial class SalvageSystem
                 Dirty(uid, comp);
                 Announce(uid, Loc.GetString("salvage-expedition-announcement-countdown-minutes", ("duration", TimeSpan.FromMinutes(5).Minutes)));
             }
-            // Auto-FTL out any shuttles
+            // Return the expedition owner's ship. The owner can be either a legacy station or
+            // an independent vessel grid, but both are resolved through the same path.
             else if (remaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime) + TimeSpan.FromSeconds(0.5))
             {
                 var ftlTime = (float) remaining.TotalSeconds;
-
                 if (remaining < TimeSpan.FromSeconds(_shuttle.DefaultStartupTime))
-                {
-                    ftlTime = MathF.Max(0, (float) remaining.TotalSeconds - 0.5f);
-                }
+                    ftlTime = MathF.Max(0f, (float) remaining.TotalSeconds - 0.5f);
 
                 ftlTime = MathF.Min(ftlTime, _shuttle.DefaultStartupTime);
-                var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
 
-                if (TryComp<StationDataComponent>(comp.Station, out var data))
+                if (!TryGetExpeditionGrid(comp.Station, out var shuttleUid) ||
+                    !TryComp<ShuttleComponent>(shuttleUid, out var shuttle) ||
+                    Transform(shuttleUid).MapUid != uid ||
+                    IsFtlActive(shuttleUid))
                 {
-                    foreach (var member in data.Grids)
+                    continue;
+                }
+
+                if (!TryPrepareExpeditionReturn(comp, out var mapUid, out var mapId, out var reservedSystem))
+                    continue;
+
+                const int numRetries = 20;
+                const float minDistance = 200f;
+                const float minRange = 750f;
+                const float maxRange = 3500f;
+
+                List<Vector2> gridCoords = new();
+                var gridQuery = EntityManager.AllEntityQueryEnumerator<MapGridComponent, TransformComponent>();
+                while (gridQuery.MoveNext(out var _, out _, out var xform))
+                {
+                    if (xform.MapID == mapId)
+                        gridCoords.Add(_transform.GetWorldPosition(xform));
+                }
+
+                Vector2 dropLocation = _random.NextVector2(minRange, maxRange);
+                for (var i = 0; i < numRetries; i++)
+                {
+                    var positionIsValid = true;
+                    foreach (var station in gridCoords)
                     {
-                        while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform))
+                        if (Vector2.Distance(station, dropLocation) < minDistance)
                         {
-                            if (shuttleXform.MapUid != uid || HasComp<FTLComponent>(shuttleUid))
-                                continue;
-
-                            // Frontier: try to find a potential destination for ship that doesn't collide with other grids.
-                            var mapId = _gameTicker.DefaultMap;
-                            if (!_mapSystem.TryGetMap(mapId, out var mapUid))
-                            {
-                                Log.Error($"Could not get DefaultMap EntityUID, shuttle {shuttleUid} may be stuck on expedition.");
-                                continue;
-                            }
-
-                            // Destination generator parameters (move to CVAR?)
-                            int numRetries = 20; // Maximum number of retries
-                            float minDistance = 200f; // Minimum distance from another object, in meters
-                            float minRange = 750f; // Minimum distance from sector centre, in meters
-                            float maxRange = 3500f; // Maximum distance from sector centre, in meters
-
-                            // Get a list of all grid positions on the destination map
-                            List<Vector2> gridCoords = new();
-                            var gridQuery = EntityManager.AllEntityQueryEnumerator<MapGridComponent, TransformComponent>();
-                            while (gridQuery.MoveNext(out var _, out _, out var xform))
-                            {
-                                if (xform.MapID == mapId)
-                                    gridCoords.Add(_transform.GetWorldPosition(xform));
-                            }
-
-                            Vector2 dropLocation = _random.NextVector2(minRange, maxRange);
-                            for (int i = 0; i < numRetries; i++)
-                            {
-                                bool positionIsValid = true;
-                                foreach (var station in gridCoords)
-                                {
-                                    if (Vector2.Distance(station, dropLocation) < minDistance)
-                                    {
-                                        positionIsValid = false;
-                                        break;
-                                    }
-                                }
-
-                                if (positionIsValid)
-                                    break;
-
-                                // No good position yet, pick another random position.
-                                dropLocation = _random.NextVector2(minRange, maxRange);
-                            }
-
-                            _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(mapUid.Value, dropLocation), 0f, 5.5f, 50f);
-                            // End Frontier:  try to find a potential destination for ship that doesn't collide with other grids.
+                            positionIsValid = false;
+                            break;
                         }
-
-                        break;
                     }
+
+                    if (positionIsValid)
+                        break;
+
+                    dropLocation = _random.NextVector2(minRange, maxRange);
+                }
+
+                _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(mapUid, dropLocation), 0f, ftlTime, 50f);
+
+                if (reservedSystem != null)
+                {
+                    if (TryComp<FTLComponent>(shuttleUid, out var ftl) && ftl.State == FTLState.Starting)
+                        _shuttleConsoles.TrackExternalKoronusJumpReservation(shuttleUid, reservedSystem);
+                    else
+                        _koronusResidency.EndIncomingSectorJump(reservedSystem);
                 }
             }
 
             if (remaining < TimeSpan.Zero)
             {
+                // Never delete the expedition map while the owner's ship is still on it. If the
+                // return destination is temporarily unavailable, keep retrying instead of deleting
+                // the ship together with the expired map.
+                if (TryGetExpeditionGrid(comp.Station, out var ownerGrid) &&
+                    Transform(ownerGrid).MapUid == uid)
+                {
+                    continue;
+                }
+
                 QueueDel(uid);
             }
         }
@@ -348,5 +359,44 @@ public sealed partial class SalvageSystem
                     comp.MissionParams.Seed));
             }
         }
+    }
+
+    private bool TryPrepareExpeditionReturn(
+        SalvageExpeditionComponent expedition,
+        out EntityUid mapUid,
+        out MapId mapId,
+        out string? reservedSystem)
+    {
+        mapUid = EntityUid.Invalid;
+        mapId = MapId.Nullspace;
+        reservedSystem = null;
+
+        if (!string.IsNullOrEmpty(expedition.ReturnSystemId))
+        {
+            var systemId = expedition.ReturnSystemId;
+            if (!_koronusResidency.BeginIncomingSectorJump(systemId))
+                return false;
+
+            if (!_koronusSector.TryGetSystemMap(systemId, out mapId) ||
+                !_mapSystem.TryGetMap(mapId, out var foundMap))
+            {
+                _koronusResidency.EndIncomingSectorJump(systemId);
+                return false;
+            }
+
+            mapUid = foundMap.Value;
+            reservedSystem = systemId;
+            return true;
+        }
+
+        if (expedition.ReturnMap is not { Valid: true } returnMap ||
+            !TryComp<MapComponent>(returnMap, out var map))
+        {
+            return false;
+        }
+
+        mapUid = returnMap;
+        mapId = map.MapId;
+        return true;
     }
 }

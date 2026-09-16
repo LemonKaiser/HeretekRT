@@ -1,14 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Chat.Systems;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.CCVar;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
-using Content.Server.GameTicking; // Frontier
-using Robust.Shared.Player; // Frontier
-using Content.Server._NF.SectorServices; // Frontier
+using Robust.Shared.Player;
 
 namespace Content.Server.AlertLevel;
 
@@ -18,17 +17,14 @@ public sealed partial class AlertLevelSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private ChatSystem _chatSystem = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
-    [Dependency] private StationSystem _stationSystem = default!;
-    [Dependency] private GameTicker _ticker = default!; // Frontier
-    [Dependency] private SectorServiceSystem _sectorService = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     // Until stations are a prototype, this is how it's going to have to be.
     public const string DefaultAlertLevelSet = "stationAlerts";
 
     public override void Initialize()
     {
-        //SubscribeLocalEvent<StationInitializedEvent>(OnStationInitialize); // Frontier: sector-wide services
-        SubscribeLocalEvent<AlertLevelComponent, ComponentInit>(OnInit); // Frontier: sector-wide services
+        SubscribeLocalEvent<AlertLevelComponent, ComponentInit>(OnInit);
         SubscribeLocalEvent<PrototypesReloadedEventArgs>(OnPrototypeReload);
     }
 
@@ -52,48 +48,10 @@ public sealed partial class AlertLevelSystem : EntitySystem
         }
     }
 
-    // Frontier: sector-wide services
-    /*
-    private void OnStationInitialize(StationInitializedEvent args)
-    {
-        if (!TryComp<AlertLevelComponent>(args.Station, out var alertLevelComponent))
-            return;
-
-        if (!_prototypeManager.TryIndex(alertLevelComponent.AlertLevelPrototype, out AlertLevelPrototype? alerts))
-        {
-            return;
-        }
-
-        alertLevelComponent.AlertLevels = alerts;
-
-        var defaultLevel = alertLevelComponent.AlertLevels.DefaultLevel;
-        if (string.IsNullOrEmpty(defaultLevel))
-        {
-            defaultLevel = alertLevelComponent.AlertLevels.Levels.Keys.First();
-        }
-
-        SetLevel(args.Station, defaultLevel, false, false, true);
-    }
-    */
-
     private void OnInit(EntityUid uid, AlertLevelComponent comp, ComponentInit args)
     {
-        if (!_prototypeManager.TryIndex(comp.AlertLevelPrototype, out AlertLevelPrototype? alerts))
-        {
-            return;
-        }
-
-        comp.AlertLevels = alerts;
-
-        var defaultLevel = comp.AlertLevels.DefaultLevel;
-        if (string.IsNullOrEmpty(defaultLevel))
-        {
-            defaultLevel = comp.AlertLevels.Levels.Keys.First();
-        }
-
-        SetLevel(uid, defaultLevel, false, false, true);
+        InitializeAlertLevel(uid, comp);
     }
-    // End Frontier
 
     private void OnPrototypeReload(PrototypesReloadedEventArgs args)
     {
@@ -117,7 +75,7 @@ public sealed partial class AlertLevelSystem : EntitySystem
                     defaultLevel = comp.AlertLevels.Levels.Keys.First();
                 }
 
-                SetLevel(uid, defaultLevel, true, true, true);
+                SetLevelDirect(uid, defaultLevel, true, true, true, component: comp);
             }
         }
 
@@ -126,32 +84,44 @@ public sealed partial class AlertLevelSystem : EntitySystem
 
     public string GetLevel(EntityUid station, AlertLevelComponent? alert = null)
     {
-        // Frontier: sector-wide alarms
-        if (!TryComp(_sectorService.GetServiceEntity(), out alert))
+        if (!TryGetDomainAlertLevel(station, out _, out alert))
             return string.Empty;
-
-        // if (!Resolve(station, ref alert))
-        // {
-        //     return string.Empty;
-        // }
-        // End Frontier
 
         return alert.CurrentLevel;
     }
 
     public float GetAlertLevelDelay(EntityUid station, AlertLevelComponent? alert = null)
     {
-        // Frontier: sector-wide alarms
-        if (!TryComp(_sectorService.GetServiceEntity(), out alert))
+        if (!TryGetDomainAlertLevel(station, out _, out alert))
             return float.NaN;
 
-        // if (!Resolve(station, ref alert))
-        // {
-        //     return float.NaN;
-        // }
-        // End Frontier
-
         return alert.CurrentDelay;
+    }
+
+    /// <summary>
+    /// Resolves the alert state belonging to an entity's operational domain.
+    /// Independent vessel grids receive their own alert component on first use.
+    /// </summary>
+    public bool TryGetDomainAlertLevel(
+        EntityUid entity,
+        out EntityUid owner,
+        [NotNullWhen(true)] out AlertLevelComponent? alert)
+    {
+        owner = EntityUid.Invalid;
+        alert = null;
+
+        if (_operationalDomains.TryResolveOperationalDomain(entity, out var domain))
+        {
+            owner = domain.Owner;
+            alert = EnsureComp<AlertLevelComponent>(owner);
+            return InitializeAlertLevel(owner, alert);
+        }
+
+        if (!TryComp(entity, out alert))
+            return false;
+
+        owner = entity;
+        return InitializeAlertLevel(owner, alert);
     }
 
     /// <summary>
@@ -166,13 +136,40 @@ public sealed partial class AlertLevelSystem : EntitySystem
     public void SetLevel(EntityUid station, string level, bool playSound, bool announce, bool force = false,
         bool locked = false, MetaDataComponent? dataComponent = null, AlertLevelComponent? component = null)
     {
-        // Frontier: sector-wide alerts
-        EntityUid sectorEnt = _sectorService.GetServiceEntity();
-        if (!TryComp<AlertLevelComponent>(sectorEnt, out component))
+        if (!TryGetDomainAlertLevel(station, out var owner, out component))
             return;
-        // End Frontier
 
-        if (component.AlertLevels == null // Frontier: remove component, resolve station to data component later
+        SetLevelDirect(owner, level, playSound, announce, force, locked, component: component);
+    }
+
+    private bool InitializeAlertLevel(EntityUid uid, AlertLevelComponent component)
+    {
+        if (component.AlertLevels != null)
+            return true;
+
+        component.AlertLevelPrototype = string.IsNullOrWhiteSpace(component.AlertLevelPrototype)
+            ? DefaultAlertLevelSet
+            : component.AlertLevelPrototype;
+
+        if (!_prototypeManager.TryIndex(component.AlertLevelPrototype, out AlertLevelPrototype? alerts))
+            return false;
+
+        component.AlertLevels = alerts;
+        var defaultLevel = alerts.DefaultLevel;
+        if (string.IsNullOrEmpty(defaultLevel))
+            defaultLevel = alerts.Levels.Keys.First();
+
+        SetLevelDirect(uid, defaultLevel, false, false, true, component: component);
+        return true;
+    }
+
+    private void SetLevelDirect(EntityUid owner, string level, bool playSound, bool announce, bool force = false,
+        bool locked = false, MetaDataComponent? dataComponent = null, AlertLevelComponent? component = null)
+    {
+        if (!Resolve(owner, ref component))
+            return;
+
+        if (component.AlertLevels == null
             || !component.AlertLevels.Levels.TryGetValue(level, out var detail)
             || component.CurrentLevel == level)
         {
@@ -195,8 +192,6 @@ public sealed partial class AlertLevelSystem : EntitySystem
         component.CurrentLevel = level;
         component.IsLevelLocked = locked;
 
-        //var stationName = dataComponent.EntityName; // Frontier: remove station name
-
         var name = level.ToLower();
 
         if (Loc.TryGetString($"alert-level-{level}", out var locName))
@@ -216,13 +211,16 @@ public sealed partial class AlertLevelSystem : EntitySystem
         var announcementFull = Loc.GetString("alert-level-announcement", ("name", name), ("announcement", announcement));
 
         var playDefault = false;
-        if (playSound)
+        var hasDomain = _operationalDomains.TryResolveOperationalDomain(owner, out var domain);
+        if (playSound && hasDomain)
         {
             if (detail.Sound != null)
             {
-                //var filter = _stationSystem.GetInOwningStation(station); // Frontier: global alerts
-                var filter = Filter.Empty(); // Frontier
-                filter.AddInMap(_ticker.DefaultMap, EntityManager); // Frontier
+                var filter = Filter.Empty();
+                foreach (var session in _operationalDomains.GetPlayersInOperationalDomain(domain))
+                {
+                    filter.AddPlayer(session);
+                }
                 _audio.PlayGlobal(detail.Sound, filter, true, detail.Sound.Params);
             }
             else
@@ -231,17 +229,17 @@ public sealed partial class AlertLevelSystem : EntitySystem
             }
         }
 
-        if (announce && Resolve(station, ref dataComponent)) // Frontier: add Resolve for dataComponent
+        if (announce && hasDomain)
         {
-            var stationName = dataComponent.EntityName; // Frontier: moved down
-            _chatSystem.DispatchGlobalAnnouncement(
+            _chatSystem.DispatchDomainAnnouncement(
+                owner,
                 announcementFull,
-                sender: stationName,
-                playSound: playDefault,
+                sender: Name(owner),
+                playDefaultSound: playDefault,
                 colorOverride: detail.Color);
         }
 
-        RaiseLocalEvent(new AlertLevelChangedEvent(EntityUid.Invalid, level)); // Frontier: pass invalid, we have no station
+        RaiseLocalEvent(new AlertLevelChangedEvent(owner, level));
     }
 }
 

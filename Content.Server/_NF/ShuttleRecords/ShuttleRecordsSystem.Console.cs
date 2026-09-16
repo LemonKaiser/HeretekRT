@@ -27,7 +27,7 @@ public sealed partial class ShuttleRecordsSystem
 
     private void OnConsoleUiOpened(EntityUid uid, ShuttleRecordsConsoleComponent component, BoundUIOpenedEvent args)
     {
-        if (args.Actor is not { Valid: true })
+        if (args.Actor is not { Valid: true } || !IsActorInConsoleDomain(uid, args.Actor))
             return;
 
         RefreshState(uid, component);
@@ -129,6 +129,9 @@ public sealed partial class ShuttleRecordsSystem
 
     private void OnCopyDeedMessage(EntityUid uid, ShuttleRecordsConsoleComponent component, CopyDeedMessage args)
     {
+        if (!IsActorInConsoleDomain(uid, args.Actor))
+            return;
+
         if (!TryGetShuttleRecordsDataComponent(out var dataComponent))
             return;
 

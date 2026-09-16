@@ -1,0 +1,145 @@
+- type: entity
+  id: BaseMobWH40KKhorneDaemon
+  parent: SimpleSpaceMobBase
+  name: daemon of Khorne
+  description: A blood-mad lesser daemon of the Blood God, dragged into realspace to take skulls in His name.
+  suffix: WH40K, Khorne
+  abstract: true
+  components:
+  - type: TypingIndicator
+    proto: alien
+  - type: NpcFactionMember
+    factions:
+    - Heretics
+  - type: NPCRetaliation
+    attackMemoryLength: 15
+  - type: FactionException
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+    blackboard:
+      NavClimb: !type:Bool
+        true
+      NavSmash: !type:Bool
+        true
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: alive
+      Dead:
+        Base: dead
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Dead
+  - type: SpawnOnTrigger
+    proto: FoodMeatMeatball
+  - type: DeleteOnTrigger
+  - type: CombatMode
+  - type: ReplacementAccent
+    accent: genericAggressive
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepThud
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+    - FootstepSound
+    - StunImmune
+
+- type: entity
+  id: MobWH40KKhorneBloodletter
+  parent: BaseMobWH40KKhorneDaemon
+  name: bloodletter of Khorne
+  description: A lesser daemon sent to harvest skulls. Its talons burn with the Blood God's hunger for slaughter.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _WH40K/Mobs/Khorne/bloodletter.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: alive
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.48
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      135: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.6
+    baseSprintSpeed: 6.4
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 1.55
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    damage:
+      types:
+        Slash: 21
+        Piercing: 7
+  - type: PointLight
+    radius: 1.8
+    energy: 1.8
+    color: "#d32020"
+    castShadows: false
+
+- type: entity
+  id: MobWH40KKhorneBloodreaper
+  parent: BaseMobWH40KKhorneDaemon
+  name: Bloodreaper of Khorne
+  description: A Bloodletter champion bearing a hellblade. The daemon bellows for blood and charges the strongest prey first.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _WH40K/Mobs/Khorne/bloodreaper.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: alive
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.56
+        density: 130
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      185: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.2
+    baseSprintSpeed: 5.9
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 1.3
+    angle: 0
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
+    damage:
+      types:
+        Slash: 30
+        Piercing: 10
+        Structural: 8
+  - type: PointLight
+    radius: 2.1
+    energy: 2.1
+    color: "#e03a20"
+    castShadows: false

@@ -1,0 +1,466 @@
+- type: entity
+  id: WH40KClothingUniformKoronusMercenaryBase
+  parent: ClothingUniformBase
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      innerClothing:
+      - state: equipped-INNERCLOTHING
+
+- type: entity
+  id: WH40KClothingOuterKoronusMercenaryVestBase
+  parent: ClothingOuterArmorBasic
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+
+- type: entity
+  id: WH40KClothingHeadKoronusMercenaryHelmetBase
+  parent: ClothingHeadHelmetBasic
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+
+- type: entity
+  id: WH40KClothingHeadKoronusMercenaryHatBase
+  parent: ClothingHeadBase
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+
+- type: entity
+  id: WH40KClothingHandsKoronusMercenaryBase
+  parent: ClothingHandsBase
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      gloves:
+      - state: equipped-HANDS
+
+- type: entity
+  id: WH40KClothingOuterKoronusMercenaryVoidsuitBase
+  parent: ClothingOuterHardsuitVoidsmanStandard
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+
+- type: entity
+  id: WH40KClothingHeadKoronusMercenaryVoidsuitBase
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  abstract: true
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+
+- type: entity
+  parent: WH40KClothingUniformKoronusMercenaryBase
+  id: WH40KClothingUniformJumpsuitKoronusMercenary
+  name: Koronus Free Company field uniform
+  description: Practical uniform worn by the free companies that sell their services across the Koronus Expanse.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/arcadian_uniform.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/arcadian_uniform.rsi
+
+- type: entity
+  parent: WH40KClothingUniformKoronusMercenaryBase
+  id: WH40KClothingUniformJumpsuitKoronusMercenaryPilot
+  name: Koronus Free Company flight uniform
+  description: A reinforced flight suit for pilots who need to leave their cockpit under fire.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/arcadian_pilot_uniform.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/arcadian_pilot_uniform.rsi
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVestBase
+  id: WH40KClothingOuterVestKoronusMercenaryRecruit
+  name: Koronus Free Company recruit vest
+  description: Light flak protection issued to a recruit before they have earned a better contract.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_recruit_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_recruit_vest.rsi
+  - type: Armor
+    armorRating: 240
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.78
+        Heat: 0.85
+        Caustic: 0.95
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVestBase
+  id: WH40KClothingOuterVestKoronusMercenaryMedic
+  name: Koronus Free Company medic vest
+  description: A light flak vest with medical markings and a layout that leaves room for field supplies.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcandian_med_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcandian_med_vest.rsi
+  - type: Armor
+    armorRating: 240
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.78
+        Heat: 0.85
+        Caustic: 0.95
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVestBase
+  id: WH40KClothingOuterVestKoronusMercenaryPilot
+  name: Koronus Free Company pilot vest
+  description: A compact flak vest for shuttle crews; it protects without restricting access to the controls.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_pilot_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_pilot_vest.rsi
+  - type: Armor
+    armorRating: 240
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.78
+        Heat: 0.85
+        Caustic: 0.95
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVestBase
+  id: WH40KClothingOuterVestKoronusMercenarySoldier
+  name: Koronus Free Company flak vest
+  description: A well-maintained flak vest worn by the company’s line soldiers.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_vest.rsi
+  - type: Armor
+    armorRating: 280
+    modifiers:
+      coefficients:
+        Blunt: 0.68
+        Slash: 0.68
+        Piercing: 0.72
+        Heat: 0.82
+        Caustic: 0.92
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVestBase
+  id: WH40KClothingOuterVestKoronusMercenarySergeant
+  name: Koronus Free Company sergeant vest
+  description: A veteran’s flak vest with additional plates over the heart and spine.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_sgt_vest.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_sgt_vest.rsi
+  - type: Armor
+    armorRating: 300
+    modifiers:
+      coefficients:
+        Blunt: 0.63
+        Slash: 0.63
+        Piercing: 0.67
+        Heat: 0.80
+        Caustic: 0.90
+
+- type: entity
+  parent: WH40KClothingHandsKoronusMercenaryBase
+  id: WH40KClothingHandsGlovesKoronusMercenary
+  name: Koronus Free Company gloves
+  description: Durable gloves with reinforced palms for handling weapons, cables and rough cargo.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/arcadian_gloves.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/arcadian_gloves.rsi
+
+- type: entity
+  parent: WH40KClothingHandsKoronusMercenaryBase
+  id: WH40KClothingHandsGlovesKoronusMercenaryMedic
+  name: Koronus Free Company medic gloves
+  description: Field medic gloves with flexible fingertips for emergency surgery.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Hands/Gloves/arcandian_med_gloves.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Hands/Gloves/arcandian_med_gloves.rsi
+
+- type: entity
+  parent: ClothingShoesMilitaryBase
+  id: WH40KClothingShoesBootsKoronusMercenary
+  name: Koronus Free Company boots
+  description: Hard-wearing boarding boots that hold their grip on shuttle decks and hive ferrocrete.
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/arcadian_boots.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/arcadian_boots.rsi
+    clothingVisuals:
+      feet:
+      - state: equipped-FEET
+
+- type: entity
+  parent: ClothingEyesBase
+  id: WH40KClothingEyesGogglesKoronusMercenary
+  name: Koronus Free Company tactical goggles
+  description: Rugged goggles that protect the wearer’s eyes from grit and battlefield flashes.
+  suffix: WH40K, Koronus Free Company
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Eyes/arcadian_goggles.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Eyes/arcadian_goggles.rsi
+    clothingVisuals:
+      eyes:
+      - state: equipped-EYES
+  - type: FlashImmunity
+  - type: EyeProtection
+    protectionTime: 3
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHatBase
+  id: WH40KClothingHeadCapKoronusMercenaryRecruit
+  name: Koronus Free Company recruit cap
+  description: A soft cap marking a new hire who has not yet earned a proper helmet.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_recruit_cap.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_recruit_cap.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHelmetBase
+  id: WH40KClothingHeadHelmetKoronusMercenaryRecruit
+  name: Koronus Free Company recruit helmet
+  description: A basic flak helmet for a recruit who has finally made it off the training deck.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_recruit_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_recruit_helmet.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHelmetBase
+  id: WH40KClothingHeadHelmetKoronusMercenaryMedic
+  name: Koronus Free Company medic helmet
+  description: A flak helmet bearing the colors of a field medic; its wearer is still a target on the line.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/arcandian_med_hemet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/arcandian_med_hemet.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHelmetBase
+  id: WH40KClothingHeadHelmetKoronusMercenaryPilot
+  name: Koronus Free Company pilot helmet
+  description: A close-fitting helmet for pilots and vehicle crews.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_pilot_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_pilot_helmet.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHatBase
+  id: WH40KClothingHeadBeretKoronusMercenarySergeant
+  name: Koronus Free Company sergeant beret
+  description: A sergeant’s beret, kept neat enough to make the rest of the squad feel underdressed.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_sgt_beret.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_sgt_beret.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHatBase
+  id: WH40KClothingHeadCapKoronusMercenarySergeant
+  name: Koronus Free Company sergeant cap
+  description: A peaked field cap reserved for a squad leader away from the front.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_sgt_cap.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/arcadian_sgt_cap.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHelmetBase
+  id: WH40KClothingHeadHelmetKoronusMercenarySoldier
+  name: Koronus Free Company combat helmet
+  description: A standard flak helmet worn by the company’s line soldiers.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_helmet.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryHelmetBase
+  id: WH40KClothingHeadHelmetKoronusMercenarySergeant
+  name: Koronus Free Company sergeant helmet
+  description: A hardened flak helmet with extra plating and command markings.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_sgt_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/arcadian_sgt_helmet.rsi
+  - type: Armor
+    armorRating: 100
+    modifiers:
+      coefficients:
+        Blunt: 0.86
+        Slash: 0.86
+        Piercing: 0.86
+        Heat: 0.88
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVoidsuitBase
+  id: WH40KClothingOuterHardsuitKoronusMercenary
+  name: Koronus Free Company voidsuit
+  description: A sealed boarding suit for mercenaries who work beyond a shuttle’s hull. Wear its helmet separately to complete vacuum protection.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/arcadian_spacesuit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/arcadian_spacesuit.rsi
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryVoidsuitBase
+  id: WH40KClothingHeadHelmetKoronusMercenaryVoidsuit
+  name: Koronus Free Company voidsuit helmet
+  description: The separate sealed helmet for a Koronus Free Company voidsuit. Without it, the suit cannot protect its wearer from vacuum.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/arcadian_spacesuit_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/arcadian_spacesuit_helmet.rsi
+
+- type: entity
+  parent: WH40KClothingOuterKoronusMercenaryVoidsuitBase
+  id: WH40KClothingOuterHardsuitKoronusMercenarySergeant
+  name: Koronus Free Company sergeant voidsuit
+  description: A sealed boarding suit reinforced for the sergeant who leads the first breach.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/arcadian_sgt_spacesuit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/arcadian_sgt_spacesuit.rsi
+  - type: Armor
+    armorRating: 200
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.88
+        Piercing: 0.92
+        Radiation: 0.60
+        Caustic: 0.65
+        Heat: 0.84
+
+- type: entity
+  parent: WH40KClothingHeadKoronusMercenaryVoidsuitBase
+  id: WH40KClothingHeadHelmetKoronusMercenarySergeantVoidsuit
+  name: Koronus Free Company sergeant voidsuit helmet
+  description: The separate sealed helmet for the sergeant’s voidsuit, reinforced around the visor and neck ring.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/arcadian_sgt_spacesuit_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/arcadian_sgt_spacesuit_helmet.rsi
+  - type: Armor
+    armorRating: 95
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.88
+        Piercing: 0.92
+        Radiation: 0.60
+        Heat: 0.86

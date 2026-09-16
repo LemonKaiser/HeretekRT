@@ -13,7 +13,6 @@ using Content.Shared.Atmos.Components;
 using Content.Server.GameTicking; // Mono
 using Content.Server.AlertLevel; // Mono
 using Content.Server.Station.Systems; // Mono
-using Content.Server._Mono.NuclearWar.Components; // Mono
 using Content.Server.Station.Systems; // Mono
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Camera;
@@ -204,15 +203,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         // End mono
 
         // Mono edit: Set station alert when exploded
-        var query = EntityQueryEnumerator<AnnouncerComponent>();
         if (explosive.DetonationAlert != null)
-            while (query.MoveNext(out var ent, out var component))
-            {
-                if (ent != null)
-                {
-                    _alertLevel.SetLevel(ent, explosive.DetonationAlert, true, true, true, true);
-                }
-            }
+            _alertLevel.SetLevel(uid, explosive.DetonationAlert, true, true, true, true);
         // End mono
 
         // Mono

@@ -437,7 +437,9 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         {
             var shuttleMap = _xformQuery.GetComponent(shuttleGridUid.Value).MapID;
             sectorState = GetKoronusSectorState(shuttleGridUid.Value, shuttleMap, mapState);
-            planetaryState = _koronusPlanetary.GetInterfaceState(shuttleGridUid.Value);
+            planetaryState = mapState.FTLState is FTLState.Starting or FTLState.Travelling or FTLState.Arriving
+                ? KoronusPlanetaryInterfaceState.Unavailable()
+                : _koronusPlanetary.GetInterfaceState(shuttleGridUid.Value);
         }
 
         if (_ui.HasUi(consoleUid, ShuttleConsoleUiKey.Key))

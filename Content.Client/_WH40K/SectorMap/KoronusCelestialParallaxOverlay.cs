@@ -49,14 +49,17 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
             return false;
 
         var mapUid = _maps.GetMapEntityId(args.MapId);
-        return _entities.HasComponent<KoronusPlanetarySystemVisualComponent>(mapUid);
+        return _entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(mapUid, out var visual) &&
+               _prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system) &&
+               system.SpaceMode == KoronusSpaceMode.Planetary;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
         var mapUid = _maps.GetMapEntityId(args.MapId);
         if (!_entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(mapUid, out var visual) ||
-            !_prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system))
+            !_prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system) ||
+            system.SpaceMode != KoronusSpaceMode.Planetary)
         {
             return;
         }

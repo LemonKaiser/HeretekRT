@@ -80,8 +80,7 @@ namespace Content.Server.Cargo.Systems
 
         private void OnInit(EntityUid uid, CargoOrderConsoleComponent orderConsole, ComponentInit args)
         {
-            var station = _station.GetOwningStation(uid);
-            UpdateOrderState(uid, orderConsole, station);
+            UpdateOrderState(uid, orderConsole);
         }
 
         private void Reset()
@@ -135,8 +134,7 @@ namespace Content.Server.Cargo.Systems
                 {
                     if (!_uiSystem.IsUiOpen(uid, CargoConsoleUiKey.Orders)) continue;
 
-                    var station = _station.GetOwningStation(uid);
-                    UpdateOrderState(uid, comp, station);
+                    UpdateOrderState(uid, comp);
                 }
             }
         }
@@ -155,8 +153,6 @@ namespace Content.Server.Cargo.Systems
                 return;
             }
 
-            var station = _station.GetOwningStation(uid);
-
             // Frontier: orders require a bank account.
             if (!TryComp<BankAccountComponent>(player, out var bankAccount))
             {
@@ -167,8 +163,7 @@ namespace Content.Server.Cargo.Systems
 
             // No station to deduct from.
             // Frontier: no checks for StationData/StationBankAccount.
-            if (station == null
-                || !TryGetOrderDatabase(uid, out var dbUid, out var orderDatabase, component))
+            if (!TryGetOrderDatabase(uid, out var dbUid, out var orderDatabase, component))
             {
                 ConsolePopup(args.Actor, Loc.GetString("cargo-console-station-not-found"));
                 PlayDenySound(uid, component);
@@ -277,7 +272,7 @@ namespace Content.Server.Cargo.Systems
             _bank.TryBankWithdraw(player, cost);
             // End Frontier
 
-            UpdateOrders(station.Value);
+            UpdateOrders(dbUid!.Value);
         }
 
         // Frontier - consoleUid is required to find cargo pads
@@ -379,8 +374,7 @@ namespace Content.Server.Cargo.Systems
 
         private void OnOrderUIOpened(EntityUid uid, CargoOrderConsoleComponent component, BoundUIOpenedEvent args)
         {
-            var station = _station.GetOwningStation(uid);
-            UpdateOrderState(uid, component, station);
+            UpdateOrderState(uid, component);
         }
 
         #endregion
@@ -391,30 +385,28 @@ namespace Content.Server.Cargo.Systems
             if (!_uiSystem.IsUiOpen(ent.Owner, CargoConsoleUiKey.Orders))
                 return;
 
-            UpdateOrderState(ent, ent.Comp, args.Station); // Frontier: add ent.Comp
+            UpdateOrderState(ent, ent.Comp);
         }
 
         // Frontier: custom UpdateOrderState function
-        private void UpdateOrderState(EntityUid uid, CargoOrderConsoleComponent component, EntityUid? station)
+        private void UpdateOrderState(EntityUid uid, CargoOrderConsoleComponent component)
         {
+            if (!TryGetOrderDatabase(uid, out var owner, out var orderDatabase, component))
+                return;
+
             var uiUsers = _uiSystem.GetActors((uid, null), CargoConsoleUiKey.Orders);
             foreach (var user in uiUsers)
             {
                 var balance = 0;
 
-                if (Transform(user).GridUid is EntityUid stationGrid &&
-                    TryComp<BankAccountComponent>(user, out var playerBank))
+                if (TryComp<BankAccountComponent>(user, out var playerBank))
                 {
-                    station = stationGrid;
                     balance = playerBank.Balance;
                 }
-                else if (TryComp<StationBankAccountComponent>(station, out var stationBank))
+                else if (TryComp<StationBankAccountComponent>(owner, out var stationBank))
                 {
                     balance = stationBank.Balance;
                 }
-
-                if (station == null || !TryGetOrderDatabase(station.Value, out var _, out var orderDatabase, component))
-                    return;
 
                 // Frontier - we only want to see orders made on the same computer, so filter them out
                 var filteredOrders = orderDatabase.Orders
@@ -472,21 +464,19 @@ namespace Content.Server.Cargo.Systems
 
             while (orderQuery.MoveNext(out var uid, out var comp))
             {
-                var station = _station.GetOwningStation(uid);
-                if (station != dbUid)
+                if (!TryResolveCargoDomain(uid, out var domain) || domain.Owner != dbUid)
                     continue;
 
-                UpdateOrderState(uid, comp, station);
+                UpdateOrderState(uid, comp);
             }
 
             var consoleQuery = AllEntityQuery<CargoShuttleConsoleComponent>();
             while (consoleQuery.MoveNext(out var uid, out var _))
             {
-                var station = _station.GetOwningStation(uid);
-                if (station != dbUid)
+                if (!TryResolveCargoDomain(uid, out var domain) || domain.Owner != dbUid)
                     continue;
 
-                UpdateShuttleState(uid, station);
+                UpdateShuttleState(uid, dbUid);
             }
         }
 
@@ -626,16 +616,23 @@ namespace Content.Server.Cargo.Systems
 
         private StationBankAccountComponent? GetBankAccount(EntityUid uid, CargoOrderConsoleComponent _)
         {
-            var station = _station.GetOwningStation(uid);
+            if (!TryResolveCargoDomain(uid, out var domain))
+                return null;
 
-            TryComp<StationBankAccountComponent>(station, out var bankComponent);
+            TryComp<StationBankAccountComponent>(domain.Owner, out var bankComponent);
             return bankComponent;
         }
 
         private bool TryGetOrderDatabase(EntityUid uid, [MaybeNullWhen(false)] out EntityUid? dbUid, [MaybeNullWhen(false)] out StationCargoOrderDatabaseComponent dbComp, CargoOrderConsoleComponent _)
         {
-            dbUid = _station.GetOwningStation(uid);
-            return TryComp(dbUid, out dbComp);
+            if (TryResolveCargoOrderDatabase(uid, out var owner, out dbComp))
+            {
+                dbUid = owner;
+                return true;
+            }
+
+            dbUid = null;
+            return false;
         }
 
         #endregion

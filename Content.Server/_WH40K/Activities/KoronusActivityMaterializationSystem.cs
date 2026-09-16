@@ -87,8 +87,16 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
 
     private void OnInteractHand(EntityUid uid, KoronusActivityObjectiveComponent component, InteractHandEvent args)
     {
-        if (args.Handled)
+        // Authored set-piece recoverables use their own extraction gates: items resolve only
+        // after reaching a living player's hand and the rescue patient only after a completed
+        // carry action. Consuming their initial hand interaction here would archive the location
+        // and delete the recoverable before either gate can run.
+        if (args.Handled ||
+            !KoronusActivityRuntimePolicy.IsObjectiveExecution(component.Execution) &&
+            !KoronusActivityRuntimePolicy.IsGridExecution(component.Execution))
+        {
             return;
+        }
 
         // A player must be attached to a living body. This rejects regular observers, admin
         // ghosts and any unowned NPC even if an interaction reaches the server.

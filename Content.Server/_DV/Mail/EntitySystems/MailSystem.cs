@@ -50,6 +50,10 @@ using Content.Shared._NF.Bank.BUI; // Frontier
 using Content.Shared.SSDIndicator; // Frontier
 using Content.Server.Power.EntitySystems; // Frontier
 using Content.Server._NF.Mail.Components; // Frontier
+using Content.Server._WH40K.OperationalDomain;
+using Content.Shared._WH40K.OperationalDomain;
+using Content.Shared.Shuttles.Components;
+using Content.Shared.Shuttles.Systems;
 using Robust.Server.Player; // Mono
 
 namespace Content.Server._DV.Mail.EntitySystems
@@ -72,13 +76,13 @@ namespace Content.Server._DV.Mail.EntitySystems
         [Dependency] private SharedContainerSystem _containerSystem = default!;
         [Dependency] private SharedHandsSystem _handsSystem = default!;
         [Dependency] private SharedSolutionContainerSystem _solution = default!;
-        [Dependency] private StationSystem _stationSystem = default!;
         [Dependency] private TagSystem _tagSystem = default!;
         [Dependency] private LogisticStatsSystem _logisticsStatsSystem = default!;
         [Dependency] private EmagSystem _emag = default!;
         [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier
         [Dependency] private BankSystem _bank = default!; // Frontier
         [Dependency] private PowerReceiverSystem _powerReceiver = default!; // Frontier
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
         private ISawmill _sawmill = default!;
 
@@ -580,18 +584,22 @@ namespace Content.Server._DV.Mail.EntitySystems
         /// </summary>
         public bool TryGetMailTeleporterForReceiver(EntityUid receiverUid, [NotNullWhen(true)] out MailTeleporterComponent? teleporterComponent, [NotNullWhen(true)] out EntityUid? teleporterUid)
         {
+            if (!_operationalDomains.TryResolveOperationalDomain(receiverUid, out var receiverDomain))
+            {
+                teleporterComponent = null;
+                teleporterUid = null;
+                return false;
+            }
+
             var query = EntityQueryEnumerator<MailTeleporterComponent>();
-            //var receiverStation = _stationSystem.GetOwningStation(receiverUid); // Frontier: skip station checks
 
             while (query.MoveNext(out var uid, out var mailTeleporter))
             {
-                // Frontier: skip station checks, ensure teleporter is powered
-                // var teleporterStation = _stationSystem.GetOwningStation(uid);
-                // if (receiverStation != teleporterStation)
-                //     continue;
-                if (!_powerReceiver.IsPowered(uid))
+                if (!_powerReceiver.IsPowered(uid) ||
+                    !_operationalDomains.TryResolveOperationalDomain(uid, out var teleporterDomain) ||
+                    teleporterDomain.Owner != receiverDomain.Owner)
                     continue;
-                // End Frontier
+
                 teleporterComponent = mailTeleporter;
                 teleporterUid = uid;
                 return true;
@@ -608,25 +616,18 @@ namespace Content.Server._DV.Mail.EntitySystems
         public bool TryGetMailRecipientForReceiver(EntityUid receiverUid, [NotNullWhen(true)] out MailRecipient? recipient)
         {
             recipient = null; // Frontier
+            if (!_operationalDomains.TryResolveOperationalDomain(receiverUid, out var domain) ||
+                domain.Kind == OperationalDomainKind.Vessel &&
+                TryComp<FTLComponent>(domain.PrimaryGrid, out var ftl) &&
+                ftl.State is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
+            {
+                return false;
+            }
+
             if (_idCardSystem.TryFindIdCard(receiverUid, out var idCard)
                 && TryComp<AccessComponent>(idCard.Owner, out var access)
                 && idCard.Comp.FullName != null)
             {
-                // Frontier: get name of station recipient is on, check recipient isn't SSD
-                string stationName;
-                if (_stationSystem.GetOwningStation(receiverUid) is { Valid: true } station
-                    && TryComp<StationDataComponent>(station, out var stationData)
-                    && _stationSystem.GetLargestGrid((station, stationData)) is { Valid: true } stationGrid
-                    && TryName(stationGrid, out var gridName)
-                    && gridName != null)
-                {
-                    stationName = gridName;
-                }
-                else
-                {
-                    stationName = "Unknown";
-                }
-
                 // Mail recipients requires a connected player
                 if (!_player.TryGetSessionByEntity(receiverUid, out var session)
                     || session.State.Status != SessionStatus.InGame)
@@ -646,7 +647,8 @@ namespace Content.Server._DV.Mail.EntitySystems
                     idCard.Comp.JobIcon,
                     accessTags,
                     true, // Frontier: all recipients can receive priority mail
-                    stationName); // Frontier: add stationName
+                    Name(domain.PrimaryGrid),
+                    domain.Owner);
 
                 return true;
             }
@@ -665,17 +667,6 @@ namespace Content.Server._DV.Mail.EntitySystems
 
             while (query.MoveNext(out var receiverUid, out _))
             {
-                var location = Transform(receiverUid);
-
-                // Frontier: sector-wide mail
-                // var receiverStation = _stationSystem.GetOwningStation(receiverUid);
-                // if (receiverStation != teleporterStation)
-                //     continue;
-
-                // Are you on expedition or in FTL? No mail for you.
-                if (location.MapID != Transform(receiverUid).MapID)
-                    continue;
-
                 // Is this player displaying as SSD? If so, skip 'em.
                 if (TryComp(receiverUid, out SSDIndicatorComponent? ssd) && ssd.IsSSD)
                     continue;
@@ -689,9 +680,10 @@ namespace Content.Server._DV.Mail.EntitySystems
         }
 
         // Frontier: sector-wide mail
-        sealed class MailTeleporterSpawnData(Entity<MailTeleporterComponent> entity)
+        sealed class MailTeleporterSpawnData(Entity<MailTeleporterComponent> entity, EntityUid owner)
         {
             public Entity<MailTeleporterComponent> Entity = entity;
+            public EntityUid Owner = owner;
             public bool HadMail = false;
         }
 
@@ -706,9 +698,10 @@ namespace Content.Server._DV.Mail.EntitySystems
             while (teleporterQuery.MoveNext(out var uid, out var mailTeleporter))
             {
                 if (_powerReceiver.IsPowered(uid)
+                    && _operationalDomains.TryResolveOperationalDomain(uid, out var teleporterDomain)
                     && GetUndeliveredParcelCount(uid) < mailTeleporter.MaximumUndeliveredParcels)
                 {
-                    validTeleporters.Add(new MailTeleporterSpawnData((uid, mailTeleporter)));
+                    validTeleporters.Add(new MailTeleporterSpawnData((uid, mailTeleporter), teleporterDomain.Owner));
                 }
             }
 
@@ -738,6 +731,13 @@ namespace Content.Server._DV.Mail.EntitySystems
             for (var i = 0; i < deliveryCount; i++)
             {
                 var candidate = _random.Pick(candidateList);
+                var recipientTeleporters = validTeleporters
+                    .Where(teleporter => teleporter.Owner == candidate.DeliveryOwner)
+                    .ToList();
+
+                if (recipientTeleporters.Count == 0)
+                    continue;
+
                 var possibleParcels = new Dictionary<string, float>(pool.Everyone);
 
                 if (TryMatchJobTitleToPrototype(candidate.Job, out var jobPrototype)
@@ -777,12 +777,11 @@ namespace Content.Server._DV.Mail.EntitySystems
                     return;
                 }
 
-                var index = _random.Next(validTeleporters.Count);
-
-                var coordinates = Transform(validTeleporters[index].Entity).Coordinates;
+                var teleporter = _random.Pick(recipientTeleporters);
+                var coordinates = Transform(teleporter.Entity).Coordinates;
                 var mail = EntityManager.SpawnEntity(chosenParcel, coordinates);
                 SetupMail(mail, component, candidate);
-                validTeleporters[index].HadMail = true;
+                teleporter.HadMail = true;
 
                 _tagSystem.AddTag(mail, "Mail"); // Frontier
             }
@@ -854,7 +853,8 @@ namespace Content.Server._DV.Mail.EntitySystems
         string jobIcon,
         HashSet<ProtoId<AccessLevelPrototype>> accessTags,
         bool mayReceivePriorityMail,
-        string ship) // Frontier: add ship
+        string ship,
+        EntityUid deliveryOwner)
     {
         public readonly string Name = name;
         public readonly string Job = job;
@@ -862,5 +862,6 @@ namespace Content.Server._DV.Mail.EntitySystems
         public readonly HashSet<ProtoId<AccessLevelPrototype>> AccessTags = accessTags;
         public readonly bool MayReceivePriorityMail = mayReceivePriorityMail;
         public readonly string Ship = ship; // Frontier
+        public readonly EntityUid DeliveryOwner = deliveryOwner;
     }
 }

@@ -1,5 +1,5 @@
 using Content.Server.DeviceNetwork.Components;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.DeviceNetwork.Events;
 using JetBrains.Annotations;
 using Robust.Shared.Map;
@@ -12,7 +12,7 @@ namespace Content.Server.DeviceNetwork.Systems
     [UsedImplicitly]
     public sealed partial class StationLimitedNetworkSystem : EntitySystem
     {
-        [Dependency] private StationSystem _stationSystem = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
         public override void Initialize()
         {
             base.Initialize();
@@ -21,67 +21,71 @@ namespace Content.Server.DeviceNetwork.Systems
         }
 
         /// <summary>
-        /// Sets the station id the device is limited to.
+        /// Sets the operational domain owner the device is limited to.
         /// </summary>
-        public void SetStation(EntityUid uid, EntityUid? stationId, StationLimitedNetworkComponent? component = null)
+        public void SetDomainOwner(EntityUid uid, EntityUid? domainOwner, StationLimitedNetworkComponent? component = null)
         {
             if (!Resolve(uid, ref component))
                 return;
 
-            component.StationId = stationId;
+            component.DomainOwner = domainOwner;
         }
 
         /// <summary>
-        /// Tries to set the station id to the current station if the device is currently on a station
+        /// Resolves and stores the owner of the device's current operational domain.
         /// </summary>
-        public bool TrySetStationId(EntityUid uid, StationLimitedNetworkComponent? component = null)
+        public bool TrySetDomainOwner(EntityUid uid, StationLimitedNetworkComponent? component = null)
         {
-            if (!Resolve(uid, ref component) || !Transform(uid).GridUid.HasValue)
+            if (!Resolve(uid, ref component) ||
+                !_operationalDomains.TryResolveOperationalDomain(uid, out var domain))
                 return false;
 
-            component.StationId = _stationSystem.GetOwningStation(uid);
-            return component.StationId.HasValue;
+            component.DomainOwner = domain.Owner;
+            return true;
         }
 
         /// <summary>
-        /// Set the station id to the one the entity is on when the station limited component is added
+        /// Set the domain owner when the component is added.
         /// </summary>
         private void OnMapInit(EntityUid uid, StationLimitedNetworkComponent networkComponent, MapInitEvent args)
         {
-            networkComponent.StationId = _stationSystem.GetOwningStation(uid);
+            TrySetDomainOwner(uid, networkComponent);
         }
 
         /// <summary>
-        /// Checks if both devices are limited to the same station
+        /// Checks if both devices are limited to the same operational domain.
         /// </summary>
         private void OnBeforePacketSent(EntityUid uid, StationLimitedNetworkComponent component, BeforePacketSentEvent args)
         {
-            if (!component.StationId.HasValue)
-                TrySetStationId(uid, component);
+            if (!TrySetDomainOwner(uid, component))
+            {
+                args.Cancel();
+                return;
+            }
 
-            if (!CheckStationId(args.Sender, component.AllowNonStationPackets, component.StationId))
+            if (!CheckDomainOwner(args.Sender, component.AllowNonStationPackets, component.DomainOwner))
             {
                 args.Cancel();
             }
         }
 
         /// <summary>
-        /// Compares the station IDs of the sending and receiving network components.
-        /// Returns false if either of them doesn't have a station ID or if their station ID isn't equal.
-        /// Returns true even when the sending entity isn't tied to a station if `allowNonStationPackets` is set to true.
+        /// Compares the domain owners of the sending and receiving network components.
+        /// Returns false if either cannot resolve to a domain or their owners differ.
+        /// Returns true for a non-limited sender when `allowNonStationPackets` is set.
         /// </summary>
-        private bool CheckStationId(EntityUid senderUid, bool allowNonStationPackets, EntityUid? receiverStationId, StationLimitedNetworkComponent? sender = null)
+        private bool CheckDomainOwner(EntityUid senderUid, bool allowNonStationPackets, EntityUid? receiverDomainOwner, StationLimitedNetworkComponent? sender = null)
         {
-            if (!receiverStationId.HasValue)
+            if (!receiverDomainOwner.HasValue)
                 return false;
 
             if (!Resolve(senderUid, ref sender, false))
                 return allowNonStationPackets;
 
-            if (!sender.StationId.HasValue)
-                TrySetStationId(senderUid, sender);
+            if (!TrySetDomainOwner(senderUid, sender))
+                return false;
 
-            return sender.StationId == receiverStationId;
+            return sender.DomainOwner == receiverDomainOwner;
         }
     }
 }

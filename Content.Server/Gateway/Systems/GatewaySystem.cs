@@ -1,5 +1,6 @@
 using Content.Server.Gateway.Components;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
+using Content.Shared._WH40K.OperationalDomain;
 using Content.Shared.UserInterface;
 using Content.Shared.Access.Systems;
 using Content.Shared.Gateway;
@@ -24,9 +25,9 @@ public sealed partial class GatewaySystem : EntitySystem
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private MetaDataSystem _metadata = default!;
-    [Dependency] private StationSystem _stations = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public override void Initialize()
     {
@@ -55,7 +56,7 @@ public sealed partial class GatewaySystem : EntitySystem
 
     private void OnGatewayOpenAttempt(EntityUid uid, GatewayComponent component, ref ActivatableUIOpenAttemptEvent args)
     {
-        if (!component.Enabled || !component.Interactable)
+        if (!component.Enabled || !component.Interactable || !CanUseGatewayInDomain(uid, component))
             args.Cancel();
     }
 
@@ -89,7 +90,8 @@ public sealed partial class GatewaySystem : EntitySystem
         // - Our station's unlock timer (if we have a station)
         // - If our map is a generated destination then use the generator that made it
 
-        if (TryComp(_stations.GetOwningStation(uid), out GatewayGeneratorComponent? generatorComp) ||
+        if ((_operationalDomains.TryResolveOperationalDomain(uid, out var domain) &&
+             TryComp(domain.Owner, out GatewayGeneratorComponent? generatorComp)) ||
             (TryComp(xform.MapUid, out GatewayGeneratorDestinationComponent? generatorDestination) &&
              TryComp(generatorDestination.Generator, out generatorComp)))
         {
@@ -99,7 +101,7 @@ public sealed partial class GatewaySystem : EntitySystem
 
         while (query.MoveNext(out var destUid, out var dest, out var destXform))
         {
-            if (!dest.Enabled || destUid == uid)
+            if (!dest.Enabled || destUid == uid || !CanUseGatewayInDomain(destUid, dest))
                 continue;
 
             // Show destination if either no destination comp on the map or it's ours.
@@ -140,7 +142,7 @@ public sealed partial class GatewaySystem : EntitySystem
     private void OnOpenPortal(EntityUid uid, GatewayComponent comp, GatewayOpenPortalMessage args)
     {
         if (GetNetEntity(uid) == args.Destination ||
-            !comp.Enabled || !comp.Interactable)
+            !comp.Enabled || !comp.Interactable || !CanUseGatewayInDomain(uid, comp))
         {
             return;
         }
@@ -155,7 +157,7 @@ public sealed partial class GatewaySystem : EntitySystem
 
         // If it's already open / not enabled / we're not ready DENY.
         if (!TryComp<GatewayComponent>(desto, out var dest) ||
-            !dest.Enabled ||
+            !dest.Enabled || !CanUseGatewayInDomain(desto, dest) ||
             _timing.CurTime < _metadata.GetPauseTime(uid) + comp.NextReady)
         {
             return;
@@ -287,6 +289,30 @@ public sealed partial class GatewaySystem : EntitySystem
             return;
 
         gatewayComp.Name = gatewayName;
+    }
+
+    public void SetAllowVesselDomain(EntityUid gatewayUid, bool allowed, GatewayComponent? gatewayComp = null)
+    {
+        if (!Resolve(gatewayUid, ref gatewayComp) || gatewayComp.AllowVesselDomain == allowed)
+            return;
+
+        gatewayComp.AllowVesselDomain = allowed;
+        UpdateAllGateways();
+    }
+
+    /// <summary>
+    /// Station gateways are supported by default. A vessel gateway is usable only when its
+    /// prototype explicitly opts in; transient generated destinations have no domain and retain
+    /// their existing map-local behaviour.
+    /// </summary>
+    public bool CanUseGatewayInDomain(EntityUid gateway, GatewayComponent? component = null)
+    {
+        if (!Resolve(gateway, ref component))
+            return false;
+
+        return !_operationalDomains.TryResolveOperationalDomain(gateway, out var domain)
+               || domain.Kind != OperationalDomainKind.Vessel
+               || component.AllowVesselDomain;
     }
 }
 

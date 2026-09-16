@@ -11,13 +11,15 @@ using Content.Server._NF.Station.Components; // Frontier
 using Content.Server.Administration.Logs; // Frontier
 using Content.Shared.Database; // Frontier
 using Content.Shared._NF.StationRecords; // Frontier
+using Content.Server._WH40K.OperationalDomain;
+using Content.Shared._WH40K.OperationalDomain;
 
 namespace Content.Server.StationRecords.Systems;
 
 public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
 {
     [Dependency] private UserInterfaceSystem _ui = default!;
-    [Dependency] private StationSystem _station = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private StationRecordsSystem _stationRecords = default!;
     [Dependency] private StationJobsSystem _stationJobsSystem = default!; // Frontier
     [Dependency] private AccessReaderSystem _access = default!; // Frontier
@@ -43,13 +45,11 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
 
     private void OnRecordDelete(Entity<GeneralStationRecordConsoleComponent> ent, ref DeleteStationRecord args)
     {
-        if (!ent.Comp.CanDeleteEntries)
+        if (!ent.Comp.CanDeleteEntries || !IsActorInConsoleDomain(ent.Owner, args.Actor))
             return;
 
-        var owning = _station.GetOwningStation(ent.Owner);
-
-        if (owning != null)
-            _stationRecords.RemoveRecord(new StationRecordKey(args.Id, owning.Value));
+        if (TryGetDomainRecordsOwner(ent.Owner, out var owner, out _))
+            _stationRecords.RemoveRecord(new StationRecordKey(args.Id, owner));
         UpdateUserInterface(ent); // Apparently an event does not get raised for this.
     }
 
@@ -70,11 +70,14 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
     // Frontier: job counts, advertisements
     private void OnAdjustJob(Entity<GeneralStationRecordConsoleComponent> ent, ref AdjustStationJobMsg msg)
     {
-        var stationUid = _station.GetOwningStation(ent);
-        if (stationUid is EntityUid station)
+        if (!IsActorInConsoleDomain(ent.Owner, msg.Actor))
+            return;
+
+        if (_operationalDomains.TryResolveOperationalDomain(ent, out var domain))
         {
+            var owner = domain.Owner;
             // Frontier: check access - hack because we don't have an AccessReaderComponent, it's the station
-            if (TryComp(stationUid, out StationJobsComponent? stationJobs) &&
+            if (TryComp(owner, out StationJobsComponent? stationJobs) &&
                 (stationJobs.Groups.Count > 0 || stationJobs.Tags.Count > 0))
             {
                 var accessSources = _access.FindPotentialAccessItems(msg.Actor);
@@ -102,7 +105,8 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
                 }
             }
             // End Frontier
-            _stationJobsSystem.TryAdjustJobSlot(station, msg.JobProto, msg.Amount, false, true);
+            if (stationJobs != null)
+                _stationJobsSystem.TryAdjustJobSlot(owner, msg.JobProto, msg.Amount, false, true, stationJobs);
             UpdateUserInterface(ent);
         }
     }
@@ -118,12 +122,12 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
 
     private void OnAdvertisementChanged(Entity<GeneralStationRecordConsoleComponent> ent, ref SetStationAdvertisementMsg msg)
     {
-        var stationUid = _station.GetOwningStation(ent);
-        if (stationUid is EntityUid station
-            && TryComp<ExtraShuttleInformationComponent>(station, out var vesselInfo))
+        if (IsActorInConsoleDomain(ent.Owner, msg.Actor) &&
+            _operationalDomains.TryResolveOperationalDomain(ent, out var domain) &&
+            TryComp<ExtraShuttleInformationComponent>(domain.Owner, out var vesselInfo))
         {
             vesselInfo.Advertisement = msg.Advertisement;
-            _adminLog.Add(LogType.ShuttleInfoChanged, $"{ToPrettyString(msg.Actor):actor} set their shuttle {ToPrettyString(station)}'s ad text to {vesselInfo.Advertisement}");
+            _adminLog.Add(LogType.ShuttleInfoChanged, $"{ToPrettyString(msg.Actor):actor} set their shuttle {ToPrettyString(domain.Owner)}'s ad text to {vesselInfo.Advertisement}");
             UpdateUserInterface(ent);
             _stationJobsSystem.UpdateJobsAvailable(); // Nasty - ideally this sends out partial information - one ship changed its advertisement.
         }
@@ -133,25 +137,30 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
     private void UpdateUserInterface(Entity<GeneralStationRecordConsoleComponent> ent)
     {
         var (uid, console) = ent;
-        var owningStation = _station.GetOwningStation(uid);
+        if (!TryGetDomainRecordsOwner(uid, out var owner, out var stationRecords))
+        {
+            _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, new GeneralStationRecordConsoleState(null, null, null, null, console.Filter, ent.Comp.CanDeleteEntries, null));
+            return;
+        }
 
         // Frontier: jobs, advertisements
         IReadOnlyDictionary<ProtoId<JobPrototype>, int?>? jobList = null;
         string? advertisement = null;
-        if (owningStation != null)
+        if (TryComp(owner, out StationJobsComponent? stationJobs))
         {
-            jobList = _stationJobsSystem.GetJobs(owningStation.Value);
-            if (TryComp<ExtraShuttleInformationComponent>(owningStation, out var extraVessel))
-                advertisement = extraVessel.Advertisement;
+            jobList = _stationJobsSystem.GetJobs(owner, stationJobs);
         }
 
-        if (!TryComp<StationRecordsComponent>(owningStation, out var stationRecords))
+        if (TryComp<ExtraShuttleInformationComponent>(owner, out var extraVessel))
+            advertisement = extraVessel.Advertisement;
+
+        if (stationRecords == null)
         {
             _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, new GeneralStationRecordConsoleState(null, null, null, jobList, console.Filter, ent.Comp.CanDeleteEntries, advertisement)); // Frontier: add as many args as we can
             return;
         }
 
-        var listing = _stationRecords.BuildListing((owningStation.Value, stationRecords), console.Filter);
+        var listing = _stationRecords.BuildListing((owner, stationRecords), console.Filter);
 
         switch (listing.Count)
         {
@@ -171,10 +180,36 @@ public sealed partial class GeneralStationRecordConsoleSystem : EntitySystem
             return;
         }
 
-        var key = new StationRecordKey(id, owningStation.Value);
+        var key = new StationRecordKey(id, owner);
         _stationRecords.TryGetRecord<GeneralStationRecord>(key, out var record, stationRecords);
 
         GeneralStationRecordConsoleState newState = new(id, record, listing, jobList, console.Filter, ent.Comp.CanDeleteEntries, advertisement);
         _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, newState);
+    }
+
+    private bool TryGetDomainRecordsOwner(
+        EntityUid entity,
+        out EntityUid owner,
+        out StationRecordsComponent? records)
+    {
+        owner = EntityUid.Invalid;
+        records = null;
+        if (!_operationalDomains.TryResolveOperationalDomain(entity, out var domain))
+            return false;
+
+        owner = domain.Owner;
+        if (domain.Kind == OperationalDomainKind.Vessel)
+            records = EnsureComp<StationRecordsComponent>(owner);
+        else
+            records = CompOrNull<StationRecordsComponent>(owner);
+
+        return records != null;
+    }
+
+    private bool IsActorInConsoleDomain(EntityUid console, EntityUid actor)
+    {
+        return _operationalDomains.TryResolveOperationalDomain(console, out var consoleDomain)
+               && _operationalDomains.TryResolveOperationalDomain(actor, out var actorDomain)
+               && consoleDomain.Owner == actorDomain.Owner;
     }
 }

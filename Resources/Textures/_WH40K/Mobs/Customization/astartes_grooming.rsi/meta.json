@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "copyright": "HeretekRT contributors",
+  "license": "CC-BY-SA-3.0",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "beard",
+      "directions": 4
+    },
+    {
+      "name": "longbeard",
+      "directions": 4
+    },
+    {
+      "name": "longhair",
+      "directions": 4
+    },
+    {
+      "name": "mustaches",
+      "directions": 4
+    }
+  ]
+}

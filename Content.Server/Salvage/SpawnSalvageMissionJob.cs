@@ -14,7 +14,6 @@ using Content.Server.Salvage.Expeditions;
 using Content.Server.Salvage.Expeditions.Structure;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
-using Content.Server.Station.Systems;
 using Content.Shared.Atmos;
 using Content.Shared.Construction.EntitySystems;
 using Content.Shared.Dataset;
@@ -27,7 +26,7 @@ using Content.Shared.Salvage;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Salvage.Expeditions.Modifiers;
 using Content.Shared.Shuttles.Components;
-using Content.Shared.Station.Components;
+using Content.Shared.Shuttles.Systems;
 using Content.Shared.Storage;
 using Content.Server.Weather;
 using Content.Shared.Weather;
@@ -54,12 +53,14 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
     private readonly DungeonSystem _dungeon;
     private readonly MetaDataSystem _metaData;
     private readonly ShuttleSystem _shuttle;
-    private readonly StationSystem _stationSystem;
     private readonly SalvageSystem _salvage;
     private readonly SharedTransformSystem _xforms;
     private readonly SharedMapSystem _map;
 
     public readonly EntityUid Station;
+    private readonly EntityUid _primaryGrid;
+    private readonly EntityUid? _returnMap;
+    private readonly string? _returnSystemId;
     public readonly EntityUid? CoordinatesDisk;
     private readonly SalvageMissionParams _missionParams;
 
@@ -87,12 +88,14 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         WeatherSystem weather,
         DungeonSystem dungeon,
         ShuttleSystem shuttle,
-        StationSystem stationSystem,
         MetaDataSystem metaData,
         SalvageSystem salvage,
         SharedTransformSystem xform,
         SharedMapSystem map,
         EntityUid station,
+        EntityUid primaryGrid,
+        EntityUid? returnMap,
+        string? returnSystemId,
         EntityUid? coordinatesDisk,
         SalvageMissionParams missionParams,
         CancellationToken cancellation = default) : base(maxTime, cancellation)
@@ -106,12 +109,14 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         _weather = weather;
         _dungeon = dungeon;
         _shuttle = shuttle;
-        _stationSystem = stationSystem;
         _metaData = metaData;
         _salvage = salvage;
         _xforms = xform;
         _map = map;
         Station = station;
+        _primaryGrid = primaryGrid;
+        _returnMap = returnMap;
+        _returnSystemId = returnSystemId;
         CoordinatesDisk = coordinatesDisk;
         _missionParams = missionParams;
     }
@@ -119,18 +124,27 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
     protected override async Task<bool> Process()
     {
         // Frontier: gracefully handle expedition failures
-        bool success = true;
-        string? errorStackTrace = null;
+        var success = false;
         try
         {
-            await InternalProcess().ContinueWith((t) => { success = false; errorStackTrace = t.Exception?.InnerException?.StackTrace; }, TaskContinuationOptions.OnlyOnFaulted);
+            success = await InternalProcess();
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            Logger.ErrorS("salvage", $"Expedition generation failed with exception: {e}");
         }
         finally
         {
-            ExpeditionSpawnCompleteEvent ev = new(Station, success, _missionParams.Index);
-            _entManager.EventBus.RaiseLocalEvent(Station, ev);
-            if (errorStackTrace != null)
-                Logger.ErrorS("salvage", $"Expedition generation failed with exception: {errorStackTrace}!");
+            if (_entManager.TryGetComponent<SalvageExpeditionDataComponent>(Station, out _))
+            {
+                var ev = new ExpeditionSpawnCompleteEvent(Station, success, _missionParams.Index);
+                _entManager.EventBus.RaiseLocalEvent(Station, ev);
+            }
+
             if (!success)
             {
                 // Invalidate station, expedition cancellation will be handled by task handler
@@ -222,6 +236,8 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         // Setup expedition
         var expedition = _entManager.AddComponent<SalvageExpeditionComponent>(mapUid);
         expedition.Station = Station;
+        expedition.ReturnMap = _returnMap;
+        expedition.ReturnSystemId = _returnSystemId;
         expedition.EndTime = _timing.CurTime + mission.Duration;
         expedition.MissionParams = _missionParams;
         expedition.Difficulty = _missionParams.Difficulty;
@@ -275,15 +291,20 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
 
         // Frontier: get map bounding box
         Box2 dungeonBox = new Box2(dungeonOffset, dungeonOffset);
-        foreach (var tile in dungeon.AllTiles)
+        if (config != SalvageMissionType.Mining)
         {
-            dungeonBox = dungeonBox.ExtendToContain(tile);
+            foreach (var tile in dungeon.AllTiles)
+            {
+                dungeonBox = dungeonBox.ExtendToContain(tile);
+            }
         }
 
-        var stationData = _entManager.GetComponent<StationDataComponent>(Station);
+        EntityUid? shuttleUid = _entManager.EntityExists(_primaryGrid) &&
+                                _entManager.HasComponent<MapGridComponent>(_primaryGrid)
+            ? _primaryGrid
+            : null;
 
-        // Frontier: get ship bounding box relative to largest grid coords
-        var shuttleUid = _stationSystem.GetLargestGrid((Station, stationData));
+        // Get the owner ship's bounding box relative to its grid coordinates.
         Box2 shuttleBox = new Box2();
 
         if (shuttleUid is { Valid: true } vesselUid &&
@@ -297,14 +318,6 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         Vector2 shuttleProjection = new Vector2(shuttleBox.Width * (float) -Math.Sin(dungeonRotation) / 2, shuttleBox.Height * (float) Math.Cos(dungeonRotation) / 2); // Note: sine is negative because of CCW rotation (starting north, then west)
         Vector2 coords = dungeonBox.Center - dungeonProjection - dungeonOffset - shuttleProjection - shuttleBox.Center; // Coordinates to spawn the ship at to center it with the dungeon's bounding boxes
         coords = coords.Rounded(); // Ensure grid is aligned to map coords
-
-        // Frontier: delay ship FTL
-        if (shuttleUid is { Valid: true })
-        {
-            var shuttle = _entManager.GetComponent<ShuttleComponent>(shuttleUid.Value);
-            MassAdjustFTLExpedStartup(shuttleUid, out var massStartupTime);
-            _shuttle.FTLToCoordinates(shuttleUid.Value, shuttle, new EntityCoordinates(mapUid, coords), 0f, massStartupTime, HyperSpaceTime);
-        }
 
         List<Vector2i> reservedTiles = new();
 
@@ -351,6 +364,31 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                 continue;
             await SpawnDungeonLoot(dungeon, missionBiome, lootProto, mapUid, grid, random, reservedTiles);
         }
+
+        // Start travel only after the destination is fully generated. Otherwise a later generation
+        // failure can delete the target map while the owner is already travelling to it.
+        Cancellation.ThrowIfCancellationRequested();
+        if (shuttleUid is not { Valid: true } shuttleGrid ||
+            !_entManager.TryGetComponent<SalvageExpeditionDataComponent>(Station, out var ownerData) ||
+            ownerData.ActiveMission != _missionParams.Index ||
+            !_entManager.TryGetComponent<ShuttleComponent>(shuttleGrid, out var shuttle) ||
+            _entManager.HasComponent<FTLComponent>(shuttleGrid))
+        {
+            return false;
+        }
+
+        MassAdjustFTLExpedStartup(shuttleUid, out var massStartupTime);
+        _shuttle.FTLToCoordinates(shuttleGrid, shuttle, new EntityCoordinates(mapUid, coords), 0f, massStartupTime, HyperSpaceTime);
+
+        // FTLToCoordinates can refuse the request (for example if the grid started another jump
+        // while this job was generating). Do not leave an inaccessible active mission behind.
+        if (!_entManager.TryGetComponent<FTLComponent>(shuttleGrid, out var ftl) ||
+            ftl.State != FTLState.Starting ||
+            ftl.TargetCoordinates.EntityId != mapUid)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -500,8 +538,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                 if (value < roll)
                     continue;
 
-                var mobGroupIndex = random.Next(faction.MobGroups.Count);
-                var mobGroup = faction.MobGroups[mobGroupIndex];
+                var mobGroup = group;
 
                 var spawnRoomIndex = random.Next(dungeon.Rooms.Count);
                 var spawnRoom = dungeon.Rooms[spawnRoomIndex];

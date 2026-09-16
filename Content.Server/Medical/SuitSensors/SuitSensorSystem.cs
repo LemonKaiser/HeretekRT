@@ -74,9 +74,9 @@ public sealed partial class SuitSensorSystem : EntitySystem
 
         var curTime = _gameTiming.CurTime;
         //var sensors = EntityManager.EntityQueryEnumerator<SuitSensorComponent, DeviceNetworkComponent>(); // Frontier modification
-        var sensors = EntityQueryEnumerator<SuitSensorComponent, DeviceNetworkComponent, TransformComponent>(); // Frontier modification
+        var sensors = EntityQueryEnumerator<SuitSensorComponent, DeviceNetworkComponent>(); // Frontier modification
 
-        while (sensors.MoveNext(out var uid, out var sensor, out var device, out var xform)) // Frontier modification
+        while (sensors.MoveNext(out var uid, out var sensor, out var device)) // Frontier modification
         {
             if (device.TransmitFrequency is null)
                 continue;
@@ -98,17 +98,15 @@ public sealed partial class SuitSensorSystem : EntitySystem
             if (status == null)
                 continue;
 
-            //Retrieve active server address if the sensor isn't connected to a server
-            if (sensor.ConnectedServer == null)
+            // Always resolve the server from the sensor's current operational domain. This prevents a
+            // cached address on another vessel from surviving a transfer or a docking interaction.
+            if (!_singletonServerSystem.TryGetActiveServerAddress<CrewMonitoringServerComponent>(uid, out var address))
             {
-                // Frontier - PR 1053 QoL changes to coordinates display
-                // if (!_singletonServerSystem.TryGetActiveServerAddress<CrewMonitoringServerComponent>(sensor.StationId!.Value, out var address))
-                if (!_singletonServerSystem.TryGetActiveServerAddress<CrewMonitoringServerComponent>(xform.MapID, out var address))
-                    continue;
-
-
-                sensor.ConnectedServer = address;
+                sensor.ConnectedServer = null;
+                continue;
             }
+
+            sensor.ConnectedServer = address;
 
             // Send it to the connected server
             var payload = SuitSensorToPacket(status);

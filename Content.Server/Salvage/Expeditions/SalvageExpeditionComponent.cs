@@ -30,10 +30,24 @@ public sealed partial class SalvageExpeditionComponent : SharedSalvageExpedition
     public TimeSpan EndTime;
 
     /// <summary>
-    /// Station whose mission this is.
+    /// Expedition owner whose mission this is. Legacy station owners and independent vessel-grid
+    /// owners both use this field.
     /// </summary>
     [DataField("station")]
     public EntityUid Station;
+
+    /// <summary>
+    /// Map from which the owner entered the expedition. Used outside Koronus sector maps.
+    /// </summary>
+    [DataField]
+    public EntityUid? ReturnMap;
+
+    /// <summary>
+    /// Koronus system from which the owner entered the expedition. The system id survives a
+    /// cold-unload of its runtime map and is therefore preferred over <see cref="ReturnMap"/>.
+    /// </summary>
+    [DataField]
+    public string? ReturnSystemId;
 
     [ViewVariables] public bool Completed = false;
 

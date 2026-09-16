@@ -1,0 +1,74 @@
+- type: entity
+  parent: ClothingOuterArmorFlakVest
+  id: ClothingOuterArmorLithosMining
+  suffix: WH40K, шахтёры
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Armor/lithos_mining_armor.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Armor/lithos_mining_armor.rsi
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+  - type: Armor
+    armorRating: 140
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.88
+        Piercing: 1.00
+        Heat: 0.85
+        Radiation: 0.55
+        Caustic: 0.80
+  - type: ItemDurability
+    maxDurability: 420
+    protectsWearer: true
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.65
+  - type: ClothingSpeedModifier
+    walkModifier: 0.93
+    sprintModifier: 0.93
+
+- type: entity
+  parent: [WH40KDurableHelmet, ClothingHeadSuitWithLightBase, ClothingHeadHelmetBasic]
+  id: ClothingHeadHelmetLithosMining
+  suffix: WH40K, шахтёры
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/lithos_mining_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/lithos_mining_helmet.rsi
+  - type: Item
+    heldPrefix: off
+    size: Normal
+  - type: PointLight
+    color: "#ffcc7a"
+  - type: Armor
+    armorRating: 70
+    modifiers:
+      coefficients:
+        Blunt: 0.90
+        Slash: 0.92
+        Piercing: 1.00
+        Heat: 0.85
+        Radiation: 0.55
+        Caustic: 0.85
+  - type: ItemDurability
+    maxDurability: 200
+    protectsWearer: true
+    protectedBodyParts: Head
+    repairMaterial: Steel
+    requiredWorkbenchTier: 2
+  - type: ExplosionResistance
+    damageCoefficient: 0.85
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD

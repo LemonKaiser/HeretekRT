@@ -26,6 +26,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Server._NF.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.EntitySerialization.Systems;
 
 namespace Content.Server._NF.Smuggling;
@@ -50,6 +52,7 @@ public sealed partial class DeadDropSystem : EntitySystem
     [Dependency] private SharedGameTicker _ticker = default!;
     [Dependency] private LinkedLifecycleGridSystem _linkedLifecycleGrid = default!;
     [Dependency] private StationRenameWarpsSystems _stationRenameWarps = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     private ISawmill _sawmill = default!;
 
     private readonly Queue<EntityUid> _drops = [];
@@ -441,6 +444,9 @@ public sealed partial class DeadDropSystem : EntitySystem
         if (_timing.CurTime < component.NextDrop)
             return;
 
+        if (!TryResolveDeadDropTarget(uid, user, out var targetDomain))
+            return;
+
         //relying entirely on shipyard capabilities, including using the shipyard map to spawn the items and ftl to bring em in
         if (_shipyard.ShipyardMap == null)
         {
@@ -461,7 +467,7 @@ public sealed partial class DeadDropSystem : EntitySystem
         //this is where we set up all the information that FTL is going to need, including a new null entity as a destination target because FTL needs it for reasons?
         //dont ask me im just fulfilling FTL requirements.
         var dropLocation = _random.NextVector2(component.MinimumDistance, component.MaximumDistance);
-        var mapId = Transform(user).MapID;
+        var mapId = Transform(targetDomain.PrimaryGrid).MapID;
 
         //tries to get the map uid, if it fails, it will return which I would assume will make the component try again.
         if (!_mapManager.TryGetMap(mapId, out var mapUid))
@@ -506,7 +512,7 @@ public sealed partial class DeadDropSystem : EntitySystem
         }
 
         //tattle on the smuggler here, but obfuscate it a bit if possible to just the grid it was summoned from.
-        var sender = Transform(user).GridUid ?? uid;
+        var sender = targetDomain.PrimaryGrid;
 
         _adminLogger.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(user)} sent a dead drop to {dropLocation.ToString()} from {ToPrettyString(uid)} at {Transform(uid).Coordinates.ToString()}");
 
@@ -631,6 +637,25 @@ public sealed partial class DeadDropSystem : EntitySystem
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Dead drops are sector-scheduled, but their physical destination is always the explicit
+    /// operational domain containing both the drop and the interacting user.
+    /// </summary>
+    public bool TryResolveDeadDropTarget(EntityUid drop, EntityUid user, out OperationalDomain domain)
+    {
+        domain = default;
+        if (!_operationalDomains.TryResolveOperationalDomain(drop, out var dropDomain) ||
+            !_operationalDomains.TryResolveOperationalDomain(user, out var userDomain) ||
+            dropDomain.Owner != userDomain.Owner ||
+            !_operationalDomains.IsOperationalDomainValid(dropDomain))
+        {
+            return false;
+        }
+
+        domain = dropDomain;
+        return true;
     }
 
     // Generates a random hint from a given set of entities (grabs the first N, N randomly generated between min/max),

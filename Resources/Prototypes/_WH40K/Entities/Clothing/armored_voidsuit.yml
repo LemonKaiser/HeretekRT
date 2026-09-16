@@ -1,0 +1,60 @@
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanStandard
+  id: ClothingOuterHardsuitArmoredVoidsuit
+  name: бронескафандр пустотника
+  description: Герметичный бронескафандр для работ и боя в пустоте. Кираса защищает лучше штатного скафандра, но её вес ограничивает подвижность.
+  suffix: WH40K, пустотная броня
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/armored_voidsuit.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/armored_voidsuit.rsi
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+  - type: Armor
+    armorRating: 190
+    modifiers:
+      coefficients:
+        Blunt: 0.91
+        Slash: 0.88
+        Piercing: 0.93
+        Radiation: 0.60
+        Caustic: 0.65
+        Heat: 0.85
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetArmoredVoidsuit
+  name: шлем бронескафандра пустотника
+  description: Герметичный шлем к бронескафандру пустотника. Вместе с корпусом изолирует владельца от вакуума; без него тело остаётся без защиты.
+  suffix: WH40K, пустотная броня
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/armored_voidhelmet.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/armored_voidhelmet.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-HEAD
+  - type: Armor
+    armorRating: 95
+    modifiers:
+      coefficients:
+        Blunt: 0.93
+        Slash: 0.91
+        Piercing: 0.96
+        Radiation: 0.60
+        Heat: 0.88

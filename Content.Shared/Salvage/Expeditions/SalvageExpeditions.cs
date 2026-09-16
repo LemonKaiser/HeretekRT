@@ -63,7 +63,16 @@ public sealed class ClaimSalvageMessage : BoundUserInterfaceMessage
 public sealed class FinishSalvageMessage : BoundUserInterfaceMessage;
 
 /// <summary>
-/// Added per station to store data on their available salvage missions.
+/// Marks an entity as the authoritative owner of salvage expeditions.
+/// Stations use this through their station entity; independent vessels use their grid entity.
+/// </summary>
+[RegisterComponent]
+public sealed partial class SalvageExpeditionOwnerComponent : Component
+{
+}
+
+/// <summary>
+/// Stored on an expedition owner and contains its available salvage missions.
 /// </summary>
 [RegisterComponent, AutoGenerateComponentPause]
 public sealed partial class SalvageExpeditionDataComponent : Component

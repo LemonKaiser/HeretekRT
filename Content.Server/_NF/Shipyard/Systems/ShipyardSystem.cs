@@ -2,6 +2,7 @@ using Content.Server.Shuttles.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Cargo.Systems;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._NF.Shipyard;
 using Content.Shared.GameTicking;
@@ -19,6 +20,7 @@ using Robust.Shared.Containers;
 using Content.Server._NF.Station.Components;
 using Content.Server.Storage.Components;
 using Content.Shared._Mono.Shipyard;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Utility;
 using Content.Shared.Doors.Components;
@@ -40,6 +42,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private ShipOwnershipSystem _shipOwnership = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     public MapId? ShipyardMap { get; private set; }
     private float _shuttleIndex;
@@ -355,8 +358,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return false;
 
         var shuttle = shuttleDeed.ShuttleUid;
-        if (shuttle != null
-             && _station.GetOwningStation(shuttle.Value) is { Valid: true } shuttleStation)
+        if (shuttle != null &&
+            _operationalDomains.TryResolveOperationalDomain(shuttle.Value, out var domain))
         {
             // Update the primary deed
             shuttleDeed.ShuttleName = newName;
@@ -381,9 +384,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             }
 
             var fullName = GetFullName(shuttleDeed);
-            _station.RenameStation(shuttleStation, fullName, loud: false);
             _metaData.SetEntityName(shuttle.Value, fullName);
-            _metaData.SetEntityName(shuttleStation, fullName);
+            if (domain.Kind == OperationalDomainKind.Station)
+                _station.RenameStation(domain.Owner, fullName, loud: false);
+            else if (domain.Owner != shuttle.Value)
+                _metaData.SetEntityName(domain.Owner, fullName);
         }
         else
         {

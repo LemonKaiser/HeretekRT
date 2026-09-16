@@ -1,0 +1,59 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitImperialCitizen
+  name: одежда гражданина улья
+  description: Простая рубаха и брюки, сшитые для повседневной жизни в тесных кварталах улья.
+  suffix: WH40K, гражданские
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/citizen_uniform.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/citizen_uniform.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitImperialCitizenVest
+  name: жилет гражданина улья
+  description: Неброская рубаха с жилетом. Не защитит от опасностей Империума, но выглядит опрятнее рабочего комбинезона.
+  suffix: WH40K, гражданские
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/citizen_uniform2.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/citizen_uniform2.rsi
+
+- type: entity
+  parent: ClothingOuterBase
+  id: ClothingOuterCoatImperialCitizen
+  name: пальто гражданина улья
+  description: Скромное пальто, защищающее лишь от сквозняка в коридорах улья.
+  suffix: WH40K, гражданские
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/citizen_coat.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/citizen_coat.rsi
+
+- type: entity
+  parent: ClothingOuterBase
+  id: ClothingOuterWorkSuitImperialCitizen
+  name: рабочий комбинезон гражданина улья
+  description: Выносливая рабочая одежда для доков и фабрик. На ней нет ни брони, ни герметизации.
+  suffix: WH40K, гражданские
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/citizen_worksuit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/citizen_worksuit.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatImperialCitizen
+  name: фуражка гражданина улья
+  description: Форменная фуражка для человека, которому ещё есть куда идти после смены.
+  suffix: WH40K, гражданские
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/citizen_hat.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/citizen_hat.rsi

@@ -7,13 +7,13 @@ namespace Content.Server.DeviceNetwork.Components
     public sealed partial class StationLimitedNetworkComponent : Component
     {
         /// <summary>
-        /// The station id the device is limited to.
+        /// The owner of the operational domain the device is limited to.
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
-        public EntityUid? StationId;
+        public EntityUid? DomainOwner;
 
         /// <summary>
-        /// Whether the entity is allowed to receive packets from entities that are not tied to any station
+        /// Whether the entity is allowed to receive packets from entities that are not tied to an operational domain.
         /// </summary>
         [DataField("allowNonStationPackets")]
         [ViewVariables(VVAccess.ReadWrite)]

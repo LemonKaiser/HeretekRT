@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.Access.Systems;
 using Content.Server.Forensics;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Access.Components;
 using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
@@ -9,6 +10,7 @@ using Content.Shared.PDA;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Content.Shared.StationRecords;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -44,6 +46,7 @@ public sealed partial class StationRecordsSystem : SharedStationRecordsSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier
     [Dependency] private ForensicsSystem _forensics = default!; // Frontier
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
 
     static readonly ProtoId<JobPrototype>[] FakeJobIds = ["Contractor"]; // Frontier // Monolith: removed Pilot and Mercenary
 
@@ -57,10 +60,25 @@ public sealed partial class StationRecordsSystem : SharedStationRecordsSystem
 
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent args)
     {
-        if (!TryComp<StationRecordsComponent>(args.Station, out var stationRecords))
+        var owner = args.Station;
+        StationRecordsComponent? stationRecords = null;
+
+        if (_operationalDomains.TryResolveOperationalDomain(args.Mob, out var domain))
+        {
+            owner = domain.Owner;
+            stationRecords = domain.Kind == OperationalDomainKind.Vessel
+                ? EnsureComp<StationRecordsComponent>(owner)
+                : CompOrNull<StationRecordsComponent>(owner);
+        }
+        else
+        {
+            stationRecords = CompOrNull<StationRecordsComponent>(owner);
+        }
+
+        if (stationRecords == null)
             return;
 
-        CreateGeneralRecord(args.Station, args.Mob, args.Profile, args.JobId, stationRecords);
+        CreateGeneralRecord(owner, args.Mob, args.Profile, args.JobId, stationRecords);
     }
 
     private void OnRename(ref EntityRenamedEvent ev)

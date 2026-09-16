@@ -1,0 +1,95 @@
+- type: entity
+  id: WH40KCWISDamageVisualBase
+  abstract: true
+  components:
+  - type: Appearance
+  - type: WH40KCWISDamage
+    damageThreshold: 7500
+  - type: GenericVisualizer
+    visuals:
+      enum.WH40KCWISVisuals.DamageState:
+        base:
+          Intact: { state: base }
+          Damaged: { state: damaged }
+          HeavilyDamaged: { state: damaged2 }
+          Destroyed: { state: dead }
+
+- type: entity
+  id: WH40KCWISQuadAutocannon
+  parent:
+  - WeaponTurretL85Autocannon
+  - WH40KCWISDamageVisualBase
+  name: 40-мм зенитная установка
+  description: Четырёхствольная автопушка ПКО, собранная по схеме «Гидра». Использует штатные снаряды автопушки и предназначена для заградительного огня по малым целям.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/ShuttleWeapons/4autocannon.rsi
+    layers:
+    - state: base
+      map: ["base"]
+  - type: Icon
+    sprite: _WH40K/Objects/ShuttleWeapons/4autocannon.rsi
+    state: base
+  - type: Gun
+    fireRate: 8
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: WH40KMagazineAutocannon
+        insertSound: /Audio/Weapons/Guns/MagIn/hpistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/sfrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - WH40KMagazineAutocannon
+        whitelistFailPopup: gun-magazine-whitelist-fail
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: WH40KCWISAssaultCannon
+  parent:
+  - WeaponTurretL85Autocannon
+  - WH40KCWISDamageVisualBase
+  name: 20-мм зенитная установка
+  description: Спаренная корабельная установка с двумя роторными автопушками. Питание и боеприпасы полностью совместимы со штатным 20-мм зенитным орудием.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/ShuttleWeapons/assaultcannon.rsi
+    layers:
+    - state: base
+      map: ["base"]
+  - type: Icon
+    sprite: _WH40K/Objects/ShuttleWeapons/assaultcannon.rsi
+    state: base
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: WH40KCWISMultilas
+  parent:
+  - WeaponLaserTurretL1Phalanx
+  - WH40KCWISDamageVisualBase
+  name: лазерная зенитная установка
+  description: Корабельный мультилаз ПКО. Использует стандартный излучатель мультилаза и ведёт огонь вдвое быстрее стационарной установки.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/ShuttleWeapons/sparedmultilas.rsi
+    layers:
+    - state: base
+      map: ["base"]
+  - type: Icon
+    sprite: _WH40K/Objects/ShuttleWeapons/sparedmultilas.rsi
+    state: base
+  - type: Gun
+    fireRate: 16
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+  - type: HitscanBatteryAmmoProvider
+    proto: LaserMultilas
+    fireCost: 100
+  - type: WH40KCWISDamage
+    damageThreshold: 4000
+  - type: Destructible
+    thresholds: []

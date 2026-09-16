@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingHeadHelmetAstartesAquila
+  id: ClothingHeadHelmetAstartesAquilaRaptors
+  name: Raptors Chapter Aquila helmet
+  description: A Mk.VII Aquila-pattern helmet in the muted livery of the Raptors Chapter. Its autosenses serve the patient hunter in void and shadow alike.
+  suffix: WH40K, Astartes, Imperium, Raptors
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Helmets/astartes_aquila_raptors.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Helmets/astartes_aquila_raptors.rsi

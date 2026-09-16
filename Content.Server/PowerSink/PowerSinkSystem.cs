@@ -2,7 +2,7 @@
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
-using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Examine;
 using Content.Shared.Power.Components;
 using Robust.Shared.Audio.Systems;
@@ -31,7 +31,7 @@ namespace Content.Server.PowerSink
         [Dependency] private ChatSystem _chat = default!;
         [Dependency] private ExplosionSystem _explosionSystem = default!;
         [Dependency] private SharedAudioSystem _audio = default!;
-        [Dependency] private StationSystem _station = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
         [Dependency] private BatterySystem _battery = default!;
 
         public override void Initialize()
@@ -121,13 +121,11 @@ namespace Content.Server.PowerSink
                 return;
 
             powerSinkComponent.SentImminentExplosionWarningMessage = true;
-            var station = _station.GetOwningStation(uid);
-
-            if (station == null)
+            if (!_operationalDomains.TryResolveOperationalDomain(uid, out _))
                 return;
 
             _chat.DispatchStationAnnouncement(
-                station.Value,
+                uid,
                 Loc.GetString("powersink-imminent-explosion-announcement"),
                 playDefaultSound: true,
                 colorOverride: Color.Yellow

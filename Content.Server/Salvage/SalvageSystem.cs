@@ -18,6 +18,8 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 using Robust.Shared.EntitySerialization.Systems;
 using Content.Server.Weather;
+using Content.Server._WH40K.OperationalDomain;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Weather;
 
 namespace Content.Server.Salvage
@@ -43,6 +45,9 @@ namespace Content.Server.Salvage
         [Dependency] private ShuttleSystem _shuttle = default!;
         [Dependency] private ShuttleConsoleSystem _shuttleConsoles = default!;
         [Dependency] private StationSystem _station = default!;
+        [Dependency] private OperationalDomainSystem _operationalDomains = default!;
+        [Dependency] private KoronusSectorResidencySystem _koronusResidency = default!;
+        [Dependency] private KoronusSectorRuleSystem _koronusSector = default!;
         [Dependency] private UserInterfaceSystem _ui = default!;
 
         private EntityQuery<MapGridComponent> _gridQuery;

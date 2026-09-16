@@ -1,0 +1,50 @@
+- type: entity
+  parent: ClothingOuterBase
+  id: ClothingOuterRobeImperialPilgrim
+  suffix: WH40K, паломник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Robes/pilgrim_robe.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Robes/pilgrim_robe.rsi
+    clothingVisuals:
+      outerClothing:
+      - state: equipped-OUTERCLOTHING
+
+- type: entity
+  parent: WH40KClothingHeadToggleableHoodBase
+  id: ClothingHeadHoodImperialPilgrim
+  suffix: WH40K, паломник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hoods/pilgrim_hood.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hoods/pilgrim_hood.rsi
+    clothingVisuals:
+      head:
+      - state: equipped-HELMET
+
+- type: entity
+  parent: ClothingShoesBase
+  id: ClothingShoesImperialPilgrim
+  suffix: WH40K, паломник
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/pilgrim_shoes.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/pilgrim_shoes.rsi
+    clothingVisuals:
+      shoes:
+      - state: equipped-FEET

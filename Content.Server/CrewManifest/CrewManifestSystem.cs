@@ -4,6 +4,7 @@ using Content.Server.EUI;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.CrewManifest;
@@ -11,6 +12,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Roles;
 using Content.Shared.Station.Components;
 using Content.Shared.StationRecords;
+using Content.Shared._WH40K.OperationalDomain;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
 using Robust.Shared.Player;
@@ -20,7 +22,7 @@ namespace Content.Server.CrewManifest;
 
 public sealed partial class CrewManifestSystem : EntitySystem
 {
-    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private StationRecordsSystem _recordsSystem = default!;
     [Dependency] private EuiManager _euiManager = default!;
     [Dependency] private IConfigurationManager _configManager = default!;
@@ -98,13 +100,12 @@ public sealed partial class CrewManifestSystem : EntitySystem
         if (!Equals(ev.UiKey, component.OwnerKey))
             return;
 
-        var owningStation = _stationSystem.GetOwningStation(uid);
-        if (owningStation == null || !TryComp(ev.Actor, out ActorComponent? actorComp))
+        if (!TryGetManifestOwner(uid, out var owner) || !TryComp(ev.Actor, out ActorComponent? actorComp))
         {
             return;
         }
 
-        CloseEui(owningStation.Value, actorComp.PlayerSession, uid);
+        CloseEui(owner, actorComp.PlayerSession, uid);
     }
 
     /// <summary>
@@ -114,8 +115,25 @@ public sealed partial class CrewManifestSystem : EntitySystem
     /// <returns>The name and crew manifest entries (unordered) of the station.</returns>
     public (string name, CrewManifestEntries? entries) GetCrewManifest(EntityUid station)
     {
-        var valid = _cachedEntries.TryGetValue(station, out var manifest);
-        return (valid ? MetaData(station).EntityName : string.Empty, valid ? manifest : null);
+        if (!HasComp<StationRecordsComponent>(station))
+            return (string.Empty, null);
+
+        _cachedEntries.TryGetValue(station, out var manifest);
+        return (Name(station), manifest);
+    }
+
+    /// <summary>
+    /// Gets the manifest belonging to the operational domain of an entity.
+    /// </summary>
+    public bool TryGetCrewManifestForDomain(EntityUid entity, out string name, out CrewManifestEntries? entries)
+    {
+        name = string.Empty;
+        entries = null;
+        if (!TryGetManifestOwner(entity, out var owner))
+            return false;
+
+        (name, entries) = GetCrewManifest(owner);
+        return true;
     }
 
     private void UpdateEuis(EntityUid station)
@@ -139,8 +157,7 @@ public sealed partial class CrewManifestSystem : EntitySystem
             return;
         }
 
-        var owningStation = _stationSystem.GetOwningStation(uid);
-        if (owningStation == null || !TryComp(msg.Actor, out ActorComponent? actorComp))
+        if (!TryGetManifestOwner(uid, out var owner) || !TryComp(msg.Actor, out ActorComponent? actorComp))
         {
             return;
         }
@@ -150,7 +167,7 @@ public sealed partial class CrewManifestSystem : EntitySystem
             return;
         }
 
-        OpenEui(owningStation.Value, actorComp.PlayerSession, uid);
+        OpenEui(owner, actorComp.PlayerSession, uid);
     }
 
     /// <summary>
@@ -246,6 +263,18 @@ public sealed partial class CrewManifestSystem : EntitySystem
 
         entries.Entries = entriesSort.Select(x => x.entry).ToArray();
         _cachedEntries[station] = entries;
+    }
+
+    private bool TryGetManifestOwner(EntityUid entity, out EntityUid owner)
+    {
+        owner = EntityUid.Invalid;
+        if (!_operationalDomains.TryResolveOperationalDomain(entity, out var domain))
+            return false;
+
+        owner = domain.Owner;
+        return domain.Kind == OperationalDomainKind.Vessel
+            ? EnsureComp<StationRecordsComponent>(owner) != null
+            : HasComp<StationRecordsComponent>(owner);
     }
 }
 

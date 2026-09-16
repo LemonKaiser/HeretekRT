@@ -31,10 +31,21 @@ public sealed partial class ResearchSystem
 
     private void OnServerDatabaseModified(EntityUid uid, ResearchServerComponent component, ref TechnologyDatabaseModifiedEvent args)
     {
-        foreach (var client in component.Clients)
+        var removedClient = false;
+        foreach (var client in component.Clients.ToArray())
         {
+            if (!IsInSameOperationalDomain(uid, client))
+            {
+                UnregisterClient(client, uid, serverComponent: component, dirtyServer: false);
+                removedClient = true;
+                continue;
+            }
+
             RaiseLocalEvent(client, ref args);
         }
+
+        if (removedClient && !TerminatingOrDeleted(uid))
+            Dirty(uid, component);
     }
 
     private bool CanRun(EntityUid uid)
@@ -64,6 +75,9 @@ public sealed partial class ResearchSystem
         ResearchServerComponent? serverComponent = null,  bool dirtyServer = true)
     {
         if (!Resolve(client, ref clientComponent, false) || !Resolve(server, ref serverComponent, false))
+            return;
+
+        if (!IsInSameOperationalDomain(client, server))
             return;
 
         if (serverComponent.Clients.Contains(client))
@@ -141,10 +155,21 @@ public sealed partial class ResearchSystem
             return points;
 
         var ev = new ResearchServerGetPointsPerSecondEvent(uid, points);
-        foreach (var client in component.Clients)
+        var removedClient = false;
+        foreach (var client in component.Clients.ToArray())
         {
+            if (!IsInSameOperationalDomain(uid, client))
+            {
+                UnregisterClient(client, uid, serverComponent: component, dirtyServer: false);
+                removedClient = true;
+                continue;
+            }
+
             RaiseLocalEvent(client, ref ev);
         }
+
+        if (removedClient && !TerminatingOrDeleted(uid))
+            Dirty(uid, component);
         return ev.Points;
     }
 
@@ -163,8 +188,14 @@ public sealed partial class ResearchSystem
             return;
         component.Points += points;
         var ev = new ResearchServerPointsChangedEvent(uid, component.Points, points);
-        foreach (var client in component.Clients)
+        foreach (var client in component.Clients.ToArray())
         {
+            if (!IsInSameOperationalDomain(uid, client))
+            {
+                UnregisterClient(client, uid, serverComponent: component, dirtyServer: false);
+                continue;
+            }
+
             RaiseLocalEvent(client, ref ev);
         }
         Dirty(uid, component);

@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using Content.Server._NF.SectorServices;
 using Content.Server.Administration;
-using Content.Server.Station.Systems;
 using Content.Shared.Administration;
 using JetBrains.Annotations;
 using Robust.Shared.Console;
@@ -22,14 +20,7 @@ namespace Content.Server.AlertLevel.Commands
             var player = shell.Player;
             if (player?.AttachedEntity != null)
             {
-                // Frontier: sector-wide alerts
-                levelNames = GetSectorLevelNames();
-                // var stationUid = _entitySystems.GetEntitySystem<StationSystem>().GetOwningStation(player.AttachedEntity.Value);
-                // if (stationUid != null)
-                // {
-                //     levelNames = GetStationLevelNames(stationUid.Value);
-                // }
-                // End Frontier
+                levelNames = GetDomainLevelNames(player.AttachedEntity.Value);
             }
 
             return args.Length switch
@@ -64,37 +55,32 @@ namespace Content.Server.AlertLevel.Commands
                 return;
             }
 
-            var stationUid = _entitySystems.GetEntitySystem<StationSystem>().GetOwningStation(player.AttachedEntity.Value);
-            if (stationUid == null)
+            var alertLevels = _entitySystems.GetEntitySystem<AlertLevelSystem>();
+            if (!alertLevels.TryGetDomainAlertLevel(player.AttachedEntity.Value, out _, out _))
             {
                 shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-grid"));
                 return;
             }
 
             var level = args[0];
-            var levelNames = GetSectorLevelNames();
+            var levelNames = GetDomainLevelNames(player.AttachedEntity.Value);
             if (!levelNames.Contains(level))
             {
                 shell.WriteLine(LocalizationManager.GetString("cmd-setalertlevel-invalid-level"));
                 return;
             }
 
-            _entitySystems.GetEntitySystem<AlertLevelSystem>().SetLevel(stationUid.Value, level, true, true, true, locked);
+            alertLevels.SetLevel(player.AttachedEntity.Value, level, true, true, true, locked);
         }
 
-        // Frontier: sector-wide alert level names
-        private string[] GetSectorLevelNames()
+        private string[] GetDomainLevelNames(EntityUid entity)
         {
-            var sectorServiceUid = _entitySystems.GetEntitySystem<SectorServiceSystem>().GetServiceEntity();
-            var entityManager = IoCManager.Resolve<IEntityManager>();
-            if (!entityManager.TryGetComponent<AlertLevelComponent>(sectorServiceUid, out var alertLevelComp))
-                return new string[]{};
-
-            if (alertLevelComp.AlertLevels == null)
-                return new string[]{};
+            var alerts = _entitySystems.GetEntitySystem<AlertLevelSystem>();
+            if (!alerts.TryGetDomainAlertLevel(entity, out _, out var alertLevelComp)
+                || alertLevelComp.AlertLevels == null)
+                return Array.Empty<string>();
 
             return alertLevelComp.AlertLevels.Levels.Keys.ToArray();
         }
-        // End Frontier
     }
 }

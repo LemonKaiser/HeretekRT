@@ -14,6 +14,7 @@ using Content.Server.Speech.Prototypes;
 using Content.Server.Speech.EntitySystems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.Administration.Mute;
 using Content.Server._WH40K.MetaProgress;
 using Content.Shared.ActionBlocker;
@@ -64,7 +65,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IAdminLogManager _adminLogger = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
-    [Dependency] private StationSystem _stationSystem = default!;
+    [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private MobStateSystem _mobStateSystem = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private ReplacementAccentSystem _wordreplacement = default!;
@@ -471,7 +472,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     }
 
     /// <summary>
-    /// Dispatches an announcement on a specific station
+    /// Dispatches an announcement to the operational domain of the source entity.
     /// </summary>
     /// <param name="source">The entity making the announcement (used to determine the station)</param>
     /// <param name="message">The contents of the message</param>
@@ -486,29 +487,60 @@ public sealed partial class ChatSystem : SharedChatSystem
         SoundSpecifier? announcementSound = null,
         Color? colorOverride = null)
     {
-        sender ??= Loc.GetString("chat-manager-sender-announcement");
+        DispatchDomainAnnouncement(source, message, sender, playDefaultSound, announcementSound, colorOverride);
+    }
 
-        var wrappedMessage = Loc.GetString("chat-manager-sender-announcement-wrap-message", ("sender", FormattedMessage.EscapeText(sender)), ("message", FormattedMessage.EscapeText(message)));
-        var station = _stationSystem.GetOwningStation(source);
-
-        if (station == null)
-        {
-            // you can't make a station announcement without a station
+    /// <summary>
+    /// Dispatches an announcement only to players currently in the source's operational domain.
+    /// </summary>
+    public void DispatchDomainAnnouncement(
+        EntityUid source,
+        string message,
+        string? sender = null,
+        bool playDefaultSound = true,
+        SoundSpecifier? announcementSound = null,
+        Color? colorOverride = null)
+    {
+        if (!_operationalDomains.TryResolveOperationalDomain(source, out var domain))
             return;
-        }
 
-        if (!EntityManager.TryGetComponent<StationDataComponent>(station, out var stationDataComp)) return;
+        sender ??= Loc.GetString("chat-manager-sender-announcement");
+        var wrappedMessage = Loc.GetString(
+            "chat-manager-sender-announcement-wrap-message",
+            ("sender", FormattedMessage.EscapeText(sender)),
+            ("message", FormattedMessage.EscapeText(message)));
 
-        var filter = _stationSystem.GetInStation(stationDataComp);
+        var filter = GetOperationalDomainAnnouncementFilter(source);
 
         _chatManager.ChatMessageToManyFiltered(filter, ChatChannel.Radio, message, wrappedMessage, source, false, true, colorOverride);
 
         if (playDefaultSound)
         {
-            _audio.PlayGlobal(announcementSound == null ? DefaultAnnouncementSound : _audio.ResolveSound(announcementSound), filter, true, AudioParams.Default.WithVolume(-2f));
+            _audio.PlayGlobal(
+                announcementSound == null ? DefaultAnnouncementSound : _audio.ResolveSound(announcementSound),
+                filter,
+                true,
+                AudioParams.Default.WithVolume(-2f));
         }
 
-        _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Station Announcement on {station} from {sender}: {message}");
+        _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Domain announcement on {domain.Owner} from {sender}: {message}");
+    }
+
+    /// <summary>
+    /// Creates the recipient filter for an announcement local to an operational domain.
+    /// </summary>
+    public Filter GetOperationalDomainAnnouncementFilter(EntityUid source)
+    {
+        var filter = Filter.Empty();
+        if (!_operationalDomains.TryResolveOperationalDomain(source, out var domain))
+            return filter;
+
+        foreach (var session in _operationalDomains.GetPlayersInOperationalDomain(domain))
+        {
+            filter.AddPlayer(session);
+        }
+
+        return filter;
     }
 
     #endregion
