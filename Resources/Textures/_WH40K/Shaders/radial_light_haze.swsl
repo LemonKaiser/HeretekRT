@@ -1,0 +1,19 @@
+light_mode unshaded;
+blend_mode add;
+
+void fragment()
+{
+    highp vec2 offset = UV2 * 2.0 - 1.0;
+    highp float radius = length(offset);
+    highp float sourceFade = smoothstep(0.02, 0.2, radius);
+    highp float distanceFade = 1.0 - smoothstep(0.1, 1.0, radius);
+    highp float mounted = step(0.5, UV.x);
+    highp vec2 direction = offset / max(radius, 0.0001);
+    // The mesh ends at 60 degrees. Fade its outer 18 degrees per side per-pixel,
+    // otherwise the shared center vertex leaves a visible diagonal fan edge.
+    highp float angularFade = smoothstep(0.5, 0.743, direction.y);
+    angularFade = mix(1.0, angularFade, mounted);
+    highp float opacity = sourceFade * distanceFade * distanceFade * angularFade * 0.78;
+
+    COLOR = vec4(1.0, 1.0, 1.0, opacity);
+}

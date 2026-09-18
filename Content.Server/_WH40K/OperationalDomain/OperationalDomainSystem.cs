@@ -36,6 +36,16 @@ public sealed class OperationalDomainSystem : EntitySystem
     }
 
     /// <summary>
+    /// Returns whether a live grid has an explicit vessel identity.
+    /// This remains separate from domain resolution because a purchased vessel may correctly
+    /// resolve to its own station domain.
+    /// </summary>
+    public bool IsVesselGrid(EntityUid grid)
+    {
+        return IsLiveGrid(grid) && IsIndependentVessel(grid);
+    }
+
+    /// <summary>
     /// Resolves an entity to its station or independent vessel operational domain.
     /// No map, sector entity, arbitrary station, or arbitrary grid is used as a fallback.
     /// </summary>

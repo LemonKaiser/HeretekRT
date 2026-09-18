@@ -1,0 +1,56 @@
+light_mode unshaded;
+blend_mode add;
+
+uniform sampler2D SCREEN_TEXTURE;
+
+highp vec3 brightSample(highp vec2 screenUv, highp vec2 pixelOffset)
+{
+    highp vec3 sampleColor = zTextureSpec(
+        SCREEN_TEXTURE,
+        screenUv + pixelOffset * SCREEN_PIXEL_SIZE).rgb;
+    highp float peak = max(max(sampleColor.r, sampleColor.g), sampleColor.b);
+    highp float brightMask = smoothstep(0.32, 0.78, peak);
+    return sampleColor * brightMask;
+}
+
+void fragment()
+{
+    highp vec2 screenUv = FRAGCOORD.xy * SCREEN_PIXEL_SIZE;
+
+    // One-pass 5x5 Gaussian bright-pass. The local quad keeps the cost proportional to the number of lamps,
+    // while the weighted neighbourhood produces actual blur instead of shifted sprite copies.
+    highp vec3 bloom = vec3(0.0);
+    bloom += brightSample(screenUv, vec2(-8.0, -8.0)) * 0.0025;
+    bloom += brightSample(screenUv, vec2(-4.0, -8.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2( 0.0, -8.0)) * 0.0210;
+    bloom += brightSample(screenUv, vec2( 4.0, -8.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2( 8.0, -8.0)) * 0.0025;
+
+    bloom += brightSample(screenUv, vec2(-8.0, -4.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2(-4.0, -4.0)) * 0.0576;
+    bloom += brightSample(screenUv, vec2( 0.0, -4.0)) * 0.1008;
+    bloom += brightSample(screenUv, vec2( 4.0, -4.0)) * 0.0576;
+    bloom += brightSample(screenUv, vec2( 8.0, -4.0)) * 0.0120;
+
+    bloom += brightSample(screenUv, vec2(-8.0,  0.0)) * 0.0210;
+    bloom += brightSample(screenUv, vec2(-4.0,  0.0)) * 0.1008;
+    bloom += brightSample(screenUv, vec2( 0.0,  0.0)) * 0.1764;
+    bloom += brightSample(screenUv, vec2( 4.0,  0.0)) * 0.1008;
+    bloom += brightSample(screenUv, vec2( 8.0,  0.0)) * 0.0210;
+
+    bloom += brightSample(screenUv, vec2(-8.0,  4.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2(-4.0,  4.0)) * 0.0576;
+    bloom += brightSample(screenUv, vec2( 0.0,  4.0)) * 0.1008;
+    bloom += brightSample(screenUv, vec2( 4.0,  4.0)) * 0.0576;
+    bloom += brightSample(screenUv, vec2( 8.0,  4.0)) * 0.0120;
+
+    bloom += brightSample(screenUv, vec2(-8.0,  8.0)) * 0.0025;
+    bloom += brightSample(screenUv, vec2(-4.0,  8.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2( 0.0,  8.0)) * 0.0210;
+    bloom += brightSample(screenUv, vec2( 4.0,  8.0)) * 0.0120;
+    bloom += brightSample(screenUv, vec2( 8.0,  8.0)) * 0.0025;
+
+    highp vec2 local = UV2 * 2.0 - 1.0;
+    highp float localMask = 1.0 - smoothstep(0.48, 1.0, dot(local, local));
+    COLOR = vec4(bloom * 1.12, localMask);
+}

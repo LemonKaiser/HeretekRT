@@ -262,8 +262,8 @@ public sealed partial class SalvageSystem
 
     /// <summary>
     /// Resolves the single owner used by every expedition operation.
-    /// A console installed on an independent vessel grid promotes that grid to an owner;
-    /// station-owned consoles remain attached to their station and never promote the station grid.
+    /// An independent vessel grid owns its expedition data directly. A purchased vessel with its
+    /// own station domain keeps the data on that station; other stations require explicit data.
     /// </summary>
     internal bool TryGetExpeditionOwner(
         EntityUid entity,
@@ -286,7 +286,9 @@ public sealed partial class SalvageSystem
             return true;
         }
 
-        if (domain.Kind != OperationalDomainKind.Vessel)
+        if (domain.Kind != OperationalDomainKind.Vessel &&
+            (domain.Kind != OperationalDomainKind.Station ||
+             !_operationalDomains.IsVesselGrid(domain.PrimaryGrid)))
             return false;
 
         data = EnsureComp<SalvageExpeditionDataComponent>(owner);

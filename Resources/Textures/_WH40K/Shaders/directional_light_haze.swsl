@@ -1,0 +1,16 @@
+light_mode unshaded;
+blend_mode add;
+
+void fragment()
+{
+    highp float along = clamp(UV2.y, 0.0, 1.0);
+    highp float across = abs(UV2.x * 2.0 - 1.0);
+
+    highp float sourceFade = smoothstep(0.0, 0.08, along);
+    highp float distanceFade = 1.0 - smoothstep(0.12, 1.0, along);
+    highp float edgeFade = 1.0 - smoothstep(0.42, 1.0, across);
+    highp float softCore = 1.0 - smoothstep(0.0, 0.64, across);
+    highp float opacity = sourceFade * distanceFade * edgeFade * (0.72 + softCore * 0.28);
+
+    COLOR = vec4(1.0, 1.0, 1.0, opacity);
+}

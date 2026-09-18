@@ -1,0 +1,9 @@
+void fragment()
+{
+    highp vec2 offset = UV2 * 2.0 - 1.0;
+    highp float radiusSquared = dot(offset, offset);
+    highp float softLobe = 1.0 - smoothstep(0.08, 1.0, radiusSquared);
+    highp float contactCore = 1.0 - smoothstep(0.0, 0.28, radiusSquared);
+    highp float opacity = softLobe * softLobe * 0.72 + contactCore * 0.28;
+    COLOR = vec4(1.0, 1.0, 1.0, opacity);
+}

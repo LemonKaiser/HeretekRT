@@ -20,6 +20,12 @@
                 <CheckBox Name="RenderStarSystemCheckBox" Text="{Loc 'ui-options-render-star-system'}" />
                 <!-- Far Horizons end -->
 
+                <Label Text="{Loc 'wh40k-options-world-effects'}" StyleClasses="LabelKeyText"/>
+                <CheckBox Name="WorldGlowCheckBox" Text="{Loc 'wh40k-options-world-glow'}"
+                          ToolTip="{Loc 'wh40k-options-world-glow-tooltip'}" />
+                <CheckBox Name="ContactShadowsCheckBox" Text="{Loc 'wh40k-options-contact-shadows'}"
+                          ToolTip="{Loc 'wh40k-options-contact-shadows-tooltip'}" />
+
                 <!-- Interface -->
                 <Label Text="{Loc 'ui-options-interface-label'}" StyleClasses="LabelKeyText"/>
                 <ui:OptionDropDown Name="DropDownUIScale" Title="{Loc 'ui-options-scale-label'}" />

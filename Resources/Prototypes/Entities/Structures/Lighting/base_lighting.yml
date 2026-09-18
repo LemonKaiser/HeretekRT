@@ -18,7 +18,6 @@
     anchored: true
   - type: Clickable
   - type: InteractionOutline
-  - type: BloomOverlayVisuals
   - type: Construction
     graph: LightFixture
     node: tubeLight
@@ -39,6 +38,7 @@
     radius: 10
     softness: 1
     offset: "0, 0.495"
+  - type: WH40KLightEffects
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic

@@ -1,0 +1,24 @@
+- type: shader
+  id: WH40KLightSourceBloom
+  kind: source
+  path: /Textures/_WH40K/Shaders/light_source_bloom.swsl
+
+- type: shader
+  id: WH40KLightSourceGlow
+  kind: source
+  path: /Textures/_WH40K/Shaders/light_source_glow.swsl
+
+- type: shader
+  id: WH40KDirectionalLightHaze
+  kind: source
+  path: /Textures/_WH40K/Shaders/directional_light_haze.swsl
+
+- type: shader
+  id: WH40KRadialLightHaze
+  kind: source
+  path: /Textures/_WH40K/Shaders/radial_light_haze.swsl
+
+- type: shader
+  id: WH40KContactShadow
+  kind: source
+  path: /Textures/_WH40K/Shaders/contact_shadow.swsl

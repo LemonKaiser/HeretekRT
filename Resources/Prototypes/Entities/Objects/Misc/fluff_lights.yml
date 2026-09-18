@@ -45,6 +45,9 @@
     radius: 3
     energy: 2
     netsync: false
+  - type: WH40KLightEffects
+    profile: PortableLamp
+    emitterLayer: ToggleableLight
   - type: ToggleableVisuals
     spriteLayer: light
   - type: ItemTogglePointLight
@@ -218,6 +221,8 @@
     enabled: false
     radius: 8
     energy: 5
+  - type: WH40KLightEffects
+    profile: Floodlight
   - type: HandheldLight
     wattage: 0.3 # Mono
   - type: ItemSlots

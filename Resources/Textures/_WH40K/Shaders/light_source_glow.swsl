@@ -1,0 +1,12 @@
+light_mode unshaded;
+blend_mode add;
+
+void fragment()
+{
+    highp vec2 offset = UV2 * 2.0 - 1.0;
+    highp float radiusSquared = dot(offset, offset);
+    highp float broadHalo = exp(-radiusSquared * 3.2);
+    highp float brightCore = exp(-radiusSquared * 14.0);
+    highp float opacity = broadHalo * 0.58 + brightCore * 0.42;
+    COLOR = vec4(1.0, 1.0, 1.0, opacity);
+}

@@ -41,6 +41,9 @@
     - type: FireVisuals
       sprite: Objects/Misc/candles.rsi
       normalState: fire-big
+    - type: WH40KLightEffects
+      profile: Candle
+      emitterLayer: Fire
     - type: ToggleableVisuals
       spriteLayer: null
       inhandVisuals:
@@ -289,6 +292,9 @@
     color: "#e39c40"
     radius: 2.5
     power: 10
+  - type: WH40KLightEffects
+    profile: Candle
+    emitterLayer: Fire
 
 - type: entity
   name: magic red candle
