@@ -327,6 +327,9 @@ public abstract partial class SharedGunSystem : EntitySystem
             return new EntityCoordinates(gunUid, mountedGun.ShootOriginOffset);
         }
 
+        if (Transform(gunUid).ParentUid != user)
+            return Transform(gunUid).Coordinates;
+
         return Transform(user).Coordinates;
     }
 
