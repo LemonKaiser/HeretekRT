@@ -63,7 +63,7 @@
             - tool: Welding
               doAfter: 3
 
-- to: TablePlasteel
+        - to: TablePlasteel
           steps:
             - material: Plasteel
               amount: 1
@@ -191,7 +191,7 @@
             - tool: Anchoring
               doAfter: 1
 
-- node: TablePlasteel
+    - node: TablePlasteel
       entity: TablePlasteel
       edges:
         - to: TableFrame
