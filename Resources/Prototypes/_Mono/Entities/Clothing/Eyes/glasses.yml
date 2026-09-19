@@ -210,4 +210,5 @@
   - type: Tag
     tags:
     - PetWearable
+    - SafetyDepositBlacklist
     

@@ -11,9 +11,9 @@
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
-    maxIntensity: 75
+    maxIntensity: 60
     intensitySlope: 4
-    totalIntensity: 75
+    totalIntensity: 60
     maxTileBreak: 0
   - type: Projectile
     damage:
@@ -21,3 +21,36 @@
         Structural: 100
         Piercing: 45
     armorPenetration: 20
+
+- type: entity
+  id: Bullet35mmGrenadeStinger
+  name: stinger grenade
+  parent: BaseBulletTrigger
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    layers:
+    - state: grenade
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterRubber
+    capacity: 30
+  - type: ContainerContainer
+    containers:
+      cluster-payload: !type:Container
+  - type: FlashOnTrigger
+    range: 5
+  - type: SoundOnTrigger
+    sound:
+      path: "/Audio/_Mono/Weapons/Grenades/flashbang_explode_1.ogg" # Mono
+  - type: DeleteOnTrigger
+  - type: SpawnOnTrigger
+    proto: GrenadeFlashEffect
+  - type: Projectile
+    damage:
+      types:
+        Structural: 50
+        Blunt: 35 # smacks you to death with rubber
+    armorPenetration: 0
+  - type: StaminaDamageOnHit
+    damage: 60
