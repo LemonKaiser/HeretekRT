@@ -10,6 +10,8 @@
   components:
   - type: Transform
     anchored: true
+  - type: WallMount
+    arc: 210
   - type: Sprite
     sprite: _WH40K/Imported/Goobstation/Structures/Wallmounts/torch.rsi
     state: torch

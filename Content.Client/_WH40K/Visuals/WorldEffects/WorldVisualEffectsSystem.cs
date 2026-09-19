@@ -25,17 +25,17 @@ public sealed partial class WorldVisualEffectsSystem : EntitySystem
 
     private void UpdateGlow()
     {
-        if (!_config.GetCVar(CCVars.WH40KWorldGlow))
+        var enabled = _config.GetCVar(CCVars.WH40KWorldGlow);
+
+        // The overlay subscribes to IResourceCache.OnRsiLoaded and keeps a per-RSI geometry cache, so toggling
+        // the option must only flip the Enabled flag instead of recreating the overlay.
+        if (_sourceGlow == null)
         {
-            RemoveGlow();
-            return;
+            _sourceGlow = new LightSourceGlowOverlay();
+            _overlays.AddOverlay(_sourceGlow);
         }
 
-        if (_sourceGlow != null)
-            return;
-
-        _sourceGlow = new LightSourceGlowOverlay();
-        _overlays.AddOverlay(_sourceGlow);
+        _sourceGlow.Enabled = enabled;
     }
 
     private void UpdateShadows()

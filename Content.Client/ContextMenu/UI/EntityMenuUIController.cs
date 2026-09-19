@@ -52,6 +52,8 @@ namespace Content.Client.ContextMenu.UI
         [UISystemDependency] private readonly TransformSystem _xform = default!;
         [UISystemDependency] private readonly CombatModeSystem _combatMode = default!;
 
+        private EntityQuery<SpriteComponent> _spriteQuery;
+
         private bool _updating;
 
         /// <summary>
@@ -65,6 +67,7 @@ namespace Content.Client.ContextMenu.UI
         public void OnStateEntered(GameplayState state)
         {
             _updating = true;
+            _spriteQuery = _entityManager.GetEntityQuery<SpriteComponent>();
             _cfg.OnValueChanged(CCVars.EntityMenuGroupingType, OnGroupingChanged, true);
             _context.OnContextKeyEvent += OnKeyBindDown;
 
@@ -224,6 +227,14 @@ namespace Content.Client.ContextMenu.UI
 
                 if ((visibility & MenuVisibility.NoFov) == MenuVisibility.NoFov)
                     continue;
+
+                if ((visibility & MenuVisibility.Invisible) == 0
+                    && _spriteQuery.TryGetComponent(entity, out var sprite)
+                    && !sprite.Visible)
+                {
+                    RemoveEntity(entity);
+                    continue;
+                }
 
                 var pos = new MapCoordinates(_xform.GetWorldPosition(xform, xformQuery), xform.MapID);
 

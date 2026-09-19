@@ -3,13 +3,19 @@ blend_mode add;
 
 uniform sampler2D SCREEN_TEXTURE;
 
+highp float hashNoise(highp vec2 uv)
+{
+    return fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453123) - 0.5;
+}
+
 highp vec3 brightSample(highp vec2 screenUv, highp vec2 pixelOffset)
 {
     highp vec3 sampleColor = zTextureSpec(
         SCREEN_TEXTURE,
         screenUv + pixelOffset * SCREEN_PIXEL_SIZE).rgb;
     highp float peak = max(max(sampleColor.r, sampleColor.g), sampleColor.b);
-    highp float brightMask = smoothstep(0.32, 0.78, peak);
+    highp float dither = hashNoise(screenUv + pixelOffset * 7.31) * (1.0 / 255.0);
+    highp float brightMask = smoothstep(0.20, 0.88, peak + dither);
     return sampleColor * brightMask;
 }
 
@@ -19,6 +25,7 @@ void fragment()
 
     // One-pass 5x5 Gaussian bright-pass. The local quad keeps the cost proportional to the number of lamps,
     // while the weighted neighbourhood produces actual blur instead of shifted sprite copies.
+    // NOTE: wide sparse taps (e.g. a 3x3 kernel at +/-8 px) ghost-banded the image; keep the dense kernel.
     highp vec3 bloom = vec3(0.0);
     bloom += brightSample(screenUv, vec2(-8.0, -8.0)) * 0.0025;
     bloom += brightSample(screenUv, vec2(-4.0, -8.0)) * 0.0120;

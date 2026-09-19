@@ -6,7 +6,6 @@ using Content.Shared.Physics;
 using Content.Shared._WH40K.Visuals.WorldEffects;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
 using Robust.Client.Utility;
 using Robust.Shared.Enums;
 using Robust.Shared.Graphics.RSI;
@@ -15,6 +14,7 @@ using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Color = Robust.Shared.Maths.Color;
 
 namespace Content.Client._WH40K.Visuals.WorldEffects;
 
@@ -29,7 +29,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
     private const int RadialHazeRayCount = 24;
     private const float MountedRadialHazeArc = MathF.PI * 2f / 3f;
     private const float MountedSideBlockerMinDot = 0.342f; // cos(70 degrees), including collider margin.
-    private static readonly TimeSpan HazeCacheLifetime = TimeSpan.FromSeconds(0.2);
+    private static readonly TimeSpan HazeCacheLifetime = TimeSpan.FromSeconds(0.5);
     private static readonly ProtoId<ShaderPrototype> BloomShader = "WH40KLightSourceBloom";
     private static readonly ProtoId<ShaderPrototype> Shader = "WH40KLightSourceGlow";
     private static readonly ProtoId<ShaderPrototype> HazeShader = "WH40KDirectionalLightHaze";
@@ -37,7 +37,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private GlowGeometryCache _glowCache = default!;
     [Dependency] private IGameTiming _timing = default!;
 
     private readonly EntityLookupSystem _lookup;
@@ -49,13 +49,18 @@ public sealed partial class LightSourceGlowOverlay : Overlay
     private readonly ShaderInstance _radialHazeShader;
     private readonly HashSet<EntityUid> _candidates = new();
     private readonly List<GlowSource> _sources = new();
-    private readonly Dictionary<Texture, GlowGeometry> _geometryCache = new();
     private readonly Dictionary<EntityUid, CachedHazeMesh> _hazeCache = new();
     private readonly Dictionary<EntityUid, CachedRadialHazeMesh> _radialHazeCache = new();
     private readonly List<EntityUid> _staleHazeCache = new();
     private readonly DrawVertexUV2DColor[] _hazeVertices = new DrawVertexUV2DColor[HazeRayCount * 2];
     private readonly DrawVertexUV2DColor[] _radialHazeVertices = new DrawVertexUV2DColor[RadialHazeRayCount + 2];
     private TimeSpan _nextCacheSweep;
+
+    /// <summary>
+    /// Set by <see cref="WorldVisualEffectsSystem"/> from the graphics options. Toggling this never recreates the
+    /// overlay so that the glow geometry cache (owned by <see cref="GlowGeometryCache"/>) stays warm.
+    /// </summary>
+    public bool Enabled = true;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
     public override bool RequestScreenTexture => true;
@@ -75,7 +80,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        return args.MapId != MapId.Nullspace && args.Viewport.Eye != null;
+        return Enabled && args.MapId != MapId.Nullspace && args.Viewport.Eye != null;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -143,15 +148,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
                 textureDirection = sprite.DirectionOverride.Convert(state.RsiDirections);
 
             textureDirection = textureDirection.OffsetRsiDir(layer.DirOffset);
-            var texture = state?.GetFrame(textureDirection, layer.AnimationFrame) ?? layer.Texture;
-            if (texture == null)
-                continue;
-
-            if (!_geometryCache.TryGetValue(texture, out var geometry))
-            {
-                geometry = AnalyzeGlowTexture(state, textureDirection, layer.AnimationFrame);
-                _geometryCache.Add(texture, geometry);
-            }
+            var geometry = _glowCache.GetGlowGeometry(state, textureDirection, layer.AnimationFrame);
 
             if (!geometry.Visible)
                 continue;
@@ -696,106 +693,6 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         return Matrix3x2.Multiply(layerMatrix, spriteMatrix);
     }
 
-    private GlowGeometry AnalyzeGlowTexture(RSI.State? state, RsiDirection direction, int animationFrame)
-    {
-        if (state == null || state.StateId.Name == null)
-            return default;
-
-        var path = state.RSI.Path / $"{state.StateId.Name}.png";
-        if (!_resources.TryContentFileRead(path, out var stream))
-            return default;
-
-        using (stream)
-        {
-            if (!PngRgbaReader.TryRead(stream, out var image))
-                return default;
-
-            var frameWidth = state.Size.X;
-            var frameHeight = state.Size.Y;
-            var columns = image.Width / frameWidth;
-            // RSI stores every direction's animation frames contiguously in the source sheet.
-            var frameIndex = (int) direction * state.DelayCount + animationFrame % state.DelayCount;
-            var frameX = frameIndex % columns * frameWidth;
-            var frameY = frameIndex / columns * frameHeight;
-
-            if (frameX + frameWidth > image.Width || frameY + frameHeight > image.Height)
-                return default;
-
-            return AnalyzeGlowFrame(image, frameX, frameY, frameWidth, frameHeight);
-        }
-    }
-
-    private static GlowGeometry AnalyzeGlowFrame(
-        PngRgbaImage image,
-        int frameX,
-        int frameY,
-        int frameWidth,
-        int frameHeight)
-    {
-        var minX = frameWidth;
-        var minY = frameHeight;
-        var maxX = -1;
-        var maxY = -1;
-        var weightedX = 0f;
-        var weightedY = 0f;
-        var totalWeight = 0f;
-
-        for (var y = 0; y < frameHeight; y++)
-        {
-            for (var x = 0; x < frameWidth; x++)
-            {
-                var pixel = image.GetPixel(frameX + x, frameY + y);
-                var weight = pixel.A / 255f * Math.Max(pixel.R, Math.Max(pixel.G, pixel.B)) / 255f;
-                if (weight <= 0.01f)
-                    continue;
-
-                minX = Math.Min(minX, x);
-                minY = Math.Min(minY, y);
-                maxX = Math.Max(maxX, x);
-                maxY = Math.Max(maxY, y);
-                weightedX += (x + 0.5f) * weight;
-                weightedY += (y + 0.5f) * weight;
-                totalWeight += weight;
-            }
-        }
-
-        if (totalWeight <= 0f)
-            return default;
-
-        var pixelCenter = new Vector2(weightedX, weightedY) / totalWeight;
-        var center = new Vector2(
-            pixelCenter.X - frameWidth / 2f,
-            frameHeight / 2f - pixelCenter.Y) / EyeManager.PixelsPerMeter;
-        var pixelWidth = maxX - minX + 1;
-        var pixelHeight = maxY - minY + 1;
-        var shortAxis = Math.Min(pixelWidth, pixelHeight);
-        var linearEmitter = shortAxis > 0 && Math.Max(pixelWidth, pixelHeight) / (float) shortAxis >= 2f;
-        var sourceSize = new Vector2(pixelWidth, pixelHeight) / EyeManager.PixelsPerMeter;
-        Vector2 glowSize;
-        Vector2 bloomSize;
-        if (linearEmitter)
-        {
-            glowSize = Vector2.Clamp(
-                sourceSize + new Vector2(0.5f, 0.42f),
-                new Vector2(0.55f, 0.35f),
-                new Vector2(1.35f, 0.78f));
-            bloomSize = Vector2.Clamp(
-                glowSize + new Vector2(0.28f, 0.22f),
-                new Vector2(0.75f, 0.55f),
-                new Vector2(1.55f, 1f));
-        }
-        else
-        {
-            // Round lamps must remain round even if their luminous sprite has an asymmetric pixel bounding box.
-            var diameter = Math.Clamp(Math.Max(sourceSize.X, sourceSize.Y) + 0.48f, 0.52f, 0.82f);
-            var bloomDiameter = Math.Clamp(diameter + 0.28f, 0.72f, 1.08f);
-            glowSize = new Vector2(diameter);
-            bloomSize = new Vector2(bloomDiameter);
-        }
-
-        return new GlowGeometry(true, center, sourceSize, glowSize, bloomSize, linearEmitter);
-    }
-
     protected override void DisposeBehavior()
     {
         _radialHazeShader.Dispose();
@@ -821,14 +718,6 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         float RadialHazeRadius,
         Color HazeColor,
         float Distance);
-
-    private readonly record struct GlowGeometry(
-        bool Visible,
-        Vector2 Center,
-        Vector2 SourceSize,
-        Vector2 GlowSize,
-        Vector2 BloomSize,
-        bool LinearEmitter);
 
     private enum HazeShape : byte
     {

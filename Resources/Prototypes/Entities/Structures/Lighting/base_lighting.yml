@@ -16,6 +16,8 @@
         collection: GlassSmash
   - type: Transform
     anchored: true
+  - type: WallMount
+    arc: 210
   - type: Clickable
   - type: InteractionOutline
   - type: Construction

@@ -28,6 +28,7 @@ using Content.Shared.Players.RateLimiting;
 using Content.Client._Mono.Company; // Mono
 using Content.Client._Mono.MonoCoins; // Mono
 using Content.Client._WH40K.Administration.ScreenCheck;
+using Content.Client._WH40K.Visuals.WorldEffects;
 
 namespace Content.Client.IoC
 {
@@ -47,6 +48,7 @@ namespace Content.Client.IoC
             collection.Register<ScreenCheckClientManager>();
             collection.Register<FullscreenHook, FullscreenHook>();
             collection.Register<IClickMapManager, ClickMapManager>();
+            collection.Register<GlowGeometryCache>();
             collection.Register<IClientAdminManager, ClientAdminManager>();
             collection.Register<ISharedAdminManager, ClientAdminManager>();
             collection.Register<EuiManager, EuiManager>();

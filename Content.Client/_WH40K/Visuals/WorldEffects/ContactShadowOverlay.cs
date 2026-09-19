@@ -1,17 +1,9 @@
 using System.Numerics;
-using Content.Shared.Atmos.Components;
 using Content.Shared.Buckle.Components;
-using Content.Shared.Doors.Components;
-using Content.Shared.Gravity;
-using Content.Shared.Item;
-using Content.Shared.Light.Components;
 using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
-using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Stealth.Components;
 using Content.Shared.Standing;
-using Content.Shared.SubFloor;
-using Content.Shared.Wall;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
@@ -22,7 +14,7 @@ using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
 namespace Content.Client._WH40K.Visuals.WorldEffects;
 
 /// <summary>
-/// Procedural contact shadows below mobs and floor-standing objects, below sprites and the normal FOV mask.
+/// Procedural contact shadows below mobs, below sprites and the normal FOV mask.
 /// </summary>
 public sealed partial class ContactShadowOverlay : Overlay
 {
@@ -36,7 +28,6 @@ public sealed partial class ContactShadowOverlay : Overlay
     private readonly SharedTransformSystem _transform;
     private readonly SpriteSystem _sprites;
     private readonly TurfSystem _turf;
-    private readonly SharedGravitySystem _gravity;
     private readonly ShaderInstance _shader;
     private readonly HashSet<EntityUid> _candidates = new();
     private readonly List<Shadow> _shadows = new();
@@ -50,7 +41,6 @@ public sealed partial class ContactShadowOverlay : Overlay
         _transform = _entities.System<SharedTransformSystem>();
         _sprites = _entities.System<SpriteSystem>();
         _turf = _entities.System<TurfSystem>();
-        _gravity = _entities.System<SharedGravitySystem>();
         _shader = _prototypes.Index(Shader).InstanceUnique();
         // Above floor details, below every mob draw depth.
         ZIndex = (int) DrawDepth.Puddles + 1;
@@ -78,31 +68,20 @@ public sealed partial class ContactShadowOverlay : Overlay
                 continue;
 
             var isMob = _entities.HasComponent<MobStateComponent>(uid);
-            var isGasTank = _entities.HasComponent<GasTankComponent>(uid);
-            var isFloorObject = _entities.HasComponent<PullableComponent>(uid) &&
-                                !_entities.HasComponent<ItemComponent>(uid);
-
-            if (!isMob && !isFloorObject && !isGasTank)
+            if (!isMob)
                 continue;
 
-            // Pullable is shared by nearly every floor structure, including some things that are actually part of
-            // the wall or floor. Keep only objects that can visually stand on the tile.
-            if (!isMob && (_entities.HasComponent<DoorComponent>(uid) ||
-                           _entities.HasComponent<WallMountComponent>(uid) ||
-                           _entities.HasComponent<IsRoofComponent>(uid) ||
-                           _entities.HasComponent<SubFloorHideComponent>(uid)))
+            if (_entities.TryGetComponent<BuckleComponent>(uid, out var buckle) && buckle.Buckled)
                 continue;
 
-            if ((!xform.Anchored && _gravity.IsWeightless(uid)) ||
-                (isMob && _entities.TryGetComponent<BuckleComponent>(uid, out var buckle) && buckle.Buckled) ||
-                !_turf.TryGetTileRef(xform.Coordinates, out var tile) || _turf.IsSpace(tile.Value))
+            if (!_turf.TryGetTileRef(xform.Coordinates, out var tile) || _turf.IsSpace(tile.Value))
                 continue;
 
             var bounds = _sprites.GetLocalBounds((uid, sprite));
             if (bounds.Width <= 0f || bounds.Height <= 0f)
                 continue;
 
-            var lying = isMob && _entities.TryGetComponent<StandingStateComponent>(uid, out var standing) &&
+            var lying = _entities.TryGetComponent<StandingStateComponent>(uid, out var standing) &&
                         standing.CurrentState is StandingState.Lying or StandingState.GettingUp;
             var position = _transform.GetWorldPosition(xform);
             var worldRotation = _transform.GetWorldRotation(xform);
@@ -135,18 +114,6 @@ public sealed partial class ContactShadowOverlay : Overlay
                 size = new Vector2(length, thickness);
                 shadowRotation = spriteRotation + Angle.FromDegrees(90);
             }
-            else if (!isMob)
-            {
-                var widthScale = isGasTank ? 0.48f : 0.74f;
-                var maximumWidth = isGasTank ? 0.58f : 1.8f;
-                var width = Math.Clamp(bounds.Width * widthScale, 0.24f, maximumWidth);
-                var height = Math.Clamp(bounds.Height * (isGasTank ? 0.12f : 0.15f), 0.1f, 0.3f);
-                var localCenter = new Vector2(bounds.Center.X, bounds.Bottom - height * 0.04f);
-
-                center = spritePosition + spriteRotation.RotateVec(localCenter);
-                size = new Vector2(width, height);
-                shadowRotation = spriteRotation;
-            }
             else
             {
                 var width = Math.Clamp(bounds.Width * 0.62f, 0.32f, 1.15f);
@@ -159,7 +126,7 @@ public sealed partial class ContactShadowOverlay : Overlay
             }
 
             _shadows.Add(new Shadow(uid, center, size, shadowRotation,
-                sprite.Color.A * (lying ? 0.42f : isMob ? 0.58f : isGasTank ? 0.38f : 0.48f),
+                sprite.Color.A * (lying ? 0.42f : 0.58f),
                 Vector2.DistanceSquared(position, args.WorldAABB.Center)));
         }
 
