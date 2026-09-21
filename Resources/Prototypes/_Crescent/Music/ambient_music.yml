@@ -47,7 +47,7 @@
    - /Audio/_WH40K/Ambient/Koronus/space2.ogg
    - /Audio/_WH40K/Ambient/Koronus/space3.ogg
    - /Audio/_WH40K/Ambient/Koronus/space4.ogg
-   - /Audio/_WH40K/Ambient/Koronus/space5.ogg
+   # - /Audio/_WH40K/Ambient/Koronus/space5.ogg # файл отсутствует в Resources/Audio/_WH40K/Ambient/Koronus/
    - /Audio/_WH40K/Ambient/Koronus/space6.ogg
    - /Audio/_WH40K/Ambient/Koronus/space7.ogg
    - /Audio/_WH40K/Ambient/Koronus/space8.ogg
@@ -129,7 +129,7 @@
   id: BiomeFarReachesIV
   sound:
     collection: BiomeFarReachesIV
-    
+
 - type: soundCollection #I don't know why reusing the far reaches iii soundcollection breaks so here we are
   id: BiomeFarReachesIV
   files:

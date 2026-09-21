@@ -132,6 +132,7 @@ public sealed class HandTests
         var storage = server.System<EntityStorageSystem>();
         await server.WaitPost(() =>
         {
+            tSys.PlaceNextTo(player, box);
             storage.OpenStorage(box);
             storage.CloseStorage(box);
         });
