@@ -55,6 +55,12 @@ public sealed partial class ProjectileSystem : SharedProjectileSystem
         // Call base implementation to handle damage application and other effects
         var modifiedDamage = base.ProjectileCollide(projectile, target, collisionCoordinates, predicted);
 
+        if (component.ImpactCancelled)
+        {
+            component.ImpactCancelled = false;
+            return null;
+        }
+
         if (modifiedDamage == null)
         {
             // mono start

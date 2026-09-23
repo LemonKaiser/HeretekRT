@@ -128,6 +128,8 @@ public sealed partial class LobbyGui : UIScreen
     private float _responsiveLeftInset = 72f;
     private float _lastResponsiveViewportWidth = -1f;
     private float _lastOnboardingViewportWidth = -1f;
+    private float _lastOnboardingViewportHeight = -1f;
+    private Vector2 _lastOnboardingViewportSize = Vector2.Zero;
     private float _lastOnboardingShellViewportWidth = -1f;
     private Vector2 _lastOnboardingHeaderSize = Vector2.Zero;
     private bool _onboardingShellLayoutDirty = true;
@@ -186,6 +188,7 @@ public sealed partial class LobbyGui : UIScreen
         SetAnchorPreset(OnboardingState, LayoutPreset.Wide);
         SetAnchorPreset(OnboardingBackdropTexture, LayoutPreset.Wide);
         SetAnchorPreset(OnboardingBackdropShade, LayoutPreset.Wide);
+        SetAnchorPreset(OnboardingViewport, LayoutPreset.Wide);
         SetAnchorPreset(OnboardingFade, LayoutPreset.Wide);
         SetAnchorPreset(Background, LayoutPreset.Wide);
         SetAnchorPreset(BackdropEffects, LayoutPreset.Wide);
@@ -2920,9 +2923,23 @@ public sealed partial class LobbyGui : UIScreen
 
         if (OnboardingState.Visible)
         {
-            UpdateOnboardingShellLayout(viewportWidth);
-            UpdateOnboardingResponsiveLayout(viewportWidth);
+            var onboardingViewport = UpdateOnboardingViewportBounds();
+            UpdateOnboardingShellLayout(onboardingViewport.X);
+            UpdateOnboardingResponsiveLayout(onboardingViewport.X, onboardingViewport.Y);
         }
+    }
+
+    private Vector2 UpdateOnboardingViewportBounds()
+    {
+        var rootSize = Root?.Size ?? Size;
+        if (rootSize.X > 1f && rootSize.Y > 1f &&
+            Vector2.DistanceSquared(rootSize, _lastOnboardingViewportSize) >= 0.25f)
+        {
+            OnboardingViewport.SetSize = rootSize;
+            _lastOnboardingViewportSize = rootSize;
+        }
+
+        return rootSize;
     }
 
     private void UpdateOnboardingShellLayout(float viewportWidth)
@@ -2935,12 +2952,19 @@ public sealed partial class LobbyGui : UIScreen
 
         var compactLayout = viewportWidth <= 1500f;
         var shellWidth = compactLayout
-            ? Math.Max(0f, viewportWidth - 36f)
+            ? Math.Max(0f, viewportWidth - (viewportWidth < 700f ? 32f : 36f))
             : Math.Min(1480f, Math.Max(0f, viewportWidth - 72f));
-        var shellPadding = compactLayout ? 16f : 20f;
+        var shellPadding = viewportWidth < 700f ? 8f : compactLayout ? 16f : 20f;
 
         if (viewportChanged || _onboardingShellLayoutDirty)
             OnboardingShell.SetWidth = shellWidth;
+        OnboardingHeader.SetHeight = viewportWidth < 800f ? 100f : 62f;
+        var showTitleOrnaments = viewportWidth >= 800f;
+        OnboardingTitleLeftOrnament.Visible = showTitleOrnaments;
+        OnboardingTitleRightOrnament.Visible = showTitleOrnaments;
+        OnboardingTitle.FontOverride = viewportWidth < 520f
+            ? _onboardingSectionTitleFont
+            : _onboardingShellTitleFont;
         // The header lives in a LayoutContainer whose final size is not known while
         // the XAML tree is constructed. Re-apply these presets after the shell has
         // its responsive width so the lockup is centered in the actual header.
@@ -2977,8 +3001,11 @@ public sealed partial class LobbyGui : UIScreen
         SetGrowVertical(OnboardingTitleLockup, GrowDirection.Constrain);
         OnboardingTitleLockup.Measure(new Vector2(float.PositiveInfinity));
         var titleSize = OnboardingTitleLockup.DesiredSize;
+        OnboardingCancelButton.Measure(new Vector2(float.PositiveInfinity));
+        var cancelSize = OnboardingCancelButton.DesiredSize;
+        var stackHeader = header.Size.X < titleSize.X + cancelSize.X + 24f;
         var titleLeft = MathF.Max(0f, (header.Size.X - titleSize.X) * 0.5f);
-        var titleTop = MathF.Max(0f, (header.Size.Y - titleSize.Y) * 0.5f - 12f);
+        var titleTop = stackHeader ? 4f : MathF.Max(0f, (header.Size.Y - titleSize.Y) * 0.5f);
         SetMarginLeft(OnboardingTitleLockup, titleLeft);
         SetMarginTop(OnboardingTitleLockup, titleTop);
         SetMarginRight(OnboardingTitleLockup, titleLeft + titleSize.X);
@@ -2987,65 +3014,79 @@ public sealed partial class LobbyGui : UIScreen
         SetAnchorPreset(OnboardingCancelButton, LayoutPreset.TopLeft);
         SetGrowHorizontal(OnboardingCancelButton, GrowDirection.Constrain);
         SetGrowVertical(OnboardingCancelButton, GrowDirection.Constrain);
-        OnboardingCancelButton.Measure(new Vector2(float.PositiveInfinity));
-        var cancelSize = OnboardingCancelButton.DesiredSize;
-        var cancelLeft = MathF.Max(0f, header.Size.X - cancelSize.X - 2f);
-        var cancelTop = MathF.Max(0f, (header.Size.Y - cancelSize.Y) * 0.5f - 12f);
+        var cancelLeft = stackHeader
+            ? MathF.Max(0f, (header.Size.X - cancelSize.X) * 0.5f)
+            : MathF.Max(0f, header.Size.X - cancelSize.X - 2f);
+        var cancelTop = stackHeader
+            ? titleTop + titleSize.Y + 8f
+            : MathF.Max(0f, (header.Size.Y - cancelSize.Y) * 0.5f);
         SetMarginLeft(OnboardingCancelButton, cancelLeft);
         SetMarginTop(OnboardingCancelButton, cancelTop);
         SetMarginRight(OnboardingCancelButton, cancelLeft + cancelSize.X);
         SetMarginBottom(OnboardingCancelButton, cancelTop + cancelSize.Y);
     }
 
-    private void UpdateOnboardingResponsiveLayout(float viewportWidth)
+    private void UpdateOnboardingResponsiveLayout(float viewportWidth, float viewportHeight)
     {
         var resultSelected = _selectedOnboardingTab == 6;
         if (MathF.Abs(viewportWidth - _lastOnboardingViewportWidth) < 0.5f &&
+            MathF.Abs(viewportHeight - _lastOnboardingViewportHeight) < 0.5f &&
             resultSelected == _lastOnboardingResultLayout)
         {
             return;
         }
 
         _lastOnboardingViewportWidth = viewportWidth;
+        _lastOnboardingViewportHeight = viewportHeight;
         _lastOnboardingResultLayout = resultSelected;
 
-        // The standard layout is 300 / 760 / 252 (and 1078 / 252 on the result page).
-        // At 1500px it uses 270 / 1fr / 224 so the central page stays readable
-        // instead of squeezing itself to a desktop-width fixed column.
         var compactLayout = viewportWidth <= 1500f;
         var gap = compactLayout ? 14f : 18f;
         var navWidth = compactLayout ? 270f : 300f;
         var previewWidth = compactLayout ? 224f : 252f;
         var availableWidth = Math.Max(0f, _onboardingWorkspaceWidth);
-        var minimumContentWidth = Math.Min(compactLayout ? 560f : 620f, availableWidth);
-        var showNavigation = !resultSelected &&
-                             availableWidth >= minimumContentWidth + navWidth + gap;
-        var showPreview = availableWidth >= minimumContentWidth +
-            (showNavigation ? navWidth + gap : 0f) + previewWidth + gap;
-        var sideWidth = (showNavigation ? navWidth + gap : 0f) +
-                        (showPreview ? previewWidth + gap : 0f);
-        var preferredContentWidth = compactLayout
-            ? availableWidth - sideWidth
-            : resultSelected ? 1078f : 760f;
-        var contentWidth = Math.Clamp(availableWidth - sideWidth, minimumContentWidth, preferredContentWidth);
+        var sideWidth = (resultSelected ? 0f : navWidth + gap) + previewWidth + gap;
+        var stacked = availableWidth < sideWidth + (compactLayout ? 560f : 620f);
+        var contentWidth = stacked
+            ? availableWidth
+            : Math.Min(availableWidth - sideWidth, compactLayout ? availableWidth : resultSelected ? 1078f : 760f);
+        var pageHeight = Math.Clamp(viewportHeight - 240f, 380f, 790f);
+        var navigationHeight = stacked ? 270f : pageHeight;
 
-        OnboardingNavigationPanel.Visible = showNavigation;
-        OnboardingPreviewPanel.Visible = showPreview;
-        OnboardingNavigationPanel.SetWidth = navWidth;
-        OnboardingPreviewPanel.SetWidth = previewWidth;
+        OnboardingWorkspaceColumns.Orientation = stacked
+            ? BoxContainer.LayoutOrientation.Vertical
+            : BoxContainer.LayoutOrientation.Horizontal;
+        OnboardingWorkspaceColumns.SeparationOverride = compactLayout ? 14 : 18;
+        OnboardingNavigationPanel.Visible = !resultSelected;
+        OnboardingPreviewPanel.Visible = true;
+        OnboardingNavigationPanel.SetWidth = stacked ? availableWidth : navWidth;
+        OnboardingNavigationPanel.SetHeight = navigationHeight;
+        OnboardingAppearanceNavigationScroll.SetHeight = Math.Max(160f, navigationHeight - 100f);
+        OnboardingPreviewPanel.SetWidth = stacked ? availableWidth : previewWidth;
+        OnboardingPreviewPanel.SetHeight = stacked ? 350f : pageHeight;
         OnboardingContentPanel.SetWidth = contentWidth;
+        OnboardingContentPanel.SetHeight = pageHeight;
+        var padding = contentWidth < 620f ? 12f : 26f;
+        if (OnboardingContentPanel.PanelOverride is OnboardingPageFrameStyleBox contentStyle)
+        {
+            contentStyle.ContentMarginLeftOverride = padding;
+            contentStyle.ContentMarginRightOverride = padding;
+        }
+        OnboardingResultPage.SetCompactLayout(contentWidth - padding * 2f);
     }
 
     private void RefreshOnboardingResponsiveLayout()
     {
-        var viewportWidth = PixelSize.X / MathF.Max(UIScale, 0.01f);
+        var viewport = UpdateOnboardingViewportBounds();
+        var viewportWidth = viewport.X;
+        var viewportHeight = viewport.Y;
         if (viewportWidth <= 1f)
             return;
 
         _onboardingShellLayoutDirty = true;
         UpdateOnboardingShellLayout(viewportWidth);
         _lastOnboardingViewportWidth = -1f;
-        UpdateOnboardingResponsiveLayout(viewportWidth);
+        UpdateOnboardingResponsiveLayout(viewportWidth, viewportHeight);
     }
 
     private static float EaseTimeline(float elapsed, float start, float duration)
@@ -3100,6 +3141,7 @@ public sealed partial class LobbyGui : UIScreen
             case LobbyGuiState.Onboarding:
                 OnboardingState.Visible = true;
                 SetChatPanelAvailable(false);
+                RefreshOnboardingResponsiveLayout();
                 break;
         }
     }

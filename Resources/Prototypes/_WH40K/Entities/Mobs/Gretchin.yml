@@ -19,6 +19,8 @@
     description: ghost-role-information-monkey-description
     rules: ghost-role-information-nonantagonist-rules
   - type: GhostTakeoverAvailable
+  - type: HumanoidAppearance
+    species: Gretchin
   - type: Sprite
     drawdepth: Mobs
     layers:
@@ -36,3 +38,21 @@
     - map: [ "outerClothing" ]
     - map: [ "mask" ]
     - map: [ "head" ]
+
+- type: species
+  id: Gretchin
+  name: ent-MobGretchin
+  roundStart: false
+  prototype: MobGretchin
+  sprites: MobGretchinSprites
+  markingLimits: MobGretchinMarkingLimits
+  dollPrototype: MobGretchin
+  skinColoration: Hues
+
+- type: speciesBaseSprites
+  id: MobGretchinSprites
+  sprites: {}
+
+- type: markingPoints
+  id: MobGretchinMarkingLimits
+  points: {}

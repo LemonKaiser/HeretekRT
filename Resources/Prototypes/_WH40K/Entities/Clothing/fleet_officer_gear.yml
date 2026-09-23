@@ -70,7 +70,7 @@
       - state: equipped-HELMET
 
 - type: entity
-  parent: ClothingBeltBase
+  parent: ClothingBeltStorageBase
   id: ClothingBeltImperialFleetOfficer
   suffix: WH40K, Имперский Военный Флот
   components:

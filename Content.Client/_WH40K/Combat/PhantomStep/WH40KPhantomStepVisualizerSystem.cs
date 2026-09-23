@@ -43,7 +43,7 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         if (!Exists(source) || !start.IsValid(EntityManager) || !end.IsValid(EntityManager))
             return;
 
-        if (!TryComp(source, out SpriteComponent? sourceSprite))
+        if (!HasComp<SpriteComponent>(source))
             return;
 
         var startMap = _transform.ToMapCoordinates(start);
@@ -82,7 +82,8 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
 
             void SpawnClone()
             {
-                SpawnTrailClone(source, direction, normal, shaderPrototype, trailIndex, normalized, lifetime, duration);
+                var position = new MapCoordinates(startMap.Position + delta * normalized, startMap.MapId);
+                SpawnTrailClone(source, position, direction, normal, shaderPrototype, trailIndex, normalized, lifetime, duration);
             }
 
             if (spawnDelay <= 0f)
@@ -94,6 +95,7 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
 
     private void SpawnTrailClone(
         EntityUid source,
+        MapCoordinates position,
         Vector2 direction,
         Vector2 normal,
         ShaderPrototype shaderPrototype,
@@ -105,7 +107,7 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         if (!Exists(source) || !TryComp(source, out SpriteComponent? sourceSprite))
             return;
 
-        var clone = Spawn("clientsideclone", Transform(source).Coordinates);
+        var clone = Spawn("clientsideclone", _transform.ToCoordinates(position));
         var cloneSprite = EnsureComp<SpriteComponent>(clone);
 
         _sprite.CopySprite((source, sourceSprite), (clone, cloneSprite));

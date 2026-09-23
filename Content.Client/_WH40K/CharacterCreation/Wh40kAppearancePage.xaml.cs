@@ -32,7 +32,8 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
     [Dependency] private IResourceCache _resourceCache = default!;
     [Dependency] private IEntityManager _entityManager = default!;
 
-    private const int PortraitGridColumns = 5;
+    private const int MaximumPortraitGridColumns = 5;
+    private const float MinimumPortraitCardWidth = 115f;
     private const float PortraitGridHorizontalSeparation = 10f;
     private const float PortraitAspectRatio = 336f / 260f;
     private const float PortraitChoiceBadgeHeight = 24f;
@@ -159,6 +160,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         FlavorTextSection.Visible = false;
 
         PortraitGrid.OnResized += UpdatePortraitCardSizing;
+        OnResized += UpdateAppearanceLayout;
 
         RefreshSpecies();
         SelectSection(Wh40kAppearanceSection.Portraits);
@@ -782,20 +784,25 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         UpdatePortraitStyles();
     }
 
-    /// <summary>
-    /// Uses five fractional portrait columns. The old fixed-width
-    /// cards gave the grid a 700px minimum and let it escape the onboarding frame.
-    /// The grid now owns their width and this preserves the original portrait ratio.
-    /// </summary>
     private void UpdatePortraitCardSizing()
     {
-        var gridWidth = PortraitGrid.Width;
-        if (gridWidth <= 0f)
+        // The grid can initially report the width of five fixed-size cards, even when
+        // its scroll viewport is narrower. The page width is the actual constraint.
+        var gridWidth = MathF.Min(PortraitGrid.Width, Width - 12f);
+        if (gridWidth <= 0f || _portraits.Count == 0)
             return;
+
+        var columns = Math.Clamp(
+            (int) MathF.Floor((gridWidth + PortraitGridHorizontalSeparation) /
+                              (MinimumPortraitCardWidth + PortraitGridHorizontalSeparation)),
+            1,
+            MaximumPortraitGridColumns);
+        if (PortraitGrid.Columns != columns)
+            PortraitGrid.Columns = columns;
 
         var cardWidth = MathF.Max(
             1f,
-            (gridWidth - PortraitGridHorizontalSeparation * (PortraitGridColumns - 1)) / PortraitGridColumns);
+            (gridWidth - PortraitGridHorizontalSeparation * (columns - 1)) / columns);
         var cardHeight = MathF.Round(cardWidth * PortraitAspectRatio);
 
         foreach (var portrait in _portraits)
@@ -808,6 +815,14 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
             portrait.Card.SetSize = new Vector2(cardWidth, cardHeight);
         }
+    }
+
+    private void UpdateAppearanceLayout()
+    {
+        HairPickers.Orientation = Width < 520f
+            ? BoxContainer.LayoutOrientation.Vertical
+            : BoxContainer.LayoutOrientation.Horizontal;
+        UpdatePortraitCardSizing();
     }
 
     private void SelectPortrait(PortraitPresentation portrait)

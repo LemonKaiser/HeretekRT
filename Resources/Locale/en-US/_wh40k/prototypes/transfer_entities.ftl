@@ -3263,20 +3263,18 @@ ent-ClothingBackpackAstartesAquilaRaptorsPowerpack = Raptors Chapter Aquila powe
     .desc = A Mk.VII Aquila-pattern helmet in the muted livery of the Raptors Chapter. Its autosenses serve the patient hunter in void and shadow alike.
 
 ent-ClothingBeltImperialFleetOfficer = Imperial Navy officer's dress belt
-    .desc = A gold-trimmed cap that signals command authority from the bridge to the lowest gun deck.
+    .desc = A formal belt with a polished buckle and gold trim, with room for an officer's essential gear.
 
 ent-ClothingHeadHatImperialCitizen = hive citizen's cap
     .desc = Durable workwear for docks and manufactorums. It has neither armor nor a vacuum seal.
 
 ent-ClothingHeadHatImperialFleetOfficer = Imperial Navy officer's peaked cap
-    .desc = A formal greatcoat of the Imperial Navy. Fold it in hand to wear it as a mantle around the neck, leaving the armour slot free.
-    .desc = A dark, sharply tailored uniform whose gold trim is meant to be seen before its wearer speaks.
+    .desc = A gold-trimmed cap that signals command authority from the bridge to the lowest gun deck.
 
 ent-ClothingHeadHelmetAstartesAquilaRaptors = Raptors Chapter Aquila helmet
 
 ent-ClothingHeadHelmetLithosMining = "Lithos" mining helmet
     .desc = A hard-wearing miner's helmet with a lamp for dust-choked tunnels and a lining that keeps out more than falling stone.
-    .desc = A formal belt with a polished buckle, worn by officers who must look composed while the void tries to kill them.
 
 ent-ClothingHeadHoodImperialPilgrim = Imperial pilgrim's hood
     .desc = A modest hood that keeps dust and unwelcome attention away from a pilgrim's face.
@@ -3291,6 +3289,7 @@ ent-ClothingOuterArmorLithosMining = "Lithos" mining carapace
 ent-ClothingOuterCoatImperialCitizen = hive citizen's coat
 
 ent-ClothingOuterCoatImperialFleetOfficer = Imperial Navy officer's greatcoat
+    .desc = A formal greatcoat of the Imperial Navy. Fold it in hand to wear it as a mantle around the neck, leaving the armour slot free.
 
 ent-ClothingOuterRobeImperialPilgrim = Imperial pilgrim's robe
     .desc = A plain robe worn thin by dust roads, shrine stairs and long prayers to the God-Emperor.
@@ -3307,6 +3306,7 @@ ent-ClothingUniformJumpsuitImperialCitizenVest = hive citizen's vest
     .desc = A simple shirt and trousers made for everyday life in the cramped quarters of a hive.
 
 ent-ClothingUniformJumpsuitImperialFleetOfficer = Imperial Navy officer's uniform
+    .desc = A dark, sharply tailored uniform whose gold trim is meant to be seen before its wearer speaks.
 
 ent-WH40KBarrelBioWaste = bio-waste barrel
     .desc = A compact reservoir for transporting liquids through the manufactorum. It can stop incoming fire.

@@ -23,4 +23,10 @@ public sealed partial class SectorServicePrototype : IPrototype
     /// </summary>
     [DataField]
     public ComponentRegistry Components { get; private set; } = new();
+
+    /// <summary>
+    /// Game preset IDs for which this service should not be registered.
+    /// </summary>
+    [DataField]
+    public List<string> ExcludedPresets { get; private set; } = new();
 }

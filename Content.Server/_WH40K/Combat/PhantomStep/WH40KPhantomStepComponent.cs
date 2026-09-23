@@ -13,7 +13,7 @@ public sealed partial class WH40KPhantomStepComponent : Component
     public bool DodgeRanged = true;
 
     [DataField]
-    public bool DodgeMelee;
+    public bool DodgeMelee = true;
 
     [DataField]
     public int MaxCharges = 1;
@@ -34,12 +34,6 @@ public sealed partial class WH40KPhantomStepComponent : Component
     public int MaxDistance = 3;
 
     [DataField]
-    public TimeSpan Invulnerability = TimeSpan.FromSeconds(0.25);
-
-    [ViewVariables]
-    public TimeSpan InvulnerableUntil = TimeSpan.Zero;
-
-    [DataField]
     public TimeSpan DashDuration = TimeSpan.FromSeconds(0.12);
 
     [DataField]
@@ -47,9 +41,6 @@ public sealed partial class WH40KPhantomStepComponent : Component
 
     [DataField]
     public TimeSpan TrailLifetime = TimeSpan.FromSeconds(0.32);
-
-    [DataField]
-    public EntProtoId AfterimagePrototype = "WH40KPhantomStepAfterimage";
 
     [DataField]
     public EntProtoId ToggleAction = "ActionWH40KTogglePhantomStep";
@@ -74,4 +65,16 @@ public sealed partial class WH40KPhantomStepComponent : Component
 
     [ViewVariables]
     public EntityCoordinates DashEndCoordinates = EntityCoordinates.Invalid;
+
+    [ViewVariables]
+    public EntityUid? DodgedProjectile;
+
+    [ViewVariables]
+    public TimeSpan DodgedProjectileUntil;
+
+    [ViewVariables]
+    public EntityUid? PendingMeleeSource;
+
+    [ViewVariables]
+    public TimeSpan PendingMeleeAt;
 }

@@ -1,3 +1,4 @@
+using Content.Server.GameTicking;
 using Content.Shared._NF.SectorServices.Prototypes;
 using Content.Shared.GameTicking;
 using JetBrains.Annotations;
@@ -15,6 +16,7 @@ public sealed partial class SectorServiceSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private GameTicker _gameTicker = default!;
 
     [ViewVariables(VVAccess.ReadOnly)]
     private EntityUid _entity = EntityUid.Invalid; // The station entity that's storing our services.
@@ -38,6 +40,9 @@ public sealed partial class SectorServiceSystem : EntitySystem
 
             foreach (var servicePrototype in _prototypeManager.EnumeratePrototypes<SectorServicePrototype>())
             {
+                if (_gameTicker.CurrentPreset is { } preset && servicePrototype.ExcludedPresets.Contains(preset.ID))
+                    continue;
+
                 Log.Debug($"Adding components for service {servicePrototype.ID}");
                 _entityManager.AddComponents(_entity, servicePrototype.Components, false); // removeExisting false - do not override existing components.
             }

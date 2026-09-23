@@ -83,8 +83,8 @@ public sealed class Wh40kCharacterStatsSpawnSystem : EntitySystem
         var dodgeCharges = GetPhantomStepCharges(stats.Agility);
         if (dodgeCharges > 0)
             _phantomStep.ConfigureForCharacter(uid, dodgeCharges);
-        else
-            RemComp<WH40KPhantomStepComponent>(uid);
+        else if (HasComp<WH40KPhantomStepComponent>(uid))
+            _phantomStep.ConfigureForCharacter(uid, 0);
 
         ApplyEnduranceDelta(uid, GetEnduranceEffect(stats.Endurance) - previousEnduranceEffect);
         _movementSpeed.RefreshMovementSpeedModifiers(uid);

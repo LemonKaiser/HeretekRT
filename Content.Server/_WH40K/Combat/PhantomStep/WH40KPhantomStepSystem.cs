@@ -1,9 +1,10 @@
 using System.Numerics;
+using Content.Shared._Mono.Weapons.Hitscan.Components;
 using Content.Shared.Actions;
+using Content.Shared.ActionBlocker;
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared._WH40K.Combat.PhantomStep;
 using Content.Shared.Damage;
-using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Maps;
 using Content.Shared.Mobs;
@@ -11,15 +12,16 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
+using Content.Shared.Standing;
 using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Hitscan.Events;
+using Content.Shared.Weapons.Hitscan.Systems;
 using Content.Shared.Weapons.Melee.Events;
-using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -31,10 +33,12 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
     public const int MaximumCharacterCharges = Wh40kCharacteristicEffects.MaximumPhantomStepCharges;
 
     [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IMapManager _mapManager = default!;
-    [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private StandingStateSystem _standing = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TurfSystem _turf = default!;
@@ -46,12 +50,13 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         SubscribeLocalEvent<WH40KPhantomStepComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<WH40KPhantomStepComponent, ToggleActionEvent>(OnToggleAction);
         SubscribeLocalEvent<WH40KPhantomStepComponent, AttackedEvent>(OnAttacked);
-        SubscribeLocalEvent<WH40KPhantomStepComponent, PreventCollideEvent>(OnPreventCollide);
         SubscribeLocalEvent<WH40KPhantomStepComponent, MobStateChangedEvent>(OnMobStateChanged);
-        SubscribeLocalEvent<HitscanBasicRaycastComponent, HitscanRaycastFiredEvent>(OnHitscanFired);
-        SubscribeLocalEvent<WH40KPhantomStepComponent, ProjectileReflectAttemptEvent>(OnProjectileAttempt, before: [typeof(ReflectSystem)]);
+        SubscribeLocalEvent<HitscanBasicRaycastComponent, HitscanRaycastFiredEvent>(OnBasicHitscanFired,
+            before: [typeof(HitscanReflectSystem), typeof(HitscanBasicDamageSystem), typeof(HitscanStunSystem)]);
+        SubscribeLocalEvent<HitscanMultiRaycastComponent, HitscanRaycastFiredEvent>(OnMultiHitscanFired,
+            before: [typeof(HitscanReflectSystem), typeof(HitscanBasicDamageSystem), typeof(HitscanStunSystem)]);
+        SubscribeLocalEvent<WH40KPhantomStepComponent, ProjectileImpactAttemptEvent>(OnProjectileImpact);
         SubscribeLocalEvent<WH40KPhantomStepComponent, BeforeDamageChangedEvent>(OnBeforeDamage);
-        SubscribeLocalEvent<WH40KPhantomStepComponent, BeforeStaminaDamageEvent>(OnBeforeStaminaDamage);
     }
 
     public override void Update(float frameTime)
@@ -65,19 +70,22 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
             if (step.Dashing)
                 UpdateDash(uid, step, xform, now);
 
-            if (step.Charges > step.MaxCharges)
-                step.Charges = step.MaxCharges;
+            if (step.DodgedProjectile is not null && now > step.DodgedProjectileUntil)
+                step.DodgedProjectile = null;
 
             if (step.Charges >= step.MaxCharges || step.NextRecharge == TimeSpan.Zero || now < step.NextRecharge)
-            {
-                SyncAction(step, uid);
                 continue;
+
+            var cooldown = step.Cooldown > TimeSpan.Zero ? step.Cooldown : TimeSpan.FromMilliseconds(1);
+            while (step.Charges < step.MaxCharges && now >= step.NextRecharge)
+            {
+                step.Charges++;
+                step.NextRecharge += cooldown;
             }
 
-            step.Charges = Math.Min(step.MaxCharges, step.Charges + 1);
-            step.NextRecharge = step.Charges < step.MaxCharges
-                ? now + step.Cooldown
-                : TimeSpan.Zero;
+            if (step.Charges >= step.MaxCharges)
+                step.NextRecharge = TimeSpan.Zero;
+
             Dirty(uid, step);
             SyncAction(step, uid);
         }
@@ -96,15 +104,35 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         var step = EnsureComp<WH40KPhantomStepComponent>(uid);
         var charges = Math.Clamp(maxCharges, 0, MaximumCharacterCharges);
 
-        step.Enabled = true;
-        step.DodgeRanged = true;
-        step.DodgeMelee = true;
-        step.MaxCharges = charges;
-        step.Charges = existed
-            ? GetChargesAfterReconfigure(previousMaxCharges, previousCharges, charges)
-            : charges;
-        if (step.Charges >= step.MaxCharges)
+        if (!existed || step.MaxCharges != charges)
+        {
+            step.MaxCharges = charges;
+            step.Charges = existed
+                ? GetChargesAfterReconfigure(previousMaxCharges, previousCharges, charges)
+                : charges;
+        }
+
+        if (charges == 0)
+        {
+            if (step.Dashing)
+                StopDash(uid, step, Transform(uid), snapToEnd: false);
+            if (step.ToggleActionEntity is { } action)
+                _actions.RemoveAction(uid, action);
+            step.ToggleActionEntity = null;
+            step.PendingMeleeSource = null;
+            step.DodgedProjectile = null;
             step.NextRecharge = TimeSpan.Zero;
+        }
+        else
+        {
+            if (step.ToggleActionEntity is not { } action || !Exists(action))
+                _actions.AddAction(uid, ref step.ToggleActionEntity, step.ToggleAction, uid);
+
+            if (step.Charges >= charges)
+                step.NextRecharge = TimeSpan.Zero;
+            else if (step.NextRecharge == TimeSpan.Zero)
+                step.NextRecharge = _timing.CurTime + step.Cooldown;
+        }
 
         Dirty(uid, step);
         SyncAction(step, uid);
@@ -122,7 +150,8 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
 
     private void OnStartup(Entity<WH40KPhantomStepComponent> ent, ref ComponentStartup args)
     {
-        _actions.AddAction(ent.Owner, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction, ent.Owner);
+        if (ent.Comp.MaxCharges > 0)
+            _actions.AddAction(ent.Owner, ref ent.Comp.ToggleActionEntity, ent.Comp.ToggleAction, ent.Owner);
         SyncAction(ent.Comp, ent.Owner);
     }
 
@@ -140,6 +169,8 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
             return;
 
         ent.Comp.Enabled = !ent.Comp.Enabled;
+        if (!ent.Comp.Enabled)
+            ent.Comp.PendingMeleeSource = null;
         Dirty(ent.Owner, ent.Comp);
         SyncAction(ent.Comp, ent.Owner);
         args.Handled = true;
@@ -147,16 +178,11 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
 
     private void OnAttacked(Entity<WH40KPhantomStepComponent> ent, ref AttackedEvent args)
     {
-        TryTriggerDodge(ent, args.User, PhantomStepThreatType.Melee);
-    }
-
-    private void OnPreventCollide(Entity<WH40KPhantomStepComponent> ent, ref PreventCollideEvent args)
-    {
-        if (args.Cancelled || !TryComp<ProjectileComponent>(args.OtherEntity, out var projectile))
-            return;
-
-        if (TryTriggerDodge(ent, projectile.Shooter ?? projectile.Weapon ?? args.OtherEntity, PhantomStepThreatType.Ranged))
-            args.Cancelled = true;
+        if (TryTriggerDodge(ent, args.User, args.Used, PhantomStepThreatType.Melee))
+        {
+            ent.Comp.PendingMeleeSource = args.User;
+            ent.Comp.PendingMeleeAt = _timing.CurTime;
+        }
     }
 
     private void OnMobStateChanged(Entity<WH40KPhantomStepComponent> ent, ref MobStateChangedEvent args)
@@ -164,71 +190,97 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (args.NewMobState == MobState.Alive)
             return;
 
-        ent.Comp.InvulnerableUntil = TimeSpan.Zero;
+        ent.Comp.PendingMeleeSource = null;
+        ent.Comp.DodgedProjectile = null;
         if (ent.Comp.Dashing)
             StopDash(ent.Owner, ent.Comp, Transform(ent.Owner), snapToEnd: false);
         else
             Dirty(ent.Owner, ent.Comp);
     }
 
-    private void OnHitscanFired(Entity<HitscanBasicRaycastComponent> ent, ref HitscanRaycastFiredEvent args)
+    private void OnBasicHitscanFired(Entity<HitscanBasicRaycastComponent> ent, ref HitscanRaycastFiredEvent args)
     {
-        if (args.Canceled)
+        TryDodgeHitscan(ref args);
+    }
+
+    private void OnMultiHitscanFired(Entity<HitscanMultiRaycastComponent> ent, ref HitscanRaycastFiredEvent args)
+    {
+        TryDodgeHitscan(ref args);
+    }
+
+    private void TryDodgeHitscan(ref HitscanRaycastFiredEvent args)
+    {
+        if (args.Canceled || args.HitEntities.Count == 0)
             return;
 
+        List<EntityUid>? dodged = null;
         foreach (var target in args.HitEntities)
         {
             if (!TryComp<WH40KPhantomStepComponent>(target, out var step))
                 continue;
 
-            if (TryTriggerDodge((target, step), args.Shooter ?? args.Gun, PhantomStepThreatType.Ranged))
+            if (TryTriggerDodge((target, step), args.Shooter ?? args.Gun, args.Gun, PhantomStepThreatType.Ranged))
             {
-                args.Canceled = true;
-                return;
+                dodged ??= [];
+                dodged.Add(target);
             }
+        }
+
+        if (dodged != null)
+        {
+            foreach (var target in dodged)
+                args.HitEntities.Remove(target);
         }
     }
 
-    private void OnProjectileAttempt(Entity<WH40KPhantomStepComponent> ent, ref ProjectileReflectAttemptEvent args)
+    private void OnProjectileImpact(Entity<WH40KPhantomStepComponent> ent, ref ProjectileImpactAttemptEvent args)
     {
-        if (args.Cancelled)
+        if (args.Cancelled || IsSelfThreat(ent.Owner, args.Component.Shooter, args.Component.Weapon))
             return;
 
-        if (TryTriggerDodge(ent, args.Component.Shooter ?? args.Component.Weapon ?? args.ProjUid, PhantomStepThreatType.Ranged))
+        if (ent.Comp.DodgedProjectile == args.ProjectileUid && _timing.CurTime <= ent.Comp.DodgedProjectileUntil)
+        {
             args.Cancelled = true;
+            return;
+        }
+
+        if (!TryTriggerDodge(ent,
+                args.Component.Shooter ?? args.Component.Weapon ?? args.ProjectileUid,
+                args.Component.Weapon,
+                PhantomStepThreatType.Ranged))
+            return;
+
+        ent.Comp.DodgedProjectile = args.ProjectileUid;
+        ent.Comp.DodgedProjectileUntil = _timing.CurTime +
+            (ent.Comp.DashDuration > TimeSpan.FromMilliseconds(250)
+                ? ent.Comp.DashDuration
+                : TimeSpan.FromMilliseconds(250));
+        args.Cancelled = true;
     }
 
     private void OnBeforeDamage(Entity<WH40KPhantomStepComponent> ent, ref BeforeDamageChangedEvent args)
     {
-        if (_timing.CurTime <= ent.Comp.InvulnerableUntil)
-            args.Cancelled = true;
-    }
+        if (ent.Comp.PendingMeleeSource is not { } source ||
+            ent.Comp.PendingMeleeAt != _timing.CurTime ||
+            args.Origin != source)
+            return;
 
-    private void OnBeforeStaminaDamage(Entity<WH40KPhantomStepComponent> ent, ref BeforeStaminaDamageEvent args)
-    {
-        if (_timing.CurTime <= ent.Comp.InvulnerableUntil)
-            args.Cancelled = true;
+        ent.Comp.PendingMeleeSource = null;
+        args.Cancelled = true;
     }
 
     private bool TryTriggerDodge(
         Entity<WH40KPhantomStepComponent> ent,
         EntityUid? source,
+        EntityUid? weapon,
         PhantomStepThreatType threatType)
     {
         var now = _timing.CurTime;
-        if (now <= ent.Comp.InvulnerableUntil)
-            return true;
-
-        if (TryComp<MobStateComponent>(ent.Owner, out var mobState) &&
-            mobState.CurrentState != MobState.Alive)
-        {
-            return false;
-        }
-
-        if (!CanDodgeThreat(ent.Comp, threatType))
-            return false;
-
-        if (!ent.Comp.Enabled || ent.Comp.MaxCharges <= 0 || ent.Comp.Charges <= 0)
+        if (!ent.Comp.Enabled || ent.Comp.Dashing ||
+            ent.Comp.MaxCharges <= 0 || ent.Comp.Charges <= 0 ||
+            !CanDodgeThreat(ent.Comp, threatType) ||
+            IsSelfThreat(ent.Owner, source, weapon) ||
+            !CanDash(ent.Owner))
             return false;
 
         var xform = Transform(ent.Owner);
@@ -250,9 +302,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         var dashDuration = ent.Comp.DashDuration > TimeSpan.Zero
             ? ent.Comp.DashDuration
             : TimeSpan.FromMilliseconds(1);
-        ent.Comp.InvulnerableUntil = now + (ent.Comp.Invulnerability > dashDuration
-            ? ent.Comp.Invulnerability
-            : dashDuration);
         ent.Comp.Dashing = true;
         ent.Comp.DashStartedAt = now;
         ent.Comp.DashEndsAt = now + dashDuration;
@@ -284,9 +333,11 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (!step.Dashing)
             return;
 
-        if (step.DashStart == MapCoordinates.Nullspace ||
+        if (!CanDash(uid) ||
+            step.DashStart == MapCoordinates.Nullspace ||
             step.DashEnd == MapCoordinates.Nullspace ||
-            step.DashEndCoordinates == EntityCoordinates.Invalid)
+            step.DashEndCoordinates == EntityCoordinates.Invalid ||
+            _transform.GetMapCoordinates((uid, xform)).MapId != step.DashStart.MapId)
         {
             StopDash(uid, step, xform, snapToEnd: false);
             return;
@@ -296,7 +347,15 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         var elapsedSeconds = (float) (now - step.DashStartedAt).TotalSeconds;
         var progress = Math.Clamp(elapsedSeconds / totalSeconds, 0f, 1f);
         var nextPos = Vector2.Lerp(step.DashStart.Position, step.DashEnd.Position, progress);
-        _transform.SetMapCoordinates((uid, xform), new MapCoordinates(nextPos, step.DashEnd.MapId));
+        var currentMap = _transform.GetMapCoordinates((uid, xform));
+        var nextMap = new MapCoordinates(nextPos, step.DashEnd.MapId);
+        if (!IsDashPathSafe(uid, currentMap, nextMap))
+        {
+            StopDash(uid, step, xform, snapToEnd: false);
+            return;
+        }
+
+        _transform.SetMapCoordinates((uid, xform), nextMap);
 
         if (progress < 1f)
             return;
@@ -310,7 +369,8 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         TransformComponent xform,
         bool snapToEnd)
     {
-        if (snapToEnd && step.DashEndCoordinates != EntityCoordinates.Invalid)
+        if (snapToEnd && step.DashEndCoordinates != EntityCoordinates.Invalid &&
+            Exists(step.DashEndCoordinates.EntityId))
         {
             _transform.SetCoordinates(uid, xform, step.DashEndCoordinates);
             _transform.AttachToGridOrMap(uid, xform);
@@ -373,6 +433,34 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         };
     }
 
+    private bool CanDash(EntityUid uid)
+    {
+        return (!TryComp<MobStateComponent>(uid, out var mobState) ||
+                mobState.CurrentState == MobState.Alive) &&
+               _actionBlocker.CanMove(uid) &&
+               !_standing.IsDown(uid);
+    }
+
+    private bool IsSelfThreat(EntityUid target, EntityUid? source, EntityUid? weapon)
+    {
+        return BelongsTo(target, source) || BelongsTo(target, weapon);
+    }
+
+    private bool BelongsTo(EntityUid target, EntityUid? entity)
+    {
+        for (var depth = 0; depth < 12 && entity is { } uid && Exists(uid); depth++)
+        {
+            if (uid == target)
+                return true;
+
+            entity = TryComp<TransformComponent>(uid, out var xform) && xform.ParentUid.IsValid()
+                ? xform.ParentUid
+                : null;
+        }
+
+        return false;
+    }
+
     private bool TryFindDodgeCoordinates(
         EntityUid target,
         EntityUid? source,
@@ -391,7 +479,7 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
 
                 var candidate = new MapCoordinates(origin.Position + Vector2.Normalize(direction) * distance, origin.MapId);
                 if (TryGetSafeCoordinates(candidate, out coordinates) &&
-                    IsDashPathSafe(origin, _transform.ToMapCoordinates(coordinates)))
+                    IsDashPathSafe(target, origin, _transform.ToMapCoordinates(coordinates)))
                 {
                     return true;
                 }
@@ -429,7 +517,7 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         };
     }
 
-    private bool IsDashPathSafe(MapCoordinates start, MapCoordinates end)
+    private bool IsDashPathSafe(EntityUid mover, MapCoordinates start, MapCoordinates end)
     {
         if (start.MapId == MapId.Nullspace ||
             end.MapId == MapId.Nullspace ||
@@ -442,6 +530,18 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         var distance = delta.Length();
         if (distance <= 0.01f)
             return true;
+
+        var direction = delta / distance;
+        var lateral = new Vector2(-direction.Y, direction.X) * 0.22f;
+        for (var lane = -1; lane <= 1; lane++)
+        {
+            var ray = new CollisionRay(start.Position + lateral * lane, direction, (int) CollisionGroup.MobMask);
+            foreach (var hit in _physics.IntersectRay(start.MapId, ray, distance, mover, false))
+            {
+                if (hit.HitEntity != mover && hit.Distance < distance - 0.02f)
+                    return false;
+            }
+        }
 
         var steps = Math.Max(1, (int) MathF.Ceiling(distance / 0.35f));
         for (var i = 1; i <= steps; i++)

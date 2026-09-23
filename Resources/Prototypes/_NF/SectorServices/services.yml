@@ -57,6 +57,8 @@
 # Mono
 - type: sectorService
   id: WarAlerts
+  excludedPresets:
+  - RogueTrader
   components:
   - type: WarLevel
 

@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared.CCVar;
 using Content.Shared.Tag;
 using Content.Shared.Wall;
@@ -18,6 +19,7 @@ public sealed partial class WallMountVisibilitySystem : EntitySystem
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private TagSystem _tag = default!;
+    [Dependency] private TransformSystem _xform = default!;
 
     [Dependency] private EntityQuery<SpriteComponent> _spriteQuery = default!;
 
@@ -99,17 +101,23 @@ public sealed partial class WallMountVisibilitySystem : EntitySystem
     }
 
     /// <summary>
-    /// Checks whether the tile contains any anchored blocking entity.
+    /// Finds the wall supporting a mount, either on its tile or directly behind its facing side.
     /// </summary>
-    public bool IsTileBlocked(Entity<MapGridComponent> grid, Vector2i tile)
+    public bool TryGetWallTile(Entity<MapGridComponent> grid, Vector2i tile, Vector2 facing, out Vector2i wallTile)
     {
-        // The entity itself is usually on an empty tile in front of the wall,
-        // so also check the four adjacent tiles.
-        return HasWall(grid, tile)
-            || HasWall(grid, tile + (1, 0))
-            || HasWall(grid, tile + (-1, 0))
-            || HasWall(grid, tile + (0, 1))
-            || HasWall(grid, tile + (0, -1));
+        if (HasWall(grid, tile))
+        {
+            wallTile = tile;
+            return true;
+        }
+
+        // Mounts can be anchored on the empty tile in front of their wall.
+        var localFacing = (-_xform.GetWorldRotation(grid.Owner)).RotateVec(facing);
+        var behind = MathF.Abs(localFacing.X) > MathF.Abs(localFacing.Y)
+            ? new Vector2i(localFacing.X > 0 ? -1 : 1, 0)
+            : new Vector2i(0, localFacing.Y > 0 ? -1 : 1);
+        wallTile = tile + behind;
+        return HasWall(grid, wallTile);
     }
 
     private bool HasWall(Entity<MapGridComponent> grid, Vector2i tile)

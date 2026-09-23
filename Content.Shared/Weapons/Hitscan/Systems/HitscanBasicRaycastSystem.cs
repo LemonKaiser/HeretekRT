@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared.Administration.Logs;
+using Content.Shared._WH40K.Combat;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
 using Content.Shared.Weapons.Hitscan.Components;
@@ -17,6 +18,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private ISharedAdminLogManager _log = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedWH40KDirectionalBarricadeSystem _barricades = default!;
 
     public override void Initialize()
     {
@@ -33,14 +35,16 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         var rayCastResults = _physics.IntersectRay(mapCords.MapId, ray, ent.Comp.MaxDistance, shooter, false);
 
         var target = args.Target;
+        var shotDirection = args.ShotDirection;
         // If you are in a container, use the raycast result
         // Otherwise:
         //  1.) Hit the first entity that you targeted.
         //  2.) Hit the first entity that doesn't require you to aim at it specifically to be hit.
         var result = _container.IsEntityOrParentInContainer(shooter)
-            ? rayCastResults.FirstOrNull()
-            : rayCastResults.FirstOrNull(hit => hit.HitEntity == target
-                                                || CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true);
+            ? rayCastResults.FirstOrNull(hit => !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection))
+            : rayCastResults.FirstOrNull(hit => !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection) &&
+                                                (hit.HitEntity == target ||
+                                                 CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true));
 
         var trace = new HitscanRaycastFiredEvent
         {

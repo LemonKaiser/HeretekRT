@@ -5,6 +5,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.Utility;
 using Robust.Shared.Graphics.RSI;
 using Robust.Shared.IoC;
+using Robust.Shared.Maths;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = Robust.Shared.Maths.Color;
@@ -12,17 +13,17 @@ using Color = Robust.Shared.Maths.Color;
 namespace Content.Client._WH40K.Visuals.WorldEffects;
 
 /// <summary>
-/// Caches the luminous-pixel geometry of every loaded RSI, so the light-source glow overlay can draw its halos.
+/// Caches luminous and opaque pixel geometry of loaded RSI frames for world effects.
 /// Subscribes to <see cref="IResourceCache.OnRsiLoaded"/> in <see cref="PostInject"/>: this runs before the
 /// engine's RSI preload, so light fixtures loaded at startup are retained. A late-subscribing EntitySystem
 /// (created during EntityManager.Initialize) would silently miss them.
 /// Follows the same pattern as <see cref="Content.Client.Clickable.ClickMapManager"/>.
 /// </summary>
-public sealed partial class GlowGeometryCache : IPostInjectInit
+public sealed partial class RsiVisualGeometryCache : IPostInjectInit
 {
     [Dependency] private readonly IResourceCache _resources = default!;
 
-    private readonly Dictionary<RSI, Dictionary<RSI.StateId, Dictionary<RsiDirection, GlowGeometry[]>>> _geometry =
+    private readonly Dictionary<RSI, Dictionary<RSI.StateId, Dictionary<RsiDirection, FrameGeometry[]>>> _geometry =
         new();
 
     public void PostInject()
@@ -31,6 +32,12 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
     }
 
     public GlowGeometry GetGlowGeometry(RSI.State? state, RsiDirection direction, int animationFrame)
+        => GetFrameGeometry(state, direction, animationFrame).Glow;
+
+    public OpaqueGeometry GetOpaqueGeometry(RSI.State? state, RsiDirection direction, int animationFrame)
+        => GetFrameGeometry(state, direction, animationFrame).Opaque;
+
+    private FrameGeometry GetFrameGeometry(RSI.State? state, RsiDirection direction, int animationFrame)
     {
         if (state == null)
             return default;
@@ -54,14 +61,14 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
 
         foreach (var (stateId, directionOffsets) in args.AtlasOffsets)
         {
-            var directionCache = new Dictionary<RsiDirection, GlowGeometry[]>();
+            var directionCache = new Dictionary<RsiDirection, FrameGeometry[]>();
             for (var direction = 0; direction < directionOffsets.Length; direction++)
             {
                 var frameOffsets = directionOffsets[direction];
                 if (frameOffsets.Length == 0)
                     continue;
 
-                var frames = new GlowGeometry[frameOffsets.Length];
+                var frames = new FrameGeometry[frameOffsets.Length];
                 for (var frame = 0; frame < frameOffsets.Length; frame++)
                 {
                     var offset = frameOffsets[frame];
@@ -81,7 +88,7 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
 
             if (!_geometry.TryGetValue(args.Resource.RSI, out var stateCache))
             {
-                stateCache = new Dictionary<RSI.StateId, Dictionary<RsiDirection, GlowGeometry[]>>();
+                stateCache = new Dictionary<RSI.StateId, Dictionary<RsiDirection, FrameGeometry[]>>();
                 _geometry.Add(args.Resource.RSI, stateCache);
             }
 
@@ -89,7 +96,7 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
         }
     }
 
-    private static GlowGeometry AnalyzeFrame(
+    internal static FrameGeometry AnalyzeFrame(
         Image<Rgba32> image,
         int frameX,
         int frameY,
@@ -100,6 +107,10 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
         var minY = frameHeight;
         var maxX = -1;
         var maxY = -1;
+        var opaqueMinX = frameWidth;
+        var opaqueMinY = frameHeight;
+        var opaqueMaxX = -1;
+        var opaqueMaxY = -1;
         var weightedX = 0f;
         var weightedY = 0f;
         var totalWeight = 0f;
@@ -114,6 +125,14 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
             for (var x = 0; x < frameWidth; x++)
             {
                 var pixel = pixels[(frameY + y) * imageWidth + frameX + x];
+                if (pixel.A > 16)
+                {
+                    opaqueMinX = Math.Min(opaqueMinX, x);
+                    opaqueMinY = Math.Min(opaqueMinY, y);
+                    opaqueMaxX = Math.Max(opaqueMaxX, x);
+                    opaqueMaxY = Math.Max(opaqueMaxY, y);
+                }
+
                 var weight = pixel.A / 255f * Math.Max(pixel.R, Math.Max(pixel.G, pixel.B)) / 255f;
                 if (weight <= 0.01f)
                     continue;
@@ -128,8 +147,16 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
             }
         }
 
+        var opaque = opaqueMaxX < 0
+            ? default
+            : new OpaqueGeometry(true, new Box2(
+                (opaqueMinX - frameWidth / 2f) / EyeManager.PixelsPerMeter,
+                (frameHeight / 2f - opaqueMaxY - 1) / EyeManager.PixelsPerMeter,
+                (opaqueMaxX + 1 - frameWidth / 2f) / EyeManager.PixelsPerMeter,
+                (frameHeight / 2f - opaqueMinY) / EyeManager.PixelsPerMeter));
+
         if (totalWeight <= 0f)
-            return default;
+            return new FrameGeometry(default, opaque);
 
         var pixelCenter = new Vector2(weightedX, weightedY) / totalWeight;
         var center = new Vector2(
@@ -162,9 +189,13 @@ public sealed partial class GlowGeometryCache : IPostInjectInit
             bloomSize = new Vector2(bloomDiameter);
         }
 
-        return new GlowGeometry(true, center, sourceSize, glowSize, bloomSize, linearEmitter);
+        return new FrameGeometry(new GlowGeometry(true, center, sourceSize, glowSize, bloomSize, linearEmitter), opaque);
     }
+
+    internal readonly record struct FrameGeometry(GlowGeometry Glow, OpaqueGeometry Opaque);
 }
+
+public readonly record struct OpaqueGeometry(bool Visible, Box2 Bounds);
 
 /// <summary>Bounding geometry of the luminous pixels of one RSI frame.</summary>
 public readonly record struct GlowGeometry(

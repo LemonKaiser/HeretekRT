@@ -130,6 +130,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     public virtual DamageSpecifier? ProjectileCollide(Entity<ProjectileComponent, PhysicsComponent> projectile, EntityUid target, MapCoordinates? collisionCoordinates, bool predicted = false)
     {
         var (uid, component, ourBody) = projectile;
+        component.ImpactCancelled = false;
 
         // it's here so this check is only done once before possible hit
         var attemptEv = new ProjectileReflectAttemptEvent(uid, component, false);
@@ -137,6 +138,14 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         if (attemptEv.Cancelled)
         {
             SetShooter(uid, component, target);
+            return null;
+        }
+
+        var impactAttempt = new ProjectileImpactAttemptEvent(uid, component);
+        RaiseLocalEvent(target, ref impactAttempt);
+        if (impactAttempt.Cancelled)
+        {
+            component.ImpactCancelled = true;
             return null;
         }
 
@@ -590,10 +599,11 @@ public abstract partial class SharedProjectileSystem : EntitySystem
 
     public void SetShooter(EntityUid id, ProjectileComponent component, EntityUid shooterId)
     {
-        if (component.Shooter == shooterId)
+        if (component.Shooter == shooterId && component.ShotOrigin != null)
             return;
 
         component.Shooter = shooterId;
+        component.ShotOrigin = _transform.GetMapCoordinates(id);
         Dirty(id, component);
     }
 
@@ -622,6 +632,13 @@ public sealed class ImpactEffectEvent : EntityEventArgs
 /// </summary>
 [ByRefEvent]
 public record struct ProjectileReflectAttemptEvent(EntityUid ProjUid, ProjectileComponent Component, bool Cancelled);
+
+/// <summary>
+/// Raised on the actual projectile target after reflection, before hit effects and damage.
+/// Cancelling this impact leaves the projectile and its shooter unchanged.
+/// </summary>
+[ByRefEvent]
+public record struct ProjectileImpactAttemptEvent(EntityUid ProjectileUid, ProjectileComponent Component, bool Cancelled = false);
 
 /// <summary>
 /// Raised when a projectile hits an entity

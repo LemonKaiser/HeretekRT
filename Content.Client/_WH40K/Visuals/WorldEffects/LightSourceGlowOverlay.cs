@@ -37,7 +37,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private GlowGeometryCache _glowCache = default!;
+    [Dependency] private RsiVisualGeometryCache _geometryCache = default!;
     [Dependency] private IGameTiming _timing = default!;
 
     private readonly EntityLookupSystem _lookup;
@@ -58,7 +58,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     /// <summary>
     /// Set by <see cref="WorldVisualEffectsSystem"/> from the graphics options. Toggling this never recreates the
-    /// overlay so that the glow geometry cache (owned by <see cref="GlowGeometryCache"/>) stays warm.
+    /// overlay so that the RSI geometry cache (owned by <see cref="RsiVisualGeometryCache"/>) stays warm.
     /// </summary>
     public bool Enabled = true;
 
@@ -148,12 +148,12 @@ public sealed partial class LightSourceGlowOverlay : Overlay
                 textureDirection = sprite.DirectionOverride.Convert(state.RsiDirections);
 
             textureDirection = textureDirection.OffsetRsiDir(layer.DirOffset);
-            var geometry = _glowCache.GetGlowGeometry(state, textureDirection, layer.AnimationFrame);
+            var geometry = _geometryCache.GetGlowGeometry(state, textureDirection, layer.AnimationFrame);
 
             if (!geometry.Visible)
                 continue;
 
-            var transformMatrix = GetLayerTransform(sprite, layer, matrixDirection, worldPosition, worldRotation, angle, eye.Rotation);
+            var transformMatrix = SpriteLayerWorldTransform.Get(sprite, layer, matrixDirection, worldPosition, worldRotation, angle, eye.Rotation);
             var center = Vector2.Transform(geometry.Center, transformMatrix);
 
             // Source glow and light haze are separate effects. Glow always surrounds the luminous pixels while only
@@ -654,43 +654,6 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             RsiDirection.NorthWest => Vector2.Normalize(new Vector2(-1f, 1f)),
             _ => -Vector2.UnitY,
         };
-    }
-
-    private static Matrix3x2 GetLayerTransform(
-        SpriteComponent sprite,
-        SpriteComponent.Layer layer,
-        RsiDirection direction,
-        Vector2 worldPosition,
-        Angle worldRotation,
-        Angle screenAngle,
-        Angle eyeRotation)
-    {
-        var cardinal = Angle.Zero;
-        if (!sprite.NoRotation && sprite.SnapCardinals)
-            cardinal = screenAngle.RoundToCardinalAngle();
-
-        var entityMatrix = Matrix3Helpers.CreateTransform(
-            worldPosition,
-            sprite.NoRotation ? -eyeRotation : worldRotation - cardinal);
-        var spriteMatrix = Matrix3x2.Multiply(sprite.LocalMatrix, entityMatrix);
-
-        if (sprite.GranularLayersRendering)
-        {
-            entityMatrix = layer.RenderingStrategy switch
-            {
-                LayerRenderingStrategy.Default =>
-                    Matrix3Helpers.CreateTransform(worldPosition, worldRotation),
-                LayerRenderingStrategy.NoRotation =>
-                    Matrix3Helpers.CreateTransform(worldPosition, -eyeRotation),
-                LayerRenderingStrategy.SnapToCardinals =>
-                    Matrix3Helpers.CreateTransform(worldPosition, worldRotation - screenAngle.RoundToCardinalAngle()),
-                _ => entityMatrix,
-            };
-            spriteMatrix = Matrix3x2.Multiply(sprite.LocalMatrix, entityMatrix);
-        }
-
-        layer.GetLayerDrawMatrix(direction, out var layerMatrix);
-        return Matrix3x2.Multiply(layerMatrix, spriteMatrix);
     }
 
     protected override void DisposeBehavior()

@@ -48,7 +48,7 @@ namespace Content.Client.IoC
             collection.Register<ScreenCheckClientManager>();
             collection.Register<FullscreenHook, FullscreenHook>();
             collection.Register<IClickMapManager, ClickMapManager>();
-            collection.Register<GlowGeometryCache>();
+            collection.Register<RsiVisualGeometryCache>();
             collection.Register<IClientAdminManager, ClientAdminManager>();
             collection.Register<ISharedAdminManager, ClientAdminManager>();
             collection.Register<EuiManager, EuiManager>();

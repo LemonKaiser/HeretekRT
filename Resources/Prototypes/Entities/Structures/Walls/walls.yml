@@ -374,6 +374,8 @@
     snap:
     - Wall
   components:
+  - type: Occluder
+    enabled: false
   - type: RCDDeconstructable # Frontier
     deconstructable: false # Frontier
   - type: StaticPrice
@@ -422,11 +424,8 @@
     fixtures:
       fix1:
         shape:
-          !type:PolygonShape
-          vertices:
-          - "-0.5,-0.5"
-          - "0.5,0.5"
-          - "0.5,-0.5"
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
         mask:
         - FullTileMask
         layer:
@@ -671,11 +670,8 @@
     fixtures:
       fix1:
         shape:
-          !type:PolygonShape
-          vertices:
-          - "-0.5,-0.5"
-          - "0.5,0.5"
-          - "0.5,-0.5"
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
         mask:
         - FullTileMask
         layer:

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Content.Client.Message;
 using Content.Shared._WH40K.CharacterCreation;
@@ -92,6 +93,15 @@ public sealed partial class Wh40kResultPage : BoxContainer
         ResultAgilityPoints.Text = string.Empty;
         ResultActiveAbility.SetMarkup(string.Empty);
         ResultPassiveAbility.SetMarkup(string.Empty);
+    }
+
+    public void SetCompactLayout(float availableWidth)
+    {
+        var compact = availableWidth < 700f;
+        ResultSummaryColumns.Orientation = compact
+            ? BoxContainer.LayoutOrientation.Vertical
+            : BoxContainer.LayoutOrientation.Horizontal;
+        ResultDetailsColumn.SetWidth = compact ? MathF.Max(1f, MathF.Min(286f, availableWidth)) : 286f;
     }
 
     public void RefreshForDraft()

@@ -2,6 +2,7 @@ using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using System.Numerics;
 
@@ -27,6 +28,12 @@ public sealed partial class ProjectileComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? Shooter;
+
+    /// <summary>
+    /// Map position where this projectile was last fired. Updated when it is reflected.
+    /// </summary>
+    [AutoNetworkedField]
+    public MapCoordinates? ShotOrigin;
 
     /// <summary>
     ///     Weapon used to shoot.
@@ -105,6 +112,11 @@ public sealed partial class ProjectileComponent : Component
     /// </summary>
     [DataField]
     public bool NoDamageDelete = true;
+
+    /// <summary>
+    /// Transient result of the current impact attempt, consumed by the server collision handler.
+    /// </summary>
+    public bool ImpactCancelled;
 
     // Goobstation Start
     /// <summary>

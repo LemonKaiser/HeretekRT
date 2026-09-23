@@ -1,4 +1,3 @@
-using System.Numerics;
 using Content.Client.Graphics;
 using Content.Client.Wall.Systems;
 using Content.Shared.Wall;
@@ -6,6 +5,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.Graphics;
+using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 
@@ -20,6 +20,7 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
     [Dependency] private IGameTiming _timing = default!;
 
     private readonly SharedMapSystem _map;
+    private readonly OccluderSystem _occluder;
     private readonly SpriteSystem _sprite;
     private readonly TransformSystem _xform;
     private readonly WallMountTreeSystem _tree;
@@ -33,6 +34,7 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
         IoCManager.InjectDependencies(this);
 
         _map = _entManager.System<SharedMapSystem>();
+        _occluder = _entManager.System<OccluderSystem>();
         _sprite = _entManager.System<SpriteSystem>();
         _xform = _entManager.System<TransformSystem>();
         _tree = _entManager.System<WallMountTreeSystem>();
@@ -83,10 +85,8 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
         viewportState.WasFovEnabled = true;
 
         var fadeStep = _visibility.FadeEnabled ? FadeSpeed * (float)_timing.FrameTime.TotalSeconds : 1f;
-        var matrix = args.Viewport.GetWorldToLocalMatrix();
-
         viewportState.SeenThisFrame.Clear();
-        ProcessVisibleEntities(args, eye, matrix, fadeStep, viewportState);
+        ProcessVisibleEntities(args, eye, fadeStep, viewportState);
 
         // Remove entities that left the viewport this frame.
         _toRemove.Clear();
@@ -132,7 +132,7 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
     /// <summary>
     /// Updates fade state for all wall-mounted entities in the viewport.
     /// </summary>
-    private void ProcessVisibleEntities(in OverlayDrawArgs args, IEye eye, Matrix3x2 matrix, float fadeStep, ViewportFadeState viewportState)
+    private void ProcessVisibleEntities(in OverlayDrawArgs args, IEye eye, float fadeStep, ViewportFadeState viewportState)
     {
         foreach (var entity in _tree.QueryAabb(args.MapId, args.WorldBounds))
         {
@@ -148,36 +148,37 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
 
             viewportState.SeenThisFrame.Add(uid);
 
-            var targetAlpha = ComputeTargetAlpha(wallmount, xform, eye, matrix);
-            UpdateFadeState(uid, originalAlpha, targetAlpha, fadeStep, viewportState);
+            var targetAlpha = ComputeTargetAlpha(wallmount, xform, eye, out var occluded);
+            UpdateFadeState(uid, originalAlpha, targetAlpha, fadeStep, occluded, viewportState);
         }
     }
 
     /// <summary>
-    /// Returns 1 if the entity is within its facing arc relative to the eye, 0 otherwise.
+    /// Returns 1 when the wall's visible face is within the mount's arc and unobstructed from the eye.
     /// </summary>
-    private float ComputeTargetAlpha(WallMountComponent wallmount, TransformComponent xform, IEye eye, Matrix3x2 matrix)
+    private float ComputeTargetAlpha(WallMountComponent wallmount, TransformComponent xform, IEye eye, out bool occluded)
     {
+        occluded = false;
         if (!wallmount.DirectionalVisibility || wallmount.Arc >= Math.Tau)
             return 1f;
 
         if (xform.GridUid is not { } gridUid || !_gridQuery.TryGetComponent(gridUid, out var grid))
             return 1f;
 
+        var facing = (_xform.GetWorldRotation(xform) + wallmount.Direction).ToWorldVec();
         var tile = _map.TileIndicesFor(gridUid, grid, xform.Coordinates);
-        if (!_visibility.IsTileBlocked((gridUid, grid), tile))
+        if (!_visibility.TryGetWallTile((gridUid, grid), tile, facing, out var wallTile))
             return 1f;
 
-        var (pos, rot) = _xform.GetWorldPositionRotation(xform);
-        var facingAngle = rot + eye.Rotation + wallmount.Direction;
+        var wallCenter = _map.GridTileToWorldPos(gridUid, grid, wallTile);
+        var facePoint = WallMountVisibilityGeometry.FacePoint(wallCenter, facing, grid.TileSize);
+        if (!WallMountVisibilityGeometry.FacesEye(facePoint, facing, wallmount.Arc, eye.Position.Position))
+            return 0f;
 
-        var entityScreenPos = Vector2.Transform(pos, matrix);
-        var eyeScreenPos = Vector2.Transform(eye.Position.Position, matrix);
-        var toEntity = entityScreenPos - eyeScreenPos;
-        var eyeToEntityAngle = (toEntity with { X = -toEntity.X }).ToWorldAngle();
-
-        var angleDiff = Angle.ShortestDistance(eyeToEntityAngle, facingAngle);
-        return Math.Abs(angleDiff) < wallmount.Arc / 2 ? 1f : 0f;
+        // Use the same occluders as FOV. The facing test above avoids rays for mounts viewed from behind.
+        var target = new MapCoordinates(facePoint, xform.MapID);
+        occluded = !_occluder.InRangeUnoccluded(eye.Position, target, 0f, false);
+        return occluded ? 0f : 1f;
     }
 
     /// <summary>
@@ -204,12 +205,16 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
     /// <summary>
     /// Updates fade target for a tracked entity. Newly seen entities snap immediately without fading.
     /// </summary>
-    private static void UpdateFadeState(EntityUid uid, float originalAlpha, float targetAlpha, float fadeStep, ViewportFadeState viewportState)
+    private static void UpdateFadeState(EntityUid uid, float originalAlpha, float targetAlpha, float fadeStep, bool occluded, ViewportFadeState viewportState)
     {
         if (viewportState.FadeStates.TryGetValue(uid, out var state))
         {
             state.TargetAlpha = targetAlpha;
-            state.StepTowards(fadeStep);
+            // An occluder must hide the sprite immediately; fading through a wall leaks information.
+            if (occluded)
+                state.CurrentAlpha = 0f;
+            else
+                state.StepTowards(fadeStep);
             viewportState.FadeStates[uid] = state;
             return;
         }

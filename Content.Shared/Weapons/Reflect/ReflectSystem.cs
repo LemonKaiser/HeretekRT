@@ -355,6 +355,11 @@ public sealed partial class ReflectSystem : EntitySystem
     /// </summary>
     private void RefreshReflectUser(EntityUid user)
     {
+        // Equipment events also run while the client restores predicted container state.
+        // ReflectUser is networked and must not be added or removed during that reset.
+        if (_gameTiming.ApplyingState)
+            return;
+
         bool hasReflectItem = false;
 
         // Check if the entity has hands component

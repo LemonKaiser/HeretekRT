@@ -126,6 +126,8 @@
         <TextureRect Name="OnboardingBackdropTexture" Access="Public" Stretch="KeepAspectCovered" MouseFilter="Ignore"
                      TexturePath="/Textures/_WH40K/LobbyScreens/wps4.png" />
         <lobbyUi:OnboardingBackdropShade Name="OnboardingBackdropShade" Access="Public" MouseFilter="Ignore" />
+        <ScrollContainer Name="OnboardingViewport" Access="Public" HScrollEnabled="False"
+                         HorizontalAlignment="Left" VerticalAlignment="Top">
         <PanelContainer Name="OnboardingShell" Access="Public" SetWidth="1480" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0 24 0 24">
             <PanelContainer.PanelOverride>
@@ -134,15 +136,15 @@
                                        ContentMarginTopOverride="20" ContentMarginBottomOverride="20" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="0">
-            <LayoutContainer HorizontalExpand="True" MinHeight="62">
+            <LayoutContainer Name="OnboardingHeader" Access="Public" HorizontalExpand="True" SetHeight="62">
                 <BoxContainer Name="OnboardingTitleLockup" Access="Public" Orientation="Horizontal" SeparationOverride="12"
                               HorizontalAlignment="Center" VerticalAlignment="Center" MouseFilter="Ignore">
-                    <TextureRect SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                    <TextureRect Name="OnboardingTitleLeftOrnament" Access="Public" SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
                                  Modulate="#B69754C7"
                                  TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/header-wreath.svg.192dpi.png" />
                     <Label Name="OnboardingTitle" Access="Public" Text="{Loc 'heretek-onboarding-title'}"
                            FontColorOverride="#DFD7C3" VerticalAlignment="Center" />
-                    <lobbyUi:OnboardingMirroredTextureRect SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True"
+                    <lobbyUi:OnboardingMirroredTextureRect Name="OnboardingTitleRightOrnament" SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True"
                                                             MouseFilter="Ignore" Modulate="#B69754C7"
                                                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/header-wreath.svg.192dpi.png" />
                 </BoxContainer>
@@ -164,7 +166,7 @@
                                             ContentMarginLeftOverride="8" ContentMarginRightOverride="8"
                                             ContentMarginTopOverride="6" ContentMarginBottomOverride="6" />
                 </PanelContainer.PanelOverride>
-                <ScrollContainer HorizontalExpand="True" HScrollEnabled="False" VScrollEnabled="False">
+                <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VScrollEnabled="False">
                     <BoxContainer Orientation="Horizontal" SeparationOverride="6" HorizontalExpand="True" MinHeight="38">
                         <Button Name="OnboardingAppearanceButton" Access="Public" Text="{Loc 'heretek-onboarding-appearance'}" HorizontalExpand="True" ClipText="True" />
                         <Button Name="OnboardingHomeworldButton" Access="Public" Text="{Loc 'heretek-onboarding-homeworld'}" HorizontalExpand="True" ClipText="True" />
@@ -206,7 +208,7 @@
                 </PanelContainer>
             </BoxContainer>
 
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="790" SeparationOverride="18" Align="Center">
+            <BoxContainer Name="OnboardingWorkspaceColumns" Access="Public" Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="18" Align="Center">
                 <PanelContainer Name="OnboardingNavigationPanel" Access="Public" SetWidth="300" SetHeight="790">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#11120FE8" BorderColor="#B6975452" BorderThickness="1"
@@ -241,7 +243,7 @@
                             </BoxContainer>
                             <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B697543B"
                                                              EndColor="#00000000" Thickness="1" SetHeight="1" />
-                            <ScrollContainer HorizontalExpand="True" HScrollEnabled="False" VScrollEnabled="False"
+                            <ScrollContainer Name="OnboardingAppearanceNavigationScroll" Access="Public" HorizontalExpand="True" HScrollEnabled="False" VScrollEnabled="True"
                                              SetHeight="459" Margin="0 3 0 0">
                                 <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="9">
                             <Button Name="OnboardingPortraitsButton" Access="Public" MinHeight="69" ClipText="True">
@@ -507,6 +509,7 @@
             </BoxContainer>
             </BoxContainer>
         </PanelContainer>
+        </ScrollContainer>
     </Control>
 
     <!-- Blocks input during the short switch from the lobby to the onboarding shell. -->

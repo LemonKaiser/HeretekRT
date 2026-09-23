@@ -10,9 +10,9 @@
          layout used by the canonical onboarding page and keeps every long value bounded. -->
     <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Stretch"
                           VerticalAlignment="Center" SeparationOverride="8">
-                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
                     </PanelContainer.PanelOverride>
@@ -25,7 +25,7 @@
                 <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
                                                         MouseFilter="Ignore" Modulate="#B69754A8"
                                                         TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
-                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
                     </PanelContainer.PanelOverride>

@@ -1,7 +1,6 @@
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Interaction.Components;
 using Content.Shared.Maps;
-using Content.Shared.Physics;
 using Content.Shared.Stacks;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
@@ -20,7 +19,6 @@ public sealed partial class SharedWH40KBarricadePlacementSystem : EntitySystem
     [Dependency] private  EntityLookupSystem _lookup = default!;
     [Dependency] private  SharedMapSystem _maps = default!;
     [Dependency] private  SharedStackSystem _stack = default!;
-    [Dependency] private  TurfSystem _turf = default!;
     [Dependency] private  SharedTransformSystem _transform = default!;
 
     public override void Initialize()
@@ -128,41 +126,29 @@ public sealed partial class SharedWH40KBarricadePlacementSystem : EntitySystem
         if (tileRef.Tile.IsEmpty)
             return false;
 
-        if (!_turf.IsTileBlocked(tileRef, CollisionGroup.MobMask))
-            return true;
-
-        return IsOccupiedOnlyByCompatibleBarricades(tileRef, direction);
-    }
-
-    private bool IsOccupiedOnlyByCompatibleBarricades(TileRef tileRef, Direction direction)
-    {
-        var foundBarricade = false;
-
+        // Inspect the actual occupants even when their fixture is too small for TurfSystem's
+        // area threshold. Otherwise a second kit can spawn inside a wall or a player.
         foreach (var entity in _lookup.GetEntitiesInTile(tileRef, LookupFlags.Dynamic | LookupFlags.Static))
         {
-            if (!TryComp<FixturesComponent>(entity, out var fixtures) || !BlocksMobPlacement(fixtures))
+            if (!TryComp<FixturesComponent>(entity, out var fixtures) || !HasHardFixture(fixtures))
                 continue;
 
             if (!HasComp<WH40KDirectionalBarricadeComponent>(entity))
                 return false;
 
-            foundBarricade = true;
             var existingDirection = _transform.GetWorldRotation(entity).GetCardinalDir();
             if (existingDirection == direction)
                 return false;
         }
 
-        return foundBarricade;
+        return true;
     }
 
-    private static bool BlocksMobPlacement(FixturesComponent fixtures)
+    private static bool HasHardFixture(FixturesComponent fixtures)
     {
         foreach (var fixture in fixtures.Fixtures.Values)
         {
-            if (!fixture.Hard)
-                continue;
-
-            if ((fixture.CollisionLayer & (int) CollisionGroup.MobMask) != 0)
+            if (fixture.Hard)
                 return true;
         }
 

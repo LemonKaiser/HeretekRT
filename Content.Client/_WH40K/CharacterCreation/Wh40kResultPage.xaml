@@ -8,9 +8,9 @@
     HorizontalExpand="True" VerticalExpand="True">
     <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Center"
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Stretch"
                           VerticalAlignment="Center" SeparationOverride="8">
-                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
                     </PanelContainer.PanelOverride>
@@ -24,7 +24,7 @@
                 <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
                                                         MouseFilter="Ignore" Modulate="#B69754A8"
                                                         TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
-                <PanelContainer SetWidth="110" SetHeight="1" VerticalAlignment="Center">
+                <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
                     </PanelContainer.PanelOverride>
@@ -33,8 +33,8 @@
             <Label Text="{Loc 'heretek-onboarding-result'}" FontColorOverride="#B69754" HorizontalAlignment="Center"
                    StyleClasses="Wh40kOnboardingTechnicalText" />
 
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="26" Margin="0 6 0 0">
-                <BoxContainer Orientation="Vertical" SetWidth="286" SeparationOverride="9">
+            <BoxContainer Name="ResultSummaryColumns" Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="26" Margin="0 6 0 0">
+                <BoxContainer Name="ResultDetailsColumn" Orientation="Vertical" SetWidth="286" SeparationOverride="9">
                     <Label Text="{Loc 'heretek-onboarding-result-name-title'}" FontColorOverride="#B69754"
                            StyleClasses="Wh40kOnboardingTechnicalText" />
                     <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="7">
