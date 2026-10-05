@@ -19,3 +19,11 @@
   addComponents:
   - type: IFF
     flags: [IsPlayerShuttle, HideLabel]
+
+- type: vessel
+  id: BaseVesselIFFDisabled
+  abstract: true
+  parent: BaseVessel
+  addComponents:
+  - type: IFF
+    flags: [IsPlayerShuttle, HideLabel]

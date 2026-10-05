@@ -198,6 +198,17 @@ namespace Content.Shared.Preferences
         [DataField]
         public string Company { get; private set; } = "None";
 
+        // Mono start
+        [DataField]
+        public List<string> Flags { get; private set; } = [];
+
+        [DataField]
+        public List<PersistentProfileComponent> Components { get; private set; } = [];
+
+        [DataField]
+        public List<PersistentProfileItem> Items { get; private set; } = [];
+        // Mono end
+
         /// <summary>
         /// Selections from the WH40K introductory character creation.
         /// They are persisted now but do not have gameplay effects yet.
@@ -221,7 +232,10 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts,
             string company = "None",
-            Wh40kCharacterBuild? wh40kBuild = null)
+            Wh40kCharacterBuild? wh40kBuild = null,
+            IEnumerable<string>? flags = null, // Mono
+            IEnumerable<PersistentProfileComponent>? components = null, // Mono
+            IEnumerable<PersistentProfileItem>? items = null) // Mono
         {
             Name = name;
             FlavorText = flavortext;
@@ -239,6 +253,11 @@ namespace Content.Shared.Preferences
             _loadouts = loadouts;
             Company = company;
             Wh40kBuild = wh40kBuild?.Clone() ?? new Wh40kCharacterBuild();
+            // Mono start
+            Flags = flags is null ? [] : [..flags];
+            Components = components is null ? [] : [..components];
+            Items = items is null ? [] : [..items];
+            // Mono end
         }
 
         /// <summary>Copy constructor but with overridable references (to prevent useless copies)</summary>
@@ -249,7 +268,8 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts)
             : this(other.Name, other.FlavorText, other.Species, other.Age, other.Sex, other.Gender, other.BankBalance, other.Appearance, other.SpawnPriority,
-                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild)
+                jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild,
+                other.Flags, other.Components, other.Items) // Mono
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
@@ -282,7 +302,10 @@ namespace Content.Shared.Preferences
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
                 new Dictionary<string, RoleLoadout>(other.Loadouts),
                 other.Company,
-                other.Wh40kBuild)
+                other.Wh40kBuild,
+                other.Flags, // Mono
+                other.Components, // Mono
+                other.Items) // Mono
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
@@ -554,6 +577,21 @@ namespace Content.Shared.Preferences
             return new(this) { Company = company };
         }
 
+        // Mono start
+        public HumanoidCharacterProfile WithPersistentData(
+            IEnumerable<string> flags,
+            IEnumerable<PersistentProfileComponent> components,
+            IEnumerable<PersistentProfileItem> items)
+        {
+            return new(this)
+            {
+                Flags = [..flags],
+                Components = [..components],
+                Items = [..items],
+            };
+        }
+        // Mono end
+
         public HumanoidCharacterProfile WithWh40kCharacterBuild(Wh40kCharacterBuild build)
         {
             return new(this) { Wh40kBuild = build.Clone() };
@@ -687,6 +725,9 @@ namespace Content.Shared.Preferences
             if (SpawnPriority != other.SpawnPriority) return false;
             if (Species != other.Species) return false;
             if (Company != other.Company) return false;
+            if (!Flags.SequenceEqual(other.Flags)) return false; // Mono
+            if (!Components.SequenceEqual(other.Components)) return false; // Mono
+            if (!Items.SequenceEqual(other.Items)) return false; // Mono
             if (Voice != other.Voice) return false;
             if (BarkVoice != other.BarkVoice) return false;
             if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
@@ -1024,6 +1065,14 @@ namespace Content.Shared.Preferences
             hashCode.Add(BarkVoice);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
+            // Mono start
+            foreach (var flag in Flags)
+                hashCode.Add(flag);
+            foreach (var component in Components)
+                hashCode.Add(component);
+            foreach (var item in Items)
+                hashCode.Add(item);
+            // Mono end
             hashCode.Add((int)SpawnPriority);
             hashCode.Add((int)PreferenceUnavailable);
             hashCode.Add(Wh40kBuild);

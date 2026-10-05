@@ -652,9 +652,35 @@ namespace Content.Server.Database
 
         public string Company { get; set; } = "None";
 
+        // Mono start
+        public string[] Flags { get; set; } = [];
+        public List<ProfileComponent> Components { get; } = [];
+        public List<ProfileItem> Items { get; } = [];
+        // Mono end
+
         public int PreferenceId { get; set; }
         public Preference Preference { get; set; } = null!;
     }
+
+    // Mono start
+    public class ProfileComponent
+    {
+        public int Id { get; set; }
+        public int ProfileId { get; set; }
+        public Profile Profile { get; set; } = null!;
+        public string Data { get; set; } = null!;
+        public bool Sticky { get; set; }
+    }
+
+    public class ProfileItem
+    {
+        public int Id { get; set; }
+        public int ProfileId { get; set; }
+        public Profile Profile { get; set; } = null!;
+        public string Data { get; set; } = null!;
+        public bool Sticky { get; set; }
+    }
+    // Mono end
 
     public class Job
     {

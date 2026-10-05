@@ -156,6 +156,7 @@
   - type: Tag
     tags:
     - Sheet
+    - PlastitaniumSheet
   - type: Item
     sprite: _Mono/Objects/Materials/plastitanium.rsi
     heldPrefix: plastitanium

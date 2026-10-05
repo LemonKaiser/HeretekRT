@@ -1,4 +1,5 @@
 using Content.Shared._Goobstation.DoAfter;
+using Content.Shared._Mono.PersonalShield;
 using Content.Shared.DoAfter;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Projectiles;
@@ -15,6 +16,8 @@ namespace Content.Shared._WH40K.CharacterCreation;
 /// </summary>
 public sealed class Wh40kCharacterStatsSystem : EntitySystem
 {
+    [Dependency] private readonly SharedPersonalShieldSystem _personalShield = default!;
+
     public override void Initialize()
     {
         SubscribeLocalEvent<Wh40kCharacterStatsComponent, GetMeleeDamageEvent>(OnGetMeleeDamage);
@@ -93,9 +96,13 @@ public sealed class Wh40kCharacterStatsSystem : EntitySystem
     private void OnProjectileHit(Entity<ProjectileComponent> projectile, ref ProjectileHitEvent args)
     {
         if (args.Shooter is not { } shooter || !TryComp<Wh40kCharacterStatsComponent>(shooter, out var stats))
+        {
+            _personalShield.HandleProjectileHit(projectile, ref args);
             return;
+        }
 
         args.Damage *= Wh40kCharacteristicEffects.GetDamageMultiplier(stats.Ranged);
+        _personalShield.HandleProjectileHit(projectile, ref args);
     }
 
     public static float GetDoAfterSpeedMultiplier(int intelligence)

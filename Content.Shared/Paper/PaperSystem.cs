@@ -16,6 +16,7 @@ using Content.Shared.Ghost;
 using Content.Shared._Forge.Paper;
 using Content.Shared.Mobs; // Frontier
 using Robust.Shared.Prototypes;
+using Content.Shared._WF.SafetyDepositBox.Components;
 
 namespace Content.Shared.Paper;
 
@@ -194,6 +195,9 @@ public sealed partial class PaperSystem : EntitySystem
         {
             // Frontier: assign DisplayStampInfo before stamp
             var stampInfo = GetStampInfo(stampComp);
+            // Mono: deposited stamps dry up
+            if (HasComp<SafetyDepositStoredComponent>(args.Used))
+                return;
             if (_tagSystem.HasTag(args.Used, "Write"))
             {
                 TrySign(entity, args.User, args.Used);

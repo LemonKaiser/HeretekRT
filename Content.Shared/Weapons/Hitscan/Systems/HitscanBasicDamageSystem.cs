@@ -52,7 +52,7 @@ public sealed partial class HitscanBasicDamageSystem : EntitySystem
                 impactCoordinates: impactCoordinates); // Mono - AP
 
             if (damageDealt == null)
-                return;
+                continue;
 
             var damageEvent = new HitscanDamageDealtEvent
             {

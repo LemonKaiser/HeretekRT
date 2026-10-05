@@ -4,6 +4,7 @@ using Content.Server.Station.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using System.Text;
+using Content.Server._Battlefield14.FactionTracking;
 
 namespace Content.Server.GameTicking
 {
@@ -81,7 +82,7 @@ namespace Content.Server.GameTicking
                 ("roundId", RoundId),
                 ("playerCount", playerCount),
                 ("readyCount", readyCount),
-                ("mapName", stationNames.ToString()),
+                //("mapName", stationNames.ToString()), // Mono
                 ("gmTitle", gmTitle),
                 ("desc", desc));
         }

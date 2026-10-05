@@ -375,6 +375,10 @@
   name: glass table
   description: A square piece of glass, standing on four metal legs.
   components:
+  - type: RangedDamageSound # WOLFGATE - material bullet impacts
+    soundGroups:
+      Brute:
+        collection: WolfgateBulletImpactGlass
   - type: Sprite
     sprite: Structures/Furniture/Tables/glass.rsi
   - type: Icon
@@ -429,6 +433,10 @@
   name: reinforced glass table
   description: A square piece of glass, standing on four metal legs. Extra robust.
   components:
+  - type: RangedDamageSound # WOLFGATE - material bullet impacts
+    soundGroups:
+      Brute:
+        collection: WolfgateBulletImpactGlass
   - type: Sprite
     sprite: Structures/Furniture/Tables/r_glass.rsi
   - type: Icon
@@ -505,6 +513,10 @@
   name: plasma glass table
   description: A square piece of plasma glass, standing on four metal legs. Pretty!
   components:
+  - type: RangedDamageSound # WOLFGATE - material bullet impacts
+    soundGroups:
+      Brute:
+        collection: WolfgateBulletImpactGlass
   - type: Sprite
     sprite: Structures/Furniture/Tables/plasma.rsi
   - type: Icon
@@ -605,6 +617,10 @@
   name: wood table
   description: Do not apply fire to this. Rumour says it burns easily.
   components:
+  - type: RangedDamageSound # WOLFGATE - material bullet impacts
+    soundGroups:
+      Brute:
+        collection: WolfgateBulletImpactWood
   - type: Sprite
     sprite: Structures/Furniture/Tables/wood.rsi
   - type: Icon
@@ -984,6 +1000,10 @@
   name: wood counter
   description: Do not apply fire to this. Rumour says it burns easily.
   components:
+  - type: RangedDamageSound # WOLFGATE - material bullet impacts
+    soundGroups:
+      Brute:
+        collection: WolfgateBulletImpactWood
   - type: Sprite
     sprite: Structures/Furniture/Tables/counterwood.rsi
   - type: Icon

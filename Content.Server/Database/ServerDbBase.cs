@@ -74,6 +74,8 @@ namespace Content.Server.Database
                 .Include(p => p.Profiles).ThenInclude(h => h.Jobs)
                 .Include(p => p.Profiles).ThenInclude(h => h.Antags)
                 .Include(p => p.Profiles).ThenInclude(h => h.Traits)
+                .Include(p => p.Profiles).ThenInclude(h => h.Components) // Mono
+                .Include(p => p.Profiles).ThenInclude(h => h.Items) // Mono
                 .Include(p => p.Profiles)
                     .ThenInclude(h => h.Loadouts)
                     .ThenInclude(l => l.Groups)
@@ -126,6 +128,8 @@ namespace Content.Server.Database
                 .Include(p => p.Jobs)
                 .Include(p => p.Antags)
                 .Include(p => p.Traits)
+                .Include(p => p.Components) // Mono
+                .Include(p => p.Items) // Mono
                 .Include(p => p.Loadouts)
                     .ThenInclude(l => l.Groups)
                     .ThenInclude(group => group.Loadouts)

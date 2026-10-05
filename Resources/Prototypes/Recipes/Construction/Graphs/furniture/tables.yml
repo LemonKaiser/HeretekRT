@@ -94,11 +94,6 @@
               amount: 1
               doAfter: 1
 
-        - to: TableReinforcedGlassBlack
-          steps:
-            - tool: Cutting
-              doAfter: 3
-
         - to: TablePlasmaGlass
           steps:
             - material: PlasmaGlass
@@ -180,6 +175,11 @@
     - node: TableReinforced
       entity: TableReinforced
       edges:
+        - to: TableReinforcedBlack
+          steps:
+            - tool: Screwing
+              doAfter: 3
+
         - to: TableFrame
           completed:
             - !type:SpawnPrototype
@@ -246,6 +246,11 @@
     - node: TableReinforcedGlass
       entity: TableReinforcedGlass
       edges:
+        - to: TableReinforcedGlassBlack
+          steps:
+            - tool: Cutting
+              doAfter: 3
+
         - to: TableFrame
           completed:
             - !type:SpawnPrototype

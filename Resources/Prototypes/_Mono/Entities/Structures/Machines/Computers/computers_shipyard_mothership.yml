@@ -75,37 +75,15 @@
 - type: entity
   id: TSFNChengduComputer
   parent: BaseCarrierComputer
-  name: TSFN Chengdu internal hangar console
+  name: TSFN chengdu internal hangar console
   description: Lighter shipyard using the Chengdu's internal hangars, doesn't have access to the full roster of TSFMC ships.
   components:
   - type: ShipyardListing
     shuttles:
-    - Jaguar
     - Ocelot
   - type: CompanyAccessReader
     requiredCompanies:
     - TSF
-
-- type: entity
-  id: LedokolAttachmentComputer
-  parent: BaseCarrierComputer
-  name: ledokol attachment console
-  components:
-  - type: ShipyardListing
-    shuttles:
-    - Molotok
-    - Kopye
-    - Kupol
-
-- type: entity
-  id: WindreignCarrierComputer
-  parent: BaseCarrierComputer
-  name: windreign shipyard console
-  components:
-  - type: ShipyardListing
-    shuttles:
-    - Antlion
-    - StratoRat
 
 - type: entity
   id: JupiterCarrierComputer
@@ -115,13 +93,12 @@
   components:
   - type: ShipyardListing
     shuttles:
-    - Hazel
     - Tethys
-    - Eris
     - Layak
-    - Metis
-    - Kalisto
-    - Prowler
+    - Scorpion
+    - Bazalt
+    - Gadfly
+    - Ontos
   - type: Sprite
     sprite: _NF/Structures/Machines/computers.rsi
     layers:
@@ -133,7 +110,6 @@
       state: shipyard_pdv
     - map: ["computerLayerKeys"]
       state: telesci_key
-
 
 - type: entity
   id: PDVMotleyAnneCarrierComputer
@@ -156,24 +132,3 @@
       state: shipyard_blackmarket
     - map: ["computerLayerKeys"]
       state: blackmarket_key
-
-- type: entity
-  id: RavagerCarrierComputer
-  parent: BaseCarrierComputer
-  name: ravager shipyard console
-  components:
-  - type: ShipyardListing
-    shuttles:
-    - Rook
-    - Taser
-    - Hound
-
-- type: entity
-  id: BalorCarrierComputer
-  parent: BaseCarrierComputer
-  name: balor shipyard console
-  components:
-  - type: ShipyardListing
-    shuttles:
-    - Rac-Man
-    - Bow-Man

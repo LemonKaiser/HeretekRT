@@ -6,6 +6,7 @@ using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.Database;
 using Content.Server.GameTicking.Events;
+using Content.Server._Battlefield14.FactionTracking;
 using Content.Server.Ghost;
 using Content.Server.Spawners.Components;
 using Content.Server.Speech.Components;
@@ -549,6 +550,26 @@ namespace Content.Server.GameTicking
 
             if (!_userDb.IsLoadComplete(player))
                 return;
+            // Mono/BF14 start
+            if (jobId != null)
+            {
+                var factionTracking = EntityManager.System<FactionTrackingSystem>();
+                if (CurrentPreset != null && CurrentPreset.AutobalancerEnabled && _jobs.TryGetDepartment(jobId, out var dept))
+                {
+                    string? faction = null;
+                    if (FactionTrackingSystem.BluforDepartments.Contains(dept.ID))
+                        faction = "blufor";
+                    else if (FactionTrackingSystem.RedforDepartments.Contains(dept.ID))
+                        faction = "redfor";
+
+                    if (faction != null && factionTracking.IsFactionOverpopulated(faction, this))
+                    {
+                        _chatManager.DispatchServerMessage(player, Loc.GetString("autobalance-team-full"));
+                        return;
+                    }
+                }
+            }
+            // Mono/BF14 end
 
             if (IsWh40kOnboardingBlocking(player.UserId))
             {

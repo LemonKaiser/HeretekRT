@@ -419,7 +419,8 @@ namespace Content.Client.Lobby
 
             if (_gameTicker.ServerInfoBlob != null)
             {
-                //Lobby!.ServerInfo.SetInfoBlob(_gameTicker.ServerInfoBlob); // Frontier: ???
+                // ServerInfo UI is not present in this fork. Keep the blob available
+                // for clients that implement the optional panel.
             }
         }
 
