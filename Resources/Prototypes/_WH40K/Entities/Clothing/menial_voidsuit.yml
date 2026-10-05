@@ -1,0 +1,29 @@
+- type: entity
+  parent: ClothingOuterHardsuitSalvage
+  id: ClothingOuterHardsuitMenial
+  name: menial voidsuit
+  description: A voidsuit patterned for use by technical laborers. Has some low-end armor plating.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/menial.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/menial.rsi
+  - type: ToggleableClothing # Goobstation - Modsuits change - Mono - this is a solution for helmet attachment/cover to not fit on hardsuits
+    requiredSlot: outerclothing
+    blockUnequipWhenAttached: false
+    replaceCurrentClothing: true
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitMenial
+      helmetcover: ClothingHeadHelmetCoverBlock
+      helmetattachment: ClothingHeadHelmetAttachmentBlock
+
+- type: entity
+  parent: ClothingHeadHelmetHardsuitSalvage
+  id: ClothingHeadHelmetHardsuitMenial
+  name: menial voidsuit helmet
+  description: A voidsuit helmet patterned for use by technical laborers. Has some low-end armor plating and dual floodlights.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/menial.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/menial.rsi
