@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Shuttles.Components;
+using Content.Server.Explosion.EntitySystems;
 using Content.Server.Shuttles.Events;
 using Content.Server.Station.Events;
 using Content.Shared.Atmos.Components; // Mono
@@ -1385,18 +1386,20 @@ public sealed partial class ShuttleSystem
     /// <summary>
     /// Flattens / deletes everything under the grid upon FTL.
     /// </summary>
-    private void Smimsh(EntityUid uid, FixturesComponent? manager = null, MapGridComponent? grid = null, TransformComponent? xform = null)
+    public void Smimsh(EntityUid uid, FixturesComponent? manager = null, MapGridComponent? grid = null, TransformComponent? xform = null, EntityUid? crushMap = null, bool explodeGrids = false, HashSet<EntityUid>? ignoredGrids = null)
     {
-        if (!Resolve(uid, ref manager, ref grid, ref xform) || xform.MapUid == null)
+        if (!Resolve(uid, ref manager, ref grid, ref xform))
             return;
 
-        if (!TryComp(xform.MapUid, out BroadphaseComponent? lookup))
+        var mapUid = crushMap ?? xform.MapUid;
+        if (mapUid == null || !TryComp(mapUid, out BroadphaseComponent? lookup))
             return;
 
         // Flatten anything not parented to a grid.
-        var transform = _physics.GetRelativePhysicsTransform((uid, xform), xform.MapUid.Value);
+        var transform = _physics.GetRelativePhysicsTransform((uid, xform), mapUid.Value);
         var aabbs = new List<Box2>(manager.Fixtures.Count);
         var tileSet = new List<(Vector2i, Tile)>();
+        var crushedGrids = new HashSet<EntityUid>();
 
         foreach (var fixture in manager.Fixtures.Values)
         {
@@ -1415,11 +1418,23 @@ public sealed partial class ShuttleSystem
 
             // Handle clearing biome stuff as relevant.
             tileSet.Clear();
-            _biomes.ReserveTiles(xform.MapUid.Value, aabb, tileSet);
+            _biomes.ReserveTiles(mapUid.Value, aabb, tileSet);
             _lookupEnts.Clear();
             _immuneEnts.Clear();
             // TODO: Ideally we'd query first BEFORE moving grid but needs adjustments above.
-            _lookup.GetLocalEntitiesIntersecting(xform.MapUid.Value, fixture.Shape, transform, _lookupEnts, flags: LookupFlags.Uncontained, lookup: lookup);
+            _lookup.GetLocalEntitiesIntersecting(mapUid.Value, fixture.Shape, transform, _lookupEnts, flags: LookupFlags.Uncontained, lookup: lookup);
+
+            if (explodeGrids)
+            {
+                _mapManager.FindGridsIntersecting(mapUid.Value, fixture.Shape, transform,
+                    (EntityUid gridEnt, MapGridComponent _) =>
+                    {
+                        if (gridEnt != uid && (ignoredGrids == null || !ignoredGrids.Contains(gridEnt)))
+                            crushedGrids.Add(gridEnt);
+
+                        return true;
+                    }, approx: false, includeMap: false);
+            }
 
             foreach (var ent in _lookupEnts)
             {
@@ -1430,6 +1445,11 @@ public sealed partial class ShuttleSystem
 
                 // If it's on our grid ignore it.
                 if (!_xformQuery.TryComp(ent, out var childXform) || childXform.GridUid == uid)
+                {
+                    continue;
+                }
+
+                if (ignoredGrids != null && childXform.GridUid != null && ignoredGrids.Contains(childXform.GridUid.Value))
                 {
                     continue;
                 }
@@ -1453,8 +1473,56 @@ public sealed partial class ShuttleSystem
             }
         }
 
-        var ev = new ShuttleFlattenEvent(xform.MapUid.Value, aabbs);
+        foreach (var gridEnt in crushedGrids)
+        {
+            CrushGrid(gridEnt, uid);
+        }
+
+        var ev = new ShuttleFlattenEvent(mapUid.Value, aabbs);
         RaiseLocalEvent(ref ev);
+    }
+
+    private const float CrushIntensityPerArea = 5f;
+    private const float CrushMinIntensity = 300f;
+    private const float CrushMaxIntensity = 25000f;
+
+    private void CrushGrid(EntityUid crushed, EntityUid crusher)
+    {
+        if (!TryComp<MapGridComponent>(crushed, out var crushedGrid) ||
+            !TryComp<MapGridComponent>(crusher, out var crusherGrid))
+            return;
+
+        var crushedAabb = _transform.GetWorldMatrix(crushed).TransformBox(crushedGrid.LocalAABB);
+        var crusherAabb = _transform.GetWorldMatrix(crusher).TransformBox(crusherGrid.LocalAABB);
+        var overlap = crushedAabb.Intersect(crusherAabb);
+        var epicentre = overlap.Width > 0f && overlap.Height > 0f
+            ? overlap.Center
+            : (crushedAabb.Center + crusherAabb.Center) / 2f;
+
+        _logger.Add(LogType.Explosion, LogImpact.Extreme,
+            $"{ToPrettyString(crushed)} and {ToPrettyString(crusher)} crushed into each other during z-level transit");
+
+        ExplodeCrushedGrid(crushed, crushedGrid, epicentre);
+        ExplodeCrushedGrid(crusher, crusherGrid, epicentre);
+    }
+
+    private void ExplodeCrushedGrid(EntityUid gridUid, MapGridComponent grid, Vector2 worldEpicentre)
+    {
+        var xform = Transform(gridUid);
+        if (xform.MapID == MapId.Nullspace)
+            return;
+
+        var area = grid.LocalAABB.Width * grid.LocalAABB.Height;
+        var intensity = Math.Clamp(area * CrushIntensityPerArea, CrushMinIntensity, CrushMaxIntensity);
+        var localEpicentre = Vector2.Transform(worldEpicentre, _transform.GetInvWorldMatrix(gridUid));
+        _explosion.QueueExplosion(
+            _transform.ToMapCoordinates(new EntityCoordinates(gridUid, localEpicentre)),
+            ExplosionSystem.DefaultExplosionPrototypeId,
+            intensity,
+            slope: 5f,
+            maxTileIntensity: 100f,
+            cause: null,
+            addLog: false);
     }
 
     /// <summary>

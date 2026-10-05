@@ -155,6 +155,18 @@ namespace Content.Shared.Maps
         /// </summary>
         [DataField("indestructible")] public bool Indestructible = false;
 
+        /// <summary>
+        /// CrystalEdge: used for lighting calculations through z-levels.
+        /// </summary>
+        [DataField]
+        public bool Transparent = false;
+
+        /// <summary>
+        /// CrystalEdge: RSI path for icon-smooth border sprites.
+        /// </summary>
+        [DataField]
+        public ResPath? IconSmoothSprite { get; private set; }
+
         public void AssignTileId(ushort id)
         {
             TileId = id;

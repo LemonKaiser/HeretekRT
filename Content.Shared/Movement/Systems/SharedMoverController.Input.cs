@@ -51,6 +51,8 @@ namespace Content.Shared.Movement.Systems
                 .Bind(ContentKeyFunctions.ShuttleRotateLeft, new ShuttleInputCmdHandler(this, ShuttleButtons.RotateLeft))
                 .Bind(ContentKeyFunctions.ShuttleRotateRight, new ShuttleInputCmdHandler(this, ShuttleButtons.RotateRight))
                 .Bind(ContentKeyFunctions.ShuttleBrake, new ShuttleInputCmdHandler(this, ShuttleButtons.Brake))
+                .Bind(ContentKeyFunctions.ShuttleAscend, new ShuttleInputCmdHandler(this, ShuttleButtons.AscendZ))
+                .Bind(ContentKeyFunctions.ShuttleDescend, new ShuttleInputCmdHandler(this, ShuttleButtons.DescendZ))
                 .Register<SharedMoverController>();
 
             SubscribeLocalEvent<InputMoverComponent, ComponentInit>(OnInputInit);
@@ -634,7 +636,7 @@ namespace Content.Shared.Movement.Systems
     }
 
     [Flags]
-    public enum ShuttleButtons : byte
+    public enum ShuttleButtons : ushort
     {
         None = 0,
         StrafeUp = 1 << 0,
@@ -644,6 +646,8 @@ namespace Content.Shared.Movement.Systems
         RotateLeft = 1 << 4,
         RotateRight = 1 << 5,
         Brake = 1 << 6,
+        AscendZ = 1 << 7,
+        DescendZ = 1 << 8,
     }
 
 }

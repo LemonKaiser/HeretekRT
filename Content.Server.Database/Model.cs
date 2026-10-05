@@ -68,6 +68,8 @@ namespace Content.Server.Database
         public DbSet<Wh40kPersistentInventoryServerEpoch> Wh40kPersistentInventoryServerEpochs { get; set; } = null!;
         public DbSet<WH40KMute> WH40KMute { get; set; } = null!;
         public DbSet<WH40KUnmute> WH40KUnmute { get; set; } = null!;
+        public DbSet<WayfarerSafetyDepositBox> WayfarerSafetyDepositBox { get; set; } = null!;
+        public DbSet<WayfarerSafetyDepositBoxItem> WayfarerSafetyDepositBoxItem { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -568,6 +570,19 @@ namespace Content.Server.Database
 
             modelBuilder.Entity<Wh40kPersistentInventoryServerEpoch>()
                 .HasIndex(epoch => epoch.StartedAt);
+
+            modelBuilder.Entity<WayfarerSafetyDepositBox>()
+                .HasIndex(box => box.BoxId)
+                .IsUnique();
+            modelBuilder.Entity<WayfarerSafetyDepositBox>()
+                .HasIndex(box => box.OwnerUserId);
+            modelBuilder.Entity<WayfarerSafetyDepositBoxItem>()
+                .HasOne(item => item.Box)
+                .WithMany(box => box.Items)
+                .HasForeignKey(item => item.BoxId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<WayfarerSafetyDepositBoxItem>()
+                .HasIndex(item => item.BoxId);
         }
 
         public virtual IQueryable<AdminLog> SearchLogs(IQueryable<AdminLog> query, string searchText)
@@ -2007,5 +2022,29 @@ namespace Content.Server.Database
 
         public DateTime? CleanShutdownAt { get; set; }
     }
+    public class WayfarerSafetyDepositBox
+    {
+        [Key] public int Id { get; set; }
+        public Guid BoxId { get; set; }
+        public Guid OwnerUserId { get; set; }
+        public int CharacterIndex { get; set; }
+        [Required] public string OwnerName { get; set; } = null!;
+        [Required] public string ProtoId { get; set; } = null!;
+        public string? Nickname { get; set; }
+        public DateTime PurchaseDate { get; set; }
+        public DateTime? LastWithdrawn { get; set; }
+        public int? LastWithdrawnRoundId { get; set; }
+        public List<WayfarerSafetyDepositBoxItem> Items { get; set; } = new();
+    }
+
+    public class WayfarerSafetyDepositBoxItem
+    {
+        [Key] public int Id { get; set; }
+        public int BoxId { get; set; }
+        public WayfarerSafetyDepositBox Box { get; set; } = null!;
+        [Required] public string EntityData { get; set; } = null!;
+        public DateTime DepositDate { get; set; }
+    }
+
     // Mono-End
 }

@@ -782,3 +782,6 @@
 # Deposit box blacklist
 - type: Tag
   id: SafetyDepositBlacklist
+
+- type: Tag
+  id: Unstashable

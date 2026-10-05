@@ -25,6 +25,37 @@ namespace Content.Server.Database.Migrations.Postgres
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Content.Server.Database.WayfarerSafetyDepositBox", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("integer").HasColumnName("wayfarer_safety_deposit_box_id");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("BoxId").HasColumnType("uuid").HasColumnName("box_id");
+                    b.Property<int>("CharacterIndex").HasColumnType("integer").HasColumnName("character_index");
+                    b.Property<DateTime?>("LastWithdrawn").HasColumnType("timestamp with time zone").HasColumnName("last_withdrawn");
+                    b.Property<int?>("LastWithdrawnRoundId").HasColumnType("integer").HasColumnName("last_withdrawn_round_id");
+                    b.Property<string>("Nickname").HasColumnType("text").HasColumnName("nickname");
+                    b.Property<string>("OwnerName").IsRequired().HasColumnType("text").HasColumnName("owner_name");
+                    b.Property<Guid>("OwnerUserId").HasColumnType("uuid").HasColumnName("owner_user_id");
+                    b.Property<string>("ProtoId").IsRequired().HasColumnType("text").HasColumnName("proto_id");
+                    b.Property<DateTime>("PurchaseDate").HasColumnType("timestamp with time zone").HasColumnName("purchase_date");
+                    b.HasKey("Id").HasName("PK_wayfarer_safety_deposit_box");
+                    b.HasIndex("BoxId").IsUnique();
+                    b.HasIndex("OwnerUserId");
+                    b.ToTable("wayfarer_safety_deposit_box", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.WayfarerSafetyDepositBoxItem", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("integer").HasColumnName("wayfarer_safety_deposit_box_item_id");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("BoxId").HasColumnType("integer").HasColumnName("box_id");
+                    b.Property<DateTime>("DepositDate").HasColumnType("timestamp with time zone").HasColumnName("deposit_date");
+                    b.Property<string>("EntityData").IsRequired().HasColumnType("text").HasColumnName("entity_data");
+                    b.HasKey("Id").HasName("PK_wayfarer_safety_deposit_box_item");
+                    b.HasIndex("BoxId").HasDatabaseName("IX_wayfarer_safety_deposit_box_item_box_id");
+                    b.ToTable("wayfarer_safety_deposit_box_item", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Admin", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -3437,6 +3468,22 @@ namespace Content.Server.Database.Migrations.Postgres
             modelBuilder.Entity("Content.Server.Database.WH40KMute", b =>
                 {
                     b.Navigation("Unmute");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.WayfarerSafetyDepositBoxItem", b =>
+                {
+                    b.HasOne("Content.Server.Database.WayfarerSafetyDepositBox", "Box")
+                        .WithMany("Items")
+                        .HasForeignKey("BoxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_wayfarer_safety_deposit_box_item_wayfarer_safety_deposit_box_box_id");
+                    b.Navigation("Box");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.WayfarerSafetyDepositBox", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

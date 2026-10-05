@@ -8,6 +8,12 @@ namespace Content.Shared.Gravity;
 public partial class SharedGravityGeneratorComponent : Component
 {
     /// <summary>
+    /// Maximum grid mass this generator can handle.
+    /// </summary>
+    [DataField]
+    public float MaxHandledMass;
+
+    /// <summary>
     /// A map of the sprites used by the gravity generator given its status.
     /// </summary>
     [DataField("spriteMap")]
