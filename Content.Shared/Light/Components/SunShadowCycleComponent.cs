@@ -1,12 +1,26 @@
 using System.Linq;
 using System.Numerics;
 using Robust.Shared.GameStates;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared.Light.Components;
 
 /// <summary>
 /// Applies <see cref="SunShadowComponent"/> direction vectors based on a time-offset. Will track <see cref="LightCycleComponent"/> on on MapInit
 /// </summary>
+[DataDefinition, Serializable, NetSerializable]
+public sealed partial class SunShadowCycleDirection
+{
+    [DataField]
+    public float Ratio;
+
+    [DataField]
+    public Vector2 Direction;
+
+    [DataField]
+    public float Alpha;
+}
+
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SunShadowCycleComponent : Component
 {
@@ -25,11 +39,11 @@ public sealed partial class SunShadowCycleComponent : Component
     /// Time to have each direction applied. Will lerp from the current value to the next one.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public List<(float Ratio, Vector2 Direction, float Alpha)> Directions = new()
+    public List<SunShadowCycleDirection> Directions = new()
     {
-        (0f, new Vector2(0f, 3f), 0f),
-        (0.25f, new Vector2(-3f, -0.1f), 0.5f),
-        (0.5f, new Vector2(0f, -3f), 0.8f),
-        (0.75f, new Vector2(3f, -0.1f), 0.5f),
+        new() { Ratio = 0f, Direction = new Vector2(0f, 3f), Alpha = 0f },
+        new() { Ratio = 0.25f, Direction = new Vector2(-3f, -0.1f), Alpha = 0.5f },
+        new() { Ratio = 0.5f, Direction = new Vector2(0f, -3f), Alpha = 0.8f },
+        new() { Ratio = 0.75f, Direction = new Vector2(3f, -0.1f), Alpha = 0.5f },
     };
 }

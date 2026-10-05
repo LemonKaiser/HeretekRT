@@ -95,6 +95,202 @@
           0.2
         ]
       ]
+    },
+    {
+      "name": "fire-candle-big",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-small",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-long",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-cup-big",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-cup-small",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-can-big",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "fire-candle-can-small",
+      "delays": [
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15
+        ]
+      ]
+    },
+    {
+      "name": "candle-long"
+    },
+    {
+      "name": "candle-big-cup"
+    },
+    {
+      "name": "candle-small-cup"
+    },
+    {
+      "name": "candle-big-can"
+    },
+    {
+      "name": "candle-small-can"
+    },
+    {
+      "name": "candle-long-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "candle-long-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "candle-small-can-inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "candle-small-can-inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "long-inhand-left-flame",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ]
+      ]
+    },
+    {
+      "name": "long-inhand-right-flame",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ]
+      ]
+    },
+    {
+      "name": "can-inhand-left-flame",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ]
+      ]
+    },
+    {
+      "name": "can-inhand-right-flame",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2
+        ]
+      ]
     }
   ]
 }

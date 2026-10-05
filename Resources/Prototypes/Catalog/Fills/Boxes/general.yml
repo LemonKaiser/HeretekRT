@@ -440,6 +440,12 @@
         amount: 2
       - id: CandlePurple
         amount: 2
+      - id: CandleLong
+        amount: 1
+      - id: CandleCup
+        amount: 1
+      - id: CandleChandelier
+        amount: 1
 
 - type: entity
   name: small candle box
@@ -458,6 +464,10 @@
         amount: 4
       - id: CandlePurpleSmall
         amount: 4
+      - id: CandleCupSmall
+        amount: 1
+      - id: CandleChandelierSmall
+        amount: 1
 
 - type: entity
   name: darts box

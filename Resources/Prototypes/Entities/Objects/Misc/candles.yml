@@ -40,7 +40,7 @@
           Heat: 0.1
     - type: FireVisuals
       sprite: Objects/Misc/candles.rsi
-      normalState: fire-big
+      normalState: fire-candle-big
     - type: WH40KLightEffects
       profile: Candle
       emitterLayer: Fire
@@ -63,6 +63,33 @@
         behaviors:
         - !type:DoActsBehavior
           acts: [ "Destruction" ]
+
+- type: entity
+  name: long candle
+  parent: Candle
+  id: CandleLong
+  components:
+  - type: Sprite
+    layers:
+      - state: candle-long
+  - type: FireVisuals
+    sprite: Objects/Misc/candles.rsi
+    normalState: fire-candle-long
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: candle-long-inhand-left
+      right:
+      - state: candle-long-inhand-right
+  - type: ToggleableVisuals
+    spriteLayer: null
+    inhandVisuals:
+      left:
+      - state: long-inhand-left-flame
+        shader: unshaded
+      right:
+      - state: long-inhand-right-flame
+        shader: unshaded
 
 - type: entity
   name: red candle
@@ -168,7 +195,7 @@
         - state: candle-small
           color: "#e2ca90"
     - type: FireVisuals
-      normalState: fire-small
+      normalState: fire-candle-small
     - type: Flammable
       firestacksOnIgnite: 2.0
     - type: Destructible
@@ -180,6 +207,84 @@
         - !type:SpawnEntitiesBehavior
         - !type:DoActsBehavior
           acts: [ "Destruction" ]
+
+- type: entity
+  name: candle in a cup
+  parent: Candle
+  id: CandleCup
+  components:
+  - type: Sprite
+    layers:
+      - state: candle-big-cup
+  - type: FireVisuals
+    sprite: Objects/Misc/candles.rsi
+    normalState: fire-candle-cup-big
+
+- type: entity
+  name: small candle in a cup
+  parent: CandleSmall
+  id: CandleCupSmall
+  components:
+  - type: Sprite
+    layers:
+      - state: candle-small-cup
+  - type: FireVisuals
+    sprite: Objects/Misc/candles.rsi
+    normalState: fire-candle-cup-small
+
+- type: entity
+  name: chandelier candle
+  parent: Candle
+  id: CandleChandelier
+  components:
+  - type: Sprite
+    layers:
+      - state: candle-big-can
+  - type: FireVisuals
+    sprite: Objects/Misc/candles.rsi
+    normalState: fire-candle-can-big
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: candle-small-can-inhand-left
+      right:
+      - state: candle-small-can-inhand-right
+  - type: ToggleableVisuals
+    spriteLayer: null
+    inhandVisuals:
+      left:
+      - state: can-inhand-left-flame
+        shader: unshaded
+      right:
+      - state: can-inhand-right-flame
+        shader: unshaded
+
+- type: entity
+  name: small chandelier candle
+  parent: CandleSmall
+  id: CandleChandelierSmall
+  components:
+  - type: Sprite
+    layers:
+      - state: candle-small-can
+  - type: FireVisuals
+    sprite: Objects/Misc/candles.rsi
+    normalState: fire-candle-can-small
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: candle-small-can-inhand-left
+      right:
+      - state: candle-small-can-inhand-right
+  - type: ToggleableVisuals
+    spriteLayer: null
+    inhandVisuals:
+      left:
+      - state: can-inhand-left-flame
+        shader: unshaded
+      right:
+      - state: can-inhand-right-flame
+        shader: unshaded
 
 - type: entity
   name: small red candle
@@ -286,7 +391,7 @@
     layers:
       - state: candle-big
         color: "#decb8e"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: PointLight
     color: "#e39c40"
@@ -305,7 +410,7 @@
     layers:
       - state: candle-big
         color: "#a12349"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -325,7 +430,7 @@
     layers:
       - state: candle-big
         color: "#425d7d"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -345,7 +450,7 @@
     layers:
       - state: candle-big
         color: "#1b1724"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -365,7 +470,7 @@
     layers:
       - state: candle-big
         color: "#5d997e"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -385,7 +490,7 @@
     layers:
       - state: candle-big
         color: "#984aa1"
-      - state: fire-big
+      - state: fire-candle-big
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -405,7 +510,7 @@
     layers:
       - state: candle-small
         color: "#a12349"
-      - state: fire-small
+      - state: fire-candle-small
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -425,7 +530,7 @@
     layers:
       - state: candle-small
         color: "#425d7d"
-      - state: fire-small
+      - state: fire-candle-small
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -445,7 +550,7 @@
     layers:
       - state: candle-small
         color: "#1b1724"
-      - state: fire-small
+      - state: fire-candle-small
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -465,7 +570,7 @@
     layers:
       - state: candle-small
         color: "#5d997e"
-      - state: fire-small
+      - state: fire-candle-small
         shader: unshaded
   - type: Item
     inhandVisuals:
@@ -485,7 +590,7 @@
     layers:
       - state: candle-small
         color: "#984aa1"
-      - state: fire-small
+      - state: fire-candle-small
         shader: unshaded
   - type: Item
     inhandVisuals:
