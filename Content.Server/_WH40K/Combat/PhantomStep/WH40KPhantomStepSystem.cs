@@ -13,6 +13,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
 using Content.Shared.Standing;
+using Content.Shared.Tag;
 using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Hitscan.Events;
@@ -23,6 +24,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -41,7 +43,10 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
     [Dependency] private StandingStateSystem _standing = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private TagSystem _tags = default!;
     [Dependency] private TurfSystem _turf = default!;
+
+    private static readonly ProtoId<TagPrototype> UnavoidableTrapTag = "UnavoidableTrap";
 
     public override void Initialize()
     {
@@ -578,6 +583,9 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (_turf.IsTileBlocked(tileRef, CollisionGroup.MobMask))
             return false;
 
+        if (IsHazardousTile(tileRef))
+            return false;
+
         coordinates = _turf.GetTileCenter(tileRef);
         return true;
     }
@@ -597,7 +605,19 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (tileRef.Tile.IsEmpty || _turf.IsSpace(tileRef))
             return false;
 
-        return !_turf.IsTileBlocked(tileRef, CollisionGroup.MobMask);
+        return !_turf.IsTileBlocked(tileRef, CollisionGroup.MobMask) &&
+               !IsHazardousTile(tileRef);
+    }
+
+    private bool IsHazardousTile(TileRef tileRef)
+    {
+        foreach (var entity in _turf.GetEntitiesInTile(_turf.GetTileCenter(tileRef), LookupFlags.Static))
+        {
+            if (_tags.HasTag(entity, UnavoidableTrapTag))
+                return true;
+        }
+
+        return false;
     }
 
     private static Vector2 Rotate(Vector2 vector, float radians)

@@ -48,6 +48,8 @@ public sealed partial class HitscanBasicVisualsSystem : EntitySystem
             shotAngle -= _transform.GetWorldRotation(fromXform);
         }
 
+        var visualAngle = shotAngle + hitscan.AngleOffset;
+
         if (distance >= 1f)
         {
             if (hitscan.MuzzleFlash != null)
@@ -55,7 +57,7 @@ public sealed partial class HitscanBasicVisualsSystem : EntitySystem
                 var coords = fromCoordinates.Offset(shotAngle.ToVec().Normalized() / 2);
                 var netCoords = GetNetCoordinates(coords);
 
-                sprites.Add((netCoords, shotAngle, hitscan.MuzzleFlash, 1f));
+                sprites.Add((netCoords, visualAngle, hitscan.MuzzleFlash, 1f));
             }
 
             if (hitscan.TravelFlash != null)
@@ -63,7 +65,7 @@ public sealed partial class HitscanBasicVisualsSystem : EntitySystem
                 var coords = fromCoordinates.Offset(shotAngle.ToVec() * (distance + 0.5f) / 2);
                 var netCoords = GetNetCoordinates(coords);
 
-                sprites.Add((netCoords, shotAngle, hitscan.TravelFlash, distance - 1.5f));
+                sprites.Add((netCoords, visualAngle, hitscan.TravelFlash, distance - 1.5f));
             }
         }
 
@@ -72,7 +74,7 @@ public sealed partial class HitscanBasicVisualsSystem : EntitySystem
             var coords = fromCoordinates.Offset(shotAngle.ToVec() * distance);
             var netCoords = GetNetCoordinates(coords);
 
-            sprites.Add((netCoords, shotAngle.FlipPositive(), hitscan.ImpactFlash, 1f));
+            sprites.Add((netCoords, visualAngle.FlipPositive(), hitscan.ImpactFlash, 1f));
         }
 
         if (sprites.Count > 0)

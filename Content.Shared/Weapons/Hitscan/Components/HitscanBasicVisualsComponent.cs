@@ -10,6 +10,13 @@ namespace Content.Shared.Weapons.Hitscan.Components;
 public sealed partial class HitscanBasicVisualsComponent : Component
 {
     /// <summary>
+    /// Rotation adjustment for sprites whose authored forward direction differs from the
+    /// direction used by the hitscan trace.
+    /// </summary>
+    [DataField]
+    public Angle AngleOffset = Angle.Zero;
+
+    /// <summary>
     /// The muzzle flash from the hitscan weapon.
     /// </summary>
     [DataField]

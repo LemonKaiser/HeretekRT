@@ -13,6 +13,8 @@
     # - /Audio/Lobby/at_any_cost.ogg
     # - /Audio/Lobby/a_walk_in_the_woods.ogg
     # - /Audio/Lobby/monument.ogg
+    # - /Audio/_Mono/Jukebox/enkan.ogg
+    # - /Audio/_Mono/Jukebox/onirya.ogg
 
     # Warhammer 40,000: Rogue Trader — набор для Heretek.
     - /Audio/Lobby/wh40k_semper_servientes.ogg
@@ -22,5 +24,3 @@
     - /Audio/Lobby/wh40k_martyrs_endurance.ogg
     - /Audio/Lobby/wh40k_end_of_the_journey.ogg
 
-    - /Audio/_Mono/Jukebox/enkan.ogg
-    - /Audio/_Mono/Jukebox/onirya.ogg

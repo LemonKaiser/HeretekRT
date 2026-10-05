@@ -75,8 +75,11 @@ public sealed class EntityHealthBarOverlay : Overlay
             if (damageableComponent.DamageContainerID == null || !DamageContainers.Contains(damageableComponent.DamageContainerID))
                 continue;
 
-            // we use the status icon component bounds if specified otherwise use sprite
-            var bounds = _entManager.GetComponentOrNull<StatusIconComponent>(uid)?.Bounds ?? spriteComponent.Bounds;
+            // Status icon bounds are authored in the sprite's unscaled local space. Apply the
+            // sprite scale here as well so health bars follow custom-sized bodies (for example,
+            // Astartes) instead of falling back to the default 1x1 bounds.
+            var statusIconBounds = _entManager.GetComponentOrNull<StatusIconComponent>(uid)?.Bounds;
+            var bounds = statusIconBounds?.Scale(spriteComponent.Scale) ?? spriteComponent.Bounds;
             var worldPos = _transform.GetWorldPosition(xform, xformQuery);
 
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))

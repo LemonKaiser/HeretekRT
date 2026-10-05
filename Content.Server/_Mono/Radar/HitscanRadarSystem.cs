@@ -25,7 +25,7 @@ public sealed partial class HitscanRadarSystem : EntitySystem
         var radarComponent = EnsureComp<HitscanRadarComponent>(radarEntity);
         var startPos = _transform.ToMapCoordinates(ev.FromCoordinates).Position;
         var endPos = startPos + ev.ShotDirection.Normalized() * ev.DistanceTried;
-        InheritShooterSettings(shooter, radarComponent); // Grab visual fields from hitscan entity and imbue radarComponent with em
+        InheritSignatureSettings(ent.Comp, radarComponent);
 
         radarComponent.StartPosition = startPos;
         radarComponent.EndPosition = endPos;
@@ -33,15 +33,12 @@ public sealed partial class HitscanRadarSystem : EntitySystem
 
         ScheduleEntityDespawn(radarEntity, radarComponent.LifeTime); // Make sure the radar entity gets cleaned up
     }
-    private void InheritShooterSettings(EntityUid shooter, HitscanRadarComponent radarComponent)
+    private static void InheritSignatureSettings(HitscanRadarSignatureComponent signature, HitscanRadarComponent radarComponent)
     {
-        if (!TryComp<HitscanRadarComponent>(shooter, out var shooterComponent))
-            return;
-
-        radarComponent.RadarColor = shooterComponent.RadarColor;
-        radarComponent.LineThickness = shooterComponent.LineThickness;
-        radarComponent.Enabled = shooterComponent.Enabled;
-        radarComponent.LifeTime = shooterComponent.LifeTime;
+        radarComponent.RadarColor = signature.RadarColor;
+        radarComponent.LineThickness = signature.LineThickness;
+        radarComponent.Enabled = signature.Enabled;
+        radarComponent.LifeTime = signature.LifeTime;
     }
     private void ScheduleEntityDespawn(EntityUid entity, float lifetime)
     {

@@ -233,6 +233,7 @@
       types:
         Heat: 20
   - type: HitscanBasicVisuals
+    angleOffset: 180
     muzzleFlash:
       sprite: _WH40K/Objects/Weapons/Guns/Projectiles/projectiles.rsi
       state: muzzle_beam_multilas
@@ -242,6 +243,8 @@
     impactFlash:
       sprite: _WH40K/Objects/Weapons/Guns/Projectiles/projectiles.rsi
       state: impact_beam_multilas
+  - type: HitscanRadarSignature
+    radarColor: "#FFD34E"
 
 - type: entity
   id: BasicHitscanElectricArc

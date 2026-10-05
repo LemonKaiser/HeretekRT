@@ -496,6 +496,11 @@
     damage:
       types:
         Piercing: 60
+  - type: ShipWeaponProjectile
+  - type: RadarBlip
+    scale: 0.4
+    shape: circle
+    radarColor: "#FFFFFF"
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
