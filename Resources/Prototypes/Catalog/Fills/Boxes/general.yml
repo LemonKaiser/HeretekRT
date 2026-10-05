@@ -431,7 +431,7 @@
   - type: StorageFill
     contents:
       - id: Candle
-        amount: 4
+        amount: 1
       - id: CandleBlue
         amount: 2
       - id: CandleRed
@@ -455,7 +455,7 @@
   - type: StorageFill
     contents:
       - id: CandleSmall
-        amount: 8
+        amount: 6
       - id: CandleBlueSmall
         amount: 4
       - id: CandleRedSmall
