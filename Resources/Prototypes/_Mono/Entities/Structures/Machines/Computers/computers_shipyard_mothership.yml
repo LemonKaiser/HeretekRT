@@ -132,3 +132,48 @@
       state: shipyard_blackmarket
     - map: ["computerLayerKeys"]
       state: blackmarket_key
+
+# Compatibility prototypes for legacy shuttle maps. These consoles were
+# removed during the shipyard refactor, but the corresponding published maps
+# remain loadable and still contain these entity prototypes.
+- type: entity
+  id: LedokolAttachmentComputer
+  parent: BaseCarrierComputer
+  name: ledokol attachment console
+  components:
+  - type: ShipyardListing
+    shuttles:
+    - Molotok
+    - Kopye
+    - Kupol
+
+- type: entity
+  id: WindreignCarrierComputer
+  parent: BaseCarrierComputer
+  name: windreign shipyard console
+  components:
+  - type: ShipyardListing
+    shuttles:
+    - Antlion
+    - StratoRat
+
+- type: entity
+  id: RavagerCarrierComputer
+  parent: BaseCarrierComputer
+  name: ravager shipyard console
+  components:
+  - type: ShipyardListing
+    shuttles:
+    - Rook
+    - Taser
+    - Hound
+
+- type: entity
+  id: BalorCarrierComputer
+  parent: BaseCarrierComputer
+  name: balor shipyard console
+  components:
+  - type: ShipyardListing
+    shuttles:
+    - Rac-Man
+    - Bow-Man
