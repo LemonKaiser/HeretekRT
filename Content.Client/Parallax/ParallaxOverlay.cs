@@ -8,6 +8,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Maths;
 
 namespace Content.Client.Parallax;
 
@@ -64,8 +65,18 @@ public sealed partial class ParallaxOverlay : Overlay
             worldHandle.UseShader(shader);
             var tex = layer.Texture;
 
+            var textureSize = (Vector2) tex.Size;
+            UIBox2? textureRegion = null;
+            var animation = layer.Config.Animation;
+            if (animation is not null)
+            {
+                var frame = ParallaxAnimation.GetFrame(realTime, animation);
+                textureSize = animation.FrameSize;
+                textureRegion = ParallaxAnimation.GetFrameRegion(frame, animation);
+            }
+
             // Size of the texture in world units.
-            var size = (tex.Size / (float) EyeManager.PixelsPerMeter) * layer.Config.Scale;
+            var size = (textureSize / EyeManager.PixelsPerMeter) * layer.Config.Scale;
 
             // The "home" position is the effective origin of this layer.
             // Parallax shifting is relative to the home, and shifts away from the home and towards the Eye centre.
@@ -102,17 +113,24 @@ public sealed partial class ParallaxOverlay : Overlay
                 {
                     for (var y = flooredBL.Y; y < args.WorldAABB.Top; y += size.Y)
                     {
-                        worldHandle.DrawTextureRect(tex, Box2.FromDimensions(new Vector2(x, y), size));
+                        worldHandle.DrawTextureRectRegion(
+                            tex,
+                            Box2.FromDimensions(new Vector2(x, y), size),
+                            subRegion: textureRegion);
                     }
                 }
             }
             else
             {
-                worldHandle.DrawTextureRect(tex, Box2.FromDimensions(originBL, size));
+                worldHandle.DrawTextureRectRegion(
+                    tex,
+                    Box2.FromDimensions(originBL, size),
+                    subRegion: textureRegion);
             }
         }
 
         worldHandle.UseShader(null);
     }
+
 }
 

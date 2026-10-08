@@ -33,7 +33,7 @@ namespace Content.Client.Verbs.UI
     {
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private ContextMenuUIController _context = default!;
-        [UISystemDependency] private readonly LocalizationCultureHandshakeSystem _cultureHandshake = default!;
+        [UISystemDependency] private readonly LocalizationCultureHandshakeSystem? _cultureHandshake = default;
         [Dependency] private ILocalizationManager _localization = default!;
 
         [UISystemDependency] private readonly CombatModeSystem _combatMode = default!;
@@ -54,7 +54,8 @@ namespace Content.Client.Verbs.UI
             _context.OnContextKeyEvent += OnKeyBindDown;
             _context.OnContextClosed += Close;
             _verbSystem.OnVerbsResponse += HandleVerbsResponse;
-            _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
+            if (_cultureHandshake != null)
+                _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
         }
 
         public void OnStateExited(GameplayState state)
@@ -63,7 +64,8 @@ namespace Content.Client.Verbs.UI
             _context.OnContextClosed -= Close;
             if (_verbSystem != null)
                 _verbSystem.OnVerbsResponse -= HandleVerbsResponse;
-            _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
+            if (_cultureHandshake != null)
+                _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
             Close();
         }
 
@@ -72,7 +74,8 @@ namespace Content.Client.Verbs.UI
             _context.OnContextKeyEvent += OnKeyBindDown;
             _context.OnContextClosed += Close;
             _verbSystem.OnVerbsResponse += HandleVerbsResponse;
-            _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
+            if (_cultureHandshake != null)
+                _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
         }
 
         public void OnStateExited(MappingState state)
@@ -81,7 +84,8 @@ namespace Content.Client.Verbs.UI
             _context.OnContextClosed -= Close;
             if (_verbSystem != null)
                 _verbSystem.OnVerbsResponse -= HandleVerbsResponse;
-            _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
+            if (_cultureHandshake != null)
+                _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
             Close();
         }
 

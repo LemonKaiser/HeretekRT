@@ -480,6 +480,9 @@ ent-ClothingHeadHelmetHardsuitVoidsmanSergeant = шлем сержанта во�
 ent-ClothingHeadHelmetHardsuitVoidsmanStandard = шлем войдсмена
     .desc = Шлем стандартного скафандра войдсмена.
 
+ent-ClothingHeadHelmetHardsuitAristocrat = аристократический шлем скафандра
+    .desc = Выдвижной шлем скафандра с отделкой для знати.
+
 ent-ClothingHeadHelmetHeresiarchCardinal =  шлем кардинала ересиарха
     .desc = Шлем кардинала ересиарха.
 
@@ -1024,6 +1027,9 @@ ent-ClothingOuterHardsuitVoidsmanSergeant = скафандр сержанта в
 
 ent-ClothingOuterHardsuitVoidsmanStandard = скафандр войдсмена
     .desc = Базовый скафандр войдсмена. Достаточно удобен для комфортного использования в безатмосферных областях.
+
+ent-ClothingOuterHardsuitAristocrat = аристократический скафандр
+    .desc = Изысканный скафандр для знати. Шлем убирается в воротник, когда не используется.
 
 ent-ClothingOuterHelldriverArmor = броня "Infiltrator"
     .desc = Эта броня — стандартная броня Суперземли, изготовленная из того же титанового сплава, что и корпус Уничтожителя.

@@ -486,6 +486,9 @@ ent-ClothingHeadHelmetHardsuitVoidsmanSergeant = Sergeant Voidsman helmet
 ent-ClothingHeadHelmetHardsuitVoidsmanStandard = voidsman helmet
     .desc = Helmet of a standard voidsman suit.
 
+ent-ClothingHeadHelmetHardsuitAristocrat = aristocratic hardsuit helmet
+    .desc = A retractable hardsuit helmet with a polished noble finish.
+
 ent-ClothingHeadHelmetHeresiarchCardinal = Cardinal heresiarch helmet
     .desc = Cardinal heresiarch helmet.
 
@@ -1030,6 +1033,9 @@ ent-ClothingOuterHardsuitVoidsmanSergeant = Sergeant Voidsman's suit
 
 ent-ClothingOuterHardsuitVoidsmanStandard = voidsman suit
     .desc = Basic voidsman suit. Convenient enough for comfortable use in non-atmospheric areas.
+
+ent-ClothingOuterHardsuitAristocrat = aristocratic hardsuit
+    .desc = A refined voidsuit worn by the nobility. Its helmet retracts into the collar when not in use.
 
 ent-ClothingOuterHelldriverArmor = "Infiltrator" Armor
     .desc = This armor is the standard Super-Earth armor, made of the same titanium alloy as the Annihilator's body.

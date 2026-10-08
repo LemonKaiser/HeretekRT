@@ -54,9 +54,19 @@ public sealed partial class ParallaxControl : Control
         foreach (var layer in _parallaxManager.GetParallaxLayers(_parallaxPrototype))
         {
             var tex = layer.Texture;
+            var textureSize = (Vector2) tex.Size;
+            UIBox2? textureRegion = null;
+            var animation = layer.Config.Animation;
+            if (animation is not null)
+            {
+                var frame = ParallaxAnimation.GetFrame(currentTime, animation);
+                textureSize = animation.FrameSize;
+                textureRegion = ParallaxAnimation.GetFrameRegion(frame, animation);
+            }
+
             var texSize = new Vector2i(
-                (int)(tex.Size.X * Size.X * layer.Config.Scale.X / 1920 * ScaleX),
-                (int)(tex.Size.Y * Size.X * layer.Config.Scale.Y / 1920 * ScaleY)
+                (int)(textureSize.X * Size.X * layer.Config.Scale.X / 1920 * ScaleX),
+                (int)(textureSize.Y * Size.X * layer.Config.Scale.Y / 1920 * ScaleY)
             );
             var ourSize = PixelSize;
 
@@ -80,14 +90,20 @@ public sealed partial class ParallaxControl : Control
                 {
                     for (var y = -scaledOffset.Y; y < ourSize.Y; y += texSize.Y)
                     {
-                        handle.DrawTextureRect(tex, UIBox2.FromDimensions(new Vector2(x, y), texSize));
+                        handle.DrawTextureRectRegion(
+                            tex,
+                            UIBox2.FromDimensions(new Vector2(x, y), texSize),
+                            subRegion: textureRegion);
                     }
                 }
             }
             else
             {
                 var origin = ((ourSize - texSize) / 2) + layer.Config.ControlHomePosition;
-                handle.DrawTextureRect(tex, UIBox2.FromDimensions(origin, texSize));
+                handle.DrawTextureRectRegion(
+                    tex,
+                    UIBox2.FromDimensions(origin, texSize),
+                    subRegion: textureRegion);
             }
         }
     }

@@ -1,0 +1,11 @@
+- type: entity
+  parent: ClothingHeadHelmetHardsuitVoidsmanStandard
+  id: ClothingHeadHelmetHardsuitAristocrat
+  name: aristocratic hardsuit helmet
+  description: A retractable hardsuit helmet with a polished noble finish.
+  suffix: WH40K, aristocracy
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hardsuits/aristocrat_spacesuit_helmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hardsuits/aristocrat_spacesuit_helmet.rsi

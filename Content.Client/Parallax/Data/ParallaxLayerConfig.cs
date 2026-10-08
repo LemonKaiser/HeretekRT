@@ -66,5 +66,46 @@ public sealed partial class ParallaxLayerConfig
     [DataField("scrolling")] public Vector2 Scrolling = Vector2.Zero;
 
     [DataField("shader")] public string? Shader = "unshaded";
+
+    /// <summary>
+    /// Optional sprite-sheet animation for this layer. The first frame is used while the
+    /// layer is idle, and the remaining frames are shown during the configured cycle.
+    /// </summary>
+    [DataField("animation")]
+    public ParallaxLayerAnimationConfig? Animation { get; set; }
+}
+
+[DataDefinition]
+public sealed partial class ParallaxLayerAnimationConfig
+{
+    /// <summary>
+    /// Size of one frame in the source texture, in pixels.
+    /// </summary>
+    [DataField("frameSize", required: true)]
+    public Vector2 FrameSize { get; set; }
+
+    /// <summary>
+    /// Number of frames to use from the sprite sheet.
+    /// </summary>
+    [DataField("frameCount")]
+    public int FrameCount { get; set; } = 1;
+
+    /// <summary>
+    /// Number of frame columns in the source texture.
+    /// </summary>
+    [DataField("frameColumns")]
+    public int FrameColumns { get; set; } = 1;
+
+    /// <summary>
+    /// Time between the starts of two animation passes, in seconds.
+    /// </summary>
+    [DataField("cycleInterval")]
+    public float CycleInterval { get; set; } = 40f;
+
+    /// <summary>
+    /// How long each frame is displayed during the pass, in seconds.
+    /// </summary>
+    [DataField("frameDuration")]
+    public float FrameDuration { get; set; } = 1f;
 }
 

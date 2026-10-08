@@ -1,0 +1,23 @@
+- type: entity
+  parent: ClothingOuterHardsuitVoidsmanStandard
+  id: ClothingOuterHardsuitAristocrat
+  name: aristocratic hardsuit
+  description: A refined voidsuit worn by the nobility. Its helmet retracts into the collar when not in use.
+  suffix: WH40K, aristocracy
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/aristocrat_spacesuit.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Hardsuits/aristocrat_spacesuit.rsi
+  - type: ToggleableClothing
+    requiredSlot: outerclothing
+    blockUnequipWhenAttached: false
+    replaceCurrentClothing: true
+    clothingPrototypes:
+      head: ClothingHeadHelmetHardsuitAristocrat
+      helmetcover: ClothingHeadHelmetCoverBlock
+      helmetattachment: ClothingHeadHelmetAttachmentBlock
+  - type: UserInterface
+    interfaces:
+      enum.ToggleClothingUiKey.Key:
+        type: ToggleableClothingBoundUserInterface
