@@ -71,6 +71,13 @@ namespace Content.Shared.Verbs
         public string Text = string.Empty;
 
         /// <summary>
+        ///     Stable localization key used for ordering and identity when the verb text is
+        ///     localized. Existing callers that only provide <see cref="Text"/> retain an
+        ///     ordinal text fallback until they can be migrated to this field.
+        /// </summary>
+        public string? TextLocId;
+
+        /// <summary>
         ///     Sprite of the icon that the user sees on the verb button.
         /// </summary>
         public SpriteSpecifier? Icon;
@@ -177,16 +184,23 @@ namespace Content.Shared.Verbs
             if (Priority != otherVerb.Priority)
                 return otherVerb.Priority - Priority;
 
-            // Then try use alphabetical verb categories. Uncategorized verbs always appear first.
-            if (Category?.Text != otherVerb.Category?.Text)
+            // Category.Text is a localized display value and must not define identity/order.
+            // Built-in categories carry TextLocId; dynamic categories fall back to their
+            // serialized text using an invariant ordinal comparison.
+            var categoryKey = Category?.TextLocId ?? Category?.Text;
+            var otherCategoryKey = otherVerb.Category?.TextLocId ?? otherVerb.Category?.Text;
+            if (!string.Equals(categoryKey, otherCategoryKey, StringComparison.Ordinal))
             {
-                return string.Compare(Category?.Text, otherVerb.Category?.Text, StringComparison.CurrentCulture);
+                return string.Compare(categoryKey, otherCategoryKey, StringComparison.Ordinal);
             }
 
-            // Then try use alphabetical verb text.
-            if (Text != otherVerb.Text)
+            // Prefer a stable loc-id. Until all producers provide one, the display text is a
+            // deterministic ordinal fallback; it cannot be affected by the process UI culture.
+            var textKey = TextLocId ?? Text;
+            var otherTextKey = otherVerb.TextLocId ?? otherVerb.Text;
+            if (!string.Equals(textKey, otherTextKey, StringComparison.Ordinal))
             {
-                return string.Compare(Text, otherVerb.Text, StringComparison.CurrentCulture);
+                return string.Compare(textKey, otherTextKey, StringComparison.Ordinal);
             }
 
             if (IconEntity != otherVerb.IconEntity)
@@ -201,7 +215,7 @@ namespace Content.Shared.Verbs
             }
 
             // Finally, compare icon texture paths. Note that this matters for verbs that don't have any text (e.g., the rotate-verbs)
-            return string.Compare(Icon?.ToString(), otherVerb.Icon?.ToString(), StringComparison.CurrentCulture);
+            return string.Compare(Icon?.ToString(), otherVerb.Icon?.ToString(), StringComparison.Ordinal);
         }
 
         // I hate this. Please somebody allow generics to be networked.

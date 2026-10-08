@@ -8,6 +8,7 @@ using Content.Server.Stack;
 using Content.Server.Stealth;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Server._WH40K.Progression;
+using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Actions;
 using Content.Shared.ActionBlocker;
@@ -106,6 +107,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
     [Dependency] private StackSystem _stacks = default!;
     [Dependency] private StaminaSystem _stamina = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
@@ -540,7 +542,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         var candidate = _transform.ToMapCoordinates(target);
         if (!TryGetSafeDashTarget(candidate, out var safePoint))
         {
-            _popup.PopupEntity(Loc.GetString("wh40k-class-nest-invalid-point"), ent.Owner, ent.Owner, PopupType.Medium);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(ent.Owner, "wh40k-class-nest-invalid-point"), ent.Owner, ent.Owner, PopupType.Medium);
             return false;
         }
 
@@ -550,7 +552,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         var point = _transform.ToMapCoordinates(safePoint);
         if (reference.MapId != point.MapId || Vector2.DistanceSquared(reference.Position, point.Position) > effect.Range * effect.Range)
         {
-            _popup.PopupEntity(Loc.GetString("wh40k-class-nest-too-far"), ent.Owner, ent.Owner, PopupType.Medium);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(ent.Owner, "wh40k-class-nest-too-far"), ent.Owner, ent.Owner, PopupType.Medium);
             return false;
         }
 
@@ -579,7 +581,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         var source = _transform.GetMapCoordinates(ent.Owner);
         if (source.MapId != next.MapId || Vector2.DistanceSquared(source.Position, next.Position) > effect.Range * effect.Range)
         {
-            _popup.PopupEntity(Loc.GetString("wh40k-class-nest-too-far"), ent.Owner, ent.Owner, PopupType.Medium);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(ent.Owner, "wh40k-class-nest-too-far"), ent.Owner, ent.Owner, PopupType.Medium);
             return false;
         }
 
@@ -984,7 +986,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
                              _npcFaction.IsEntityFriendly(ent.Owner, target.Owner) &&
                              _interaction.InRangeUnobstructed(ent.Owner, target.Owner, effect.Range));
         _popup.PopupEntity(
-            Loc.GetString("wh40k-class-triage-scan-result", ("count", injured)),
+            _playerCulture.GetPlayerString(ent.Owner, "wh40k-class-triage-scan-result", ("count", injured)),
             ent.Owner,
             ent.Owner,
             PopupType.Medium);
@@ -1027,7 +1029,8 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
             : 0f;
         var bolts = TryComp<DoorBoltComponent>(target, out var boltComponent) && boltComponent.BoltsDown;
         _popup.PopupEntity(
-            Loc.GetString(
+            _playerCulture.GetPlayerString(
+                ent.Owner,
                 "wh40k-class-device-scan-result",
                 ("device", Name(target)),
                 ("damage", MathF.Round(damage)),

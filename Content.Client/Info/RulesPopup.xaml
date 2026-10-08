@@ -11,9 +11,14 @@
             <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="10 10 5 10">
                 <info:RulesControl/>
                 <Label Name="WaitLabel" />
-                <BoxContainer Orientation="Horizontal">
-                    <Button Name="AcceptButton"
-                            Text="{Loc 'ui-rules-accept'}"
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <Button Name="ContinueRuButton"
+                            Text="{Loc 'ui-rules-continue-ru'}"
+                            HorizontalExpand="True"
+                            Disabled="True" />
+                    <Button Name="ContinueEnButton"
+                            Text="{Loc 'ui-rules-continue-en'}"
+                            HorizontalExpand="True"
                             Disabled="True" />
                     <Button Name="QuitButton"
                             StyleClasses="Caution"

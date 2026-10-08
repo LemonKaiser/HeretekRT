@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Client.Administration.Managers;
 using Content.Client.Administration.Systems;
 using Content.Client._WH40K.ItemRarity;
+using Content.Client.Localization;
 using Content.Client.UserInterface;
 using Content.Shared.Administration;
 using Content.Shared.IdentityManagement;
@@ -98,7 +99,7 @@ namespace Content.Client.ContextMenu.UI
                 return GetEntityDescriptionAdmin(entity);
             }
 
-            var name = Identity.Name(entity, _entityManager, _playerManager.LocalEntity!);
+            var name = _entityManager.System<WH40KEntityNameLocalizer>().GetName(entity, _playerManager.LocalEntity);
             return GetNameWithRarity(entity, name);
         }
 

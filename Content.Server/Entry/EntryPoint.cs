@@ -13,6 +13,7 @@ using Content.Server.Database;
 using Content.Server.Discord.DiscordLink;
 using Content.Server.EUI;
 using Content.Server.GameTicking;
+using Content.Server._WH40K.Localizations;
 using Content.Server.GhostKick;
 using Content.Server.GuideGenerator;
 using Content.Server.Info;
@@ -38,6 +39,7 @@ using Robust.Server.ServerStatus;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Network;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -90,6 +92,7 @@ namespace Content.Server.Entry
             }
 
             IoCManager.BuildGraph();
+            WH40KPlayerCultureManager.RegisterNetworkMessages(IoCManager.Resolve<INetManager>());
             factory.GenerateNetIds();
             var configManager = IoCManager.Resolve<IConfigurationManager>();
             var dest = configManager.GetCVar(CCVars.DestinationFile);

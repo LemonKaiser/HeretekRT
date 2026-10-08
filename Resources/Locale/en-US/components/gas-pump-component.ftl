@@ -1,4 +1,6 @@
 comp-gas-pump-ui-pump-status = Status:
+comp-gas-volume-pump-ui-title = Volume Pump
+comp-gas-pressure-pump-ui-title = Pressure Pump
 comp-gas-pump-ui-status-enabled = On
 comp-gas-pump-ui-status-disabled = Off
 

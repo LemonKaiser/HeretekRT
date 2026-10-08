@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared._WH40K.Activities;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
@@ -23,6 +24,7 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
     public override void Initialize()
     {
@@ -43,11 +45,11 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
         args.Handled = true;
         if (!TryAcceptTrophy(uid, args.Used))
         {
-            _popup.PopupEntity(Loc.GetString("koronus-activity-delivery-rejected"), uid, args.User, PopupType.SmallCaution);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(args.User, "koronus-activity-delivery-rejected"), uid, args.User, PopupType.SmallCaution);
             return;
         }
 
-        _popup.PopupEntity(Loc.GetString("koronus-activity-delivery-accepted"), uid, args.User, PopupType.Medium);
+        _popup.PopupEntity(_playerCulture.GetPlayerString(args.User, "koronus-activity-delivery-accepted"), uid, args.User, PopupType.Medium);
     }
 
     private void OnInsertAttempt(

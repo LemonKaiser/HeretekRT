@@ -6,6 +6,7 @@ using Content.Shared.Popups;
 using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
 using Content.Shared._WH40K.Augments;
+using Content.Server._WH40K.Localizations;
 
 namespace Content.Server._WH40K.Augments;
 
@@ -20,6 +21,7 @@ public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedPopupSystem _popups = default!;
     [Dependency] private readonly SharedStorageSystem _storage = default!;
+    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
 
     private EntityQuery<HandsComponent> _handsQuery;
     private EntityQuery<BodyPartComponent> _partQuery;
@@ -89,7 +91,7 @@ public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
             }
         }
 
-        _popups.PopupEntity(Loc.GetString("augment-tool-panel-no-hand"), body, body, PopupType.LargeCaution);
+        _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augment-tool-panel-no-hand"), body, body, PopupType.LargeCaution);
     }
 
     private void SwitchTool(Entity<AugmentToolPanelComponent> augment, EntityUid? desiredTool, EntityUid body, string hand)
@@ -98,7 +100,7 @@ public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
         {
             if (!RemComp<AugmentToolPanelActiveItemComponent>(item))
             {
-                _popups.PopupEntity(Loc.GetString("augment-tool-panel-hand-full"), body, body, PopupType.SmallCaution);
+                _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augment-tool-panel-hand-full"), body, body, PopupType.SmallCaution);
                 return;
             }
 
@@ -110,7 +112,7 @@ public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
             }
 
             if (desiredTool == null)
-                _popups.PopupEntity(Loc.GetString("augment-tool-panel-retracted", ("item", item)), body, body);
+                _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augment-tool-panel-retracted", ("item", item)), body, body);
 
             _toggle.TryDeactivate(augment.Owner, user: body);
         }
@@ -120,12 +122,12 @@ public sealed class AugmentToolPanelSystem : SharedAugmentToolPanelSystem
 
         if (!_hands.TryPickup(body, tool, hand))
         {
-            _popups.PopupEntity(Loc.GetString("augment-tool-panel-cannot-pick-up"), body, body, PopupType.SmallCaution);
+            _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augment-tool-panel-cannot-pick-up"), body, body, PopupType.SmallCaution);
             return;
         }
 
         EnsureComp<AugmentToolPanelActiveItemComponent>(tool);
         _toggle.TryActivate(augment.Owner, user: body);
-        _popups.PopupEntity(Loc.GetString("augment-tool-panel-selected", ("item", tool)), body, body);
+        _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augment-tool-panel-selected", ("item", tool)), body, body);
     }
 }

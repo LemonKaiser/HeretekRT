@@ -4,6 +4,7 @@ using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.NPC.HTN;
 using Content.Shared._WH40K.Activities;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Activities.Prototypes;
 using Content.Shared.Doors.Systems;
 using Content.Shared.Ghost;
@@ -113,11 +114,11 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
         // hostile stays behind even if the interaction races an AI tick.
         if (!_director.TryCompleteThreat(anchor.InstanceId, uid, KoronusActivityTerminalReason.Contained))
         {
-            _popup.PopupCursor(Loc.GetString("koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
+            _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
             return;
         }
 
-        _popup.PopupCursor(Loc.GetString("koronus-activity-threat-contained"), args.User, PopupType.Medium);
+        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-threat-contained"), args.User, PopupType.Medium);
     }
 
     private void TryMaterializeThreat(

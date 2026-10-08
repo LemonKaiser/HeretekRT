@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Linq;
 using Content.Shared._WH40K.HeavyBolter;
 using Content.Server.Particles;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Events;
 using Content.Shared.Buckle;
@@ -54,6 +55,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly ParticleSpawnSystem _particles = default!;
+    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
 
     public override void Initialize()
     {
@@ -195,7 +197,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
         if (!IsOperatorControlAllowed(bolter, args.User))
         {
             args.Cancelled = true;
-            args.Message = Loc.GetString("wh40k-heavy-bolter-operator-required");
+            args.Message = _playerCulture.GetPlayerString(args.User, "wh40k-heavy-bolter-operator-required");
             return;
         }
 
@@ -204,7 +206,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
             !TryGetForwardDirection(bolter, out var forwardDirection))
         {
             args.Cancelled = true;
-            args.Message = Loc.GetString("wh40k-heavy-bolter-invalid-shot-position");
+            args.Message = _playerCulture.GetPlayerString(args.User, "wh40k-heavy-bolter-invalid-shot-position");
             return;
         }
 
@@ -218,7 +220,7 @@ public sealed partial class WH40KHeavyBolterSystem : EntitySystem
             return;
 
         args.Cancelled = true;
-        args.Message = Loc.GetString("wh40k-heavy-bolter-arc-limit");
+        args.Message = _playerCulture.GetPlayerString(args.User, "wh40k-heavy-bolter-arc-limit");
     }
 
     private void OnAmmoShot(Entity<WH40KHeavyBolterComponent> bolter, ref AmmoShotEvent args)

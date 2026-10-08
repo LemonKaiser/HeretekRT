@@ -1,6 +1,9 @@
 using System.Globalization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Localizations
@@ -8,7 +11,29 @@ namespace Content.Shared.Localizations
     public sealed partial class ContentLocalizationManager
     {
         [Dependency] private ILocalizationManager _loc = default!;
+        [Dependency] private IConfigurationManager _config = default!;
         private static readonly CultureInfo EnglishCulture = new("en-US");
+        private static readonly CultureInfo RussianCulture = new("ru-RU");
+        private readonly HashSet<string> _preparedCultures = new(StringComparer.OrdinalIgnoreCase);
+
+        public const string DefaultCultureName = "ru-RU";
+        public const string FallbackCultureName = "en-US";
+
+        public static IReadOnlyList<string> SupportedCultureNames { get; } =
+            [DefaultCultureName, FallbackCultureName];
+
+        public static string? ValidateCultureName(string? cultureName)
+        {
+            if (string.IsNullOrWhiteSpace(cultureName))
+                return null;
+
+            return cultureName.Trim().ToLowerInvariant() switch
+            {
+                "ru" or "ru-ru" => DefaultCultureName,
+                "en" or "en-us" => FallbackCultureName,
+                _ => null
+            };
+        }
 
         /// <summary>
         /// Custom format strings used for parsing and displaying minutes:seconds timespans.
@@ -23,26 +48,34 @@ namespace Content.Shared.Localizations
 
         public void Initialize()
         {
-            if (!_loc.HasCulture(EnglishCulture))
-                _loc.LoadCulture(EnglishCulture);
+            EnsureCulturePrepared(RussianCulture);
+            EnsureCulturePrepared(EnglishCulture);
 
-            RegisterCultureFunctions(EnglishCulture);
+            var configuredCulture = ValidateCultureName(_config.GetCVar(CVars.LocCultureName))
+                                    ?? DefaultCultureName;
+            if (!string.Equals(configuredCulture, _config.GetCVar(CVars.LocCultureName), StringComparison.Ordinal))
+                _config.SetCVar(CVars.LocCultureName, configuredCulture);
 
-
-            /*
-             * The following language functions are specific to the english localization. When working on your own
-             * localization you should NOT modify these, instead add new functions specific to your language/culture.
-             * This ensures the english translations continue to work as expected when fallbacks are needed.
-             */
-            _loc.AddFunction(EnglishCulture, "MAKEPLURAL", FormatMakePlural);
-            _loc.AddFunction(EnglishCulture, "MANY", FormatMany);
-
+            _loc.SetFallbackCluture(EnglishCulture);
             var culture = _loc.SetDefaultCulture();
+            EnsureCulturePrepared(culture);
+        }
 
-            if (!culture.NameEquals(EnglishCulture))
+        public void EnsureCulturePrepared(CultureInfo culture)
+        {
+            if (!_loc.HasCulture(culture))
+                _loc.LoadCulture(culture);
+
+            if (!_preparedCultures.Add(culture.Name))
+                return;
+
+            RegisterCultureFunctions(culture);
+
+            // These helpers contain English grammar rules. Other cultures should use Fluent selectors.
+            if (culture.NameEquals(EnglishCulture))
             {
-                RegisterCultureFunctions(culture);
-                _loc.SetFallbackCluture(EnglishCulture);
+                _loc.AddFunction(culture, "MAKEPLURAL", FormatMakePlural);
+                _loc.AddFunction(culture, "MANY", FormatMany);
             }
         }
 
@@ -79,18 +112,38 @@ namespace Content.Shared.Localizations
         {
             var number = ((LocValueNumber) args.Args[0]).Value * 100;
             var maxDecimals = (int)Math.Floor(((LocValueNumber) args.Args[1]).Value);
-            var formatter = (NumberFormatInfo)NumberFormatInfo.GetInstance(culture).Clone();
-            formatter.NumberDecimalDigits = maxDecimals;
-            return new LocValueString(string.Format(formatter, "{0:N}", number).TrimEnd('0').TrimEnd(char.Parse(formatter.NumberDecimalSeparator)) + "%");
+            return new LocValueString(FormatNaturalNumber(number, maxDecimals, culture) + "%");
         }
 
         private static ILocValue FormatNaturalFixed(CultureInfo culture, LocArgs args)
         {
             var number = ((LocValueNumber) args.Args[0]).Value;
             var maxDecimals = (int)Math.Floor(((LocValueNumber) args.Args[1]).Value);
-            var formatter = (NumberFormatInfo)NumberFormatInfo.GetInstance(culture).Clone();
-            formatter.NumberDecimalDigits = maxDecimals;
-            return new LocValueString(string.Format(formatter, "{0:N}", number).TrimEnd('0').TrimEnd(char.Parse(formatter.NumberDecimalSeparator)));
+            return new LocValueString(FormatNaturalNumber(number, maxDecimals, culture));
+        }
+
+        /// <summary>
+        /// Formats a number with optional fractional digits, without stripping integer zeroes.
+        /// The explicit culture also makes this safe for personal server responses.
+        /// </summary>
+        public static string FormatNaturalNumber(double number, int maxDecimals, CultureInfo culture)
+        {
+            var formatter = (NumberFormatInfo)culture.NumberFormat.Clone();
+            formatter.NumberDecimalDigits = Math.Clamp(maxDecimals, 0, 99);
+            var text = number.ToString("N", formatter);
+            if (formatter.NumberDecimalDigits == 0)
+                return text;
+
+            var separator = formatter.NumberDecimalSeparator;
+            var separatorIndex = text.LastIndexOf(separator, StringComparison.Ordinal);
+            if (separatorIndex < 0)
+                return text;
+
+            var fractionStart = separatorIndex + separator.Length;
+            var fraction = text[fractionStart..].TrimEnd('0');
+            return fraction.Length == 0
+                ? text[..separatorIndex]
+                : text[..fractionStart] + fraction;
         }
 
         private static readonly Regex PluralEsRule = new("^.*(s|sh|ch|x|z)$");
@@ -118,11 +171,11 @@ namespace Content.Shared.Localizations
 
         // TODO: allow fluent to take in lists of strings so this can be a format function like it should be.
         /// <summary>
-        /// Formats a list as per english grammar rules.
+        /// Formats a list using Russian or English conjunctions.
         /// </summary>
-        public static string FormatList(List<string> list)
+        public static string FormatList(List<string> list, CultureInfo? culture = null)
         {
-            var isRussian = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru";
+            var isRussian = (culture ?? CultureInfo.CurrentUICulture).TwoLetterISOLanguageName == "ru";
 
             return list.Count switch
             {
@@ -138,9 +191,9 @@ namespace Content.Shared.Localizations
         /// <summary>
         /// Formats a list as per english grammar rules, but uses or instead of and.
         /// </summary>
-        public static string FormatListToOr(List<string> list)
+        public static string FormatListToOr(List<string> list, CultureInfo? culture = null)
         {
-            var isRussian = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru";
+            var isRussian = (culture ?? CultureInfo.CurrentUICulture).TwoLetterISOLanguageName == "ru";
 
             return list.Count switch
             {

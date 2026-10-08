@@ -7,6 +7,7 @@ using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared._WH40K.Activities;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Activities.Prototypes;
 using Content.Shared.Carrying;
 using Content.Shared.Ghost;
@@ -113,7 +114,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid))
             return;
 
-        _popup.PopupCursor(Loc.GetString("koronus-activity-objective-completed"), args.User, PopupType.Medium);
+        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-completed"), args.User, PopupType.Medium);
     }
 
     private void OnPatientCarried(
@@ -130,7 +131,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             return;
 
         component.InstanceId = 0;
-        _popup.PopupCursor(Loc.GetString("koronus-activity-rescue-extracted"), args.Args.User, PopupType.Medium);
+        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.Args.User, "koronus-activity-rescue-extracted"), args.Args.User, PopupType.Medium);
     }
 
     private void TryMaterialize(

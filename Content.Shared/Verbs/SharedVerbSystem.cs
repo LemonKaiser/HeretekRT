@@ -2,8 +2,11 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory.VirtualItem;
+using Content.Shared.Localizations;
 using Robust.Shared.Containers;
+using Robust.Shared.Localization;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 
 namespace Content.Shared.Verbs
 {
@@ -11,6 +14,7 @@ namespace Content.Shared.Verbs
     {
         [Dependency] private SharedInteractionSystem _interactionSystem = default!;
         [Dependency] private ActionBlockerSystem _actionBlockerSystem = default!;
+        [Dependency] private ILocalizationManager _localization = default!;
         [Dependency] protected SharedContainerSystem ContainerSystem = default!;
 
         public override void Initialize()
@@ -22,6 +26,13 @@ namespace Content.Shared.Verbs
 
         private void HandleExecuteVerb(ExecuteVerbEvent args, EntitySessionEventArgs eventArgs)
         {
+            if (!CanExecuteVerb(eventArgs.SenderSession))
+                return;
+
+            using var cultureScope = new LocalizationCultureScope(
+                _localization,
+                GetExecuteVerbCulture(eventArgs.SenderSession, args.CultureName));
+
             var user = eventArgs.SenderSession.AttachedEntity;
             if (user == null)
                 return;
@@ -45,6 +56,21 @@ namespace Content.Shared.Verbs
             // Find the requested verb.
             if (verbs.TryGetValue(args.RequestedVerb, out var verb))
                 ExecuteVerb(verb, user.Value, target.Value);
+        }
+
+        /// <summary>
+        /// Selects the culture used while rebuilding and executing a server verb. The shared
+        /// implementation uses the request value for client prediction; the server overrides
+        /// this with its authenticated per-session culture.
+        /// </summary>
+        protected virtual string? GetExecuteVerbCulture(ICommonSession session, string? requestedCulture)
+        {
+            return requestedCulture;
+        }
+
+        protected virtual bool CanExecuteVerb(ICommonSession session)
+        {
+            return true;
         }
 
         /// <summary>

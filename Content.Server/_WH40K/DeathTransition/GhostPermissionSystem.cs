@@ -9,6 +9,7 @@ using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Mind;
 using Content.Server._WH40K.PersistentInventory;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Administration;
 using Content.Shared.Chat;
 using Content.Shared.Database;
@@ -45,6 +46,7 @@ public sealed class GhostPermissionSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private ITaskManager _taskManager = default!;
     [Dependency] private PersistentInventoryLifecycleSystem _persistentInventory = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
     private readonly Dictionary<NetUserId, GhostPermissionData> _permissions = new();
     private readonly HashSet<NetUserId> _loadedPermissions = new();
@@ -363,8 +365,8 @@ public sealed class GhostPermissionSystem : EntitySystem
 
         _deathScreenEligible.Add(session.UserId);
 
-        var message = Loc.GetString("heretek-death-surrender-hint");
-        var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", message));
+        var message = _playerCulture.GetPlayerString(session, "heretek-death-surrender-hint");
+        var wrappedMessage = _playerCulture.GetPlayerString(session, "chat-manager-server-wrap-message", ("message", message));
         _chat.ChatMessageToOne(
             ChatChannel.Server,
             message,

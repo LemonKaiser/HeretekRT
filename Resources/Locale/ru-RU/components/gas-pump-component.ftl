@@ -1,4 +1,6 @@
 comp-gas-pump-ui-pump-status = Статус:
+comp-gas-volume-pump-ui-title = Объёмный насос
+comp-gas-pressure-pump-ui-title = Насос давления
 comp-gas-pump-ui-status-enabled = Вкл
 comp-gas-pump-ui-status-disabled = Выкл
 comp-gas-pump-ui-pump-set-rate = Установить

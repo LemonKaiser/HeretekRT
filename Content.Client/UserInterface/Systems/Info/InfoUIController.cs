@@ -1,8 +1,12 @@
 using Content.Client.Gameplay;
 using Content.Client.Info;
+using Content.Client.Lobby;
+using Content.Client.UserInterface.Systems.Localization;
 using Content.Shared.Guidebook;
 using Content.Shared.Info;
+using Content.Shared.Localizations;
 using Robust.Client.Console;
+using Robust.Client.State;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Network;
@@ -10,15 +14,17 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client.UserInterface.Systems.Info;
 
-public sealed partial class InfoUIController : UIController, IOnStateExited<GameplayState>
+public sealed partial class InfoUIController : UIController, IOnStateEntered<LobbyState>, IOnStateExited<GameplayState>
 {
     [Dependency] private IClientConsoleHost _consoleHost = default!;
     [Dependency] private INetManager _netManager = default!;
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private ILogManager _logMan = default!;
+    [Dependency] private IStateManager _stateManager = default!;
 
     private RulesPopup? _rulesPopup;
     private RulesAndInfoWindow? _infoWindow;
+    private string? _pendingRulesCultureName;
     private ISawmill _sawmill = default!;
 
     [ValidatePrototypeId<GuideEntryPrototype>]
@@ -45,10 +51,16 @@ public sealed partial class InfoUIController : UIController, IOnStateExited<Game
 
     private void OnRulesInformationMessage(SendRulesInformationMessage message)
     {
+        _pendingRulesCultureName = null;
         RulesEntryId = message.CoreRules;
 
         if (message.ShouldShowRules)
             ShowRules(message.PopupTime);
+    }
+
+    public void OnStateEntered(LobbyState state)
+    {
+        ShowPendingRulesCultureChange();
     }
 
     public void OnStateExited(GameplayState state)
@@ -71,7 +83,7 @@ public sealed partial class InfoUIController : UIController, IOnStateExited<Game
         };
 
         _rulesPopup.OnQuitPressed += OnQuitPressed;
-        _rulesPopup.OnAcceptPressed += OnAcceptPressed;
+        _rulesPopup.OnContinuePressed += OnContinuePressed;
         UIManager.WindowRoot.AddChild(_rulesPopup);
         LayoutContainer.SetAnchorPreset(_rulesPopup, LayoutContainer.LayoutPreset.Wide);
     }
@@ -79,6 +91,28 @@ public sealed partial class InfoUIController : UIController, IOnStateExited<Game
     private void OnQuitPressed()
     {
         _consoleHost.ExecuteCommand("quit");
+    }
+
+    private void OnContinuePressed(string cultureName)
+    {
+        var canonicalName = ContentLocalizationManager.ValidateCultureName(cultureName);
+        if (canonicalName == null)
+            return;
+
+        _pendingRulesCultureName = canonicalName;
+        OnAcceptPressed();
+
+        if (_stateManager.CurrentState is LobbyState)
+            ShowPendingRulesCultureChange();
+    }
+
+    private void ShowPendingRulesCultureChange()
+    {
+        if (_pendingRulesCultureName is not { } cultureName)
+            return;
+
+        _pendingRulesCultureName = null;
+        UIManager.GetUIController<LocalizationUIController>().RequestCultureChange(cultureName);
     }
 
     private void OnAcceptPressed()

@@ -9,6 +9,7 @@ using Content.Shared.NodeContainer;
 using Content.Shared.Particles;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Verbs;
+using Content.Server._WH40K.Localizations;
 using JetBrains.Annotations;
 using Robust.Shared.Utility;
 
@@ -22,6 +23,7 @@ namespace Content.Server.Power.EntitySystems
         [Dependency] private ExamineSystemShared _examineSystem = default!;
         [Dependency] private ParticleSpawnSystem _particles = default!;
         [Dependency] private SharedTransformSystem _transform = default!;
+        [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
         public override void Initialize()
         {
@@ -36,7 +38,8 @@ namespace Content.Server.Power.EntitySystems
             if (args.Handled || args.Target == null || !args.CanReach || !_toolSystem.HasQuality(args.Used, SharedToolSystem.PulseQuality))
                 return;
 
-            var markup = FormattedMessage.FromMarkupOrThrow(GenerateCableMarkup(uid));
+            var markup = _playerCulture.WithCulture(args.User,
+                () => FormattedMessage.FromMarkupOrThrow(GenerateCableMarkup(uid)));
             _examineSystem.SendExamineTooltip(args.User, uid, markup, false, false);
             _particles.Spawn(
                 _transform.GetMapCoordinates(uid),

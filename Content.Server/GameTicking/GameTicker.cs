@@ -10,6 +10,7 @@ using Content.Server.Preferences.Managers;
 using Content.Server.ServerUpdates;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.PersistentInventory;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Chat;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
@@ -20,6 +21,7 @@ using Robust.Server.GameStates;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Console;
 using Robust.Shared.EntitySerialization.Systems;
+using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -70,6 +72,8 @@ namespace Content.Server.GameTicking
         [Dependency] private PersistentInventoryRestoreSystem _persistentInventoryRestore = default!;
         [Dependency] private PersistentInventoryLifecycleSystem _persistentInventoryLifecycle = default!;
         [Dependency] private PersistentInventoryShutdownSystem _persistentInventoryShutdown = default!;
+        [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
+        [Dependency] private WH40KEntityLocalizationCache _entityLocalization = default!;
 
         [ViewVariables] private bool _initialized;
         [ViewVariables] private bool _postInitialized;
@@ -98,6 +102,7 @@ namespace Content.Server.GameTicking
                 "Overflow role does not have the correct name!");
             InitializeGameRules();
             InitializeReplays();
+            SubscribeLocalEvent<PlayerCultureChangedEvent>(OnPlayerCultureChanged);
             _initialized = true;
         }
 
@@ -128,7 +133,15 @@ namespace Content.Server.GameTicking
 
         private void SendWh40kProfileRequiredMessage(ICommonSession player)
         {
-            _chatManager.DispatchServerMessage(player, Loc.GetString("heretek-lobby-profile-required"));
+            _chatManager.DispatchServerMessage(player, _playerCulture.GetPlayerString(player, "heretek-lobby-profile-required"));
+        }
+
+        private void OnPlayerCultureChanged(PlayerCultureChangedEvent ev)
+        {
+            if (ev.Session.Status == SessionStatus.Disconnected)
+                return;
+
+            RaiseNetworkEvent(GetInfoMsg(ev.Session), ev.Session.Channel);
         }
 
         private bool IsWh40kOnboardingBlocking(NetUserId userId)

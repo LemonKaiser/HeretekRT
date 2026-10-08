@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Content.Server._WH40K.Administration;
 using Content.Server._WH40K.Administration.Mute;
 using Content.Server._WH40K.Chat.Moderation;
+using Content.Server._WH40K.Localizations;
 using Content.Server.Chat.V2.Repository;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
@@ -20,6 +21,7 @@ internal sealed partial class ChatManager
     private readonly Dictionary<NetUserId, WH40KRepeatedChatSpamTracker> _repeatRateLimitData = new();
 
     [Dependency] private IGameTiming _gameTiming = default!;
+    private WH40KPlayerCultureManager PlayerCulture => _entityManager.System<WH40KPlayerCultureManager>();
 
     private TimeSpan _nextRepeatRateLimitSweep;
 
@@ -65,7 +67,7 @@ internal sealed partial class ChatManager
 
         if (result.FirstViolation)
         {
-            DispatchServerMessage(player, Loc.GetString("chat-manager-repeat-rate-limited"), suppressLog: true);
+            DispatchServerMessage(player, PlayerCulture.GetPlayerString(player, "chat-manager-repeat-rate-limited"), suppressLog: true);
             _adminLogger.Add(
                 LogType.ChatRateLimited,
                 LogImpact.Medium,
@@ -157,7 +159,7 @@ internal sealed partial class ChatManager
             if (result != WH40KMuteApplyResult.Applied || !mutes.IsChatMuted(player, out _))
                 return;
 
-            DispatchServerMessage(player, Loc.GetString(
+            DispatchServerMessage(player, PlayerCulture.GetPlayerString(player,
                 trigger == WH40KChatSpamTrigger.RateLimit
                     ? "chat-manager-rate-limit-auto-muted"
                     : "chat-manager-repeat-rate-limit-auto-muted",

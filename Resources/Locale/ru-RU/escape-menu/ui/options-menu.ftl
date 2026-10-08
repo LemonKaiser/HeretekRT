@@ -1,6 +1,10 @@
 ## General stuff
 
 ui-options-title = Игровые настройки
+ui-language-restart-title = Требуется перезапуск
+ui-language-restart-message = Выбранный язык будет применён после перезапуска игры. Принять изменение?
+ui-language-restart-cancel = Отмена
+ui-language-restart-confirm = ОК
 ui-options-tab-accessibility = Доступность
 ui-options-tab-graphics = Графика
 ui-options-tab-controls = Управление
@@ -413,3 +417,5 @@ ui-options-lobby-animated-background = Анимированный фон лоб�
 ui-options-lobby-background-auto = Авто
 ui-options-lobby-panel-opacity = Прозрачность панелей лобби
 ui-options-ui-window-opacity = Прозрачность фона окон UI
+ui-options-general-language-translation = Язык интерфейса
+ui-options-language = Язык интерфейса:

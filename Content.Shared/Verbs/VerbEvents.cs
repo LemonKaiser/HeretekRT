@@ -22,11 +22,19 @@ namespace Content.Shared.Verbs
 
         public readonly bool AdminRequest;
 
-        public RequestServerVerbsEvent(NetEntity entityUid, IEnumerable<Type> verbTypes, NetEntity? slotOwner = null, bool adminRequest = false)
+        /// <summary>
+        /// Culture the client is currently displaying. Including it in the request
+        /// removes the handshake race for the first server-verb response.
+        /// </summary>
+        public readonly string? CultureName;
+
+        public RequestServerVerbsEvent(NetEntity entityUid, IEnumerable<Type> verbTypes, NetEntity? slotOwner = null,
+            bool adminRequest = false, string? cultureName = null)
         {
             EntityUid = entityUid;
             SlotOwner = slotOwner;
             AdminRequest = adminRequest;
+            CultureName = cultureName;
 
             foreach (var type in verbTypes)
             {
@@ -41,10 +49,12 @@ namespace Content.Shared.Verbs
     {
         public readonly List<Verb>? Verbs;
         public readonly NetEntity Entity;
+        public readonly string? CultureName;
 
-        public VerbsResponseEvent(NetEntity entity, SortedSet<Verb>? verbs)
+        public VerbsResponseEvent(NetEntity entity, SortedSet<Verb>? verbs, string? cultureName = null)
         {
             Entity = entity;
+            CultureName = cultureName;
 
             if (verbs == null)
                 return;
@@ -59,11 +69,13 @@ namespace Content.Shared.Verbs
     {
         public readonly NetEntity Target;
         public readonly Verb RequestedVerb;
+        public readonly string? CultureName;
 
-        public ExecuteVerbEvent(NetEntity target, Verb requestedVerb)
+        public ExecuteVerbEvent(NetEntity target, Verb requestedVerb, string? cultureName = null)
         {
             Target = target;
             RequestedVerb = requestedVerb;
+            CultureName = cultureName;
         }
     }
 

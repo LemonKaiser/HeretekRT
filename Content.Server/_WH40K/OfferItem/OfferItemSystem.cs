@@ -5,6 +5,7 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared._WH40K.OfferItem;
+using Content.Server._WH40K.Localizations;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
@@ -22,6 +23,7 @@ public sealed class OfferItemSystem : EntitySystem
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly SharedPopupSystem _popups = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
 
     public override void Initialize()
     {
@@ -66,9 +68,9 @@ public sealed class OfferItemSystem : EntitySystem
         Dirty(source, offer);
         Dirty(target, offered);
 
-        _popups.PopupEntity(Loc.GetString("offer-item-try-give", ("item", Identity.Entity(item, EntityManager)),
+        _popups.PopupEntity(_playerCulture.GetPlayerString(source, "offer-item-try-give", ("item", Identity.Entity(item, EntityManager)),
             ("target", Identity.Entity(target, EntityManager))), source, source);
-        _popups.PopupEntity(Loc.GetString("offer-item-try-give-target", ("user", Identity.Entity(source, EntityManager)),
+        _popups.PopupEntity(_playerCulture.GetPlayerString(target, "offer-item-try-give-target", ("user", Identity.Entity(source, EntityManager)),
             ("item", Identity.Entity(item, EntityManager))), source, target);
     }
 
@@ -92,9 +94,9 @@ public sealed class OfferItemSystem : EntitySystem
             return;
         }
 
-        _popups.PopupEntity(Loc.GetString("offer-item-give", ("item", Identity.Entity(item, EntityManager)),
+        _popups.PopupEntity(_playerCulture.GetPlayerString(source, "offer-item-give", ("item", Identity.Entity(item, EntityManager)),
             ("target", Identity.Entity(target, EntityManager))), source, source);
-        _popups.PopupEntity(Loc.GetString("offer-item-give-target", ("user", Identity.Entity(source, EntityManager)),
+        _popups.PopupEntity(_playerCulture.GetPlayerString(target, "offer-item-give-target", ("user", Identity.Entity(source, EntityManager)),
             ("item", Identity.Entity(item, EntityManager))), source, target);
         ClearOffer(source, offer);
     }

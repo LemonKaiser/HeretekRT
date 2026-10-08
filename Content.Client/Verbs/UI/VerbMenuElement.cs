@@ -64,7 +64,7 @@ namespace Content.Client.Verbs.UI
             });
         }
 
-        public VerbMenuElement(VerbCategory category, string styleClass) : base(category.Text)
+        public VerbMenuElement(VerbCategory category, string styleClass) : base(category.GetDisplayText())
         {
             Label.SetOnlyStyleClass(styleClass);
 

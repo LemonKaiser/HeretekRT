@@ -1,4 +1,5 @@
 using Content.Server._NF.Bank;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Merchant;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -24,6 +25,7 @@ public sealed class MerchantSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private BankSystem _bank = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
@@ -212,7 +214,7 @@ public sealed class MerchantSystem : EntitySystem
             entry => entry.Offer.Product.Id == args.Product && entry.Remaining > 0);
         if (stock == null || stock.Remaining <= 0)
         {
-            _popup.PopupEntity(Loc.GetString("wh40k-merchant-out-of-stock"), uid, buyer);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(buyer, "wh40k-merchant-out-of-stock"), uid, buyer);
             UpdateUi(uid, component);
             return;
         }
@@ -220,7 +222,7 @@ public sealed class MerchantSystem : EntitySystem
         var offer = stock.Offer;
         if (offer.Price <= 0 || !_bank.TryBankWithdraw(buyer, offer.Price))
         {
-            _popup.PopupEntity(Loc.GetString("wh40k-merchant-insufficient-funds"), uid, buyer);
+            _popup.PopupEntity(_playerCulture.GetPlayerString(buyer, "wh40k-merchant-insufficient-funds"), uid, buyer);
             return;
         }
 
@@ -229,7 +231,7 @@ public sealed class MerchantSystem : EntitySystem
         stock.Remaining--;
 
         _popup.PopupEntity(
-            Loc.GetString("wh40k-merchant-purchase-complete", ("price", offer.Price)),
+            _playerCulture.GetPlayerString(buyer, "wh40k-merchant-purchase-complete", ("price", offer.Price)),
             uid,
             buyer);
         UpdateUi(uid, component);

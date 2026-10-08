@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared.GameTicking;
+using Content.Shared.Localizations;
 using Content.Server.Station.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -38,11 +39,13 @@ namespace Content.Server.GameTicking
 
         public void UpdateInfoText()
         {
-            RaiseNetworkEvent(GetInfoMsg(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions));
+            foreach (var session in _playerManager.NetworkedSessions)
+                RaiseNetworkEvent(GetInfoMsg(session), session.Channel);
         }
 
-        private string GetInfoText()
+        private string GetInfoText(ICommonSession session)
         {
+            using var culture = _playerCulture.CreateScope(session);
             var preset = CurrentPreset ?? Preset;
             if (preset == null)
             {
@@ -64,7 +67,25 @@ namespace Content.Server.GameTicking
                 if (stationNames.Length > 0)
                     stationNames.Append('\n');
 
-                stationNames.Append(meta.EntityName);
+                var stationName = meta.EntityName;
+                if (meta.EntityPrototype is { } prototype)
+                {
+                    var cultureName = _playerCulture.GetCulture(session);
+                    var localized = _entityLocalization.Get(cultureName, prototype.ID).Name;
+                    var russian = _entityLocalization.Get(ContentLocalizationManager.DefaultCultureName, prototype.ID).Name;
+                    var english = _entityLocalization.Get(ContentLocalizationManager.FallbackCultureName, prototype.ID).Name;
+
+                    // Preserve a station that was renamed at runtime. Only replace metadata
+                    // when it still contains one of the known prototype translations.
+                    if (!string.IsNullOrWhiteSpace(localized) &&
+                        (string.Equals(stationName, russian, StringComparison.Ordinal) ||
+                         string.Equals(stationName, english, StringComparison.Ordinal)))
+                    {
+                        stationName = localized;
+                    }
+                }
+
+                stationNames.Append(stationName);
             }
 
             if (!foundOne)
@@ -82,7 +103,7 @@ namespace Content.Server.GameTicking
                 ("roundId", RoundId),
                 ("playerCount", playerCount),
                 ("readyCount", readyCount),
-                //("mapName", stationNames.ToString()), // Mono
+                ("mapName", stationNames.ToString()),
                 ("gmTitle", gmTitle),
                 ("desc", desc));
         }
@@ -106,9 +127,9 @@ namespace Content.Server.GameTicking
             }
         }
 
-        private TickerLobbyInfoEvent GetInfoMsg()
+        private TickerLobbyInfoEvent GetInfoMsg(ICommonSession session)
         {
-            return new(GetInfoText());
+            return new(GetInfoText(session));
         }
 
         private void UpdateLateJoinStatus()

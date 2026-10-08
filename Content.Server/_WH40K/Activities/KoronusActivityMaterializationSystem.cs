@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared._WH40K.Activities;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Activities.Prototypes;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
@@ -109,11 +110,11 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
         args.Handled = true;
         if (!_director.TryCompleteObjective(component.InstanceId, uid))
         {
-            _popup.PopupCursor(Loc.GetString("koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
+            _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
             return;
         }
 
-        _popup.PopupCursor(Loc.GetString("koronus-activity-objective-completed"), args.User, PopupType.Medium);
+        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-completed"), args.User, PopupType.Medium);
     }
 
     private void TryMaterialize(

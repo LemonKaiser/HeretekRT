@@ -12,6 +12,7 @@ using Content.Client.Input;
 using Content.Client.IoC;
 using Content.Client.Launcher;
 using Content.Client.Lobby;
+using Content.Client.Localization;
 using Content.Client.Mapping.MapTransfer;
 using Content.Client.MainMenu;
 using Content.Client.Parallax.Managers;
@@ -38,6 +39,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
+using Robust.Shared.Network;
 using Robust.Shared.Timing;
 using Content.Client._NF.Emp.Overlays; // Frontier
 using Content.Client._Mono.Company; // Mono
@@ -93,6 +95,7 @@ namespace Content.Client.Entry
             }
 
             IoCManager.BuildGraph();
+            LocalizationCultureHandshakeSystem.RegisterNetworkMessages(IoCManager.Resolve<INetManager>());
             IoCManager.InjectDependencies(this);
 
             _configManager.OverrideDefault(CVars.LocCultureName, "ru-RU");

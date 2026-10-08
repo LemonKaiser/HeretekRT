@@ -1,5 +1,6 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Managers;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.DirectionalEmote;
 using Content.Shared.ActionBlocker;
 using Content.Shared.CCVar;
@@ -21,6 +22,7 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
     [Dependency] private readonly ExamineSystemShared _examine = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
 
     private int _maxEmoteLength = 256;
     private float _maxEmoteDistance = 2.3f;
@@ -59,28 +61,33 @@ public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
 
         var escapedText = FormattedMessage.EscapeText(args.Text);
         var targetName = FormattedMessage.EscapeText(MetaData(targetUid).EntityName);
-        var wrappedMessage = Loc.GetString(
-            args.HideName
-                ? "wh40k-directional-emote-hidden-wrap-message"
-                : "wh40k-directional-emote-wrap-message",
-            ("source", FormattedMessage.EscapeText(MetaData(source).EntityName)),
-            ("target", targetName),
-            ("message", escapedText));
+        var sourceName = FormattedMessage.EscapeText(MetaData(source).EntityName);
+        var messageId = args.HideName
+            ? "wh40k-directional-emote-hidden-wrap-message"
+            : "wh40k-directional-emote-wrap-message";
 
-        _chatManager.ChatMessageToMany(
-            ChatChannel.Emotes,
-            args.Text,
-            wrappedMessage,
-            source,
-            false,
-            true,
-            [sourceActor.PlayerSession.Channel, targetActor.PlayerSession.Channel]);
+        // A single ChatMessageToMany payload cannot contain two cultures. Format the directed
+        // wrapper once for each recipient while preserving the same raw emote and source.
+        SendLocalized(sourceActor.PlayerSession, messageId, sourceName, targetName, escapedText, source, recordReplay: true);
+        if (!ReferenceEquals(targetActor.PlayerSession, sourceActor.PlayerSession))
+            SendLocalized(targetActor.PlayerSession, messageId, sourceName, targetName, escapedText, source, recordReplay: false);
         _adminLog.Add(LogType.Chat, LogImpact.Low,
             $"{ToPrettyString(source):source} sent directed emote to {ToPrettyString(targetUid):target}: {args.Text}");
 
         sourceEmote.LastSendAt = _timing.CurTime;
         sourceEmote.LastEmote = args.Text;
         Dirty(source, sourceEmote);
+    }
+
+    private void SendLocalized(ICommonSession recipient, string messageId, string sourceName, string targetName,
+        string message, EntityUid source, bool recordReplay)
+    {
+        var wrappedMessage = _playerCulture.GetPlayerString(recipient, messageId,
+            ("source", sourceName),
+            ("target", targetName),
+            ("message", message));
+        _chatManager.ChatMessageToOne(ChatChannel.Emotes, message, wrappedMessage, source, false,
+            recipient.Channel, recordReplay: recordReplay);
     }
 
     private bool IsValid(WH40KDirectionalEmoteAttemptEvent args, EntityUid source, EntityUid target)

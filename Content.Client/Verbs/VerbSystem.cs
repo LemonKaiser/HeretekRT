@@ -2,11 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Client.Examine;
 using Content.Client.Gameplay;
+using Content.Client.Localization;
 using Content.Client.Popups;
 using Content.Shared.CCVar;
 using Content.Shared.Examine;
 using Content.Shared.Tag;
 using Content.Shared.Verbs;
+using Content.Shared.Localizations;
 using JetBrains.Annotations;
 using Robust.Client.ComponentTrees;
 using Robust.Client.GameObjects;
@@ -14,7 +16,9 @@ using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.State;
 using Robust.Shared.Configuration;
+using Robust.Shared;
 using Robust.Shared.Containers;
+using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -31,8 +35,10 @@ namespace Content.Client.Verbs
         [Dependency] private IStateManager _stateManager = default!;
         [Dependency] private IEyeManager _eyeManager = default!;
         [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private IConfigurationManager _config = default!;
+        [Dependency] private ILocalizationManager _localization = default!;
+        [Dependency] private LocalizationCultureHandshakeSystem _cultureHandshake = default!;
         [Dependency] private SharedContainerSystem _containers = default!;
-        [Dependency] private IConfigurationManager _cfg = default!;
         [Dependency] private EntityLookupSystem _lookup = default!;
 
         private float _lookupSize;
@@ -51,7 +57,7 @@ namespace Content.Client.Verbs
             base.Initialize();
 
             SubscribeNetworkEvent<VerbsResponseEvent>(HandleVerbResponse);
-            Subs.CVar(_cfg, CCVars.GameEntityMenuLookup, OnLookupChanged, true);
+            Subs.CVar(_config, CCVars.GameEntityMenuLookup, OnLookupChanged, true);
         }
 
         private void OnLookupChanged(float val)
@@ -175,8 +181,9 @@ namespace Content.Client.Verbs
         /// </summary>
         public SortedSet<Verb> GetVerbs(NetEntity target, EntityUid user, List<Type> verbTypes, out List<VerbCategory> extraCategories, bool force = false)
         {
-            if (!target.IsClientSide())
-                RaiseNetworkEvent(new RequestServerVerbsEvent(target, verbTypes, adminRequest: force));
+            if (!target.IsClientSide() && _cultureHandshake.IsCultureConfirmed)
+                RaiseNetworkEvent(new RequestServerVerbsEvent(target, verbTypes, adminRequest: force,
+                    cultureName: ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name)));
 
             // Some admin menu interactions will try get verbs for entities that have not yet been sent to the player.
             if (!TryGetEntity(target, out var local))
@@ -224,8 +231,9 @@ namespace Content.Client.Verbs
             if (verb.ClientExclusive || target.IsClientSide())
                 // is this a client exclusive (gui) verb?
                 ExecuteVerb(verb, user, GetEntity(target));
-            else
-                EntityManager.RaisePredictiveEvent(new ExecuteVerbEvent(target, verb));
+            else if (_cultureHandshake.IsCultureConfirmed)
+                EntityManager.RaisePredictiveEvent(new ExecuteVerbEvent(target, verb,
+                    ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name)));
         }
 
         private void HandleVerbResponse(VerbsResponseEvent msg)

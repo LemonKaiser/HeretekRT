@@ -3,15 +3,19 @@ using System.Numerics;
 using Content.Client.CombatMode;
 using Content.Client.ContextMenu.UI;
 using Content.Client.Gameplay;
+using Content.Client.Localization;
 using Content.Client.Mapping;
 using Content.Shared.Input;
 using Content.Shared.Verbs;
+using Content.Shared.Localizations;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Collections;
 using Robust.Shared.Input;
+using Robust.Shared.Localization;
 using Robust.Shared.Utility;
+using Robust.Shared;
 
 namespace Content.Client.Verbs.UI
 {
@@ -29,6 +33,8 @@ namespace Content.Client.Verbs.UI
     {
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private ContextMenuUIController _context = default!;
+        [UISystemDependency] private readonly LocalizationCultureHandshakeSystem _cultureHandshake = default!;
+        [Dependency] private ILocalizationManager _localization = default!;
 
         [UISystemDependency] private readonly CombatModeSystem _combatMode = default!;
         [UISystemDependency] private readonly VerbSystem _verbSystem = default!;
@@ -48,6 +54,7 @@ namespace Content.Client.Verbs.UI
             _context.OnContextKeyEvent += OnKeyBindDown;
             _context.OnContextClosed += Close;
             _verbSystem.OnVerbsResponse += HandleVerbsResponse;
+            _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
         }
 
         public void OnStateExited(GameplayState state)
@@ -56,6 +63,7 @@ namespace Content.Client.Verbs.UI
             _context.OnContextClosed -= Close;
             if (_verbSystem != null)
                 _verbSystem.OnVerbsResponse -= HandleVerbsResponse;
+            _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
             Close();
         }
 
@@ -64,6 +72,7 @@ namespace Content.Client.Verbs.UI
             _context.OnContextKeyEvent += OnKeyBindDown;
             _context.OnContextClosed += Close;
             _verbSystem.OnVerbsResponse += HandleVerbsResponse;
+            _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
         }
 
         public void OnStateExited(MappingState state)
@@ -72,6 +81,12 @@ namespace Content.Client.Verbs.UI
             _context.OnContextClosed -= Close;
             if (_verbSystem != null)
                 _verbSystem.OnVerbsResponse -= HandleVerbsResponse;
+            _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
+            Close();
+        }
+
+        private void OnCultureConfirmed()
+        {
             Close();
         }
 
@@ -139,7 +154,7 @@ namespace Content.Client.Verbs.UI
 
             foreach (var cat in ExtraCategories)
             {
-                extras.Add(cat.Text);
+                extras.Add(GetCategoryKey(cat));
             }
 
             foreach (var verb in CurrentVerbs)
@@ -150,13 +165,13 @@ namespace Content.Client.Verbs.UI
                     _context.AddElement(popup, element);
                 }
                 // Add the category if it's not an extra (this is to avoid shuffling if we're filling from server verbs response).
-                else if (!extras.Contains(verb.Category.Text) && listedCategories.Add(verb.Category.Text))
+                else if (!extras.Contains(GetCategoryKey(verb.Category)) && listedCategories.Add(GetCategoryKey(verb.Category)))
                     AddVerbCategory(verb.Category, popup);
             }
 
             foreach (var category in ExtraCategories)
             {
-                if (listedCategories.Add(category.Text))
+                if (listedCategories.Add(GetCategoryKey(category)))
                     AddVerbCategory(category, popup);
             }
 
@@ -173,7 +188,7 @@ namespace Content.Client.Verbs.UI
             var drawIcons = false;
             foreach (var verb in CurrentVerbs)
             {
-                if (verb.Category?.Text == category.Text)
+                if (verb.Category != null && GetCategoryKey(verb.Category) == GetCategoryKey(category))
                 {
                     verbsInCategory.Add(verb);
                     drawIcons = drawIcons || verb.Icon != null || verb.IconEntity != null;
@@ -200,6 +215,11 @@ namespace Content.Client.Verbs.UI
             }
 
             element.SubMenu.MenuBody.Columns = category.Columns;
+        }
+
+        private static string GetCategoryKey(VerbCategory category)
+        {
+            return category.TextLocId ?? category.Text;
         }
 
         /// <summary>
@@ -295,6 +315,15 @@ namespace Content.Client.Verbs.UI
         {
             if (OpenMenu == null || !OpenMenu.Visible || CurrentTarget != msg.Entity)
                 return;
+
+            var currentCulture = ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name);
+            if (msg.CultureName != null && currentCulture != null &&
+                !string.Equals(msg.CultureName, currentCulture, StringComparison.OrdinalIgnoreCase))
+            {
+                // A response for the previous culture must not be merged with the
+                // newly-built local verbs.
+                return;
+            }
 
             AddServerVerbs(msg.Verbs, OpenMenu);
         }

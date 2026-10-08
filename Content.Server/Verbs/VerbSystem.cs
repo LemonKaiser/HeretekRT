@@ -1,12 +1,15 @@
 using System.Linq;
 using Content.Server.Administration.Managers;
 using Content.Server.Popups;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Hands.Components;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Verbs;
+using Content.Shared.Localizations;
+using Robust.Shared.Player;
 
 namespace Content.Server.Verbs
 {
@@ -15,6 +18,7 @@ namespace Content.Server.Verbs
         [Dependency] private ISharedAdminLogManager _adminLogger = default!;
         [Dependency] private PopupSystem _popupSystem = default!;
         [Dependency] private IAdminManager _adminMgr = default!;
+        [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
         public override void Initialize()
         {
@@ -26,6 +30,9 @@ namespace Content.Server.Verbs
         private void HandleVerbRequest(RequestServerVerbsEvent args, EntitySessionEventArgs eventArgs)
         {
             var player = eventArgs.SenderSession;
+
+            if (!_playerCulture.IsCultureReady(player))
+                return;
 
             if (!EntityManager.EntityExists(GetEntity(args.EntityUid)))
             {
@@ -57,9 +64,23 @@ namespace Content.Server.Verbs
                     Log.Error($"Unknown verb type received: {key}");
             }
 
+            // Rebuild the list in the culture authenticated for this session. The request field
+            // is only an echo used by clients to reject stale responses.
+            using var culture = _playerCulture.CreateScope(player, args.CultureName);
             var response =
-                new VerbsResponseEvent(args.EntityUid, GetLocalVerbs(GetEntity(args.EntityUid), attached, verbTypes, force));
+                new VerbsResponseEvent(args.EntityUid, GetLocalVerbs(GetEntity(args.EntityUid), attached, verbTypes, force),
+                    _playerCulture.GetCulture(player));
             RaiseNetworkEvent(response, player.Channel);
+        }
+
+        protected override string? GetExecuteVerbCulture(ICommonSession session, string? requestedCulture)
+        {
+            return _playerCulture.GetCulture(session);
+        }
+
+        protected override bool CanExecuteVerb(ICommonSession session)
+        {
+            return _playerCulture.IsCultureReady(session);
         }
 
         /// <summary>

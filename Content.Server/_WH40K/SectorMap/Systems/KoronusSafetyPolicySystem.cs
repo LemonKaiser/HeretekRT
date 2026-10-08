@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.ClassProgression;
+using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.Components;
@@ -79,6 +80,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private ShuttleConsoleLockSystem _shipAccess = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
     [Dependency] private SharedGunSystem _guns = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kPartyManager _wh40kParties = default!;
@@ -435,7 +437,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             _guns.GetBulletPrototype(ammoPrototype).TryGetComponent<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
         {
             args.Cancel();
-            _popup.PopupCursor(Loc.GetString("koronus-safety-radiation-ammo-blocked"), args.User);
+            _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-radiation-ammo-blocked"), args.User);
             return;
         }
 
@@ -693,7 +695,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return;
 
         args.Cancel();
-        _popup.PopupCursor(Loc.GetString("koronus-safety-deployment-blocked"), args.User);
+        _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-deployment-blocked"), args.User);
     }
 
     private void OnSprayAttempt(Entity<SprayComponent> entity, ref SprayAttemptEvent args)
@@ -702,7 +704,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return;
 
         args.Cancel();
-        _popup.PopupCursor(Loc.GetString("koronus-safety-chemistry-blocked"), args.User);
+        _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-chemistry-blocked"), args.User);
     }
 
     private void OnBodyDragDrop(Entity<BodyComponent> entity, ref DragDropDraggedEvent args)
@@ -716,7 +718,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         }
 
         args.Handled = true;
-        _popup.PopupCursor(Loc.GetString("koronus-safety-disposal-blocked"), args.User);
+        _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-disposal-blocked"), args.User);
     }
 
     private void OnGasTankValveAttempt(Entity<GasTankComponent> entity, ref GasTankValveAttemptEvent args)
@@ -726,7 +728,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         args.Cancel();
         if (args.User is { } user)
-            _popup.PopupCursor(Loc.GetString("koronus-safety-atmospheric-release-blocked"), user);
+            _popup.PopupCursor(_playerCulture.GetPlayerString(user, "koronus-safety-atmospheric-release-blocked"), user);
     }
 
     private void OnGasCanisterValveAttempt(Entity<GasCanisterComponent> entity, ref GasCanisterValveAttemptEvent args)
@@ -736,7 +738,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         args.Cancel();
         if (args.User is { } user)
-            _popup.PopupCursor(Loc.GetString("koronus-safety-atmospheric-release-blocked"), user);
+            _popup.PopupCursor(_playerCulture.GetPlayerString(user, "koronus-safety-atmospheric-release-blocked"), user);
     }
 
     private void BlockAnchoring(EntityUid target, EntityUid user, BaseAnchoredAttemptEvent args)
@@ -745,7 +747,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return;
 
         args.Cancel();
-        _popup.PopupCursor(Loc.GetString("koronus-safety-anchoring-blocked"), user);
+        _popup.PopupCursor(_playerCulture.GetPlayerString(user, "koronus-safety-anchoring-blocked"), user);
     }
 
     private bool TryGetGrid(EntityUid entity, out EntityUid grid)

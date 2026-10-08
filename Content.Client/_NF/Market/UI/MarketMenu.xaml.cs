@@ -74,8 +74,8 @@ public sealed partial class MarketMenu : FancyWindow
             CartEntitiesCount.FontColorOverride = null;
         BalanceLabel.Text = $" ₮{uiState.Balance}";
         CartBalanceLabel.Text = _loc.GetString("market-cart-balance", ("cost", uiState.CartBalance), ("cratecost", uiState.TransactionCost));
-        PurchaseCart.Text = _loc.GetString("market-purchase-cart-button") +
-                            (uiState.CartBalance + uiState.TransactionCost);
+        PurchaseCart.Text = _loc.GetString("market-purchase-cart-button",
+            ("cost", uiState.CartBalance + uiState.TransactionCost));
         SetUiEnabled(uiState.Enabled);
         PurchaseCart.Disabled = uiState.CartDataList.Count <= 0;
     }
@@ -132,8 +132,7 @@ public sealed partial class MarketMenu : FancyWindow
                 var productRow = new MarketProductRow(prototype)
                 {
                     Title = { Text = prototype.Name },
-                    Quantity = { Text = _loc.GetString("market-quantity-available")
-                        .Replace("$1", marketData.Quantity.ToString()) },
+                    Quantity = { Text = _loc.GetString("market-quantity-available", ("quantity", marketData.Quantity)) },
                     Price = { Text = priceText },
                     Icon = { Texture = sprite.Icon?.Default }
                 };

@@ -10,6 +10,7 @@ using Content.Server.Chat.V2.Repository;
 using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server._WH40K.Administration;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Chat;
 using Content.Shared.Database;
 using Content.Shared.Emoting;
@@ -37,6 +38,7 @@ public sealed class WH40KMuteSystem : EntitySystem
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private UserDbDataManager _userDb = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
     private static readonly WH40KMuteSnapshot EmptySnapshot =
         new(WH40KMuteType.None, null, null);
@@ -88,16 +90,21 @@ public sealed class WH40KMuteSystem : EntitySystem
         return IsMuted(session, WH40KMuteType.AHelp, out info);
     }
 
-    public string GetApplyFailureMessage(WH40KMuteApplyResult result)
+    public string GetApplyFailureMessage(WH40KMuteApplyResult result, ICommonSession? session = null)
     {
         return result switch
         {
-            WH40KMuteApplyResult.InvalidScope => Loc.GetString("wh40k-mute-command-invalid-scope-mask"),
-            WH40KMuteApplyResult.InvalidReason => Loc.GetString("wh40k-mute-panel-no-reason"),
-            WH40KMuteApplyResult.InvalidDuration => Loc.GetString("wh40k-mute-command-invalid-duration"),
-            WH40KMuteApplyResult.TargetHostProtected => Loc.GetString("wh40k-mute-target-host-protected"),
+            WH40KMuteApplyResult.InvalidScope => GetMessage(session, "wh40k-mute-command-invalid-scope-mask"),
+            WH40KMuteApplyResult.InvalidReason => GetMessage(session, "wh40k-mute-panel-no-reason"),
+            WH40KMuteApplyResult.InvalidDuration => GetMessage(session, "wh40k-mute-command-invalid-duration"),
+            WH40KMuteApplyResult.TargetHostProtected => GetMessage(session, "wh40k-mute-target-host-protected"),
             _ => string.Empty,
         };
+    }
+
+    private string GetMessage(ICommonSession? session, string messageId)
+    {
+        return session == null ? Loc.GetString(messageId) : _playerCulture.GetPlayerString(session, messageId);
     }
 
     public Task<WH40KMuteApplyResult> ApplyMuteAsync(
@@ -176,7 +183,7 @@ public sealed class WH40KMuteSystem : EntitySystem
                     actorHierarchy,
                     await TryGetHierarchyAsync(mutingAdminId, cancel)))
             {
-                notify?.Invoke(Loc.GetString("wh40k-mute-unmute-denied-protected"));
+                notify?.Invoke(_playerCulture.GetPlayerString(actor!, "wh40k-mute-unmute-denied-protected"));
                 return false;
             }
         }
@@ -321,7 +328,7 @@ public sealed class WH40KMuteSystem : EntitySystem
     private void NotifyMutedPlayer(NetUserId userId)
     {
         if (_players.TryGetSessionById(userId, out var session))
-            _chat.DispatchServerMessage(session, Loc.GetString("wh40k-mute-player-notification"));
+            _chat.DispatchServerMessage(session, _playerCulture.GetPlayerString(session, "wh40k-mute-player-notification"));
     }
 
     private async Task<WH40KMuteSnapshot> LoadSnapshotAsync(NetUserId userId)

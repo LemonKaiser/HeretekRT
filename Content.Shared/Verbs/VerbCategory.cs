@@ -9,7 +9,15 @@ namespace Content.Shared.Verbs
     [Serializable, NetSerializable]
     public sealed class VerbCategory
     {
-        public readonly string Text;
+        /// <summary>
+        /// Stable localization key for built-in categories. Dynamic categories may leave this null.
+        /// </summary>
+        public readonly string? TextLocId;
+
+        /// <summary>
+        /// Localized display text kept for compatibility with serialized/dynamic categories.
+        /// </summary>
+        public string Text;
 
         public readonly SpriteSpecifier? Icon;
 
@@ -30,9 +38,52 @@ namespace Content.Shared.Verbs
 
         public VerbCategory(string text, string? icon, bool iconsOnly = false)
         {
+            TextLocId = text;
             Text = Loc.GetString(text);
             Icon = icon == null ? null : new SpriteSpecifier.Texture(new(icon));
             IconsOnly = iconsOnly;
+        }
+
+        /// <summary>
+        /// Refreshes the cached text after the active UI culture changes.
+        /// </summary>
+        public void RefreshLocalization()
+        {
+            if (TextLocId != null)
+                Text = Loc.GetString(TextLocId);
+        }
+
+        /// <summary>
+        /// Gets the current display text without relying on a stale constructor-time value.
+        /// </summary>
+        public string GetDisplayText() => TextLocId == null ? Text : Loc.GetString(TextLocId);
+
+        /// <summary>
+        /// Refreshes all static categories used by the verb UI.
+        /// </summary>
+        public static void RefreshStaticLocalizations()
+        {
+            Admin.RefreshLocalization();
+            Antag.RefreshLocalization();
+            Examine.RefreshLocalization();
+            Debug.RefreshLocalization();
+            Eject.RefreshLocalization();
+            Insert.RefreshLocalization();
+            Buckle.RefreshLocalization();
+            Unbuckle.RefreshLocalization();
+            Rotate.RefreshLocalization();
+            Smite.RefreshLocalization();
+            Tricks.RefreshLocalization();
+            SetTransferAmount.RefreshLocalization();
+            Split.RefreshLocalization();
+            InstrumentStyle.RefreshLocalization();
+            ChannelSelect.RefreshLocalization();
+            SetSensor.RefreshLocalization();
+            Lever.RefreshLocalization();
+            SelectType.RefreshLocalization();
+            PowerLevel.RefreshLocalization();
+            Pen.RefreshLocalization();
+            Adjust.RefreshLocalization();
         }
 
         public static readonly VerbCategory Admin =

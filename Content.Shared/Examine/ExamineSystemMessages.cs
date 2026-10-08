@@ -15,11 +15,15 @@ namespace Content.Shared.Examine
 
             public readonly bool GetVerbs;
 
-            public RequestExamineInfoMessage(NetEntity netEntity, int id, bool getVerbs=false)
+            /// <summary>Culture used to build the response, avoiding a handshake timing race.</summary>
+            public readonly string? CultureName;
+
+            public RequestExamineInfoMessage(NetEntity netEntity, int id, bool getVerbs=false, string? cultureName = null)
             {
                 NetEntity = netEntity;
                 Id = id;
                 GetVerbs = getVerbs;
+                CultureName = cultureName;
             }
         }
 
@@ -36,9 +40,10 @@ namespace Content.Shared.Examine
             public readonly bool OpenAtOldTooltip;
 
             public readonly bool KnowTarget;
+            public readonly string? CultureName;
 
             public ExamineInfoResponseMessage(NetEntity entityUid, int id, FormattedMessage message, List<Verb>? verbs=null,
-                bool centerAtCursor=true, bool openAtOldTooltip=true, bool knowTarget = true)
+                bool centerAtCursor=true, bool openAtOldTooltip=true, bool knowTarget = true, string? cultureName = null)
             {
                 EntityUid = entityUid;
                 Id = id;
@@ -47,6 +52,7 @@ namespace Content.Shared.Examine
                 CenterAtCursor = centerAtCursor;
                 OpenAtOldTooltip = openAtOldTooltip;
                 KnowTarget = knowTarget;
+                CultureName = cultureName;
             }
         }
     }

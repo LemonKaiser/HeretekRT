@@ -186,7 +186,7 @@ namespace Content.Server.GameTicking
         public void PlayerJoinGame(ICommonSession session, bool silent = false)
         {
             if (!silent)
-                _chatManager.DispatchServerMessage(session, Loc.GetString("game-ticker-player-join-game-message"));
+                _chatManager.DispatchServerMessage(session, _playerCulture.GetPlayerString(session, "game-ticker-player-join-game-message"));
 
             _playerGameStatuses[session.UserId] = PlayerGameStatus.JoinedGame;
             _db.AddRoundPlayers(RoundId, session.UserId);
@@ -211,7 +211,7 @@ namespace Content.Server.GameTicking
             var client = session.Channel;
             RaiseNetworkEvent(new TickerJoinLobbyEvent(), client);
             RaiseNetworkEvent(GetStatusMsg(session), client);
-            RaiseNetworkEvent(GetInfoMsg(), client);
+            RaiseNetworkEvent(GetInfoMsg(session), client);
             RaiseLocalEvent(new PlayerJoinedLobbyEvent(session));
         }
 

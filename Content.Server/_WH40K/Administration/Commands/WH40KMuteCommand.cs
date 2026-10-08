@@ -3,6 +3,7 @@ using System.Linq;
 using Content.Server.Administration;
 using Content.Server.Administration.Managers;
 using Content.Server._WH40K.Administration.Mute;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Administration;
 using Content.Shared._WH40K.Administration.Mute;
 using Robust.Server.Player;
@@ -20,6 +21,8 @@ public sealed class WH40KMuteCommand : LocalizedCommands
     [Dependency] private IPlayerLocator _locator = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
 
+    private WH40KPlayerCultureManager PlayerCulture => _entities.System<WH40KPlayerCultureManager>();
+
     public override string Command => "mute";
 
     public override async void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -32,7 +35,7 @@ public sealed class WH40KMuteCommand : LocalizedCommands
 
         if (!TryParseMuteType(args[1], out var type))
         {
-            shell.WriteError(Loc.GetString("wh40k-mute-command-invalid-type", ("type", args[1])));
+            shell.WriteError(GetString(shell, "wh40k-mute-command-invalid-type", ("type", args[1])));
             shell.WriteError(Help);
             return;
         }
@@ -40,7 +43,7 @@ public sealed class WH40KMuteCommand : LocalizedCommands
         uint minutes = 0;
         if (args.Length >= 4 && !uint.TryParse(args[3], out minutes))
         {
-            shell.WriteError(Loc.GetString("cmd-ban-invalid-minutes", ("minutes", args[3])));
+            shell.WriteError(GetString(shell, "cmd-ban-invalid-minutes", ("minutes", args[3])));
             shell.WriteError(Help);
             return;
         }
@@ -48,14 +51,14 @@ public sealed class WH40KMuteCommand : LocalizedCommands
         TimeSpan? duration = args.Length >= 4 && minutes != 0 ? TimeSpan.FromMinutes(minutes) : null;
         if (!WH40KMutePolicy.IsValidTemporaryDuration(duration))
         {
-            shell.WriteError(Loc.GetString("wh40k-mute-command-invalid-duration"));
+            shell.WriteError(GetString(shell, "wh40k-mute-command-invalid-duration"));
             return;
         }
 
         var erase = false;
         if (args.Length == 5 && !TryParseBool(args[4], out erase))
         {
-            shell.WriteError(Loc.GetString("wh40k-mute-command-invalid-erase", ("value", args[4])));
+            shell.WriteError(GetString(shell, "wh40k-mute-command-invalid-erase", ("value", args[4])));
             shell.WriteError(Help);
             return;
         }
@@ -63,14 +66,14 @@ public sealed class WH40KMuteCommand : LocalizedCommands
         var located = await _locator.LookupIdByNameOrIdAsync(args[0]);
         if (located == null)
         {
-            shell.WriteError(Loc.GetString("cmd-ban-player"));
+            shell.WriteError(GetString(shell, "cmd-ban-player"));
             return;
         }
 
         if (await _adminActionGuard.TryDenyProtectedTargetAsync(
                 shell.Player,
                 located.UserId,
-                Loc.GetString("wh40k-admin-hierarchy-action-mute"),
+                GetString(shell, "wh40k-admin-hierarchy-action-mute"),
                 located.Username,
                 shell.WriteLine))
         {
@@ -88,11 +91,11 @@ public sealed class WH40KMuteCommand : LocalizedCommands
             erase);
         if (result != WH40KMuteApplyResult.Applied)
         {
-            shell.WriteError(muteSystem.GetApplyFailureMessage(result));
+            shell.WriteError(muteSystem.GetApplyFailureMessage(result, shell.Player));
             return;
         }
 
-        shell.WriteLine(Loc.GetString("wh40k-mute-command-success", ("player", located.Username)));
+        shell.WriteLine(GetString(shell, "wh40k-mute-command-success", ("player", located.Username)));
     }
 
     public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)
@@ -101,31 +104,31 @@ public sealed class WH40KMuteCommand : LocalizedCommands
         {
             return CompletionResult.FromHintOptions(
                 _playerManager.Sessions.Select(c => c.Name).OrderBy(c => c).ToArray(),
-                Loc.GetString("cmd-ban-hint"));
+                GetString(shell, "cmd-ban-hint"));
         }
 
         if (args.Length == 2)
         {
             return CompletionResult.FromHintOptions(
                 [
-                    new CompletionOption("chat", Loc.GetString("wh40k-mute-scope-chat")),
-                    new CompletionOption("ahelp", Loc.GetString("wh40k-mute-scope-ahelp")),
-                    new CompletionOption("all", Loc.GetString("wh40k-mute-scope-all")),
+                    new CompletionOption("chat", GetString(shell, "wh40k-mute-scope-chat")),
+                    new CompletionOption("ahelp", GetString(shell, "wh40k-mute-scope-ahelp")),
+                    new CompletionOption("all", GetString(shell, "wh40k-mute-scope-all")),
                 ],
-                Loc.GetString("wh40k-mute-command-hint-scope"));
+                GetString(shell, "wh40k-mute-command-hint-scope"));
         }
 
         if (args.Length == 3)
-            return CompletionResult.FromHint(Loc.GetString("cmd-ban-hint-reason"));
+            return CompletionResult.FromHint(GetString(shell, "cmd-ban-hint-reason"));
         if (args.Length == 4)
-            return CompletionResult.FromHint(Loc.GetString("cmd-ban-hint-duration"));
+            return CompletionResult.FromHint(GetString(shell, "cmd-ban-hint-duration"));
         if (args.Length == 5)
             return CompletionResult.FromHintOptions(
                 [
-                    new CompletionOption("false", Loc.GetString("wh40k-mute-command-hint-erase-no")),
-                    new CompletionOption("true", Loc.GetString("wh40k-mute-command-hint-erase-yes")),
+                    new CompletionOption("false", GetString(shell, "wh40k-mute-command-hint-erase-no")),
+                    new CompletionOption("true", GetString(shell, "wh40k-mute-command-hint-erase-yes")),
                 ],
-                Loc.GetString("wh40k-mute-command-hint-erase"));
+                GetString(shell, "wh40k-mute-command-hint-erase"));
 
         return CompletionResult.Empty;
     }
@@ -162,5 +165,12 @@ public sealed class WH40KMuteCommand : LocalizedCommands
                 value = false;
                 return false;
         }
+    }
+
+    private string GetString(IConsoleShell shell, string messageId, params (string, object)[] args)
+    {
+        return shell.Player is { } player
+            ? PlayerCulture.GetPlayerString(player, messageId, args)
+            : Loc.GetString(messageId, args);
     }
 }

@@ -6,6 +6,7 @@ using Content.Server.Chat.Managers;
 using Content.Server.Database;
 using Content.Server.EUI;
 using Content.Server._WH40K.Administration;
+using Content.Server._WH40K.Localizations;
 using Content.Shared.Eui;
 using Content.Shared._WH40K.Administration.Mute;
 using Robust.Shared.GameObjects;
@@ -24,6 +25,7 @@ public sealed class WH40KMutePanelEui : BaseEui
     private string _playerName = string.Empty;
     private bool _muteRequestInFlight;
     private WH40KMuteSystem MuteSystem => _entities.System<WH40KMuteSystem>();
+    private WH40KPlayerCultureManager PlayerCulture => _entities.System<WH40KPlayerCultureManager>();
 
     public WH40KMutePanelEui()
     {
@@ -91,19 +93,19 @@ public sealed class WH40KMutePanelEui : BaseEui
 
             if (!WH40KMutePolicy.IsValidScopeMask(request.Type))
             {
-                _chat.DispatchServerMessage(Player, Loc.GetString("wh40k-mute-panel-no-type"));
+                _chat.DispatchServerMessage(Player, PlayerCulture.GetPlayerString(Player, "wh40k-mute-panel-no-type"));
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(request.Target))
             {
-                _chat.DispatchServerMessage(Player, Loc.GetString("wh40k-mute-panel-no-player"));
+                _chat.DispatchServerMessage(Player, PlayerCulture.GetPlayerString(Player, "wh40k-mute-panel-no-player"));
                 return;
             }
 
             if (!WH40KMutePolicy.TryNormalizeReason(request.Reason, out _))
             {
-                _chat.DispatchServerMessage(Player, Loc.GetString("wh40k-mute-panel-no-reason"));
+                _chat.DispatchServerMessage(Player, PlayerCulture.GetPlayerString(Player, "wh40k-mute-panel-no-reason"));
                 return;
             }
 
@@ -112,21 +114,21 @@ public sealed class WH40KMutePanelEui : BaseEui
                 : TimeSpan.FromMinutes(request.DurationMinutes);
             if (!WH40KMutePolicy.IsValidTemporaryDuration(duration))
             {
-                _chat.DispatchServerMessage(Player, Loc.GetString("wh40k-mute-command-invalid-duration"));
+                _chat.DispatchServerMessage(Player, PlayerCulture.GetPlayerString(Player, "wh40k-mute-command-invalid-duration"));
                 return;
             }
 
             var located = await _playerLocator.LookupIdByNameOrIdAsync(request.Target);
             if (located == null)
             {
-                _chat.DispatchServerMessage(Player, Loc.GetString("cmd-ban-player"));
+                _chat.DispatchServerMessage(Player, PlayerCulture.GetPlayerString(Player, "cmd-ban-player"));
                 return;
             }
 
             if (await _adminActionGuard.TryDenyProtectedTargetAsync(
                     Player,
                     located.UserId,
-                    Loc.GetString("wh40k-admin-hierarchy-action-mute"),
+                    PlayerCulture.GetPlayerString(Player, "wh40k-admin-hierarchy-action-mute"),
                     located.Username,
                     message => _chat.DispatchServerMessage(Player, message)))
             {
@@ -143,13 +145,13 @@ public sealed class WH40KMutePanelEui : BaseEui
                 request.Erase);
             if (result != WH40KMuteApplyResult.Applied)
             {
-                _chat.DispatchServerMessage(Player, MuteSystem.GetApplyFailureMessage(result));
+                _chat.DispatchServerMessage(Player, MuteSystem.GetApplyFailureMessage(result, Player));
                 return;
             }
 
             _chat.DispatchServerMessage(
                 Player,
-                Loc.GetString("wh40k-mute-command-success", ("player", located.Username)));
+                PlayerCulture.GetPlayerString(Player, "wh40k-mute-command-success", ("player", located.Username)));
             closeAfterRequest = true;
         }
         finally

@@ -1,6 +1,10 @@
 ## General stuff
 
 ui-options-title = Game Options
+ui-language-restart-title = Restart required
+ui-language-restart-message = The selected language will apply after restarting the game. Accept this change?
+ui-language-restart-cancel = Cancel
+ui-language-restart-confirm = OK
 ui-options-tab-accessibility = Accessibility
 ui-options-tab-admin = Admin
 ui-options-tab-graphics = Graphics
@@ -386,3 +390,5 @@ ui-options-lobby-animated-background = Animated lobby background
 ui-options-lobby-background-auto = Auto
 ui-options-lobby-panel-opacity = Lobby panel background opacity
 ui-options-ui-window-opacity = UI window background opacity
+ui-options-general-language-translation = Language
+ui-options-language = Interface language:

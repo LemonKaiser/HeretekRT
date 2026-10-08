@@ -7,6 +7,7 @@ using Content.Shared.Power.Components;
 using Content.Shared.PowerCell;
 using Content.Shared.PowerCell.Components;
 using Content.Shared._WH40K.Augments;
+using Content.Server._WH40K.Localizations;
 using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments;
@@ -24,6 +25,7 @@ public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
     [Dependency] private readonly MobStateSystem _mobs = default!;
     [Dependency] private readonly PowerCellSystem _powerCell = default!;
     [Dependency] private readonly SharedPopupSystem _popups = default!;
+    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
 
     private TimeSpan _nextAlertUpdate;
 
@@ -37,13 +39,13 @@ public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
     {
         if (GetBodyAugment(ent) is not { } augment || GetAugmentCell(augment) is not { } battery)
         {
-            _popups.PopupEntity(Loc.GetString("power-cell-no-battery"), args.User, args.User, PopupType.MediumCaution);
+            _popups.PopupEntity(_playerCulture.GetPlayerString(args.User, "power-cell-no-battery"), args.User, args.User, PopupType.MediumCaution);
             return;
         }
 
         var percent = 100f * battery.Comp.CurrentCharge / battery.Comp.MaxCharge;
         var draw = CompOrNull<PowerCellDrawComponent>(augment)?.DrawRate ?? 0f;
-        _popups.PopupEntity(Loc.GetString("augments-power-cell-info", ("percent", $"{percent:F0}"), ("draw", draw)),
+        _popups.PopupEntity(_playerCulture.GetPlayerString(args.User, "augments-power-cell-info", ("percent", $"{percent:F0}"), ("draw", draw)),
             args.User, args.User);
     }
 
@@ -62,20 +64,20 @@ public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
     {
         if (GetBodyAugment(body) is not { } slot)
         {
-            _popups.PopupEntity(Loc.GetString("augments-no-power-cell-slot"), body, body, PopupType.MediumCaution);
+            _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augments-no-power-cell-slot"), body, body, PopupType.MediumCaution);
             return false;
         }
 
         if (GetAugmentCell(slot) is not { } battery)
         {
-            _popups.PopupEntity(Loc.GetString("power-cell-no-battery"), body, body, PopupType.MediumCaution);
+            _popups.PopupEntity(_playerCulture.GetPlayerString(body, "power-cell-no-battery"), body, body, PopupType.MediumCaution);
             return false;
         }
 
         if (_battery.TryUseCharge(battery.Owner, amount))
             return true;
 
-        _popups.PopupEntity(Loc.GetString("power-cell-insufficient"), body, body, PopupType.MediumCaution);
+        _popups.PopupEntity(_playerCulture.GetPlayerString(body, "power-cell-insufficient"), body, body, PopupType.MediumCaution);
         return false;
     }
 

@@ -3,6 +3,7 @@ using System.Numerics;
 using Content.Client.CombatMode;
 using Content.Client.Examine;
 using Content.Client.Gameplay;
+using Content.Client.Localization;
 using Content.Client.Verbs;
 using Content.Client.Verbs.UI;
 using Content.Shared.CCVar;
@@ -51,6 +52,7 @@ namespace Content.Client.ContextMenu.UI
         [UISystemDependency] private readonly ExamineSystem _examineSystem = default!;
         [UISystemDependency] private readonly TransformSystem _xform = default!;
         [UISystemDependency] private readonly CombatModeSystem _combatMode = default!;
+        [UISystemDependency] private readonly WH40KEntityNameLocalizer _entityNameLocalizer = default!;
 
         private EntityQuery<SpriteComponent> _spriteQuery;
 
@@ -97,8 +99,8 @@ namespace Content.Client.ContextMenu.UI
             var entitySpriteStates = GroupEntities(entities);
             var orderedStates = entitySpriteStates.ToList();
             orderedStates.Sort((x, y) => string.Compare(
-                Identity.Name(x.First(), _entityManager),
-                Identity.Name(y.First(), _entityManager),
+                _entityNameLocalizer.GetName(x.First()),
+                _entityNameLocalizer.GetName(y.First()),
                 StringComparison.CurrentCulture));
             Elements.Clear();
             AddToUI(orderedStates);

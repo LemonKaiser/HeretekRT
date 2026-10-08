@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
 using Robust.Shared.Serialization;
@@ -122,6 +123,19 @@ namespace Content.Shared.GameTicking
         public TickerLobbyInfoEvent(string textBlob)
         {
             TextBlob = textBlob;
+        }
+    }
+
+    /// <summary>
+    /// Local server event raised after a session's culture changes.
+    /// </summary>
+    public sealed class PlayerCultureChangedEvent : EntityEventArgs
+    {
+        public ICommonSession Session { get; }
+
+        public PlayerCultureChangedEvent(ICommonSession session)
+        {
+            Session = session;
         }
     }
 

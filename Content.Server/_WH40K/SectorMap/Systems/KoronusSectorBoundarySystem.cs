@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared.GameTicking;
 using Robust.Server.GameObjects;
@@ -33,6 +34,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private MapSystem _maps = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
     private readonly Dictionary<MapId, SystemBoundary> _boundaries = new();
     private readonly Dictionary<EntityUid, TimeSpan> _lastWarning = new();
@@ -194,11 +196,11 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
             var systemName = _sector.TryGetSystemPrototype(boundary.Runtime.SystemId, out var system)
                 ? system.DisplayName
                 : boundary.Runtime.SystemId;
-            var message = Loc.GetString("koronus-boundary-warning", ("system", systemName));
+            var message = _playerCulture.GetPlayerString(session, "koronus-boundary-warning", ("system", systemName));
             _chat.DispatchFilteredAnnouncement(
                 Filter.SinglePlayer(session),
                 message,
-                sender: Loc.GetString("koronus-boundary-announcer"),
+                sender: _playerCulture.GetPlayerString(session, "koronus-boundary-announcer"),
                 playSound: true,
                 announcementSound: new SoundPathSpecifier("/Audio/Effects/adminhelp.ogg"),
                 colorOverride: Color.Red);

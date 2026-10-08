@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using System.Threading;
+using Content.Client.Localization;
 using Content.Client._WH40K.ItemRarity;
 using Content.Client.Verbs;
 using Content.Shared.Examine;
@@ -9,15 +10,20 @@ using Content.Shared.Input;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Verbs;
+using Content.Shared.Localizations;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Utility;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using static Content.Shared.Interaction.SharedInteractionSystem;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 using Direction = Robust.Shared.Maths.Direction;
@@ -31,8 +37,16 @@ namespace Content.Client.Examine
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private IEyeManager _eyeManager = default!;
         [Dependency] private VerbSystem _verbSystem = default!;
+        [Dependency] private WH40KEntityNameLocalizer _entityNameLocalizer = default!;
+        [Dependency] private LocalizationCultureHandshakeSystem _cultureHandshake = default!;
+        [Dependency] private ILocalizationManager _localization = default!;
 
         public const string StyleClassEntityTooltip = "entity-tooltip";
+
+        protected override string GetEntityDescription(EntityUid entity, MetaDataComponent metadata)
+        {
+            return _entityNameLocalizer.GetDescription(entity);
+        }
 
         private EntityUid _examinedEntity;
         private EntityUid _lastExaminedEntity;
@@ -52,6 +66,7 @@ namespace Content.Client.Examine
             SubscribeNetworkEvent<ExamineSystemMessages.ExamineInfoResponseMessage>(OnExamineInfoResponse);
 
             SubscribeLocalEvent<ItemComponent, DroppedEvent>(OnExaminedItemDropped);
+            _cultureHandshake.CultureConfirmed += OnCultureConfirmed;
 
             CommandBinds.Builder
                 .Bind(ContentKeyFunctions.ExamineEntity, new PointerInputCmdHandler(HandleExamine, outsidePrediction: true))
@@ -83,7 +98,22 @@ namespace Content.Client.Examine
         public override void Shutdown()
         {
             CommandBinds.Unregister<ExamineSystem>();
+            _cultureHandshake.CultureConfirmed -= OnCultureConfirmed;
             base.Shutdown();
+        }
+
+        private void OnCultureConfirmed()
+        {
+            if (_examineTooltipOpen is not { Visible: true } || !_examinedEntity.Valid)
+                return;
+
+            if (_playerManager.LocalEntity is not { } player || !CanExamine(player, _examinedEntity))
+            {
+                CloseTooltip();
+                return;
+            }
+
+            DoExamine(_examinedEntity, centeredOnCursor: false, userOverride: player);
         }
 
         public override bool CanExamine(EntityUid examiner, MapCoordinates target, Ignored? predicate = null, EntityUid? examined = null, ExaminerComponent? examinerComp = null)
@@ -147,6 +177,13 @@ namespace Content.Client.Examine
             var player = _playerManager.LocalEntity;
             if (player == null)
                 return;
+
+            var currentCulture = ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name);
+            if (ev.CultureName != null && currentCulture != null &&
+                !string.Equals(ev.CultureName, currentCulture, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
 
             // Prevent updating a new tooltip.
             if (ev.Id != 0 && ev.Id != _idCounter)
@@ -241,7 +278,7 @@ namespace Content.Client.Examine
 
             if (knowTarget)
             {
-                var itemName = FormattedMessage.EscapeText(Identity.Name(target, EntityManager, player));
+                var itemName = FormattedMessage.EscapeText(_entityNameLocalizer.GetName(target, player));
                 var labelMessage = FormattedMessage.FromMarkupPermissive($"[bold]{itemName}[/bold]");
                 var label = new RichTextLabel();
                 label.SetMessage(labelMessage);
@@ -368,14 +405,15 @@ namespace Content.Client.Examine
             message = GetExamineText(entity, playerEnt);
             UpdateTooltipInfo(playerEnt.Value, entity, message);
 
-            if (!IsClientSide(entity))
+            if (!IsClientSide(entity) && _cultureHandshake.IsCultureConfirmed)
             {
                 // Ask server for extra examine info.
                 if (entity != _lastExaminedEntity)
                     _idCounter += 1;
                 if (_idCounter == int.MaxValue)
                     _idCounter = 0;
-                RaiseNetworkEvent(new ExamineSystemMessages.RequestExamineInfoMessage(GetNetEntity(entity), _idCounter, true));
+                RaiseNetworkEvent(new ExamineSystemMessages.RequestExamineInfoMessage(GetNetEntity(entity), _idCounter, true,
+                    ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name)));
             }
 
             RaiseLocalEvent(entity, new ClientExaminedEvent(entity, playerEnt.Value));

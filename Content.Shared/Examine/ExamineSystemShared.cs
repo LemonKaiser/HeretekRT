@@ -269,9 +269,10 @@ namespace Content.Shared.Examine
             var metadata = MetaData(entity);
 
             //Add an entity description if one is declared
-            if (!string.IsNullOrEmpty(metadata.EntityDescription))
+            var entityDescription = GetEntityDescription(entity, metadata);
+            if (!string.IsNullOrEmpty(entityDescription))
             {
-                message.AddText(metadata.EntityDescription);
+                message.AddText(entityDescription);
                 hasDescription = true;
             }
 
@@ -288,6 +289,15 @@ namespace Content.Shared.Examine
             newMessage.Pop();
 
             return newMessage;
+        }
+
+        /// <summary>
+        /// Gets the description used by examine. Content can override this for a
+        /// per-player culture while preserving runtime descriptions.
+        /// </summary>
+        protected virtual string GetEntityDescription(EntityUid entity, MetaDataComponent metadata)
+        {
+            return metadata.EntityDescription;
         }
     }
 
