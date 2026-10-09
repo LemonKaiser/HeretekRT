@@ -1,5 +1,5 @@
-shuttle-timer-eta = ПРИБ
-shuttle-timer-etd = ОТБ
+shuttle-timer-eta = ETA
+shuttle-timer-etd = ETD
 shuttle-timer-shuttle-time = ShuttleTime
 shuttle-timer-source-time = SourceTime
 shuttle-timer-dest-time = DestTime

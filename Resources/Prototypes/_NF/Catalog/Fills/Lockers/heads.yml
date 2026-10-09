@@ -50,6 +50,8 @@
       - id: WeaponOverseerMace # Mono
       - id: PhoneInstrumentHigh # Mono
       - id: WeaponCaseShortBombCollar # Mono
+      - id: PaperCCTCMiningVesselPurchase
+      - id: PaperCCTCTransportVesselPurchase
 
 - type: entity
   id: LockerNfsdSheriffFilled

@@ -6,3 +6,4 @@ research-technology-mieyo-corpsec-rifles = Винтовки охраны акт�
 research-technology-mieyo-meds = Лечение ран MMC
 research-technology-mieyo-press = Гидравлика MMC
 research-technology-mieyo-srd = Корабельные технологии MMC
+research-technology-mieyo-bionics-sakimoto = MMC EVT-001 Сакимото

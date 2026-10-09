@@ -177,8 +177,23 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
 
         // Use the same occluders as FOV. The facing test above avoids rays for mounts viewed from behind.
         var target = new MapCoordinates(facePoint, xform.MapID);
+
+        // OccluderSystem deliberately limits raycasts to a short range. During sector FTL transitions the
+        // client can briefly render a viewport whose eye and wall mounts are far apart on the same map. Avoid
+        // asking for that raycast so the normal visibility pass does not emit a warning every frame.
+        if (target.MapId != eye.Position.MapId || !IsWithinOcclusionRange(eye.Position, target))
+            return 1f;
+
         occluded = !_occluder.InRangeUnoccluded(eye.Position, target, 0f, false);
         return occluded ? 0f : 1f;
+    }
+
+    private static bool IsWithinOcclusionRange(MapCoordinates origin, MapCoordinates target)
+    {
+        var delta = target.Position - origin.Position;
+        return float.IsFinite(delta.X) &&
+               float.IsFinite(delta.Y) &&
+               delta.LengthSquared() <= OccluderSystem.MaxRaycastRange * OccluderSystem.MaxRaycastRange;
     }
 
     /// <summary>

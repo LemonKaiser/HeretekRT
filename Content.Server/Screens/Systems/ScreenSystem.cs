@@ -66,7 +66,8 @@ public sealed partial class ScreenSystem : EntitySystem
     /// Determines if/how a timer packet affects this screen.
     /// Currently there are 2 broadcast domains: Arrivals, and every other screen.
     /// Domain is determined by the <see cref="Shared.DeviceNetwork.Components.DeviceNetworkComponent.TransmitFrequencyId"/> on each timer.
-    /// Each broadcast domain is divided into subnets. Screen MapUid determines subnet.
+    /// Each broadcast domain is divided into subnets. Screen MapUid normally determines the subnet;
+    /// grid IDs are also accepted for routes that have multiple transit stops on one map.
     /// Subnets are the shuttle, source, and dest. Source/dest change each jump.
     /// This is required to send different timers to the shuttle/terminal/station.
     /// </summary>
@@ -91,10 +92,10 @@ public sealed partial class ScreenSystem : EntitySystem
             case var local when local == shuttleMap || timerXform.GridUid == shuttleMap:
                 key = ShuttleTimerMasks.ShuttleTime;
                 break;
-            case var origin when origin == source:
+            case var origin when origin == source || timerXform.GridUid == source:
                 key = ShuttleTimerMasks.SourceTime;
                 break;
-            case var remote when remote == dest:
+            case var remote when remote == dest || timerXform.GridUid == dest:
                 key = ShuttleTimerMasks.DestTime;
                 text = ShuttleTimerMasks.ETA;
                 break;

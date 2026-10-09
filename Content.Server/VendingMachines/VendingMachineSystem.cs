@@ -373,10 +373,14 @@ namespace Content.Server.VendingMachines
 
                 if (TryEjectVendorItem(uid, type, itemId, component.CanShoot, component))
                 {
-                    paidFully = _cash.TryCashPayment(uid, totalPrice, out var _, true); // Mono - Attempt to pay with cash before credit
+                    paidFully = totalPrice <= 0;
+                    if (totalPrice > 0)
+                    {
+                        paidFully = _cash.TryCashPayment(uid, totalPrice, out var _, true); // Mono - Attempt to pay with cash before credit
 
-                    if (totalPrice > cashSlotBalance && !HasComp<IronmanComponent>(sender))
-                        paidFully = _bankSystem.TryBankWithdraw(sender, totalPrice - cashSlotBalance); // Mono - if cash was not enough, pay the difference with credit
+                        if (totalPrice > cashSlotBalance && !HasComp<IronmanComponent>(sender))
+                            paidFully = _bankSystem.TryBankWithdraw(sender, totalPrice - cashSlotBalance); // Mono - if cash was not enough, pay the difference with credit
+                    }
 
                     // If we paid completely, pay our station taxes
                     if (paidFully)
@@ -626,6 +630,25 @@ namespace Content.Server.VendingMachines
             if (!Resolve(uid, ref vendComponent))
                 return;
 
+            RestockInventoryFromPrototype(uid, vendComponent);
+
+            Dirty(uid, vendComponent);
+            TryUpdateVisualState(uid, vendComponent);
+        }
+
+        /// <summary>
+        /// Restores a machine to the exact stock declared by its inventory prototype.
+        /// This is used by scheduled station resupply; the normal restock box keeps its
+        /// additive three-times-cap behavior through <see cref="TryRestockInventory"/>.
+        /// </summary>
+        public void ResetInventoryFromPrototype(EntityUid uid, VendingMachineComponent? vendComponent = null)
+        {
+            if (!Resolve(uid, ref vendComponent))
+                return;
+
+            vendComponent.Inventory.Clear();
+            vendComponent.EmaggedInventory.Clear();
+            vendComponent.ContrabandInventory.Clear();
             RestockInventoryFromPrototype(uid, vendComponent);
 
             Dirty(uid, vendComponent);

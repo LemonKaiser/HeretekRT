@@ -1,0 +1,62 @@
+- type: entity
+  parent: PaperCargoInvoice
+  id: PaperCCTCMiningVesselPurchase
+  name: ent-PaperCCTCMiningVesselPurchase
+  description: ent-PaperCCTCMiningVesselPurchase-desc
+  components:
+  - type: Paper
+    content: paper-cctc-mining-vessel-purchase
+  - type: ShipyardVoucher
+    destroyOnEmpty: true
+    consoleType: Shipyard
+    companyName: Colonial
+    vessels:
+    - Baeg
+    - Borer
+    - caracara
+    - Guppy
+    - Hammerhead
+    - MClass
+    - Noble
+    - Notch
+    - Peregrine
+    - Rig
+    - Sakuratsu
+    - Shareholder
+    - Vaquita
+    - Victoria
+    - Windreign
+  - type: NFShipyardVoucher
+  - type: StationRecordKeyStorage
+  - type: CargoSellBlacklist
+  - type: StaticPrice
+    price: 0
+
+- type: entity
+  parent: PaperCargoInvoice
+  id: PaperCCTCTransportVesselPurchase
+  name: ent-PaperCCTCTransportVesselPurchase
+  description: ent-PaperCCTCTransportVesselPurchase-desc
+  components:
+  - type: Paper
+    content: paper-cctc-transport-vessel-purchase
+  - type: ShipyardVoucher
+    destroyOnEmpty: true
+    consoleType: Shipyard
+    companyName: Colonial
+    vessels:
+    - Argent
+    - Autumn
+    - Brute
+    - Framework
+    - Olympus
+    - Piva
+    - Plutomkii
+    - Tiger
+    - Twilight
+    - Zhuangzi
+  - type: NFShipyardVoucher
+  - type: StationRecordKeyStorage
+  - type: CargoSellBlacklist
+  - type: StaticPrice
+    price: 0

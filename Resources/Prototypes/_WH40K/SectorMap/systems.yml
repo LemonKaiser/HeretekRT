@@ -7,6 +7,19 @@
   initialGridSpawnDistance: 5200
   initialGridDisplayName: Футфол
   # The round-start Footfall grid is moved to a random angle at this radius from Furibundus.
+  # These two local facilities are kept on the same map so the public transit shuttle can
+  # cycle between the station, the casino and the bar without leaving the Footfall system.
+  additionalGrids:
+  - mapPath: /Maps/_WH40K/Footfall/footfall_caseys_casino.yml
+    displayName: koronus-footfall-casino-name
+    spawnDistance: 7000
+    protectGrid: true
+    autoRestock: true
+  - mapPath: /Maps/_WH40K/Footfall/footfall_bahama_mamas.yml
+    displayName: koronus-footfall-bar-name
+    spawnDistance: 9000
+    protectGrid: true
+    autoRestock: true
   spaceMode: Planetary
   stellarCenter: 0, 0
   enabled: true
@@ -19,6 +32,7 @@
   # These extra restrictions are attached to the Footfall grid itself, not the system map.
   initialGridLocalSafetyProfile: KoronusFootfallStationRestrictions
   protectInitialGrid: true
+  autoRestockInitialGrid: true
 
 - type: koronusSystem
   id: Aivorius
@@ -26,7 +40,7 @@
   displayName: Aivorius
   uiPosition: 0.525, 0.817
   # The authored derelict stays at the lower system marker; it is the Drifting Voidship from Aivorius.
-  initialGridPath: /Maps/Ruins/ruined_prison_ship.yml
+  initialGridPath: /Maps/_WH40K/BrokenCruiser.yml
   initialGridDisplayName: Дрейфующий пустотный корабль
   spaceMode: Planetary
   # The voidship grid is authored at 0,0, 6.6 kilometres below this stellar centre.
@@ -34,7 +48,7 @@
   # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
   boundaryRadius: 24000
   enabled: true
-  activityEligible: true
+  activityEligible: false
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
@@ -66,6 +80,7 @@
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
+  autoRestockInitialGrid: true
   allowColdUnload: true
   coldUnloadDelay: 120
 
@@ -87,6 +102,7 @@
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true
+  autoRestockInitialGrid: true
   allowColdUnload: true
   coldUnloadDelay: 120
 

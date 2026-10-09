@@ -19,6 +19,18 @@ public sealed partial class TransitShuttleComponent : Component
     [DataField]
     public EntityUid NextStation;
 
+    /// <summary>
+    /// The stop reached by the current or most recent jump.
+    /// </summary>
+    [DataField]
+    public EntityUid CurrentStation;
+
+    /// <summary>
+    /// Whether the shuttle is currently between stops.
+    /// </summary>
+    [DataField]
+    public bool InTransit;
+
     [DataField(customTypeSerializer:typeof(TimeOffsetSerializer))]
     public TimeSpan NextTransfer;
 }

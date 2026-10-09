@@ -410,7 +410,9 @@ public sealed partial class ShuttleSystem
             }
         }
 
-        var hyperspace = EnsureComp<FTLComponent>(shuttleUid);
+        if (!TrySetupFTL(shuttleUid, component, out var hyperspace))
+            return;
+
         SetupFTL(hyperspace, startupTime, hyperspaceTime, priorityTag);
 
         if (TryComp<DockingComponent>(target, out var dock) && dock.Docked && dock.DockedWith != null)
@@ -418,7 +420,7 @@ public sealed partial class ShuttleSystem
             hyperspace.TargetCoordinates = new EntityCoordinates(dock.DockedWith.Value, Vector2.Zero);
             hyperspace.TargetAngle = _transform.GetWorldRotation(dock.DockedWith.Value) + Math.PI;
         }
-        else if (TryFTLDock(shuttleUid, component, target, out var config))
+        else if (_dockSystem.GetDockingConfig(shuttleUid, target, priorityTag) is { } config)
         {
             hyperspace.TargetCoordinates = config.Coordinates;
             hyperspace.TargetAngle = config.Angle;

@@ -156,3 +156,17 @@
   - UniversalMaterialResearchT3
   - MieyoBionicsT2
   position: -6, -15
+
+- type: technology
+  id: MieyoBionicsBlackFlash
+  name: research-technology-mieyo-bionics-sakimoto
+  entityIcon: OrganHeartMMCSakimoto
+  discipline: Mieyo
+  tier: 3
+  cost: 75000
+  recipeUnlocks:
+  - AutosurgeonAdvHeartMMC
+  technologyPrerequisites:
+  - UniversalMaterialResearchT3
+  - MieyoBionicsT2
+  position: -7, -15

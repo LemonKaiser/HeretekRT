@@ -1,10 +1,14 @@
 using Content.Server._NF.PublicTransit.Components;
 using Content.Server.Chat.Systems;
+using Content.Server.DeviceNetwork.Systems;
 using Content.Server.GameTicking;
+using Content.Server.Screens.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
 using Content.Server.Shuttles.Systems;
 using Content.Shared.Chat; // Einstein Engines - Languages
+using Content.Shared.DeviceNetwork;
+using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.GameTicking;
 using Content.Shared._NF.CCVar;
 using Content.Shared.Shuttles.Components;
@@ -35,6 +39,7 @@ public sealed partial class PublicTransitSystem : EntitySystem
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private StationRenameWarpsSystems _renameWarps = default!;
     [Dependency] private DockingSystem _dockSystem = default!;
+    [Dependency] private DeviceNetworkSystem _deviceNetwork = default!;
 
     /// <summary>
     /// If enabled then spawns the bus and sets up the bus line.
@@ -102,6 +107,19 @@ public sealed partial class PublicTransitSystem : EntitySystem
         {
             if (!StationList.Contains(uid)) //if the grid isnt already in
                 StationList.Add(uid); //add it to the list
+
+            StationList.Sort((left, right) =>
+            {
+                var leftOrder = TryComp<StationTransitComponent>(left, out var leftComponent)
+                    ? leftComponent.RouteOrder
+                    : int.MaxValue;
+                var rightOrder = TryComp<StationTransitComponent>(right, out var rightComponent)
+                    ? rightComponent.RouteOrder
+                    : int.MaxValue;
+
+                var order = leftOrder.CompareTo(rightOrder);
+                return order != 0 ? order : left.Id.CompareTo(right.Id);
+            });
         }
     }
 
@@ -147,6 +165,11 @@ public sealed partial class PublicTransitSystem : EntitySystem
 
     private void OnShuttleArrival(EntityUid uid, TransitShuttleComponent comp, ref FTLCompletedEvent args)
     {
+        comp.InTransit = false;
+        var waitTime = TimeSpan.FromSeconds(_cfgManager.GetCVar(NFCCVars.PublicTransitWaitTime));
+        comp.NextTransfer = _timing.CurTime + waitTime;
+        SendTransitTimer(uid, comp, comp.NextStation, waitTime, docked: true);
+
         var consoleQuery = EntityQueryEnumerator<ShuttleConsoleComponent>();
 
         while (consoleQuery.MoveNext(out var consoleUid, out _))
@@ -204,40 +227,98 @@ public sealed partial class PublicTransitSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var comp, out var shuttle))
         {
-            if (comp.NextTransfer > curTime)
+            if (comp.InTransit || comp.NextTransfer > curTime || HasComp<FTLComponent>(uid))
                 continue;
 
-            var consoleQuery = EntityQueryEnumerator<ShuttleConsoleComponent>();
-
-            while (consoleQuery.MoveNext(out var consoleUid, out _))
-            {
-                if (Transform(consoleUid).GridUid == uid && TryComp(comp.NextStation, out MetaDataComponent? metadata))
-                {
-                    var destinationString = metadata.EntityName;
-
-                    //public-transit-arrival >> public-transit-instant, use waittime arg instead of flytime arg: The system is currently bugged
-                    //_shuttles.FTLToDock is calling TryFTLDock, which bypasses the FTL delay and breaks OnShuttleArrival
-                    //Standard FTL also occasionally overlaps the bus into stations so I have resorted to just reappropriating the message
-                    _chat.TrySendInGameICMessage(consoleUid, Loc.GetString("public-transit-instant",
-                        ("destination", destinationString), /*("flytime", FlyTime),*/ ("waittime", _cfgManager.GetCVar(NFCCVars.PublicTransitWaitTime))),
-                        InGameICChatType.Speak, ChatTransmitRange.HideChat, hideLog: true, checkRadioPrefix: false,
-                        ignoreActionBlocker: true);
-                }
-            }
-
             // FTL to next station, but only if it exists.
-            if (comp.NextStation.Valid)
+            if (TryStartTransitJump(uid, shuttle, comp, comp.NextStation))
             {
-                // Ensure the shuttle is undocked before initiating FTL travel
-                _dockSystem.UndockDocks(uid);
-                _shuttles.FTLToDock(uid, shuttle, comp.NextStation, hyperspaceTime: FlyTime, priorityTag: "DockTransit");
+                if (TryGetNextStation(out var nextStation) && nextStation is { Valid: true } destination)
+                    comp.NextStation = destination;
+                continue;
             }
 
-            if (TryGetNextStation(out var nextStation) && nextStation is { Valid: true } destination)
-                comp.NextStation = destination;
-
-            comp.NextTransfer = curTime + TimeSpan.FromSeconds(FlyTime + _cfgManager.GetCVar(NFCCVars.PublicTransitWaitTime));
+            // Do not advance the route when a destination is unavailable. Retry after a short delay.
+            comp.NextTransfer = curTime + TimeSpan.FromSeconds(5);
         }
+    }
+
+    private bool TryStartTransitJump(
+        EntityUid shuttleUid,
+        ShuttleComponent shuttle,
+        TransitShuttleComponent transit,
+        EntityUid destination)
+    {
+        if (!destination.Valid || Deleted(destination) || !TryComp(destination, out TransformComponent? destinationTransform))
+            return false;
+
+        // Public transit facilities may be ordinary grids rather than stations, so they do not
+        // necessarily register their map as an FTL destination during StationPostInit.
+        if (!_shuttles.TryAddFTLDestination(destinationTransform.MapID, true, false, false, out _))
+            return false;
+
+        _dockSystem.UndockDocks(shuttleUid);
+        _shuttles.FTLToDock(shuttleUid, shuttle, destination, hyperspaceTime: FlyTime, priorityTag: "DockTransit");
+        if (!HasComp<FTLComponent>(shuttleUid))
+            return false;
+
+        transit.InTransit = true;
+        // The transit flag gates the route update while the FTL component is active. Keep a
+        // finite timestamp so pause/unpause adjustments cannot overflow the time serializer.
+        transit.NextTransfer = _timing.CurTime + TimeSpan.FromHours(1);
+        SendTransitTimer(shuttleUid, transit, destination, TimeSpan.FromSeconds(FlyTime), docked: false);
+        transit.CurrentStation = destination;
+
+        AnnounceDeparture(shuttleUid, destination);
+        return true;
+    }
+
+    private void AnnounceDeparture(EntityUid shuttleUid, EntityUid destination)
+    {
+        if (!TryComp(destination, out MetaDataComponent? metadata))
+            return;
+
+        var destinationString = metadata.EntityName;
+        var consoleQuery = EntityQueryEnumerator<ShuttleConsoleComponent>();
+        while (consoleQuery.MoveNext(out var consoleUid, out _))
+        {
+            if (Transform(consoleUid).GridUid != shuttleUid)
+                continue;
+
+            _chat.TrySendInGameICMessage(consoleUid, Loc.GetString("public-transit-departure",
+                    ("destination", destinationString), ("flytime", FlyTime)),
+                InGameICChatType.Speak, ChatTransmitRange.HideChat, hideLog: true, checkRadioPrefix: false,
+                ignoreActionBlocker: true);
+        }
+    }
+
+    private void SendTransitTimer(
+        EntityUid shuttleUid,
+        TransitShuttleComponent transit,
+        EntityUid destination,
+        TimeSpan duration,
+        bool docked)
+    {
+        if (!TryComp<DeviceNetworkComponent>(shuttleUid, out var network))
+            return;
+
+        var travelTime = TimeSpan.FromSeconds(FlyTime);
+        var payload = new NetworkPayload
+        {
+            [ShuttleTimerMasks.ShuttleMap] = shuttleUid,
+            [ShuttleTimerMasks.ShuttleTime] = duration,
+            [ShuttleTimerMasks.SourceTime] = docked ? duration : TimeSpan.Zero,
+            [ShuttleTimerMasks.DestTime] = docked ? duration + travelTime : duration,
+            [ShuttleTimerMasks.Docked] = docked,
+        };
+
+        if (transit.CurrentStation.Valid)
+            payload[ShuttleTimerMasks.SourceMap] = transit.CurrentStation;
+
+        if (destination.Valid)
+            payload[ShuttleTimerMasks.DestMap] = destination;
+
+        _deviceNetwork.QueuePacket(shuttleUid, null, payload, network.TransmitFrequency, network: network.DeviceNetId, device: network);
     }
 
     /// <summary>
@@ -302,18 +383,16 @@ public sealed partial class PublicTransitSystem : EntitySystem
             //We run our bus station function to try to get a valid station to FTL to. If for some reason, there are no bus stops, we will instead just delete the shuttle
             if (TryGetNextStation(out var station) && station is { Valid: true } destination)
             {
-                //we set up a default in case the second time we call it fails for some reason
                 transitComp.NextStation = destination;
-
-                // Ensure the shuttle is undocked before initiating FTL travel
-                _dockSystem.UndockDocks(shuttle);
-                _shuttles.FTLToDock(shuttle, shuttleComp, destination, hyperspaceTime: 5f);
-                transitComp.NextTransfer = _timing.CurTime + TimeSpan.FromSeconds(_cfgManager.GetCVar(NFCCVars.PublicTransitWaitTime));
-
-                //since the initial cached value of the next station is actually the one we are 'starting' from, we need to run the
-                //bus stop list code one more time so that our first trip isnt just Frontier - Frontier
-                if (TryGetNextStation(out var firstStop) && firstStop is { Valid: true } firstDestination)
-                    transitComp.NextStation = firstDestination;
+                if (!TryStartTransitJump(shuttle, shuttleComp, transitComp, destination))
+                    QueueDel(shuttle);
+                else
+                {
+                    // Since the initial cached value of the next station is actually the one we are
+                    // starting from, advance once so the first completed stop has a real destination.
+                    if (TryGetNextStation(out var firstStop) && firstStop is { Valid: true } firstDestination)
+                        transitComp.NextStation = firstDestination;
+                }
             }
             else
                 QueueDel(shuttle);

@@ -13,13 +13,16 @@ namespace Content.Shared._Mono.Economy;
 /// <remarks>Mostly to be used in other systems that like to implement this behavior to avoid code duplication.</remarks>
 public abstract partial class SharedCreditReceiverSystem : EntitySystem
 {
-    private readonly ISawmill _log = default!;
+    private ISawmill _log = default!;
+    [Dependency] private ILogManager _logManager = default!;
     [Dependency] private SharedStackSystem _stack = default!; // Frontier
     [Dependency] protected ItemSlotsSystem ItemSlots = default!; // Frontier
 
     public override void Initialize()
     {
         base.Initialize();
+
+        _log = _logManager.GetSawmill("credit-receiver");
 
         SubscribeLocalEvent<CreditReceiverComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<CreditReceiverComponent, EntInsertedIntoContainerMessage>(OnEntityInserted);

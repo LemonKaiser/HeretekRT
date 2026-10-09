@@ -7,6 +7,7 @@ using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server._WH40K.VendingMachines.Components;
 using Content.Shared._Mono.Ships.Components;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.OperationalDomain.Components;
@@ -448,6 +449,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         if (_maps.TryGetMap(ev.Map, out var startMap))
         {
             ConfigureStartSystemGrids(startMap.Value, ev.Grids, startSystem);
+            LoadStartSystemAdditionalGrids(ev.Map, startSystem);
             _metaData.SetEntityName(startMap.Value, startSystem.DisplayName);
             ConfigureSystemMap(startMap.Value, startSystem);
             _asteroidFields.EnsureField(startMap.Value, startSystem);
@@ -466,6 +468,28 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         }
 
         _planetary.PreloadSurfaces(rule);
+    }
+
+    private void LoadStartSystemAdditionalGrids(MapId mapId, KoronusSystemPrototype system)
+    {
+        foreach (var additionalGrid in system.AdditionalGrids)
+        {
+            if (!_mapLoader.TryLoadGrid(mapId, additionalGrid.MapPath, out var loadedGrid))
+            {
+                Log.Error($"Failed to load additional grid for start system {system.ID} from {additionalGrid.MapPath}.");
+                continue;
+            }
+
+            if (additionalGrid.SpawnDistance > 0f)
+            {
+                var halfDiagonal = GetGridHalfDiagonal(loadedGrid.Value.Comp);
+                var position = GetSafeGridSpawnPosition(system, additionalGrid.SpawnDistance, halfDiagonal);
+                _transform.SetCoordinates(loadedGrid.Value.Owner, new EntityCoordinates(_maps.GetMap(mapId), position));
+            }
+
+            _metaData.SetEntityName(loadedGrid.Value.Owner, GetGridDisplayName(system, additionalGrid.DisplayName));
+            ConfigureAdditionalGrid(loadedGrid.Value.Owner, additionalGrid);
+        }
     }
 
     private void LoadPausedSystem(Entity<KoronusSectorRuleComponent> rule, KoronusSystemPrototype system)
@@ -606,6 +630,9 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     private void ConfigureInitialGrid(EntityUid grid, KoronusSystemPrototype system)
     {
+        if (system.AutoRestockInitialGrid)
+            EnsureComp<AutoVendingRestockComponent>(grid);
+
         ConfigureGrid(
             grid,
             system.InitialGridLocalSafetyProfile,
@@ -616,6 +643,9 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
     private void ConfigureAdditionalGrid(EntityUid grid, KoronusAdditionalGridDefinition additionalGrid)
     {
+        if (additionalGrid.AutoRestock)
+            EnsureComp<AutoVendingRestockComponent>(grid);
+
         ConfigureGrid(
             grid,
             additionalGrid.LocalSafetyProfile,
@@ -666,15 +696,18 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         _forceAnchor.EnsureGridAnchored(grid);
     }
 
-    private static string GetInitialGridDisplayName(KoronusSystemPrototype system)
+    private string GetInitialGridDisplayName(KoronusSystemPrototype system)
     {
         return GetGridDisplayName(system, system.InitialGridDisplayName);
     }
 
-    private static string GetGridDisplayName(KoronusSystemPrototype system, string? gridDisplayName)
+    private string GetGridDisplayName(KoronusSystemPrototype system, string? gridDisplayName)
     {
-        return string.IsNullOrWhiteSpace(gridDisplayName)
-            ? system.DisplayName
+        if (string.IsNullOrWhiteSpace(gridDisplayName))
+            return system.DisplayName;
+
+        return Loc.TryGetString(gridDisplayName, out var localizedName)
+            ? localizedName
             : gridDisplayName;
     }
 

@@ -95,6 +95,12 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public bool ProtectInitialGrid;
 
     /// <summary>
+    /// Includes the authored initial facility in the scheduled vending-machine restock.
+    /// </summary>
+    [DataField]
+    public bool AutoRestockInitialGrid;
+
+    /// <summary>
     /// Additional authored facility grids loaded alongside the initial grid on this system map.
     /// Each facility owns its placement, name and safeguards, so one system can host several bases.
     /// </summary>
@@ -201,4 +207,10 @@ public sealed partial class KoronusAdditionalGridDefinition
 
     [DataField]
     public bool ProtectGrid;
+
+    /// <summary>
+    /// Includes this supplementary facility in the scheduled vending-machine restock.
+    /// </summary>
+    [DataField]
+    public bool AutoRestock;
 }

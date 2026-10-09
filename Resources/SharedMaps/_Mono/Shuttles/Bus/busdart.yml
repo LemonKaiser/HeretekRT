@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 12/28/2025 06:01:25
-  entityCount: 165
+  entityCount: 166
 maps: []
 grids:
 - 1
@@ -58,6 +58,10 @@ entities:
     - type: SpreaderGrid
     - type: Shuttle
       dampingModifier: 0.25
+    - type: AutoVendingRestock
+    - type: DeviceNetwork
+      deviceNetId: Wireless
+      transmitFrequencyId: ShuttleTimer
     - type: GridPathfinding
     - type: Gravity
       gravityShakeSound: !type:SoundPathSpecifier
@@ -855,6 +859,13 @@ entities:
     components:
     - type: Transform
       pos: 6.5,-1.5
+      parent: 1
+- proto: WH40KTransitScreen
+  entities:
+  - uid: 166
+    components:
+    - type: Transform
+      pos: 3.5,-1.5
       parent: 1
 - proto: PacifiedZonePanicBunker10
   entities:

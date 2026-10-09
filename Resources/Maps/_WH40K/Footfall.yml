@@ -92,6 +92,7 @@ entities:
       parent: 1
     - type: ForceAnchor
     - type: StationTransit
+      routeOrder: 0
     - type: IFF
       readOnly: True
       address: ' 2E8F-FB71'
