@@ -7,7 +7,7 @@
 - type: vessel
   id: Notch
   parent: BaseVessel
-  name: DIS Notch
+  name: Reaver-class Patrol Boat
   description: A small salvage shuttle featuring the bare minimum for any fresh aspiring scavenger in the sector. Fast and compact. A proud piece of Drake Industries' civilian spacecrafts collection.
   price: 47186
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Notch
-  mapName: 'DIS Notch'
+  mapName: 'Reaver-class Patrol Boat'
   mapPath: /SharedMaps/_Mono/Shuttles/notch.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Notch CIV{1}'
+          mapNameTemplate: 'Reaver {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

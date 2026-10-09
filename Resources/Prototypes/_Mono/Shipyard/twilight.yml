@@ -7,7 +7,7 @@
 - type: vessel
   id: Twilight
   parent: BaseVessel
-  name: SKR Twilight
+  name: Twilight Corsair
   description: A small, fast jump-capable cargo transport with light rear-facing defensive armament.
   price: 73375
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Twilight
-  mapName: 'SKR Twilight'
+  mapName: 'Twilight Corsair'
   mapPath: /SharedMaps/_Mono/Shuttles/twilight.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Twilight CIV{1}'
+          mapNameTemplate: 'Twilight Corsair {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

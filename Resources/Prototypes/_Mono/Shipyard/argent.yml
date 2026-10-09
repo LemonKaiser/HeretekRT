@@ -7,7 +7,7 @@
 - type: vessel
   id: Argent
   parent: BaseVessel
-  name: TSF-SKR Argent
+  name: Gladius-class Escort
   description: A retired frigate gutted out and refurbished for cargo transport.
   price: 97903
   category: Medium
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Argent
-  mapName: 'TSF-SKR Argent'
+  mapName: 'Gladius-class Escort'
   mapPath: /SharedMaps/_Mono/Shuttles/argent.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Argent CIV{1}'
+          mapNameTemplate: 'Gladius {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

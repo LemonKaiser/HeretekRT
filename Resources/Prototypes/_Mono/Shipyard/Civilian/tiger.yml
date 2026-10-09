@@ -7,7 +7,7 @@
 - type: vessel
   id: Tiger
   parent: BaseVessel
-  name: NSK Tiger
+  name: Tiger Claw Gunboat
   description: A retired racing ship, the Tiger hull has been found in use by the Nova Sharks as both a hotrod, as well as a ludicriously fast haulcraft.
   price: 71166 # race ship tax since its gonna be used for smuggling.
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Tiger
-  mapName: 'NSK Tiger'
+  mapName: 'Tiger Claw Gunboat'
   mapPath: /SharedMaps/_Mono/Shuttles/Civilian/tiger.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Tiger CIV{1}'
+          mapNameTemplate: 'Tiger Claw {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

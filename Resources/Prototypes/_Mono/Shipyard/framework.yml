@@ -11,7 +11,7 @@
 - type: vessel
   id: Framework
   parent: BaseVessel
-  name: UNJ Framework
+  name: Chartership Primus
   description: The cheapest hunk of junk this side of the Rogue. Not meant to last, but has the potential to be anything.
   price: 18204
   category: Small
@@ -26,7 +26,7 @@
 
 - type: gameMap
   id: Framework
-  mapName: 'UNJ Framework'
+  mapName: 'Chartership Primus'
   mapPath: /SharedMaps/_Mono/Shuttles/framework.yml
   minPlayers: 0
   stations:
@@ -34,7 +34,7 @@
       stationProto: StandardFrontierExpeditionVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Framework CIV{1}'
+          mapNameTemplate: 'Chartership Primus {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

@@ -6,7 +6,7 @@
 - type: vessel
   id: Ethereal
   parent: BaseVessel
-  name: NS Ethereal
+  name: Veiled Prophet
   description: A science vessel shaped like a butterfly. Comes facilities to accomodate botany and artifact research, as well as chemistry. Comes with a pool & bar.
   price: 191621
   category: Large
@@ -25,7 +25,7 @@
 
 - type: gameMap
   id: Ethereal
-  mapName: 'NS Ethereal'
+  mapName: 'Veiled Prophet'
   mapPath: /SharedMaps/_Mono/Shuttles/ethereal.yml
   minPlayers: 0
   stations:
@@ -33,7 +33,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Ethereal CIV{1}'
+          mapNameTemplate: 'Veiled Prophet {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

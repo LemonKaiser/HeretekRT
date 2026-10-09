@@ -2,7 +2,7 @@
 - type: vessel
   id: Spyglass
   parent: BaseVessel
-  name: UI Spyglass
+  name: Augur Picket
   description:  A Ullman Industries research ship. This baby is capable of Xenoarcheology and not a whole lot more.
   price: 72298
   category: Small
@@ -16,7 +16,7 @@
 
 - type: gameMap
   id: Spyglass
-  mapName: 'UI Spyglass'
+  mapName: 'Augur Picket'
   mapPath: /SharedMaps/_Mono/Shuttles/spyglass.yml
   minPlayers: 0
   stations:
@@ -24,7 +24,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Spyglass CIV{1}'
+          mapNameTemplate: 'Augur {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

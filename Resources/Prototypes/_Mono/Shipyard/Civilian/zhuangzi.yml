@@ -1,7 +1,7 @@
 - type: vessel
   id: Zhuangzi
   parent: BaseVessel
-  name: MSH Zhuangzi
+  name: Celestial Chartership
   description: A cheap long-range medium-sized freighter with a large singular cargo bay. Very modular, owing to a NFR able to supply power for any modifications and a large amount of empty hardpoints (for a cargo ship).
   price: 92450
   category: Large
@@ -15,7 +15,7 @@
 
 - type: gameMap
   id: Zhuangzi
-  mapName: 'MSH Zhuangzi'
+  mapName: 'Celestial Chartership'
   mapPath: /SharedMaps/_Mono/Shuttles/Civilian/zhuangzi.yml
   minPlayers: 0
   stations:
@@ -23,7 +23,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Zhuangzi CIV{1}'
+          mapNameTemplate: 'Celestial {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

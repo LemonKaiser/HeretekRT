@@ -7,7 +7,7 @@
 - type: vessel
   id: Plutomkii
   parent: BaseVessel
-  name: DIS Pluto MK. II
+  name: Pluto Anvil
   description: A light-weight cargo runner manufactured by DIS. The replacement of the venerable Pluto. Performing better than it's predecessor in every way. Larger cargo bay, tougher hull, faster top speed and sleeker design.
   price: 45224
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Plutomkii
-  mapName: 'DIS Pluto MK. II'
+  mapName: 'Pluto Anvil'
   mapPath: /SharedMaps/_Mono/Shuttles/plutomkii.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Pluto MK. II CIV{1}'
+          mapNameTemplate: 'Pluto Anvil {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

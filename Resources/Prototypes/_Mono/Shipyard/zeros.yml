@@ -8,7 +8,7 @@
 - type: vessel
   id: Zeros
   parent: BaseVessel
-  name: JIN Zeros
+  name: Mechanicus Zero Rite
   description: A truck stop diner ship designed to resemble a semi-truck, complete with a EVA accessable dining room and a small cargo bay.
   price: 153578
   category: Large
@@ -24,7 +24,7 @@
 
 - type: gameMap
   id: Zeros
-  mapName: 'JIN Zeros'
+  mapName: 'Mechanicus Zero Rite'
   mapPath: /SharedMaps/_Mono/Shuttles/zeros.yml
   minPlayers: 0
   stations:
@@ -32,7 +32,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Zeros CIV{1}'
+          mapNameTemplate: 'Zero Rite {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

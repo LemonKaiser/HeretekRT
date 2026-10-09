@@ -10,7 +10,7 @@
 - type: vessel
   id: Victoria
   parent: BaseVessel
-  name: NOV Victoria
+  name: Victoria Triumph
   description: A reworked hull from an unknown salvage ship, thought by a machine intelligence for the scientist that needs all of the manufactoring capabilities imaginable.
   price: 87679
   category: Medium
@@ -25,7 +25,7 @@
 
 - type: gameMap
   id: Victoria
-  mapName: 'IHR Victoria'
+  mapName: 'Victoria Triumph'
   mapPath: /SharedMaps/_Mono/Shuttles/victoria.yml
   minPlayers: 0
   stations:
@@ -33,7 +33,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Victoria CIV{1}'
+          mapNameTemplate: 'Victoria Triumph {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

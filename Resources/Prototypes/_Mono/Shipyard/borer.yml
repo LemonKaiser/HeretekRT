@@ -7,7 +7,7 @@
 - type: vessel
   id: Borer
   parent: BaseVessel
-  name: SHS-DIS Borer
+  name: Explorator Dray
   description: designed by SHM and produced in cooperation with DI, the borer is a cost effective ship for salvaging and derilect scrapping.
   price: 37419
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Borer
-  mapName: 'SHS-DIS Borer'
+  mapName: 'Explorator Dray'
   mapPath: /SharedMaps/_Mono/Shuttles/borer.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Borer CIV{1}'
+          mapNameTemplate: 'Explorator {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

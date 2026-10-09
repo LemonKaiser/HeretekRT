@@ -1,0 +1,486 @@
+﻿# Imperial and Mechanicus voidships for the Koronus Expanse shipyard.
+
+- type: vessel
+  id: Aquila
+  parent: BaseVessel
+  name: Aquila-pattern Assault Shuttle
+  description: A dependable Imperial drop craft built to carry soldiers, officers, and sacred cargo through hostile fire. Its compact frame and simple APU make it easy to keep flying far from a proper dockyard.
+  price: 65000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/aquila.yml
+  guidebookPage: null
+  class:
+  - Fighter
+  - Escort
+  engine:
+  - APU
+
+- type: gameMap
+  id: Aquila
+  mapName: 'Aquila-pattern Assault Shuttle'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/aquila.yml
+  minPlayers: 0
+  stations:
+    Aquila:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Aquila IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: Arvus
+  parent: BaseVessel
+  name: Arvus-pattern Lighter
+  description: The Arvus is an unglamorous but trusted Imperial utility craft. It moves personnel, munitions, and provisions between ships with the stubborn reliability expected of a workhorse of the Imperium.
+  price: 85000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/arvus.yml
+  guidebookPage: null
+  class:
+  - Cargo
+  - Civilian
+  engine:
+  - APU
+
+- type: gameMap
+  id: Arvus
+  mapName: 'Arvus-pattern Lighter'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/arvus.yml
+  minPlayers: 0
+  stations:
+    Arvus:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Arvus IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: RavenWh40k
+  parent: BaseVessel
+  name: Raven-pattern Transport
+  description: A light Imperial transport with enough room for a small crew and a useful load. Its modest systems are easy to service, making the Raven a common sight in the hands of frontier captains.
+  price: 110000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/raven.yml
+  guidebookPage: null
+  class:
+  - Cargo
+  - Civilian
+  engine:
+  - APU
+
+- type: gameMap
+  id: RavenWh40k
+  mapName: 'Raven-pattern Transport'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/raven.yml
+  minPlayers: 0
+  stations:
+    RavenWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Raven IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: IntrepidWh40k
+  parent: BaseVessel
+  name: Intrepid-class Light Cruiser
+  description: A light cruiser built for Imperial patrols and long-range void service. The Intrepid combines a respectable broadside with enough internal space to support a crew far from friendly worlds.
+  price: 480000
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/intrepid.yml
+  guidebookPage: null
+  class:
+  - Cruiser
+  - Escort
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: IntrepidWh40k
+  mapName: 'Intrepid-class Light Cruiser'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/intrepid.yml
+  minPlayers: 0
+  stations:
+    IntrepidWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Intrepid IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: CobraWh40k
+  parent: BaseVessel
+  name: Cobra-class Destroyer
+  description: A fast Imperial destroyer intended to strike first and leave before the enemy can answer. The Cobra sacrifices endurance for speed, torpedoes, and a sharp forward attack.
+  price: 360000
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/cobra_armed.yml
+  guidebookPage: null
+  class:
+  - Destroyer
+  - Pursuit
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: CobraWh40k
+  mapName: 'Cobra-class Destroyer'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/cobra_armed.yml
+  minPlayers: 0
+  stations:
+    CobraWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Cobra IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: PerditionWh40k
+  parent: BaseVessel
+  name: Perdition-class Light Cruiser
+  description: A Kasballica-pattern cruiser whose name is a warning in Low Gothic. It carries brutal firepower in a compact hull and is favoured by captains who expect every negotiation to end in a boarding action.
+  price: 430000
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/perdition.yml
+  guidebookPage: null
+  class:
+  - Cruiser
+  - Brawler
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: PerditionWh40k
+  mapName: 'Perdition-class Light Cruiser'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/perdition.yml
+  minPlayers: 0
+  stations:
+    PerditionWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Perdition KAS{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: SwordWh40k
+  parent: BaseVessel
+  name: Sword-class Strike Corvette
+  description: A Kasballica assault corvette designed to close the distance and put its guns on target. The Sword is quick, aggressive, and unforgiving when its captain commits to an attack run.
+  price: 210000
+  category: Medium
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/sword.yml
+  guidebookPage: null
+  class:
+  - Corvette
+  - Pursuit
+  engine:
+  - AME
+
+- type: gameMap
+  id: SwordWh40k
+  mapName: 'Sword-class Strike Corvette'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/sword.yml
+  minPlayers: 0
+  stations:
+    SwordWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Sword KAS{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: ClaymoreWh40k
+  parent: BaseVessel
+  name: Claymore-class Corvette
+  description: A frontier corvette built around a heavy forward battery. The Claymore rewards disciplined attack runs and punishes anyone who lets a target reach its flanks.
+  price: 190000
+  category: Medium
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/claymore.yml
+  guidebookPage: null
+  class:
+  - Corvette
+  - Brawler
+  engine:
+  - AME
+
+- type: gameMap
+  id: ClaymoreWh40k
+  mapName: 'Claymore-class Corvette'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/claymore.yml
+  minPlayers: 0
+  stations:
+    ClaymoreWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Claymore KAS{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: FalchionWh40k
+  parent: BaseVessel
+  name: Falchion-class Frigate
+  description: A Kasballica frigate intended to escort convoys and hunt isolated prey. The Falchion balances speed, armour, and a broad selection of weapons without relying on a single trick.
+  price: 300000
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/falchion_hydra.yml
+  guidebookPage: null
+  class:
+  - Frigate
+  - Escort
+  engine:
+  - AME
+
+- type: gameMap
+  id: FalchionWh40k
+  mapName: 'Falchion-class Frigate'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/falchion_hydra.yml
+  minPlayers: 0
+  stations:
+    FalchionWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Falchion KAS{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: DesolatorWh40k
+  parent: BaseVessel
+  name: Desolator-class Astartes Strike Cruiser
+  description: A brutal strike vessel for the Adeptus Astartes. The Desolator brings its assault force directly to the battle line, where heavy armour and disciplined fire can decide a fight before it becomes a war.
+  price: 650000
+  limit: 1
+  hyperwarLimit: 2
+  hyperwarTimelock: 1800
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/desolator.yml
+  guidebookPage: null
+  class:
+  - Cruiser
+  - Brawler
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: DesolatorWh40k
+  mapName: 'Desolator-class Astartes Strike Cruiser'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/desolator.yml
+  minPlayers: 0
+  stations:
+    DesolatorWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Desolator AST{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: ArkMechanicus
+  parent: BaseVessel
+  name: Ark Mechanicus "Covenant of the Omnissiah"
+  description: A Mechanicus ark built to carry workshops, surveyors, and the sacred machinery of a forge world. It is slow and immense, but its holds can support an expedition long after lesser ships have run dry.
+  price: 800000
+  limit: 1
+  hyperwarLimit: 1
+  hyperwarTimelock: 3600
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/ark_mechanicus.yml
+  guidebookPage: null
+  class:
+  - Capital
+  - MechCarrier
+  - Engineering
+  - Science
+  - Salvage
+  engine:
+  - AME
+
+- type: gameMap
+  id: ArkMechanicus
+  mapName: 'Ark Mechanicus Covenant of the Omnissiah'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/ark_mechanicus.yml
+  minPlayers: 0
+  stations:
+    ArkMechanicus:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Covenant MECH{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: MiningArvus
+  parent: BaseVessel
+  name: Arvus-pattern Mining Lighter
+  description: A stripped-down Arvus fitted with a prospector's rig. It is cheap, practical, and well suited to a captain learning which void rocks are worth bringing home.
+  price: 45000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier1.yml
+  guidebookPage: null
+  class:
+  - Salvage
+  - Engineering
+  engine:
+  - APU
+
+- type: gameMap
+  id: MiningArvus
+  mapName: 'Arvus-pattern Mining Lighter'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier1.yml
+  minPlayers: 0
+  stations:
+    MiningArvus:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Arvus MIN{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: MiningTier2
+  parent: BaseVessel
+  name: Prospector Cutter Mk II
+  description: A second-generation mining cutter with a stronger reactor and room for a proper survey crew. Its reinforced hull lets it work claims that would tear apart an entry-level lighter.
+  price: 85000
+  category: Medium
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier2.yml
+  guidebookPage: null
+  class:
+  - Salvage
+  - Engineering
+  engine:
+  - Plasma
+
+- type: gameMap
+  id: MiningTier2
+  mapName: 'Prospector Cutter Mk II'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier2.yml
+  minPlayers: 0
+  stations:
+    MiningTier2:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Prospector MIN{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: MiningTier3
+  parent: BaseVessel
+  name: Mechanicus Prospector Mk III
+  description: A heavy mining vessel maintained according to Mechanicus rites. It carries the power and machinery to break open rich deposits while keeping a small crew protected from the void.
+  price: 150000
+  category: Large
+  group: Shipyard
+  shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier3.yml
+  guidebookPage: null
+  class:
+  - Salvage
+  - Engineering
+  engine:
+  - AME
+
+- type: gameMap
+  id: MiningTier3
+  mapName: 'Mechanicus Prospector Mk III'
+  mapPath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier3.yml
+  minPlayers: 0
+  stations:
+    MiningTier3:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Prospector MK3 MIN{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]

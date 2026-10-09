@@ -7,7 +7,7 @@
 - type: vessel
   id: Valkyrie
   parent: BaseVessel
-  name: PDW Valkyrie
+  name: Valkyrie Gunship
   description: An ancient phaethon dynasty interceptor. It's instruments are outdated and it's hull is rusted. However the Valkyrie still contends with vessels of similar class.
   price: 136554
   category: Medium
@@ -22,7 +22,7 @@
 
 - type: gameMap
   id: Valkyrie
-  mapName: 'PDW Valkyrie'
+  mapName: 'Valkyrie Gunship'
   mapPath: /SharedMaps/_Mono/Shuttles/valkyrie.yml
   minPlayers: 0
   stations:
@@ -30,7 +30,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Valkyrie MIL{1}'
+          mapNameTemplate: 'Valkyrie Gunship {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

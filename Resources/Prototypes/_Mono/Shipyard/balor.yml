@@ -1,7 +1,7 @@
 - type: vessel
   id: Balor
   parent: BaseVessel
-  name: Z-22 Balor
+  name: Voss-pattern Guncutter
   description: Directly translated to the common tongue, the 'Evil Eye' is a drone hunter, meant to patrol the deep periphery until its prey reveals itself, then parks and unleashes its malicious intent. EVA is required to access the core.
   price: 188000
   category: Large
@@ -17,7 +17,7 @@
 
 - type: gameMap
   id: Balor
-  mapName: 'Z-22 Balor'
+  mapName: 'Voss-pattern Guncutter'
   mapPath: /SharedMaps/_Mono/Shuttles/balor.yml
   minPlayers: 0
   stations:
@@ -25,7 +25,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Balor MIL{1}'
+          mapNameTemplate: 'Voss {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

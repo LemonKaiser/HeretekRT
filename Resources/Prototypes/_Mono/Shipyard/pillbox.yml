@@ -1,7 +1,7 @@
 - type: vessel
   id: Pillbox
   parent: BaseVessel
-  name: TPC Pillbox
+  name: Medicae Bastion
   description: A modified Takeaway shuttle, turned from a nice little restaurant into a travelling pharmacy and bar, with everything a chemist would need to peddle their wares. The Solars were sniped, and the generator replaced with a Pinch Fusion reactor
   price: 116484
   category: Medium
@@ -15,7 +15,7 @@
 
 - type: gameMap
   id: Pillbox
-  mapName: 'TPC Pillbox'
+  mapName: 'Medicae Bastion'
   mapPath: /SharedMaps/_Mono/Shuttles/pillbox.yml
   minPlayers: 0
   stations:
@@ -23,7 +23,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Pillbox CIV{1}'
+          mapNameTemplate: 'Bastion {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

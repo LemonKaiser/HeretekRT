@@ -7,7 +7,7 @@
 - type: vessel
   id: Rosetta
   parent: BaseVessel
-  name: NOV-Rosetta
+  name: Cipher-class Courier
   description: A science vessel built by the enigmatic "System" the Rosetta model is a heavy duty, yet luxurious xenoarcheological ship. A hulking laboratory with enough firepower to persuade the undesired (and stationary) "customer" to leave.
   price: 128131
   category: Medium
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Rosetta
-  mapName: 'NOV-Rosetta'
+  mapName: 'Cipher-class Courier'
   mapPath: /SharedMaps/_Mono/Shuttles/Rosetta.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Rosetta CIV{1}'
+          mapNameTemplate: 'Cipher {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

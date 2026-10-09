@@ -7,7 +7,7 @@
 - type: vessel
   id: Guppy
   parent: BaseVessel
-  name: SHM Guppy
+  name: Pilgrim Barge
   description: A small mining vessel straight from the outer Perseus arm. Reliable, rugged, but rudimentary, the Guppy is a prime vessel for a novice contractor.
   price: 22000
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Guppy
-  mapName: 'SHM Guppy'
+  mapName: 'Pilgrim Barge'
   mapPath: /SharedMaps/_Mono/Shuttles/Civilian/guppy.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Guppy CIV{1}'
+          mapNameTemplate: 'Pilgrim Barge {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

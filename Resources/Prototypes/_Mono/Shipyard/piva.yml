@@ -7,7 +7,7 @@
 - type: vessel
   id: Piva
   parent: BaseVessel
-  name: PB Piva
+  name: Pious Venture
   description: A small yet agile cargo shuttle, sporting a sideway shutter in order to facilitate the exchange of cargo in space without docking.
   price: 36694 # its got no ftl, barely any cargo space, its THE cheapest cargo ship you can buy.
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Piva
-  mapName: 'PB Piva'
+  mapName: 'Pious Venture'
   mapPath: /SharedMaps/_Mono/Shuttles/piva.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Piva CIV{1}'
+          mapNameTemplate: 'Pious Venture {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

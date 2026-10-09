@@ -6,7 +6,7 @@
 - type: vessel
   id: Olympus
   parent: BaseVessel
-  name: DIS Olympus
+  name: Forge World Tender
   description: A massive cargo freighter, the pride and joy of DIS. Furnished with an 185 tile dedicated cargo space, a 50 type drive and dedicated shield & point defense system. In sum all you need to run smooth, large scale transport operations.
   price: 299891
   category: Large
@@ -20,7 +20,7 @@
 
 - type: gameMap
   id: Olympus
-  mapName: 'DIS Olympus'
+  mapName: 'Forge World Tender'
   mapPath: /SharedMaps/_Mono/Shuttles/olympus.yml
   minPlayers: 0
   stations:
@@ -28,7 +28,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Olympus CIV{1}'
+          mapNameTemplate: 'Forge Tender {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

@@ -10,7 +10,7 @@
 - type: vessel
   id: Phaeron
   parent: BaseVessel
-  name: HES Phaeron
+  name: Dynasty Chartership
   description: Part of Horizon Energy's latest gas mining initiative, this gigantic gas tanker is able to harvest and store a frightening amount of gas. Perfect for plasma harvesting in the Colossus sector.
   price: 82751
   category: Medium
@@ -24,7 +24,7 @@
 
 - type: gameMap
   id: Phaeron
-  mapName: 'HES Phaeron'
+  mapName: 'Dynasty Chartership'
   mapPath: /SharedMaps/_Mono/Shuttles/phaeron.yml
   minPlayers: 0
   stations:
@@ -32,7 +32,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Phaeron CIV{1}'
+          mapNameTemplate: 'Dynasty {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

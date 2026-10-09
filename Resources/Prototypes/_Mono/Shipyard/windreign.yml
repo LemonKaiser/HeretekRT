@@ -1,7 +1,7 @@
 - type: vessel
   id: Windreign
   parent: BaseVessel
-  name: HES Windreign
+  name: Warp Tempest
   description: A massive, high-end Horizon Energy vessel built for long-term atmospheric work and gas mining. Carrier-capable with a small fleet of gas mining and salvage shuttles. Features a large, luxurious crew area. Recommended crew is 2-6.
   price: 289598
   category: Large
@@ -17,7 +17,7 @@
 
 - type: gameMap
   id: Windreign
-  mapName: 'HES Windreign'
+  mapName: 'Warp Tempest'
   mapPath: /SharedMaps/_Mono/Shuttles/windreign.yml
   minPlayers: 0
   stations:
@@ -25,7 +25,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Windreign CIV{1}'
+          mapNameTemplate: 'Warp Tempest {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

@@ -7,7 +7,7 @@
 - type: vessel
   id: Autumn
   parent: BaseVessel
-  name: TSF-SKR Autumn
+  name: Firebrand-class Cutter
   description: A long-range cargo freighter. The cargo bay is (relatively) heavily armored with a plastitanium inner layer, and the ship is equipped with a heavy FTL drive. Armed with 4x 57mms.
   price: 217811
   category: Large
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Autumn
-  mapName: 'TSF-SKR Autumn'
+  mapName: 'Firebrand-class Cutter'
   mapPath: /SharedMaps/_Mono/Shuttles/autumn.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Autumn CIV{1}'
+          mapNameTemplate: 'Firebrand {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

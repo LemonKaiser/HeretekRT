@@ -6,7 +6,7 @@
 - type: vessel
   id: McChicken
   parent: BaseVessel
-  name: AES McChicken
+  name: Refectory Galley
   description: A cheap, fried food ship. For those who enjoy ungodly ammounts of calories, now made on the go!.
   price: 38485
   category: Medium
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: McChicken
-  mapName: 'AES McChicken'
+  mapName: 'Refectory Galley'
   mapPath: /SharedMaps/_Mono/Shuttles/mcchicken.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'McChicken CIV{1}'
+          mapNameTemplate: 'Refectory {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

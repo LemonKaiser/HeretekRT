@@ -7,7 +7,7 @@
 - type: vessel
   id: Sakuratsu
   parent: BaseVessel
-  name: SKR Sakuratsu
+  name: Sakura Lance
   description: A xenoarcheology ship with a dedicated, reinforced chamber. Contains mining equipment too.
   price: 89293
   category: Medium
@@ -22,7 +22,7 @@
 
 - type: gameMap
   id: Sakuratsu
-  mapName: 'SKR Sakuratsu'
+  mapName: 'Sakura Lance'
   mapPath: /SharedMaps/_Mono/Shuttles/sakuratsu.yml
   minPlayers: 0
   stations:
@@ -30,7 +30,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Sakuratsu CIV{1}'
+          mapNameTemplate: 'Sakura Lance {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

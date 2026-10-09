@@ -7,7 +7,7 @@
 - type: vessel
   id: Shareholder
   parent: BaseVessel
-  name: DME Shareholder
+  name: Charterholder
   description: Cheap and affordable salvage vessel that comes with a comfortable lounge at the cost of leaving no budget for the rest.
   price: 33269
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Shareholder
-  mapName: 'DME Shareholder'
+  mapName: 'Charterholder'
   mapPath: /SharedMaps/_Mono/Shuttles/shareholder.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Shareholder CIV{1}'
+          mapNameTemplate: 'Charterholder {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

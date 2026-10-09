@@ -9,7 +9,7 @@
 - type: vessel
   id: Jitterbug
   parent: BaseVessel
-  name: SE Jitterbug
+  name: Servo-Skiff Canticle
   description: A Botanical shuttle, comes with ten trays and some supplies to get you going. Comes in the unique shape of a bug, how cute.
   price: 50580
   category: Small
@@ -24,7 +24,7 @@
 
 - type: gameMap
   id: Jitterbug
-  mapName: 'SE Jitterbug'
+  mapName: 'Servo-Skiff Canticle'
   mapPath: /SharedMaps/_Mono/Shuttles/jitterbug.yml
   minPlayers: 0
   stations:
@@ -32,7 +32,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Jitterbug CIV{1}'
+          mapNameTemplate: 'Canticle {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

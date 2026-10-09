@@ -1,7 +1,7 @@
 - type: vessel
   id: Xinhua
   parent: BaseVessel
-  name: MSH Xinhua
+  name: New Dawn Chartership
   description: A light corvette that failed to attract the attention of any defense suppliers. Well-armed, with the hardpoints and gunnery power to supplement it even more, but lacking heavily in free internal space.
   price: 196000
   category: Large
@@ -19,7 +19,7 @@
 
 - type: gameMap
   id: Xinhua
-  mapName: 'MSH Xinhua'
+  mapName: 'New Dawn Chartership'
   mapPath: /SharedMaps/_Mono/Shuttles/CivilianMil/xinhua.yml
   minPlayers: 0
   stations:
@@ -27,7 +27,7 @@
       stationProto: StandardFrontierVessel
       components:
       - type: StationNameSetup
-        mapNameTemplate: 'Xinhua MIL{1}'
+        mapNameTemplate: 'New Dawn {1}'
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: '14'

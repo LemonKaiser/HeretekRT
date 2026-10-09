@@ -7,7 +7,7 @@
 - type: vessel
   id: Iapetus
   parent: BaseVessel
-  name: TSF-SKR Iapetus
+  name: Luna-class Surveyor
   description: A basic artifact research ship, with minimal armament.
   price: 62548
   category: Small
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Iapetus
-  mapName: 'TSF-SKR Iapetus'
+  mapName: 'Luna-class Surveyor'
   mapPath: /SharedMaps/_Mono/Shuttles/iapetus.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Iapetus CIV{1}'
+          mapNameTemplate: 'Luna {1}'
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'
