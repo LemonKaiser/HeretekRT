@@ -1,0 +1,88 @@
+- type: wh40kDialogue
+  id: WH40KFootfallIvoMercer
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-bar-ivomercer-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-bar-ivomercer-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-bar-ask-menu
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-bar-ivomercer-info
+        nextStep: service
+    - text: wh40k-footfall-bar-small-talk
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-bar-ivomercer-banter
+        nextStep: service
+    - text: wh40k-footfall-lore-ivomercer-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-ivomercer-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-ivomercer-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-ivomercer-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-bar-ivomercer-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallBastianRook
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-bar-bastianrook-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-bar-bastianrook-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-bar-ask-menu
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-bar-bastianrook-info
+        nextStep: service
+    - text: wh40k-footfall-bar-small-talk
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-bar-bastianrook-banter
+        nextStep: service
+    - text: wh40k-footfall-lore-bastianrook-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-bastianrook-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-bastianrook-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-bastianrook-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-bar-bastianrook-farewell
+

@@ -1,0 +1,11 @@
+<DefaultWindow xmlns="https://spacestation14.io" Title="{Loc 'wh40k-quest-ui-title'}" MinSize="600 480" SetSize="720 640">
+    <BoxContainer Orientation="Vertical" Margin="12">
+        <BoxContainer Orientation="Horizontal">
+            <Label Name="ResultLabel" HorizontalExpand="True" />
+            <Button Name="RefreshButton" Text="{Loc 'wh40k-quest-ui-refresh'}" />
+        </BoxContainer>
+        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="Rows" Orientation="Vertical" HorizontalExpand="True" />
+        </ScrollContainer>
+    </BoxContainer>
+</DefaultWindow>

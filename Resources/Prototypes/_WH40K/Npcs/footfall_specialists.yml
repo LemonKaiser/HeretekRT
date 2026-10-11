@@ -1,0 +1,32 @@
+- type: entity
+  id: MobWH40KFootfallLucanRho
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-lucanrho-name
+  description: wh40k-footfall-npc-lucanrho-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallLucanRho
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesChiefGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallLucanRho
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallLucanRhoPool
+
+- type: entity
+  id: MarkerWH40KFootfallLucanRho
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-lucanrho-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallLucanRho
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallLucanRho
+

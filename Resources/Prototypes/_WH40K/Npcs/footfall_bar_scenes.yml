@@ -1,0 +1,659 @@
+- type: entity
+  id: MobWH40KFootfallChatSceneBase
+  parent: MobHuman
+  abstract: true
+  save: false
+  components:
+  - type: Wh40kNpcProtection
+  - type: Godmode
+  - type: RandomHumanoidAppearance
+    randomizeName: true
+  - type: Wh40kNpcScene
+  - type: HTN
+    rootTask:
+      task: WH40KMerchantIdleCompound
+    sleepPlayerCheckRangeOverride: 8
+
+- type: wh40kNpcProfile
+  id: FootfallSleeperOne
+  name: wh40k-footfall-bar-sleeperone-name
+  description: wh40k-footfall-bar-sleeperone-desc
+  role: SleeperOne
+  department: housing
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallSleepwearGear
+
+- type: entity
+  id: MobWH40KFootfallSleeperOne
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-sleeperone-name
+  description: wh40k-footfall-bar-sleeperone-desc
+  suffix: WH40K, Footfall, Bar scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallSleeperOne
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-sleeperone-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallSleepwearGear]
+  - type: AmbientSound
+    enabled: true
+    sound:
+      path: /Audio/_WH40K/Npcs/snore_1.ogg
+    range: 3
+    volume: -10.8
+
+- type: entity
+  id: MarkerWH40KFootfallSleeperOne
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-sleeperone-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallSleeperOne
+
+- type: wh40kNpcProfile
+  id: FootfallSleeperTwo
+  name: wh40k-footfall-bar-sleepertwo-name
+  description: wh40k-footfall-bar-sleepertwo-desc
+  role: SleeperTwo
+  department: housing
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallSleepwearGear
+
+- type: entity
+  id: MobWH40KFootfallSleeperTwo
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-sleepertwo-name
+  description: wh40k-footfall-bar-sleepertwo-desc
+  suffix: WH40K, Footfall, Bar scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallSleeperTwo
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-sleepertwo-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallSleepwearGear]
+  - type: AmbientSound
+    enabled: true
+    sound:
+      path: /Audio/_WH40K/Npcs/snore_2.ogg
+    range: 3
+    volume: -10.8
+
+- type: entity
+  id: MarkerWH40KFootfallSleeperTwo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-sleepertwo-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallSleeperTwo
+
+- type: wh40kNpcProfile
+  id: FootfallLostSockResident
+  name: wh40k-footfall-bar-lostsockresident-name
+  description: wh40k-footfall-bar-lostsockresident-desc
+  role: LostSockResident
+  department: housing
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenVestGear
+
+- type: entity
+  id: MobWH40KFootfallLostSockResident
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-lostsockresident-name
+  description: wh40k-footfall-bar-lostsockresident-desc
+  suffix: WH40K, Footfall, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallLostSockResident
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-lostsockresident-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenVestGear]
+
+- type: entity
+  id: MarkerWH40KFootfallLostSockResident
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-lostsockresident-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallLostSockResident
+
+- type: wh40kNpcProfile
+  id: FootfallDinerOne
+  name: wh40k-footfall-bar-dinerone-name
+  description: wh40k-footfall-bar-dinerone-desc
+  role: DinerOne
+  department: dining
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenGear
+
+- type: entity
+  id: MobWH40KFootfallDinerOne
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-dinerone-name
+  description: wh40k-footfall-bar-dinerone-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallDinerOne
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-dinerone-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallDinerOne
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-dinerone-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallDinerOne
+
+- type: wh40kNpcProfile
+  id: FootfallDinerTwo
+  name: wh40k-footfall-bar-dinertwo-name
+  description: wh40k-footfall-bar-dinertwo-desc
+  role: DinerTwo
+  department: dining
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallLaborerGear
+
+- type: entity
+  id: MobWH40KFootfallDinerTwo
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-dinertwo-name
+  description: wh40k-footfall-bar-dinertwo-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallDinerTwo
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-dinertwo-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallLaborerGear]
+
+- type: entity
+  id: MarkerWH40KFootfallDinerTwo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-dinertwo-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallDinerTwo
+
+- type: wh40kNpcProfile
+  id: FootfallDinerThree
+  name: wh40k-footfall-bar-dinerthree-name
+  description: wh40k-footfall-bar-dinerthree-desc
+  role: DinerThree
+  department: dining
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallSeekerGear
+
+- type: entity
+  id: MobWH40KFootfallDinerThree
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-dinerthree-name
+  description: wh40k-footfall-bar-dinerthree-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallDinerThree
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-dinerthree-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallSeekerGear]
+
+- type: entity
+  id: MarkerWH40KFootfallDinerThree
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-dinerthree-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallDinerThree
+
+- type: wh40kNpcProfile
+  id: FootfallDinerFour
+  name: wh40k-footfall-bar-dinerfour-name
+  description: wh40k-footfall-bar-dinerfour-desc
+  role: DinerFour
+  department: dining
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenVestGear
+
+- type: entity
+  id: MobWH40KFootfallDinerFour
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-dinerfour-name
+  description: wh40k-footfall-bar-dinerfour-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallDinerFour
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-dinerfour-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenVestGear]
+
+- type: entity
+  id: MarkerWH40KFootfallDinerFour
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-dinerfour-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallDinerFour
+
+- type: wh40kNpcProfile
+  id: FootfallJuniorCookOne
+  name: wh40k-footfall-bar-juniorcookone-name
+  description: wh40k-footfall-bar-juniorcookone-desc
+  role: JuniorCookOne
+  department: kitchen
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallJuniorCookGear
+
+- type: entity
+  id: MobWH40KFootfallJuniorCookOne
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-juniorcookone-name
+  description: wh40k-footfall-bar-juniorcookone-desc
+  suffix: WH40K, Footfall, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallJuniorCookOne
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-juniorcookone-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallJuniorCookGear]
+
+- type: entity
+  id: MarkerWH40KFootfallJuniorCookOne
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-juniorcookone-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallJuniorCookOne
+
+- type: wh40kNpcProfile
+  id: FootfallJuniorCookTwo
+  name: wh40k-footfall-bar-juniorcooktwo-name
+  description: wh40k-footfall-bar-juniorcooktwo-desc
+  role: JuniorCookTwo
+  department: kitchen
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallJuniorCookApronGear
+
+- type: entity
+  id: MobWH40KFootfallJuniorCookTwo
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-juniorcooktwo-name
+  description: wh40k-footfall-bar-juniorcooktwo-desc
+  suffix: WH40K, Footfall, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallJuniorCookTwo
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-juniorcooktwo-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallJuniorCookApronGear]
+
+- type: entity
+  id: MarkerWH40KFootfallJuniorCookTwo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-juniorcooktwo-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallJuniorCookTwo
+
+- type: wh40kNpcProfile
+  id: FootfallBarJanitor
+  name: wh40k-footfall-bar-barjanitor-name
+  description: wh40k-footfall-bar-barjanitor-desc
+  role: BarJanitor
+  department: cleaning
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallJanitorGear
+
+- type: entity
+  id: MobWH40KFootfallBarJanitor
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-barjanitor-name
+  description: wh40k-footfall-bar-barjanitor-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBarJanitor
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-barjanitor-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallJanitorGear]
+
+- type: entity
+  id: MarkerWH40KFootfallBarJanitor
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-barjanitor-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBarJanitor
+
+- type: wh40kNpcProfile
+  id: FootfallDiningCorridorResident
+  name: wh40k-footfall-bar-diningcorridorresident-name
+  description: wh40k-footfall-bar-diningcorridorresident-desc
+  role: DiningCorridorResident
+  department: diningCorridor
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenGear
+
+- type: entity
+  id: MobWH40KFootfallDiningCorridorResident
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-bar-diningcorridorresident-name
+  description: wh40k-footfall-bar-diningcorridorresident-desc
+  suffix: WH40K, Footfall, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallDiningCorridorResident
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-bar-diningcorridorresident-chat
+      speaker: npc
+      cooldown: 5
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallDiningCorridorResident
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-diningcorridorresident-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallDiningCorridorResident
+
+- type: wh40kNpcProfile
+  id: FootfallIvoMercer
+  name: wh40k-footfall-bar-ivomercer-name
+  description: wh40k-footfall-bar-ivomercer-desc
+  role: IvoMercer
+  department: barCounter
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallFootfallCivilian
+  services: [Trade, Social]
+  gear: WH40KFootfallCantinaGear
+  dialogue: WH40KFootfallIvoMercer
+
+- type: wh40kNpcAnchor
+  id: FootfallIvoMercer
+  profile: FootfallIvoMercer
+
+- type: entity
+  id: MobWH40KFootfallIvoMercer
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-ivomercer-name
+  description: wh40k-footfall-bar-ivomercer-desc
+  suffix: WH40K, Footfall, Bar scene
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallIvoMercer
+  - type: Loadout
+    prototypes: [WH40KFootfallCantinaGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallIvoMercer
+    interactionRange: 3
+    maxDialogueRange: 3
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-bar-ivomercer-title
+    greeting: wh40k-footfall-bar-ivomercer-intro
+    refreshInterval: 900
+    displayCount: 8
+    lookAtRange: 1
+    offers:
+    - product: DrinkBeerBottleFull
+      price: 35
+      minStock: 7
+      maxStock: 8
+    - product: DrinkWineBottleFull
+      price: 65
+      minStock: 7
+      maxStock: 8
+    - product: DrinkWhiskeyBottleFull
+      price: 90
+      minStock: 7
+      maxStock: 8
+    - product: DrinkVodkaBottleFull
+      price: 55
+      minStock: 7
+      maxStock: 8
+    - product: DrinkRumBottleFull
+      price: 70
+      minStock: 7
+      maxStock: 8
+    - product: DrinkGinBottleFull
+      price: 75
+      minStock: 7
+      maxStock: 8
+    - product: DrinkColaBottleFull
+      price: 25
+      minStock: 7
+      maxStock: 8
+    - product: DrinkWaterBottleFull
+      price: 15
+      minStock: 7
+      maxStock: 8
+
+- type: entity
+  id: MarkerWH40KFootfallIvoMercer
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-ivomercer-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallIvoMercer
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallIvoMercer
+
+- type: wh40kNpcProfile
+  id: FootfallBastianRook
+  name: wh40k-footfall-bar-bastianrook-name
+  description: wh40k-footfall-bar-bastianrook-desc
+  role: BastianRook
+  department: kitchen
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallFootfallCivilian
+  services: [Trade, Social]
+  gear: WH40KFootfallChefGear
+  dialogue: WH40KFootfallBastianRook
+
+- type: wh40kNpcAnchor
+  id: FootfallBastianRook
+  profile: FootfallBastianRook
+
+- type: entity
+  id: MobWH40KFootfallBastianRook
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-bastianrook-name
+  description: wh40k-footfall-bar-bastianrook-desc
+  suffix: WH40K, Footfall, Bar scene
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallBastianRook
+  - type: Loadout
+    prototypes: [WH40KFootfallChefGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallBastianRook
+    interactionRange: 3
+    maxDialogueRange: 3
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-bar-bastianrook-title
+    greeting: wh40k-footfall-bar-bastianrook-intro
+    refreshInterval: 900
+    displayCount: 8
+    lookAtRange: 1
+    offers:
+    - product: FoodBurgerPlain
+      price: 40
+      minStock: 4
+      maxStock: 6
+    - product: FoodBurgerCheese
+      price: 45
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealFries
+      price: 25
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealEggsbenedict
+      price: 50
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealPotatoLoaded
+      price: 40
+      minStock: 4
+      maxStock: 6
+    - product: FoodSoupTomato
+      price: 35
+      minStock: 4
+      maxStock: 6
+    - product: FoodPizzaMargheritaSlice
+      price: 30
+      minStock: 4
+      maxStock: 6
+    - product: FoodDonutPlain
+      price: 20
+      minStock: 4
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallBastianRook
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-bar-bastianrook-marker
+  description: wh40k-footfall-bar-marker-desc
+  suffix: WH40K, Footfall, Mapping, Bar scene
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallBastianRook
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallBastianRook
+

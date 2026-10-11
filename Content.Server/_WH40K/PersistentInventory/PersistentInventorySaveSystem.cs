@@ -571,7 +571,9 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
             return SavePreparation.Fail(PersistentInventorySaveStatus.InvalidTarget, "Цель не является живым мобом.");
         }
 
-        if (HasComp<PersistentInventoryOperationComponent>(request.Body))
+        if (HasComp<PersistentInventoryOperationComponent>(request.Body) ||
+            EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSubmissionSystem>().IsBusy(request.UserId) ||
+            EntityManager.System<Content.Server._WH40K.Merchant.MerchantSystem>().IsSelling(request.UserId))
         {
             return SavePreparation.Fail(
                 PersistentInventorySaveStatus.Busy,
@@ -625,6 +627,8 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
         }
 
         WarnAboutOmittedComponents(request.UserId, capture.OmittedComponents);
+        if (capture.CapturedEntities.Any(item => TryComp(item, out Content.Shared._WH40K.Merchant.MerchantItemTokenComponent? title) && !title.Verified))
+            return SavePreparation.Fail(PersistentInventorySaveStatus.Busy, "Merchant item title verification is pending.");
         AddOperationLocks(capture, request.Body, request.UserId, operationId);
         var roleId = TryComp(request.Body, out PlayerJobComponent? playerJob)
             ? playerJob.JobPrototype?.Id

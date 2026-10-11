@@ -1,0 +1,172 @@
+- type: wh40kDialogue
+  id: WH40KFootfallEdricMoss
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-market-guide-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-market-guide-menu
+    choices:
+    - text: wh40k-footfall-market-guide-start-question
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-guide-start-answer
+        nextStep: service
+    - text: wh40k-footfall-market-guide-appraise-question
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-guide-appraise-answer
+        nextStep: service
+    - text: wh40k-footfall-market-guide-confirm-question
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-guide-confirm-answer
+        nextStep: service
+    - text: wh40k-footfall-market-guide-payment-question
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-guide-payment-answer
+        nextStep: service
+    - text: wh40k-footfall-market-guide-missing-question
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-guide-missing-answer
+        nextStep: service
+    - text: wh40k-footfall-lore-edricmoss-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-edricmoss-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-edricmoss-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-edricmoss-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-market-guide-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallBorsGrant
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-market-borsgrant-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-market-borsgrant-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-borsgrant-info
+        nextStep: service
+    - text: wh40k-footfall-lore-borsgrant-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-borsgrant-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-borsgrant-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-borsgrant-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-market-borsgrant-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallNeraQuinn
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-market-neraquinn-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-market-neraquinn-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-neraquinn-info
+        nextStep: service
+    - text: wh40k-footfall-lore-neraquinn-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-neraquinn-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-neraquinn-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-neraquinn-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-market-neraquinn-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallKassMarket
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-market-kass-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-market-kass-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-market-kass-info
+        nextStep: service
+    - text: wh40k-footfall-lore-kassmarket-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-kassmarket-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-kassmarket-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-kassmarket-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-market-kass-farewell

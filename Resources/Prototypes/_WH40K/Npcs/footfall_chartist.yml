@@ -1,0 +1,320 @@
+- type: wh40kNpcFaction
+  id: FootfallChartistFleet
+  name: wh40k-footfall-faction-chartistfleet
+
+- type: startingGear
+  id: WH40KFootfallChartistOfficerGear
+  equipment:
+    id: WH40KFootfallChartistIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialFleetOfficer
+    outerClothing: ClothingOuterCoatImperialFleetOfficer
+    head: ClothingHeadHatImperialFleetOfficer
+    belt: ClothingBeltImperialFleetOfficer
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombatColonel
+
+- type: startingGear
+  id: WH40KFootfallChartistMerchantGear
+  equipment:
+    id: WH40KFootfallChartistIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialFleetOfficer
+    outerClothing: ClothingOuterArmorJuniorOfficerArmoredJacket
+    belt: ClothingBeltImperialFleetOfficer
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesColorBlack
+
+- type: startingGear
+  id: WH40KFootfallChartistCrewmanGear
+  equipment:
+    id: WH40KFootfallChartistIDCard
+    jumpsuit: ClothingUniformJumpsuitCommandUniform
+    outerClothing: ClothingOuterArmorFlakVest
+    belt: ClothingBeltUtility
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombatVoidsman
+
+- type: startingGear
+  id: WH40KFootfallChartistGuardGear
+  equipment:
+    id: WH40KFootfallChartistIDCard
+    jumpsuit: ClothingUniformJumpsuitCommandUniform
+    outerClothing: ClothingOuterArmorFlakVest
+    head: ClothingHeadHelmetFlak
+    belt: ClothingBeltImperialFleetOfficer
+    shoes: ClothingShoesBootsCombat
+    gloves: ClothingHandsGlovesCombat
+  inhand:
+  - WeaponRifleAk
+
+- type: localizedDataset
+  id: WH40KFootfallChartistCrewmanChatter
+  values:
+    prefix: wh40k-footfall-ambient-chartistcrewman-line-
+    count: 6
+
+- type: localizedDataset
+  id: WH40KFootfallChartistGuardChatter
+  values:
+    prefix: wh40k-footfall-ambient-chartistguard-line-
+    count: 6
+
+- type: wh40kNpcProfile
+  id: FootfallChartistOfficer
+  name: wh40k-footfall-npc-chartistofficer-name
+  description: wh40k-footfall-npc-chartistofficer-desc
+  role: ChartistOfficer
+  department: chartist
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallChartistFleet
+  gear: WH40KFootfallChartistOfficerGear
+  services: [Social]
+  dialogue: WH40KFootfallChartistOfficer
+
+- type: wh40kNpcProfile
+  id: FootfallChartistMerchant
+  name: wh40k-footfall-npc-chartistmerchant-name
+  description: wh40k-footfall-npc-chartistmerchant-desc
+  role: ChartistMerchant
+  department: chartist
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallChartistFleet
+  gear: WH40KFootfallChartistMerchantGear
+  services: [Trade, Social]
+  dialogue: WH40KFootfallChartistMerchant
+
+- type: wh40kNpcProfile
+  id: FootfallChartistCrewman
+  name: wh40k-footfall-ambient-chartistcrewman-name
+  description: wh40k-footfall-ambient-chartistcrewman-desc
+  role: ChartistCrewman
+  department: chartist
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallChartistFleet
+  gear: WH40KFootfallChartistCrewmanGear
+  services: [Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallChartistCrewman
+  profile: FootfallChartistCrewman
+
+- type: wh40kNpcProfile
+  id: FootfallChartistGuard
+  name: wh40k-footfall-ambient-chartistguard-name
+  description: wh40k-footfall-ambient-chartistguard-desc
+  role: ChartistGuard
+  department: chartist
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallChartistFleet
+  gear: WH40KFootfallChartistGuardGear
+  services: [Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallChartistGuard
+  profile: FootfallChartistGuard
+
+- type: wh40kNpcAnchor
+  id: FootfallChartistOfficer
+  profile: FootfallChartistOfficer
+
+- type: wh40kNpcAnchor
+  id: FootfallChartistMerchant
+  profile: FootfallChartistMerchant
+
+- type: entity
+  id: MobWH40KFootfallChartistOfficer
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-chartistofficer-name
+  description: wh40k-footfall-npc-chartistofficer-desc
+  suffix: WH40K, Footfall, Chartist
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallChartistOfficer
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallChartistOfficerGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallChartistOfficer
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  id: MarkerWH40KFootfallChartistOfficer
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-chartistofficer-name
+  suffix: WH40K, Footfall, Mapping, Chartist
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallChartistOfficer
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallChartistOfficer
+
+- type: entity
+  id: MobWH40KFootfallChartistMerchant
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-chartistmerchant-name
+  description: wh40k-footfall-npc-chartistmerchant-desc
+  suffix: WH40K, Footfall, Chartist
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallChartistMerchant
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallChartistMerchantGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallChartistMerchant
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-merchant-chartist-title
+    greeting: wh40k-footfall-merchant-chartist-intro
+    refreshInterval: 900
+    displayCount: 6
+    offers:
+    - product: ClothingHeadHatImperialFleetOfficer
+      price: 450
+      minStock: 1
+      maxStock: 2
+    - product: ClothingOuterCoatImperialFleetOfficer
+      price: 750
+      minStock: 1
+      maxStock: 2
+    - product: ClothingUniformJumpsuitImperialFleetOfficer
+      price: 500
+      minStock: 1
+      maxStock: 3
+    - product: ClothingBeltImperialFleetOfficer
+      price: 200
+      minStock: 2
+      maxStock: 4
+    - product: ClothingOuterArmorJuniorOfficerArmoredJacket
+      price: 650
+      minStock: 1
+      maxStock: 3
+    - product: ClothingUniformJumpsuitCommandUniform
+      price: 250
+      minStock: 2
+      maxStock: 5
+    - product: ClothingOuterArmorFlakVest
+      price: 550
+      minStock: 2
+      maxStock: 4
+    - product: ClothingHeadHelmetMoebian6
+      price: 400
+      minStock: 1
+      maxStock: 3
+    - product: ClothingHandsGlovesCombatVoidsman
+      price: 120
+      minStock: 3
+      maxStock: 6
+    - product: ClothingShoesBootsCombat
+      price: 150
+      minStock: 2
+      maxStock: 5
+    - product: Magazine762x39mmFMJ
+      price: 180
+      minStock: 3
+      maxStock: 8
+    - product: Magazine762x39mmBox
+      price: 420
+      minStock: 2
+      maxStock: 5
+    - product: DrinkGuardsmanFlask
+      price: 35
+      minStock: 2
+      maxStock: 5
+    - product: FoodBoxImperialMRESmall
+      price: 75
+      minStock: 3
+      maxStock: 8
+    - product: ExtendedEmergencyOxygenTankFilled
+      price: 220
+      minStock: 2
+      maxStock: 4
+    - product: EmergencyMedipen
+      price: 160
+      minStock: 2
+      maxStock: 5
+
+- type: entity
+  id: MarkerWH40KFootfallChartistMerchant
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-chartistmerchant-name
+  suffix: WH40K, Footfall, Mapping, Chartist
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallChartistMerchant
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallChartistMerchant
+
+- type: entity
+  id: MobWH40KFootfallChartistCrewman
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-ambient-chartistcrewman-name
+  description: wh40k-footfall-ambient-chartistcrewman-desc
+  suffix: WH40K, Footfall, Chartist, Crewman
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallChartistCrewman
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallChartistCrewmanGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-ambient-chartistcrewman-line-1
+      chatDataset: WH40KFootfallChartistCrewmanChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  id: MarkerWH40KFootfallChartistCrewman
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-chartistcrewman-name
+  description: wh40k-footfall-ambient-marker-desc
+  suffix: WH40K, Footfall, Mapping, Chartist, Crewman
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallChartistCrewman
+
+- type: entity
+  id: MobWH40KFootfallChartistGuard
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-ambient-chartistguard-name
+  description: wh40k-footfall-ambient-chartistguard-desc
+  suffix: WH40K, Footfall, Chartist, Guard
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallChartistGuard
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallChartistGuardGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-ambient-chartistguard-line-1
+      chatDataset: WH40KFootfallChartistGuardChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  id: MarkerWH40KFootfallChartistGuard
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-chartistguard-name
+  description: wh40k-footfall-ambient-marker-desc
+  suffix: WH40K, Footfall, Mapping, Chartist, Guard
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallChartistGuard

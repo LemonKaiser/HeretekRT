@@ -1,0 +1,387 @@
+- type: wh40kMerchantValuation
+  id: FootfallOdranValuation
+  prices:
+    WH40KHartyRelic: 90
+    ClothingHeadHatImperialCitizen: 8
+    CatachanKnife: 55
+    WH40KFootfallOldVoyageChart: 70
+    WH40KFootfallOldDockSeal: 45
+
+- type: entity
+  id: MobWH40KFootfallOdranPell
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-odranpell-name
+  description: wh40k-footfall-npc-odranpell-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallOdranPell
+  - type: Loadout
+    prototypes: [WH40KFootfallCurioGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallOdranPell
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-odranpell-title
+    greeting: wh40k-service-odranpell-intro
+    refreshInterval: 900
+    displayCount: 5
+    buyback: FootfallOdranValuation
+    offers:
+    - product: WH40KHartyRelic
+      price: 200
+      minStock: 5
+      maxStock: 5
+    - product: WH40KFootfallOldVoyageChart
+      price: 230
+      minStock: 4
+      maxStock: 4
+    - product: WH40KFootfallOldDockSeal
+      price: 160
+      minStock: 5
+      maxStock: 5
+    - product: WH40KFlowerBouquet
+      price: 140
+      minStock: 5
+      maxStock: 5
+    - product: StandardDogTag
+      price: 95
+      minStock: 5
+      maxStock: 5
+
+- type: entity
+  id: MarkerWH40KFootfallOdranPell
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-odranpell-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallOdranPell
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallOdranPell
+
+- type: entity
+  id: MobWH40KFootfallKappaSpanner
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-kappaspanner-name
+  description: wh40k-footfall-npc-kappaspanner-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallKappaSpanner
+  - type: Loadout
+    prototypes: [WH40KFootfallOutfitterGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallKappaSpanner
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-kappaspanner-title
+    greeting: wh40k-service-kappaspanner-intro
+    refreshInterval: 900
+    displayCount: 7
+    offers:
+    - product: WH40KMiningDrillVoidpiercer
+      price: 300
+      minStock: 5
+      maxStock: 5
+    - product: ClothingHeadHelmetLithosMining
+      price: 90
+      minStock: 8
+      maxStock: 8
+    - product: ClothingOuterArmorLithosMining
+      price: 150
+      minStock: 6
+      maxStock: 6
+    - product: WH40KInflatableWallStackImperium
+      price: 240
+      minStock: 6
+      maxStock: 6
+    - product: WH40KInflatableDoorStackImperium
+      price: 220
+      minStock: 6
+      maxStock: 6
+    - product: WH40KSignalFlareImperium
+      price: 30
+      minStock: 12
+      maxStock: 12
+    - product: ClothingBackpackWanderer
+      price: 140
+      minStock: 6
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallKappaSpanner
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-kappaspanner-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallKappaSpanner
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallKappaSpanner
+
+- type: entity
+  id: MobWH40KFootfallVennOrs
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-vennors-name
+  description: wh40k-footfall-npc-vennors-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallVennOrs
+  - type: Loadout
+    prototypes: [WH40KCasinoHostGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallVennOrs
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  id: MarkerWH40KFootfallVennOrs
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-vennors-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallVennOrs
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallVennOrs
+
+- type: entity
+  id: MobWH40KFootfallBrannaKest
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-brannakest-name
+  description: wh40k-footfall-npc-brannakest-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallBrannaKest
+  - type: Loadout
+    prototypes: [WH40KBahamaBrannaGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallBrannaKest
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-brannakest-title
+    greeting: wh40k-service-brannakest-intro
+    refreshInterval: 900
+    displayCount: 8
+    lookAtRange: 1
+    offers:
+    - product: FoodBurgerPlain
+      price: 40
+      minStock: 4
+      maxStock: 6
+    - product: FoodBurgerCheese
+      price: 45
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealFries
+      price: 25
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealEggsbenedict
+      price: 50
+      minStock: 4
+      maxStock: 6
+    - product: FoodMealPotatoLoaded
+      price: 40
+      minStock: 4
+      maxStock: 6
+    - product: FoodSoupTomato
+      price: 35
+      minStock: 4
+      maxStock: 6
+    - product: FoodPizzaMargheritaSlice
+      price: 30
+      minStock: 4
+      maxStock: 6
+    - product: FoodDonutPlain
+      price: 20
+      minStock: 4
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallBrannaKest
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-brannakest-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallBrannaKest
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallBrannaKest
+
+- type: entity
+  id: MobWH40KFootfallMaraSevrin
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-marasevrin-name
+  description: wh40k-footfall-npc-marasevrin-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallMaraSevrin
+  - type: Loadout
+    prototypes: [WH40KFootfallTailorGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallMaraSevrin
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-marasevrin-title
+    greeting: wh40k-service-marasevrin-intro
+    refreshInterval: 900
+    displayCount: 8
+    offers:
+    - product: ClothingUniformJumpsuitImperialCitizen
+      price: 35
+      minStock: 8
+      maxStock: 8
+    - product: ClothingUniformJumpsuitImperialCitizenVest
+      price: 45
+      minStock: 8
+      maxStock: 8
+    - product: ClothingOuterCoatImperialCitizen
+      price: 65
+      minStock: 6
+      maxStock: 6
+    - product: ClothingHeadHatImperialCitizen
+      price: 25
+      minStock: 8
+      maxStock: 8
+    - product: ClothingNeckCloakRainImp
+      price: 180
+      minStock: 5
+      maxStock: 5
+    - product: ClothingOuterRobeImperialPilgrim
+      price: 140
+      minStock: 5
+      maxStock: 5
+    - product: ClothingShoesImperialPilgrim
+      price: 50
+      minStock: 8
+      maxStock: 8
+    - product: ClothingBeltStorageWaistbag
+      price: 70
+      minStock: 6
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallMaraSevrin
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-marasevrin-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallMaraSevrin
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallMaraSevrin
+
+- type: entity
+  id: MobWH40KFootfallDorianBale
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-dorianbale-name
+  description: wh40k-footfall-npc-dorianbale-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallDorianBale
+  - type: Loadout
+    prototypes: [WH40KFootfallArmouryGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallDorianBale
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-dorianbale-title
+    greeting: wh40k-service-dorianbale-intro
+    refreshInterval: 900
+    displayCount: 7
+    offers:
+    - product: ClothingHeadHelmetFlak
+      price: 120
+      minStock: 8
+      maxStock: 8
+    - product: ClothingOuterArmorFlakVest
+      price: 320
+      minStock: 5
+      maxStock: 5
+    - product: WH40KImperialCombatShield
+      price: 650
+      minStock: 4
+      maxStock: 4
+    - product: ClothingHandsGlovesCombatVoidsman
+      price: 90
+      minStock: 8
+      maxStock: 8
+    - product: CatachanKnife
+      price: 220
+      minStock: 5
+      maxStock: 5
+      requiredAccess: WH40KFootfallImperialPermit
+    - product: WeaponLaserPistol
+      price: 350
+      minStock: 4
+      maxStock: 4
+      requiredAccess: WH40KFootfallImperialPermit
+    - product: WeaponLaserLasgun
+      price: 450
+      minStock: 4
+      maxStock: 4
+      requiredAccess: WH40KFootfallImperialPermit
+
+- type: entity
+  id: MarkerWH40KFootfallDorianBale
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-dorianbale-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallDorianBale
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallDorianBale
+
+- type: entity
+  id: MarkerWH40KFootfallFizzo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-service-fizzo-marker
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallFizzo
+  - type: Wh40kNpcSpawn
+    prototype: MobQueenChrysalisImperiumDialogueFizzo

@@ -1,0 +1,305 @@
+- type: wh40kNpcFaction
+  id: FootfallKasballicaMission
+  name: wh40k-footfall-faction-kasballica
+
+- type: startingGear
+  id: WH40KFootfallKasballicaOfficerGear
+  equipment:
+    id: WH40KFootfallKasballicaIDCard
+    jumpsuit: ClothingUniformRogueWarm
+    outerClothing: ClothingOuterArmorBPVestMediumPDV
+    head: ClothingHeadHatSyndieMAA
+    belt: guardbelt
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsMercenaryGlovesCombat
+
+- type: wh40kNpcProfile
+  id: FootfallKasballicaOfficer
+  name: wh40k-footfall-npc-kasballicaofficer-name
+  description: wh40k-footfall-npc-kasballicaofficer-desc
+  role: KasballicaOfficer
+  department: kasballica
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallKasballicaMission
+  gear: WH40KFootfallKasballicaOfficerGear
+  services: [Faction, Social]
+  dialogue: WH40KFootfallKasballicaOfficer
+
+- type: wh40kNpcAnchor
+  id: FootfallKasballicaOfficer
+  profile: FootfallKasballicaOfficer
+
+- type: entity
+  parent: MobWH40KFootfallNpcBase
+  id: MobWH40KFootfallKasballicaOfficer
+  name: wh40k-footfall-npc-kasballicaofficer-name
+  suffix: WH40K, Footfall, Kasballica, Officer
+  description: wh40k-footfall-npc-kasballicaofficer-desc
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallKasballicaOfficer
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallKasballicaOfficerGear
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallKasballicaOfficer
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallKasballicaOfficer
+  name: wh40k-footfall-marker-kasballicaofficer-name
+  suffix: WH40K, Footfall, Mapping, Kasballica, Officer
+  description: wh40k-footfall-kasballica-marker-desc
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallKasballicaOfficer
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallKasballicaOfficer
+
+- type: startingGear
+  id: WH40KFootfallKasballicaMerchantGear
+  equipment:
+    id: WH40KFootfallKasballicaIDCard
+    jumpsuit: ClothingUniformRogueWarm
+    outerClothing: ClothingOuterArmorBPVestMediumPDV
+    head: ClothingHeadHatBlacksoft
+    belt: guardbelt
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsMercenaryGlovesCombat
+
+- type: wh40kNpcProfile
+  id: FootfallKasballicaMerchant
+  name: wh40k-footfall-npc-kasballicamerchant-name
+  description: wh40k-footfall-npc-kasballicamerchant-desc
+  role: KasballicaMerchant
+  department: kasballica
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallKasballicaMission
+  gear: WH40KFootfallKasballicaMerchantGear
+  services: [Trade, Social]
+  dialogue: WH40KFootfallKasballicaMerchant
+
+- type: wh40kNpcAnchor
+  id: FootfallKasballicaMerchant
+  profile: FootfallKasballicaMerchant
+
+- type: entity
+  parent: MobWH40KFootfallNpcBase
+  id: MobWH40KFootfallKasballicaMerchant
+  name: wh40k-footfall-npc-kasballicamerchant-name
+  suffix: WH40K, Footfall, Kasballica, Merchant
+  description: wh40k-footfall-npc-kasballicamerchant-desc
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallKasballicaMerchant
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallKasballicaMerchantGear
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallKasballicaMerchant
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-merchant-kasballica-title
+    greeting: wh40k-footfall-merchant-kasballica-intro
+    refreshInterval: 900
+    displayCount: 8
+    offers:
+    - product: WeaponStubPistol
+      price: 450
+      minStock: 2
+      maxStock: 4
+    - product: MagazineStubPistol
+      price: 160
+      minStock: 4
+      maxStock: 8
+    - product: WH40KAmmoBox10mm
+      price: 220
+      minStock: 4
+      maxStock: 8
+    - product: WeaponHeavyStubPistolAquila
+      price: 850
+      minStock: 1
+      maxStock: 2
+    - product: MagazineHeavyStubPistol
+      price: 240
+      minStock: 3
+      maxStock: 5
+    - product: WH40KAmmoBoxHeavyStubPistol
+      price: 320
+      minStock: 3
+      maxStock: 5
+    - product: WeaponTauPulsePistol
+      price: 4500
+      minStock: 1
+      maxStock: 1
+    - product: ClothingOuterArmorBPVestMediumPDV
+      price: 1300
+      minStock: 1
+      maxStock: 3
+    - product: ClothingUniformRogue
+      price: 300
+      minStock: 2
+      maxStock: 4
+    - product: ClothingUniformRogueWarm
+      price: 400
+      minStock: 1
+      maxStock: 3
+    - product: ClothingHeadHelmetMoebian6
+      price: 450
+      minStock: 1
+      maxStock: 2
+    - product: ClothingBeltStorageWaistbag
+      price: 110
+      minStock: 2
+      maxStock: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallKasballicaMerchant
+  name: wh40k-footfall-marker-kasballicamerchant-name
+  suffix: WH40K, Footfall, Mapping, Kasballica, Merchant
+  description: wh40k-footfall-kasballica-marker-desc
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallKasballicaMerchant
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallKasballicaMerchant
+
+- type: startingGear
+  id: WH40KFootfallKasballicaAmmunitionWorkerGear
+  equipment:
+    id: WH40KFootfallKasballicaIDCard
+    jumpsuit: ClothingUniformRogue
+    outerClothing: ClothingOuterArmorBPVestMediumPDV
+    belt: guardbelt
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsMercenaryGlovesCombat
+  inhand:
+  - Screwdriver
+
+- type: wh40kNpcProfile
+  id: FootfallKasballicaAmmunitionWorker
+  name: wh40k-footfall-ambient-kasballicaammunitionworker-name
+  description: wh40k-footfall-ambient-kasballicaammunitionworker-desc
+  role: KasballicaAmmunitionWorker
+  department: kasballica
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallKasballicaMission
+  gear: WH40KFootfallKasballicaAmmunitionWorkerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallKasballicaAmmunitionWorkerChatter
+  values:
+    prefix: wh40k-footfall-ambient-kasballicaammunitionworker-line-
+    count: 6
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallKasballicaAmmunitionWorker
+  name: wh40k-footfall-ambient-kasballicaammunitionworker-name
+  suffix: WH40K, Footfall, Kasballica, AmmunitionWorker
+  description: wh40k-footfall-ambient-kasballicaammunitionworker-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallKasballicaAmmunitionWorker
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallKasballicaAmmunitionWorkerGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-ambient-kasballicaammunitionworker-line-1
+      chatDataset: WH40KFootfallKasballicaAmmunitionWorkerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallKasballicaAmmunitionWorker
+  name: wh40k-footfall-marker-kasballicaammunitionworker-name
+  suffix: WH40K, Footfall, Mapping, Kasballica, AmmunitionWorker
+  description: wh40k-footfall-kasballica-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallKasballicaAmmunitionWorker
+
+- type: startingGear
+  id: WH40KFootfallKasballicaGuardGear
+  equipment:
+    id: WH40KFootfallKasballicaIDCard
+    jumpsuit: ClothingUniformRogue
+    outerClothing: ClothingOuterArmorBPVestMediumPDV
+    head: ClothingHeadHelmetMoebian6
+    belt: guardbelt
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsMercenaryGlovesCombat
+  inhand:
+  - WeaponStubPistol
+
+- type: wh40kNpcProfile
+  id: FootfallKasballicaGuard
+  name: wh40k-footfall-ambient-kasballicaguard-name
+  description: wh40k-footfall-ambient-kasballicaguard-desc
+  role: KasballicaGuard
+  department: kasballica
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallKasballicaMission
+  gear: WH40KFootfallKasballicaGuardGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallKasballicaGuardChatter
+  values:
+    prefix: wh40k-footfall-ambient-kasballicaguard-line-
+    count: 6
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallKasballicaGuard
+  name: wh40k-footfall-ambient-kasballicaguard-name
+  suffix: WH40K, Footfall, Kasballica, Guard
+  description: wh40k-footfall-ambient-kasballicaguard-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallKasballicaGuard
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallKasballicaGuardGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-ambient-kasballicaguard-line-1
+      chatDataset: WH40KFootfallKasballicaGuardChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallKasballicaGuard
+  name: wh40k-footfall-marker-kasballicaguard-name
+  suffix: WH40K, Footfall, Mapping, Kasballica, Guard
+  description: wh40k-footfall-kasballica-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallKasballicaGuard

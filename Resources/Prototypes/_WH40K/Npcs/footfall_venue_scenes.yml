@@ -1,0 +1,611 @@
+- type: startingGear
+  id: WH40KBahamaBrigGear
+  equipment:
+    id: WH40KFootfallBartenderIDCard
+    jumpsuit: ClothingUniformJumpsuitBartender
+    outerClothing: ClothingOuterApronBar
+    head: ClothingHeadHatBowlerHat
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KBahamaBrannaGear
+  equipment:
+    id: WH40KFootfallChefIDCard
+    jumpsuit: ClothingUniformJumpsuitChef
+    outerClothing: ClothingOuterApronChef
+    head: ClothingHeadHatBeretFrench
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KBahamaEngineerGear
+  equipment:
+    id: WH40KFootfallEngineerIDCard
+    jumpsuit: ClothingUniformJumpsuitEngineering
+    head: ClothingHeadHatBeretEngineering
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltUtility
+    eyes: ClothingEyesGlasses
+  inhand:
+  - BoxFolderClipboard
+
+- type: startingGear
+  id: WH40KBahamaVacationerGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitHawaiYellow
+    head: ClothingHeadHatStrawHat
+    shoes: ClothingShoesColorBrown
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    eyes: ClothingEyesGlassesCheapSunglasses
+
+- type: startingGear
+  id: WH40KCasinoLumenGear
+  equipment:
+    id: WH40KFootfallBartenderIDCard
+    jumpsuit: ClothingUniformJumpsuitBartenderPurple
+    outerClothing: ClothingOuterApronBar
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorWhite
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KCasinoHostGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitBartenderPurple
+    head: ClothingHeadHatBowlerHat
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorWhite
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KCasinoAccountantGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorWhite
+    belt: ClothingBeltStorageWaistbag
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KCasinoVeteranGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    head: ClothingHeadHatBeret
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KCasinoLuckyGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitCasualRed
+    head: ClothingHeadHatFez
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KCasinoEngineerGear
+  equipment:
+    id: WH40KFootfallEngineerIDCard
+    jumpsuit: ClothingUniformJumpsuitEngineeringHazard
+    head: ClothingHeadHatWeldingMaskPainted
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltUtility
+  inhand:
+  - Screwdriver
+
+- type: wh40kNpcProfile
+  id: FootfallBahamaBrig
+  name: wh40k-venue-bahamabrig-name
+  description: wh40k-venue-bahamabrig-desc
+  role: BahamaBrig
+  department: bahamaBar
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallFootfallCivilian
+  gear: WH40KBahamaBrigGear
+  services: [Trade, Social]
+  dialogue: WH40KFootfallBahamaBrig
+
+- type: wh40kNpcAnchor
+  id: FootfallBahamaBrig
+  profile: FootfallBahamaBrig
+
+- type: entity
+  parent: [MobDwarf, MobWH40KFootfallNpcBase]
+  id: MobWH40KFootfallBahamaBrig
+  name: wh40k-venue-bahamabrig-name
+  suffix: WH40K, Bahama, Standing
+  description: wh40k-venue-bahamabrig-desc
+  components:
+  - type: HumanoidAppearance
+    species: Human
+  - type: Body
+    prototype: Dwarf
+  - type: Sprite
+    scale: 1, 0.8
+  - type: Wh40kNpcIdentity
+    anchor: FootfallBahamaBrig
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Standing
+    markings: [HumanFacialHairDwarf]
+  - type: Loadout
+    prototypes: [WH40KBahamaBrigGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallBahamaBrig
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-venue-bahamabrig-shop-title
+    greeting: wh40k-venue-bahamabrig-shop-intro
+    refreshInterval: 900
+    displayCount: 7
+    lookAtRange: 1
+    offers:
+    - product: DrinkBeerglass
+      price: 25
+      minStock: 6
+      maxStock: 10
+    - product: DrinkAleGlass
+      price: 25
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWineGlass
+      price: 35
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWhiskeyGlass
+      price: 45
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWaterBottleFull
+      price: 20
+      minStock: 6
+      maxStock: 10
+    - product: DrinkTeaGlass
+      price: 15
+      minStock: 6
+      maxStock: 10
+    - product: DrinkCoffee
+      price: 15
+      minStock: 6
+      maxStock: 10
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallBahamaBrig
+  name: wh40k-venue-bahamabrig-marker
+  suffix: WH40K, Bahama, Mapping, Standing
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallBahamaBrig
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallBahamaBrig
+
+- type: wh40kNpcProfile
+  id: FootfallBahamaEngineer
+  name: wh40k-venue-bahamaengineer-name
+  description: wh40k-venue-bahamaengineer-desc
+  role: BahamaEngineer
+  department: bahamaBar
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KBahamaEngineerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KBahamaEngineerReplies
+  values:
+    prefix: wh40k-venue-bahamaengineer-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallBahamaEngineer
+  name: wh40k-venue-bahamaengineer-name
+  suffix: WH40K, Bahama, Standing
+  description: wh40k-venue-bahamaengineer-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBahamaEngineer
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KBahamaEngineerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-bahamaengineer-line-1
+      chatDataset: WH40KBahamaEngineerReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallBahamaEngineer
+  name: wh40k-venue-bahamaengineer-marker
+  suffix: WH40K, Bahama, Mapping, Standing
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBahamaEngineer
+
+- type: wh40kNpcProfile
+  id: FootfallBahamaVacationer
+  name: wh40k-venue-bahamavacationer-name
+  description: wh40k-venue-bahamavacationer-desc
+  role: BahamaVacationer
+  department: bahamaBar
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KBahamaVacationerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KBahamaVacationerReplies
+  values:
+    prefix: wh40k-venue-bahamavacationer-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallBahamaVacationer
+  name: wh40k-venue-bahamavacationer-name
+  suffix: WH40K, Bahama, Seated
+  description: wh40k-venue-bahamavacationer-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBahamaVacationer
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KBahamaVacationerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-bahamavacationer-line-1
+      chatDataset: WH40KBahamaVacationerReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallBahamaVacationer
+  name: wh40k-venue-bahamavacationer-marker
+  suffix: WH40K, Bahama, Mapping, Seated
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBahamaVacationer
+
+- type: wh40kNpcProfile
+  id: FootfallCasinoLumen
+  name: wh40k-venue-casinolumen-name
+  description: wh40k-venue-casinolumen-desc
+  role: CasinoLumen
+  department: casino
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallCasino
+  gear: WH40KCasinoLumenGear
+  services: [Trade, Social]
+  dialogue: WH40KFootfallCasinoLumen
+
+- type: wh40kNpcAnchor
+  id: FootfallCasinoLumen
+  profile: FootfallCasinoLumen
+
+- type: entity
+  parent: [MobMoth, MobWH40KFootfallNpcBase]
+  id: MobWH40KFootfallCasinoLumen
+  name: wh40k-venue-casinolumen-name
+  suffix: WH40K, Casino, Standing
+  description: wh40k-venue-casinolumen-desc
+  components:
+  - type: HumanoidAppearance
+    species: Moth
+  - type: Body
+    prototype: Moth
+  - type: Wh40kNpcIdentity
+    anchor: FootfallCasinoLumen
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Standing
+    markings: [MothAntennasRoyal, MothWingsRoyal]
+  - type: Loadout
+    prototypes: [WH40KCasinoLumenGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallCasinoLumen
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-venue-casinolumen-shop-title
+    greeting: wh40k-venue-casinolumen-shop-intro
+    refreshInterval: 900
+    displayCount: 8
+    lookAtRange: 1
+    offers:
+    - product: DrinkBeerglass
+      price: 25
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWineGlass
+      price: 35
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWhiskeyColaGlass
+      price: 40
+      minStock: 6
+      maxStock: 10
+    - product: DrinkGinTonicglass
+      price: 40
+      minStock: 6
+      maxStock: 10
+    - product: DrinkCubaLibreGlass
+      price: 40
+      minStock: 6
+      maxStock: 10
+    - product: DrinkVodkaTonicGlass
+      price: 40
+      minStock: 6
+      maxStock: 10
+    - product: DrinkWaterBottleFull
+      price: 20
+      minStock: 6
+      maxStock: 10
+    - product: DrinkTeaGlass
+      price: 15
+      minStock: 6
+      maxStock: 10
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCasinoLumen
+  name: wh40k-venue-casinolumen-marker
+  suffix: WH40K, Casino, Mapping, Standing
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallCasinoLumen
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallCasinoLumen
+
+- type: wh40kNpcProfile
+  id: FootfallCasinoPlayerAccountant
+  name: wh40k-venue-casinoplayeraccountant-name
+  description: wh40k-venue-casinoplayeraccountant-desc
+  role: CasinoPlayerAccountant
+  department: casino
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallCasino
+  gear: WH40KCasinoAccountantGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KCasinoPlayerAccountantReplies
+  values:
+    prefix: wh40k-venue-casinoplayeraccountant-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCasinoPlayerAccountant
+  name: wh40k-venue-casinoplayeraccountant-name
+  suffix: WH40K, Casino, Seated
+  description: wh40k-venue-casinoplayeraccountant-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCasinoPlayerAccountant
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KCasinoAccountantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-casinoplayeraccountant-line-1
+      chatDataset: WH40KCasinoPlayerAccountantReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCasinoPlayerAccountant
+  name: wh40k-venue-casinoplayeraccountant-marker
+  suffix: WH40K, Casino, Mapping, Seated
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCasinoPlayerAccountant
+
+- type: wh40kNpcProfile
+  id: FootfallCasinoPlayerVeteran
+  name: wh40k-venue-casinoplayerveteran-name
+  description: wh40k-venue-casinoplayerveteran-desc
+  role: CasinoPlayerVeteran
+  department: casino
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallCasino
+  gear: WH40KCasinoVeteranGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KCasinoPlayerVeteranReplies
+  values:
+    prefix: wh40k-venue-casinoplayerveteran-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCasinoPlayerVeteran
+  name: wh40k-venue-casinoplayerveteran-name
+  suffix: WH40K, Casino, Seated
+  description: wh40k-venue-casinoplayerveteran-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCasinoPlayerVeteran
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KCasinoVeteranGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-casinoplayerveteran-line-1
+      chatDataset: WH40KCasinoPlayerVeteranReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCasinoPlayerVeteran
+  name: wh40k-venue-casinoplayerveteran-marker
+  suffix: WH40K, Casino, Mapping, Seated
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCasinoPlayerVeteran
+
+- type: wh40kNpcProfile
+  id: FootfallCasinoPlayerLucky
+  name: wh40k-venue-casinoplayerlucky-name
+  description: wh40k-venue-casinoplayerlucky-desc
+  role: CasinoPlayerLucky
+  department: casino
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallCasino
+  gear: WH40KCasinoLuckyGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KCasinoPlayerLuckyReplies
+  values:
+    prefix: wh40k-venue-casinoplayerlucky-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCasinoPlayerLucky
+  name: wh40k-venue-casinoplayerlucky-name
+  suffix: WH40K, Casino, Standing
+  description: wh40k-venue-casinoplayerlucky-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCasinoPlayerLucky
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KCasinoLuckyGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-casinoplayerlucky-line-1
+      chatDataset: WH40KCasinoPlayerLuckyReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCasinoPlayerLucky
+  name: wh40k-venue-casinoplayerlucky-marker
+  suffix: WH40K, Casino, Mapping, Standing
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCasinoPlayerLucky
+
+- type: wh40kNpcProfile
+  id: FootfallCasinoEngineer
+  name: wh40k-venue-casinoengineer-name
+  description: wh40k-venue-casinoengineer-desc
+  role: CasinoEngineer
+  department: casino
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallCasino
+  gear: WH40KCasinoEngineerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KCasinoEngineerReplies
+  values:
+    prefix: wh40k-venue-casinoengineer-line-
+    count: 4
+
+- type: entity
+  parent: [MobDwarf, MobWH40KFootfallChatSceneBase]
+  id: MobWH40KFootfallCasinoEngineer
+  name: wh40k-venue-casinoengineer-name
+  suffix: WH40K, Casino, Standing
+  description: wh40k-venue-casinoengineer-desc
+  components:
+  - type: HumanoidAppearance
+    species: Human
+  - type: Body
+    prototype: Dwarf
+  - type: Sprite
+    scale: 1, 0.8
+  - type: Wh40kAmbientNpc
+    profile: FootfallCasinoEngineer
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Wh40kNpcScene
+    pose: Standing
+    markings: [HumanFacialHairFullbeard]
+  - type: Loadout
+    prototypes: [WH40KCasinoEngineerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-venue-casinoengineer-line-1
+      chatDataset: WH40KCasinoEngineerReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCasinoEngineer
+  name: wh40k-venue-casinoengineer-marker
+  suffix: WH40K, Casino, Mapping, Standing
+  description: wh40k-venue-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCasinoEngineer

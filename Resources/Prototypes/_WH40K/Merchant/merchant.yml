@@ -13,33 +13,30 @@
 
 - type: entity
   id: MarkerWH40KMerchantSpawn
-  parent: MarkerBase
-  name: Точка спавна торговца
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-kass-marker
   description: Торговец возвращается сюда, если его унесло дальше трёх тайлов.
   suffix: WH40K, Merchant, Mapping
   components:
-  - type: Sprite
-    layers:
-    - state: pink
-      shader: unshaded
   - type: MerchantSpawnMarker
+  - type: Wh40kNpcAnchor
+    anchor: FootfallKass
 
 - type: entity
   id: MobWH40KFootfallMerchant
   parent: MobHuman
-  name: Лоточник Касс
-  description: Он всегда знает, что скоро подорожает, и никогда не объясняет откуда это знает.
+  name: wh40k-footfall-market-kass-name
+  description: wh40k-footfall-market-kass-desc
   suffix: WH40K, Merchant
   save: false
   components:
-  - type: DialogueDisplayName
-    name: Лоточник Касс
+  - type: Wh40kNpcProtection
   - type: RandomHumanoidAppearance
     randomizeName: false
     hair: HairBald
   - type: Loadout
     prototypes:
-    - WandererGear
+    - WH40KFootfallSmugglerKassGear
   - type: HTN
     rootTask:
       task: WH40KMerchantIdleCompound
@@ -52,88 +49,42 @@
       enum.MerchantUiKey.Key:
         type: MerchantBoundUserInterface
         interactionRange: 3
-  - type: ActivatableUI
-    key: enum.MerchantUiKey.Key
   - type: Merchant
-    title: wh40k-merchant-title
-    greeting: wh40k-merchant-greeting
+    title: wh40k-footfall-market-kass-title
+    greeting: wh40k-footfall-market-kass-intro
     refreshInterval: 900
     displayCount: 6
     interactionRange: 3
-    lookAtRange: 3
+    lookAtRange: 1
     returnDistance: 3
     offers:
-    - product: DrinkGuardsmanFlask
-      price: 18
+    - product: Emag
+      price: 1000
       minStock: 2
-      maxStock: 7
-      weight: 8
-      displayName: wh40k-merchant-item-flask
-      description: wh40k-merchant-item-flask-desc
-    - product: DrinkImperialNutriCan
-      price: 24
-      minStock: 1
-      maxStock: 5
-      weight: 7
-      displayName: wh40k-merchant-item-nutri-can
-      description: wh40k-merchant-item-nutri-can-desc
-    - product: FoodSnackImperialHardtack
-      price: 12
+      maxStock: 2
+    - product: RadioJammer
+      price: 600
       minStock: 3
-      maxStock: 10
-      weight: 9
-      displayName: wh40k-merchant-item-hardtack
-      description: wh40k-merchant-item-hardtack-desc
-    - product: ChaosMedkit
-      price: 160
-      minStock: 1
-      maxStock: 2
-      weight: 3
-      displayName: wh40k-merchant-item-medkit
-      description: wh40k-merchant-item-medkit-desc
-    - product: WH40KMiningDrillVoidpiercer
-      price: 320
-      minStock: 1
-      maxStock: 2
-      weight: 2
-      displayName: wh40k-merchant-item-tool
-      description: wh40k-merchant-item-tool-desc
-    - product: CatachanKnife
-      price: 220
-      minStock: 1
-      maxStock: 2
-      weight: 2
-      displayName: wh40k-merchant-item-knife
-      description: wh40k-merchant-item-knife-desc
-    - product: FoodSnackImperialNutriBar
-      price: 20
-      minStock: 2
-      maxStock: 8
-      weight: 8
-      displayName: wh40k-merchant-item-nutri-bar
-      description: wh40k-merchant-item-nutri-bar-desc
-    - product: FoodTinGroxPorridge
-      price: 34
-      minStock: 1
-      maxStock: 5
-      weight: 6
-      displayName: wh40k-merchant-item-grox-porridge
-      description: wh40k-merchant-item-grox-porridge-desc
-    - product: FoodTinGroxMeat
-      price: 45
-      minStock: 1
-      maxStock: 4
-      weight: 5
-      displayName: wh40k-merchant-item-grox-meat
-      description: wh40k-merchant-item-grox-meat-desc
-    - product: FoodBoxImperialMRESmall
-      price: 95
-      minStock: 1
       maxStock: 3
-      weight: 4
-      displayName: wh40k-merchant-item-mre
-      description: wh40k-merchant-item-mre-desc
+    - product: ClothingHeadsetVoxBackpackHeretics
+      price: 280
+      minStock: 4
+      maxStock: 4
+    - product: EncryptionKeyVoxHeretics
+      price: 180
+      minStock: 4
+      maxStock: 4
+    - product: ChaosMedkit
+      price: 350
+      minStock: 4
+      maxStock: 4
+    - product: ClothingNeckCloakRainChs
+      price: 240
+      minStock: 4
+      maxStock: 4
   - type: DialogueInteractable
     interactionRange: 3
     requireLineOfSight: true
-    dialogue: WH40KMerchantGreeting
+    dialogue: WH40KFootfallKassMarket
+  - type: Wh40kNpcIdentity
+    anchor: FootfallKass

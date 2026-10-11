@@ -1,0 +1,136 @@
+- type: wh40kNpcProfile
+  id: FootfallSleepingVagrant
+  name: wh40k-footfall-hab-sleepingvagrant-name
+  description: wh40k-footfall-hab-sleepingvagrant-desc
+  role: SleepingVagrant
+  department: housing
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallSleepingVagrantGear
+
+- type: entity
+  id: MobWH40KFootfallSleepingVagrant
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-hab-sleepingvagrant-name
+  description: wh40k-footfall-hab-sleepingvagrant-desc
+  suffix: WH40K, Footfall, Hab scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallSleepingVagrant
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: Loadout
+    prototypes: [WH40KFootfallSleepingVagrantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-hab-sleepingvagrant-chat
+      speaker: npc
+      cooldown: 5
+  - type: AmbientSound
+    enabled: true
+    sound:
+      path: /Audio/_WH40K/Npcs/snore_1.ogg
+    range: 3
+    volume: -10.8
+
+- type: entity
+  id: MarkerWH40KFootfallSleepingVagrant
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-hab-sleepingvagrant-marker
+  description: wh40k-footfall-hab-marker-desc
+  suffix: WH40K, Footfall, Mapping, Hab scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallSleepingVagrant
+
+- type: wh40kNpcProfile
+  id: FootfallStandingVagrant
+  name: wh40k-footfall-hab-standingvagrant-name
+  description: wh40k-footfall-hab-standingvagrant-desc
+  role: StandingVagrant
+  department: housing
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallStandingVagrantGear
+
+- type: entity
+  id: MobWH40KFootfallStandingVagrant
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-hab-standingvagrant-name
+  description: wh40k-footfall-hab-standingvagrant-desc
+  suffix: WH40K, Footfall, Hab scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallStandingVagrant
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallStandingVagrantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-hab-standingvagrant-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallStandingVagrant
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-hab-standingvagrant-marker
+  description: wh40k-footfall-hab-marker-desc
+  suffix: WH40K, Footfall, Mapping, Hab scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallStandingVagrant
+
+- type: wh40kNpcProfile
+  id: FootfallCryoPriest
+  name: wh40k-footfall-hab-cryopriest-name
+  description: wh40k-footfall-hab-cryopriest-desc
+  role: CryoPriest
+  department: housing
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallEcclesiarchy
+  services: [Social]
+  gear: WH40KFootfallCryoPriestGear
+  dialogue: WH40KFootfallCryoPriest
+
+- type: wh40kNpcAnchor
+  id: FootfallCryoPriest
+  profile: FootfallCryoPriest
+
+- type: entity
+  id: MobWH40KFootfallCryoPriest
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-hab-cryopriest-name
+  description: wh40k-footfall-hab-cryopriest-desc
+  suffix: WH40K, Footfall, Hab scene, Standing
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallCryoPriest
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCryoPriestGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallCryoPriest
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  id: MarkerWH40KFootfallCryoPriest
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-hab-cryopriest-marker
+  description: wh40k-footfall-hab-marker-desc
+  suffix: WH40K, Footfall, Mapping, Hab scene, Standing
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallCryoPriest
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallCryoPriest

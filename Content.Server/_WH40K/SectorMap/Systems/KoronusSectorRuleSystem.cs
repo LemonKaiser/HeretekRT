@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Linq;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
@@ -50,6 +51,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private KoronusAsteroidFieldSystem _asteroidFields = default!;
     [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private ForceAnchorSystem _forceAnchor = default!;
+    [Dependency] private KoronusInfrastructureSystem _infrastructure = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
 
@@ -75,6 +77,12 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         mapId = MapId.Nullspace;
         return TryGetSectorRule(out var rule) && rule.Comp.SystemMaps.TryGetValue(systemId, out mapId);
     }
+
+    public bool HasSector(string sectorId)
+        => TryGetSectorRule(out var rule) && rule.Comp.Sector.Id == sectorId;
+
+    public bool IsMapInSector(string sectorId, MapId mapId)
+        => TryGetSectorRule(out var rule) && rule.Comp.Sector.Id == sectorId && rule.Comp.SystemMaps.Values.Contains(mapId);
 
     /// <summary>
     /// Ensures that a cold-unloaded system has a live map again before a shuttle or another
@@ -688,6 +696,8 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         protectedGrid.PreventRCDUse = true;
         protectedGrid.PreventEmpEvents = true;
         protectedGrid.PreventExplosions = true;
+
+        _infrastructure.ProtectGrid(grid);
 
         // Facility maps are loaded before their Koronus safeguards are attached. Merely adding
         // ForceAnchor here would miss its MapInit handler, leaving an otherwise protected station

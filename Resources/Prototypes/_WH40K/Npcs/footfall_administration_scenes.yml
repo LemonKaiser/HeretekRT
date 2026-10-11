@@ -1,0 +1,503 @@
+- type: entity
+  parent: Cigarette
+  id: CigaretteWH40KFootfallScene
+  name: clerk's cigarette
+  description: A cigarette accompanying an unusually long administrative break.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Smokable
+    inhaleAmount: 0
+    exposeTemperature: 0
+
+- type: startingGear
+  id: WH40KFootfallAdministrationFinanceGear
+  equipment:
+    id: WH40KFootfallAdministrationIDCard
+    jumpsuit: ClothingUniformJumpsuitCommandUniform
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    outerClothing: ClothingOuterCoatImperialCitizen
+    eyes: ClothingEyesGlasses
+  inhand:
+  - BoxFolderClipboard
+
+- type: startingGear
+  id: WH40KFootfallAdministrationSmokingGear
+  equipment:
+    id: WH40KFootfallAdministrationIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    outerClothing: ClothingOuterCoatImperialCitizen
+    mask: CigaretteWH40KFootfallScene
+
+- type: startingGear
+  id: WH40KFootfallAdministrationRecordsGear
+  equipment:
+    id: WH40KFootfallAdministrationIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizen
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    outerClothing: ClothingOuterCoatImperialCitizen
+    eyes: ClothingEyesGlasses
+  inhand:
+  - Paper
+
+- type: startingGear
+  id: WH40KFootfallAdministrationDispatchGear
+  equipment:
+    id: WH40KFootfallAdministrationIDCard
+    jumpsuit: ClothingUniformJumpsuitCommandUniform
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+  inhand:
+  - BoxFolderClipboard
+
+- type: wh40kNpcProfile
+  id: FootfallAdministrationFinanceClerk
+  name: wh40k-footfall-administration-administrationfinanceclerk-name
+  description: wh40k-footfall-administration-administrationfinanceclerk-desc
+  role: AdministrationFinanceClerk
+  department: administration
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderAdministration
+  gear: WH40KFootfallAdministrationFinanceGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallAdministrationFinanceClerkReplies
+  values:
+    prefix: wh40k-footfall-administration-administrationfinanceclerk-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallAdministrationFinanceClerk
+  name: wh40k-footfall-administration-administrationfinanceclerk-name
+  description: wh40k-footfall-administration-administrationfinanceclerk-desc
+  suffix: WH40K, Footfall, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAdministrationFinanceClerk
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAdministrationFinanceGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-administrationfinanceclerk-line-1
+      chatDataset: WH40KFootfallAdministrationFinanceClerkReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallAdministrationFinanceClerk
+  name: wh40k-footfall-administration-administrationfinanceclerk-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAdministrationFinanceClerk
+
+- type: wh40kNpcProfile
+  id: FootfallAdministrationSmokingClerk
+  name: wh40k-footfall-administration-administrationsmokingclerk-name
+  description: wh40k-footfall-administration-administrationsmokingclerk-desc
+  role: AdministrationSmokingClerk
+  department: administration
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderAdministration
+  gear: WH40KFootfallAdministrationSmokingGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallAdministrationSmokingClerkReplies
+  values:
+    prefix: wh40k-footfall-administration-administrationsmokingclerk-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallAdministrationSmokingClerk
+  name: wh40k-footfall-administration-administrationsmokingclerk-name
+  description: wh40k-footfall-administration-administrationsmokingclerk-desc
+  suffix: WH40K, Footfall, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAdministrationSmokingClerk
+  - type: Wh40kNpcScene
+    pose: Standing
+    smoking: true
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+    blackboard:
+      IdleRange: !type:Single
+        1.25
+      MinimumIdleTime: !type:Single
+        8
+      MaximumIdleTime: !type:Single
+        15
+  - type: Wh40kNpcProtection
+    homeRadius: 2
+  - type: Loadout
+    prototypes: [WH40KFootfallAdministrationSmokingGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-administrationsmokingclerk-line-1
+      chatDataset: WH40KFootfallAdministrationSmokingClerkReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallAdministrationSmokingClerk
+  name: wh40k-footfall-administration-administrationsmokingclerk-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAdministrationSmokingClerk
+
+- type: wh40kNpcProfile
+  id: FootfallAdministrationRecordsClerk
+  name: wh40k-footfall-administration-administrationrecordsclerk-name
+  description: wh40k-footfall-administration-administrationrecordsclerk-desc
+  role: AdministrationRecordsClerk
+  department: administration
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderAdministration
+  gear: WH40KFootfallAdministrationRecordsGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallAdministrationRecordsClerkReplies
+  values:
+    prefix: wh40k-footfall-administration-administrationrecordsclerk-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallAdministrationRecordsClerk
+  name: wh40k-footfall-administration-administrationrecordsclerk-name
+  description: wh40k-footfall-administration-administrationrecordsclerk-desc
+  suffix: WH40K, Footfall, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAdministrationRecordsClerk
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAdministrationRecordsGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-administrationrecordsclerk-line-1
+      chatDataset: WH40KFootfallAdministrationRecordsClerkReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallAdministrationRecordsClerk
+  name: wh40k-footfall-administration-administrationrecordsclerk-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAdministrationRecordsClerk
+
+- type: wh40kNpcProfile
+  id: FootfallAdministrationDispatchClerk
+  name: wh40k-footfall-administration-administrationdispatchclerk-name
+  description: wh40k-footfall-administration-administrationdispatchclerk-desc
+  role: AdministrationDispatchClerk
+  department: administration
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderAdministration
+  gear: WH40KFootfallAdministrationDispatchGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallAdministrationDispatchClerkReplies
+  values:
+    prefix: wh40k-footfall-administration-administrationdispatchclerk-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallAdministrationDispatchClerk
+  name: wh40k-footfall-administration-administrationdispatchclerk-name
+  description: wh40k-footfall-administration-administrationdispatchclerk-desc
+  suffix: WH40K, Footfall, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAdministrationDispatchClerk
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAdministrationDispatchGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-administrationdispatchclerk-line-1
+      chatDataset: WH40KFootfallAdministrationDispatchClerkReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallAdministrationDispatchClerk
+  name: wh40k-footfall-administration-administrationdispatchclerk-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAdministrationDispatchClerk
+
+- type: wh40kNpcProfile
+  id: FootfallPublicResidentSeatedOne
+  name: wh40k-footfall-administration-publicresidentseatedone-name
+  description: wh40k-footfall-administration-publicresidentseatedone-desc
+  role: PublicResidentSeatedOne
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallPublicResidentSeatedOneReplies
+  values:
+    prefix: wh40k-footfall-administration-publicresidentseatedone-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallPublicResidentSeatedOne
+  name: wh40k-footfall-administration-publicresidentseatedone-name
+  description: wh40k-footfall-administration-publicresidentseatedone-desc
+  suffix: WH40K, Footfall, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallPublicResidentSeatedOne
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-publicresidentseatedone-line-1
+      chatDataset: WH40KFootfallPublicResidentSeatedOneReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallPublicResidentSeatedOne
+  name: wh40k-footfall-administration-publicresidentseatedone-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallPublicResidentSeatedOne
+
+- type: wh40kNpcProfile
+  id: FootfallPublicResidentSeatedTwo
+  name: wh40k-footfall-administration-publicresidentseatedtwo-name
+  description: wh40k-footfall-administration-publicresidentseatedtwo-desc
+  role: PublicResidentSeatedTwo
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenVestGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallPublicResidentSeatedTwoReplies
+  values:
+    prefix: wh40k-footfall-administration-publicresidentseatedtwo-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallPublicResidentSeatedTwo
+  name: wh40k-footfall-administration-publicresidentseatedtwo-name
+  description: wh40k-footfall-administration-publicresidentseatedtwo-desc
+  suffix: WH40K, Footfall, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallPublicResidentSeatedTwo
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenVestGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-publicresidentseatedtwo-line-1
+      chatDataset: WH40KFootfallPublicResidentSeatedTwoReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallPublicResidentSeatedTwo
+  name: wh40k-footfall-administration-publicresidentseatedtwo-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallPublicResidentSeatedTwo
+
+- type: wh40kNpcProfile
+  id: FootfallPublicResidentStandingOne
+  name: wh40k-footfall-administration-publicresidentstandingone-name
+  description: wh40k-footfall-administration-publicresidentstandingone-desc
+  role: PublicResidentStandingOne
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallLaborerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallPublicResidentStandingOneReplies
+  values:
+    prefix: wh40k-footfall-administration-publicresidentstandingone-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallPublicResidentStandingOne
+  name: wh40k-footfall-administration-publicresidentstandingone-name
+  description: wh40k-footfall-administration-publicresidentstandingone-desc
+  suffix: WH40K, Footfall, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallPublicResidentStandingOne
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallLaborerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-publicresidentstandingone-line-1
+      chatDataset: WH40KFootfallPublicResidentStandingOneReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallPublicResidentStandingOne
+  name: wh40k-footfall-administration-publicresidentstandingone-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallPublicResidentStandingOne
+
+- type: wh40kNpcProfile
+  id: FootfallPublicResidentStandingTwo
+  name: wh40k-footfall-administration-publicresidentstandingtwo-name
+  description: wh40k-footfall-administration-publicresidentstandingtwo-desc
+  role: PublicResidentStandingTwo
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallPublicResidentStandingTwoReplies
+  values:
+    prefix: wh40k-footfall-administration-publicresidentstandingtwo-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallPublicResidentStandingTwo
+  name: wh40k-footfall-administration-publicresidentstandingtwo-name
+  description: wh40k-footfall-administration-publicresidentstandingtwo-desc
+  suffix: WH40K, Footfall, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallPublicResidentStandingTwo
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-publicresidentstandingtwo-line-1
+      chatDataset: WH40KFootfallPublicResidentStandingTwoReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallPublicResidentStandingTwo
+  name: wh40k-footfall-administration-publicresidentstandingtwo-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallPublicResidentStandingTwo
+
+- type: wh40kNpcProfile
+  id: FootfallPublicWindowWatcher
+  name: wh40k-footfall-administration-publicwindowwatcher-name
+  description: wh40k-footfall-administration-publicwindowwatcher-desc
+  role: PublicWindowWatcher
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenVestGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallPublicWindowWatcherReplies
+  values:
+    prefix: wh40k-footfall-administration-publicwindowwatcher-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallPublicWindowWatcher
+  name: wh40k-footfall-administration-publicwindowwatcher-name
+  description: wh40k-footfall-administration-publicwindowwatcher-desc
+  suffix: WH40K, Footfall, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallPublicWindowWatcher
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenVestGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-administration-publicwindowwatcher-line-1
+      chatDataset: WH40KFootfallPublicWindowWatcherReplies
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallPublicWindowWatcher
+  name: wh40k-footfall-administration-publicwindowwatcher-marker
+  description: wh40k-footfall-administration-marker-desc
+  suffix: WH40K, Footfall, Mapping, Administration and public, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallPublicWindowWatcher

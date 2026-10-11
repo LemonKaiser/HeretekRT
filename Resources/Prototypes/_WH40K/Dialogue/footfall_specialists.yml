@@ -1,0 +1,78 @@
+- type: wh40kDialogue
+  id: WH40KFootfallLucanRho
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-lucanrho-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-lucanrho-service
+    choices:
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallLucanRhoPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallCapture
+      - type: QuestActive
+        quest: WH40KFootfallCapture
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallCapture
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallCapture
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallCapture
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-lucanrho-tell
+        nextStep: service
+    - text: wh40k-footfall-arbites-chief-laws-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-arbites-chief-laws
+        nextStep: service
+    - text: wh40k-footfall-arbites-chief-report-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-arbites-chief-report
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-lucanrho-farewell
+

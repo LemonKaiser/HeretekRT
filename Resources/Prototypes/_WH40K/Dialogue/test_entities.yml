@@ -32,10 +32,11 @@
   id: MobQueenChrysalisImperiumDialogueFizzo
   parent: MobQueenChrysalisImperium
   name: Физзо
-  description: A poised bartender pony who watches the room like it owes him an honest answer.
-  suffix: WH40K, Dialogue, Bartender
+  description: wh40k-footfall-npc-fizzo-desc
+  suffix: WH40K, Dialogue, Casino owner
   save: false
   components:
+  - type: Wh40kNpcProtection
   - type: DialogueDisplayName
     name: Физзо
   - type: HTN
@@ -63,6 +64,32 @@
           - type: Flag
             flag: wh40k_fizzo_intro_done
             value: false
+  - type: Wh40kNpcIdentity
+    anchor: FootfallFizzo
+  - type: Godmode
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-fizzo-title
+    greeting: wh40k-service-fizzo-intro
+    refreshInterval: 900
+    displayCount: 3
+    offers:
+    - product: DrinkGuardsmanFlask
+      price: 18
+      minStock: 2
+      maxStock: 5
+    - product: DrinkImperialNutriCan
+      price: 22
+      minStock: 2
+      maxStock: 5
+    - product: FoodSnackImperialNutriBar
+      price: 18
+      minStock: 2
+      maxStock: 5
 
 - type: entity
   id: MobHumanWH40KDialogueAutoDummy

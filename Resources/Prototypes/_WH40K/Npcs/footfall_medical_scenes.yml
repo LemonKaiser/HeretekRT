@@ -1,0 +1,630 @@
+- type: wh40kNpcProfile
+  id: FootfallAdrianVey
+  name: wh40k-footfall-medical-adrianvey-name
+  description: wh40k-footfall-medical-adrianvey-desc
+  role: AdrianVey
+  department: medicae
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallMedicae
+  services: [MedicalIntake]
+  gear: WH40KFootfallReceptionMedicGear
+  dialogue: WH40KFootfallAdrianVey
+
+- type: wh40kNpcAnchor
+  id: FootfallAdrianVey
+  profile: FootfallAdrianVey
+
+- type: entity
+  id: MobWH40KFootfallAdrianVey
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-adrianvey-name
+  description: wh40k-footfall-medical-adrianvey-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallAdrianVey
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallReceptionMedicGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallAdrianVey
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kMedicalUiKey.Key:
+        type: Wh40kMedicalBoundUserInterface
+        interactionRange: 3
+  - type: Wh40kMedicalProvider
+    basePrice: 50
+    pricePerDamage: 4
+    cooldownSeconds: 600
+
+- type: entity
+  id: MarkerWH40KFootfallAdrianVey
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-adrianvey-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallAdrianVey
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallAdrianVey
+
+- type: wh40kNpcProfile
+  id: FootfallMiraFenn
+  name: wh40k-footfall-medical-mirafenn-name
+  description: wh40k-footfall-medical-mirafenn-desc
+  role: MiraFenn
+  department: medicae
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallMedicae
+  services: [Trade]
+  gear: WH40KFootfallDispensaryGear
+  dialogue: WH40KFootfallMiraFenn
+
+- type: wh40kNpcAnchor
+  id: FootfallMiraFenn
+  profile: FootfallMiraFenn
+
+- type: entity
+  id: MobWH40KFootfallMiraFenn
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-mirafenn-name
+  description: wh40k-footfall-medical-mirafenn-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallMiraFenn
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallDispensaryGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallMiraFenn
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-medical-mirafenn-title
+    greeting: wh40k-footfall-medical-mirafenn-intro
+    refreshInterval: 900
+    displayCount: 10
+    lookAtRange: 1
+    offers:
+    - product: Gauze
+      price: 45
+      minStock: 5
+      maxStock: 6
+    - product: Ointment
+      price: 55
+      minStock: 5
+      maxStock: 6
+    - product: Brutepack
+      price: 55
+      minStock: 5
+      maxStock: 6
+    - product: Bloodpack
+      price: 70
+      minStock: 5
+      maxStock: 6
+    - product: Tourniquet
+      price: 35
+      minStock: 5
+      maxStock: 6
+    - product: SyringeInaprovaline
+      price: 65
+      minStock: 5
+      maxStock: 6
+    - product: SyringeSaline
+      price: 60
+      minStock: 5
+      maxStock: 6
+    - product: PillCanisterDylovene
+      price: 75
+      minStock: 5
+      maxStock: 6
+    - product: PillCanisterDexalin
+      price: 75
+      minStock: 5
+      maxStock: 6
+    - product: HandheldHealthAnalyzer
+      price: 180
+      minStock: 5
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallMiraFenn
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-mirafenn-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallMiraFenn
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallMiraFenn
+
+- type: wh40kNpcProfile
+  id: FootfallBandagedPatient
+  name: wh40k-footfall-medical-bandagedpatient-name
+  description: wh40k-footfall-medical-bandagedpatient-desc
+  role: BandagedPatient
+  department: medicae
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallSleepwearGear
+
+- type: entity
+  id: MobWH40KFootfallBandagedPatient
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-bandagedpatient-name
+  description: wh40k-footfall-medical-bandagedpatient-desc
+  suffix: WH40K, Footfall, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBandagedPatient
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+    markings: [GauzeHead, GauzeShoulder, GauzeStomach, GauzeLeftArm, GauzeLowerLegLeft, GauzeUpperLegRight]
+  - type: Loadout
+    prototypes: [WH40KFootfallSleepwearGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-bandagedpatient-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallBandagedPatient
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-bandagedpatient-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBandagedPatient
+
+- type: wh40kNpcProfile
+  id: FootfallWardDoctor
+  name: wh40k-footfall-medical-warddoctor-name
+  description: wh40k-footfall-medical-warddoctor-desc
+  role: WardDoctor
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallMedicaeAssistantGear
+
+- type: entity
+  id: MobWH40KFootfallWardDoctor
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-warddoctor-name
+  description: wh40k-footfall-medical-warddoctor-desc
+  suffix: WH40K, Footfall, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallWardDoctor
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicaeAssistantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-warddoctor-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallWardDoctor
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-warddoctor-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallWardDoctor
+
+- type: wh40kNpcProfile
+  id: FootfallMedicalLoungeDoctorOne
+  name: wh40k-footfall-medical-medicalloungedoctorone-name
+  description: wh40k-footfall-medical-medicalloungedoctorone-desc
+  role: MedicalLoungeDoctorOne
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallMedicalLoungeBlueGear
+
+- type: entity
+  id: MobWH40KFootfallMedicalLoungeDoctorOne
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-medicalloungedoctorone-name
+  description: wh40k-footfall-medical-medicalloungedoctorone-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMedicalLoungeDoctorOne
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicalLoungeBlueGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-medicalloungedoctorone-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMedicalLoungeDoctorOne
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-medicalloungedoctorone-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMedicalLoungeDoctorOne
+
+- type: wh40kNpcProfile
+  id: FootfallMedicalLoungeDoctorTwo
+  name: wh40k-footfall-medical-medicalloungedoctortwo-name
+  description: wh40k-footfall-medical-medicalloungedoctortwo-desc
+  role: MedicalLoungeDoctorTwo
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallMedicalLoungePurpleGear
+
+- type: entity
+  id: MobWH40KFootfallMedicalLoungeDoctorTwo
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-medicalloungedoctortwo-name
+  description: wh40k-footfall-medical-medicalloungedoctortwo-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMedicalLoungeDoctorTwo
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicalLoungePurpleGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-medicalloungedoctortwo-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMedicalLoungeDoctorTwo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-medicalloungedoctortwo-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMedicalLoungeDoctorTwo
+
+- type: wh40kNpcProfile
+  id: FootfallOperatingSurgeon
+  name: wh40k-footfall-medical-operatingsurgeon-name
+  description: wh40k-footfall-medical-operatingsurgeon-desc
+  role: OperatingSurgeon
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallOperatingSurgeonGear
+
+- type: entity
+  id: MobWH40KFootfallOperatingSurgeon
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-operatingsurgeon-name
+  description: wh40k-footfall-medical-operatingsurgeon-desc
+  suffix: WH40K, Footfall, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallOperatingSurgeon
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallOperatingSurgeonGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-operatingsurgeon-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallOperatingSurgeon
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-operatingsurgeon-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallOperatingSurgeon
+
+- type: wh40kNpcProfile
+  id: FootfallBurnPatient
+  name: wh40k-footfall-medical-burnpatient-name
+  description: wh40k-footfall-medical-burnpatient-desc
+  role: BurnPatient
+  department: medicae
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallPatientIdentityGear
+
+- type: entity
+  id: MobWH40KFootfallBurnPatient
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-burnpatient-name
+  description: wh40k-footfall-medical-burnpatient-desc
+  suffix: WH40K, Footfall, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBurnPatient
+  - type: Loadout
+    prototypes: [WH40KFootfallPatientIdentityGear]
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: Wh40kNpcProtection
+    preserveDamage: true
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      250: Critical
+      300: Dead
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-burnpatient-chat
+      speaker: npc
+      cooldown: 5
+  - type: Damageable
+    damageContainer: Biological
+    damage:
+      types:
+        Heat: 185
+
+- type: entity
+  id: MarkerWH40KFootfallBurnPatient
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-burnpatient-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBurnPatient
+
+- type: wh40kNpcProfile
+  id: FootfallMedicalChemist
+  name: wh40k-footfall-medical-medicalchemist-name
+  description: wh40k-footfall-medical-medicalchemist-desc
+  role: MedicalChemist
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallMedicalChemistGear
+
+- type: entity
+  id: MobWH40KFootfallMedicalChemist
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-medicalchemist-name
+  description: wh40k-footfall-medical-medicalchemist-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMedicalChemist
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicalChemistGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-medicalchemist-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMedicalChemist
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-medicalchemist-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMedicalChemist
+
+- type: wh40kNpcProfile
+  id: FootfallMedicalVirologist
+  name: wh40k-footfall-medical-medicalvirologist-name
+  description: wh40k-footfall-medical-medicalvirologist-desc
+  role: MedicalVirologist
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallMedicalVirologistGear
+
+- type: entity
+  id: MobWH40KFootfallMedicalVirologist
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-medicalvirologist-name
+  description: wh40k-footfall-medical-medicalvirologist-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMedicalVirologist
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicalVirologistGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-medicalvirologist-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMedicalVirologist
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-medicalvirologist-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMedicalVirologist
+
+- type: wh40kNpcProfile
+  id: FootfallCrematoriumDoctor
+  name: wh40k-footfall-medical-crematoriumdoctor-name
+  description: wh40k-footfall-medical-crematoriumdoctor-desc
+  role: CrematoriumDoctor
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallCrematoriumGear
+
+- type: entity
+  id: MobWH40KFootfallCrematoriumDoctor
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-crematoriumdoctor-name
+  description: wh40k-footfall-medical-crematoriumdoctor-desc
+  suffix: WH40K, Footfall, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCrematoriumDoctor
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCrematoriumGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-crematoriumdoctor-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallCrematoriumDoctor
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-crematoriumdoctor-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCrematoriumDoctor
+
+- type: wh40kNpcProfile
+  id: FootfallQuarantinePatient
+  name: wh40k-footfall-medical-quarantinepatient-name
+  description: wh40k-footfall-medical-quarantinepatient-desc
+  role: QuarantinePatient
+  department: medicae
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallQuarantinePatientGear
+
+- type: entity
+  id: MobWH40KFootfallQuarantinePatient
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-medical-quarantinepatient-name
+  description: wh40k-footfall-medical-quarantinepatient-desc
+  suffix: WH40K, Footfall, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallQuarantinePatient
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: Loadout
+    prototypes: [WH40KFootfallQuarantinePatientGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-medical-quarantinepatient-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallQuarantinePatient
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-quarantinepatient-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallQuarantinePatient
+
+- type: wh40kNpcProfile
+  id: FootfallQuarantineOfficer
+  name: wh40k-footfall-medical-quarantineofficer-name
+  description: wh40k-footfall-medical-quarantineofficer-desc
+  role: QuarantineOfficer
+  department: medicae
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallMedicae
+  services: [Social]
+  gear: WH40KFootfallQuarantineOfficerGear
+  dialogue: WH40KFootfallQuarantineOfficer
+
+- type: wh40kNpcAnchor
+  id: FootfallQuarantineOfficer
+  profile: FootfallQuarantineOfficer
+
+- type: entity
+  id: MobWH40KFootfallQuarantineOfficer
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-quarantineofficer-name
+  description: wh40k-footfall-medical-quarantineofficer-desc
+  suffix: WH40K, Footfall, Medical scene, Seated
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallQuarantineOfficer
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallQuarantineOfficerGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallQuarantineOfficer
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  id: MarkerWH40KFootfallQuarantineOfficer
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-medical-quarantineofficer-marker
+  description: wh40k-footfall-medical-marker-desc
+  suffix: WH40K, Footfall, Mapping, Medical scene, Seated
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallQuarantineOfficer
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallQuarantineOfficer

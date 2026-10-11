@@ -1,0 +1,13 @@
+- type: entity
+  id: MarkerWH40KFootfallNpcBase
+  parent: MarkerBase
+  abstract: true
+  components:
+  - type: Tag
+    tags: []
+  - type: Sprite
+    sprite: Markers/arrow.rsi
+    state: mono
+    directional: false
+    noRot: false
+    color: "#69e5ffff"

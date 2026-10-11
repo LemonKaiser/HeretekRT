@@ -26,7 +26,7 @@ public sealed partial class MerchantComponent : Component
     public float InteractionRange = 3f;
 
     [DataField("lookAtRange")]
-    public float LookAtRange = 3f;
+    public float LookAtRange = 1f;
 
     [DataField("returnDistance")]
     public float ReturnDistance = 3f;
@@ -45,6 +45,11 @@ public sealed partial class MerchantComponent : Component
 
     [ViewVariables]
     public EntityCoordinates? HomeCoordinates;
+
+    public Guid CatalogId = Guid.NewGuid();
+    public Dictionary<(Guid User, Guid Operation), (string Product, string Result)> Receipts = new();
+
+    [DataField] public ProtoId<MerchantValuationPrototype>? Buyback;
 }
 
 [RegisterComponent]
@@ -75,6 +80,8 @@ public sealed partial class MerchantOfferPrototype
 
     [DataField("description")]
     public LocId? Description;
+
+    [DataField] public ProtoId<Content.Shared.Access.AccessLevelPrototype>? RequiredAccess;
 }
 
 public sealed class MerchantStockEntry

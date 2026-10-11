@@ -1,0 +1,317 @@
+- type: entity
+  id: MobWH40KFootfallNpcBase
+  parent: MobHuman
+  abstract: true
+  save: false
+  components:
+  - type: Wh40kNpcProtection
+  - type: Godmode
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: HTN
+    rootTask:
+      task: WH40KMerchantIdleCompound
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+
+- type: entity
+  id: MobWH40KFootfallMarisVeyra
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-marisveyra-name
+  description: wh40k-footfall-npc-marisveyra-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallMarisVeyra
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAdministrationGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallMarisVeyra
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallMarisVeyraPool
+
+- type: entity
+  id: MarkerWH40KFootfallMarisVeyra
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-marisveyra-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallMarisVeyra
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallMarisVeyra
+
+- type: entity
+  id: MobWH40KFootfallHestVarn
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-hestvarn-name
+  description: wh40k-footfall-npc-hestvarn-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallHestVarn
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallCargoGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallHestVarn
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallHestVarnPool
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-service-hestvarn-title
+    greeting: wh40k-service-hestvarn-intro
+    refreshInterval: 900
+    displayCount: 14
+    offers:
+    - product: AppraisalTool
+      price: 200
+      displayName: wh40k-footfall-cargo-shop-appraisal-name
+      description: wh40k-footfall-cargo-shop-appraisal-desc
+      minStock: 2
+      maxStock: 4
+    - product: ContrabandAppraisalTool
+      price: 300
+      displayName: wh40k-footfall-cargo-shop-contraband-name
+      description: wh40k-footfall-cargo-shop-contraband-desc
+      minStock: 2
+      maxStock: 3
+    - product: HandLabeler
+      price: 60
+      displayName: wh40k-footfall-cargo-shop-labeler-name
+      description: wh40k-footfall-cargo-shop-labeler-desc
+      minStock: 2
+      maxStock: 4
+    - product: BoxCardboard
+      price: 15
+      displayName: wh40k-footfall-cargo-shop-box-name
+      description: wh40k-footfall-cargo-shop-box-desc
+      minStock: 12
+      maxStock: 20
+    - product: MaterialCardboard10
+      price: 25
+      displayName: wh40k-footfall-cargo-shop-cardboard-name
+      description: wh40k-footfall-cargo-shop-cardboard-desc
+      minStock: 6
+      maxStock: 10
+    - product: BoxFolderClipboard
+      price: 35
+      displayName: wh40k-footfall-cargo-shop-clipboard-name
+      description: wh40k-footfall-cargo-shop-clipboard-desc
+      minStock: 3
+      maxStock: 5
+    - product: Paper
+      price: 5
+      displayName: wh40k-footfall-cargo-shop-paper-name
+      description: wh40k-footfall-cargo-shop-paper-desc
+      minStock: 20
+      maxStock: 30
+    - product: Pen
+      price: 8
+      displayName: wh40k-footfall-cargo-shop-pen-name
+      description: wh40k-footfall-cargo-shop-pen-desc
+      minStock: 8
+      maxStock: 12
+    - product: RubberStampApproved
+      price: 40
+      displayName: wh40k-footfall-cargo-shop-approved-name
+      description: wh40k-footfall-cargo-shop-approved-desc
+      minStock: 2
+      maxStock: 4
+    - product: RubberStampDenied
+      price: 40
+      displayName: wh40k-footfall-cargo-shop-denied-name
+      description: wh40k-footfall-cargo-shop-denied-desc
+      minStock: 2
+      maxStock: 4
+    - product: Crowbar
+      price: 45
+      displayName: wh40k-footfall-cargo-shop-crowbar-name
+      description: wh40k-footfall-cargo-shop-crowbar-desc
+      minStock: 3
+      maxStock: 5
+    - product: Wrench
+      price: 45
+      displayName: wh40k-footfall-cargo-shop-wrench-name
+      description: wh40k-footfall-cargo-shop-wrench-desc
+      minStock: 3
+      maxStock: 5
+    - product: FlashlightLantern
+      price: 65
+      displayName: wh40k-footfall-cargo-shop-light-name
+      description: wh40k-footfall-cargo-shop-light-desc
+      minStock: 3
+      maxStock: 5
+    - product: ClothingBackpackDuffelCargo
+      price: 160
+      displayName: wh40k-footfall-cargo-shop-duffel-name
+      description: wh40k-footfall-cargo-shop-duffel-desc
+      minStock: 2
+      maxStock: 4
+
+- type: entity
+  id: MarkerWH40KFootfallHestVarn
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-hestvarn-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallHestVarn
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallHestVarn
+
+- type: entity
+  id: MobWH40KFootfallAvelineQuill
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-avelinequill-name
+  description: wh40k-footfall-npc-avelinequill-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallAvelineQuill
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Wh40kTransitInfo
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kTransitUiKey.Key:
+        type: Wh40kTransitBoundUserInterface
+        interactionRange: 3
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+  - type: Loadout
+    prototypes: [WH40KFootfallNavigationGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallAvelineQuill
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallAvelineQuillPool
+
+- type: entity
+  id: MarkerWH40KFootfallAvelineQuill
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-avelinequill-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallAvelineQuill
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallAvelineQuill
+
+- type: entity
+  id: MobWH40KFootfallOmicronKhepra
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-omicronkhepra-name
+  description: wh40k-footfall-npc-omicronkhepra-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallOmicronKhepra
+  - type: Loadout
+    prototypes: [WH40KFootfallMechanicusGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallOmicronKhepra
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallOmicronKhepraPool
+
+- type: entity
+  id: MarkerWH40KFootfallOmicronKhepra
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-omicronkhepra-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallOmicronKhepra
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallOmicronKhepra
+
+- type: entity
+  id: MobWH40KFootfallSeraHolt
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-npc-seraholt-name
+  description: wh40k-footfall-npc-seraholt-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallSeraHolt
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicaeChiefGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallSeraHolt
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallSeraHoltPool
+
+- type: entity
+  id: MarkerWH40KFootfallSeraHolt
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-marker-seraholt-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallSeraHolt
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallSeraHolt
+
+- type: entity
+  id: WH40KFootfallQuestBoard
+  parent: ComputerFrame
+  name: wh40k-footfall-quest-board-name
+  description: wh40k-footfall-quest-board-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestUi
+    pool: WH40KFootfallMarisVeyraPool
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+  - type: ActivatableUI
+    key: enum.Wh40kQuestUiKey.Key
+
+- type: entity
+  id: WH40KFootfallDiagnosticConsole
+  parent: ComputerFrame
+  name: wh40k-footfall-diagnostic-console-name
+  description: wh40k-footfall-diagnostic-console-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestInteractionTarget
+
+- type: entity
+  id: MarkerWH40KFootfallDockGrid
+  parent: MarkerBase
+  name: wh40k-footfall-dock-grid-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kQuestLocation
+    key: footfall-dock-grid
+    kind: Grid

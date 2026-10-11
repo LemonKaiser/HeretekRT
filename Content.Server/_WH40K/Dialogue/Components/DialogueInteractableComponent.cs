@@ -1,4 +1,5 @@
 using Content.Shared._WH40K.Dialogue;
+using Content.Shared.Dataset;
 using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 
@@ -61,6 +62,10 @@ public sealed partial class DialogueInteractableComponent : Component
 
     [DataField("verbText")]
     public LocId VerbText = "heretek-dialogue-verb-talk";
+
+    // Runtime speech history belongs to the NPC, so different visitors cannot repeat its last dataset line.
+    [ViewVariables]
+    public Dictionary<string, string> LastChatPhrases = new(StringComparer.Ordinal);
 }
 
 [DataDefinition]
@@ -71,6 +76,10 @@ public sealed partial class DialogueInteractableEntry
 
     [DataField("chat")]
     public LocId? Chat;
+
+    /// <summary>Optional native phrase dataset for standalone chat; Chat remains its fallback and cooldown identity.</summary>
+    [DataField("chatDataset")]
+    public ProtoId<LocalizedDatasetPrototype>? ChatDataset;
 
     [DataField("speaker")]
     public DialogueSpeaker Speaker = DialogueSpeaker.Npc;

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._NF.LoggingExtensions;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.CCVar;
@@ -71,6 +72,8 @@ namespace Content.Shared.Interaction
         [Dependency] private SharedStrippableSystem _strippable = default!;
         [Dependency] private SharedPlayerRateLimitManager _rateLimit = default!;
         [Dependency] private ISharedChatManager _chat = default!;
+        [Dependency] private SharedKoronusInfrastructureSystem _infrastructure = default!;
+        [Dependency] private ActivatableUISystem _activatableUi = default!;
 
         [Dependency] private INetManager _net = default!; // Mono
 
@@ -496,6 +499,9 @@ namespace Content.Shared.Interaction
         {
             if (IsDeleted(user) || IsDeleted(target))
                 return false; // Goobstation
+
+            if (_infrastructure.IsReadOnly(target))
+                return InteractionActivate(user, target);
 
             var complexInteractions = _actionBlockerSystem.CanComplexInteract(user);
             if (!complexInteractions)
@@ -994,6 +1000,9 @@ namespace Content.Shared.Interaction
             if (checkDeletion && (IsDeleted(user) || IsDeleted(used) || IsDeleted(target)))
                 return false;
 
+            if (target is { } infrastructure && _infrastructure.IsReadOnly(infrastructure))
+                return true;
+
             var ev = new BeforeRangedInteractEvent(user, used, target, clickLocation, canReach);
             RaiseLocalEvent(used, ev);
 
@@ -1074,6 +1083,9 @@ namespace Content.Shared.Interaction
         /// <returns>True if the interaction was handled. Otherwise, false.</returns>
         public bool InteractDoAfter(EntityUid user, EntityUid used, EntityUid? target, EntityCoordinates clickLocation, bool canReach, bool checkDeletion = true)
         {
+            if (target is { } infrastructure && !IsDeleted(infrastructure) && _infrastructure.IsReadOnly(infrastructure))
+                return true;
+
             if (target is { Valid: false })
                 target = null;
 
@@ -1165,6 +1177,10 @@ namespace Content.Shared.Interaction
                 return false;
 
             complexInteractions ??= _actionBlockerSystem.CanComplexInteract(user);
+            if (_infrastructure.IsReadOnly(used) && !_infrastructure.UsesNativeUiActivation(used))
+                return complexInteractions.Value && TryComp<ActivatableUIComponent>(used, out var readUi) &&
+                       _activatableUi.InteractUI(user, used, readUi);
+
             var activateMsg = new ActivateInWorldEvent(user, used, complexInteractions.Value);
             RaiseLocalEvent(used, activateMsg, true);
             if (activateMsg.Handled)

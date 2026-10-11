@@ -1,0 +1,74 @@
+- type: startingGear
+  id: WH40KFootfallServerOperatorGear
+  equipment:
+    id: WH40KFootfallMechanicusIDCard
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltUtility
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallShieldAttendantGear
+  equipment:
+    id: WH40KFootfallMechanicusIDCard
+    jumpsuit: ClothingUniformJumpsuitTechpriest
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestMars
+    eyes: ClothingEyesGlassesMeson
+
+- type: startingGear
+  id: WH40KFootfallSmesTechnicianGear
+  equipment:
+    id: WH40KFootfallMechanicusIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    shoes: ClothingShoesArmoredWorkbootsTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestMetalica
+    eyes: ClothingEyesGlassesMeson
+
+- type: startingGear
+  id: WH40KFootfallToolCustodianGear
+  equipment:
+    id: WH40KFootfallMechanicusIDCard
+    jumpsuit: ClothingUniformJumpsuitTechpriest
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestRiza
+    back: ClothingBackpackTechpriest
+
+- type: startingGear
+  id: WH40KFootfallAtmosConsoleOperatorGear
+  equipment:
+    id: WH40KFootfallAtmosIDCard
+    jumpsuit: ClothingUniformJumpsuitTechpriest
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestGraia
+    eyes: ClothingEyesGlassesMeson
+
+- type: startingGear
+  id: WH40KFootfallAtmosCylinderTechnicianGear
+  equipment:
+    id: WH40KFootfallAtmosIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    shoes: ClothingShoesArmoredWorkbootsTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestLucius
+    mask: ClothingMaskGasTechPriest
+
+- type: startingGear
+  id: WH40KFootfallAtmosStandbyRepairmanGear
+  equipment:
+    id: WH40KFootfallAtmosIDCard
+    jumpsuit: ClothingUniformJumpsuitAtmosCasual
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltUtility
+    head: ClothingHeadHatHardhatYellow

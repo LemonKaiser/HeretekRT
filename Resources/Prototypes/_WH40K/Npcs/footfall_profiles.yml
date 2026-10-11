@@ -1,0 +1,307 @@
+- type: wh40kNpcFaction
+  id: FootfallRogueTraderAdministration
+  name: wh40k-footfall-faction-roguetraderadministration
+
+- type: wh40kNpcFaction
+  id: FootfallRogueTraderTrade
+  name: wh40k-footfall-faction-roguetradertrade
+
+- type: wh40kNpcFaction
+  id: FootfallNavigatorHouse
+  name: wh40k-footfall-faction-navigatorhouse
+
+- type: wh40kNpcFaction
+  id: FootfallMechanicus
+  name: wh40k-footfall-faction-mechanicus
+
+- type: wh40kNpcFaction
+  id: FootfallMedicae
+  name: wh40k-footfall-faction-medicae
+
+- type: wh40kNpcFaction
+  id: FootfallArbites
+  name: wh40k-footfall-faction-arbites
+
+- type: wh40kNpcFaction
+  id: FootfallInquisition
+  name: wh40k-footfall-faction-inquisition
+
+- type: wh40kNpcFaction
+  id: FootfallAdministratum
+  name: wh40k-footfall-faction-administratum
+
+- type: wh40kNpcFaction
+  id: FootfallTelepathica
+  name: wh40k-footfall-faction-telepathica
+
+- type: wh40kNpcFaction
+  id: FootfallRogueTraderDynasty
+  name: wh40k-footfall-faction-roguetraderdynasty
+
+- type: wh40kNpcFaction
+  id: FootfallEcclesiarchy
+  name: wh40k-footfall-faction-ecclesiarchy
+
+- type: wh40kNpcFaction
+  id: FootfallFootfallCivilian
+  name: wh40k-footfall-faction-footfallcivilian
+
+- type: wh40kNpcFaction
+  id: FootfallIndependentTrade
+  name: wh40k-footfall-faction-independenttrade
+
+- type: wh40kNpcFaction
+  id: FootfallPortAuthority
+  name: wh40k-footfall-faction-portauthority
+
+- type: wh40kNpcFaction
+  id: FootfallCasino
+  name: wh40k-footfall-faction-casino
+
+- type: wh40kNpcFaction
+  id: FootfallMinersGuild
+  name: wh40k-footfall-faction-minersguild
+
+- type: wh40kNpcProfile
+  id: FootfallMarisVeyra
+  name: wh40k-footfall-npc-marisveyra-name
+  description: wh40k-footfall-npc-marisveyra-desc
+  dialogue: WH40KFootfallMarisVeyra
+  role: MarisVeyra
+  department: administration
+  kind: Special
+  exclusivity: Exclusive
+  faction: FootfallRogueTraderAdministration
+  gear: WH40KFootfallAdministrationGear
+  services: [Quests, Social]
+  allowedObjectives: [KillEntity, CollectItem, DeliverItem, ReachLocation, TalkToNpc, InteractWithEntity, CompleteActivity, RecoverActivityObjective, EscortEntity, SurviveDuration, DiscoverLocation, ProtectTarget]
+
+- type: wh40kNpcAnchor
+  id: FootfallMarisVeyra
+  profile: FootfallMarisVeyra
+
+- type: wh40kNpcProfile
+  id: FootfallHestVarn
+  name: wh40k-footfall-npc-hestvarn-name
+  description: wh40k-footfall-npc-hestvarn-desc
+  dialogue: WH40KFootfallHestVarn
+  role: HestVarn
+  department: cargo
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallRogueTraderTrade
+  gear: WH40KFootfallCargoGear
+  services: [Quests, Trade]
+  allowedObjectives: [CollectItem, DeliverItem, DeliverEntity, CompleteActivity, ExtractResource]
+
+- type: wh40kNpcAnchor
+  id: FootfallHestVarn
+  profile: FootfallHestVarn
+
+- type: wh40kNpcProfile
+  id: FootfallAvelineQuill
+  name: wh40k-footfall-npc-avelinequill-name
+  description: wh40k-footfall-npc-avelinequill-desc
+  dialogue: WH40KFootfallAvelineQuill
+  role: AvelineQuill
+  department: navigation
+  kind: Special
+  exclusivity: Exclusive
+  faction: FootfallNavigatorHouse
+  gear: WH40KFootfallNavigationGear
+  services: [Quests, Navigation]
+  allowedObjectives: [ReachLocation, DiscoverLocation, DecodeSignal, CompleteActivity, InvestigateLocation]
+
+- type: wh40kNpcAnchor
+  id: FootfallAvelineQuill
+  profile: FootfallAvelineQuill
+
+- type: wh40kNpcProfile
+  id: FootfallOmicronKhepra
+  name: wh40k-footfall-npc-omicronkhepra-name
+  description: wh40k-footfall-npc-omicronkhepra-desc
+  dialogue: WH40KFootfallOmicronKhepra
+  role: OmicronKhepra
+  department: mechanicus
+  kind: Special
+  exclusivity: Exclusive
+  faction: FootfallMechanicus
+  gear: WH40KFootfallMechanicusGear
+  services: [Quests, Technical]
+  allowedObjectives: [RepairEntity, InstallComponent, ScanOrAnalyze, CollectItem, DeliverItem, InteractWithEntity, CompleteActivity]
+
+- type: wh40kNpcAnchor
+  id: FootfallOmicronKhepra
+  profile: FootfallOmicronKhepra
+
+- type: wh40kNpcProfile
+  id: FootfallSeraHolt
+  name: wh40k-footfall-npc-seraholt-name
+  description: wh40k-footfall-npc-seraholt-desc
+  dialogue: WH40KFootfallSeraHolt
+  role: SeraHolt
+  department: medicae
+  kind: Special
+  exclusivity: DepartmentUnique
+  faction: FootfallMedicae
+  gear: WH40KFootfallMedicaeChiefGear
+  services: [Quests, MedicalIntake]
+  allowedObjectives: [RescueAndDeliver, StabilizeTarget, EscortEntity, CollectItem, DeliverItem, ProtectTarget]
+
+- type: wh40kNpcAnchor
+  id: FootfallSeraHolt
+  profile: FootfallSeraHolt
+
+- type: wh40kNpcProfile
+  id: FootfallLucanRho
+  name: wh40k-footfall-npc-lucanrho-name
+  description: wh40k-footfall-npc-lucanrho-desc
+  role: LucanRho
+  department: arbites
+  kind: Special
+  exclusivity: Exclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesChiefGear
+  dialogue: WH40KFootfallLucanRho
+  services: [Quests, Investigation]
+  allowedObjectives: [KillEntity, CollectEvidence, InvestigateLocation, CaptureAlive, DeliverEntity, TalkToNpc]
+
+- type: wh40kNpcAnchor
+  id: FootfallLucanRho
+  profile: FootfallLucanRho
+
+- type: wh40kNpcProfile
+  id: FootfallFizzo
+  name: wh40k-footfall-npc-fizzo-name
+  description: wh40k-footfall-npc-fizzo-desc
+  role: Fizzo
+  department: casino
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallCasino
+  dialogue: WH40KFizzoBase
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallFizzo
+  profile: FootfallFizzo
+
+- type: wh40kNpcProfile
+  id: FootfallKass
+  name: wh40k-footfall-npc-kass-name
+  description: wh40k-footfall-npc-kass-desc
+  role: Kass
+  department: streetMarket
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  gear: WH40KFootfallSmugglerKassGear
+  dialogue: WH40KFootfallKassMarket
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallKass
+  profile: FootfallKass
+
+- type: wh40kNpcProfile
+  id: FootfallOdranPell
+  name: wh40k-footfall-npc-odranpell-name
+  description: wh40k-footfall-npc-odranpell-desc
+  role: OdranPell
+  department: curioPavilion
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  gear: WH40KFootfallCurioGear
+  dialogue: WH40KFootfallOdranPell
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallOdranPell
+  profile: FootfallOdranPell
+
+- type: wh40kNpcProfile
+  id: FootfallKappaSpanner
+  name: wh40k-footfall-npc-kappaspanner-name
+  description: wh40k-footfall-npc-kappaspanner-desc
+  role: KappaSpanner
+  department: outfitter
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  gear: WH40KFootfallOutfitterGear
+  dialogue: WH40KFootfallKappaSpanner
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallKappaSpanner
+  profile: FootfallKappaSpanner
+
+- type: wh40kNpcProfile
+  id: FootfallVennOrs
+  name: wh40k-footfall-npc-vennors-name
+  description: wh40k-footfall-npc-vennors-desc
+  role: VennOrs
+  department: casino
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallCasino
+  gear: WH40KCasinoHostGear
+  dialogue: WH40KFootfallVennOrs
+  services: [Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallVennOrs
+  profile: FootfallVennOrs
+
+- type: wh40kNpcProfile
+  id: FootfallBrannaKest
+  name: wh40k-footfall-npc-brannakest-name
+  description: wh40k-footfall-npc-brannakest-desc
+  role: BrannaKest
+  department: bahamaBar
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallFootfallCivilian
+  gear: WH40KBahamaBrannaGear
+  dialogue: WH40KFootfallBrannaKest
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallBrannaKest
+  profile: FootfallBrannaKest
+
+- type: wh40kNpcProfile
+  id: FootfallMaraSevrin
+  name: wh40k-footfall-npc-marasevrin-name
+  description: wh40k-footfall-npc-marasevrin-desc
+  role: MaraSevrin
+  department: clothingPavilion
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  gear: WH40KFootfallTailorGear
+  dialogue: WH40KFootfallMaraSevrin
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallMaraSevrin
+  profile: FootfallMaraSevrin
+
+- type: wh40kNpcProfile
+  id: FootfallDorianBale
+  name: wh40k-footfall-npc-dorianbale-name
+  description: wh40k-footfall-npc-dorianbale-desc
+  role: DorianBale
+  department: armouryPavilion
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallRogueTraderTrade
+  gear: WH40KFootfallArmouryGear
+  dialogue: WH40KFootfallDorianBale
+  services: [Trade, Social]
+
+- type: wh40kNpcAnchor
+  id: FootfallDorianBale
+  profile: FootfallDorianBale
+

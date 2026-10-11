@@ -17,6 +17,7 @@ public sealed class KoronusActivityRuntimeInstance
     public TimeSpan CreatedAt;
     public TimeSpan ExpiresAt;
     public EntityUid? Objective;
+    public EntityUid? CompletingActor;
     public bool HasSystemLease;
     public TimeSpan? LeaseStartedAt;
     public KoronusActivityThreatState ThreatState;

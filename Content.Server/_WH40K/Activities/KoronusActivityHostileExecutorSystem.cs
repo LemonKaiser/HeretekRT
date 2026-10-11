@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Linq;
 using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
@@ -61,6 +62,15 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<KoronusActivityThreatAnchorComponent, InteractHandEvent>(OnAnchorInteract);
+        SubscribeLocalEvent<KoronusActivityHostileComponent, MobStateChangedEvent>(OnHostileDeath);
+    }
+
+    private void OnHostileDeath(EntityUid uid, KoronusActivityHostileComponent component, MobStateChangedEvent ev)
+    {
+        if (ev.NewMobState != MobState.Dead || ev.Origin is not {} actor || !_players.TryGetSessionByEntity(actor, out _)) return;
+        var instance = _director.GetActiveInstances().FirstOrDefault(x => x.Id == component.InstanceId);
+        if (instance == null) return;
+        instance.CompletingActor = actor;
     }
 
     public override void Update(float frameTime)
@@ -112,7 +122,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
         // Containment is the non-lethal alternative: a living crew member reaches the single
         // telegraphed anchor and seals it. The director then deletes the same owned group, so no
         // hostile stays behind even if the interaction races an AI tick.
-        if (!_director.TryCompleteThreat(anchor.InstanceId, uid, KoronusActivityTerminalReason.Contained))
+        if (!_director.TryCompleteThreat(anchor.InstanceId, uid, KoronusActivityTerminalReason.Contained, args.User))
         {
             _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
             return;
@@ -247,7 +257,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
 
         if (aliveHostiles == 0)
         {
-            _director.TryCompleteThreat(instance.Id, anchor, KoronusActivityTerminalReason.Defeated);
+            _director.TryCompleteThreat(instance.Id, anchor, KoronusActivityTerminalReason.Defeated, instance.CompletingActor);
             return;
         }
 

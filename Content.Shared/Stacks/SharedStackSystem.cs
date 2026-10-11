@@ -116,6 +116,7 @@ namespace Content.Shared.Stacks
             StackComponent? recipientStack = null)
         {
             transferred = 0;
+            if (!CanTransferQuestUnits(donor, recipient)) return false;
             if (donor == recipient)
                 return false;
 
@@ -132,6 +133,18 @@ namespace Content.Shared.Stacks
             SetCount(donor, donorStack.Count - transferred, donorStack);
             SetCount(recipient, recipientStack.Count + transferred, recipientStack);
             return transferred > 0;
+        }
+
+        private bool CanTransferQuestUnits(EntityUid donor, EntityUid recipient)
+        {
+            if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(donor) ||
+                HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(recipient) ||
+                HasComp<Content.Shared._WH40K.Quests.Wh40kQuestReservationComponent>(donor) ||
+                HasComp<Content.Shared._WH40K.Quests.Wh40kQuestReservationComponent>(recipient)) return false;
+            var donorMarked = TryComp<Content.Shared._WH40K.Quests.Wh40kQuestItemComponent>(donor, out var donorQuest);
+            var recipientMarked = TryComp<Content.Shared._WH40K.Quests.Wh40kQuestItemComponent>(recipient, out var recipientQuest);
+            return donorMarked == recipientMarked && (!donorMarked ||
+                donorQuest!.QuestId == recipientQuest!.QuestId && donorQuest.ObjectiveId == recipientQuest.ObjectiveId);
         }
 
         /// <summary>
@@ -255,6 +268,8 @@ namespace Content.Shared.Stacks
         /// </summary>
         public bool Use(EntityUid uid, int amount, StackComponent? stack = null)
         {
+            if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(uid) ||
+                HasComp<Content.Shared._WH40K.Quests.Wh40kQuestReservationComponent>(uid)) return false;
             if (!Resolve(uid, ref stack))
                 return false;
 
@@ -402,6 +417,7 @@ namespace Content.Shared.Stacks
         /// </summary>
         public bool TryAdd(EntityUid insertEnt, EntityUid targetEnt, int count, StackComponent? insertStack = null, StackComponent? targetStack = null)
         {
+            if (!CanTransferQuestUnits(insertEnt, targetEnt)) return false;
             if (!Resolve(insertEnt, ref insertStack) || !Resolve(targetEnt, ref targetStack))
                 return false;
 

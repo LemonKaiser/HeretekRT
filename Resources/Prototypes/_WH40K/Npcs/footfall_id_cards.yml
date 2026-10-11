@@ -1,0 +1,378 @@
+- type: entity
+  parent: IDCardStandard
+  id: WH40KFootfallNpcIDCard
+  abstract: true
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+    - state: idpassenger
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallCitizenIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-citizen-title
+    jobIcon: JobIconPassenger
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallAdministrationIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-administration-title
+    jobIcon: JobIconHeadOfPersonnel
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallCargoIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-cargo-title
+    jobIcon: JobIconCargoTechnician
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallNavigationIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-navigation-title
+    jobIcon: JobIconScientist
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallMechanicusIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-mechanicus-title
+    jobIcon: JobIconStationEngineer
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallMedicaeIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-medicae-title
+    jobIcon: JobIconMedicalDoctor
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallMedicaeChiefIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-medicaechief-title
+    jobIcon: JobIconChiefMedicalOfficer
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallArbitesIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-arbites-title
+    jobIcon: JobIconSecurityOfficer
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallArbitesCadetIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-arbitescadet-title
+    jobIcon: JobIconSecurityCadet
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallArbitesOfficerIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-arbitesofficer-title
+    jobIcon: JobIconSecurityOfficer
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallArbitesChiefIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-arbiteschief-title
+    jobIcon: JobIconHeadOfSecurity
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallDetectiveIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-detective-title
+    jobIcon: JobIconDetective
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallWardenIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-warden-title
+    jobIcon: JobIconWarden
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallPrisonerIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-prisoner-title
+    jobIcon: JobIconPassenger
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallInquisitionIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-inquisition-title
+    jobIcon: JobIconDetective
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallArchiveIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-archive-title
+    jobIcon: JobIconLibrarian
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallRelayIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-relay-title
+    jobIcon: JobIconScientist
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallImperialDelegateIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-imperialdelegate-title
+    jobIcon: JobIconHeadOfPersonnel
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallDynastyIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-dynasty-title
+    jobIcon: JobIconCaptain
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallEcclesiarchyIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-ecclesiarchy-title
+    jobIcon: JobIconChaplain
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallMinerIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-miner-title
+    jobIcon: JobIconShaftMiner
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallPortIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-port-title
+    jobIcon: JobIconCargoTechnician
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallMerchantIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-merchant-title
+    jobIcon: JobIconServiceWorker
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallBartenderIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-bartender-title
+    jobIcon: JobIconBartender
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallChefIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-chef-title
+    jobIcon: JobIconChef
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallJanitorIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-janitor-title
+    jobIcon: JobIconJanitor
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallPatientIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-patient-title
+    jobIcon: JobIconPassenger
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallChartistIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-chartist-title
+    jobIcon: JobIconCargoTechnician
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallKasballicaIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-kasballica-title
+    jobIcon: JobIconServiceWorker
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallEngineerIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-engineer-title
+    jobIcon: JobIconStationEngineer
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallAtmosIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-atmos-title
+    jobIcon: JobIconAtmosphericTechnician
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallChemistIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-chemist-title
+    jobIcon: JobIconChemist
+
+- type: entity
+  parent: WH40KFootfallNpcIDCard
+  id: WH40KFootfallVirologistIDCard
+  name: Footfall identification card
+  suffix: WH40K, Footfall, NPC
+  categories: [HideSpawnMenu]
+  components:
+  - type: IdCard
+    jobTitle: wh40k-footfall-id-virologist-title
+    jobIcon: JobIconMedicalDoctor
+
+- type: startingGear
+  id: WH40KFootfallPatientIdentityGear
+  equipment:
+    id: WH40KFootfallPatientIDCard
+

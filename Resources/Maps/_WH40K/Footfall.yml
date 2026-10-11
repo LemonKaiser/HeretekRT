@@ -4,8 +4,8 @@ meta:
   engineVersion: 279.0.1
   forkId: ""
   forkVersion: ""
-  time: 09/29/2026 13:45:28
-  entityCount: 24236
+  time: 10/11/2026 14:46:54
+  entityCount: 24354
 maps:
 - 1
 grids:
@@ -92,10 +92,9 @@ entities:
       parent: 1
     - type: ForceAnchor
     - type: StationTransit
-      routeOrder: 0
     - type: IFF
       readOnly: True
-      address: ' 2E8F-FB71'
+      address: ' 2DEF-1F45'
     - type: ProtectedGrid
       hostileMobKillSound: !type:SoundPathSpecifier
         path: /Audio/Effects/holy.ogg
@@ -467,9 +466,9 @@ entities:
     - type: SpreaderGrid
       spreadQueues:
         Kudzu: []
-        Smoke: []
         Puddle: []
         MetalFoam: []
+        Smoke: []
     - type: Shuttle
       dampingModifier: 0.25
     - type: ImplicitRoof
@@ -14716,7 +14715,7 @@ entities:
       pos: 32.5,-9.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -79866.49
+      secondsUntilStateChange: -83494.12
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -21991,63 +21990,6 @@ entities:
     components:
     - type: Transform
       pos: -18.5,-11.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1473
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 15.5,-22.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1474
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 21.5,-22.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1475
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 18.5,-22.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1476
-    components:
-    - type: Transform
-      pos: 15.5,-20.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1477
-    components:
-    - type: Transform
-      pos: 18.5,-20.5
-      parent: 2
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-  - uid: 1478
-    components:
-    - type: Transform
-      pos: 21.5,-20.5
       parent: 2
     - type: ApcPowerReceiver
       powerLoad: 5
@@ -62294,16 +62236,6 @@ entities:
     - type: Transform
       pos: 16.5,-24.5
       parent: 2
-  - uid: 9523
-    components:
-    - type: Transform
-      pos: 16.5,-15.5
-      parent: 2
-  - uid: 9524
-    components:
-    - type: Transform
-      pos: 20.5,-15.5
-      parent: 2
   - uid: 9525
     components:
     - type: Transform
@@ -64724,25 +64656,10 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -4.5,-6.5
       parent: 2
-  - uid: 10009
-    components:
-    - type: Transform
-      pos: 18.5,-15.5
-      parent: 2
-  - uid: 10010
-    components:
-    - type: Transform
-      pos: 17.5,-15.5
-      parent: 2
   - uid: 10011
     components:
     - type: Transform
       pos: 14.5,-15.5
-      parent: 2
-  - uid: 10012
-    components:
-    - type: Transform
-      pos: 15.5,-15.5
       parent: 2
   - uid: 10013
     components:
@@ -64784,20 +64701,10 @@ entities:
       rot: 3.141592653589793 rad
       pos: 6.5,-21.5
       parent: 2
-  - uid: 10020
-    components:
-    - type: Transform
-      pos: 21.5,-15.5
-      parent: 2
   - uid: 10021
     components:
     - type: Transform
       pos: 22.5,-15.5
-      parent: 2
-  - uid: 10022
-    components:
-    - type: Transform
-      pos: 19.5,-15.5
       parent: 2
   - uid: 10023
     components:
@@ -65457,6 +65364,23 @@ entities:
     components:
     - type: Transform
       pos: 57.46128,34.668713
+      parent: 2
+  - uid: 24294
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 64.54735,-26.439373
+      parent: 2
+  - uid: 24315
+    components:
+    - type: Transform
+      pos: 18.511517,-13.321838
+      parent: 2
+  - uid: 24316
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 20.469849,-12.341991
       parent: 2
 - proto: ChairOfficeLight
   entities:
@@ -66857,6 +66781,104 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
+- proto: ComputerBankATM
+  entities:
+  - uid: 24331
+    components:
+    - type: Transform
+      pos: 62.5,-48.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24332
+    components:
+    - type: Transform
+      pos: 90.5,-0.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24338
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 20.5,-54.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24339
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -39.5,-34.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24342
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -36.5,2.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24343
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -34.5,-9.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24344
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -20.5,-6.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24345
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -40.5,49.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24349
+    components:
+    - type: Transform
+      pos: 50.5,42.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24350
+    components:
+    - type: Transform
+      pos: 54.5,9.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ComputerBroken
   entities:
   - uid: 10310
@@ -67109,13 +67131,142 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
-- proto: ComputerShuttleFrontierOutpostLocal
+- proto: ComputerShipyard
   entities:
-  - uid: 10336
+  - uid: 1476
+    components:
+    - type: Transform
+      pos: 15.5,-20.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 1477
+    components:
+    - type: Transform
+      pos: 21.5,-20.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 1478
+    components:
+    - type: Transform
+      pos: 18.5,-20.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24169
+    components:
+    - type: Transform
+      pos: 63.5,-48.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24333
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 106.5,-3.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24340
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -51.5,-56.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24341
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -53.5,-0.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24346
+    components:
+    - type: Transform
+      pos: -39.5,49.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24347
+    components:
+    - type: Transform
+      pos: 15.5,40.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24351
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 74.5,41.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24352
+    components:
+    - type: Transform
+      pos: 14.5,-61.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+- proto: ComputerShipyardExpedition
+  entities:
+  - uid: 1474
     components:
     - type: Transform
       rot: 3.141592653589793 rad
-      pos: 18.5,-13.5
+      pos: 15.5,-22.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+- proto: ComputerShipyardMedical
+  entities:
+  - uid: 1475
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 18.5,-22.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+- proto: ComputerShuttleFrontierOutpostLocal
+  entities:
+  - uid: 10009
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 15.5,-9.5
       parent: 2
     - type: ApcPowerReceiver
       powerLoad: 5
@@ -67239,6 +67390,46 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
+- proto: ComputerWallmountBankATM
+  entities:
+  - uid: 24334
+    components:
+    - type: Transform
+      pos: 74.5,-28.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24335
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 46.5,-51.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24336
+    components:
+    - type: Transform
+      pos: 8.5,-42.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 24337
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 8.5,-60.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ComputerWallmountBroken
   entities:
   - uid: 10348
@@ -67271,6 +67462,17 @@ entities:
     - type: Transform
       pos: 59.5,39.5
       parent: 2
+- proto: ComputerWallmountWithdrawBankATM
+  entities:
+  - uid: 24348
+    components:
+    - type: Transform
+      pos: 17.5,41.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ConstructionBag
   entities:
   - uid: 10353
@@ -88406,6 +88608,11 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 119
+  - uid: 19209
+    components:
+    - type: Transform
+      pos: 18.5,-14.5
+      parent: 2
 - proto: FirelockGlass
   entities:
   - uid: 13812
@@ -116910,6 +117117,11 @@ entities:
       parent: 2
 - proto: Grille
   entities:
+  - uid: 10012
+    components:
+    - type: Transform
+      pos: 20.5,-14.5
+      parent: 2
   - uid: 18582
     components:
     - type: Transform
@@ -118090,11 +118302,6 @@ entities:
     - type: Transform
       pos: -19.5,-6.5
       parent: 2
-  - uid: 18818
-    components:
-    - type: Transform
-      pos: 18.5,-14.5
-      parent: 2
   - uid: 18819
     components:
     - type: Transform
@@ -118125,15 +118332,10 @@ entities:
     - type: Transform
       pos: 17.5,-14.5
       parent: 2
-  - uid: 18825
-    components:
-    - type: Transform
-      pos: 19.5,-14.5
-      parent: 2
   - uid: 18826
     components:
     - type: Transform
-      pos: 20.5,-14.5
+      pos: 19.5,-14.5
       parent: 2
   - uid: 18827
     components:
@@ -119700,12 +119902,754 @@ entities:
     - type: Transform
       pos: 16.5,-17.5
       parent: 2
-- proto: MarkerWH40KMerchantSpawn
+- proto: MarkerWH40KFootfallAdministrationDispatchClerk
+  entities:
+  - uid: 24321
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 20.5,-25.5
+      parent: 2
+- proto: MarkerWH40KFootfallAdministrationFinanceClerk
+  entities:
+  - uid: 24318
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 20.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallAdministrationRecordsClerk
+  entities:
+  - uid: 24320
+    components:
+    - type: Transform
+      pos: 17.5,-25.5
+      parent: 2
+- proto: MarkerWH40KFootfallAdministrationSmokingClerk
+  entities:
+  - uid: 24319
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 15.5,-8.5
+      parent: 2
+- proto: MarkerWH40KFootfallAdrianVey
+  entities:
+  - uid: 24249
+    components:
+    - type: Transform
+      pos: -17.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesArmourer
+  entities:
+  - uid: 24306
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 63.5,37.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesCameraEntrance
+  entities:
+  - uid: 24303
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 64.5,15.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesCameraOffice
+  entities:
+  - uid: 24304
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 69.5,25.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesDetainee
+  entities:
+  - uid: 24297
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 56.5,14.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesDetective
+  entities:
+  - uid: 24296
+    components:
+    - type: Transform
+      pos: 56.5,16.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesGuardOne
+  entities:
+  - uid: 24311
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 64.5,33.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesGuardThree
+  entities:
+  - uid: 24313
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 61.5,9.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesGuardTwo
+  entities:
+  - uid: 24312
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 60.5,21.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesInstructor
+  entities:
+  - uid: 24301
+    components:
+    - type: Transform
+      pos: 57.5,34.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesPrisonerLookout
+  entities:
+  - uid: 24310
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 47.5,26.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesPrisonerPlanner
+  entities:
+  - uid: 24309
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 46.5,26.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesPrisonerSleeper
+  entities:
+  - uid: 24308
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 46.5,31.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesReceptionist
+  entities:
+  - uid: 24302
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 67.5,23.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesRookieOne
+  entities:
+  - uid: 24298
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 56.5,30.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesRookieThree
+  entities:
+  - uid: 24300
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 58.5,30.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesRookieTwo
+  entities:
+  - uid: 24299
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 59.5,27.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesShooter
+  entities:
+  - uid: 24274
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 25.5,33.5
+      parent: 2
+- proto: MarkerWH40KFootfallArbitesWarden
+  entities:
+  - uid: 24307
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 51.5,26.5
+      parent: 2
+- proto: MarkerWH40KFootfallAtmosConsoleOperator
+  entities:
+  - uid: 24268
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 29.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallAtmosCylinderTechnician
+  entities:
+  - uid: 24269
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 37.5,-11.5
+      parent: 2
+- proto: MarkerWH40KFootfallAtmosStandbyRepairman
+  entities:
+  - uid: 24270
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 45.5,-6.5
+      parent: 2
+- proto: MarkerWH40KFootfallAvelineQuill
+  entities:
+  - uid: 24322
+    components:
+    - type: Transform
+      pos: 17.5,-20.5
+      parent: 2
+- proto: MarkerWH40KFootfallBandagedPatient
+  entities:
+  - uid: 24251
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -12.5,-11.5
+      parent: 2
+- proto: MarkerWH40KFootfallBarJanitor
+  entities:
+  - uid: 24247
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -38.5,-30.5
+      parent: 2
+- proto: MarkerWH40KFootfallBastianRook
+  entities:
+  - uid: 24244
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -36.5,-21.5
+      parent: 2
+- proto: MarkerWH40KFootfallBorsGrant
+  entities:
+  - uid: 24281
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 30.5,-57.5
+      parent: 2
+- proto: MarkerWH40KFootfallBrokeShopper
+  entities:
+  - uid: 24276
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 13.5,-53.5
+      parent: 2
+- proto: MarkerWH40KFootfallBurnPatient
+  entities:
+  - uid: 24256
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -3.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoDispatchWorker
+  entities:
+  - uid: 24167
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 76.5,-17.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoReturningMiner
+  entities:
+  - uid: 24293
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 64.5,-26.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoWaitingResidentOne
+  entities:
+  - uid: 20377
+    components:
+    - type: Transform
+      pos: 75.5,-10.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoWaitingResidentThree
+  entities:
+  - uid: 24166
+    components:
+    - type: Transform
+      pos: 79.5,-10.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoWaitingResidentTwo
+  entities:
+  - uid: 24042
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 76.5,-8.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoWarehousePacker
+  entities:
+  - uid: 24292
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 77.5,-26.5
+      parent: 2
+- proto: MarkerWH40KFootfallCargoWarehouseSorter
+  entities:
+  - uid: 24291
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 75.5,-22.5
+      parent: 2
+- proto: MarkerWH40KFootfallChartistCrewman
+  entities:
+  - uid: 24289
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -27.5,36.5
+      parent: 2
+- proto: MarkerWH40KFootfallChartistGuard
+  entities:
+  - uid: 24287
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -22.5,35.5
+      parent: 2
+- proto: MarkerWH40KFootfallChartistMerchant
+  entities:
+  - uid: 24288
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -32.5,35.5
+      parent: 2
+- proto: MarkerWH40KFootfallChartistOfficer
+  entities:
+  - uid: 24290
+    components:
+    - type: Transform
+      pos: -29.5,24.5
+      parent: 2
+- proto: MarkerWH40KFootfallCrematoriumDoctor
+  entities:
+  - uid: 24260
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 6.5,-17.5
+      parent: 2
+- proto: MarkerWH40KFootfallCryoPriest
+  entities:
+  - uid: 24271
+    components:
+    - type: Transform
+      pos: 27.5,3.5
+      parent: 2
+- proto: MarkerWH40KFootfallDinerFour
+  entities:
+  - uid: 24242
+    components:
+    - type: Transform
+      pos: -47.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallDinerOne
+  entities:
+  - uid: 24239
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -40.5,-16.5
+      parent: 2
+- proto: MarkerWH40KFootfallDinerThree
+  entities:
+  - uid: 24241
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -33.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallDinerTwo
+  entities:
+  - uid: 24240
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -37.5,-16.5
+      parent: 2
+- proto: MarkerWH40KFootfallDiningCorridorResident
+  entities:
+  - uid: 24248
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -27.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallDorianBale
+  entities:
+  - uid: 24280
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 24.5,-57.5
+      parent: 2
+- proto: MarkerWH40KFootfallEdricMoss
+  entities:
+  - uid: 24275
+    components:
+    - type: Transform
+      pos: 9.5,-43.5
+      parent: 2
+- proto: MarkerWH40KFootfallGados
+  entities:
+  - uid: 24263
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -20.5,3.5
+      parent: 2
+- proto: MarkerWH40KFootfallHestVarn
+  entities:
+  - uid: 19918
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 76.5,-16.5
+      parent: 2
+- proto: MarkerWH40KFootfallIvoMercer
+  entities:
+  - uid: 24243
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -46.5,-14.5
+      parent: 2
+- proto: MarkerWH40KFootfallJuniorCookOne
+  entities:
+  - uid: 24246
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -35.5,-24.5
+      parent: 2
+- proto: MarkerWH40KFootfallJuniorCookTwo
+  entities:
+  - uid: 24245
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -31.5,-22.5
+      parent: 2
+- proto: MarkerWH40KFootfallKappaSpanner
+  entities:
+  - uid: 24278
+    components:
+    - type: Transform
+      pos: 30.5,-47.5
+      parent: 2
+- proto: MarkerWH40KFootfallKasballicaAmmunitionWorker
+  entities:
+  - uid: 19916
+    components:
+    - type: Transform
+      pos: -40.5,-52.5
+      parent: 2
+- proto: MarkerWH40KFootfallKasballicaGuard
+  entities:
+  - uid: 19917
+    components:
+    - type: Transform
+      pos: -37.5,-39.5
+      parent: 2
+- proto: MarkerWH40KFootfallKasballicaMerchant
+  entities:
+  - uid: 19915
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -34.5,-42.5
+      parent: 2
+- proto: MarkerWH40KFootfallKasballicaOfficer
+  entities:
+  - uid: 19914
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -37.5,-47.5
+      parent: 2
+- proto: MarkerWH40KFootfallLostSockResident
+  entities:
+  - uid: 24238
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -40.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallLucanRho
+  entities:
+  - uid: 24305
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 69.5,33.5
+      parent: 2
+- proto: MarkerWH40KFootfallMaraSevrin
+  entities:
+  - uid: 24279
+    components:
+    - type: Transform
+      pos: 24.5,-47.5
+      parent: 2
+- proto: MarkerWH40KFootfallMarisVeyra
+  entities:
+  - uid: 24317
+    components:
+    - type: Transform
+      pos: 18.5,-13.5
+      parent: 2
+- proto: MarkerWH40KFootfallMarketBuyerOne
+  entities:
+  - uid: 24284
+    components:
+    - type: Transform
+      pos: 39.5,-55.5
+      parent: 2
+- proto: MarkerWH40KFootfallMarketBuyerThree
+  entities:
+  - uid: 24286
+    components:
+    - type: Transform
+      pos: 31.5,-55.5
+      parent: 2
+- proto: MarkerWH40KFootfallMarketBuyerTwo
+  entities:
+  - uid: 24285
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 23.5,-49.5
+      parent: 2
+- proto: MarkerWH40KFootfallMedicalChemist
+  entities:
+  - uid: 24257
+    components:
+    - type: Transform
+      pos: 4.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallMedicalLoungeDoctorOne
+  entities:
+  - uid: 24253
+    components:
+    - type: Transform
+      pos: -5.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallMedicalLoungeDoctorTwo
+  entities:
+  - uid: 24254
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -8.5,-6.5
+      parent: 2
+- proto: MarkerWH40KFootfallMedicalVirologist
+  entities:
+  - uid: 24258
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -0.5,-5.5
+      parent: 2
+- proto: MarkerWH40KFootfallMiraFenn
+  entities:
+  - uid: 24250
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -17.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallNeraQuinn
+  entities:
+  - uid: 24282
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 40.5,-57.5
+      parent: 2
+- proto: MarkerWH40KFootfallOdranPell
+  entities:
+  - uid: 24277
+    components:
+    - type: Transform
+      pos: 40.5,-47.5
+      parent: 2
+- proto: MarkerWH40KFootfallOmicronKhepra
+  entities:
+  - uid: 24267
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 7.5,4.5
+      parent: 2
+- proto: MarkerWH40KFootfallOperatingSurgeon
+  entities:
+  - uid: 24255
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -4.5,-12.5
+      parent: 2
+- proto: MarkerWH40KFootfallPublicResidentSeatedOne
+  entities:
+  - uid: 24327
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 10.5,-18.5
+      parent: 2
+- proto: MarkerWH40KFootfallPublicResidentSeatedTwo
+  entities:
+  - uid: 24328
+    components:
+    - type: Transform
+      pos: 22.5,-15.5
+      parent: 2
+- proto: MarkerWH40KFootfallPublicResidentStandingOne
+  entities:
+  - uid: 24314
+    components:
+    - type: Transform
+      pos: 71.5,-29.5
+      parent: 2
+- proto: MarkerWH40KFootfallPublicResidentStandingTwo
+  entities:
+  - uid: 24329
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 27.5,10.5
+      parent: 2
+- proto: MarkerWH40KFootfallPublicWindowWatcher
+  entities:
+  - uid: 24330
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -5.5,18.5
+      parent: 2
+- proto: MarkerWH40KFootfallQuarantineOfficer
+  entities:
+  - uid: 24261
+    components:
+    - type: Transform
+      pos: 28.5,47.5
+      parent: 2
+- proto: MarkerWH40KFootfallQuarantinePatient
+  entities:
+  - uid: 24262
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 18.5,43.5
+      parent: 2
+- proto: MarkerWH40KFootfallSeraHolt
+  entities:
+  - uid: 24259
+    components:
+    - type: Transform
+      pos: 1.5,-17.5
+      parent: 2
+- proto: MarkerWH40KFootfallShieldCoreAttendant
+  entities:
+  - uid: 24264
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -5.5,7.5
+      parent: 2
+- proto: MarkerWH40KFootfallSleeperOne
   entities:
   - uid: 24234
     components:
     - type: Transform
-      pos: -46.5,-14.5
+      rot: 1.5707963267948966 rad
+      pos: -47.5,-4.5
+      parent: 2
+- proto: MarkerWH40KFootfallSleeperTwo
+  entities:
+  - uid: 24237
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -37.5,-6.5
+      parent: 2
+- proto: MarkerWH40KFootfallSleepingVagrant
+  entities:
+  - uid: 24273
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 7.5,38.5
+      parent: 2
+- proto: MarkerWH40KFootfallSmesMonitor
+  entities:
+  - uid: 24265
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -0.5,7.5
+      parent: 2
+- proto: MarkerWH40KFootfallStandingVagrant
+  entities:
+  - uid: 24272
+    components:
+    - type: Transform
+      pos: 8.5,45.5
+      parent: 2
+- proto: MarkerWH40KFootfallToolSorter
+  entities:
+  - uid: 24266
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -11.5,11.5
+      parent: 2
+- proto: MarkerWH40KFootfallWardDoctor
+  entities:
+  - uid: 24252
+    components:
+    - type: Transform
+      pos: -12.5,-10.5
+      parent: 2
+- proto: MarkerWH40KFootfallWorkshopSolderingEngineer
+  entities:
+  - uid: 24295
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 64.5,-8.5
+      parent: 2
+- proto: MarkerWH40KMerchantSpawn
+  entities:
+  - uid: 24283
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 2.5,-59.5
       parent: 2
 - proto: MatchboxGuardsman
   entities:
@@ -120918,17 +121862,12 @@ entities:
       parent: 2
 - proto: PlastitaniumWindowOutpost
   entities:
-  - uid: 19156
-    components:
-    - type: Transform
-      pos: 18.5,-14.5
-      parent: 2
-  - uid: 19157
+  - uid: 10010
     components:
     - type: Transform
       pos: 19.5,-14.5
       parent: 2
-  - uid: 19158
+  - uid: 10022
     components:
     - type: Transform
       pos: 20.5,-14.5
@@ -121252,11 +122191,6 @@ entities:
     components:
     - type: Transform
       pos: -34.5,-44.5
-      parent: 2
-  - uid: 19209
-    components:
-    - type: Transform
-      pos: 20.5,-15.5
       parent: 2
   - uid: 19210
     components:
@@ -121742,6 +122676,31 @@ entities:
       parent: 2
 - proto: Railing
   entities:
+  - uid: 9523
+    components:
+    - type: Transform
+      pos: 20.5,-15.5
+      parent: 2
+  - uid: 10020
+    components:
+    - type: Transform
+      pos: 17.5,-15.5
+      parent: 2
+  - uid: 18818
+    components:
+    - type: Transform
+      pos: 19.5,-15.5
+      parent: 2
+  - uid: 18825
+    components:
+    - type: Transform
+      pos: 18.5,-15.5
+      parent: 2
+  - uid: 19156
+    components:
+    - type: Transform
+      pos: 16.5,-15.5
+      parent: 2
   - uid: 19299
     components:
     - type: Transform
@@ -122717,6 +123676,12 @@ entities:
       parent: 2
 - proto: RailingCornerSmall
   entities:
+  - uid: 19157
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 15.5,-15.5
+      parent: 2
   - uid: 19470
     components:
     - type: Transform
@@ -122880,6 +123845,18 @@ entities:
       rot: 3.141592653589793 rad
       pos: -29.5,-45.5
       parent: 2
+- proto: RavagerCarrierComputer
+  entities:
+  - uid: 1473
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 21.5,-22.5
+      parent: 2
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ReinforcedJug
   entities:
   - uid: 19498
@@ -124906,6 +125883,46 @@ entities:
         - False
       - - 19862
         - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
+      - - 19133
+        - False
+      - - 19862
+        - False
   - uid: 19770
     components:
     - type: Transform
@@ -124915,6 +125932,26 @@ entities:
       inputItems:
       - - 19864
         - True
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
+      - - 19864
+        - False
       - - 19864
         - False
       - - 19864
@@ -125672,46 +126709,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 65.5,35.5
       parent: 2
-  - uid: 19877
-    components:
-    - type: Transform
-      pos: 23.5,-48.5
-      parent: 2
-  - uid: 19878
-    components:
-    - type: Transform
-      pos: 24.5,-48.5
-      parent: 2
-  - uid: 19879
-    components:
-    - type: Transform
-      pos: 30.5,-48.5
-      parent: 2
-  - uid: 19880
-    components:
-    - type: Transform
-      pos: 31.5,-48.5
-      parent: 2
-  - uid: 19881
-    components:
-    - type: Transform
-      pos: 39.5,-56.5
-      parent: 2
-  - uid: 19882
-    components:
-    - type: Transform
-      pos: 40.5,-56.5
-      parent: 2
-  - uid: 19883
-    components:
-    - type: Transform
-      pos: 31.5,-56.5
-      parent: 2
-  - uid: 19884
-    components:
-    - type: Transform
-      pos: 30.5,-56.5
-      parent: 2
   - uid: 19886
     components:
     - type: Transform
@@ -125732,6 +126729,51 @@ entities:
       parent: 2
 - proto: ShuttersNormalOpen
   entities:
+  - uid: 10336
+    components:
+    - type: Transform
+      pos: 31.5,-56.5
+      parent: 2
+  - uid: 19158
+    components:
+    - type: Transform
+      pos: 18.5,-14.5
+      parent: 2
+  - uid: 19877
+    components:
+    - type: Transform
+      pos: 30.5,-56.5
+      parent: 2
+  - uid: 19878
+    components:
+    - type: Transform
+      pos: 23.5,-48.5
+      parent: 2
+  - uid: 19879
+    components:
+    - type: Transform
+      pos: 24.5,-48.5
+      parent: 2
+  - uid: 19880
+    components:
+    - type: Transform
+      pos: 31.5,-48.5
+      parent: 2
+  - uid: 19881
+    components:
+    - type: Transform
+      pos: 30.5,-48.5
+      parent: 2
+  - uid: 19882
+    components:
+    - type: Transform
+      pos: 23.5,-56.5
+      parent: 2
+  - uid: 19883
+    components:
+    - type: Transform
+      pos: 24.5,-56.5
+      parent: 2
   - uid: 19889
     components:
     - type: Transform
@@ -125812,6 +126854,16 @@ entities:
     - type: Transform
       pos: 77.5,-15.5
       parent: 2
+  - uid: 24353
+    components:
+    - type: Transform
+      pos: 39.5,-56.5
+      parent: 2
+  - uid: 24354
+    components:
+    - type: Transform
+      pos: 40.5,-56.5
+      parent: 2
 - proto: ShuttersWindow
   entities:
   - uid: 19905
@@ -125862,33 +126914,6 @@ entities:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 62.5,14.5
-      parent: 2
-- proto: ShuttersWindowOpen
-  entities:
-  - uid: 19914
-    components:
-    - type: Transform
-      pos: 16.5,-14.5
-      parent: 2
-  - uid: 19915
-    components:
-    - type: Transform
-      pos: 17.5,-14.5
-      parent: 2
-  - uid: 19916
-    components:
-    - type: Transform
-      pos: 18.5,-14.5
-      parent: 2
-  - uid: 19917
-    components:
-    - type: Transform
-      pos: 19.5,-14.5
-      parent: 2
-  - uid: 19918
-    components:
-    - type: Transform
-      pos: 20.5,-14.5
       parent: 2
 - proto: SignalButton
   entities:
@@ -125985,23 +127010,6 @@ entities:
     - type: Transform
       pos: 21.5,-11.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        19918:
-        - - Pressed
-          - Toggle
-        19917:
-        - - Pressed
-          - Toggle
-        19916:
-        - - Pressed
-          - Toggle
-        19915:
-        - - Pressed
-          - Toggle
-        19914:
-        - - Pressed
-          - Toggle
   - uid: 19928
     components:
     - type: MetaData
@@ -126041,27 +127049,11 @@ entities:
     - type: Transform
       pos: 32.5,-56.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        19883:
-        - - Pressed
-          - Toggle
-        19884:
-        - - Pressed
-          - Toggle
   - uid: 19931
     components:
     - type: Transform
       pos: 42.5,-56.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        19882:
-        - - Pressed
-          - Toggle
-        19881:
-        - - Pressed
-          - Toggle
   - uid: 19932
     components:
     - type: Transform
@@ -126080,27 +127072,11 @@ entities:
     - type: Transform
       pos: 32.5,-44.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        19880:
-        - - Pressed
-          - Toggle
-        19879:
-        - - Pressed
-          - Toggle
   - uid: 19934
     components:
     - type: Transform
       pos: 25.5,-44.5
       parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        19878:
-        - - Pressed
-          - Toggle
-        19877:
-        - - Pressed
-          - Toggle
   - uid: 19935
     components:
     - type: MetaData
@@ -127895,6 +128871,30 @@ entities:
     - type: Transform
       pos: -38.5,2.5
       parent: 2
+  - uid: 24323
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 10.5,-18.5
+      parent: 2
+  - uid: 24324
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 10.5,-19.5
+      parent: 2
+  - uid: 24325
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 10.5,-20.5
+      parent: 2
+  - uid: 24326
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 10.5,-21.5
+      parent: 2
 - proto: StoolBar
   entities:
   - uid: 20216
@@ -128106,6 +129106,12 @@ entities:
       parent: 2
 - proto: Table
   entities:
+  - uid: 9524
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 18.5,-14.5
+      parent: 2
   - uid: 20246
     components:
     - type: Transform
@@ -128822,11 +129828,6 @@ entities:
     components:
     - type: Transform
       pos: 21.5,-24.5
-      parent: 2
-  - uid: 20377
-    components:
-    - type: Transform
-      pos: 20.5,-15.5
       parent: 2
   - uid: 20378
     components:
@@ -149003,11 +150004,6 @@ entities:
     - type: Transform
       pos: 16.5,-24.5
       parent: 2
-  - uid: 24042
-    components:
-    - type: Transform
-      pos: 16.5,-15.5
-      parent: 2
   - uid: 24043
     components:
     - type: Transform
@@ -149761,6 +150757,13 @@ entities:
       gridUid: 2
 - proto: WindoorSecure
   entities:
+  - uid: 19884
+    components:
+    - type: Transform
+      pos: 18.5,-14.5
+      parent: 2
+    - type: DeltaPressure
+      gridUid: 2
   - uid: 24163
     components:
     - type: Transform
@@ -149781,21 +150784,7 @@ entities:
     components:
     - type: Transform
       rot: 3.141592653589793 rad
-      pos: 76.5,-15.5
-      parent: 2
-    - type: DeltaPressure
-      gridUid: 2
-  - uid: 24166
-    components:
-    - type: Transform
       pos: 77.5,-15.5
-      parent: 2
-    - type: DeltaPressure
-      gridUid: 2
-  - uid: 24167
-    components:
-    - type: Transform
-      pos: 76.5,-15.5
       parent: 2
     - type: DeltaPressure
       gridUid: 2
@@ -149803,31 +150792,16 @@ entities:
     components:
     - type: Transform
       rot: 3.141592653589793 rad
-      pos: 77.5,-15.5
+      pos: 76.5,-15.5
       parent: 2
     - type: DeltaPressure
       gridUid: 2
-- proto: WindoorSecureBrigLocked
-  entities:
-  - uid: 24169
+  - uid: 24170
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 66.5,23.5
       parent: 2
-    - type: DeltaPressure
-      gridUid: 2
-- proto: WindoorSecureSecurityLocked
-  entities:
-  - uid: 24170
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 66.5,23.5
-      parent: 2
-    - type: AccessReader
-      access:
-      - - Security
     - type: DeltaPressure
       gridUid: 2
 - proto: WindowDirectional

@@ -1,0 +1,44 @@
+- type: startingGear
+  id: WH40KFootfallChefGear
+  equipment:
+    id: WH40KFootfallChefIDCard
+    jumpsuit: ClothingUniformJumpsuitChef
+    outerClothing: ClothingOuterApronChef
+    head: ClothingHeadHatChef
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallJuniorCookGear
+  equipment:
+    id: WH40KFootfallChefIDCard
+    jumpsuit: ClothingUniformJumpsuitChef
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallJuniorCookApronGear
+  equipment:
+    id: WH40KFootfallChefIDCard
+    jumpsuit: ClothingUniformJumpsuitChef
+    outerClothing: ClothingOuterApronChef
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallJanitorGear
+  equipment:
+    id: WH40KFootfallJanitorIDCard
+    jumpsuit: ClothingUniformJumpsuitJanitor
+    shoes: ClothingShoesGaloshes
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltJanitor
+
+- type: startingGear
+  id: WH40KFootfallSleepwearGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformRandomShorts

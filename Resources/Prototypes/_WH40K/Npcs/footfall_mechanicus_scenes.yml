@@ -1,0 +1,299 @@
+- type: wh40kNpcProfile
+  id: FootfallGados
+  name: wh40k-footfall-mechanicus-gados-name
+  description: wh40k-footfall-mechanicus-gados-desc
+  role: Gados
+  department: mechanicus
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallServerOperatorGear
+
+- type: wh40kNpcAnchor
+  id: FootfallGados
+  profile: FootfallGados
+
+- type: entity
+  id: MobWH40KFootfallGados
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-gados-name
+  description: wh40k-footfall-mechanicus-gados-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Standing
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallGados
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallServerOperatorGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-gados-line-1
+      chatDataset: WH40KFootfallGadosReplies
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallGados
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-gados-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Standing
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallGados
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallGados
+
+- type: wh40kNpcProfile
+  id: FootfallShieldCoreAttendant
+  name: wh40k-footfall-mechanicus-shieldcoreattendant-name
+  description: wh40k-footfall-mechanicus-shieldcoreattendant-desc
+  role: ShieldCoreAttendant
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallShieldAttendantGear
+
+- type: entity
+  id: MobWH40KFootfallShieldCoreAttendant
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-shieldcoreattendant-name
+  description: wh40k-footfall-mechanicus-shieldcoreattendant-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallShieldCoreAttendant
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallShieldAttendantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-shieldcoreattendant-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallShieldCoreAttendant
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-shieldcoreattendant-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallShieldCoreAttendant
+
+- type: wh40kNpcProfile
+  id: FootfallSmesMonitor
+  name: wh40k-footfall-mechanicus-smesmonitor-name
+  description: wh40k-footfall-mechanicus-smesmonitor-desc
+  role: SmesMonitor
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallSmesTechnicianGear
+
+- type: entity
+  id: MobWH40KFootfallSmesMonitor
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-smesmonitor-name
+  description: wh40k-footfall-mechanicus-smesmonitor-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallSmesMonitor
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallSmesTechnicianGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-smesmonitor-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallSmesMonitor
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-smesmonitor-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallSmesMonitor
+
+- type: wh40kNpcProfile
+  id: FootfallToolSorter
+  name: wh40k-footfall-mechanicus-toolsorter-name
+  description: wh40k-footfall-mechanicus-toolsorter-desc
+  role: ToolSorter
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallToolCustodianGear
+
+- type: entity
+  id: MobWH40KFootfallToolSorter
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-toolsorter-name
+  description: wh40k-footfall-mechanicus-toolsorter-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallToolSorter
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallToolCustodianGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-toolsorter-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallToolSorter
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-toolsorter-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallToolSorter
+
+- type: wh40kNpcProfile
+  id: FootfallAtmosConsoleOperator
+  name: wh40k-footfall-mechanicus-atmosconsoleoperator-name
+  description: wh40k-footfall-mechanicus-atmosconsoleoperator-desc
+  role: AtmosConsoleOperator
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallAtmosConsoleOperatorGear
+
+- type: entity
+  id: MobWH40KFootfallAtmosConsoleOperator
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-atmosconsoleoperator-name
+  description: wh40k-footfall-mechanicus-atmosconsoleoperator-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAtmosConsoleOperator
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAtmosConsoleOperatorGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-atmosconsoleoperator-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallAtmosConsoleOperator
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-atmosconsoleoperator-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAtmosConsoleOperator
+
+- type: wh40kNpcProfile
+  id: FootfallAtmosCylinderTechnician
+  name: wh40k-footfall-mechanicus-atmoscylindertechnician-name
+  description: wh40k-footfall-mechanicus-atmoscylindertechnician-desc
+  role: AtmosCylinderTechnician
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallAtmosCylinderTechnicianGear
+
+- type: entity
+  id: MobWH40KFootfallAtmosCylinderTechnician
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-atmoscylindertechnician-name
+  description: wh40k-footfall-mechanicus-atmoscylindertechnician-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAtmosCylinderTechnician
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallAtmosCylinderTechnicianGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-atmoscylindertechnician-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallAtmosCylinderTechnician
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-atmoscylindertechnician-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAtmosCylinderTechnician
+
+- type: wh40kNpcProfile
+  id: FootfallAtmosStandbyRepairman
+  name: wh40k-footfall-mechanicus-atmosstandbyrepairman-name
+  description: wh40k-footfall-mechanicus-atmosstandbyrepairman-desc
+  role: AtmosStandbyRepairman
+  department: mechanicus
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  services: [Social]
+  gear: WH40KFootfallAtmosStandbyRepairmanGear
+
+- type: entity
+  id: MobWH40KFootfallAtmosStandbyRepairman
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-mechanicus-atmosstandbyrepairman-name
+  description: wh40k-footfall-mechanicus-atmosstandbyrepairman-desc
+  suffix: WH40K, Footfall, Mechanicus scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallAtmosStandbyRepairman
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallAtmosStandbyRepairmanGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-mechanicus-atmosstandbyrepairman-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallAtmosStandbyRepairman
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-mechanicus-atmosstandbyrepairman-marker
+  description: wh40k-footfall-mechanicus-marker-desc
+  suffix: WH40K, Footfall, Mapping, Mechanicus scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallAtmosStandbyRepairman
+
+- type: localizedDataset
+  id: WH40KFootfallGadosReplies
+  values:
+    prefix: wh40k-footfall-mechanicus-gados-line-
+    count: 6

@@ -1,0 +1,254 @@
+- type: wh40kQuest
+  id: WH40KFootfallWatch
+  enabled: true
+  title: wh40k-footfall-quest-watch-title
+  description: wh40k-footfall-quest-watch-desc
+  issuer: FootfallMarisVeyra
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: kill
+    kind: KillEntity
+    text: wh40k-footfall-quest-watch-objective
+    requiredCount: 2
+    target: { kind: Entity, entity: MobHormagaunt }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallContacts
+  enabled: true
+  title: wh40k-footfall-quest-contacts-title
+  description: wh40k-footfall-quest-contacts-desc
+  issuer: FootfallMarisVeyra
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: hest
+    kind: TalkToNpc
+    text: wh40k-footfall-quest-contacts-objective
+    requiredCount: 1
+    target: { kind: NpcAnchor, anchors: [FootfallHestVarn], dialogue: WH40KFootfallHestVarn }
+  - id: sera
+    kind: TalkToNpc
+    text: wh40k-footfall-quest-contacts-sera
+    target: { kind: NpcAnchor, anchors: [FootfallSeraHolt], dialogue: WH40KFootfallSeraHolt }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallCargo
+  enabled: true
+  title: wh40k-footfall-quest-cargo-title
+  description: wh40k-footfall-quest-cargo-desc
+  issuer: FootfallHestVarn
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: deliver
+    kind: DeliverItem
+    text: wh40k-footfall-quest-cargo-objective
+    requiredCount: 2
+    target: { kind: Entity, entity: FoodTinGroxPorridge }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallGrid
+  enabled: true
+  title: wh40k-footfall-quest-grid-title
+  description: wh40k-footfall-quest-grid-desc
+  issuer: FootfallAvelineQuill
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: reach
+    kind: ReachLocation
+    text: wh40k-footfall-quest-grid-objective
+    requiredCount: 1
+    target: { kind: Location, locationKind: Grid, system: Footfall, locationKey: footfall-dock-grid, radius: 3 }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallSystem
+  enabled: true
+  title: wh40k-footfall-quest-system-title
+  description: wh40k-footfall-quest-system-desc
+  issuer: FootfallAvelineQuill
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: reach
+    kind: ReachLocation
+    text: wh40k-footfall-quest-system-objective
+    requiredCount: 1
+    target: { kind: Location, locationKind: System, system: Aivorius }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallSector
+  enabled: true
+  title: wh40k-footfall-quest-sector-title
+  description: wh40k-footfall-quest-sector-desc
+  issuer: FootfallAvelineQuill
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: reach
+    kind: ReachLocation
+    text: wh40k-footfall-quest-sector-objective
+    requiredCount: 1
+    target: { kind: Location, locationKind: Sector, sector: KoronusExpanse }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallDiagnostics
+  enabled: true
+  title: wh40k-footfall-quest-diagnostics-title
+  description: wh40k-footfall-quest-diagnostics-desc
+  issuer: FootfallOmicronKhepra
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: interact
+    kind: InteractWithEntity
+    text: wh40k-footfall-quest-diagnostics-objective
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallDiagnosticConsole }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallNutrition
+  enabled: true
+  title: wh40k-footfall-quest-nutrition-title
+  description: wh40k-footfall-quest-nutrition-desc
+  issuer: FootfallSeraHolt
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: collect
+    kind: CollectItem
+    text: wh40k-footfall-quest-nutrition-objective
+    requiredCount: 3
+    target: { kind: Entity, entity: FoodSnackImperialNutriBar }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuestPool
+  id: WH40KFootfallMarisVeyraPool
+  source: FootfallMarisVeyra
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallEndurance
+    weight: 1
+  - quest: WH40KFootfallWatch
+    weight: 1
+  - quest: WH40KFootfallContacts
+    weight: 3
+
+- type: wh40kQuestPool
+  id: WH40KFootfallHestVarnPool
+  source: FootfallHestVarn
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallCargo
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KFootfallAvelineQuillPool
+  source: FootfallAvelineQuill
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallGrid
+    weight: 3
+  - quest: WH40KFootfallSystem
+    weight: 1
+  - quest: WH40KFootfallSector
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KFootfallOmicronKhepraPool
+  source: FootfallOmicronKhepra
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallRepair
+    weight: 1
+  - quest: WH40KFootfallDiagnostics
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KFootfallSeraHoltPool
+  source: FootfallSeraHolt
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallRescue
+    weight: 1
+  - quest: WH40KFootfallNutrition
+    weight: 1

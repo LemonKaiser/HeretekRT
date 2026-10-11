@@ -62,7 +62,7 @@ heretek-dialogue-state-choice-3 = Close immediately
 heretek-dialogue-state-locked-001 = The limit has been reached. That means the dialogue selector saw the counter, switched to another prototype, and kept you out of the normal reward loop.
 heretek-dialogue-state-locked-chat = That is enough for now. The selector hit the limit and used a chat-only branch without opening the scene window.
 
-heretek-dialogue-fizzo-intro-001 = Welcome to the Ale Wrath. Sit closer to the counter, and try not to stare at the hooves. I pour cleaner with them than half this station does with hands, and I listen better than most priests.
+heretek-dialogue-fizzo-intro-001 = Welcome to Casey's. I'm Fizzo, owner of this casino. Sit closer and try not to stare at the hooves: I signed the deed to the whole place with them. Lumen tends bar now, but I've kept my habit of offering guests a drink and listening to their stories.
 heretek-dialogue-fizzo-intro-002 = A talking horse behind a bar. Space always finds a new way to remind me that normal was only a temporary agreement.
 heretek-dialogue-fizzo-intro-003 = I want to stare, apologize, and order something strong all at once. I should probably start with whichever option embarrasses me least.
 heretek-dialogue-fizzo-intro-003b = Relax. In this bar, oddities get a stool before they get a label.
@@ -108,7 +108,7 @@ heretek-dialogue-fizzo-encore-choice-2-response = Rare discipline. I respect it.
 
 heretek-dialogue-fizzo-cutoff-chat = You have had enough. I pour whiskey here, not lift customers off the floor from under the counter.
 
-heretek-dialogue-fizzo-base-001 = Back at the counter. What do you need?
+heretek-dialogue-fizzo-base-001 = Back in my house. A drink, a rumour, or the story of how a horse became a casino owner?
 heretek-dialogue-fizzo-base-choice-store = Open the shop
 heretek-dialogue-fizzo-base-choice-whiskey = Another glass
 heretek-dialogue-fizzo-base-choice-whiskey-selected = Another glass.

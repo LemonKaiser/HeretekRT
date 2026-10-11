@@ -1,0 +1,348 @@
+- type: startingGear
+  id: WH40KFootfallCitizenGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizen
+    outerClothing: ClothingOuterCoatImperialCitizen
+    head: ClothingHeadHatImperialCitizen
+    shoes: ClothingShoesImperialPilgrim
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallCitizenVestGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    shoes: ClothingShoesImperialPilgrim
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallLaborerGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: ClothingBeltUtility
+
+- type: startingGear
+  id: WH40KFootfallAdministrationGear
+  equipment:
+    id: WH40KFootfallAdministrationIDCard
+    jumpsuit: ClothingUniformJumpsuitCommandUniform
+    outerClothing: ClothingOuterArmorOfficer
+    head: ClothingHeadOfficer
+    shoes: ClothingShoesGenBoots
+    gloves: ClothingHandsGlovesCombatColonel
+    belt: ClothingBeltImperialFleetOfficer
+
+- type: startingGear
+  id: WH40KFootfallCargoGear
+  equipment:
+    id: WH40KFootfallCargoIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: ClothingBeltUtility
+    head: ClothingHeadHatImperialCitizen
+
+- type: startingGear
+  id: WH40KFootfallNavigationGear
+  equipment:
+    id: WH40KFootfallNavigationIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    shoes: ClothingShoesGenBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    neck: ClothingNeckCloakRainImp
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallMechanicusGear
+  equipment:
+    id: WH40KFootfallMechanicusIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestMars
+    back: ClothingBackpackTechpriest
+
+- type: startingGear
+  id: WH40KFootfallOutfitterGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    shoes: ClothingShoesArmoredWorkbootsTechpriest
+    gloves: ClothingHandsGlovesTechpriest
+    belt: ClothingBeltUtility
+    neck: ClothingNeckRobeTechpriestAgripinaa
+    back: ClothingBackpackTechpriest
+
+- type: startingGear
+  id: WH40KFootfallMedicaeGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: ClothingOuterCoatLab
+    head: ClothingHeadHatSurgcapBlue
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallMedicaeAssistantGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    head: ClothingHeadHatSurgcapBlue
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallArbitesAssistantGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMinoris
+    head: ClothingHeadHelmetArbiteMinoris
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesShooterGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+    - WeaponHeavyStubPistolArbitesPractice
+
+- type: startingGear
+  id: WH40KFootfallPilgrimGear
+  equipment:
+    id: WH40KFootfallEcclesiarchyIDCard
+    jumpsuit: WH40KClothingUniformJumpsuitChaplain
+    outerClothing: ClothingOuterRobeImperialPilgrim
+    head: ClothingHeadHoodImperialPilgrim
+    shoes: ClothingShoesBootsChaplain
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltChaplain
+
+- type: startingGear
+  id: WH40KFootfallCurioGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    head: ClothingHeadHatImperialCitizen
+    shoes: ClothingShoesImperialPilgrim
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallCasinoGear
+  equipment:
+    id: WH40KFootfallBartenderIDCard
+    jumpsuit: ClothingUniformJumpsuitBartenderPurple
+    outerClothing: ClothingOuterApronBar
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallCantinaGear
+  equipment:
+    id: WH40KFootfallBartenderIDCard
+    jumpsuit: ClothingUniformJumpsuitBartender
+    outerClothing: ClothingOuterApronBar
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallTailorGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltStorageWaistbag
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallArmouryGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitGuardsman
+    outerClothing: ClothingOuterArmorFlakVest
+    head: ClothingHeadVet
+    shoes: ClothingShoesGenBoots
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallSeekerGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitCatachan2
+    outerClothing: ClothingOuterArmorCatachanLight
+    head: ClothingHeadHatCatachanBandana
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: ClothingBeltUtility
+    back: ClothingBackpackGuard
+
+- type: startingGear
+  id: WH40KFootfallMedicaeChiefGear
+  equipment:
+    id: WH40KFootfallMedicaeChiefIDCard
+    jumpsuit: ClothingUniformJumpsuitCMO
+    outerClothing: ClothingOuterCoatLabCmo
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+    neck: ClothingNeckStethoscope
+
+- type: startingGear
+  id: WH40KFootfallReceptionMedicGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: ClothingOuterCoatLabOpened
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+    neck: ClothingNeckStethoscope
+
+- type: startingGear
+  id: WH40KFootfallDispensaryGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: ClothingOuterCoatLab
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallMedicalLoungeBlueGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitCasualBlue
+    shoes: ClothingShoesColorBrown
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallMedicalLoungePurpleGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: ClothingUniformJumpsuitCasualPurple
+    shoes: ClothingShoesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallOperatingSurgeonGear
+  equipment:
+    id: WH40KFootfallMedicaeIDCard
+    jumpsuit: UniformScrubsColorGreen
+    head: ClothingHeadHatSurgcapGreen
+    mask: ClothingMaskSterile
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallMedicalChemistGear
+  equipment:
+    id: WH40KFootfallChemistIDCard
+    jumpsuit: ClothingUniformJumpsuitChemistry
+    outerClothing: ClothingOuterCoatLabChem
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallMedicalVirologistGear
+  equipment:
+    id: WH40KFootfallVirologistIDCard
+    jumpsuit: ClothingUniformJumpsuitVirology
+    outerClothing: ClothingOuterCoatLabViro
+    mask: ClothingMaskSterile
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallCrematoriumGear
+  equipment:
+    id: WH40KFootfallJanitorIDCard
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: ClothingOuterCoatLabOpened
+    mask: ClothingMaskSterile
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallQuarantinePatientGear
+  equipment:
+    id: WH40KFootfallPatientIDCard
+    jumpsuit: ClothingUniformRandomShorts
+    outerClothing: ClothingOuterHospitalGown
+
+- type: startingGear
+  id: WH40KFootfallQuarantineOfficerGear
+  equipment:
+    id: WH40KFootfallVirologistIDCard
+    jumpsuit: ClothingUniformJumpsuitVirology
+    outerClothing: ClothingOuterBioVirology
+    head: ClothingHeadHatHoodBioVirology
+    mask: ClothingMaskBreathMedical
+    shoes: ClothingShoesColorWhite
+    gloves: ClothingHandsGlovesLatex
+    belt: ClothingBeltMedical
+
+- type: startingGear
+  id: WH40KFootfallSleepingVagrantGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitPrisoner
+    outerClothing: ClothingOuterWinterCoat
+    shoes: ClothingShoesBootsWork
+    gloves: ClothingHandsGlovesFingerless
+
+- type: startingGear
+  id: WH40KFootfallStandingVagrantGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizen
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    head: ClothingHeadHatGreysoftFlipped
+    shoes: ClothingShoesImperialPilgrim
+    gloves: ClothingHandsGlovesFingerless
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallCryoPriestGear
+  equipment:
+    id: WH40KFootfallEcclesiarchyIDCard
+    jumpsuit: WH40KClothingUniformJumpsuitChaplain
+    outerClothing: ClothingOuterChaplainRobe
+    head: ClothingHeadHoodImperialPilgrim
+    neck: ClothingNeckImperialAquilaMedal
+    shoes: ClothingShoesBootsChaplain
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltChaplain

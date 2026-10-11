@@ -27,12 +27,14 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     [Dependency] private IEntityNetworkManager _net = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private ISharedPlayerManager _players = default!;
     [UISystemDependency] private readonly AudioSystem _audio = default!;
     [UISystemDependency] private readonly ContentAudioSystem _contentAudio = default!;
     [UISystemDependency] private readonly DialoguePreviewSystem _preview = default!;
 
     private DialogueOverlay? _overlay;
     private int? _sessionId;
+    private int _lineRevision;
     private float _defaultTypewriterCps;
     private float _typewriterCps;
     private string _currentText = string.Empty;
@@ -58,6 +60,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     private float _musicBaseVolume;
     private float _musicLineDuckRemaining;
     private readonly List<EntityUid> _actorPreviewEntities = new();
+    private float _syncRequestDelay;
 
     public override void Initialize()
     {
@@ -66,6 +69,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         SubscribeNetworkEvent<DialogueOpenEvent>(OnDialogueOpened);
         SubscribeNetworkEvent<DialogueLineUpdateEvent>(OnDialogueUpdated);
         SubscribeNetworkEvent<DialogueCloseEvent>(OnDialogueClosed);
+        SubscribeNetworkEvent<DialogueOperationEvent>(OnOperation);
 
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
@@ -73,13 +77,21 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     public void OnStateEntered(GameplayState state)
     {
+        EnsureOverlay();
+        ReattachOverlay();
+        PresentPendingDialogue();
+    }
+
+    private void EnsureOverlay()
+    {
+        if (_overlay != null)
+            return;
+
         _overlay = new DialogueOverlay();
         _overlay.AdvancePressed += OnAdvancePressed;
         _overlay.TextAreaPressed += OnTextAreaPressed;
         _overlay.ChoiceSelected += OnChoiceSelected;
         _overlay.CancelPressed += OnCancelPressed;
-        ReattachOverlay();
-        PresentPendingDialogue();
     }
 
     public void OnStateExited(GameplayState state)
@@ -101,6 +113,30 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     public override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+
+        if (UIManager.ActiveScreen is InGameScreen { VisibleInTree: true })
+        {
+            if (_sessionId == null && _players.LocalEntity is { } player && EntityManager.HasComponent<DialogueInputLockComponent>(player))
+            {
+                _syncRequestDelay -= args.DeltaSeconds;
+                if (_syncRequestDelay <= 0f)
+                {
+                    _net.SendSystemNetworkMessage(new DialogueSyncRequestEvent());
+                    _syncRequestDelay = 1f;
+                }
+            }
+            else
+            {
+                _syncRequestDelay = 0f;
+            }
+
+            if (_sessionId != null && (_overlay == null || !_overlay.VisibleInTree))
+            {
+                EnsureOverlay();
+                ReattachOverlay();
+                PresentPendingDialogue();
+            }
+        }
 
         UpdateDialogueMusicDuck(args.DeltaSeconds);
 
@@ -223,6 +259,8 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void ApplyLine(DialogueLineData line, bool playActorEntrance = false)
     {
+        _lineRevision = line.Revision;
+        _overlay?.SetOperationStatus(string.Empty);
         if (_overlay == null)
             return;
 
@@ -265,6 +303,13 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         _overlay.SetBodyText(string.Empty, _currentText);
     }
 
+    private void OnOperation(DialogueOperationEvent ev, EntitySessionEventArgs args)
+    {
+        if (_sessionId != ev.SessionId || _overlay == null) return;
+        _overlay.SetChoicesDisabled(ev.Pending);
+        _overlay.SetOperationStatus(Loc.GetString("wh40k-quest-result-" + ev.Result.ToString().ToLowerInvariant()));
+    }
+
     private void OnAdvancePressed()
     {
         RequestAdvance(fromAutoAdvance: false);
@@ -298,7 +343,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
         _awaitingAdvance = true;
         _overlay.SetContinueVisible(false);
-        _net.SendSystemNetworkMessage(new DialogueAdvanceRequestEvent(_sessionId.Value, fromAutoAdvance));
+        _net.SendSystemNetworkMessage(new DialogueAdvanceRequestEvent(_sessionId.Value, fromAutoAdvance, _lineRevision));
     }
 
     private void OnTextAreaPressed()
@@ -315,7 +360,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
         _awaitingChoiceResponse = true;
         _overlay.SetChoicesDisabled(true);
-        _net.SendSystemNetworkMessage(new DialogueChoiceRequestEvent(_sessionId.Value, choiceIndex));
+        _net.SendSystemNetworkMessage(new DialogueChoiceRequestEvent(_sessionId.Value, choiceIndex, _lineRevision));
     }
 
     private void OnCancelPressed()
@@ -360,6 +405,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void ResetDialogueState(bool immediateMusicStop = false)
     {
+        _syncRequestDelay = 0f;
         if (_hideHud && UIManager.ActiveScreen is InGameScreen activeScreen)
             activeScreen.SetHudVisible(true);
 

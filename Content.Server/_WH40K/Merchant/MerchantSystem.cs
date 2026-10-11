@@ -5,7 +5,6 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.SSDIndicator;
-using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
@@ -14,10 +13,17 @@ using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System.Numerics;
 using System.Linq;
+using Content.Shared.Access.Systems;
+using Content.Shared._WH40K.Npcs;
+using Content.Server._WH40K.Quests;
+using Content.Server._WH40K.Dialogue;
+using Content.Server._WH40K.Dialogue.Components;
+using Content.Server._WH40K.PersistentInventory;
+using Robust.Shared.Network;
 
 namespace Content.Server._WH40K.Merchant;
 
-public sealed class MerchantSystem : EntitySystem
+public sealed partial class MerchantSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -29,8 +35,15 @@ public sealed class MerchantSystem : EntitySystem
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private BankSystem _bank = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private RotateToFaceSystem _rotate = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private AccessReaderSystem _access = default!;
+    [Dependency] private Wh40kQuestInteractionSystem _quests = default!;
+    [Dependency] private Wh40kQuestSubmissionSystem _submission = default!;
+    [Dependency] private Wh40kQuestSessionSystem _sessions = default!;
+    [Dependency] private DialogueSystem _dialogue = default!;
+    [Dependency] private Content.Server._WH40K.Npcs.Wh40kNpcAnchorSystem _anchors = default!;
+    [Dependency] private Content.Server._WH40K.Npcs.Wh40kNpcFacingSystem _facing = default!;
+    public event Action? PurchasePrepared;
 
     public override void Initialize()
     {
@@ -39,21 +52,31 @@ public sealed class MerchantSystem : EntitySystem
         SubscribeLocalEvent<MerchantComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<MerchantSpawnMarkerComponent, MapInitEvent>(OnSpawnMarkerMapInit);
         SubscribeLocalEvent<MerchantComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<MerchantComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
         SubscribeLocalEvent<MerchantComponent, MerchantBuyMessage>(OnBuy);
         SubscribeLocalEvent<MerchantComponent, MerchantRequestRefreshMessage>(OnRequestRefresh);
+        SubscribeLocalEvent<MerchantComponent, BoundUIOpenedEvent>(OnOpened);
+        SubscribeLocalEvent<MerchantComponent, InteractHandEvent>(OnInteractHand);
+        InitializeBuyback();
+    }
+
+    private void OnInteractHand(EntityUid uid, MerchantComponent comp, InteractHandEvent args)
+    {
+        if (args.Handled || !HasComp<ActorComponent>(args.User) || HasComp<DialogueInteractableComponent>(uid))
+            return;
+
+        args.Handled = OpenUi(args.User, uid, comp);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+        UpdateSaleRecovery(frameTime);
 
         var query = EntityQueryEnumerator<MerchantComponent>();
         while (query.MoveNext(out var uid, out var merchant))
         {
             EnsureHomeCoordinates(uid, merchant);
             ReturnToHomeIfNeeded(uid, merchant);
-            FaceNearestPlayer(uid, merchant);
 
             if (merchant.NextRefreshAt > _timing.CurTime)
                 continue;
@@ -65,7 +88,7 @@ public sealed class MerchantSystem : EntitySystem
     public bool OpenUi(EntityUid user, EntityUid merchant, MerchantComponent? component = null)
     {
         if (!Resolve(merchant, ref component)
-            || !HasComp<ActorComponent>(user))
+            || !CanTrade(user) || !_interaction.InRangeUnobstructed(user, merchant, Math.Clamp(component.InteractionRange, 0.1f, 3f)))
         {
             return false;
         }
@@ -80,6 +103,7 @@ public sealed class MerchantSystem : EntitySystem
 
     private void OnMapInit(EntityUid uid, MerchantComponent component, MapInitEvent args)
     {
+        _facing.Capture(uid);
         RemComp<SSDIndicatorComponent>(uid);
         EnsureHomeCoordinates(uid, component);
         Refresh(uid, component);
@@ -88,6 +112,12 @@ public sealed class MerchantSystem : EntitySystem
     private void OnSpawnMarkerMapInit(EntityUid uid, MerchantSpawnMarkerComponent component, MapInitEvent args)
     {
         var coordinates = Transform(uid).Coordinates;
+        if (TryComp(uid, out Wh40kNpcAnchorComponent? anchor))
+        {
+            if (!_anchors.TryGetAnchor(anchor.Anchor, out var marker) || marker != uid || _anchors.HasRegisteredBody(anchor.Anchor)) return;
+            SpawnAttachedTo("MobWH40KFootfallMerchant", coordinates, rotation: Transform(uid).LocalRotation);
+            return;
+        }
         var mapCoordinates = _transform.ToMapCoordinates(coordinates);
         foreach (var (merchant, _) in _lookup.GetEntitiesInRange<MerchantComponent>(mapCoordinates, 1f))
         {
@@ -95,11 +125,12 @@ public sealed class MerchantSystem : EntitySystem
                 return;
         }
 
-        Spawn("MobWH40KFootfallMerchant", coordinates);
+        SpawnAttachedTo("MobWH40KFootfallMerchant", coordinates, rotation: Transform(uid).LocalRotation);
     }
 
     private void OnStartup(EntityUid uid, MerchantComponent component, ComponentStartup args)
     {
+        _facing.CaptureInitialized(uid);
         RemComp<SSDIndicatorComponent>(uid);
         EnsureHomeCoordinates(uid, component);
 
@@ -138,6 +169,7 @@ public sealed class MerchantSystem : EntitySystem
 
     private void ReturnToHomeIfNeeded(EntityUid uid, MerchantComponent component)
     {
+        if (HasComp<Wh40kNpcProtectionComponent>(uid)) return;
         if (component.HomeCoordinates is not { } home || component.ReturnDistance <= 0f ||
             !TryComp(uid, out TransformComponent? merchantTransform))
         {
@@ -155,104 +187,119 @@ public sealed class MerchantSystem : EntitySystem
         _transform.SetCoordinates(uid, merchantTransform, home);
     }
 
-    private void FaceNearestPlayer(EntityUid uid, MerchantComponent component)
-    {
-        if (component.LookAtRange <= 0f || !TryComp(uid, out TransformComponent? merchantTransform))
-            return;
-
-        var merchantCoordinates = _transform.GetMapCoordinates(uid, merchantTransform);
-        var merchantPosition = merchantCoordinates.Position;
-        var rangeSquared = component.LookAtRange * component.LookAtRange;
-        EntityUid? nearest = null;
-        Vector2 nearestPosition = default;
-        var nearestDistance = float.MaxValue;
-
-        foreach (var (actor, _) in _lookup.GetEntitiesInRange<ActorComponent>(merchantCoordinates, component.LookAtRange))
-        {
-            if (actor == uid || !TryComp(actor, out TransformComponent? actorTransform))
-                continue;
-
-            var actorPosition = _transform.GetMapCoordinates(actor, actorTransform).Position;
-            var distance = (actorPosition - merchantPosition).LengthSquared();
-            if (distance > rangeSquared || distance >= nearestDistance)
-                continue;
-
-            nearest = actor;
-            nearestPosition = actorPosition;
-            nearestDistance = distance;
-        }
-
-        if (nearest != null)
-            _rotate.TryFaceCoordinates(uid, nearestPosition, merchantTransform);
-    }
-
-    private void OnBeforeUiOpen(EntityUid uid, MerchantComponent component, BeforeActivatableUIOpenEvent args)
-    {
-        UpdateUi(uid, component);
-    }
+    private void OnOpened(Entity<MerchantComponent> ent, ref BoundUIOpenedEvent ev)
+    { if (ev.UiKey.Equals(MerchantUiKey.Key)) UpdateUi(ent, ent.Comp); }
 
     private void OnRequestRefresh(EntityUid uid, MerchantComponent component, MerchantRequestRefreshMessage args)
     {
-        UpdateUi(uid, component);
+        if (ValidViewer(uid, component, args.Actor)) UpdateUi(uid, component);
+    }
+
+    public bool CanTrade(EntityUid buyer)
+    {
+        if (TerminatingOrDeleted(buyer) || !TryComp(buyer, out ActorComponent? actor) ||
+            actor.PlayerSession.AttachedEntity != buyer || _sessions.IsStopping ||
+            HasComp<PersistentInventoryOperationComponent>(buyer)) return false;
+        var user = actor.PlayerSession.UserId;
+        return !_quests.IsBusy(user) && !_submission.IsBusy(user) && !IsSelling(user) && !_dialogue.IsInDialogue(actor.PlayerSession);
+    }
+
+    private bool ValidViewer(EntityUid uid, MerchantComponent component, EntityUid buyer) =>
+        !TerminatingOrDeleted(buyer) && TryComp(buyer, out ActorComponent? actor) && actor.PlayerSession.AttachedEntity == buyer &&
+        _ui.GetActors(uid, MerchantUiKey.Key).Contains(buyer) && _interaction.InRangeUnobstructed(buyer, uid,
+            Math.Clamp(component.InteractionRange, 0.1f, 3f), popup: false);
+
+    private bool Allowed(EntityUid buyer, MerchantOfferPrototype offer) => offer.RequiredAccess == null ||
+        _access.FindAccessTags(buyer).Contains(offer.RequiredAccess.Value);
+
+    private void Result(EntityUid uid, EntityUid buyer, Guid operation, string result)
+    {
+        if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(buyer)) return;
+        _ui.ServerSendUiMessage(uid, MerchantUiKey.Key, new MerchantResultMessage(operation, result), buyer);
+        _popup.PopupEntity(_playerCulture.GetPlayerString(buyer, result), uid, buyer);
     }
 
     private void OnBuy(EntityUid uid, MerchantComponent component, MerchantBuyMessage args)
     {
         var buyer = args.Actor;
-        if (TerminatingOrDeleted(buyer)
-            || !_ui.GetActors(uid, MerchantUiKey.Key).Contains(buyer)
-            || !_interaction.InRangeUnobstructed(
-                buyer,
-                uid,
-                Math.Max(0.1f, component.InteractionRange),
-                popup: false))
+        if (!ValidViewer(uid, component, buyer))
         {
             return;
         }
 
-        var stock = component.CurrentStock.FirstOrDefault(
-            entry => entry.Offer.Product.Id == args.Product && entry.Remaining > 0);
-        if (stock == null || stock.Remaining <= 0)
+        if (component.NextRefreshAt <= _timing.CurTime) Refresh(uid, component);
+        if (args.Operation == Guid.Empty || args.CatalogId != component.CatalogId)
         {
-            _popup.PopupEntity(_playerCulture.GetPlayerString(buyer, "wh40k-merchant-out-of-stock"), uid, buyer);
+            Result(uid, buyer, args.Operation, "wh40k-service-stale");
             UpdateUi(uid, component);
             return;
         }
-
-        var offer = stock.Offer;
-        if (offer.Price <= 0 || !_bank.TryBankWithdraw(buyer, offer.Price))
+        var key = (Comp<ActorComponent>(buyer).PlayerSession.UserId.UserId, args.Operation);
+        if (component.Receipts.TryGetValue(key, out var prior))
         {
-            _popup.PopupEntity(_playerCulture.GetPlayerString(buyer, "wh40k-merchant-insufficient-funds"), uid, buyer);
+            Result(uid, buyer, args.Operation, prior.Product == args.Product ? prior.Result : "wh40k-service-stale");
+            UpdateUi(uid, component);
             return;
         }
-
-        var product = Spawn(offer.Product, Transform(buyer).Coordinates);
-        _hands.TryPickupAnyHand(buyer, product, checkActionBlocker: false);
-        stock.Remaining--;
-
-        _popup.PopupEntity(
-            _playerCulture.GetPlayerString(buyer, "wh40k-merchant-purchase-complete", ("price", offer.Price)),
-            uid,
-            buyer);
+        if (!CanTrade(buyer) || component.Receipts.Count >= 2048)
+        { Result(uid, buyer, args.Operation, "wh40k-service-busy"); return; }
+        var stock = component.CurrentStock.FirstOrDefault(entry => entry.Offer.Product.Id == args.Product);
+        var outcome = "wh40k-merchant-out-of-stock";
+        if (stock != null && Allowed(buyer, stock.Offer) && stock.Remaining > 0)
+        {
+            EntityUid? product = null;
+            var paid = false;
+            try
+            {
+                // Prepare before charging. Delivery to a hand is optional; the buyer owns the product on the floor too.
+                product = Spawn(stock.Offer.Product, Transform(buyer).Coordinates);
+                PurchasePrepared?.Invoke();
+                if (!CanTrade(buyer) || !ValidViewer(uid, component, buyer) || TerminatingOrDeleted(product.Value))
+                    outcome = "wh40k-service-failed";
+                else if (stock.Offer.Price <= 0 || !_bank.TryBankWithdraw(buyer, stock.Offer.Price))
+                    outcome = "wh40k-merchant-insufficient-funds";
+                else
+                {
+                    paid = true;
+                    stock.Remaining--;
+                    outcome = "wh40k-service-bought";
+                    _hands.TryPickupAnyHand(buyer, product.Value, checkActionBlocker: false);
+                }
+            }
+            catch (Exception error)
+            {
+                Log.Error($"Merchant purchase failed: {error}");
+                // A delivery placement error after payment leaves the paid item at the buyer's feet.
+                outcome = paid ? "wh40k-service-bought" : "wh40k-service-failed";
+            }
+            finally { if (!paid && product != null && Exists(product.Value)) QueueDel(product.Value); }
+        }
+        else if (stock != null && !Allowed(buyer, stock.Offer)) outcome = "wh40k-service-permission";
+        component.Receipts.Add(key, (args.Product, outcome));
+        Result(uid, buyer, args.Operation, outcome);
         UpdateUi(uid, component);
     }
 
     private void Refresh(EntityUid uid, MerchantComponent component)
     {
         component.CurrentStock.Clear();
+        component.CatalogId = Guid.NewGuid();
+        component.Receipts.Clear();
 
         var candidates = component.Offers
-            .Where(offer => offer.Weight > 0
-                           && offer.Price > 0
-                           && offer.MinStock > 0
+            .Take(64)
+            .Where(offer => offer.Weight is > 0 and <= 10000
+                           && offer.Price is > 0 and <= 1000000
+                           && offer.MinStock is > 0 and <= 100
                            && offer.MaxStock >= offer.MinStock
-                           && offer.MaxStock < int.MaxValue
+                           && offer.MaxStock <= 100
                            && _prototypes.TryIndex<EntityPrototype>(offer.Product, out var product)
-                           && !product.Abstract)
+                           && !product.Abstract && product.Components.ContainsKey("Item") &&
+                           !product.Components.ContainsKey("Wh40kNpcProtection") && !product.Components.ContainsKey("Wh40kQuestItem"))
             .DistinctBy(offer => offer.Product)
             .ToList();
 
-        var wanted = Math.Clamp(component.DisplayCount, 0, candidates.Count);
+        var wanted = Math.Clamp(component.DisplayCount, 0, Math.Min(32, candidates.Count));
         while (component.CurrentStock.Count < wanted && candidates.Count > 0)
         {
             var totalWeight = candidates.Sum(offer => offer.Weight);
@@ -278,7 +325,7 @@ public sealed class MerchantSystem : EntitySystem
         }
 
         component.RefreshNumber++;
-        component.NextRefreshAt = _timing.CurTime + TimeSpan.FromSeconds(Math.Max(1d, component.RefreshInterval.TotalSeconds));
+        component.NextRefreshAt = _timing.CurTime + TimeSpan.FromSeconds(Math.Clamp(component.RefreshInterval.TotalSeconds, 30d, 86400d));
         UpdateUi(uid, component);
     }
 
@@ -290,19 +337,21 @@ public sealed class MerchantSystem : EntitySystem
             return;
         }
 
-        var state = new MerchantUpdateState(
-            component.Title.Id,
-            component.Greeting.Id,
-            (float)Math.Max(0d, (component.NextRefreshAt - _timing.CurTime).TotalSeconds),
-            component.RefreshNumber,
-            component.CurrentStock.Select(entry => new MerchantOfferState(
-                entry.Offer.Product.Id,
-                entry.Offer.Price,
-                entry.Remaining,
-                entry.InitialStock,
-                entry.Offer.DisplayName?.Id,
-                entry.Offer.Description?.Id)).ToList());
-
-        _ui.SetUiState(uid, MerchantUiKey.Key, state);
+        foreach (var actor in _ui.GetActors(uid, MerchantUiKey.Key).ToArray())
+        {
+            var state = new MerchantUpdateState(
+                component.Title.Id,
+                component.Greeting.Id,
+                (float)Math.Max(0d, (component.NextRefreshAt - _timing.CurTime).TotalSeconds),
+                component.RefreshNumber,
+                component.CurrentStock.Where(entry => Allowed(actor, entry.Offer)).Select(entry => new MerchantOfferState(
+                    entry.Offer.Product.Id,
+                    entry.Offer.Price,
+                    entry.Remaining,
+                    entry.InitialStock,
+                    entry.Offer.DisplayName?.Id,
+                    entry.Offer.Description?.Id)).ToList(), component.CatalogId, component.Buyback != null);
+            _ui.ServerSendUiMessage(uid, MerchantUiKey.Key, state, actor);
+        }
     }
 }

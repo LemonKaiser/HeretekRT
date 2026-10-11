@@ -1,0 +1,39 @@
+wh40k-footfall-hab-sleepingvagrant-name = sleeping vagrant
+wh40k-footfall-hab-sleepingvagrant-desc = A denizen of Footfall's shadowy maintenance corridors.
+wh40k-footfall-hab-sleepingvagrant-marker = sleeping vagrant spawn source
+wh40k-footfall-hab-sleepingvagrant-chat = Hrr-r... leave my boot alone... ZZZ
+ent-MobWH40KFootfallSleepingVagrant = { wh40k-footfall-hab-sleepingvagrant-name }
+    .desc = { wh40k-footfall-hab-sleepingvagrant-desc }
+ent-MarkerWH40KFootfallSleepingVagrant = { wh40k-footfall-hab-sleepingvagrant-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-standingvagrant-name = philosopher vagrant
+wh40k-footfall-hab-standingvagrant-desc = A denizen of Footfall's shadowy maintenance corridors.
+wh40k-footfall-hab-standingvagrant-marker = philosopher vagrant spawn source
+wh40k-footfall-hab-standingvagrant-chat = If something isn't welded down, it's fair game. If it is, you just need a stronger torch.
+ent-MobWH40KFootfallStandingVagrant = { wh40k-footfall-hab-standingvagrant-name }
+    .desc = { wh40k-footfall-hab-standingvagrant-desc }
+ent-MarkerWH40KFootfallStandingVagrant = { wh40k-footfall-hab-standingvagrant-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-cryopriest-name = Father Declan
+wh40k-footfall-hab-cryopriest-desc = Preacher of the Sacred Stasis Sanctuary.
+wh40k-footfall-hab-cryopriest-marker = Father Declan spawn source (stasis preacher)
+wh40k-footfall-hab-cryopriest-title = Father Declan — Stasis Preacher
+wh40k-footfall-hab-cryopriest-intro = Peace be upon you, traveler. Here your vessel and labors find rest under the gaze of the Master of Mankind on Holy Terra.
+wh40k-footfall-hab-cryopriest-menu = How may I fortify your spirit before the sacred slumber?
+wh40k-footfall-hab-cryopriest-ask-pods = What are these caskets?
+wh40k-footfall-hab-cryopriest-pods = These are stasis arks. They shelter the body during a long rest, while the attendants preserve a record of permitted equipment. Wait for the rite to be confirmed: a closed hatch alone promises nothing. The ark will tell you if it cannot accept your belongings.
+wh40k-footfall-hab-cryopriest-ask-outside = What if I sleep on the floor?
+wh40k-footfall-hab-cryopriest-outside = Sleeping on the floor is rest, not the stasis rite. Your body and belongings remain here among passers-by. If you intend to leave Footfall for a long time, use an ark and wait for confirmation. Even a blessing cannot replace a locked store.
+wh40k-footfall-hab-cryopriest-ask-how = How to perform the rite?
+wh40k-footfall-hab-cryopriest-how = Approach a free ark, choose to enter, and confirm sleep in its window. Stay connected until the attendants confirm preservation. If the ark refuses and releases you, read its warning; the rite has not been completed.
+wh40k-footfall-hab-cryopriest-ask-blessing = Give me a blessing.
+wh40k-footfall-hab-cryopriest-blessing = May the God-Emperor shield your soul, and the tech-priests maintain the sacred circuits. Rest in peace, child of Terra.
+wh40k-footfall-hab-cryopriest-farewell = Go in peace. Before a long sleep, wait for the ark's answer; patience costs less than lost equipment.
+ent-MobWH40KFootfallCryoPriest = { wh40k-footfall-hab-cryopriest-name }
+    .desc = { wh40k-footfall-hab-cryopriest-desc }
+ent-MarkerWH40KFootfallCryoPriest = { wh40k-footfall-hab-cryopriest-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-marker-desc = Persistent spawn marker for habitation and stasis sanctuary scenes. Arrow indicates facing direction; save the map before initializing it.

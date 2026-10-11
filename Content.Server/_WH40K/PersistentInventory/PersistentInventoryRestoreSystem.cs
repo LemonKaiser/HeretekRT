@@ -264,6 +264,16 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
                     cancel);
             }
 
+            // Pre-commerce snapshots have no item title. Derive one from durable snapshot identity rather than
+            // minting a new title on every restore, so replaying the same legacy snapshot cannot resell its goods.
+            foreach (var item in finalPreparation.Payload.Entities)
+            {
+                if (item.Components.Any(component => component.ComponentId == "MerchantItemToken") ||
+                    !isolated.Entities.TryGetValue(item.EntityId, out var uid)) continue;
+                EntityManager.System<Content.Server._WH40K.Merchant.MerchantSystem>()
+                    .AssignLegacyTitle(uid, $"{reservation.SnapshotId}:{item.EntityId}");
+            }
+
             if (appliedMigrationActions.Count > 0)
             {
                 isolated = isolated with
@@ -276,7 +286,9 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
             }
 
             PersistentInventoryMetrics.ObserveMigrationActions(isolated.MigrationActions);
-            if (!TryPlaceExact(body, isolated, out var placementError))
+            string? placementError = null;
+            if (!EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSubmissionSystem>()
+                    .WithReservationPlacement(isolated.Entities.Values, () => TryPlaceExact(body, isolated, out placementError)))
             {
                 _serializer.DeleteIsolated(isolated);
                 isolated = null;
@@ -381,6 +393,11 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
             RemoveOperationLocks(body, isolated, reservation);
             locksApplied = false;
             _manager.CompleteRestore(reservation, boundHeader);
+            var quests = EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSessionSystem>();
+            quests.TrackWork(EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSubmissionSystem>()
+                .ReconcileAsync(reservation.UserId));
+            quests.TrackWork(EntityManager.System<Content.Server._WH40K.Merchant.MerchantSystem>()
+                .ReconcileSalesAsync(reservation.UserId));
             _adminLog.Add(
                 LogType.Mind,
                 LogImpact.High,

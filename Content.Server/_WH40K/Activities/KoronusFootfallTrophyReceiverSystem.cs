@@ -43,7 +43,7 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
             return;
 
         args.Handled = true;
-        if (!TryAcceptTrophy(uid, args.Used))
+        if (!TryAcceptTrophy(uid, args.Used, args.User))
         {
             _popup.PopupEntity(_playerCulture.GetPlayerString(args.User, "koronus-activity-delivery-rejected"), uid, args.User, PopupType.SmallCaution);
             return;
@@ -83,7 +83,7 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
     /// Authoritative item hand-off used by the interaction handler and integration coverage. It
     /// deliberately validates Footfall and the receiver again rather than trusting the caller.
     /// </summary>
-    public bool TryAcceptTrophy(EntityUid receiver, EntityUid item)
+    public bool TryAcceptTrophy(EntityUid receiver, EntityUid item, EntityUid? actor = null)
     {
         if (!TryComp<KoronusActivityTrophyReceiverComponent>(receiver, out var component) ||
             !IsFootfallReceiver(receiver) ||
@@ -92,6 +92,7 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
             return false;
         }
 
+        RaiseLocalEvent(new Content.Server._WH40K.Quests.Wh40kQuestIntakeEvent(receiver, item, actor));
         QueueDel(item);
         return true;
     }
@@ -109,6 +110,11 @@ public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
             return false;
         }
 
+        var actor = TryComp(patient, out Content.Shared.Movement.Pulling.Components.PullableComponent? pull) ? pull.Puller : null;
+        if (actor == null && TryComp(patient, out Content.Server.Carrying.BeingCarriedComponent? carried) &&
+            TryComp(carried.Carrier, out Content.Server.Carrying.CarryingComponent? carrier) && carrier.Carried == patient)
+            actor = carried.Carrier;
+        RaiseLocalEvent(new Content.Server._WH40K.Quests.Wh40kQuestIntakeEvent(receiver, patient, actor));
         QueueDel(patient);
         return true;
     }

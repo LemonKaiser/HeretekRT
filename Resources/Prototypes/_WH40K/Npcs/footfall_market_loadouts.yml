@@ -1,0 +1,52 @@
+- type: startingGear
+  id: WH40KFootfallMarketGuideGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    shoes: ClothingShoesGenBoots
+    gloves: ClothingHandsGlovesColorWhite
+    belt: ClothingBeltStorageWaistbag
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallBuildingSupplierGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    head: ClothingHeadHatHardhatYellow
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltUtility
+
+- type: startingGear
+  id: WH40KFootfallElectronicsVendorGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatLab
+    shoes: ClothingShoesColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltUtility
+    eyes: ClothingEyesGlasses
+
+- type: startingGear
+  id: WH40KFootfallBrokeShopperGear
+  equipment:
+    id: WH40KFootfallCitizenIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizen
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag
+
+- type: startingGear
+  id: WH40KFootfallSmugglerKassGear
+  equipment:
+    id: WH40KFootfallMerchantIDCard
+    jumpsuit: ClothingUniformJumpsuitImperialCitizenVest
+    outerClothing: ClothingOuterCoatImperialCitizen
+    neck: ClothingNeckCloakRainChs
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesColorBlack
+    belt: ClothingBeltStorageWaistbag

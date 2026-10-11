@@ -75,6 +75,14 @@ public sealed class PersistentInventoryShutdownSystem : EntitySystem
         bool markEpochClean,
         CancellationToken cancel)
     {
+        // Quest mutations have their own durable boundary and must drain even when inventory saving is disabled.
+        var quests = EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSessionSystem>();
+        try { await quests.DrainAsync(false); }
+        catch
+        {
+            if (source == PersistentInventorySaveSource.RoundRestart) await quests.ResumeAfterAbortedDrainAsync();
+            throw;
+        }
         if (!_configuration.GetCVar(CCVars.Wh40kPersistentInventoryEnabled))
             return new PersistentInventoryShutdownResult(0, 0, 0, false, 0, false);
 
@@ -215,6 +223,8 @@ public sealed class PersistentInventoryShutdownSystem : EntitySystem
             $"Persistent inventory {source} barrier completed: eligible {result.Eligible}, " +
             $"saved {result.Saved}, failed {result.Failed}, timedOut {result.TimedOut}, " +
             $"remainingBound {result.RemainingBound}, epochClean {result.EpochMarkedClean}, reason {reason}.");
+        if (source == PersistentInventorySaveSource.RoundRestart && !result.SafeToContinue)
+            await quests.ResumeAfterAbortedDrainAsync();
         return result;
     }
 

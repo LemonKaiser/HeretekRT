@@ -1,5 +1,6 @@
 ﻿using Content.Shared.ActionBlocker;
 using Content.Shared.Interaction;
+using Content.Shared._WH40K.SectorMap;
 
 namespace Content.Shared.DragDrop;
 
@@ -7,6 +8,7 @@ public abstract partial class SharedDragDropSystem : EntitySystem
 {
     [Dependency] private ActionBlockerSystem _actionBlockerSystem = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedKoronusInfrastructureSystem _infrastructure = default!;
 
     public override void Initialize()
     {
@@ -20,6 +22,9 @@ public abstract partial class SharedDragDropSystem : EntitySystem
         var target = GetEntity(msg.Target);
 
         if (Deleted(dragged) || Deleted(target))
+            return;
+
+        if (_infrastructure.IsReadOnly(target) || _infrastructure.IsReadOnly(dragged))
             return;
 
         var user = args.SenderSession.AttachedEntity;

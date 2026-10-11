@@ -1,0 +1,343 @@
+# Disposable foundation fixtures. No production map or spawner references these entities.
+- type: wh40kNpcProfile
+  id: WH40KQuestTestGiver
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  role: QuestTestGiver
+  department: test
+  kind: Special
+  exclusivity: Exclusive
+  services: [Quests, Social]
+  allowedObjectives: [KillEntity, CollectItem, DeliverItem, ReachLocation, TalkToNpc, InteractWithEntity, CompleteActivity]
+  gear: WH40KFootfallCitizenGear
+  dialogue: WH40KQuestTestGreeting
+
+- type: wh40kNpcProfile
+  id: WH40KQuestTestReceiver
+  name: wh40k-quest-test-receiver-name
+  description: wh40k-quest-test-receiver-desc
+  role: QuestTestReceiver
+  department: test
+  kind: Special
+  exclusivity: NonExclusive
+  services: [Social]
+  gear: WH40KFootfallCitizenGear
+  dialogue: WH40KQuestTestGreeting
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestGiver
+  profile: WH40KQuestTestGiver
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestReceiver
+  profile: WH40KQuestTestReceiver
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestTalk
+  profile: WH40KQuestTestReceiver
+
+- type: wh40kDialogue
+  id: WH40KQuestTestGreeting
+  repeatable: true
+  steps:
+  - speaker: npc
+    text: wh40k-quest-test-greeting
+
+- type: entity
+  id: WH40KQuestTestGiverMarker
+  parent: MarkerBase
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestGiver
+
+- type: entity
+  id: WH40KQuestTestReceiverMarker
+  parent: WH40KQuestTestGiverMarker
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestReceiver
+
+- type: entity
+  id: WH40KQuestTestTalkMarker
+  parent: WH40KQuestTestGiverMarker
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestTalk
+
+- type: entity
+  id: WH40KQuestTestGiver
+  parent: MobHuman
+  suffix: WH40K, Quest test only
+  save: false
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestGiver
+  - type: Godmode
+  - type: HTN
+    rootTask:
+      task: WH40KMerchantIdleCompound
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+  - type: DialogueInteractable
+    dialogue: WH40KQuestTestGreeting
+
+- type: entity
+  id: WH40KQuestTestReceiver
+  parent: WH40KQuestTestGiver
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestReceiver
+
+- type: entity
+  id: WH40KQuestTestTalk
+  parent: WH40KQuestTestGiver
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestTalk
+
+- type: entity
+  id: WH40KQuestTestHostile
+  parent: MobHuman
+  suffix: WH40K, Quest test only
+  save: false
+  components:
+  - type: HTN
+    rootTask:
+      task: WH40KMerchantIdleCompound
+  - type: NpcFactionMember
+    factions: [SimpleHostile]
+
+- type: entity
+  id: WH40KQuestTestMarkedItem
+  parent: KoronusAivoriusCargoManifest
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kQuestItem
+
+- type: entity
+  id: WH40KQuestTestLookalike
+  parent: KoronusAivoriusCargoManifest
+  suffix: WH40K, Quest test only
+
+- type: entity
+  id: WH40KQuestTestStack
+  parent: SheetSteel10
+  suffix: WH40K, Quest test only
+
+- type: entity
+  id: WH40KQuestTestLocation
+  parent: MarkerBase
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kQuestLocation
+    key: quest-test-location
+    kind: PointOfInterest
+
+- type: entity
+  id: WH40KQuestTestPatient
+  parent: KoronusSottosRescuePatient
+  suffix: WH40K, Quest test only
+
+- type: entity
+  id: WH40KQuestTestMachine
+  parent: ComputerFrame
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kQuestInteractionTarget
+
+- type: entity
+  id: WH40KQuestTestActivityObjective
+  parent: KoronusMissionBlackBox
+  suffix: WH40K, Quest test only
+
+- type: wh40kQuest
+  id: WH40KQuestTestKill
+  enabled: false
+  title: wh40k-quest-test-kill-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: kill
+    kind: KillEntity
+    text: wh40k-quest-test-kill-objective
+    requiredCount: 2
+    target: { kind: Entity, entity: WH40KQuestTestHostile }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestCollect
+  enabled: false
+  title: wh40k-quest-test-collect-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: collect
+    kind: CollectItem
+    text: wh40k-quest-test-collect-objective
+    requiredCount: 3
+    target: { kind: Entity, entity: WH40KQuestTestStack }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestDeliver
+  enabled: false
+  title: wh40k-quest-test-deliver-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: deliver
+    kind: DeliverItem
+    text: wh40k-quest-test-deliver-objective
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KQuestTestMarkedItem }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestReach
+  enabled: false
+  title: wh40k-quest-test-reach-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: reach
+    kind: ReachLocation
+    text: wh40k-quest-test-reach-objective
+    requiredCount: 1
+    target: { kind: Location, locationKind: PointOfInterest, system: Footfall, locationKey: quest-test-location, radius: 3 }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestTalk
+  enabled: false
+  title: wh40k-quest-test-talk-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: talk
+    kind: TalkToNpc
+    text: wh40k-quest-test-talk-objective
+    requiredCount: 1
+    target: { kind: NpcAnchor, anchors: [WH40KQuestTestTalk], dialogue: WH40KQuestTestGreeting }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestInteract
+  enabled: false
+  title: wh40k-quest-test-interact-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: interact
+    kind: InteractWithEntity
+    text: wh40k-quest-test-interact-objective
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KQuestTestMachine }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuest
+  id: WH40KQuestTestActivity
+  enabled: false
+  title: wh40k-quest-test-activity-title
+  description: wh40k-quest-test-description
+  issuer: WH40KQuestTestGiver
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: activity
+    kind: CompleteActivity
+    text: wh40k-quest-test-activity-objective
+    requiredCount: 1
+    target: { kind: Activity, activity: AuspexTriage, terminalReason: Completed }
+  rewards:
+  - entryId: mission-xp
+    kind: Experience
+    amount: 100
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: ration
+    kind: Item
+    amount: 1
+    item: FoodSnackImperialHardtack
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestPool
+  source: WH40KQuestTestGiver
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestKill
+    weight: 1
+  - quest: WH40KQuestTestCollect
+    weight: 1
+  - quest: WH40KQuestTestDeliver
+    weight: 1
+  - quest: WH40KQuestTestReach
+    weight: 1
+  - quest: WH40KQuestTestTalk
+    weight: 1
+  - quest: WH40KQuestTestInteract
+    weight: 1
+  - quest: WH40KQuestTestActivity
+    weight: 1

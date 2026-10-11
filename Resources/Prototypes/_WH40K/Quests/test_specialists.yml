@@ -1,0 +1,824 @@
+- type: wh40kNpcProfile
+  id: WH40KQuestTestSpecialist
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  role: QuestSpecialistFixture
+  department: test
+  kind: Special
+  exclusivity: NonExclusive
+  services: [Quests, Social]
+  allowedObjectives: [CollectEvidence, CompleteActivity, DecodeSignal, DeliverEntity, DiscoverLocation, EscortEntity, ExtractResource, FactionDecision, InstallComponent, InvestigateLocation, PayDebtOrFee, ProtectTarget, RecoverActivityObjective, ScanOrAnalyze, TalkToNpc]
+  gear: WH40KFootfallCitizenGear
+  dialogue: WH40KQuestTestGreeting
+
+- type: entity
+  id: MobWH40KQuestTestSpecialistBase
+  parent: MobWH40KFootfallNpcBase
+  abstract: true
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+  - type: DialogueInteractable
+    dialogue: WH40KQuestTestGreeting
+    interactionRange: 3
+    maxDialogueRange: 3
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestAtheliaVoss
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestAtheliaVoss
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestAtheliaVoss
+
+- type: entity
+  id: MarkerWH40KQuestTestAtheliaVoss
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestAtheliaVoss
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestAtheliaVoss
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestAulusRenn
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestAulusRenn
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestAulusRenn
+
+- type: entity
+  id: MarkerWH40KQuestTestAulusRenn
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestAulusRenn
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestAulusRenn
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestCaldusMire
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestCaldusMire
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestCaldusMire
+
+- type: entity
+  id: MarkerWH40KQuestTestCaldusMire
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestCaldusMire
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestCaldusMire
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestCenser
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestCenser
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestCenser
+
+- type: entity
+  id: MarkerWH40KQuestTestCenser
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestCenser
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestCenser
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestFioTarsis
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestFioTarsis
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestFioTarsis
+
+- type: entity
+  id: MarkerWH40KQuestTestFioTarsis
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestFioTarsis
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestFioTarsis
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestGarrickMorn
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestGarrickMorn
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestGarrickMorn
+
+- type: entity
+  id: MarkerWH40KQuestTestGarrickMorn
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestGarrickMorn
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestGarrickMorn
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestMirenSol
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestMirenSol
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestMirenSol
+
+- type: entity
+  id: MarkerWH40KQuestTestMirenSol
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestMirenSol
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestMirenSol
+
+- type: wh40kNpcAnchor
+  id: WH40KQuestTestYsabelKord
+  profile: WH40KQuestTestSpecialist
+
+- type: entity
+  id: MobWH40KQuestTestYsabelKord
+  parent: MobWH40KQuestTestSpecialistBase
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: WH40KQuestTestYsabelKord
+
+- type: entity
+  id: MarkerWH40KQuestTestYsabelKord
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: WH40KQuestTestYsabelKord
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KQuestTestYsabelKord
+
+- type: entity
+  id: MobWH40KQuestTestAmbientBase
+  parent: MobHuman
+  abstract: true
+  save: false
+  components:
+  - type: Wh40kNpcProtection
+  - type: Godmode
+  - type: RandomHumanoidAppearance
+    randomizeName: true
+  - type: HTN
+    rootTask:
+      task: WH40KMerchantIdleCompound
+    sleepPlayerCheckRangeOverride: 8
+  - type: Advertise
+    minimumWait: 60
+    maximumWait: 150
+    prewarm: false
+    pack: WH40KQuestTestAmbientWorkerChatter
+
+- type: entity
+  id: MobWH40KQuestTestAmbientWorker
+  parent: MobWH40KQuestTestAmbientBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kAmbientNpc
+    profile: WH40KQuestTestAmbientWorker
+  - type: Loadout
+    prototypes: [WH40KFootfallMedicaeGear, WH40KFootfallMedicaeAssistantGear]
+  - type: Advertise
+    pack: WH40KQuestTestAmbientWorkerChatter
+
+- type: entity
+  id: MarkerWH40KQuestTestAmbientWorker
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KQuestTestAmbientWorker
+
+- type: localizedDataset
+  id: WH40KQuestTestAmbientWorkerChatter
+  values:
+    prefix: wh40k-quest-test-ambient-worker-line-
+    count: 4
+
+- type: entity
+  id: MobWH40KQuestTestAmbientResident
+  parent: MobWH40KQuestTestAmbientBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kAmbientNpc
+    profile: WH40KQuestTestAmbientResident
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear, WH40KFootfallCitizenVestGear, WH40KFootfallLaborerGear, WH40KFootfallPilgrimGear]
+  - type: Advertise
+    pack: WH40KQuestTestAmbientResidentChatter
+
+- type: entity
+  id: MarkerWH40KQuestTestAmbientResident
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  suffix: WH40K, Quest test only
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KQuestTestAmbientResident
+
+- type: wh40kNpcProfile
+  id: WH40KQuestTestAmbientWorker
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  role: DepartmentWorker
+  department: medicae
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMedicae
+  gear: WH40KFootfallMedicaeGear
+  services: [Social]
+  chatter: WH40KQuestTestAmbientWorkerChatter
+
+- type: wh40kNpcProfile
+  id: WH40KQuestTestAmbientResident
+  name: wh40k-quest-test-giver-name
+  description: wh40k-quest-test-giver-desc
+  role: Resident
+  department: public
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenGear
+  services: [Social]
+  chatter: WH40KQuestTestAmbientResidentChatter
+
+- type: localizedDataset
+  id: WH40KQuestTestAmbientResidentChatter
+  values:
+    prefix: wh40k-quest-test-ambient-resident-line-
+    count: 4
+- type: wh40kQuest
+  id: WH40KQuestTestSignal
+  enabled: false
+  title: wh40k-specialist-quest-signal-title
+  description: wh40k-specialist-quest-signal-desc
+  issuer: WH40KQuestTestMirenSol
+  objectiveOrder: Sequential
+  objectives:
+  - id: decode
+    kind: DecodeSignal
+    text: wh40k-specialist-quest-signal-decode
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallSignalTerminal }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestArchive
+  enabled: false
+  title: wh40k-specialist-quest-archive-title
+  description: wh40k-specialist-quest-archive-desc
+  issuer: WH40KQuestTestFioTarsis
+  objectiveOrder: Sequential
+  prerequisites: [WH40KQuestTestSignal]
+  objectives:
+  - id: scan
+    kind: ScanOrAnalyze
+    text: wh40k-specialist-quest-archive-scan
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallArchiveTerminal }
+  - id: witness
+    kind: TalkToNpc
+    text: wh40k-specialist-quest-archive-witness
+    requiredCount: 1
+    target: { kind: NpcAnchor, anchors: [WH40KQuestTestFioTarsis], dialogue: WH40KQuestTestGreeting }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestEvidence
+  enabled: false
+  title: wh40k-specialist-quest-evidence-title
+  description: wh40k-specialist-quest-evidence-desc
+  issuer: WH40KQuestTestYsabelKord
+  objectiveOrder: Sequential
+  prerequisites: [WH40KQuestTestArchive]
+  objectives:
+  - id: evidence
+    kind: CollectEvidence
+    text: wh40k-specialist-quest-evidence-evidence
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallSealedEvidence, caseKey: footfall-signal }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestImperialChoice
+  enabled: false
+  title: wh40k-specialist-quest-imperialchoice-title
+  description: wh40k-specialist-quest-imperialchoice-desc
+  issuer: WH40KQuestTestAulusRenn
+  objectiveOrder: Sequential
+  branchGroup: FootfallSignal
+  branchChoice: Imperial
+  prerequisites: [WH40KQuestTestEvidence]
+  objectives:
+  - id: decision
+    kind: FactionDecision
+    text: wh40k-specialist-quest-imperialchoice-decision
+    requiredCount: 1
+    target: { kind: NpcAnchor, anchors: [WH40KQuestTestAulusRenn], dialogue: WH40KQuestTestGreeting }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+  - entryId: reputation
+    kind: FactionReputation
+    faction: FootfallAdministratum
+    amount: 10
+  - entryId: clearance
+    kind: Access
+    access: WH40KFootfallImperialPermit
+  - entryId: resolved
+    kind: Flag
+    flag: FootfallSignalImperial
+
+- type: wh40kQuest
+  id: WH40KQuestTestMechanicusChoice
+  enabled: false
+  title: wh40k-specialist-quest-mechanicuschoice-title
+  description: wh40k-specialist-quest-mechanicuschoice-desc
+  issuer: WH40KQuestTestCenser
+  objectiveOrder: Sequential
+  branchGroup: FootfallSignal
+  branchChoice: Mechanicus
+  prerequisites: [WH40KQuestTestEvidence]
+  objectives:
+  - id: decision
+    kind: FactionDecision
+    text: wh40k-specialist-quest-mechanicuschoice-decision
+    requiredCount: 1
+    target: { kind: NpcAnchor, anchors: [WH40KQuestTestCenser], dialogue: WH40KQuestTestGreeting }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+  - entryId: reputation
+    kind: FactionReputation
+    faction: FootfallMechanicus
+    amount: 10
+  - entryId: clearance
+    kind: Access
+    access: WH40KFootfallMechanicusPermit
+  - entryId: resolved
+    kind: Flag
+    flag: FootfallSignalMechanicus
+
+- type: wh40kQuest
+  id: WH40KQuestTestDispatch
+  enabled: false
+  title: wh40k-specialist-quest-dispatch-title
+  description: wh40k-specialist-quest-dispatch-desc
+  issuer: WH40KQuestTestMirenSol
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: sealed
+    kind: CollectEvidence
+    text: wh40k-specialist-quest-dispatch-sealed
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallSealedDispatch, caseKey: footfall-dispatch }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestPermitFee
+  enabled: false
+  title: wh40k-specialist-quest-permitfee-title
+  description: wh40k-specialist-quest-permitfee-desc
+  issuer: WH40KQuestTestAulusRenn
+  objectiveOrder: Sequential
+  objectives:
+  - id: fee
+    kind: PayDebtOrFee
+    text: wh40k-specialist-quest-permitfee-fee
+    requiredCount: 20
+    target: { kind: NpcAnchor, anchors: [WH40KQuestTestAulusRenn], sourceItem: SpaceCash }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: permit
+    kind: Flag
+    flag: FootfallFeePaid
+
+- type: wh40kQuest
+  id: WH40KQuestTestInstallation
+  enabled: false
+  title: wh40k-specialist-quest-installation-title
+  description: wh40k-specialist-quest-installation-desc
+  issuer: WH40KQuestTestCenser
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: install
+    kind: InstallComponent
+    text: wh40k-specialist-quest-installation-install
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallInstallationTerminal, sourceItem: DataChipImp }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestExpedition
+  enabled: false
+  title: wh40k-specialist-quest-expedition-title
+  description: wh40k-specialist-quest-expedition-desc
+  issuer: WH40KQuestTestCaldusMire
+  objectiveOrder: Sequential
+  ownerScope: Party
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: activity
+    kind: CompleteActivity
+    text: wh40k-specialist-quest-expedition-activity
+    requiredCount: 1
+    target: { kind: Activity, activity: AivoriusBlackBoxSetPiece, terminalReason: Completed }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestRecovery
+  enabled: false
+  title: wh40k-specialist-quest-recovery-title
+  description: wh40k-specialist-quest-recovery-desc
+  issuer: WH40KQuestTestFioTarsis
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: recover
+    kind: RecoverActivityObjective
+    text: wh40k-specialist-quest-recovery-recover
+    requiredCount: 1
+    target: { kind: Activity, activity: AivoriusBlackBoxSetPiece, terminalReason: Completed }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestEscort
+  enabled: false
+  title: wh40k-specialist-quest-escort-title
+  description: wh40k-specialist-quest-escort-desc
+  issuer: WH40KQuestTestAtheliaVoss
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: escort
+    kind: EscortEntity
+    text: wh40k-specialist-quest-escort-escort
+    requiredCount: 1
+    target: { kind: Entity, entity: MobWH40KFootfallQuestPilgrim, caseKey: footfall-pilgrim, destination: WH40KQuestTestAtheliaVoss }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestVigil
+  enabled: false
+  title: wh40k-specialist-quest-vigil-title
+  description: wh40k-specialist-quest-vigil-desc
+  issuer: WH40KQuestTestAtheliaVoss
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: protect
+    kind: ProtectTarget
+    text: wh40k-specialist-quest-vigil-protect
+    requiredCount: 30
+    target: { kind: Entity, entity: MobWH40KFootfallQuestPilgrim, caseKey: footfall-pilgrim, durationSeconds: 30 }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestExtraction
+  enabled: false
+  title: wh40k-specialist-quest-extraction-title
+  description: wh40k-specialist-quest-extraction-desc
+  issuer: WH40KQuestTestGarrickMorn
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: extract
+    kind: ExtractResource
+    text: wh40k-specialist-quest-extraction-extract
+    requiredCount: 3
+    target: { kind: Entity, entity: SteelOre1 }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestDiscovery
+  enabled: false
+  title: wh40k-specialist-quest-discovery-title
+  description: wh40k-specialist-quest-discovery-desc
+  issuer: WH40KQuestTestGarrickMorn
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: discover
+    kind: DiscoverLocation
+    text: wh40k-specialist-quest-discovery-discover
+    requiredCount: 1
+    target: { kind: Location, locationKind: System, system: Trinnitos }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestInvestigation
+  enabled: false
+  title: wh40k-specialist-quest-investigation-title
+  description: wh40k-specialist-quest-investigation-desc
+  issuer: WH40KQuestTestFioTarsis
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: investigate
+    kind: InvestigateLocation
+    text: wh40k-specialist-quest-investigation-investigate
+    requiredCount: 1
+    target: { kind: Location, locationKind: Grid, system: Footfall, locationKey: footfall-dock-grid }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KQuestTestArchiveIntake
+  enabled: false
+  title: wh40k-specialist-quest-intake-title
+  description: wh40k-specialist-quest-intake-desc
+  issuer: WH40KQuestTestFioTarsis
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: intake
+    kind: DeliverEntity
+    text: wh40k-specialist-quest-intake-objective
+    target: { kind: Entity, entity: KoronusMissionBlackBox, destination: WH40KQuestTestFioTarsis }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+- type: wh40kQuestPool
+  id: WH40KQuestTestYsabelKordPool
+  source: WH40KQuestTestYsabelKord
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestEvidence
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestFioTarsisPool
+  source: WH40KQuestTestFioTarsis
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestArchiveIntake
+    weight: 1
+  - quest: WH40KQuestTestArchive
+    weight: 1
+  - quest: WH40KQuestTestRecovery
+    weight: 1
+  - quest: WH40KQuestTestInvestigation
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestMirenSolPool
+  source: WH40KQuestTestMirenSol
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestSignal
+    weight: 1
+  - quest: WH40KQuestTestDispatch
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestAulusRennPool
+  source: WH40KQuestTestAulusRenn
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestImperialChoice
+    weight: 1
+  - quest: WH40KQuestTestPermitFee
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestCenserPool
+  source: WH40KQuestTestCenser
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestMechanicusChoice
+    weight: 1
+  - quest: WH40KQuestTestInstallation
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestCaldusMirePool
+  source: WH40KQuestTestCaldusMire
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestExpedition
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestAtheliaVossPool
+  source: WH40KQuestTestAtheliaVoss
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestEscort
+    weight: 1
+  - quest: WH40KQuestTestVigil
+    weight: 1
+
+- type: wh40kQuestPool
+  id: WH40KQuestTestGarrickMornPool
+  source: WH40KQuestTestGarrickMorn
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KQuestTestExtraction
+    weight: 1
+  - quest: WH40KQuestTestDiscovery
+    weight: 1
+

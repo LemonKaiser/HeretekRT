@@ -1,0 +1,498 @@
+- type: wh40kDialogue
+  id: WH40KFootfallMarisVeyra
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-marisveyra-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-marisveyra-service
+    choices:
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallMarisVeyraPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallContacts
+      - type: QuestActive
+        quest: WH40KFootfallContacts
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallContacts
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallContacts
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallContacts
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-pressure
+        nextStep: service
+    - text: wh40k-footfall-administration-maris-guide-choice
+      nextStep: maris-guide
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-marisveyra-tell
+        nextStep: service
+    - text: wh40k-footfall-lore-marisveyra-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-marisveyra-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-marisveyra-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-marisveyra-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: maris-guide
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-administration-maris-guide-intro
+    choices:
+    - text: wh40k-footfall-administration-maris-guide-port-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-maris-guide-port-reply
+        nextStep: maris-guide
+    - text: wh40k-footfall-administration-maris-guide-authority-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-maris-guide-authority-reply
+        nextStep: maris-guide
+    - text: wh40k-footfall-administration-maris-guide-begin-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-maris-guide-begin-reply
+        nextStep: maris-guide
+    - text: wh40k-footfall-administration-maris-guide-law-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-maris-guide-law-reply
+        nextStep: maris-guide
+    - text: wh40k-footfall-administration-maris-guide-work-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-maris-guide-work-reply
+        nextStep: maris-guide
+    - text: wh40k-footfall-administration-maris-guide-back
+      nextStep: service
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-marisveyra-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallHestVarn
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-hestvarn-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-hestvarn-service
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallHestVarnPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallCargo
+      - type: QuestActive
+        quest: WH40KFootfallCargo
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallCargo
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallCargo
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallCargo
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-tell
+        nextStep: service
+    - text: wh40k-footfall-dialogue-hestvarn-pickup-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-pickup-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-hestvarn-mining-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-hestvarn-mining-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-hestvarn-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-hestvarn-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-hestvarn-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-hestvarn-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-hestvarn-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallAvelineQuill
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-avelinequill-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-avelinequill-service
+    choices:
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallAvelineQuillPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallGrid
+      - type: QuestActive
+        quest: WH40KFootfallGrid
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallGrid
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallGrid
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallGrid
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-pressure
+        nextStep: service
+    - text: wh40k-footfall-administration-aveline-guide-choice
+      nextStep: aveline-guide
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-avelinequill-tell
+        nextStep: service
+    - text: wh40k-footfall-lore-avelinequill-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-avelinequill-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-avelinequill-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-avelinequill-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: aveline-guide
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-administration-aveline-guide-intro
+    choices:
+    - text: wh40k-footfall-administration-aveline-guide-purchase-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-purchase-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-arrival-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-arrival-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-deed-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-deed-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-helm-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-helm-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-prepare-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-prepare-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-sectors-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-sectors-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-uses-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-uses-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-sell-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-sell-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-refusal-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-refusal-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-void-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-administration-aveline-guide-void-reply
+        nextStep: aveline-guide
+    - text: wh40k-footfall-administration-aveline-guide-chart
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-administration-aveline-guide-back
+      nextStep: service
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-avelinequill-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallOmicronKhepra
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-omicronkhepra-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-omicronkhepra-service
+    choices:
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallOmicronKhepraPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallDiagnostics
+      - type: QuestActive
+        quest: WH40KFootfallDiagnostics
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallDiagnostics
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallDiagnostics
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallDiagnostics
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-omicronkhepra-tell
+        nextStep: service
+    - text: wh40k-footfall-lore-omicronkhepra-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-omicronkhepra-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-omicronkhepra-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-omicronkhepra-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-omicronkhepra-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallSeraHolt
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-seraholt-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-seraholt-service
+    choices:
+    - text: wh40k-footfall-dialogue-work
+      actions:
+      - type: OfferQuest
+        questPool: WH40KFootfallSeraHoltPool
+      - type: OpenQuestLog
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-accept
+      conditions:
+      - type: QuestAvailable
+        quest: WH40KFootfallNutrition
+      - type: QuestActive
+        quest: WH40KFootfallNutrition
+        value: false
+      actions:
+      - type: AcceptQuest
+        quest: WH40KFootfallNutrition
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-accepted
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-turn-in
+      conditions:
+      - type: QuestReadyToTurnIn
+        quest: WH40KFootfallNutrition
+      actions:
+      - type: TurnInQuest
+        quest: WH40KFootfallNutrition
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-payoff
+        nextStep: service
+      failureResponseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-pressure
+        nextStep: service
+    - text: wh40k-footfall-dialogue-tell
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-seraholt-tell
+        nextStep: service
+    - text: wh40k-footfall-lore-seraholt-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-seraholt-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-seraholt-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-seraholt-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-seraholt-farewell

@@ -1,0 +1,99 @@
+- type: entity
+  id: WH40KFootfallOldVoyageChart
+  parent: WH40KHartyRelic
+  name: wh40k-footfall-market-oldvoyagechart-name
+  description: wh40k-footfall-market-oldvoyagechart-desc
+  suffix: WH40K, Footfall, Collectible
+  components:
+  - type: StaticPrice
+    price: 40
+
+- type: entity
+  id: WH40KFootfallOldDockSeal
+  parent: WH40KHartyRelic
+  name: wh40k-footfall-market-olddockseal-name
+  description: wh40k-footfall-market-olddockseal-desc
+  suffix: WH40K, Footfall, Collectible
+  components:
+  - type: StaticPrice
+    price: 25
+
+- type: entity
+  id: WH40KFootfallSteelBundle
+  parent: SheetSteel
+  name: wh40k-footfall-market-steel-bundle-name
+  description: wh40k-footfall-market-steel-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallGlassBundle
+  parent: SheetGlass
+  name: wh40k-footfall-market-glass-bundle-name
+  description: wh40k-footfall-market-glass-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallPlasticBundle
+  parent: SheetPlastic
+  name: wh40k-footfall-market-plastic-bundle-name
+  description: wh40k-footfall-market-plastic-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallWoodBundle
+  parent: MaterialWoodPlank
+  name: wh40k-footfall-market-wood-bundle-name
+  description: wh40k-footfall-market-wood-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallRodBundle
+  parent: PartRodMetal
+  name: wh40k-footfall-market-rod-bundle-name
+  description: wh40k-footfall-market-rod-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallClothBundle
+  parent: MaterialCloth
+  name: wh40k-footfall-market-cloth-bundle-name
+  description: wh40k-footfall-market-cloth-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallCardboardBundle
+  parent: MaterialCardboard
+  name: wh40k-footfall-market-cardboard-bundle-name
+  description: wh40k-footfall-market-cardboard-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 50
+
+- type: entity
+  id: WH40KFootfallFloorBundle
+  parent: FloorTileItemSteel
+  name: wh40k-footfall-market-floor-bundle-name
+  description: wh40k-footfall-market-floor-bundle-desc
+  suffix: WH40K, Footfall, Building supplies
+  components:
+  - type: Stack
+    count: 30

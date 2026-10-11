@@ -108,7 +108,7 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
         }
 
         args.Handled = true;
-        if (!_director.TryCompleteObjective(component.InstanceId, uid))
+        if (!_director.TryCompleteObjective(component.InstanceId, uid, args.User))
         {
             _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
             return;

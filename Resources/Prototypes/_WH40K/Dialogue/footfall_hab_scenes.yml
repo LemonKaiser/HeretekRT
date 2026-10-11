@@ -1,0 +1,50 @@
+- type: wh40kDialogue
+  id: WH40KFootfallCryoPriest
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-hab-cryopriest-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-hab-cryopriest-menu
+    choices:
+    - text: wh40k-footfall-hab-cryopriest-ask-pods
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-hab-cryopriest-pods
+        nextStep: service
+    - text: wh40k-footfall-hab-cryopriest-ask-outside
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-hab-cryopriest-outside
+        nextStep: service
+    - text: wh40k-footfall-hab-cryopriest-ask-how
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-hab-cryopriest-how
+        nextStep: service
+    - text: wh40k-footfall-hab-cryopriest-ask-blessing
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-hab-cryopriest-blessing
+        nextStep: service
+    - text: wh40k-footfall-lore-cryopriest-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-cryopriest-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-cryopriest-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-cryopriest-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-hab-cryopriest-farewell

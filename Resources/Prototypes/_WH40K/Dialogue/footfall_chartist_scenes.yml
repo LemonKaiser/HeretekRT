@@ -1,0 +1,84 @@
+- type: wh40kDialogue
+  id: WH40KFootfallChartistOfficer
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistofficer-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistofficer-menu
+    choices:
+    - text: wh40k-footfall-dialogue-chartistofficer-lore-charter-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistofficer-lore-charter-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-chartistofficer-lore-roguetraders-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistofficer-lore-roguetraders-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-chartistofficer-lore-maw-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistofficer-lore-maw-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-chartistofficer-lore-macrotransports-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistofficer-lore-macrotransports-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-chartistofficer-lore-footfall-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistofficer-lore-footfall-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistofficer-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallChartistMerchant
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistmerchant-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistmerchant-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-dialogue-chartistmerchant-lore-goods-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-chartistmerchant-lore-goods-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-chartistmerchant-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-chartistmerchant-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-chartistmerchant-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-chartistmerchant-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-chartistmerchant-farewell

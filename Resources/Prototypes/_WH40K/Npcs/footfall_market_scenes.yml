@@ -1,0 +1,413 @@
+- type: wh40kNpcProfile
+  id: FootfallEdricMoss
+  name: wh40k-footfall-market-edricmoss-name
+  description: wh40k-footfall-market-edricmoss-desc
+  role: EdricMoss
+  department: streetMarket
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  services: [Social]
+  gear: WH40KFootfallMarketGuideGear
+  dialogue: WH40KFootfallEdricMoss
+
+- type: wh40kNpcAnchor
+  id: FootfallEdricMoss
+  profile: FootfallEdricMoss
+
+- type: entity
+  id: MobWH40KFootfallEdricMoss
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-market-edricmoss-name
+  description: wh40k-footfall-market-edricmoss-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallEdricMoss
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallMarketGuideGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallEdricMoss
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  id: MarkerWH40KFootfallEdricMoss
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-edricmoss-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallEdricMoss
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallEdricMoss
+
+- type: wh40kNpcProfile
+  id: FootfallBorsGrant
+  name: wh40k-footfall-market-borsgrant-name
+  description: wh40k-footfall-market-borsgrant-desc
+  role: BorsGrant
+  department: streetMarket
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  services: [Trade, Social]
+  gear: WH40KFootfallBuildingSupplierGear
+  dialogue: WH40KFootfallBorsGrant
+
+- type: wh40kNpcAnchor
+  id: FootfallBorsGrant
+  profile: FootfallBorsGrant
+
+- type: entity
+  id: MobWH40KFootfallBorsGrant
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-market-borsgrant-name
+  description: wh40k-footfall-market-borsgrant-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallBorsGrant
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallBuildingSupplierGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallBorsGrant
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-market-borsgrant-title
+    greeting: wh40k-footfall-market-borsgrant-intro
+    refreshInterval: 900
+    displayCount: 8
+    offers:
+    - product: WH40KFootfallSteelBundle
+      price: 500
+      minStock: 80
+      maxStock: 80
+    - product: WH40KFootfallGlassBundle
+      price: 600
+      minStock: 60
+      maxStock: 60
+    - product: WH40KFootfallPlasticBundle
+      price: 800
+      minStock: 60
+      maxStock: 60
+    - product: WH40KFootfallWoodBundle
+      price: 800
+      minStock: 60
+      maxStock: 60
+    - product: WH40KFootfallRodBundle
+      price: 400
+      minStock: 60
+      maxStock: 60
+    - product: WH40KFootfallClothBundle
+      price: 400
+      minStock: 40
+      maxStock: 40
+    - product: WH40KFootfallCardboardBundle
+      price: 100
+      minStock: 40
+      maxStock: 40
+    - product: WH40KFootfallFloorBundle
+      price: 300
+      minStock: 60
+      maxStock: 60
+
+- type: entity
+  id: MarkerWH40KFootfallBorsGrant
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-borsgrant-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallBorsGrant
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallBorsGrant
+
+- type: wh40kNpcProfile
+  id: FootfallNeraQuinn
+  name: wh40k-footfall-market-neraquinn-name
+  description: wh40k-footfall-market-neraquinn-desc
+  role: NeraQuinn
+  department: streetMarket
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallIndependentTrade
+  services: [Trade, Social]
+  gear: WH40KFootfallElectronicsVendorGear
+  dialogue: WH40KFootfallNeraQuinn
+
+- type: wh40kNpcAnchor
+  id: FootfallNeraQuinn
+  profile: FootfallNeraQuinn
+
+- type: entity
+  id: MobWH40KFootfallNeraQuinn
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-market-neraquinn-name
+  description: wh40k-footfall-market-neraquinn-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallNeraQuinn
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallElectronicsVendorGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallNeraQuinn
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-market-neraquinn-title
+    greeting: wh40k-footfall-market-neraquinn-intro
+    refreshInterval: 900
+    displayCount: 6
+    offers:
+    - product: ClothingHeadsetVoxBackpackImperium
+      price: 220
+      minStock: 6
+      maxStock: 6
+    - product: EncryptionKeyVoxImperium
+      price: 120
+      minStock: 6
+      maxStock: 6
+    - product: PowerCellHigh
+      price: 200
+      minStock: 10
+      maxStock: 10
+    - product: RadioHandheld
+      price: 90
+      minStock: 8
+      maxStock: 8
+    - product: GeigerCounter
+      price: 150
+      minStock: 6
+      maxStock: 6
+    - product: HandheldGPSBasic
+      price: 160
+      minStock: 6
+      maxStock: 6
+
+- type: entity
+  id: MarkerWH40KFootfallNeraQuinn
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-neraquinn-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallNeraQuinn
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallNeraQuinn
+
+- type: wh40kNpcProfile
+  id: FootfallBrokeShopper
+  name: wh40k-footfall-market-brokeshopper-name
+  description: wh40k-footfall-market-brokeshopper-desc
+  role: BrokeShopper
+  department: streetMarket
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallBrokeShopperGear
+
+- type: entity
+  id: MobWH40KFootfallBrokeShopper
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-market-brokeshopper-name
+  description: wh40k-footfall-market-brokeshopper-desc
+  suffix: WH40K, Footfall, Market scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallBrokeShopper
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallBrokeShopperGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-market-brokeshopper-line-1
+      chatDataset: WH40KFootfallBrokeShopperReplies
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallBrokeShopper
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-brokeshopper-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallBrokeShopper
+
+- type: localizedDataset
+  id: WH40KFootfallBrokeShopperReplies
+  values:
+    prefix: wh40k-footfall-market-brokeshopper-line-
+    count: 3
+
+- type: wh40kNpcProfile
+  id: FootfallMarketBuyerOne
+  name: wh40k-footfall-market-marketbuyerone-name
+  description: wh40k-footfall-market-marketbuyerone-desc
+  role: MarketBuyerOne
+  department: streetMarket
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenGear
+
+- type: entity
+  id: MobWH40KFootfallMarketBuyerOne
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-market-marketbuyerone-name
+  description: wh40k-footfall-market-marketbuyerone-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMarketBuyerOne
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-market-marketbuyerone-line-1
+      chatDataset: WH40KFootfallMarketBuyerOneReplies
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMarketBuyerOne
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-marketbuyerone-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMarketBuyerOne
+
+- type: localizedDataset
+  id: WH40KFootfallMarketBuyerOneReplies
+  values:
+    prefix: wh40k-footfall-market-marketbuyerone-line-
+    count: 3
+
+- type: wh40kNpcProfile
+  id: FootfallMarketBuyerTwo
+  name: wh40k-footfall-market-marketbuyertwo-name
+  description: wh40k-footfall-market-marketbuyertwo-desc
+  role: MarketBuyerTwo
+  department: streetMarket
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallSeekerGear
+
+- type: entity
+  id: MobWH40KFootfallMarketBuyerTwo
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-market-marketbuyertwo-name
+  description: wh40k-footfall-market-marketbuyertwo-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMarketBuyerTwo
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallSeekerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-market-marketbuyertwo-line-1
+      chatDataset: WH40KFootfallMarketBuyerTwoReplies
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMarketBuyerTwo
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-marketbuyertwo-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMarketBuyerTwo
+
+- type: localizedDataset
+  id: WH40KFootfallMarketBuyerTwoReplies
+  values:
+    prefix: wh40k-footfall-market-marketbuyertwo-line-
+    count: 3
+
+- type: wh40kNpcProfile
+  id: FootfallMarketBuyerThree
+  name: wh40k-footfall-market-marketbuyerthree-name
+  description: wh40k-footfall-market-marketbuyerthree-desc
+  role: MarketBuyerThree
+  department: streetMarket
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  services: [Social]
+  gear: WH40KFootfallCitizenVestGear
+
+- type: entity
+  id: MobWH40KFootfallMarketBuyerThree
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-market-marketbuyerthree-name
+  description: wh40k-footfall-market-marketbuyerthree-desc
+  suffix: WH40K, Footfall, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallMarketBuyerThree
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenVestGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-market-marketbuyerthree-line-1
+      chatDataset: WH40KFootfallMarketBuyerThreeReplies
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallMarketBuyerThree
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-market-marketbuyerthree-marker
+  description: wh40k-footfall-market-marker-desc
+  suffix: WH40K, Footfall, Mapping, Market scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallMarketBuyerThree
+
+- type: localizedDataset
+  id: WH40KFootfallMarketBuyerThreeReplies
+  values:
+    prefix: wh40k-footfall-market-marketbuyerthree-line-
+    count: 3

@@ -41,7 +41,7 @@ public sealed class Wh40kRewardDeliverySystem : EntitySystem
     [Dependency] private StackSystem _stacks = default!;
     [Dependency] private ITaskManager _taskManager = default!;
 
-    private readonly ConcurrentDictionary<NetUserId, byte> _activeDeliveries = new();
+    private readonly ConcurrentDictionary<NetUserId, TaskCompletionSource> _activeDeliveries = new();
     private readonly ConcurrentDictionary<NetUserId, DateTime> _retryAt = new();
     private readonly HashSet<EntityUid> _internalPlacement = new();
 
@@ -97,8 +97,12 @@ public sealed class Wh40kRewardDeliverySystem : EntitySystem
 
     public async Task TryDeliverForUserAsync(NetUserId userId, CancellationToken cancel = default)
     {
-        if (!_activeDeliveries.TryAdd(userId, 0))
-            return;
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        while (!_activeDeliveries.TryAdd(userId, completion))
+        {
+            if (_activeDeliveries.TryGetValue(userId, out var active))
+                await active.Task.WaitAsync(cancel);
+        }
 
         try
         {
@@ -128,7 +132,8 @@ public sealed class Wh40kRewardDeliverySystem : EntitySystem
         }
         finally
         {
-            _activeDeliveries.TryRemove(userId, out _);
+            _activeDeliveries.TryRemove(new KeyValuePair<NetUserId, TaskCompletionSource>(userId, completion));
+            completion.TrySetResult();
         }
     }
 

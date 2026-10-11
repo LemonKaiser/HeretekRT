@@ -1,0 +1,133 @@
+- type: wh40kDialogue
+  id: WH40KFootfallAdrianVey
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-medical-adrianvey-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-medical-adrianvey-menu
+    choices:
+    - text: wh40k-medical-open-treatment
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-medical-ask-services
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-adrianvey-info
+        nextStep: service
+    - text: wh40k-footfall-medical-small-talk
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-adrianvey-banter
+        nextStep: service
+    - text: wh40k-footfall-lore-adrianvey-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-adrianvey-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-adrianvey-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-adrianvey-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-medical-adrianvey-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallMiraFenn
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-medical-mirafenn-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-medical-mirafenn-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-medical-ask-services
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-mirafenn-info
+        nextStep: service
+    - text: wh40k-footfall-medical-small-talk
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-mirafenn-banter
+        nextStep: service
+    - text: wh40k-footfall-lore-mirafenn-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-mirafenn-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-mirafenn-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-mirafenn-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-medical-mirafenn-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallQuarantineOfficer
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-medical-quarantineofficer-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-medical-quarantineofficer-menu
+    choices:
+    - text: wh40k-footfall-medical-quarantine-ask-rules
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-quarantineofficer-rules
+        nextStep: service
+    - text: wh40k-footfall-medical-quarantine-ask-patient
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-quarantineofficer-patient
+        nextStep: service
+    - text: wh40k-footfall-medical-quarantine-ask-health
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-medical-quarantineofficer-health
+        nextStep: service
+    - text: wh40k-footfall-lore-quarantineofficer-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-quarantineofficer-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-quarantineofficer-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-quarantineofficer-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-medical-quarantineofficer-farewell

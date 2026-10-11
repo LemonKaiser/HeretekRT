@@ -1,0 +1,256 @@
+- type: wh40kDialogue
+  id: WH40KFootfallOdranPell
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-odranpell-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-odranpell-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-odranpell-info
+        nextStep: service
+    - text: wh40k-service-barter
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-odranpell-barter
+        nextStep: service
+    - text: wh40k-footfall-lore-odranpell-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-odranpell-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-odranpell-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-odranpell-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-odranpell-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallKappaSpanner
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-kappaspanner-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-kappaspanner-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-kappaspanner-info
+        nextStep: service
+    - text: wh40k-service-barter
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-kappaspanner-barter
+        nextStep: service
+    - text: wh40k-footfall-lore-kappaspanner-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-kappaspanner-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-kappaspanner-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-kappaspanner-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-kappaspanner-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallVennOrs
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-vennors-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-vennors-menu
+    choices:
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-vennors-info
+        nextStep: service
+    - text: wh40k-footfall-lore-vennors-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-vennors-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-vennors-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-vennors-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-vennors-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallBrannaKest
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-brannakest-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-brannakest-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-brannakest-info
+        nextStep: service
+    - text: wh40k-service-barter
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-brannakest-barter
+        nextStep: service
+    - text: wh40k-footfall-lore-brannakest-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-brannakest-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-brannakest-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-brannakest-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-brannakest-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallMaraSevrin
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-marasevrin-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-marasevrin-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-marasevrin-info
+        nextStep: service
+    - text: wh40k-service-barter
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-marasevrin-barter
+        nextStep: service
+    - text: wh40k-footfall-lore-marasevrin-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-marasevrin-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-marasevrin-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-marasevrin-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-marasevrin-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallDorianBale
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-service-dorianbale-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-service-dorianbale-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-service-ask
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-dorianbale-info
+        nextStep: service
+    - text: wh40k-service-barter
+      responseSteps:
+      - speaker: npc
+        text: wh40k-service-dorianbale-barter
+        nextStep: service
+    - text: wh40k-footfall-lore-dorianbale-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-dorianbale-1-reply
+        nextStep: service
+    - text: wh40k-footfall-lore-dorianbale-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-lore-dorianbale-2-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-service-dorianbale-farewell
+

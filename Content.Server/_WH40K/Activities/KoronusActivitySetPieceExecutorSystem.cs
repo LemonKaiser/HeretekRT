@@ -111,7 +111,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             return;
         }
 
-        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid))
+        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid, args.User))
             return;
 
         _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-completed"), args.User, PopupType.Medium);
@@ -127,7 +127,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (args.Cancelled || !args.Handled || component.InstanceId == 0 || !IsLivingAttachedPlayer(args.Args.User))
             return;
 
-        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid))
+        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid, args.Args.User))
             return;
 
         component.InstanceId = 0;

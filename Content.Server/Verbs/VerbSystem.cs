@@ -9,6 +9,8 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Verbs;
 using Content.Shared.Localizations;
+using Content.Shared._WH40K.SectorMap;
+using Content.Shared.UserInterface;
 using Robust.Shared.Player;
 
 namespace Content.Server.Verbs
@@ -19,6 +21,8 @@ namespace Content.Server.Verbs
         [Dependency] private PopupSystem _popupSystem = default!;
         [Dependency] private IAdminManager _adminMgr = default!;
         [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
+        [Dependency] private SharedKoronusInfrastructureSystem _infrastructure = default!;
+        [Dependency] private ActivatableUISystem _activatableUi = default!;
 
         public override void Initialize()
         {
@@ -91,6 +95,14 @@ namespace Content.Server.Verbs
         /// </remarks>
         public override void ExecuteVerb(Verb verb, EntityUid user, EntityUid target, bool forced = false)
         {
+            if (_infrastructure.IsReadOnly(target) && verb is not ExamineVerb)
+            {
+                if (!verb.Disabled && _infrastructure.IsOpenUiVerb(target, verb) &&
+                    TryComp<ActivatableUIComponent>(target, out var ui))
+                    _activatableUi.InteractUI(user, target, ui);
+                return;
+            }
+
             // is this verb actually valid?
             if (verb.Disabled)
             {

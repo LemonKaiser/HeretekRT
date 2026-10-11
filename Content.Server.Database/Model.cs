@@ -13,7 +13,7 @@ using NpgsqlTypes;
 
 namespace Content.Server.Database
 {
-    public abstract class ServerDbContext : DbContext
+    public abstract partial class ServerDbContext : DbContext
     {
         protected ServerDbContext(DbContextOptions options) : base(options)
         {
@@ -74,6 +74,7 @@ namespace Content.Server.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelWH40KMute.Configure(modelBuilder);
+            ConfigureWh40kQuests(modelBuilder);
 
             modelBuilder.Entity<Preference>()
                 .HasIndex(p => p.UserId)

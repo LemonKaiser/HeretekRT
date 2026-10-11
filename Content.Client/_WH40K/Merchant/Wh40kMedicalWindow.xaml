@@ -1,0 +1,47 @@
+<DefaultWindow
+    xmlns="https://spacestation14.io"
+    Title="{Loc 'wh40k-medical-window-title'}"
+    MinSize="420 230"
+    SetSize="440 250">
+    <BoxContainer Orientation="Vertical" Margin="10 8 10 10">
+        <!-- Сводка осмотра -->
+        <PanelContainer StyleClasses="Inset" Margin="0 0 0 8">
+            <BoxContainer Orientation="Vertical" Margin="10 8">
+                <!-- Строка 1: Урон и готовность -->
+                <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
+                    <Label Text="{Loc 'wh40k-medical-damage-label'}" StyleClasses="LabelSubText" />
+                    <Label Name="DamageValue" Margin="6 0 0 0" />
+                    <Control HorizontalExpand="True" />
+                    <Label Name="CooldownBadge" />
+                </BoxContainer>
+
+                <!-- Строка 2: Стоимость и Баланс -->
+                <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
+                    <Label Text="{Loc 'wh40k-medical-price-label'}" StyleClasses="LabelSubText" />
+                    <Label Name="PriceValue" Margin="6 0 0 0" />
+                    <Control HorizontalExpand="True" />
+                    <Label Text="{Loc 'wh40k-medical-balance-label'}" StyleClasses="LabelSubText" />
+                    <Label Name="BalanceValue" Margin="6 0 0 0" />
+                </BoxContainer>
+
+                <!-- Строка 3: Статус осмотра -->
+                <BoxContainer Orientation="Horizontal">
+                    <Label Text="{Loc 'wh40k-medical-status-label'}" StyleClasses="LabelSubText" Margin="0 0 6 0" />
+                    <Label Name="StatusMessage" HorizontalExpand="True" ClipText="True" />
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+
+        <!-- Кнопки действий -->
+        <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+            <Button Name="ConfirmButton" HorizontalExpand="True" MinHeight="32" Disabled="True" />
+            <Button Name="RefreshButton" MinWidth="130" MinHeight="32" Margin="8 0 0 0" Text="{Loc 'wh40k-medical-refresh'}" />
+        </BoxContainer>
+
+        <!-- Результат операции (фиксированная высота предотвращает скачки компоновки и обрезку низа) -->
+        <Label Name="ResultLabel" MinHeight="18" HorizontalAlignment="Center" Margin="0 2 0 4" />
+
+        <!-- Краткое примечание внизу -->
+        <Label Name="LimitsLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" Text="{Loc 'wh40k-medical-limits-short'}" />
+    </BoxContainer>
+</DefaultWindow>

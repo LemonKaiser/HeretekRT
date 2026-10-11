@@ -1,0 +1,109 @@
+- type: wh40kDialogue
+  id: WH40KFootfallBahamaBrig
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - speaker: npc
+    text: wh40k-venue-bahamabrig-shop-intro
+  - id: menu
+    type: Choice
+    speaker: npc
+    text: wh40k-venue-bahamabrig-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-venue-bahamabrig-topic-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-bahamabrig-topic-1-reply
+        nextStep: menu
+    - text: wh40k-venue-bahamabrig-topic-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-bahamabrig-topic-2-reply
+        nextStep: menu
+    - text: wh40k-footfall-dialogue-leave
+      actions:
+      - type: CloseDialogue
+
+- type: wh40kDialogue
+  id: WH40KFootfallCasinoLumen
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - speaker: npc
+    text: wh40k-venue-casinolumen-shop-intro
+  - id: menu
+    type: Choice
+    speaker: npc
+    text: wh40k-venue-casinolumen-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-venue-casinolumen-topic-1-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-casinolumen-topic-1-reply
+        nextStep: menu
+    - text: wh40k-venue-casinolumen-topic-2-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-casinolumen-topic-2-reply
+        nextStep: menu
+    - text: wh40k-footfall-dialogue-leave
+      actions:
+      - type: CloseDialogue
+
+- type: wh40kDialogue
+  id: WH40KFizzoCasinoGuide
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: house-menu
+    type: Choice
+    speaker: npc
+    text: wh40k-venue-fizzo-menu
+    choices:
+    - text: wh40k-venue-fizzo-owner-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-owner-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-sign-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-sign-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-rules-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-rules-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-horse-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-horse-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-staff-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-staff-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-luck-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-venue-fizzo-luck-reply
+        nextStep: house-menu
+    - text: wh40k-venue-fizzo-back
+      nextDialogue: WH40KFizzoBase
+    - text: wh40k-footfall-dialogue-leave
+      actions:
+      - type: CloseDialogue

@@ -236,9 +236,9 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     /// Completes only the currently registered physical objective. A stale interaction cannot
     /// complete an archived, replaced, or unrelated activity.
     /// </summary>
-    public bool TryCompleteObjective(long instanceId, EntityUid objective)
+    public bool TryCompleteObjective(long instanceId, EntityUid objective, EntityUid? actor = null)
     {
-        return TryFinalizeObjective(instanceId, objective, preserveObjective: false);
+        return TryFinalizeObjective(instanceId, objective, preserveObjective: false, actor);
     }
 
     /// <summary>
@@ -246,7 +246,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     /// item is deliberately detached from activity cleanup so it remains a physical record for a
     /// later redemption stage; it has no reward or special authority by itself.
     /// </summary>
-    public bool TryCompleteExtractedObjective(long instanceId, EntityUid objective)
+    public bool TryCompleteExtractedObjective(long instanceId, EntityUid objective, EntityUid? actor = null)
     {
         if (!TryComp<KoronusActivityObjectiveComponent>(objective, out var objectiveComponent) ||
             !KoronusActivityRuntimePolicy.IsSetPieceExecution(objectiveComponent.Execution))
@@ -254,10 +254,10 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return false;
         }
 
-        return TryFinalizeObjective(instanceId, objective, preserveObjective: true);
+        return TryFinalizeObjective(instanceId, objective, preserveObjective: true, actor);
     }
 
-    private bool TryFinalizeObjective(long instanceId, EntityUid objective, bool preserveObjective)
+    private bool TryFinalizeObjective(long instanceId, EntityUid objective, bool preserveObjective, EntityUid? actor)
     {
         if (!TryGetActiveComponent(out var component))
             return false;
@@ -272,6 +272,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         }
 
         instance.State = KoronusActivityState.Resolving;
+        instance.CompletingActor = actor;
         if (!Archive(component, instance, KoronusActivityTerminalReason.Completed,
                 preserveObjective ? objective : null))
             return false;
@@ -337,7 +338,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     /// used for a cleared group, Contained for an alternate anchor interaction; neither creates a
     /// reward or a child encounter.
     /// </summary>
-    public bool TryCompleteThreat(long instanceId, EntityUid anchor, KoronusActivityTerminalReason reason)
+    public bool TryCompleteThreat(long instanceId, EntityUid anchor, KoronusActivityTerminalReason reason, EntityUid? actor = null)
     {
         if (reason is not (KoronusActivityTerminalReason.Defeated or KoronusActivityTerminalReason.Contained) ||
             !TryGetActiveComponent(out var component))
@@ -355,6 +356,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         }
 
         instance.State = KoronusActivityState.Resolving;
+        instance.CompletingActor = actor;
         instance.ThreatState = reason == KoronusActivityTerminalReason.Defeated
             ? KoronusActivityThreatState.Defeated
             : KoronusActivityThreatState.Contained;
@@ -901,6 +903,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return false;
 
         instance.State = KoronusActivityState.Archived;
+        RaiseLocalEvent(new Content.Server._WH40K.Quests.Wh40kQuestActivityOutcomeEvent(instance.Id, instance.TemplateId,
+            instance.SystemId, reason, instance.CompletingActor, preservedObjective));
         CleanupOwnedEntities(instance, preservedObjective);
         component.Instances.Remove(instance);
         var family = KoronusActivityFamily.State;

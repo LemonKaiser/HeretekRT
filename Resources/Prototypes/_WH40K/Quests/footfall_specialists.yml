@@ -1,0 +1,138 @@
+- type: wh40kQuest
+  id: WH40KFootfallCapture
+  enabled: true
+  title: wh40k-specialist-quest-capture-title
+  description: wh40k-specialist-quest-capture-desc
+  issuer: FootfallLucanRho
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: capture
+    kind: CaptureAlive
+    text: wh40k-specialist-quest-capture-capture
+    requiredCount: 1
+    target: { kind: Entity, entity: MobWH40KFootfallQuestSuspect, caseKey: footfall-arbites, destination: FootfallLucanRho }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallCourier
+  enabled: true
+  title: wh40k-specialist-quest-courier-title
+  description: wh40k-specialist-quest-courier-desc
+  issuer: FootfallLucanRho
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: deliver
+    kind: DeliverEntity
+    text: wh40k-specialist-quest-courier-deliver
+    requiredCount: 1
+    target: { kind: Entity, entity: MobWH40KFootfallQuestCourier, caseKey: footfall-courier, destination: FootfallLucanRho }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallRepair
+  enabled: true
+  title: wh40k-specialist-quest-repair-title
+  description: wh40k-specialist-quest-repair-desc
+  issuer: FootfallOmicronKhepra
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: repair
+    kind: RepairEntity
+    text: wh40k-specialist-quest-repair-repair
+    requiredCount: 1
+    target: { kind: Entity, entity: WH40KFootfallRepairTerminal }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallRescue
+  enabled: true
+  title: wh40k-specialist-quest-rescue-title
+  description: wh40k-specialist-quest-rescue-desc
+  issuer: FootfallSeraHolt
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: stabilize
+    kind: StabilizeTarget
+    text: wh40k-specialist-quest-rescue-stabilize
+    requiredCount: 1
+    target: { kind: Entity, entity: MobWH40KFootfallQuestPatient, caseKey: footfall-medicae }
+  - id: rescue
+    kind: RescueAndDeliver
+    text: wh40k-specialist-quest-rescue-rescue
+    requiredCount: 1
+    target: { kind: Entity, entity: MobWH40KFootfallQuestPatient, caseKey: footfall-medicae, destination: FootfallSeraHolt }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuest
+  id: WH40KFootfallEndurance
+  enabled: true
+  title: wh40k-specialist-quest-endurance-title
+  description: wh40k-specialist-quest-endurance-desc
+  issuer: FootfallMarisVeyra
+  objectiveOrder: Sequential
+  repeatPolicy: Repeatable
+  cooldown: 60
+  objectives:
+  - id: survive
+    kind: SurviveDuration
+    text: wh40k-specialist-quest-endurance-survive
+    requiredCount: 30
+    target: { kind: Entity, entity: MobHuman, durationSeconds: 30 }
+  rewards:
+  - entryId: experience
+    kind: Experience
+    amount: 25
+    experienceSource: Wh40kSalvageExpeditionCompleted
+  - entryId: pay
+    kind: Currency
+    amount: 20
+
+- type: wh40kQuestPool
+  id: WH40KFootfallLucanRhoPool
+  source: FootfallLucanRho
+  offerCount: 3
+  activeLimit: 5
+  historyLimit: 6
+  refreshInterval: 900
+  entries:
+  - quest: WH40KFootfallCapture
+    weight: 1
+  - quest: WH40KFootfallCourier
+    weight: 1
+

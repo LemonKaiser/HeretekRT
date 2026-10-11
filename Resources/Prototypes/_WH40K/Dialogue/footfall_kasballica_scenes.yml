@@ -1,0 +1,84 @@
+- type: wh40kDialogue
+  id: WH40KFootfallKasballicaOfficer
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicaofficer-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicaofficer-menu
+    choices:
+    - text: wh40k-footfall-dialogue-kasballicaofficer-mission-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicaofficer-mission-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicaofficer-coldtrade-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicaofficer-coldtrade-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicaofficer-footfall-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicaofficer-footfall-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicaofficer-trust-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicaofficer-trust-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicaofficer-charters-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicaofficer-charters-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicaofficer-farewell
+
+- type: wh40kDialogue
+  id: WH40KFootfallKasballicaMerchant
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicamerchant-intro
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicamerchant-menu
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-dialogue-kasballicamerchant-stock-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicamerchant-stock-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicamerchant-ammunition-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicamerchant-ammunition-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-kasballicamerchant-discretion-choice
+      responseSteps:
+      - speaker: npc
+        text: wh40k-footfall-dialogue-kasballicamerchant-discretion-reply
+        nextStep: service
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-footfall-dialogue-kasballicamerchant-farewell

@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.Quests;
 using Robust.Shared.Localization;
 using Robust.Shared.Audio;
 using Robust.Shared.Serialization;
@@ -77,6 +78,7 @@ public sealed class DialogueActorStageData
 [Serializable, NetSerializable]
 public sealed class DialogueLineData
 {
+    public int Revision { get; set; }
     public DialogueSpeaker Speaker { get; }
     public DialogueTextData? SpeakerName { get; }
     public DialogueLineType LineType { get; }
@@ -336,15 +338,20 @@ public sealed class DialogueLineUpdateEvent : EntityEventArgs
 }
 
 [Serializable, NetSerializable]
+public sealed class DialogueSyncRequestEvent : EntityEventArgs;
+
+[Serializable, NetSerializable]
 public sealed class DialogueAdvanceRequestEvent : EntityEventArgs
 {
     public int SessionId { get; }
     public bool IsAutoAdvance { get; }
+    public int Revision { get; }
 
-    public DialogueAdvanceRequestEvent(int sessionId, bool isAutoAdvance = false)
+    public DialogueAdvanceRequestEvent(int sessionId, bool isAutoAdvance = false, int revision = -1)
     {
         SessionId = sessionId;
         IsAutoAdvance = isAutoAdvance;
+        Revision = revision;
     }
 }
 
@@ -353,11 +360,13 @@ public sealed class DialogueChoiceRequestEvent : EntityEventArgs
 {
     public int SessionId { get; }
     public int ChoiceIndex { get; }
+    public int Revision { get; }
 
-    public DialogueChoiceRequestEvent(int sessionId, int choiceIndex)
+    public DialogueChoiceRequestEvent(int sessionId, int choiceIndex, int revision = -1)
     {
         SessionId = sessionId;
         ChoiceIndex = choiceIndex;
+        Revision = revision;
     }
 }
 
@@ -381,4 +390,14 @@ public sealed class DialogueCloseEvent : EntityEventArgs
     {
         SessionId = sessionId;
     }
+}
+
+[Serializable, NetSerializable]
+public sealed class DialogueOperationEvent : EntityEventArgs
+{
+    public int SessionId;
+    public bool Pending;
+    public Wh40kQuestOperationResult Result;
+    public DialogueOperationEvent(int sessionId, bool pending, Wh40kQuestOperationResult result)
+    { SessionId = sessionId; Pending = pending; Result = result; }
 }

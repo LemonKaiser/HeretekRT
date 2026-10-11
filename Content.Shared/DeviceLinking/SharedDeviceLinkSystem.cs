@@ -3,6 +3,7 @@ using Content.Shared.Database;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.DeviceNetwork;
 using Content.Shared.Popups;
+using Content.Shared._WH40K.SectorMap;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -16,6 +17,7 @@ public abstract partial class SharedDeviceLinkSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private IGameTiming _gameTiming = default!;
+    [Dependency] private SharedKoronusInfrastructureSystem _infrastructureProtection = default!;
 
     public const string InvokedPort = "link_port";
 
@@ -301,6 +303,9 @@ public abstract partial class SharedDeviceLinkSystem : EntitySystem
         DeviceLinkSourceComponent? sourceComponent = null,
         DeviceLinkSinkComponent? sinkComponent = null)
     {
+        if (userId != null && (_infrastructureProtection.IsReadOnly(sourceUid) || _infrastructureProtection.IsReadOnly(sinkUid)))
+            return;
+
         if (!Resolve(sourceUid, ref sourceComponent) || !Resolve(sinkUid, ref sinkComponent))
             return;
 
@@ -419,6 +424,9 @@ public abstract partial class SharedDeviceLinkSystem : EntitySystem
         DeviceLinkSourceComponent? sourceComponent = null,
         DeviceLinkSinkComponent? sinkComponent = null)
     {
+        if (userId != null && (_infrastructureProtection.IsReadOnly(sourceUid) || _infrastructureProtection.IsReadOnly(sinkUid)))
+            return false;
+
         if (!Resolve(sourceUid, ref sourceComponent) || !Resolve(sinkUid, ref sinkComponent))
             return false;
 

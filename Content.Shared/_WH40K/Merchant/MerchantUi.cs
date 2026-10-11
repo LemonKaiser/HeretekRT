@@ -36,8 +36,10 @@ public sealed class MerchantOfferState
 }
 
 [Serializable, NetSerializable]
-public sealed class MerchantUpdateState : BoundUserInterfaceState
+public sealed class MerchantUpdateState : BoundUserInterfaceMessage
 {
+    public Guid CatalogId;
+    public bool Buyback;
     public string Title;
     public string Greeting;
     public float RefreshInSeconds;
@@ -49,13 +51,17 @@ public sealed class MerchantUpdateState : BoundUserInterfaceState
         string greeting,
         float refreshInSeconds,
         int refreshNumber,
-        List<MerchantOfferState> offers)
+        List<MerchantOfferState> offers,
+        Guid catalogId,
+        bool buyback = false)
     {
         Title = title;
         Greeting = greeting;
         RefreshInSeconds = refreshInSeconds;
         RefreshNumber = refreshNumber;
         Offers = offers;
+        CatalogId = catalogId;
+        Buyback = buyback;
     }
 }
 
@@ -63,10 +69,14 @@ public sealed class MerchantUpdateState : BoundUserInterfaceState
 public sealed class MerchantBuyMessage : BoundUserInterfaceMessage
 {
     public string Product;
+    public Guid CatalogId;
+    public Guid Operation;
 
-    public MerchantBuyMessage(string product)
+    public MerchantBuyMessage(string product, Guid catalogId, Guid operation)
     {
         Product = product;
+        CatalogId = catalogId;
+        Operation = operation;
     }
 }
 

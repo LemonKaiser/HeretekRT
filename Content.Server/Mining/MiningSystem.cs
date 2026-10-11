@@ -71,6 +71,7 @@ public sealed partial class MiningSystem : EntitySystem
         var yield = _random.Next(proto.MinOreYield, proto.MaxOreYield+1);
         _spawnCount.SpawnCount(proto.OreEntity.Value, coords.Offset(_random.NextVector2(0.2f)), yield);
         component.PreventSpawning = true;
+        RaiseLocalEvent(new Content.Server._WH40K.Quests.Wh40kQuestExtractionEvent(uid, gatherer, proto.OreEntity.Value.Id, yield));
     }
 
     private void OnMapInit(EntityUid uid, OreVeinComponent component, MapInitEvent args)

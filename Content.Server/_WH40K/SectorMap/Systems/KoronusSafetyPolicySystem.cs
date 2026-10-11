@@ -218,6 +218,11 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             rules |= _prototypes.Index(gridProfile.Profile).Rules;
         }
 
+        // Portable containers can be bought or brought in after facility initialization.
+        // Their release restriction follows the protected grid, not an optional local profile.
+        if (TryGetGrid(entity, out var protectedGrid) && HasComp<ProtectedGridComponent>(protectedGrid))
+            rules |= KoronusSafetyRule.AtmosphericRelease;
+
         return rules;
     }
 

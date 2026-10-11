@@ -1,0 +1,1090 @@
+- type: entity
+  id: BulletArbitesPractice
+  name: wh40k-bullet-arbites-practice-name
+  parent: BaseBulletPractice
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 0
+
+- type: entity
+  id: WeaponHeavyStubPistolArbitesPractice
+  parent: BaseItem
+  name: wh40k-weapon-heavystub-practice-name
+  description: wh40k-weapon-heavystub-practice-desc
+  suffix: WH40K, Arbites Practice, 0 Damage
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/heavy_stub_pistol_aquila.rsi
+    scale: 0.85,0.85
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/heavy_stub_pistol_aquila.rsi
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Guns/Autoguns/heavy_stub_pistol_aquila.rsi
+    slots:
+    - Belt
+  - type: Gun
+    fireRate: 2
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_3.wav
+  - type: BasicEntityAmmoProvider
+    proto: BulletArbitesPractice
+  - type: Tag
+    tags:
+    - Sidearm
+    - SafetyDepositBlacklist
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesShooter
+  name: wh40k-footfall-arbites-shooter-name
+  description: wh40k-footfall-arbites-shooter-desc
+  role: ArbitesShooter
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  services: [Social]
+  gear: WH40KFootfallArbitesShooterGear
+
+- type: entity
+  id: MobWH40KFootfallArbitesShooter
+  parent: MobWH40KFootfallChatSceneBase
+  name: wh40k-footfall-arbites-shooter-name
+  description: wh40k-footfall-arbites-shooter-desc
+  suffix: WH40K, Footfall, Arbites scene, Shooter, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesShooter
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Wh40kNpcRangePractice
+    interval: 60
+    playerCheckRange: 12
+    targetDistance: 6
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesShooterGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-shooter-chat
+      speaker: npc
+      cooldown: 5
+
+- type: entity
+  id: MarkerWH40KFootfallArbitesShooter
+  parent: MarkerWH40KFootfallNpcBase
+  name: wh40k-footfall-arbites-shooter-marker
+  description: wh40k-footfall-arbites-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Shooter, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesShooter
+
+- type: entity
+  parent: Handcuffs
+  id: HandcuffsWH40KFootfallScene
+  name: wh40k-footfall-arbites-cuffs-name
+  description: wh40k-footfall-arbites-cuffs-desc
+  categories: [HideSpawnMenu]
+  components:
+  - type: Handcuff
+    used: true
+
+- type: startingGear
+  id: WH40KFootfallArbitesDetectiveGear
+  equipment:
+    id: WH40KFootfallDetectiveIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterCoatDetectiveLoadoutGrey
+    head: ClothingHeadHatFedoraGrey
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - Paper
+
+- type: startingGear
+  id: WH40KFootfallArbitesRookieBareGear
+  equipment:
+    id: WH40KFootfallArbitesCadetIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMinoris
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesRookieCapGear
+  equipment:
+    id: WH40KFootfallArbitesCadetIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMinoris
+    head: ClothingHeadHatBlacksoft
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesOfficerGear
+  equipment:
+    id: WH40KFootfallArbitesOfficerIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    head: ClothingHeadOfficer
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - BoxFolderClipboard
+
+- type: startingGear
+  id: WH40KFootfallArbitesDeskGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMinoris
+    head: ClothingHeadHatBlacksoft
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesCameraGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMinoris
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesCameraCapGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    head: ClothingHeadVet
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesArmourerGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - GrenadeFlashBang
+
+- type: startingGear
+  id: WH40KFootfallArbitesWardenGear
+  equipment:
+    id: WH40KFootfallWardenIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    head: ClothingHeadHatWarden
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - Stunbaton
+
+- type: startingGear
+  id: WH40KFootfallArbitesGuardShotgunGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    head: ClothingHeadHelmetArbiteMedius
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - WeaponCombatShotgun
+
+- type: startingGear
+  id: WH40KFootfallArbitesGuardHeavyGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMajoris
+    head: ClothingHeadHelmetArbiteMajoris
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - WeaponStubSMG
+
+- type: startingGear
+  id: WH40KFootfallArbitesGuardVeteranGear
+  equipment:
+    id: WH40KFootfallArbitesIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMedius
+    head: ClothingHeadVet
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+  inhand:
+  - WeaponHeavyStubPistolAquila
+
+- type: startingGear
+  id: WH40KFootfallArbitesChiefGear
+  equipment:
+    id: WH40KFootfallArbitesChiefIDCard
+    jumpsuit: ClothingUniformJumpsuitArbites
+    outerClothing: ClothingOuterArmorArbiteMajoris
+    head: ClothingHeadOfficer
+    shoes: ClothingShoesBootsArbites
+    gloves: ClothingHandsGlovesArbites
+    belt: guardbelt
+
+- type: startingGear
+  id: WH40KFootfallArbitesPrisonerGear
+  equipment:
+    id: WH40KFootfallPrisonerIDCard
+    jumpsuit: ClothingUniformJumpsuitPrisoner
+    shoes: ClothingShoesColorOrange
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesDetective
+  name: wh40k-footfall-arbites-detective-name
+  description: wh40k-footfall-arbites-detective-desc
+  role: ArbitesDetective
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesDetectiveGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesDetectiveChatter
+  values:
+    prefix: wh40k-footfall-arbites-detective-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesDetective
+  name: wh40k-footfall-arbites-detective-name
+  description: wh40k-footfall-arbites-detective-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesDetective
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesDetectiveGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-detective-line-1
+      chatDataset: WH40KFootfallArbitesDetectiveChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesDetective
+  name: wh40k-footfall-arbites-detective-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesDetective
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesDetainee
+  name: wh40k-footfall-arbites-detainee-name
+  description: wh40k-footfall-arbites-detainee-desc
+  role: ArbitesDetainee
+  department: arbites
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallLaborerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesDetaineeChatter
+  values:
+    prefix: wh40k-footfall-arbites-detainee-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesDetainee
+  name: wh40k-footfall-arbites-detainee-name
+  description: wh40k-footfall-arbites-detainee-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesDetainee
+  - type: Wh40kNpcScene
+    pose: Seated
+    cuffs: HandcuffsWH40KFootfallScene
+  - type: Loadout
+    prototypes: [WH40KFootfallLaborerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-detainee-line-1
+      chatDataset: WH40KFootfallArbitesDetaineeChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesDetainee
+  name: wh40k-footfall-arbites-detainee-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesDetainee
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesRookieOne
+  name: wh40k-footfall-arbites-rookieone-name
+  description: wh40k-footfall-arbites-rookieone-desc
+  role: ArbitesRookieOne
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesRookieBareGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesRookieOneChatter
+  values:
+    prefix: wh40k-footfall-arbites-rookieone-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesRookieOne
+  name: wh40k-footfall-arbites-rookieone-name
+  description: wh40k-footfall-arbites-rookieone-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesRookieOne
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesRookieBareGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-rookieone-line-1
+      chatDataset: WH40KFootfallArbitesRookieOneChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesRookieOne
+  name: wh40k-footfall-arbites-rookieone-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesRookieOne
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesRookieTwo
+  name: wh40k-footfall-arbites-rookietwo-name
+  description: wh40k-footfall-arbites-rookietwo-desc
+  role: ArbitesRookieTwo
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesAssistantGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesRookieTwoChatter
+  values:
+    prefix: wh40k-footfall-arbites-rookietwo-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesRookieTwo
+  name: wh40k-footfall-arbites-rookietwo-name
+  description: wh40k-footfall-arbites-rookietwo-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesRookieTwo
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesAssistantGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-rookietwo-line-1
+      chatDataset: WH40KFootfallArbitesRookieTwoChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesRookieTwo
+  name: wh40k-footfall-arbites-rookietwo-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesRookieTwo
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesRookieThree
+  name: wh40k-footfall-arbites-rookiethree-name
+  description: wh40k-footfall-arbites-rookiethree-desc
+  role: ArbitesRookieThree
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesRookieCapGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesRookieThreeChatter
+  values:
+    prefix: wh40k-footfall-arbites-rookiethree-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesRookieThree
+  name: wh40k-footfall-arbites-rookiethree-name
+  description: wh40k-footfall-arbites-rookiethree-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesRookieThree
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesRookieCapGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-rookiethree-line-1
+      chatDataset: WH40KFootfallArbitesRookieThreeChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesRookieThree
+  name: wh40k-footfall-arbites-rookiethree-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesRookieThree
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesInstructor
+  name: wh40k-footfall-arbites-instructor-name
+  description: wh40k-footfall-arbites-instructor-desc
+  role: ArbitesInstructor
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesOfficerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesInstructorChatter
+  values:
+    prefix: wh40k-footfall-arbites-instructor-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesInstructor
+  name: wh40k-footfall-arbites-instructor-name
+  description: wh40k-footfall-arbites-instructor-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesInstructor
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesOfficerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-instructor-line-1
+      chatDataset: WH40KFootfallArbitesInstructorChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesInstructor
+  name: wh40k-footfall-arbites-instructor-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesInstructor
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesReceptionist
+  name: wh40k-footfall-arbites-receptionist-name
+  description: wh40k-footfall-arbites-receptionist-desc
+  role: ArbitesReceptionist
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesDeskGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesReceptionistChatter
+  values:
+    prefix: wh40k-footfall-arbites-receptionist-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesReceptionist
+  name: wh40k-footfall-arbites-receptionist-name
+  description: wh40k-footfall-arbites-receptionist-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesReceptionist
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesDeskGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-receptionist-line-1
+      chatDataset: WH40KFootfallArbitesReceptionistChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesReceptionist
+  name: wh40k-footfall-arbites-receptionist-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesReceptionist
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesCameraEntrance
+  name: wh40k-footfall-arbites-cameraentrance-name
+  description: wh40k-footfall-arbites-cameraentrance-desc
+  role: ArbitesCameraEntrance
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesCameraGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesCameraEntranceChatter
+  values:
+    prefix: wh40k-footfall-arbites-cameraentrance-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesCameraEntrance
+  name: wh40k-footfall-arbites-cameraentrance-name
+  description: wh40k-footfall-arbites-cameraentrance-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesCameraEntrance
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesCameraGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-cameraentrance-line-1
+      chatDataset: WH40KFootfallArbitesCameraEntranceChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesCameraEntrance
+  name: wh40k-footfall-arbites-cameraentrance-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesCameraEntrance
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesCameraOffice
+  name: wh40k-footfall-arbites-cameraoffice-name
+  description: wh40k-footfall-arbites-cameraoffice-desc
+  role: ArbitesCameraOffice
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesCameraCapGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesCameraOfficeChatter
+  values:
+    prefix: wh40k-footfall-arbites-cameraoffice-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesCameraOffice
+  name: wh40k-footfall-arbites-cameraoffice-name
+  description: wh40k-footfall-arbites-cameraoffice-desc
+  suffix: WH40K, Footfall, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesCameraOffice
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesCameraCapGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-cameraoffice-line-1
+      chatDataset: WH40KFootfallArbitesCameraOfficeChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesCameraOffice
+  name: wh40k-footfall-arbites-cameraoffice-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Seated
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesCameraOffice
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesArmourer
+  name: wh40k-footfall-arbites-armourer-name
+  description: wh40k-footfall-arbites-armourer-desc
+  role: ArbitesArmourer
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesArmourerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesArmourerChatter
+  values:
+    prefix: wh40k-footfall-arbites-armourer-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesArmourer
+  name: wh40k-footfall-arbites-armourer-name
+  description: wh40k-footfall-arbites-armourer-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesArmourer
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesArmourerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-armourer-line-1
+      chatDataset: WH40KFootfallArbitesArmourerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesArmourer
+  name: wh40k-footfall-arbites-armourer-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesArmourer
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesWarden
+  name: wh40k-footfall-arbites-warden-name
+  description: wh40k-footfall-arbites-warden-desc
+  role: ArbitesWarden
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesWardenGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesWardenChatter
+  values:
+    prefix: wh40k-footfall-arbites-warden-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesWarden
+  name: wh40k-footfall-arbites-warden-name
+  description: wh40k-footfall-arbites-warden-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesWarden
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesWardenGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-warden-line-1
+      chatDataset: WH40KFootfallArbitesWardenChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesWarden
+  name: wh40k-footfall-arbites-warden-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesWarden
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesPrisonerSleeper
+  name: wh40k-footfall-arbites-prisonersleeper-name
+  description: wh40k-footfall-arbites-prisonersleeper-desc
+  role: ArbitesPrisonerSleeper
+  department: arbites
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallArbitesPrisonerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesPrisonerSleeperChatter
+  values:
+    prefix: wh40k-footfall-arbites-prisonersleeper-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesPrisonerSleeper
+  name: wh40k-footfall-arbites-prisonersleeper-name
+  description: wh40k-footfall-arbites-prisonersleeper-desc
+  suffix: WH40K, Footfall, Arbites scene, Lying
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesPrisonerSleeper
+  - type: Wh40kNpcScene
+    pose: Lying
+    buckle: true
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesPrisonerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-prisonersleeper-line-1
+      chatDataset: WH40KFootfallArbitesPrisonerSleeperChatter
+      speaker: npc
+      cooldown: 4
+  - type: SpamEmitSound
+    sound:
+      path: /Audio/_WH40K/Npcs/snore_1.ogg
+      params:
+        volume: -10.8
+        maxDistance: 3
+    minInterval: 8
+    maxInterval: 16
+    popUp: wh40k-footfall-arbites-snore
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesPrisonerSleeper
+  name: wh40k-footfall-arbites-prisonersleeper-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Lying
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesPrisonerSleeper
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesPrisonerPlanner
+  name: wh40k-footfall-arbites-prisonerplanner-name
+  description: wh40k-footfall-arbites-prisonerplanner-desc
+  role: ArbitesPrisonerPlanner
+  department: arbites
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallArbitesPrisonerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesPrisonerPlannerChatter
+  values:
+    prefix: wh40k-footfall-arbites-prisonerplanner-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesPrisonerPlanner
+  name: wh40k-footfall-arbites-prisonerplanner-name
+  description: wh40k-footfall-arbites-prisonerplanner-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesPrisonerPlanner
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesPrisonerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-prisonerplanner-line-1
+      chatDataset: WH40KFootfallArbitesPrisonerPlannerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesPrisonerPlanner
+  name: wh40k-footfall-arbites-prisonerplanner-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesPrisonerPlanner
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesPrisonerLookout
+  name: wh40k-footfall-arbites-prisonerlookout-name
+  description: wh40k-footfall-arbites-prisonerlookout-desc
+  role: ArbitesPrisonerLookout
+  department: arbites
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallArbitesPrisonerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesPrisonerLookoutChatter
+  values:
+    prefix: wh40k-footfall-arbites-prisonerlookout-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesPrisonerLookout
+  name: wh40k-footfall-arbites-prisonerlookout-name
+  description: wh40k-footfall-arbites-prisonerlookout-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesPrisonerLookout
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesPrisonerGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-prisonerlookout-line-1
+      chatDataset: WH40KFootfallArbitesPrisonerLookoutChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesPrisonerLookout
+  name: wh40k-footfall-arbites-prisonerlookout-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesPrisonerLookout
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesGuardOne
+  name: wh40k-footfall-arbites-guardone-name
+  description: wh40k-footfall-arbites-guardone-desc
+  role: ArbitesGuardOne
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesGuardShotgunGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesGuardOneChatter
+  values:
+    prefix: wh40k-footfall-arbites-guardone-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesGuardOne
+  name: wh40k-footfall-arbites-guardone-name
+  description: wh40k-footfall-arbites-guardone-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesGuardOne
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesGuardShotgunGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-guardone-line-1
+      chatDataset: WH40KFootfallArbitesGuardOneChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesGuardOne
+  name: wh40k-footfall-arbites-guardone-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesGuardOne
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesGuardTwo
+  name: wh40k-footfall-arbites-guardtwo-name
+  description: wh40k-footfall-arbites-guardtwo-desc
+  role: ArbitesGuardTwo
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesGuardHeavyGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesGuardTwoChatter
+  values:
+    prefix: wh40k-footfall-arbites-guardtwo-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesGuardTwo
+  name: wh40k-footfall-arbites-guardtwo-name
+  description: wh40k-footfall-arbites-guardtwo-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesGuardTwo
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesGuardHeavyGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-guardtwo-line-1
+      chatDataset: WH40KFootfallArbitesGuardTwoChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesGuardTwo
+  name: wh40k-footfall-arbites-guardtwo-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesGuardTwo
+
+- type: wh40kNpcProfile
+  id: FootfallArbitesGuardThree
+  name: wh40k-footfall-arbites-guardthree-name
+  description: wh40k-footfall-arbites-guardthree-desc
+  role: ArbitesGuardThree
+  department: arbites
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallArbites
+  gear: WH40KFootfallArbitesGuardVeteranGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallArbitesGuardThreeChatter
+  values:
+    prefix: wh40k-footfall-arbites-guardthree-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallArbitesGuardThree
+  name: wh40k-footfall-arbites-guardthree-name
+  description: wh40k-footfall-arbites-guardthree-desc
+  suffix: WH40K, Footfall, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallArbitesGuardThree
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes: [WH40KFootfallArbitesGuardVeteranGear]
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-arbites-guardthree-line-1
+      chatDataset: WH40KFootfallArbitesGuardThreeChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallArbitesGuardThree
+  name: wh40k-footfall-arbites-guardthree-marker
+  description: wh40k-footfall-arbites-department-marker-desc
+  suffix: WH40K, Footfall, Mapping, Arbites scene, Standing
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallArbitesGuardThree

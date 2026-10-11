@@ -5,12 +5,14 @@ using Content.Shared.DeviceLinking.Events;
 using Content.Shared.DeviceNetwork;
 using Content.Shared.DeviceNetwork.Events;
 using Content.Shared.DeviceNetwork.Components;
+using Content.Shared._WH40K.SectorMap;
 
 namespace Content.Server.DeviceLinking.Systems;
 
 public sealed partial class DeviceLinkSystem : SharedDeviceLinkSystem
 {
     [Dependency] private DeviceNetworkSystem _deviceNetworkSystem = default!;
+    [Dependency] private SharedKoronusInfrastructureSystem _infrastructure = default!;
 
     public override void Initialize()
     {
@@ -48,6 +50,9 @@ public sealed partial class DeviceLinkSystem : SharedDeviceLinkSystem
     private void InvokeDirect(Entity<DeviceLinkSourceComponent> source, Entity<DeviceLinkSinkComponent?> sink, string sourcePort, string sinkPort, NetworkPayload? data)
     {
         if (!Resolve(sink, ref sink.Comp))
+            return;
+
+        if (_infrastructure.IsReadOnly(sink) && !_infrastructure.IsReadOnly(source))
             return;
 
         var invokeCounter = GetEffectiveInvokeCounter(sink.Comp);
@@ -126,6 +131,9 @@ public sealed partial class DeviceLinkSystem : SharedDeviceLinkSystem
     /// </summary>
     private void OnPacketReceived(EntityUid uid, DeviceLinkSinkComponent component, DeviceNetworkPacketEvent args)
     {
+        if (_infrastructure.IsReadOnly(uid) && !_infrastructure.IsReadOnly(args.Sender))
+            return;
+
         if (!args.Data.TryGetValue(InvokedPort, out string? port) || !(component.Ports?.Contains(port) ?? false))
             return;
 

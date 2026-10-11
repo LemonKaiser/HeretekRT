@@ -1,0 +1,39 @@
+wh40k-footfall-hab-sleepingvagrant-name = спящий бродяга
+wh40k-footfall-hab-sleepingvagrant-desc = Обитатель тёмных закоулков Футфола.
+wh40k-footfall-hab-sleepingvagrant-marker = Спавнер: спящий бродяга
+wh40k-footfall-hab-sleepingvagrant-chat = Хр-р-р... сапог не трогай... ZZZ
+ent-MobWH40KFootfallSleepingVagrant = { wh40k-footfall-hab-sleepingvagrant-name }
+    .desc = { wh40k-footfall-hab-sleepingvagrant-desc }
+ent-MarkerWH40KFootfallSleepingVagrant = { wh40k-footfall-hab-sleepingvagrant-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-standingvagrant-name = бродяга-философ
+wh40k-footfall-hab-standingvagrant-desc = Обитатель тёмных закоулков Футфола.
+wh40k-footfall-hab-standingvagrant-marker = Спавнер: бродяга-философ
+wh40k-footfall-hab-standingvagrant-chat = Если не приварено — это ничьё. А если приварено — нужен резак помощнее.
+ent-MobWH40KFootfallStandingVagrant = { wh40k-footfall-hab-standingvagrant-name }
+    .desc = { wh40k-footfall-hab-standingvagrant-desc }
+ent-MarkerWH40KFootfallStandingVagrant = { wh40k-footfall-hab-standingvagrant-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-cryopriest-name = отец Деклан
+wh40k-footfall-hab-cryopriest-desc = Проповедник обители Священного Стазиса.
+wh40k-footfall-hab-cryopriest-marker = Спавнер: отец Деклан (священник стазиса)
+wh40k-footfall-hab-cryopriest-title = Отец Деклан — хранитель стазиса
+wh40k-footfall-hab-cryopriest-intro = Мир тебе, путник. Здесь плоть и труды твои могут обрести покой под взором Повелителя Человечества на Святой Терре.
+wh40k-footfall-hab-cryopriest-menu = Чем укрепить твой дух перед священным сном?
+wh40k-footfall-hab-cryopriest-ask-pods = Что это за саркофаги?
+wh40k-footfall-hab-cryopriest-pods = Это ковчеги стазиса. Они укроют твоё тело на время долгого отдыха, а служители сохранят запись о дозволенном снаряжении. Дождись подтверждения обряда: закрытый люк сам по себе ничего не обещает. Если какие-то вещи нельзя принять, ковчег предупредит тебя.
+wh40k-footfall-hab-cryopriest-ask-outside = Если уснуть на полу?
+wh40k-footfall-hab-cryopriest-outside = Сон на полу — это отдых, а не обряд стазиса. Тело и вещи останутся здесь, среди прохожих. Если покидаешь Футфол надолго, воспользуйся ковчегом и дождись подтверждения. Благословение благословением, но кладовую оно не запирает.
+wh40k-footfall-hab-cryopriest-ask-how = Как совершить обряд?
+wh40k-footfall-hab-cryopriest-how = Подойди к свободному ковчегу, выбери вход и подтверди сон в открывшемся окне. Не прерывай связь, пока служители не подтвердят сохранение. Если ковчег отказал и выпустил тебя обратно, прочти его предупреждение: обряд ещё не завершён.
+wh40k-footfall-hab-cryopriest-ask-blessing = Благословите на сон.
+wh40k-footfall-hab-cryopriest-blessing = Да хранит Бог-Император твою душу, а техножрецы — священные контуры ковчега. Спи с миром, дитя Терры.
+wh40k-footfall-hab-cryopriest-farewell = Ступай с миром. Перед долгим сном дождись ответа ковчега: терпение обходится дешевле потерянного снаряжения.
+ent-MobWH40KFootfallCryoPriest = { wh40k-footfall-hab-cryopriest-name }
+    .desc = { wh40k-footfall-hab-cryopriest-desc }
+ent-MarkerWH40KFootfallCryoPriest = { wh40k-footfall-hab-cryopriest-marker }
+    .desc = { wh40k-footfall-hab-marker-desc }
+
+wh40k-footfall-hab-marker-desc = Сохраняемый спавнер сцены жилых отсеков и криостазиса. Поворот стрелки задаёт направление спавна; сохраняйте карту до её инициализации.

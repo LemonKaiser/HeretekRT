@@ -88,10 +88,7 @@ public abstract partial class SharedEmpSystem : EntitySystem
     /// <returns>If the entity was affected by the EMP.</returns>
     public bool TryEmpEffects(EntityUid uid, float energyConsumption, TimeSpan duration, EntityUid? user = null)
     {
-        if (TryComp<TransformComponent>(uid, out var transform) &&
-            transform.GridUid is { } gridUid &&
-            TryComp<ProtectedGridComponent>(gridUid, out var protectedGrid) &&
-            protectedGrid.PreventEmpEvents)
+        if (IsEmpProtected(uid))
         {
             return false;
         }
@@ -114,6 +111,9 @@ public abstract partial class SharedEmpSystem : EntitySystem
     /// <returns>If the entity was affected by the EMP.</returns>
     public bool DoEmpEffects(EntityUid uid, float energyConsumption, TimeSpan duration, EntityUid? user = null)
     {
+        if (IsEmpProtected(uid))
+            return false;
+
         var ev = new EmpPulseEvent(energyConsumption, false, false, duration, user);
         RaiseLocalEvent(uid, ref ev);
 
@@ -130,6 +130,10 @@ public abstract partial class SharedEmpSystem : EntitySystem
 
         return ev.Affected;
     }
+
+    private bool IsEmpProtected(EntityUid uid)
+        => TryComp<TransformComponent>(uid, out var transform) && transform.GridUid is { } grid &&
+           TryComp<ProtectedGridComponent>(grid, out var protection) && protection.PreventEmpEvents;
 
     public override void Update(float frameTime)
     {

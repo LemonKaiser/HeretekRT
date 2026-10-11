@@ -1,0 +1,202 @@
+- type: entity
+  id: WH40KFootfallArchiveTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-archiveterminal-name
+  description: wh40k-specialist-archiveterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestWorkstation
+    kind: ScanOrAnalyze
+    delay: 3
+
+- type: entity
+  id: WH40KFootfallSignalTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-signalterminal-name
+  description: wh40k-specialist-signalterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestWorkstation
+    kind: DecodeSignal
+    delay: 3
+
+- type: entity
+  id: WH40KFootfallInstallationTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-installationterminal-name
+  description: wh40k-specialist-installationterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestWorkstation
+    kind: InstallComponent
+    sourceItem: DataChipImp
+    delay: 3
+
+- type: entity
+  id: WH40KFootfallEvidenceTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-evidenceterminal-name
+  description: wh40k-specialist-evidenceterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestWorkstation
+    kind: CollectEvidence
+    caseKey: footfall-signal
+    evidence: WH40KFootfallSealedEvidence
+    delay: 3
+
+- type: entity
+  id: WH40KFootfallDispatchTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-dispatchterminal-name
+  description: wh40k-specialist-dispatchterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Wh40kQuestWorkstation
+    kind: CollectEvidence
+    caseKey: footfall-dispatch
+    evidence: WH40KFootfallSealedDispatch
+    delay: 3
+
+- type: entity
+  id: WH40KFootfallRepairTerminal
+  parent: ComputerFrame
+  name: wh40k-specialist-repairterminal-name
+  description: wh40k-specialist-repairterminal-desc
+  suffix: WH40K, Footfall
+  components:
+  - type: Damageable
+    damageContainer: Inorganic
+    damage:
+      types: { Blunt: 10 }
+  - type: Repairable
+    qualities: [Welding]
+    doAfterDelay: 3
+    fuelCost: 0
+
+- type: entity
+  id: WH40KFootfallSealedEvidence
+  parent: DataChipImp
+  name: wh40k-specialist-sealedevidence-name
+  description: wh40k-specialist-sealedevidence-desc
+  suffix: WH40K, Footfall
+
+- type: entity
+  id: WH40KFootfallSealedDispatch
+  parent: DataChipImp
+  name: wh40k-specialist-sealeddispatch-name
+  description: wh40k-specialist-sealeddispatch-desc
+  suffix: WH40K, Footfall
+
+- type: entity
+  id: MobWH40KFootfallQuestSuspect
+  parent: MobHuman
+  name: wh40k-specialist-suspect-name
+  description: wh40k-specialist-suspect-desc
+  suffix: WH40K, Mission subject
+  save: false
+  components:
+  - type: Wh40kQuestSubject
+    caseKey: footfall-arbites
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallQuestSuspect
+  parent: MarkerBase
+  name: wh40k-specialist-suspect-source-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kQuestSubjectSource
+    prototype: MobWH40KFootfallQuestSuspect
+    caseKey: footfall-arbites
+
+- type: entity
+  id: MobWH40KFootfallQuestPilgrim
+  parent: MobHuman
+  name: wh40k-specialist-pilgrim-name
+  description: wh40k-specialist-pilgrim-desc
+  suffix: WH40K, Mission subject
+  save: false
+  components:
+  - type: Wh40kQuestSubject
+    caseKey: footfall-pilgrim
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallQuestPilgrim
+  parent: MarkerBase
+  name: wh40k-specialist-pilgrim-source-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kQuestSubjectSource
+    prototype: MobWH40KFootfallQuestPilgrim
+    caseKey: footfall-pilgrim
+
+- type: entity
+  id: MobWH40KFootfallQuestPatient
+  parent: MobHuman
+  name: wh40k-specialist-patient-name
+  description: wh40k-specialist-patient-desc
+  suffix: WH40K, Mission subject
+  save: false
+  components:
+  - type: Wh40kQuestSubject
+    caseKey: footfall-medicae
+  - type: Damageable
+    damage:
+      types: { Blunt: 60 }
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallQuestPatient
+  parent: MarkerBase
+  name: wh40k-specialist-patient-source-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kQuestSubjectSource
+    prototype: MobWH40KFootfallQuestPatient
+    caseKey: footfall-medicae
+
+- type: entity
+  id: MobWH40KFootfallQuestCourier
+  parent: MobHuman
+  name: wh40k-specialist-courier-name
+  description: wh40k-specialist-courier-desc
+  suffix: WH40K, Mission subject
+  save: false
+  components:
+  - type: Wh40kQuestSubject
+    caseKey: footfall-courier
+  - type: RandomHumanoidAppearance
+    randomizeName: false
+  - type: Loadout
+    prototypes: [WH40KFootfallCitizenGear]
+
+- type: entity
+  id: MarkerWH40KFootfallQuestCourier
+  parent: MarkerBase
+  name: wh40k-specialist-courier-source-name
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kQuestSubjectSource
+    prototype: MobWH40KFootfallQuestCourier
+    caseKey: footfall-courier
+
+- type: accessLevel
+  id: WH40KFootfallImperialPermit
+  name: wh40k-specialist-imperial-permit
+  canAddToIdCard: false
+
+- type: accessLevel
+  id: WH40KFootfallMechanicusPermit
+  name: wh40k-specialist-mechanicus-permit
+  canAddToIdCard: false

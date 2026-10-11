@@ -169,6 +169,9 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
 
         _adapters.Add(new StackItemStateAdapter(EntityManager, _stacks));
         _adapters.Add(new RewardDeliveryClaimItemStateAdapter(EntityManager));
+        _adapters.Add(new Content.Server._WH40K.Quests.Wh40kQuestItemStateAdapter(EntityManager));
+        _adapters.Add(new Content.Server._WH40K.Quests.Wh40kQuestReservationStateAdapter(EntityManager));
+        _adapters.Add(new Content.Server._WH40K.Merchant.MerchantItemStateAdapter(EntityManager));
         _adapters.Add(new LimitedChargesItemStateAdapter(EntityManager, _charges));
         _adapters.Add(new IdCardItemStateAdapter(EntityManager, _prototypes, _idCards));
         _adapters.Add(new AccessItemStateAdapter(EntityManager, _prototypes, _access));
@@ -427,6 +430,10 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             foreach (var entityState in payload.Entities.OrderBy(entity => entity.EntityId))
             {
                 var parent = spawned[entityState.EntityId];
+                // Preserve the canonical shape of pre-commerce snapshots. The production restore pipeline
+                // assigns a deterministic legacy title using the durable snapshot identity after verification.
+                if (!entityState.Components.Any(component => component.ComponentId == "MerchantItemToken"))
+                    RemComp<Content.Shared._WH40K.Merchant.MerchantItemTokenComponent>(parent);
                 if (!TryRestoreChildren(parent, entityState.Children, spawned, out var error))
                 {
                     return CleanupAndFail(

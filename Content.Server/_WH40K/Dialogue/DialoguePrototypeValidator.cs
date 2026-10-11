@@ -1,3 +1,5 @@
+using System.Linq;
+using Content.Shared._WH40K.Quests;
 using System;
 using System.Collections.Generic;
 using Content.Shared.Access;
@@ -12,6 +14,7 @@ namespace Content.Server._WH40K.Dialogue;
 /// </summary>
 public static class DialoguePrototypeValidator
 {
+    private static readonly System.Text.RegularExpressions.Regex QuestChoicePath = new(@"\.choices\[\d+\]\.actions$", System.Text.RegularExpressions.RegexOptions.CultureInvariant);
     public static DialoguePrototypeValidationResult Validate(
         DialoguePrototype prototype,
         IPrototypeManager prototypeManager)
@@ -516,6 +519,26 @@ public static class DialoguePrototypeValidator
             var condition = conditions[i];
             var conditionPath = $"{path}[{i}]";
 
+            if (condition.Type is >= DialogueConditionType.QuestAvailable and <= DialogueConditionType.QuestHistoryAtLeast)
+            {
+                if (condition.Quest is not {} quest || !prototypeManager.TryIndex(quest, out var definition))
+                    Add(diagnostics, "missing-condition-quest", conditionPath, "Quest condition requires an existing definition.");
+                else if (condition.Type == DialogueConditionType.QuestObjectiveComplete && !definition.Objectives.Any(x => x.Id == condition.Objective))
+                    Add(diagnostics, "missing-condition-objective", conditionPath, "Objective must exist in the referenced quest.");
+                if (condition.Type == DialogueConditionType.QuestHistoryAtLeast && condition.Amount is < 1 or > 32)
+                    Add(diagnostics, "unbounded-history-condition", conditionPath, "History condition must use a bound from 1 to 32.");
+            }
+
+            if (condition.Type == DialogueConditionType.PersistentReputation &&
+                (condition.Faction is not {} faction || !prototypeManager.HasIndex(faction) || condition.Amount < 0))
+                Add(diagnostics, "invalid-persistent-reputation", conditionPath, "Persistent reputation requires an approved faction and non-negative threshold.");
+            if (condition.Type == DialogueConditionType.PersistentAccess &&
+                (condition.Access is not {} access || !prototypeManager.HasIndex(access)))
+                Add(diagnostics, "invalid-persistent-access", conditionPath, "Persistent access requires an approved access level.");
+            if (condition.Type is DialogueConditionType.PersistentFlag or DialogueConditionType.PersistentBranch &&
+                (string.IsNullOrWhiteSpace(condition.Flag) || condition.Flag.Length > 64))
+                Add(diagnostics, "invalid-persistent-key", conditionPath, "Persistent state requires a bounded authored key.");
+
             switch (condition.Type)
             {
                 case DialogueConditionType.Flag:
@@ -630,6 +653,25 @@ public static class DialoguePrototypeValidator
                 prototypeManager,
                 participants,
                 diagnostics);
+
+            if (action.Type >= DialogueActionType.OfferQuest)
+            {
+                if (!QuestChoicePath.IsMatch(path))
+                    Add(diagnostics, "quest-action-placement", actionPath, "Async quest actions are supported only in explicit choice action lists.");
+                if (action.Type == DialogueActionType.OpenQuestLog && i != actions.Count - 1)
+                    Add(diagnostics, "quest-log-handoff-order", actionPath, "OpenQuestLog closes the dialogue and must be the final choice action.");
+                if (action.Type is DialogueActionType.AcceptQuest or DialogueActionType.TurnInQuest or DialogueActionType.AbandonQuest)
+                {
+                    if (action.Quest is not {} quest || !prototypeManager.HasIndex(quest))
+                        Add(diagnostics, "missing-action-quest", actionPath, "Quest mutation requires an existing quest definition.");
+                }
+                if (action.Type == DialogueActionType.OfferQuest && action.QuestPool == null ||
+                    action.QuestPool is {} pool && !prototypeManager.HasIndex(pool))
+                    Add(diagnostics, "missing-action-quest-pool", actionPath, "OfferQuest requires an existing pool.");
+                if (actions.Count(x => x.Type is DialogueActionType.AcceptQuest or DialogueActionType.TurnInQuest or DialogueActionType.AbandonQuest) > 1 ||
+                    actions.Any(x => x.Type is DialogueActionType.GiveItem or DialogueActionType.TakeItem or DialogueActionType.DebitBankAccount or DialogueActionType.CreditBankAccount or DialogueActionType.AddAccess or DialogueActionType.RemoveAccess))
+                    Add(diagnostics, "mixed-quest-mutation", actionPath, "A choice may contain one quest mutation and flavour actions; use frozen quest rewards instead of item/bank/access side effects.");
+            }
 
             switch (action.Type)
             {

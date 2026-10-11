@@ -33,7 +33,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Database
 {
-    public abstract class ServerDbBase
+    public abstract partial class ServerDbBase
     {
         private const int Wh40kMutationRetryLimit = 8;
         private const int Wh40kMaximumRewardIdLength = 128;

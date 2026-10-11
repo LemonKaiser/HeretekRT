@@ -6,6 +6,12 @@
   suffix: WH40K
   categories: [ HideSpawnMenu ]
   components:
+  - type: Wh40kQuestUi
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
   - type: Pda
     id: WandererIDCard
   - type: Appearance

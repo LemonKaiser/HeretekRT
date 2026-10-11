@@ -1,0 +1,428 @@
+- type: startingGear
+  id: WH40KFootfallCargoPackingGear
+  equipment:
+    id: WH40KFootfallCargoIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    head: ClothingHeadHatHardhatOrange
+    shoes: ClothingShoesAnkleBoots
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: ClothingBeltUtility
+
+- type: startingGear
+  id: WH40KFootfallReturningMinerGear
+  equipment:
+    id: WH40KFootfallMinerIDCard
+    jumpsuit: ClothingUniformJumpsuitGuardsman
+    outerClothing: ClothingOuterArmorLithosMining
+    head: ClothingHeadHelmetLithosMining
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesCombatVoidsman
+    belt: ClothingBeltUtility
+  inhand:
+  - Pickaxe
+
+- type: startingGear
+  id: WH40KFootfallSolderingEngineerGear
+  equipment:
+    id: WH40KFootfallEngineerIDCard
+    jumpsuit: ClothingUniformJumpsuitVoidsman
+    outerClothing: ClothingOuterWorkSuitImperialCitizen
+    shoes: ClothingShoesBootsworkTechpriest
+    gloves: ClothingHandsGlovesColorYellow
+    belt: ClothingBeltUtility
+    eyes: ClothingEyesGlassesMeson
+  inhand:
+  - Welder
+
+- type: wh40kNpcProfile
+  id: FootfallCargoWaitingResidentOne
+  name: wh40k-footfall-cargo-cargowaitingresidentone-name
+  description: wh40k-footfall-cargo-cargowaitingresidentone-desc
+  role: CargoWaitingResidentOne
+  department: cargo
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoWaitingResidentOneChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargowaitingresidentone-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoWaitingResidentOne
+  name: wh40k-footfall-cargo-cargowaitingresidentone-name
+  suffix: WH40K, Footfall, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-cargowaitingresidentone-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoWaitingResidentOne
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallCitizenGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargowaitingresidentone-line-1
+      chatDataset: WH40KFootfallCargoWaitingResidentOneChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoWaitingResidentOne
+  name: wh40k-footfall-cargo-cargowaitingresidentone-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoWaitingResidentOne
+
+- type: wh40kNpcProfile
+  id: FootfallCargoWaitingResidentTwo
+  name: wh40k-footfall-cargo-cargowaitingresidenttwo-name
+  description: wh40k-footfall-cargo-cargowaitingresidenttwo-desc
+  role: CargoWaitingResidentTwo
+  department: cargo
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallCitizenVestGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoWaitingResidentTwoChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargowaitingresidenttwo-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoWaitingResidentTwo
+  name: wh40k-footfall-cargo-cargowaitingresidenttwo-name
+  suffix: WH40K, Footfall, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-cargowaitingresidenttwo-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoWaitingResidentTwo
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallCitizenVestGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargowaitingresidenttwo-line-1
+      chatDataset: WH40KFootfallCargoWaitingResidentTwoChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoWaitingResidentTwo
+  name: wh40k-footfall-cargo-cargowaitingresidenttwo-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoWaitingResidentTwo
+
+- type: wh40kNpcProfile
+  id: FootfallCargoWaitingResidentThree
+  name: wh40k-footfall-cargo-cargowaitingresidentthree-name
+  description: wh40k-footfall-cargo-cargowaitingresidentthree-desc
+  role: CargoWaitingResidentThree
+  department: cargo
+  kind: Resident
+  exclusivity: NonExclusive
+  faction: FootfallFootfallCivilian
+  gear: WH40KFootfallLaborerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoWaitingResidentThreeChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargowaitingresidentthree-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoWaitingResidentThree
+  name: wh40k-footfall-cargo-cargowaitingresidentthree-name
+  suffix: WH40K, Footfall, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-cargowaitingresidentthree-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoWaitingResidentThree
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallLaborerGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargowaitingresidentthree-line-1
+      chatDataset: WH40KFootfallCargoWaitingResidentThreeChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoWaitingResidentThree
+  name: wh40k-footfall-cargo-cargowaitingresidentthree-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoWaitingResidentThree
+
+- type: wh40kNpcProfile
+  id: FootfallCargoDispatchWorker
+  name: wh40k-footfall-cargo-cargodispatchworker-name
+  description: wh40k-footfall-cargo-cargodispatchworker-desc
+  role: CargoDispatchWorker
+  department: cargo
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderTrade
+  gear: WH40KFootfallCargoGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoDispatchWorkerChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargodispatchworker-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoDispatchWorker
+  name: wh40k-footfall-cargo-cargodispatchworker-name
+  suffix: WH40K, Footfall, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-cargodispatchworker-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoDispatchWorker
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallCargoGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargodispatchworker-line-1
+      chatDataset: WH40KFootfallCargoDispatchWorkerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoDispatchWorker
+  name: wh40k-footfall-cargo-cargodispatchworker-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoDispatchWorker
+
+- type: wh40kNpcProfile
+  id: FootfallCargoWarehouseSorter
+  name: wh40k-footfall-cargo-cargowarehousesorter-name
+  description: wh40k-footfall-cargo-cargowarehousesorter-desc
+  role: CargoWarehouseSorter
+  department: cargo
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderTrade
+  gear: WH40KFootfallLaborerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoWarehouseSorterChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargowarehousesorter-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoWarehouseSorter
+  name: wh40k-footfall-cargo-cargowarehousesorter-name
+  suffix: WH40K, Footfall, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-cargowarehousesorter-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoWarehouseSorter
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallLaborerGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargowarehousesorter-line-1
+      chatDataset: WH40KFootfallCargoWarehouseSorterChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoWarehouseSorter
+  name: wh40k-footfall-cargo-cargowarehousesorter-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoWarehouseSorter
+
+- type: wh40kNpcProfile
+  id: FootfallCargoWarehousePacker
+  name: wh40k-footfall-cargo-cargowarehousepacker-name
+  description: wh40k-footfall-cargo-cargowarehousepacker-desc
+  role: CargoWarehousePacker
+  department: cargo
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallRogueTraderTrade
+  gear: WH40KFootfallCargoPackingGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoWarehousePackerChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargowarehousepacker-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoWarehousePacker
+  name: wh40k-footfall-cargo-cargowarehousepacker-name
+  suffix: WH40K, Footfall, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-cargowarehousepacker-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoWarehousePacker
+  - type: Wh40kNpcScene
+    pose: Standing
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallCargoPackingGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargowarehousepacker-line-1
+      chatDataset: WH40KFootfallCargoWarehousePackerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoWarehousePacker
+  name: wh40k-footfall-cargo-cargowarehousepacker-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Standing
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoWarehousePacker
+
+- type: wh40kNpcProfile
+  id: FootfallCargoReturningMiner
+  name: wh40k-footfall-cargo-cargoreturningminer-name
+  description: wh40k-footfall-cargo-cargoreturningminer-desc
+  role: CargoReturningMiner
+  department: minersGuild
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMinersGuild
+  gear: WH40KFootfallReturningMinerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallCargoReturningMinerChatter
+  values:
+    prefix: wh40k-footfall-cargo-cargoreturningminer-line-
+    count: 4
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallCargoReturningMiner
+  name: wh40k-footfall-cargo-cargoreturningminer-name
+  suffix: WH40K, Footfall, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-cargoreturningminer-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallCargoReturningMiner
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallReturningMinerGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-cargoreturningminer-line-1
+      chatDataset: WH40KFootfallCargoReturningMinerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallCargoReturningMiner
+  name: wh40k-footfall-cargo-cargoreturningminer-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallCargoReturningMiner
+
+- type: wh40kNpcProfile
+  id: FootfallWorkshopSolderingEngineer
+  name: wh40k-footfall-cargo-workshopsolderingengineer-name
+  description: wh40k-footfall-cargo-workshopsolderingengineer-desc
+  role: WorkshopSolderingEngineer
+  department: engineering
+  kind: Worker
+  exclusivity: NonExclusive
+  faction: FootfallMechanicus
+  gear: WH40KFootfallSolderingEngineerGear
+  services: [Social]
+
+- type: localizedDataset
+  id: WH40KFootfallWorkshopSolderingEngineerChatter
+  values:
+    prefix: wh40k-footfall-cargo-workshopsolderingengineer-line-
+    count: 6
+
+- type: entity
+  parent: MobWH40KFootfallChatSceneBase
+  id: MobWH40KFootfallWorkshopSolderingEngineer
+  name: wh40k-footfall-cargo-workshopsolderingengineer-name
+  suffix: WH40K, Footfall, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-workshopsolderingengineer-desc
+  components:
+  - type: Wh40kAmbientNpc
+    profile: FootfallWorkshopSolderingEngineer
+  - type: Wh40kNpcScene
+    pose: Seated
+  - type: Loadout
+    prototypes:
+    - WH40KFootfallSolderingEngineerGear
+  - type: DialogueInteractable
+    dialogues:
+    - chat: wh40k-footfall-cargo-workshopsolderingengineer-line-1
+      chatDataset: WH40KFootfallWorkshopSolderingEngineerChatter
+      speaker: npc
+      cooldown: 4
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KFootfallWorkshopSolderingEngineer
+  name: wh40k-footfall-cargo-workshopsolderingengineer-marker
+  suffix: WH40K, Footfall, Mapping, Cargo scenes, Seated
+  description: wh40k-footfall-cargo-marker-desc
+  components:
+  - type: Wh40kAmbientNpcSpawn
+    prototype: MobWH40KFootfallWorkshopSolderingEngineer

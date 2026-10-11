@@ -37,7 +37,7 @@ public sealed class DialogueOverlay : LayoutContainer
     private const float ChoiceRowGap = 10f;
     private const int MaxChoiceButtonsPerRow = 3;
     private const float ChoiceButtonMinWidth = 164f;
-    private const float ChoiceButtonMaxWidth = 320f;
+    private const float ChoiceButtonMaxWidth = 360f;
     private const float PanelEntranceDuration = 0.24f;
     private const float ActorEntranceDuration = 0.34f;
     private const float ActorEntranceDistance = 120f;
@@ -115,6 +115,8 @@ public sealed class DialogueOverlay : LayoutContainer
     private readonly Control _headerSpacer;
     private readonly PanelContainer _speakerPlate;
     private readonly Label _speakerLabel;
+    private readonly Label _operationLabel = new() { Visible = false };
+    public void SetOperationStatus(string text) { _operationLabel.Text = text; _operationLabel.Visible = text.Length > 0; }
     private readonly RichTextLabel _bodyLabel;
     private readonly LayoutContainer _choiceArea;
     private readonly DialogueCloseButton _cancelButton;
@@ -303,6 +305,7 @@ public sealed class DialogueOverlay : LayoutContainer
 
         _choiceArea.OnKeyBindDown += HandleDialoguePanelKeyBindDown;
         _dialogueContent.AddChild(_choiceArea);
+        _dialogueContent.AddChild(_operationLabel);
 
         var footer = new BoxContainer
         {
@@ -556,7 +559,9 @@ public sealed class DialogueOverlay : LayoutContainer
             var button = new Button
             {
                 Text = localize(choices[i].Text),
+                ToolTip = localize(choices[i].Text),
                 Visible = false,
+                ClipText = true,
                 // A button is created before the typewriter line finishes.
                 // Reserve and arrange its final slot while hidden, otherwise a
                 // just-revealed button can render one frame at (0, 0) before

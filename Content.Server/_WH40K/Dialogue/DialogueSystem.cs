@@ -7,6 +7,7 @@ using Content.Server.Database;
 using Content.Server.NPC.Components;
 using Content.Server._WH40K.Dialogue.Components;
 using Content.Server._WH40K.Merchant;
+using Content.Server._WH40K.Npcs;
 using Content.Server.Chat.Systems;
 using Content.Server.NameIdentifier;
 using Content.Server.NPC.HTN;
@@ -16,8 +17,7 @@ using Content.Server.Store.Systems;
 using Content.Server._NF.Bank;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Chat;
-using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Systems;
+using Content.Shared.Dataset;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Movement.Events;
@@ -41,21 +41,24 @@ using Robust.Shared.Player;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Dialogue;
 
-public sealed class DialogueSystem : EntitySystem
+public sealed partial class DialogueSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypeManager = default!;
-    [Dependency] private SharedGodmodeSystem _godmode = default!;
+    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private RotateToFaceSystem _rotate = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private Wh40kNpcFacingSystem _npcFacing = default!;
     [Dependency] private NPCSystem _npc = default!;
     [Dependency] private NPCSteeringSystem _npcSteering = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
@@ -72,6 +75,7 @@ public sealed class DialogueSystem : EntitySystem
     [Dependency] private MerchantSystem _merchant = default!;
 
     private readonly Dictionary<ICommonSession, ActiveDialogueSession> _sessions = new();
+    public bool IsInDialogue(ICommonSession session) => _sessions.ContainsKey(session);
     private readonly Dictionary<EntityUid, HashSet<ICommonSession>> _sessionsByTarget = new();
     private readonly Dictionary<NetUserId, SuspendedDialogueSession> _suspendedSessionsByUser = new();
     private readonly Dictionary<EntityUid, HashSet<SuspendedDialogueSession>> _suspendedSessionsByTarget = new();
@@ -97,6 +101,7 @@ public sealed class DialogueSystem : EntitySystem
         base.Initialize();
 
         SubscribeNetworkEvent<DialogueAdvanceRequestEvent>(OnAdvanceRequest);
+        SubscribeNetworkEvent<DialogueSyncRequestEvent>(OnSyncRequest);
         SubscribeNetworkEvent<DialogueChoiceRequestEvent>(OnChoiceRequest);
         SubscribeNetworkEvent<DialogueCancelRequestEvent>(OnCancelRequest);
         SubscribeLocalEvent<DialogueInteractableComponent, InteractHandEvent>(
@@ -135,7 +140,7 @@ public sealed class DialogueSystem : EntitySystem
 
         foreach (var dialogue in _sessions.Values.ToArray())
         {
-            if (!CanContinueDialogue(dialogue))
+            if (!CanContinueDialogue(dialogue) || dialogue.QuestPending && _timing.CurTime - dialogue.QuestPendingSince > TimeSpan.FromSeconds(30))
             {
                 CloseSession(dialogue, sendCloseEvent: true);
                 continue;
@@ -153,6 +158,7 @@ public sealed class DialogueSystem : EntitySystem
 
     private void OnInteractableStartup(EntityUid uid, DialogueInteractableComponent component, ComponentStartup args)
     {
+        _npcFacing.CaptureInitialized(uid);
         ValidatePersistentMemoryConfiguration(uid, component);
         BeginPersistentMemoryLoads(component);
         RecalculateAutoTriggerRange();
@@ -680,7 +686,7 @@ public sealed class DialogueSystem : EntitySystem
         if (!_sessions.TryGetValue(args.SenderSession, out var session))
             return;
 
-        if (session.SessionId != ev.SessionId)
+        if (session.SessionId != ev.SessionId || !ValidQuestRevision(session, ev.Revision))
             return;
 
         if (!CanProcessDialogueRequest(session))
@@ -729,7 +735,7 @@ public sealed class DialogueSystem : EntitySystem
         if (!_sessions.TryGetValue(args.SenderSession, out var session))
             return;
 
-        if (session.SessionId != ev.SessionId)
+        if (session.SessionId != ev.SessionId || !ValidQuestRevision(session, ev.Revision))
             return;
 
         if (!CanProcessDialogueRequest(session))
@@ -756,6 +762,16 @@ public sealed class DialogueSystem : EntitySystem
             return;
         }
 
+        if (step.Actions.Concat(choice.Actions).Any(IsQuestAction))
+        {
+            BeginQuestActions(session, step.Actions.Concat(choice.Actions).ToArray(), success =>
+            {
+                if (!success) PlayChoiceFailure(session, choice);
+                else FinishChoice(session, choice);
+            });
+            return;
+        }
+
         if (!ExecuteActions(session, step.Actions)
             || !ExecuteActions(session, choice.Actions))
         {
@@ -763,6 +779,11 @@ public sealed class DialogueSystem : EntitySystem
             return;
         }
 
+        FinishChoice(session, choice);
+    }
+
+    private void FinishChoice(ActiveDialogueSession session, DialogueChoiceOptionPrototype choice)
+    {
         if (session.Closing)
         {
             TrySendNextStateOrClose(session);
@@ -810,11 +831,27 @@ public sealed class DialogueSystem : EntitySystem
 
     private bool CanProcessDialogueRequest(ActiveDialogueSession dialogue)
     {
+        if (dialogue.QuestPending) return false;
         if (CanContinueDialogue(dialogue))
             return true;
 
         CloseSession(dialogue, sendCloseEvent: true);
         return false;
+    }
+
+    private void OnSyncRequest(DialogueSyncRequestEvent ev, EntitySessionEventArgs args)
+    {
+        if (!_sessions.TryGetValue(args.SenderSession, out var dialogue)
+            || !CanContinueDialogue(dialogue)
+            || _timing.CurTime < dialogue.LastSyncSentAt + TimeSpan.FromSeconds(1))
+        {
+            return;
+        }
+
+        dialogue.LastSyncSentAt = _timing.CurTime;
+        SendDialogueOpen(dialogue);
+        if (dialogue.QuestPending)
+            RaiseNetworkEvent(new DialogueOperationEvent(dialogue.SessionId, true, Content.Shared._WH40K.Quests.Wh40kQuestOperationResult.Pending), dialogue.Session);
     }
 
     private void OnCancelRequest(DialogueCancelRequestEvent ev, EntitySessionEventArgs args)
@@ -919,7 +956,7 @@ public sealed class DialogueSystem : EntitySystem
         bool bypassActionBlocker = false,
         ProtoId<DialoguePrototype>? expectedDialogue = null)
     {
-        if (_sessions.ContainsKey(session))
+        if (_sessions.ContainsKey(session) || _merchant.IsSelling(session.UserId))
             return false;
 
         if (_suspendedSessionsByUser.TryGetValue(session.UserId, out var suspendedByUser))
@@ -1156,6 +1193,12 @@ public sealed class DialogueSystem : EntitySystem
                 dialogue.DialogueId.Id,
                 dialogue.RootSequence.Index));
 
+        SendDialogueOpen(dialogue);
+        return true;
+    }
+
+    private void SendDialogueOpen(ActiveDialogueSession dialogue)
+    {
         RaiseNetworkEvent(
             new DialogueOpenEvent(
                 dialogue.SessionId,
@@ -1165,8 +1208,6 @@ public sealed class DialogueSystem : EntitySystem
                 dialogue.Prototype.TypewriterCps,
                 BuildSceneData(dialogue.Prototype.Scene)),
             dialogue.Session);
-
-        return true;
     }
 
     private void ProtectEntity(ActiveDialogueSession dialogue, EntityUid uid)
@@ -1195,12 +1236,8 @@ public sealed class DialogueSystem : EntitySystem
 
         var lease = new DialogueEntityLease(
             owners: 1,
-            hadGodmode: HasComp<GodmodeComponent>(uid),
             hadInputLock: HasComp<DialogueInputLockComponent>(uid));
         _entityLeases.Add(uid, lease);
-
-        if (!lease.HadGodmode)
-            _godmode.EnableGodmode(uid);
 
         if (applyInputLock)
         {
@@ -1267,7 +1304,7 @@ public sealed class DialogueSystem : EntitySystem
             choices,
             BuildSoundCueData(step.Sound),
             BuildSoundCueData(step.Voice),
-            BuildMusicCueData(step.Music));
+            BuildMusicCueData(step.Music)) { Revision = dialogue.LineRevision };
     }
 
     private List<DialogueChoiceOptionData> BuildChoiceData(ActiveDialogueSession dialogue, DialogueStep step)
@@ -1620,7 +1657,8 @@ public sealed class DialogueSystem : EntitySystem
                 entry.Speaker,
                 entry.Actions,
                 GetInteractionCooldownKey(entry, i),
-                entry.Cooldown);
+                entry.Cooldown,
+                entry.ChatDataset);
             return true;
         }
 
@@ -1713,9 +1751,20 @@ public sealed class DialogueSystem : EntitySystem
         if (speaker == null || Deleted(speaker.Value))
             return interaction.Actions.Count > 0;
 
+        var message = interaction.Chat.Value;
+        if (interaction.ChatDataset is {} pack && _prototypeManager.TryIndex(pack, out var dataset) && dataset.Values.Count > 0)
+        {
+            var component = Comp<DialogueInteractableComponent>(target);
+            var previous = component.LastChatPhrases.GetValueOrDefault(pack.Id);
+            var phrases = dataset.Values.Where(line => line != previous).ToArray();
+            var selected = phrases.Length > 0 ? _random.Pick(phrases) : dataset.Values[0];
+            message = selected;
+            component.LastChatPhrases[pack.Id] = selected;
+        }
+
         _chat.TrySendInGameICMessage(
             speaker.Value,
-            Loc.GetString(interaction.Chat),
+            Loc.GetString(message),
             InGameICChatType.Speak,
             false,
             ignoreActionBlocker: true);
@@ -1818,6 +1867,8 @@ public sealed class DialogueSystem : EntitySystem
         NetUserId userId,
         DialogueConditionPrototype condition)
     {
+        if (condition.Type >= DialogueConditionType.QuestAvailable)
+            return EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestInteractionSystem>().Evaluate(userId, target, condition);
         TryGetDialogueMemory(target, userId, out var memory);
 
         switch (condition.Type)
@@ -1880,6 +1931,7 @@ public sealed class DialogueSystem : EntitySystem
 
     private bool ExecuteActions(ActiveDialogueSession dialogue, IReadOnlyList<DialogueActionPrototype> actions)
     {
+        if (actions.Any(IsQuestAction)) return false;
         var previousActionSucceeded = true;
 
         for (var i = 0; i < actions.Count; i++)
@@ -1906,6 +1958,7 @@ public sealed class DialogueSystem : EntitySystem
         EntityUid target,
         IReadOnlyList<DialogueActionPrototype> actions)
     {
+        if (actions.Any(IsQuestAction)) return false;
         var previousActionSucceeded = true;
 
         for (var i = 0; i < actions.Count; i++)
@@ -2008,7 +2061,8 @@ public sealed class DialogueSystem : EntitySystem
                 if (dialogue == null || Deleted(initiator) || Deleted(target))
                     return false;
 
-                if (!TryComp(target, out MerchantComponent? merchant))
+                if (!TryComp(target, out MerchantComponent? merchant) && !HasComp<Content.Shared._WH40K.Merchant.Wh40kTransitInfoComponent>(target) &&
+                    !HasComp<Wh40kMedicalProviderComponent>(target))
                     return false;
 
                 // The dialogue input lock rejects BUI open requests. Release this
@@ -2017,8 +2071,10 @@ public sealed class DialogueSystem : EntitySystem
                 dialogue.AbortRequested = true;
                 CloseSession(dialogue, sendCloseEvent: true);
 
-                _merchant.OpenUi(initiator, target, merchant);
-                return true;
+                if (merchant != null) return _merchant.OpenUi(initiator, target, merchant);
+                return HasComp<Wh40kMedicalProviderComponent>(target)
+                    ? EntityManager.System<Wh40kMedicalTreatmentSystem>().Open(initiator, target)
+                    : EntityManager.System<Wh40kTransitInfoSystem>().Open(initiator, target);
             }
             case DialogueActionType.SetFlag:
             {
@@ -2157,7 +2213,7 @@ public sealed class DialogueSystem : EntitySystem
                     return false;
 
                 var xform = Transform(speaker.Value);
-                _transform.SetLocalRotation(speaker.Value, xform.LocalRotation + Angle.FromDegrees(action.Degrees), xform);
+                _rotate.TryFaceAngle(speaker.Value, _transform.GetWorldRotation(xform) + Angle.FromDegrees(action.Degrees), xform);
                 return true;
             }
             case DialogueActionType.FaceSpeaker:
@@ -2175,7 +2231,7 @@ public sealed class DialogueSystem : EntitySystem
                 if (diff.LengthSquared() <= 0.0001f)
                     return false;
 
-                _transform.SetWorldRotation(speaker.Value, Angle.FromWorldVec(diff));
+                _rotate.TryFaceAngle(speaker.Value, Angle.FromWorldVec(diff));
                 return true;
             }
         }
@@ -2322,6 +2378,11 @@ public sealed class DialogueSystem : EntitySystem
 
     private void SuspendSession(ActiveDialogueSession dialogue)
     {
+        if (dialogue.QuestPending)
+        {
+            CloseSession(dialogue, sendCloseEvent: true);
+            return;
+        }
         if (!RemoveActiveSession(dialogue))
             return;
 
@@ -2640,9 +2701,6 @@ public sealed class DialogueSystem : EntitySystem
         if (Deleted(uid))
             return;
 
-        if (!lease.HadGodmode)
-            _godmode.DisableGodmode(uid);
-
         if (lease.AppliedInputLock && !lease.HadInputLock)
             RemComp<DialogueInputLockComponent>(uid);
 
@@ -2701,6 +2759,7 @@ public sealed class DialogueSystem : EntitySystem
                 dialogue.DialogueId.Id,
                 dialogue.RootSequence.Index));
 
+        dialogue.LineRevision++;
         RaiseNetworkEvent(new DialogueLineUpdateEvent(dialogue.SessionId, BuildLineData(dialogue)), dialogue.Session);
     }
 
@@ -2801,6 +2860,7 @@ public sealed class DialogueSystem : EntitySystem
         public ICommonSession Session { get; set; }
         public NetUserId UserId { get; }
         public int SessionId { get; set; }
+        public TimeSpan LastSyncSentAt { get; set; } = TimeSpan.MinValue;
         public EntityUid Initiator { get; }
         public EntityUid Target { get; }
         public ProtoId<DialoguePrototype> DialogueId { get; set; }
@@ -2821,6 +2881,9 @@ public sealed class DialogueSystem : EntitySystem
         public bool Closing { get; set; }
         public bool AbortRequested { get; set; }
         public bool Completing { get; set; }
+        public int LineRevision { get; set; } = 1;
+        public bool QuestPending { get; set; }
+        public TimeSpan QuestPendingSince { get; set; }
         public ActiveDialogueSession(
             ICommonSession session,
             int sessionId,
@@ -2880,15 +2943,13 @@ public sealed class DialogueSystem : EntitySystem
     private sealed class DialogueEntityLease
     {
         public int Owners;
-        public bool HadGodmode { get; }
         public bool HadInputLock { get; }
         public bool AppliedInputLock;
         public bool WakeNpcOnRelease;
 
-        public DialogueEntityLease(int owners, bool hadGodmode, bool hadInputLock)
+        public DialogueEntityLease(int owners, bool hadInputLock)
         {
             Owners = owners;
-            HadGodmode = hadGodmode;
             HadInputLock = hadInputLock;
         }
     }
@@ -2903,5 +2964,6 @@ public sealed class DialogueSystem : EntitySystem
         DialogueSpeaker Speaker,
         IReadOnlyList<DialogueActionPrototype> Actions,
         string? CooldownKey,
-        float Cooldown);
+        float Cooldown,
+        ProtoId<LocalizedDatasetPrototype>? ChatDataset = null);
 }

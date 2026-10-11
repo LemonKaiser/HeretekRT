@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.Quests;
 using Robust.Shared.Localization;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
@@ -273,6 +274,9 @@ public sealed partial class DialogueChoiceOptionPrototype
 [DataDefinition]
 public sealed partial class DialogueActionPrototype
 {
+    [DataField] public ProtoId<Wh40kQuestPrototype>? Quest;
+    [DataField] public ProtoId<Wh40kQuestPoolPrototype>? QuestPool;
+
     [DataField("type", required: true)]
     public DialogueActionType Type;
 
@@ -423,6 +427,12 @@ public sealed partial class DialogueLocArgumentPrototype
 [DataDefinition]
 public sealed partial class DialogueConditionPrototype
 {
+    [DataField] public ProtoId<Content.Shared._WH40K.Npcs.Wh40kNpcFactionPrototype>? Faction;
+    [DataField] public ProtoId<Content.Shared.Access.AccessLevelPrototype>? Access;
+    [DataField] public string? BranchChoice;
+    [DataField] public ProtoId<Wh40kQuestPrototype>? Quest;
+    [DataField] public string? Objective;
+
     [DataField("type", required: true)]
     public DialogueConditionType Type;
 
@@ -532,7 +542,8 @@ public enum DialogueActionType : byte
     CreditBankAccount,
     AddAccess,
     RemoveAccess,
-    OpenMerchant
+    OpenMerchant,
+    OfferQuest, AcceptQuest, TurnInQuest, AbandonQuest, OpenQuestLog
 }
 
 public enum DialogueConditionType : byte
@@ -544,7 +555,9 @@ public enum DialogueConditionType : byte
     DialogueCompleted,
     StoreAvailable,
     ItemCountAtLeast,
-    BankBalanceAtLeast
+    BankBalanceAtLeast,
+    QuestAvailable, QuestActive, QuestObjectiveComplete, QuestReadyToTurnIn, QuestCompleted, QuestHistoryAtLeast,
+    PersistentReputation, PersistentFlag, PersistentAccess, PersistentBranch
 }
 
 /// <summary>

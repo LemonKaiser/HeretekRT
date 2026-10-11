@@ -31,7 +31,7 @@ using Content.Server._Mono.Company; // Mono
 
 namespace Content.Server.Database
 {
-    public interface IServerDbManager
+    public partial interface IServerDbManager
     {
         void Init();
 
