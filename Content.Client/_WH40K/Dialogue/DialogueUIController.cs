@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Client._WH40K.Dialogue.UI;
 using Content.Client.Audio;
+using Content.Client._WH40K.Audio;
 using Content.Client.Gameplay;
 using Content.Client.UserInterface.Screens;
 using Content.Client.UserInterface.Systems.Gameplay;
@@ -22,7 +23,6 @@ namespace Content.Client._WH40K.Dialogue;
 
 public sealed class DialogueUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
 {
-    private const float DialogueMusicSidechainDuckDb = 8f;
     private const float DialogueMusicSidechainTail = 0.2f;
 
     [Dependency] private IEntityNetworkManager _net = default!;
@@ -30,6 +30,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     [Dependency] private ISharedPlayerManager _players = default!;
     [UISystemDependency] private readonly AudioSystem _audio = default!;
     [UISystemDependency] private readonly ContentAudioSystem _contentAudio = default!;
+    [UISystemDependency] private readonly Wh40kMusicOverrideSystem _music = default!;
     [UISystemDependency] private readonly DialoguePreviewSystem _preview = default!;
 
     private DialogueOverlay? _overlay;
@@ -53,11 +54,8 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     private float _backgroundMusicDuckGain = 0.08f;
     private DialogueSceneData? _pendingScene;
     private DialogueLineData? _pendingLine;
-    private EntityUid? _musicStream;
     private EntityUid? _voiceStream;
     private ResolvedSoundSpecifier? _currentMusic;
-    private float _musicFadeOut = 1.5f;
-    private float _musicBaseVolume;
     private float _musicLineDuckRemaining;
     private readonly List<EntityUid> _actorPreviewEntities = new();
     private float _syncRequestDelay;
@@ -500,7 +498,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             return null;
 
         _voiceStream = playResult.Value.Entity;
-        ApplyDialogueMusicMix(playResult.Value.Component);
+        ApplyDialogueMusicMix();
         return MathF.Max((float) _audio.GetAudioLength(cue.Sound).TotalSeconds, 0.01f);
     }
 
@@ -515,45 +513,20 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             return;
         }
 
-        if (_musicStream != null && Equals(_currentMusic, cue.Sound))
+        if (Equals(_currentMusic, cue.Sound))
             return;
 
-        StopDialogueMusic(false, cue.FadeOut);
-
-        var audio = cue.Audio;
-        _musicBaseVolume = audio.Volume;
-        var playResult = _audio.PlayGlobal(cue.Sound, Filter.Local(), false, audio);
-        if (playResult == null)
-            return;
-
-        _musicStream = playResult.Value.Entity;
         _currentMusic = cue.Sound;
-        _musicFadeOut = cue.FadeOut;
-        ApplyDialogueMusicMix(playResult.Value.Component);
-
-        if (cue.FadeIn > 0f)
-            _contentAudio.FadeIn(_musicStream, playResult.Value.Component, cue.FadeIn);
+        _music.Request(this, cue.Sound, cue.Audio, 100, cue.FadeIn, cue.FadeOut);
+        ApplyDialogueMusicMix();
     }
 
     private void StopDialogueMusic(bool immediate, float? fadeOut = null)
     {
-        if (_musicStream == null)
-            return;
-
-        if (immediate)
-        {
-            _audio.Stop(_musicStream);
-        }
-        else if (EntityManager.TryGetComponent(_musicStream, out AudioComponent? component))
-        {
-            _contentAudio.FadeOut(_musicStream, component, MathF.Max(fadeOut ?? _musicFadeOut, 0.01f));
-        }
-
-        _musicStream = null;
+        _music.Release(this, immediate, fadeOut);
         _currentMusic = null;
-        _musicFadeOut = 1.5f;
-        _musicBaseVolume = 0f;
         _musicLineDuckRemaining = 0f;
+        _music.SetVoiceDuck(this, false);
     }
 
     private void StopVoiceTrack()
@@ -587,17 +560,9 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             ApplyDialogueMusicMix();
     }
 
-    private void ApplyDialogueMusicMix(AudioComponent? component = null)
+    private void ApplyDialogueMusicMix()
     {
-        if (_musicStream == null || !EntityManager.TryGetComponent(_musicStream, out component))
-            return;
-
-        var volume = _musicBaseVolume;
-
-        if (_musicLineDuckRemaining > 0f || _voiceStream != null)
-            volume -= DialogueMusicSidechainDuckDb;
-
-        _audio.SetVolume(_musicStream, volume, component);
+        _music.SetVoiceDuck(this, _musicLineDuckRemaining > 0f || _voiceStream != null);
     }
 
     private void UpdateVoiceTrackState()

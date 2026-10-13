@@ -1,0 +1,20 @@
+- type: htnCompound
+  id: Wh40kHiveShipBoarderCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:Wh40kBoarderTargetOperator
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        pathfindInPlanning: false
+        removeKeyOnFinish: false
+        brakeMaxVelocity: null
+        targetKey: TargetCoordinates
+        pathfindKey: TargetPathfind
+        rangeKey: MeleeRange
+    - !type:HTNPrimitiveTask
+      operator: !type:MeleeOperator
+        targetKey: Target
+  - tasks:
+    - !type:HTNCompoundTask
+      task: IdleCompound

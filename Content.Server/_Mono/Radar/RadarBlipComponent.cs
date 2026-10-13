@@ -36,6 +36,12 @@ public sealed partial class RadarBlipComponent : Component
     public float MaxDistance = 2048f;
 
     /// <summary>
+    /// Use the viewing radar's range instead of a fixed contact distance.
+    /// </summary>
+    [DataField]
+    public bool UseRadarRange;
+
+    /// <summary>
     /// If not null, show up as this config if on a grid.
     /// </summary>
     [DataField]

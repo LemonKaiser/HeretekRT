@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Explosion.Components;
+using Content.Server._WH40K.Bosses;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Database;
@@ -449,6 +450,11 @@ public sealed partial class ExplosionSystem
         float? fireStacksOnIgnite,
         EntityUid? cause)
     {
+        if (_activeExplosion is { BlockSpaceBossDamage: true } && HasComp<Wh40kSpaceBossComponent>(uid))
+            return;
+        if (_activeExplosion is { BossAttack: true } && _spaceBosses.IsProtectedTarget(uid))
+            return;
+
         if (originalDamage != null)
         {
             GetEntitiesToDamage(uid, originalDamage, id);
@@ -687,6 +693,8 @@ sealed class Explosion
     public readonly EntityUid VisualEnt;
 
     public readonly EntityUid? Cause;
+    public readonly bool BlockSpaceBossDamage;
+    public readonly bool BossAttack;
 
     /// <summary>
     ///     Initialize a new instance for processing
@@ -706,10 +714,14 @@ sealed class Explosion
         EntityUid visualEnt,
         EntityUid? cause,
         SharedMapSystem mapSystem,
-        DamageableSystem damageable)
+        DamageableSystem damageable,
+        bool blockSpaceBossDamage,
+        bool bossAttack)
     {
         VisualEnt = visualEnt;
         Cause = cause;
+        BlockSpaceBossDamage = blockSpaceBossDamage;
+        BossAttack = bossAttack;
         _system = system;
         _mapSystem = mapSystem;
         ExplosionType = explosionType;
@@ -949,5 +961,7 @@ public sealed class QueuedExplosion
     public float TotalIntensity, Slope, MaxTileIntensity, TileBreakScale;
     public int MaxTileBreak;
     public bool CanCreateVacuum;
+    public bool BlockSpaceBossDamage;
+    public bool BossAttack;
     public EntityUid? Cause; // The entity that exploded, for logging purposes.
 }

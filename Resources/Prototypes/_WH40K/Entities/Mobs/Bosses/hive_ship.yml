@@ -1,0 +1,188 @@
+- type: entity
+  abstract: true
+  parent: BaseMob
+  id: BaseWh40kSpaceBoss
+  save: true
+  components:
+  - type: Wh40kBoss
+  - type: Wh40kSpaceBoss
+  - type: Damageable
+    damageContainer: StructuralInorganic
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150000: Dead
+    showOverlays: false
+    allowRevives: false
+  - type: CombatMode
+  - type: NoRotateOnMove
+  - type: MovementIgnoreGravity
+    weightless: true
+  - type: MovementAlwaysTouching
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 55
+    baseSprintSpeed: 90
+    baseWeightlessModifier: 1
+    baseWeightlessAcceleration: 5
+    baseWeightlessFriction: 4
+    offGridFriction: 4
+  - type: NpcFactionMember
+    factions:
+    - Tyranids
+  - type: RadarBlip
+    useRadarRange: true
+    config:
+      color: "#E65950"
+      shape: HiveShip
+      bounds: "-16,-6,16,6"
+      respectZoom: true
+      rotate: true
+      label: wh40k-boss-hive-ship-name
+  - type: PassiveThermalSignature
+    signature: 120000
+
+- type: entity
+  parent: BaseWh40kSpaceBoss
+  id: MobWh40kHiveShipBoss
+  name: hive ship
+  description: A colossal void organism whose armoured head and hooked mandibles tear at passing ships.
+  components:
+  - type: Wh40kSpaceBoss
+    detectionRadius: 2000
+    turnSpeed: 2.2
+    turnAcceleration: 6
+    evasionDamageThreshold: 1200
+    deathLoot: CrateWh40kHiveShipSpoils
+    boardingPrototype: MobWh40kHiveShipBoarder
+    sporeMinePrototype: Wh40kHiveShipSporeMine
+  - type: ExplosionResistance
+    worn: false
+    modifiers:
+      SporeBomb: 0
+  - type: Wh40kBoss
+    title: wh40k-boss-hive-ship-name
+    awarenessRadius: 2000
+    priority: 100
+    theme:
+      path: /Audio/_WH40K/Bosses/FootstepsofDoom.ogg
+      params:
+        volume: -5
+  - type: Sprite
+    scale: 3, 3
+    noRot: false
+    rotation: -90
+    layers:
+    - texture: _WH40K/Mobs/Bosses/hive_ship.png
+  - type: RotationVisuals
+    defaultRotation: -90
+    verticalRotation: -90
+    horizontalRotation: -90
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-12,-4,8,4"
+        density: 50
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+      head:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "8,-5,15,5"
+        density: 50
+        mask:
+        - LargeMobMask
+        layer:
+        - LargeMobLayer
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    autoAttack: false
+    attackRate: 0.4
+    range: 19
+    animation: WeaponArcBite
+    damage:
+      types:
+        Blunt: 300
+        Slash: 200
+    soundHit:
+      path: /Audio/_WH40K/Voice/Tyranid/genestealerattack1.ogg
+
+- type: entity
+  parent: MarkerBase
+  id: SpawnWh40kHiveShipBoss
+  name: hive ship boss spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - texture: _WH40K/Mobs/Bosses/hive_ship.png
+      scale: 0.07, 0.07
+  - type: RandomSpawner
+    prototypes:
+    - MobWh40kHiveShipBoss
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: MobHormagaunt
+  id: MobWh40kHiveShipBoarder
+  name: hive ship hormagaunt
+  description: A vicious Tyranid spawned into the hull breach left by a hive ship's bite.
+  components:
+  - type: Wh40kBossMinion
+  - type: HTN
+    rootTask:
+      task: Wh40kHiveShipBoarderCompound
+    planCooldown: 2
+    sleepPlayerCheckRangeOverride: 2000
+    blackboard:
+      NavInteract: !type:Bool true
+      NavPry: !type:Bool true
+      NavClimb: !type:Bool true
+  - type: TimedDespawn
+    lifetime: 180
+  - type: MobPrice
+    price: 0
+
+- type: entity
+  parent: WH40KTyranidSporeMine
+  id: Wh40kHiveShipSporeMine
+  name: hive ship spore mine
+  description: A drifting biological mine that detonates against unprotected ships.
+  components:
+  - type: Wh40kBossMinion
+    sporeMine: true
+  - type: TimedDespawn
+    lifetime: 300
+  - type: MobPrice
+    price: 0
+  - type: DeleteOnTrigger
+  - type: GibOnTrigger
+    useArgumentEntity: true
+  - type: Tag
+    tags: []
+
+- type: entity
+  parent: CrateGenericSteel
+  id: CrateWh40kHiveShipSpoils
+  name: hive ship spoils
+  description: Salvaged weapons, rare metals and a strange relic recovered from the void organism.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: WeaponLaserPlasmagun
+        - id: WeaponLaserMeltagun
+        - id: SpaceCash30000
+        - id: SheetPlasteel
+        - id: IngotGold
+        - id: ComplexXenoArtifactItem

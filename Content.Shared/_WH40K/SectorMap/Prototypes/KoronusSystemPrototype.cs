@@ -167,6 +167,12 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     [DataField]
     public List<KoronusSafetyZoneDefinition> SafetyZones = new();
 
+    [DataField]
+    public EntProtoId? BossPrototype;
+
+    [DataField]
+    public Vector2 BossPosition;
+
     /// <summary>
     /// Returns the one authoritative centre used by system-scale gameplay.
     /// </summary>

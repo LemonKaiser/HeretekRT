@@ -2,6 +2,7 @@
 // All rights reserved. Relicensed under AGPL with permission
 
 using Content.Server._Mono.Ships.Systems;
+using Content.Shared._Mono.ShipGuns;
 using Content.Server.Administration.Logs;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Mono.FireControl;
@@ -171,7 +172,7 @@ public sealed partial class FireControlSystem : EntitySystem
 
     public void OnUIOpened(EntityUid uid, FireControlConsoleComponent component, BoundUIOpenedEvent args)
     {
-        UpdateUi(uid, component);
+        DoRefreshServer(uid, component);
     }
 
     private void OnConsoleUIOpenAttempt(
@@ -271,6 +272,7 @@ public sealed partial class FireControlSystem : EntitySystem
                 controlled.NetEntity = EntityManager.GetNetEntity(controllable);
                 controlled.Coordinates = GetNetCoordinates(Transform(controllable).Coordinates);
                 controlled.Name = MetaData(controllable).EntityName;
+                controlled.WeaponType = TryComp<ShipGunTypeComponent>(controllable, out var gunType) ? gunType.Type : null;
                 TryComp<FireControllableComponent>(controllable, out var fcComp);
                 controlled.IgnoresLos = fcComp != null ? fcComp.IgnoreLos : false;
 

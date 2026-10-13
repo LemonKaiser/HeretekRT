@@ -156,6 +156,8 @@
   displayName: Tenebris Aquae
   uiPosition: 0.379, 0.592
   initialGridPath: /Maps/Test/empty.yml
+  bossPrototype: MobWh40kHiveShipBoss
+  bossPosition: 600, 400
 
 - type: koronusSystem
   id: AdermattII

@@ -1,0 +1,14 @@
+- type: entity
+  id: Wh40kHiveShipEncounter
+  parent: BaseGameRule
+  name: hive ship encounter
+  components:
+  - type: StationEvent
+    weight: 1
+    earliestStart: 60
+    reoccurrenceDelay: 0
+  - type: Wh40kBossEncounterRule
+    bossPrototype: MobWh40kHiveShipBoss
+    chance: 0.05
+    minimumSpawnDistance: 600
+    maximumSpawnDistance: 900

@@ -1,6 +1,7 @@
 using Robust.Shared.Serialization;
 using Robust.Shared.Map;
 using Content.Shared.Shuttles.BUIStates;
+using Content.Shared._Mono.ShipGuns;
 
 namespace Content.Shared._Mono.FireControl;
 
@@ -88,6 +89,8 @@ public struct FireControllableEntry
     /// Display name of the entity
     /// </summary>
     public string Name;
+
+    public ShipGunType? WeaponType;
 
     /// <summary>
     /// Current ammunition count.

@@ -224,7 +224,14 @@ public sealed partial class MeleeWeaponSystem
             if (arcComponent.User == null)
                 continue;
 
-            Vector2 targetPos = TransformSystem.GetWorldPosition(arcComponent.User.Value);
+            if (TerminatingOrDeleted(arcComponent.User.Value) ||
+                !_xformQuery.TryGetComponent(arcComponent.User.Value, out var userXform) || userXform.MapID != xform.MapID)
+            {
+                QueueDel(uid);
+                continue;
+            }
+
+            var targetPos = TransformSystem.GetWorldPosition(userXform);
 
             if (arcComponent.Offset != Vector2.Zero)
             {

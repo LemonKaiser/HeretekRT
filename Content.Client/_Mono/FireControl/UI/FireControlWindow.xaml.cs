@@ -14,8 +14,6 @@ namespace Content.Client._Mono.FireControl.UI;
 [GenerateTypedNameReferences]
 public sealed partial class FireControlWindow : FancyWindow
 {
-    [Dependency] private IEntityManager _entityManager = default!;
-
     public FireControlNavControl Radar => NavRadar;
     public Action? OnServerRefresh;
     public Action? OnWeaponSelectionChanged;
@@ -273,11 +271,8 @@ public sealed partial class FireControlWindow : FancyWindow
             _weaponNameToEntity[controllable.Name] = controllable.NetEntity;
 
             // Store the weapon type if available
-            var entity = _entityManager.GetEntity(controllable.NetEntity);
-            if (_entityManager.TryGetComponent<ShipGunTypeComponent>(entity, out var typeComp))
-            {
-                _weaponTypes[controllable.NetEntity] = typeComp.Type;
-            }
+            if (controllable.WeaponType is { } type)
+                _weaponTypes[controllable.NetEntity] = type;
 
             if (WeaponsList.TryGetValue(controllable.NetEntity, out var existingButton))
             {

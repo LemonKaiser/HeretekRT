@@ -5,7 +5,7 @@ meta:
   forkId: ebengrad
   forkVersion: 808c3607f364085218073e364251ccb9591d1199
   time: 09/19/2026 12:36:39
-  entityCount: 1117
+  entityCount: 1129
 maps: []
 grids:
 - 1
@@ -7137,4 +7137,80 @@ entities:
       parent: 1
     - type: DeltaPressure
       gridUid: 1
+- proto: HardpointMissileHeavy
+  entities:
+  - uid: 1118
+    components:
+    - type: Transform
+      pos: 8.5,19.5
+      parent: 1
+  - uid: 1119
+    components:
+    - type: Transform
+      pos: -7.5,19.5
+      parent: 1
+- proto: HardpointBallisticHeavy
+  entities:
+  - uid: 1120
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -1.5,35.5
+      parent: 1
+  - uid: 1121
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 2.5,35.5
+      parent: 1
+  - uid: 1122
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 2.5,31.5
+      parent: 1
+  - uid: 1123
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -1.5,31.5
+      parent: 1
+- proto: HardpointBallisticLight
+  entities:
+  - uid: 1124
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -7.5,8.5
+      parent: 1
+  - uid: 1125
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 8.5,8.5
+      parent: 1
+  - uid: 1126
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,43.5
+      parent: 1
+  - uid: 1127
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,39.5
+      parent: 1
+  - uid: 1128
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,39.5
+      parent: 1
+  - uid: 1129
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,43.5
+      parent: 1
 ...

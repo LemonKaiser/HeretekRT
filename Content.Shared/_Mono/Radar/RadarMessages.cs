@@ -16,7 +16,8 @@ public enum RadarBlipShape
     Diamond,
     Hexagon,
     Arrow,
-    Ring
+    Ring,
+    HiveShip
 }
 
 [Serializable, NetSerializable]
@@ -115,6 +116,9 @@ public partial record struct BlipConfig
 
     [DataField]
     public bool Rotate = false;
+
+    [DataField]
+    public string? Label;
 
     public BlipConfig() { }
 }

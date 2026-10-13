@@ -1,8 +1,8 @@
 using Content.Client.Audio;
+using Content.Client._WH40K.Audio;
 using Content.Shared._WH40K.Act1;
 using Robust.Client.Player;
 using Robust.Shared.Audio;
-using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 
@@ -16,8 +16,9 @@ public sealed class Act1PrologueAudioSystem : EntitySystem
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private ContentAudioSystem _contentAudio = default!;
+    [Dependency] private Wh40kMusicOverrideSystem _music = default!;
 
-    private EntityUid? _nullTrack;
+    private ResolvedSoundSpecifier _nullMusic = default!;
     private bool _wasInPrologue;
     private bool _stopUntilPrologueEnds;
 
@@ -27,6 +28,7 @@ public sealed class Act1PrologueAudioSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        _nullMusic = _audio.ResolveSound(NullMusic);
         SubscribeLocalEvent<PlayAmbientMusicEvent>(OnPlayAmbientMusic);
         SubscribeNetworkEvent<Act1ProloguePresentationEvent>(OnPresentation);
     }
@@ -48,10 +50,8 @@ public sealed class Act1PrologueAudioSystem : EntitySystem
         if (inPrologue)
         {
             _wasInPrologue = true;
-            _contentAudio.DisableAmbientMusic();
-
-            if (!_stopUntilPrologueEnds && _nullTrack == null)
-                _nullTrack = _audio.PlayGlobal(NullMusic, Filter.Local(), false, NullMusicParams)?.Entity;
+            if (!_stopUntilPrologueEnds)
+                _music.Request(this, _nullMusic, NullMusicParams, 300, 0, 0);
 
             return;
         }
@@ -73,18 +73,7 @@ public sealed class Act1PrologueAudioSystem : EntitySystem
 
     private void StopNullTrack()
     {
-        if (_nullTrack is not { } track)
-            return;
-
-        // SharedAudioSystem.Stop is prediction-gated and can become a no-op on
-        // the handoff tick. This stream is client-owned, so stop its source
-        // directly and remove the audio entity regardless of prediction state.
-        if (TryComp(track, out AudioComponent? component))
-            component.StopPlaying();
-
-        QueueDel(track);
-
-        _nullTrack = null;
+        _music.Release(this, true);
     }
 
     private void OnPresentation(Act1ProloguePresentationEvent ev, EntitySessionEventArgs args)

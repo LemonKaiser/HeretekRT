@@ -32,6 +32,7 @@ public sealed partial class FireControlSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private PowerReceiverSystem _power = default!;
     [Dependency] private RotateToFaceSystem _rotateToFace = default!;
+    [Dependency] private SharedHardpointSystem _hardpoints = default!;
     /// <summary>
     /// Dictionary of entities that have visualization enabled
     /// </summary>
@@ -52,6 +53,7 @@ public sealed partial class FireControlSystem : EntitySystem
         SubscribeLocalEvent<FireControllableComponent, PowerChangedEvent>(OnControllablePowerChanged);
         SubscribeLocalEvent<FireControllableComponent, ComponentShutdown>(OnControllableShutdown);
         SubscribeLocalEvent<FireControllableComponent, EntParentChangedMessage>(OnControllableParentChanged);
+        SubscribeLocalEvent<FireControllableComponent, AnchorStateChangedEvent>(OnControllableAnchorChanged);
 
         // Subscribe to grid split events to ensure we update when grids change
         SubscribeLocalEvent<GridSplitEvent>(OnGridSplit);
@@ -103,6 +105,33 @@ public sealed partial class FireControlSystem : EntitySystem
             TryRegister(uid, component);
         else
             Unregister(uid, component);
+
+        UpdateGridConsoles(_xform.GetGrid(uid));
+    }
+
+    private void OnControllableAnchorChanged(EntityUid uid, FireControllableComponent component, ref AnchorStateChangedEvent args)
+    {
+        UpdateWeaponRegistration(uid, args.Anchored);
+    }
+
+    public void UpdateWeaponRegistration(EntityUid uid, bool mounted)
+    {
+        if (!TryComp<FireControllableComponent>(uid, out var cannon))
+            return;
+        if (mounted)
+            TryRegister(uid, cannon);
+        else
+            Unregister(uid, cannon);
+        UpdateGridConsoles(_xform.GetGrid(uid));
+    }
+
+    private void UpdateGridConsoles(EntityUid? grid)
+    {
+        if (!TryComp<FireControlGridComponent>(grid, out var controlGrid) ||
+            !TryComp<FireControlServerComponent>(controlGrid.ControllingServer, out var server))
+            return;
+        foreach (var console in server.Consoles)
+            UpdateUi(console);
     }
 
     private void OnControllableShutdown(EntityUid uid, FireControllableComponent component, ComponentShutdown args)
@@ -202,6 +231,8 @@ public sealed partial class FireControlSystem : EntitySystem
             return;
         }
 
+        foreach (var previous in server.Controlled.ToArray())
+            Unregister(previous);
         server.Controlled.Clear();
         server.UsedProcessingPower = 0;
 
@@ -209,8 +240,11 @@ public sealed partial class FireControlSystem : EntitySystem
 
         while (query.MoveNext(out var controllable, out var controlComp))
         {
-            if (_xform.GetGrid(controllable) == grid && EntityManager.GetComponent<TransformComponent>(controllable).Anchored)
-                TryRegister(controllable, controlComp);
+            if (_xform.GetGrid(controllable) != grid || !Transform(controllable).Anchored)
+                continue;
+            if (TryComp<HardpointAnchorableOnlyComponent>(controllable, out var hardpoint) && hardpoint.anchoredTo == null)
+                _hardpoints.TryAnchorToHardpoint(controllable, hardpoint);
+            TryRegister(controllable, controlComp);
         }
 
         foreach (var console in server.Consoles)
@@ -270,8 +304,10 @@ public sealed partial class FireControlSystem : EntitySystem
         if (!Resolve(controllable, ref component))
             return false;
 
+        if (!Transform(controllable).Anchored || !_power.IsPowered(controllable))
+            return false;
+
         var gridServer = TryGetGridServer(controllable);
-        var hardpointValid = true;
         if (TryComp<HardpointAnchorableOnlyComponent>(controllable, out var hardpointAnchorable))
         {
             if (hardpointAnchorable.anchoredTo == null)
@@ -286,7 +322,7 @@ public sealed partial class FireControlSystem : EntitySystem
         if (processingPowerCost > GetRemainingProcessingPower(gridServer.ServerUid.Value, gridServer.ServerComponent))
             return false;
 
-        if (gridServer.ServerComponent.Controlled.Add(controllable) && hardpointValid)
+        if (gridServer.ServerComponent.Controlled.Add(controllable))
         {
             gridServer.ServerComponent.UsedProcessingPower += processingPowerCost;
             component.ControllingServer = gridServer.ServerUid;

@@ -93,7 +93,7 @@ public sealed partial class FireControlSystem
                 continue;
 
             // If firing ship is in FTL, missile won't have guidance
-            if (shooter.HasValue && Transform(shooter.Value).GridUid is { } shipGrid)
+            if (TryComp(shooter, out TransformComponent? shooterTransform) && shooterTransform.GridUid is { } shipGrid)
             {
                 if (TryComp<FTLComponent>(shipGrid, out _))
                 {
@@ -143,8 +143,8 @@ public sealed partial class FireControlSystem
 
             // Don't update position if the missile's ship is in FTL
             if (TryComp<ProjectileComponent>(missile, out var projectileComp) &&
-                projectileComp.Shooter.HasValue &&
-                Transform(projectileComp.Shooter.Value).GridUid is { } shipGrid &&
+                TryComp(projectileComp.Shooter, out TransformComponent? shooterTransform) &&
+                shooterTransform.GridUid is { } shipGrid &&
                 TryComp<FTLComponent>(shipGrid, out _))
             {
                 continue;
@@ -172,19 +172,28 @@ public sealed partial class FireControlSystem
         // Update target positions for active missiles based on the current cursor position
         foreach (var missileUid in _activeMissiles.ToArray())
         {
-            if (!TryComp<TargetGuidedComponent>(missileUid, out var guidedComp) ||
-                !guidedComp.ControllingConsole.HasValue)
+            if (TerminatingOrDeleted(missileUid) || !TryComp<TargetGuidedComponent>(missileUid, out var guidedComp))
+            {
+                _activeMissiles.Remove(missileUid);
+                continue;
+            }
+            if (!guidedComp.ControllingConsole.HasValue)
                 continue;
 
             // Get the controlling console
             var consoleUid = guidedComp.ControllingConsole.Value;
+            if (TerminatingOrDeleted(consoleUid) || !TryComp<FireControlConsoleComponent>(consoleUid, out _))
+            {
+                guidedComp.ControllingConsole = null;
+                continue;
+            }
             if (!_consoleMousePositions.TryGetValue(consoleUid, out var mousePosition))
                 continue;
 
             // Don't update position if the missile's ship is in FTL
             if (TryComp<ProjectileComponent>(missileUid, out var projectileComp) &&
-                projectileComp.Shooter.HasValue &&
-                Transform(projectileComp.Shooter.Value).GridUid is { } shipGrid &&
+                TryComp(projectileComp.Shooter, out TransformComponent? shooterTransform) &&
+                shooterTransform.GridUid is { } shipGrid &&
                 TryComp<FTLComponent>(shipGrid, out _))
             {
                 continue;

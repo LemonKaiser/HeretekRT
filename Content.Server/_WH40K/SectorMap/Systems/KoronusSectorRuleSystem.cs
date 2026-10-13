@@ -7,6 +7,7 @@ using Content.Server._NF.Shuttles.Components;
 using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.OperationalDomain;
+using Content.Server._WH40K.Bosses;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.VendingMachines.Components;
 using Content.Shared._Mono.Ships.Components;
@@ -56,6 +57,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private KoronusInfrastructureSystem _infrastructure = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
+    [Dependency] private Wh40kBossSpawnSystem _bossSpawns = default!;
 
     private readonly Dictionary<string, HashSet<string>> _warpAdjacency = new();
     private readonly List<KoronusRoutePrototype> _sectorRoutes = new();
@@ -833,7 +835,8 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         boundary.CleanupDelay = system.CleanupDelay;
         boundary.WarningAnnouncementCooldown = system.WarningAnnouncementCooldown;
         Dirty(mapUid, boundary);
-
+        if (system.BossPrototype is { } boss)
+            _bossSpawns.EnsureEncounter(mapUid, boss, system.BossPosition);
     }
 
     private float GetRandomBodyPositionAngle(

@@ -10,6 +10,19 @@ namespace Content.Client.UserInterface.Screens;
 /// </summary>
 public abstract class InGameScreen : UIScreen
 {
+    public bool GameplayHudVisible { get; protected set; } = true;
+
+    public void AttachBossHud(Control control)
+    {
+        var viewport = GetWidget<Content.Client.UserInterface.Controls.MainViewport>();
+        Control parent = viewport?.Parent ?? this;
+        if (control.Parent == parent)
+            return;
+        control.Orphan();
+        parent.AddChild(control);
+        SetAnchorPreset(control, LayoutPreset.Wide);
+    }
+
     public Action<Vector2>? OnChatResized;
 
     public abstract ChatBox ChatBox { get; }

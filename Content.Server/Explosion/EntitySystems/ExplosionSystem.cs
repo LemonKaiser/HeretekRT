@@ -79,6 +79,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     [Dependency] private DestructibleSystem _destructibleSystem = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
+    [Dependency] private Content.Server._WH40K.Bosses.Wh40kSpaceBossSystem _spaceBosses = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
 
     private EntityQuery<FlammableComponent> _flammableQuery;
@@ -310,7 +311,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             return;
 
         // Mono - MapCoordinates -> EntityCoordinates
-        QueueExplosion(gridPos!.Value, typeId, totalIntensity, slope, maxTileIntensity, user ?? uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false);
+        QueueExplosion(gridPos!.Value, typeId, totalIntensity, slope, maxTileIntensity, user ?? uid, tileBreakScale, maxTileBreak, canCreateVacuum,
+            addLog: false, blockSpaceBossDamage: _spaceBosses.IsProtectedDamageSource(uid),
+            bossAttack: HasComp<Content.Server._WH40K.Bosses.Wh40kBossMinionComponent>(uid));
 
         if (!addLog)
             return;
@@ -365,7 +368,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         float tileBreakScale = 1f,
         int maxTileBreak = int.MaxValue,
         bool canCreateVacuum = true,
-        bool addLog = true)
+        bool addLog = true,
+        bool blockSpaceBossDamage = false,
+        bool bossAttack = false)
     {
         if (totalIntensity <= 0 || slope <= 0)
             return;
@@ -379,11 +384,15 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         if (addLog) // dont log if already created a separate, more detailed, log.
             _adminLogger.Add(LogType.Explosion, LogImpact.High, $"Explosion ({typeId}) spawned at {epicenter:coordinates} with intensity {totalIntensity} slope {slope}");
 
+        // Snapshot attribution before the projectile is deleted or its vessel undocks.
+        blockSpaceBossDamage |= _spaceBosses.IsProtectedDamageSource(cause);
+        bossAttack |= HasComp<Content.Server._WH40K.Bosses.Wh40kBossMinionComponent>(cause);
+
         // try to combine explosions on the same tile if they are the same type
         foreach (var queued in _queuedExplosions)
         {
             // ignore different types or those on different maps
-            if (queued.Proto.ID != type.ID)
+            if (queued.Proto.ID != type.ID || queued.BlockSpaceBossDamage != blockSpaceBossDamage || queued.BossAttack != bossAttack)
                 continue;
 
             var dst = queued.Proto.MaxCombineDistance;
@@ -405,7 +414,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             TileBreakScale = tileBreakScale,
             MaxTileBreak = maxTileBreak,
             CanCreateVacuum = canCreateVacuum,
-            Cause = cause
+            Cause = cause,
+            BlockSpaceBossDamage = blockSpaceBossDamage,
+            BossAttack = bossAttack
         };
         _explosionQueue.Enqueue(boom);
         _queuedExplosions.Add(boom);
@@ -488,7 +499,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             visualEnt,
             queued.Cause,
             _map,
-            _damageableSystem);
+            _damageableSystem,
+            queued.BlockSpaceBossDamage,
+            queued.BossAttack);
     }
 
     private void CameraShake(float range, MapCoordinates epicenter, float totalIntensity)

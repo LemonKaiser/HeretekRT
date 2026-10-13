@@ -6,3 +6,10 @@
   - type: KoronusSectorRule
     sector: KoronusExpanse
   - type: KoronusActivityDirector
+  - type: BasicStationEventScheduler
+    minimumTimeUntilFirstEvent: 3600
+    minMaxEventTiming:
+      min: 3600
+      max: 3600
+    scheduledGameRules: !type:EntSelector
+      id: Wh40kHiveShipEncounter

@@ -84,7 +84,8 @@ public sealed partial class RadarBlipSystem : EntitySystem
         {
             if (!blip.Enabled
                 || blipXform.MapID != radarMapId
-                || !NearAnySources(_xform.GetWorldPosition(blipXform), sources, blip.MaxDistance)
+                || !NearAnySources(_xform.GetWorldPosition(blipXform), sources,
+                    blip.UseRadarRange ? component.MaxRange : blip.MaxDistance)
             )
                 continue;
 

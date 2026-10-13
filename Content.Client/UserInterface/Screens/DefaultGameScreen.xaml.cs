@@ -72,6 +72,7 @@ public sealed partial class DefaultGameScreen : InGameScreen
 
     public override void SetHudVisible(bool visible)
     {
+        GameplayHudVisible = visible;
         if (visible)
         {
             if (!_hudHidden || _hudVisibilityState == null)

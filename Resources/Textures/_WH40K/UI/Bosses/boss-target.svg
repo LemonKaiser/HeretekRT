@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<linearGradient id="metal" x2="0" y2="1"><stop stop-color="#30353b"/><stop offset=".45" stop-color="#161b21"/><stop offset="1" stop-color="#090d12"/></linearGradient>
+<linearGradient id="brass" x2="0" y2="1"><stop stop-color="#e3c789"/><stop offset=".4" stop-color="#9c7640"/><stop offset="1" stop-color="#4e3821"/></linearGradient>
+<linearGradient id="blood" x2="0" y2="1"><stop stop-color="#fa7770"/><stop offset=".15" stop-color="#bd3943"/><stop offset=".65" stop-color="#8c182b"/><stop offset="1" stop-color="#3e0e1d"/></linearGradient>
+<linearGradient id="void" x2="1" y2="1"><stop stop-color="#141f2b"/><stop offset=".55" stop-color="#0b111b"/><stop offset="1" stop-color="#1a101c"/></linearGradient>
+<pattern id="mesh" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#b9c4cc" stroke-opacity=".035"/></pattern>
+</defs>
+<path d="M24 3 45 24 24 45 3 24Z" fill="#080d15" fill-opacity=".65" stroke="#9d7747"/>
+<path d="M24 9 39 24 24 39 9 24Z" fill="none" stroke="#c84851" stroke-width="2"/>
+<path d="M3 15V3H15M33 3H45V15M45 33V45H33M15 45H3V33" fill="none" stroke="#d8b774" stroke-width="2"/>
+<path d="M24 14V20M24 28V34M14 24H20M28 24H34" stroke="#f5c7a8"/>
+<circle cx="24" cy="24" r="2" fill="#ee6c6a"/>
+</svg>

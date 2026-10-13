@@ -5,7 +5,7 @@ meta:
   forkId: ebengrad
   forkVersion: e2d5c02e5218d0622a98787878fc24f86789d254
   time: 09/18/2026 15:19:20
-  entityCount: 3532
+  entityCount: 3554
 maps: []
 grids:
 - 1
@@ -21559,4 +21559,132 @@ entities:
       parent: 1
     - type: DeltaPressure
       gridUid: 1
+- proto: HardpointMissileHeavy
+  entities:
+  - uid: 3533
+    components:
+    - type: Transform
+      pos: -8.5,-0.5
+      parent: 1
+  - uid: 3534
+    components:
+    - type: Transform
+      pos: 9.5,-0.5
+      parent: 1
+- proto: HardpointBallisticHeavy
+  entities:
+  - uid: 3535
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,37.5
+      parent: 1
+  - uid: 3536
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,33.5
+      parent: 1
+  - uid: 3537
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,29.5
+      parent: 1
+  - uid: 3538
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,25.5
+      parent: 1
+  - uid: 3539
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,21.5
+      parent: 1
+  - uid: 3540
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,17.5
+      parent: 1
+  - uid: 3541
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,17.5
+      parent: 1
+  - uid: 3542
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,21.5
+      parent: 1
+  - uid: 3543
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,25.5
+      parent: 1
+  - uid: 3544
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,29.5
+      parent: 1
+  - uid: 3545
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,33.5
+      parent: 1
+  - uid: 3546
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 4.5,37.5
+      parent: 1
+- proto: HardpointBallisticLight
+  entities:
+  - uid: 3547
+    components:
+    - type: Transform
+      pos: 5.5,43.5
+      parent: 1
+  - uid: 3548
+    components:
+    - type: Transform
+      pos: -4.5,43.5
+      parent: 1
+  - uid: 3549
+    components:
+    - type: Transform
+      pos: -4.5,10.5
+      parent: 1
+  - uid: 3550
+    components:
+    - type: Transform
+      pos: 5.5,10.5
+      parent: 1
+  - uid: 3551
+    components:
+    - type: Transform
+      pos: -13.5,-5.5
+      parent: 1
+  - uid: 3552
+    components:
+    - type: Transform
+      pos: 14.5,-5.5
+      parent: 1
+  - uid: 3553
+    components:
+    - type: Transform
+      pos: 12.5,-53.5
+      parent: 1
+  - uid: 3554
+    components:
+    - type: Transform
+      pos: -11.5,-53.5
+      parent: 1
 ...

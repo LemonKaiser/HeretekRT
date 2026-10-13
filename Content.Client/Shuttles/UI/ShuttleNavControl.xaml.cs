@@ -1234,6 +1234,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             if (monoViewBounds.Contains(position))
             {
                 DrawBlipShape(handle, position, box, color, blip.Config.Shape);
+                if (ShowIFF && blip.Config.Label is { } label)
+                {
+                    var text = Loc.GetString(label);
+                    var offset = Math.Clamp(box.Box.Width * 0.5f, 18f * UIScale, 64f * UIScale) + 6f * UIScale;
+                    var labelPosition = position + new Vector2(offset, -Font.GetLineHeight(UIScale) * 0.5f);
+                    handle.DrawString(Font, labelPosition + Vector2.One * UIScale, text, UIScale, Color.Black);
+                    handle.DrawString(Font, labelPosition, text, UIScale, color.WithAlpha(1f));
+                }
             }
         }
 
@@ -1907,6 +1915,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 break;
             case RadarBlipShape.Arrow:
                 DrawArrow(handle, position, bounds, color);
+                break;
+            case RadarBlipShape.HiveShip:
+                Content.Client._WH40K.Bosses.Wh40kBossRadarDrawing.Draw(handle, position, bounds, color, UIScale);
                 break;
         }
     }

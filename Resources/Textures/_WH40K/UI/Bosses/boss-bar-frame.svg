@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="40" viewBox="0 0 720 40">
+  <defs>
+    <linearGradient id="frame-brass" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="36">
+      <stop stop-color="#f0d7a4"/>
+      <stop offset="0.24" stop-color="#c39c61"/>
+      <stop offset="0.48" stop-color="#725330"/>
+      <stop offset="0.57" stop-color="#b18b53"/>
+      <stop offset="0.84" stop-color="#6a4b2e"/>
+      <stop offset="1" stop-color="#a58250"/>
+    </linearGradient>
+    <linearGradient id="frame-steel" gradientUnits="userSpaceOnUse" x1="0" y1="8" x2="0" y2="32">
+      <stop stop-color="#34404b"/>
+      <stop offset="0.4" stop-color="#131b25"/>
+      <stop offset="0.65" stop-color="#080e16"/>
+      <stop offset="1" stop-color="#28323d"/>
+    </linearGradient>
+    <linearGradient id="frame-inset" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#070b12"/>
+      <stop offset="1" stop-color="#1a222d"/>
+    </linearGradient>
+    <linearGradient id="frame-gem" x1="0" y1="0" x2="0.8" y2="1">
+      <stop stop-color="#da8691"/>
+      <stop offset="0.3" stop-color="#92334a"/>
+      <stop offset="0.62" stop-color="#591c33"/>
+      <stop offset="1" stop-color="#210d1b"/>
+    </linearGradient>
+    <g id="frame-clasp">
+      <path d="M2 20 7 11 14 8 28 10 35 14V26L28 30 14 32 7 29Z"
+            fill="#03070d" stroke="#03070d" stroke-width="2"/>
+      <path d="M3 20 8 12 15 9 28 11 33 15V25L28 29 15 31 8 28Z"
+            fill="url(#frame-steel)" stroke="url(#frame-brass)" stroke-width="1.2"/>
+      <path d="M10 10 15 5 24 7 29 11M10 30 15 35 24 33 29 29"
+            fill="#111922" stroke="url(#frame-brass)" stroke-width="1" stroke-linejoin="round"/>
+      <path d="M4 20 9 15 12 14M4 20 9 25 12 26" fill="none" stroke="#b08c59" stroke-width="0.8"/>
+      <path d="M8 12 15 9 27 11M9 28 15 31 27 29" fill="none" stroke="#ebd1a0" stroke-width="0.6" opacity="0.65"/>
+      <path d="M29 13H34V27H29" fill="url(#frame-steel)" stroke="#ac8752" stroke-width="0.75"/>
+      <path d="M31.5 14V26" stroke="#e3c690" stroke-width="0.6"/>
+      <circle cx="19" cy="20" r="9.5" fill="#080e16" stroke="#070a0f" stroke-width="2"/>
+      <circle cx="19" cy="20" r="8.5" fill="url(#frame-steel)" stroke="url(#frame-brass)" stroke-width="1.4"/>
+      <circle cx="19" cy="20" r="6.9" fill="url(#frame-inset)" stroke="#736044" stroke-width="0.5"/>
+      <path d="M19 13.5 22.5 17V23L19 26.5 15.5 23V17Z"
+            fill="url(#frame-gem)" stroke="#b99761" stroke-width="0.7"/>
+      <path d="M19 14.5V25.5M16.5 17.2 19 15.5 21.5 17.2" fill="none" stroke="#e1a0a1" stroke-width="0.6" opacity="0.55"/>
+      <path d="M11 20H13M25 20H27M19 10.5V12M19 28V29.5" stroke="#dcc193" stroke-width="0.9"/>
+      <circle cx="7.5" cy="20" r="1" fill="#04070c"/>
+      <circle cx="7.3" cy="19.7" r="0.45" fill="#d0b27b"/>
+    </g>
+  </defs>
+  <path d="M30 9H690L698 15V25L690 31H30L22 25V15Z M36 13V25H684V13Z"
+        fill="#03070d" fill-rule="evenodd"/>
+  <path d="M31 10H689L696 15V25L689 30H31L24 25V15Z M36 13V25H684V13Z"
+        fill="url(#frame-steel)" fill-rule="evenodd"/>
+  <path d="M34 10.5H686M34 29.5H686" stroke="url(#frame-brass)" stroke-width="1.3"/>
+  <path d="M36 12.5H684M36 25.5H684" stroke="#c4a477" stroke-width="0.65" opacity="0.8"/>
+  <path d="M38 11.5H682" stroke="#edd9b4" stroke-width="0.5" opacity="0.55"/>
+  <path d="M38 28H682" stroke="#03060b" stroke-width="1"/>
+  <path d="M35.5 13V25M684.5 13V25" stroke="#bd9a62" stroke-width="1"/>
+  <path d="M318 10.5 336 7.5H350L360 3.5 370 7.5H384L402 10.5"
+        fill="none" stroke="#a28250" stroke-width="0.7"/>
+  <path d="M318 29.5 340 33H380L402 29.5" fill="none" stroke="#695335" stroke-width="0.7"/>
+  <path d="M355.5 6 360 3.5 364.5 6 360 8.5Z" fill="url(#frame-brass)" stroke="#281f15" stroke-width="0.5"/>
+  <use href="#frame-clasp"/>
+  <use href="#frame-clasp" transform="translate(720 0) scale(-1 1)"/>
+</svg>

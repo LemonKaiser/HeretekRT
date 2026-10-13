@@ -310,7 +310,7 @@ public sealed partial class ContentAudioSystem
             _ftlAmbientTrack = null;
 
         #region combat music
-        if (newCombatState != _lastCombatState) //we switch combat music on or off now
+        if (newCombatState != _lastCombatState || newCombatState && _currentlyPlaying != MusicType.Combat)
         {
             _lastCombatState = newCombatState; // cache combat state since its different than the last
             if (newCombatState) //true = we toggled combat ON.
@@ -342,7 +342,7 @@ public sealed partial class ContentAudioSystem
                 _currentlyPlaying = MusicType.Combat;
 
                 SoundCollectionPrototype soundcol = _proto.Index<SoundCollectionPrototype>(_musicProto.ID);
-                _combatMusicTrack = _random.Pick(soundcol.PickFiles).ToString();
+                _combatMusicTrack ??= _random.Pick(soundcol.PickFiles).ToString();
                 PlayMusicTrack(_combatMusicTrack, _musicProto.Sound.Params.Volume, _combatMusicFadeInTime, true);
                 return;
             }

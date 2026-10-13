@@ -23,7 +23,7 @@ public class HardpointSystem : SharedHardpointSystem
     [Dependency] private SharedGunSystem _gun = default!;
     [Dependency] private EntityLookupSystem _lookupSystem = default!;
     // Explosions can cause a lot of lookups and events to fire. So we time-limit it based on grids
-    private const float UpdateDelay = 60f;
+    private const float UpdateDelay = 0.25f;
     private float InternalTimer = 0f;
     private HashSet<EntityUid> QueuedGrids = new();
     /// <inheritdoc/>
@@ -76,6 +76,7 @@ public class HardpointSystem : SharedHardpointSystem
         // This is just for turret-cannons!
         if (!TryComp<FireControllableComponent>(args.cannonUid, out var compx))
             return;
+        _fcsSystem.UpdateWeaponRegistration(args.cannonUid, true);
         QueueHardpointRefresh(args.gridUid);
     }
 
@@ -84,15 +85,13 @@ public class HardpointSystem : SharedHardpointSystem
         // This is just for turret-cannons!
         if (!TryComp<FireControllableComponent>(args.CannonUid, out var compx))
             return;
+        _fcsSystem.UpdateWeaponRegistration(args.CannonUid, false);
         QueueHardpointRefresh(args.gridUid);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-
-        if (!_gameTiming.IsFirstTimePredicted)
-            return;
 
         if (!_gameTiming.IsFirstTimePredicted)
             return;
@@ -105,12 +104,10 @@ public class HardpointSystem : SharedHardpointSystem
         {
             if (TerminatingOrDeleted(grid))
             {
-                QueuedGrids.Remove(grid);
                 continue;
             }
-            HashSet<Entity<HardpointComponent>> lookupList = new();
             if (!TryComp<FireControlGridComponent>(grid, out var gridFireControlComp))
-                return;
+                continue;
             _fcsSystem.RefreshControllables(grid);
         }
         QueuedGrids.Clear();
