@@ -109,6 +109,8 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     private float _nextAtmosphericTransitCoordinate;
     private readonly Dictionary<EntityUid, LandingApproachState> _landingApproachStates = new();
     private readonly Dictionary<MapId, SurfaceBoundary> _surfaceBoundaries = new();
+    private readonly HashSet<EntityUid> _pendingSurfaceBoundaryCorrections = new();
+    private readonly List<EntityUid> _surfaceBoundaryCorrectionSnapshot = new();
     private readonly HashSet<Entity<ShuttleConsoleComponent>> _shuttleConsoles = new();
     private readonly List<EntityUid> _atmosphericTransitMobRemovals = new();
     private readonly List<KoronusLandingSession> _parkingSessionSnapshot = new();
@@ -119,6 +121,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        UpdatesAfter.Add(typeof(SharedPhysicsSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<KoronusLandedShuttleFragmentComponent, GridSplitEvent>(OnLandedGridSplit);
         SubscribeLocalEvent<KoronusLandedShuttleFragmentComponent, EntityTerminatingEvent>(OnLandedShuttleTerminating);
@@ -132,6 +135,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         base.Update(frameTime);
 
         UpdatePlanetaryTransfers();
+        ProcessSurfaceBoundaryCorrections();
         if (_timing.CurTime >= _nextParkingUpdate)
         {
             _nextParkingUpdate = _timing.CurTime + ParkingUpdateInterval;
@@ -1622,7 +1626,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         if (transform.Anchored)
             return;
 
-        ClampSurfaceEntity(entity.Owner, transform, boundary);
+        _pendingSurfaceBoundaryCorrections.Add(entity.Owner);
     }
 
     private void UpdateSurfaceBoundaryTracking(EntityUid uid, TransformComponent transform)
@@ -1640,7 +1644,32 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             return;
 
         EnsureComp<KoronusSurfaceBoundaryTrackedComponent>(uid);
-        ClampSurfaceEntity(uid, transform, boundary);
+        _pendingSurfaceBoundaryCorrections.Add(uid);
+    }
+
+    private void ProcessSurfaceBoundaryCorrections()
+    {
+        // Moving inside MoveEvent or EntParentChangedMessage nests transform events and lets
+        // older events continue with coordinates from before the correction. Apply a snapshot
+        // during Update instead, rechecking entities which may have changed maps or parents.
+        _surfaceBoundaryCorrectionSnapshot.Clear();
+        _surfaceBoundaryCorrectionSnapshot.AddRange(_pendingSurfaceBoundaryCorrections);
+        _pendingSurfaceBoundaryCorrections.Clear();
+
+        foreach (var uid in _surfaceBoundaryCorrectionSnapshot)
+        {
+            if (TerminatingOrDeleted(uid) ||
+                !TryComp<TransformComponent>(uid, out var transform) ||
+                transform.Anchored ||
+                !_surfaceBoundaries.TryGetValue(transform.MapID, out var boundary) ||
+                !IsSurfaceBoundaryRoot(transform, boundary) ||
+                _maps.IsPaused(transform.MapID))
+            {
+                continue;
+            }
+
+            ClampSurfaceEntity(uid, transform, boundary);
+        }
     }
 
     private void RefreshSurfaceBoundaryTracking()
@@ -1655,6 +1684,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
 
     private void StopSurfaceBoundaryTracking(EntityUid uid)
     {
+        _pendingSurfaceBoundaryCorrections.Remove(uid);
         if (HasComp<KoronusSurfaceBoundaryTrackedComponent>(uid))
             RemComp<KoronusSurfaceBoundaryTrackedComponent>(uid);
     }
@@ -2070,6 +2100,8 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent args)
     {
         _surfaceBoundaries.Clear();
+        _pendingSurfaceBoundaryCorrections.Clear();
+        _surfaceBoundaryCorrectionSnapshot.Clear();
         _nextBoundaryUpdate = default;
         _nextBoundaryTrackingRefresh = default;
         _nextParkingUpdate = default;

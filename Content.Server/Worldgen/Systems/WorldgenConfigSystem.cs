@@ -1,6 +1,7 @@
 using Content.Server.Administration;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
+using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Worldgen.Components;
 using Content.Server.Worldgen.Prototypes;
 using Content.Shared.Administration;
@@ -74,6 +75,11 @@ public sealed partial class WorldgenConfigSystem : EntitySystem
             return;
 
         var target = _map.GetMapEntityId(_gameTicker.DefaultMap);
+        // Koronus owns its finite asteroid field and planetary maps. The ordinary infinite
+        // generator would add a second field and keep its asteroids waiting for chunk loaders.
+        if (HasComp<KoronusSystemMapComponent>(target))
+            return;
+
         Log.Debug($"Trying to configure {_gameTicker.DefaultMap}, aka {ToPrettyString(target)} aka {target}");
         var cfg = _proto.Index<WorldgenConfigPrototype>(_worldgenConfig);
 

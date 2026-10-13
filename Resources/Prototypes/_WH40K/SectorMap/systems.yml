@@ -14,11 +14,13 @@
     displayName: koronus-footfall-casino-name
     spawnDistance: 7000
     protectGrid: true
+    localSafetyProfile: KoronusFootfallStationRestrictions
     autoRestock: true
   - mapPath: /Maps/_WH40K/Footfall/footfall_bahama_mamas.yml
     displayName: koronus-footfall-bar-name
     spawnDistance: 9000
     protectGrid: true
+    localSafetyProfile: KoronusFootfallStationRestrictions
     autoRestock: true
   spaceMode: Planetary
   stellarCenter: 0, 0

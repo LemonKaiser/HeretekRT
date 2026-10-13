@@ -51,6 +51,12 @@ entities:
     - type: Transform
       pos: -128,32
       parent: invalid
+    - type: ProtectedGrid
+      preventFloorRemoval: true
+      preventFloorPlacement: true
+      preventRCDUse: true
+      preventEmpEvents: true
+      preventExplosions: true
     - type: MapGrid
       chunks:
         0,0:

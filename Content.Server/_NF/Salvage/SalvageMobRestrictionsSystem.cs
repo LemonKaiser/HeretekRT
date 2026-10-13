@@ -8,6 +8,7 @@ using Content.Server.Popups;
 using Content.Shared.Database;
 using Content.Shared.Popups;
 using Robust.Shared.Player;
+using Robust.Shared.Timing;
 
 namespace Content.Server._NF.Salvage;
 
@@ -17,6 +18,9 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
     [Dependency] private ExplosionSystem _explosion = default!;
     [Dependency] private IAdminLogManager _adminLogger = default!;
     [Dependency] private PopupSystem _popupSystem = default!;
+    [Dependency] private IGameTiming _timing = default!;
+
+    private TimeSpan _nextCleanup;
 
     public override void Initialize()
     {
@@ -27,6 +31,18 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
         SubscribeLocalEvent<SalvageMobRestrictionsGridComponent, ComponentRemove>(OnRemoveGrid);
         SubscribeLocalEvent<NFSalvageMobRestrictionsComponent, MobStateChangedEvent>(OnMobState);
         SubscribeLocalEvent<NFSalvageMobRestrictionsComponent, EntParentChangedMessage>(OnParentChanged);
+    }
+
+    public override void Update(float frameTime)
+    {
+        if (_timing.CurTime < _nextCleanup)
+            return;
+
+        _nextCleanup = _timing.CurTime + TimeSpan.FromSeconds(10);
+        // Maps can already contain stale membership, including on paused grids awaiting a cold snapshot.
+        var grids = AllEntityQuery<SalvageMobRestrictionsGridComponent>();
+        while (grids.MoveNext(out var grid))
+            grid.MobsToKill.RemoveAll(Terminating);
     }
 
     private void OnInit(EntityUid uid, NFSalvageMobRestrictionsComponent component, ComponentInit args)
@@ -43,7 +59,9 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
         {
             rg = AddComp<SalvageMobRestrictionsGridComponent>(gridUid);
         }
-        rg!.MobsToKill.Add(uid);
+        // Loaded grids already contain these references. Component initialization must not add them twice.
+        if (!rg!.MobsToKill.Contains(uid))
+            rg.MobsToKill.Add(uid);
         component.LinkedGridEntity = gridUid;
     }
 
@@ -51,16 +69,17 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
     {
         if (TryComp(component.LinkedGridEntity, out SalvageMobRestrictionsGridComponent? rg))
         {
-            rg.MobsToKill.Remove(uid);
+            rg.MobsToKill.RemoveAll(target => target == uid || Terminating(target));
         }
     }
 
     private void OnRemoveGrid(EntityUid uid, SalvageMobRestrictionsGridComponent component, ComponentRemove args)
     {
-        foreach (EntityUid target in component.MobsToKill)
+        // Removing a mob also removes its membership from this list.
+        foreach (EntityUid target in component.MobsToKill.ToArray())
         {
             // Don't destroy yourself, don't destroy things being destroyed.
-            if (uid == target || MetaData(target).EntityLifeStage >= EntityLifeStage.Terminating)
+            if (uid == target || Terminating(target))
                 continue;
 
             // Mono - fix

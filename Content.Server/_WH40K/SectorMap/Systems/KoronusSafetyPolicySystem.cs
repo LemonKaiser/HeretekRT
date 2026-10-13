@@ -22,6 +22,9 @@ using Content.Shared.Atmos.Events;
 using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Actions.Events;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Part;
+using Content.Shared.Body.Organ;
+using Content.Shared.Item;
 using Content.Shared.Chemistry.Hypospray.Events;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Buckle.Components;
@@ -67,7 +70,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// The authoritative Koronus safety policy. A rule can come from a system profile, a planetary
 /// surface profile, a static authored circle, or a dynamic zone attached to a facility grid.
-/// Infrastructure protection is deliberately separate: only explicit ProtectedGrid entities are
+/// Infrastructure protection is deliberately separate: only authored facility grids are
 /// made immune, so generated asteroids and procedural terrain remain destructible.
 /// </summary>
 public sealed class KoronusSafetyPolicySystem : EntitySystem
@@ -220,7 +223,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         // Portable containers can be bought or brought in after facility initialization.
         // Their release restriction follows the protected grid, not an optional local profile.
-        if (TryGetGrid(entity, out var protectedGrid) && HasComp<ProtectedGridComponent>(protectedGrid))
+        if (TryGetGrid(entity, out var protectedGrid) && IsFacilityGrid(protectedGrid))
             rules |= KoronusSafetyRule.AtmosphericRelease;
 
         return rules;
@@ -243,6 +246,17 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
                                    target is { Valid: true } npc &&
                                    !targetIsPlayer &&
                                    ShouldBlockPlayerAgainstMob(source, npc);
+        if (safety == Wh40kClassEffectSafety.DeviceInteraction && IsFootfallSpace(source))
+        {
+            if (target is { Valid: true } device &&
+                (ShouldBlockWireModification(source, device) || ShouldBlockGridModification(source, device)))
+                return false;
+
+            // Ship ownership restrictions apply to the selected device, not every device in the sector.
+            const KoronusSafetyRule shipRules = KoronusSafetyRule.PlayerShipWires | KoronusSafetyRule.PlayerShipDeconstruction;
+            sourceRules &= ~shipRules;
+            targetRules &= ~shipRules;
+        }
         return Wh40kClassRuntimePolicy.IsClassActionAllowed(
             safety,
             sourceRules,
@@ -261,6 +275,37 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         return HasRule(grid, rule);
     }
 
+    public bool IsFootfallSpace(EntityUid entity)
+    {
+        return _transformQuery.TryComp(entity, out var transform) &&
+               _sector.TryGetSystemId(transform.MapID, out var systemId) && systemId == "Footfall";
+    }
+
+    private bool IsFacilityGrid(EntityUid grid)
+    {
+        return IsFootfallSpace(grid)
+            ? HasComp<KoronusProtectedFacilityComponent>(grid)
+            : HasComp<ProtectedGridComponent>(grid);
+    }
+
+    private bool IsProtectedFacility(EntityUid grid)
+    {
+        return IsFacilityGrid(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection);
+    }
+
+    private bool IsPlayerShip(EntityUid grid)
+    {
+        if (!IsFootfallSpace(grid))
+            return HasComp<ShuttleDeedComponent>(grid);
+
+        if (HasComp<KoronusMiningAsteroidComponent>(grid))
+            return false;
+
+        return TryComp<ShipOwnershipComponent>(grid, out var ownership) && ownership.OwnerUserId != default ||
+               TryComp<ShuttleDeedComponent>(grid, out var deed) && deed.ShuttleUid == grid &&
+               !string.IsNullOrEmpty(deed.ShuttleOwner) && deed.ShuttleOwner != "Unknown";
+    }
+
     /// <summary>
     /// A mind is the authoritative player marker. This covers borgs, polymorphs and non-humanoid
     /// player bodies while still excluding ordinary NPCs and fauna.
@@ -275,6 +320,11 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     /// in AutoShootGunComponent so delayed shots keep their attribution as well.
     /// </summary>
     public bool TryResolveResponsiblePlayer(EntityUid? source, out EntityUid player)
+    {
+        return TryResolveResponsibleActor(source, out player) && IsPlayerCharacter(player);
+    }
+
+    private bool TryResolveResponsibleActor(EntityUid? source, out EntityUid player)
     {
         player = EntityUid.Invalid;
         if (source is not { Valid: true } current)
@@ -301,7 +351,14 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
                 continue;
             }
 
-            break;
+            if (TryComp<AutoShootGunComponent>(current, out var gun) && gun.Shooter is { Valid: true } gunner)
+            {
+                current = gunner;
+                continue;
+            }
+
+            player = current;
+            return true;
         }
 
         return false;
@@ -353,10 +410,24 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     public bool ShouldBlockHarmfulInteraction(EntityUid? source, EntityUid target)
     {
-        return ShouldBlockPlayerAgainstPlayer(source, target, KoronusSafetyRule.PlayerHarmfulInteractions) ||
+        return ShouldBlockNpcAgainstPlayer(source, target) ||
+               ShouldBlockPlayerAgainstPlayer(source, target, KoronusSafetyRule.PlayerHarmfulInteractions) ||
                ShouldBlockPlayerAgainstMob(source, target) &&
                (HasRule(target, KoronusSafetyRule.PlayerHarmfulInteractions) ||
                 TryResolveResponsiblePlayer(source, out var player) && HasRule(player, KoronusSafetyRule.PlayerHarmfulInteractions));
+    }
+
+    public bool ShouldBlockNpcAgainstPlayer(EntityUid? source, EntityUid target)
+    {
+        if (TryComp<BodyPartComponent>(target, out var part) && part.Body is { } partBody)
+            target = partBody;
+        else if (TryComp<OrganComponent>(target, out var organ) && organ.Body is { } organBody)
+            target = organBody;
+
+        return IsPlayerCharacter(target) && IsFootfallSpace(target) &&
+               TryGetGrid(target, out var grid) && IsProtectedFacility(grid) &&
+               TryResolveResponsibleActor(source, out var actor) &&
+               !IsPlayerCharacter(actor) && HasComp<MobStateComponent>(actor);
     }
 
     public bool ShouldBlockWireModification(EntityUid user, EntityUid target)
@@ -364,18 +435,19 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (!TryGetGrid(target, out var grid))
             return false;
 
-        if (HasComp<ProtectedGridComponent>(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection))
+        if (IsProtectedFacility(grid))
             return true;
 
-        return HasComp<ShuttleDeedComponent>(grid) &&
+        return IsPlayerShip(grid) &&
                HasRuleOnGrid(grid, KoronusSafetyRule.PlayerShipWires) &&
                !_shipAccess.HasShipOwnerAccess(grid, user);
     }
 
     public bool ShouldBlockPlayerShipCollision(EntityUid firstGrid, EntityUid secondGrid)
     {
-        if (HasComp<ProtectedGridComponent>(firstGrid) && HasRuleOnGrid(firstGrid, KoronusSafetyRule.StationProtection) ||
-            HasComp<ProtectedGridComponent>(secondGrid) && HasRuleOnGrid(secondGrid, KoronusSafetyRule.StationProtection))
+        if (IsProtectedFacility(firstGrid) || IsProtectedFacility(secondGrid) ||
+            IsFootfallSpace(firstGrid) && IsPlayerShip(firstGrid) ||
+            IsFootfallSpace(secondGrid) && IsPlayerShip(secondGrid))
             return true;
 
         return HasComp<ShuttleDeedComponent>(firstGrid) && HasComp<ShuttleDeedComponent>(secondGrid) &&
@@ -385,10 +457,22 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     public bool ShouldBlockPlayerShipDamage(EntityUid? source, EntityUid target)
     {
-        if (!TryResolveResponsiblePlayer(source, out var player) || !TryGetGrid(target, out var grid))
+        if (!TryGetGrid(target, out var grid))
             return false;
 
-        if (HasComp<ProtectedGridComponent>(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection))
+        if (IsFootfallSpace(grid))
+        {
+            // Protect infrastructure without making passengers, their organs or carried items invulnerable.
+            return (IsProtectedFacility(grid) || IsPlayerShip(grid)) &&
+                   !HasComp<MobStateComponent>(target) && !HasComp<BodyComponent>(target) &&
+                   !HasComp<BodyPartComponent>(target) && !HasComp<OrganComponent>(target) &&
+                   (!HasComp<ItemComponent>(target) || Transform(target).Anchored);
+        }
+
+        if (!TryResolveResponsiblePlayer(source, out var player))
+            return false;
+
+        if (IsProtectedFacility(grid))
             return !HasComp<MobStateComponent>(target);
 
         return HasComp<ShuttleDeedComponent>(grid) &&
@@ -404,10 +488,10 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (HasRuleOnGrid(grid, KoronusSafetyRule.Deconstruction))
             return true;
 
-        if (HasComp<ProtectedGridComponent>(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection))
+        if (IsProtectedFacility(grid))
             return true;
 
-        return HasComp<ShuttleDeedComponent>(grid) &&
+        return IsPlayerShip(grid) &&
                HasRuleOnGrid(grid, KoronusSafetyRule.PlayerShipDeconstruction) &&
                !_shipAccess.HasShipOwnerAccess(grid, user);
     }
@@ -424,7 +508,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     /// </summary>
     public bool ShouldBlockExplosionGridDamage(EntityUid? cause, EntityUid grid)
     {
-        if (HasComp<ProtectedGridComponent>(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection))
+        if (IsProtectedFacility(grid) || IsFootfallSpace(grid) && IsPlayerShip(grid))
             return true;
 
         if (!TryResolveResponsiblePlayer(cause, out var player))
@@ -492,6 +576,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return;
 
         if (ShouldBlockPlayerAgainstPlayer(args.Origin, uid, KoronusSafetyRule.PlayerDamage) ||
+            ShouldBlockNpcAgainstPlayer(args.Origin, uid) ||
             ShouldBlockPlayerAgainstMob(args.Origin, uid) ||
             ShouldBlockPlayerShipDamage(args.Origin, uid))
         {
@@ -505,6 +590,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return;
 
         if (ShouldBlockPlayerAgainstPlayer(args.Source, uid, KoronusSafetyRule.PlayerStaminaDamage) ||
+            ShouldBlockNpcAgainstPlayer(args.Source, uid) ||
             ShouldBlockPlayerAgainstMob(args.Source, uid))
             args.Cancelled = true;
     }

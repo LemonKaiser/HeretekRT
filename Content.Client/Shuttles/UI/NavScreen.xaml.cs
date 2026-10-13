@@ -169,6 +169,12 @@ public sealed partial class NavScreen : BoxContainer
         var targetAngle = NavRadar.TargetAngle;
         if (NavRadar.TargetingMode == ShuttleNavTargetingMode.Autopilot)
         {
+            if (NavRadar.TryGetAsteroidFieldTarget(coordinates, out var fieldTarget))
+            {
+                RequestAutopilot?.Invoke(_xformSystem.ToMapCoordinates(fieldTarget), targetAngle);
+                CancelTargeting();
+                return;
+            }
             if (NavRadar.TryGetTargetGrid(coordinates, out var targetGrid))
                 RequestAutopilotGrid?.Invoke(_entManager.GetNetEntity(targetGrid));
             else

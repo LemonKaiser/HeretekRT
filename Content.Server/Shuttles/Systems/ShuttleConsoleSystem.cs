@@ -59,6 +59,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     [Dependency] private CrewedShuttleSystem _crewedShuttle = default!;
     [Dependency] private KoronusSectorRuleSystem _koronusSector = default!;
     [Dependency] private KoronusPlanetarySystem _koronusPlanetary = default!;
+    [Dependency] private KoronusAsteroidFieldSystem _koronusAsteroids = default!;
 
     private ISawmill _sawmill = default!;
 
@@ -587,6 +588,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         // All consumers of NavInterfaceState use the same celestial presentation.  Prefer the
         // grid when available so landing capability remains accurate for ship-based consoles.
         navState.PlanetaryState = _koronusPlanetary.GetInterfaceState(entity.Comp2.GridUid ?? entity.Owner);
+        navState.AsteroidFields = _koronusAsteroids.GetNavigationFields(entity.Owner);
         return navState;
     }
 

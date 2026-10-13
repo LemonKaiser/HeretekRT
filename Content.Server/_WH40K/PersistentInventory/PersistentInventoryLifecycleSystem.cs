@@ -12,6 +12,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Interaction.Events;
+using Content.Shared.Mind;
 using Prometheus;
 using Robust.Server.Player;
 using Robust.Shared.Asynchronous;
@@ -45,6 +46,7 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly PersistentInventoryManager _manager = default!;
     [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
+    [Dependency] private SharedMindSystem _minds = default!;
 
     private readonly Dictionary<NetUserId, EntityUid> _boundBodies = new();
     private readonly Dictionary<NetUserId, PendingDisconnect> _disconnects = new();
@@ -809,7 +811,17 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
 
             component.SuppressBodyDeletion = true;
             if (deleteBody && !TerminatingOrDeleted(body))
+            {
+                // The durable life is already lost. End its mind before deleting the body so
+                // shutdown cannot leave an offline ghost that keeps the map resident.
+                if (_minds.TryGetMind(body, out var mindId, out var mind) && mind.UserId == userId)
+                {
+                    // WipeMind alone may retain a returnable ghost being visited.
+                    _minds.UnVisit(mindId, mind);
+                    _minds.WipeMind(mindId, mind);
+                }
                 QueueDel(body);
+            }
             else
                 RemCompDeferred<PersistentInventoryBoundLifeComponent>(body);
         });

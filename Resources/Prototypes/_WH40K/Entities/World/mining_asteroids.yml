@@ -1,0 +1,50 @@
+- type: entity
+  id: KoronusMiningAsteroidBase
+  name: mining asteroid
+  description: An asteroid with mineable rock and ore.
+  abstract: true
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: MapGrid
+  - type: BlobFloorPlanBuilder
+    floorTileset:
+    - FloorAsteroidSand
+    blobDrawProb: 0.5
+  - type: SimpleFloorPlanPopulator
+    entries:
+      FloorAsteroidSand:
+      - id: NFRockMineralSoft
+        orGroup: rock
+        prob: 1.025
+      - id: NFRockMineralHard
+        orGroup: rock
+        prob: 0.1223
+      - id: NFAsteroidRoomMarker
+        orGroup: rock
+        prob: 0.0002
+  - type: IFF
+    color: "#d67e27"
+    flags: HideLabel, HideLabelAlways, AlwaysShowColor
+  - type: LinkedLifecycleGridParent
+  - type: ClaimableGrid
+  - type: DetectedAtRangeMultiplier
+    visualBias: 1024
+  - type: SpaceBiomeSource
+    id: BiomeKoronusAsteroid
+    swapDistance: 40
+    priority: 3000
+
+- type: entity
+  id: KoronusMiningAsteroidSmall
+  parent: [KoronusMiningAsteroidBase, NFBaseAsteroidSmall]
+  name: small mining asteroid
+
+- type: entity
+  id: KoronusMiningAsteroidMedium
+  parent: [KoronusMiningAsteroidBase, NFBaseAsteroidMedium]
+  name: medium mining asteroid
+
+- type: entity
+  id: KoronusMiningAsteroidLarge
+  parent: [KoronusMiningAsteroidBase, NFBaseAsteroidLarge]
+  name: large mining asteroid

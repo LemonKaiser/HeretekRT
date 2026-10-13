@@ -1,6 +1,6 @@
 using Content.Server.Xenoarchaeology.XenoArtifacts;
-using Content.Shared.NPC;
 using Content.Shared.NPC.Components;
+using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Systems;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Shared.Timing;
@@ -10,7 +10,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 
 /// <summary>
 /// Cleans up temporary high-risk entities only on grids with the corresponding local safety rule.
-/// The delay lets ordinary spawning and gameplay complete before Footfall removes the hazard.
+/// Footfall refuges remove hostile NPCs on the next sweep; the damage policy protects players immediately.
 /// </summary>
 public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
 {
@@ -64,14 +64,15 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
 
     private void UpdateHostileNpcs(TimeSpan now)
     {
-        var npcs = EntityQueryEnumerator<ActiveNPCComponent, NpcFactionMemberComponent>();
+        var npcs = EntityQueryEnumerator<MobStateComponent, NpcFactionMemberComponent>();
         while (npcs.MoveNext(out var uid, out _, out var faction))
         {
             Entity<NpcFactionMemberComponent?> factionEntity = new(uid, faction);
-            if (_safety.HasRule(uid, KoronusSafetyRule.HostileNpcAutoCleanup) &&
+            if (!_safety.IsPlayerCharacter(uid) &&
+                _safety.HasRule(uid, KoronusSafetyRule.HostileNpcAutoCleanup) &&
                 _npcFaction.IsFactionHostile("NanoTrasen", factionEntity))
             {
-                _hostileNpcCleanupAt.TryAdd(uid, now + CleanupDelay);
+                _hostileNpcCleanupAt.TryAdd(uid, _safety.IsFootfallSpace(uid) ? now : now + CleanupDelay);
             }
         }
 
@@ -79,7 +80,8 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
         {
             if (TerminatingOrDeleted(uid) ||
                 !TryComp<NpcFactionMemberComponent>(uid, out var faction) ||
-                !HasComp<ActiveNPCComponent>(uid) ||
+                !HasComp<MobStateComponent>(uid) ||
+                _safety.IsPlayerCharacter(uid) ||
                 !_safety.HasRule(uid, KoronusSafetyRule.HostileNpcAutoCleanup))
             {
                 _hostileNpcCleanupAt.Remove(uid);

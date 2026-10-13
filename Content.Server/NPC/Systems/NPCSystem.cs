@@ -15,6 +15,7 @@ using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Physics.Components; // Mono
 using Robust.Shared.Player;
+using Robust.Shared.Map;
 
 namespace Content.Server.NPC.Systems
 {
@@ -47,6 +48,7 @@ namespace Content.Server.NPC.Systems
         private float _playerPauseDistance;
         private float _playerDistanceCheckTimer;
         private const float PlayerDistanceCheckInterval = 2.0f; // Check every 2 seconds
+        private readonly List<MapCoordinates> _nearbyPlayers = new();
 
         /// <inheritdoc />
         public override void Initialize()
@@ -173,6 +175,19 @@ namespace Content.Server.NPC.Systems
 
         private void CheckPlayerDistancesAndPauseNPCs()
         {
+            // Resolve connected, living players once per scan rather than enumerating all historical
+            // player data and resolving sessions separately for every NPC.
+            _nearbyPlayers.Clear();
+            foreach (var session in _playerManager.Sessions)
+            {
+                if (session.AttachedEntity is not { Valid: true } player || HasComp<GhostComponent>(player) ||
+                    TryComp<MobStateComponent>(player, out var state) && state.CurrentState != MobState.Alive ||
+                    !TryComp<TransformComponent>(player, out var playerTransform) ||
+                    playerTransform.MapID == MapId.Nullspace)
+                    continue;
+                _nearbyPlayers.Add(_transform.GetMapCoordinates(player, playerTransform));
+            }
+
             // Get all NPCs with HTN components (both active and inactive).
             var npcQuery = EntityQueryEnumerator<HTNComponent, TransformComponent>();
 
@@ -187,7 +202,7 @@ namespace Content.Server.NPC.Systems
                 if (_mobState.IsIncapacitated(npcUid))
                     continue;
 
-                var npcCoords = npcTransform.Coordinates;
+                var npcCoords = _transform.GetMapCoordinates(npcUid, npcTransform);
                 var hasNearbyPlayer = false;
 
                 var minDistance = htn.SleepPlayerCheckRangeOverride ?? _playerPauseDistance; // Mono
@@ -201,21 +216,11 @@ namespace Content.Server.NPC.Systems
                 // Check distance to all players.
                 if (!hasNearbyPlayer)
                 {
-                    var allPlayerData = _playerManager.GetAllPlayerData();
-                    foreach (var playerData in allPlayerData)
+                    foreach (var playerCoords in _nearbyPlayers)
                     {
-                        var exists = _playerManager.TryGetSessionById(playerData.UserId, out var session);
-
-                        if (!exists || session == null
-                            || session.AttachedEntity is not { Valid: true } playerEnt
-                            || HasComp<GhostComponent>(playerEnt)
-                            || TryComp<MobStateComponent>(playerEnt, out var state) && state.CurrentState != MobState.Alive)
-                            continue;
-
-                        var playerCoords = Transform(playerEnt).Coordinates;
-
-                        if (npcCoords.TryDistance(EntityManager, playerCoords, out var distance) &&
-                            distance <= minDistance)
+                        if (minDistance >= 0f && npcCoords.MapId == playerCoords.MapId &&
+                            System.Numerics.Vector2.DistanceSquared(npcCoords.Position, playerCoords.Position) <=
+                            minDistance * minDistance)
                         {
                             hasNearbyPlayer = true;
                             break;

@@ -1,5 +1,6 @@
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
@@ -31,6 +32,22 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     private readonly List<string> _coldUnloadCandidates = new();
     private static readonly TimeSpan ColdUnloadRetryDelay = TimeSpan.FromMinutes(1);
 
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent args)
+    {
+        _nextUpdate = default;
+        _playerMaps.Clear();
+        _adminGhostMaps.Clear();
+        _planetaryTransitMaps.Clear();
+        _activityLeases.Clear();
+        _coldUnloadCandidates.Clear();
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -43,7 +60,8 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         BuildPlanetaryTransitMapIndex();
         _coldUnloadCandidates.Clear();
 
-        var query = EntityQueryEnumerator<KoronusSystemMapComponent, MapComponent>();
+        // Residency must inspect paused maps too, otherwise a sleeping map can never wake up.
+        var query = EntityManager.AllEntityQueryEnumerator<KoronusSystemMapComponent, MapComponent>();
         while (query.MoveNext(out _, out var runtime, out var map))
         {
             if (!_sector.TryGetSystemPrototype(runtime.SystemId, out var system))
@@ -55,7 +73,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
             UpdateSystem(runtime, map.MapId, system, occupied);
         }
 
-        var surfaces = EntityQueryEnumerator<KoronusPlanetSurfaceMapComponent, MapComponent>();
+        var surfaces = EntityManager.AllEntityQueryEnumerator<KoronusPlanetSurfaceMapComponent, MapComponent>();
         while (surfaces.MoveNext(out _, out var runtime, out var map))
         {
             if (!_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(runtime.SurfaceId, out var surface))
@@ -222,7 +240,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     {
         _planetaryTransitMaps.Clear();
 
-        var transfers = EntityQueryEnumerator<KoronusPlanetaryTransitComponent>();
+        var transfers = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTransitComponent>();
         while (transfers.MoveNext(out _, out var transfer))
         {
             _planetaryTransitMaps.Add(transfer.SourceMap);

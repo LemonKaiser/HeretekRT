@@ -10,15 +10,9 @@
   blockPlayerExplosions: true
   protectPlayerShipWires: true
   protectPlayerShipDeconstruction: true
-  protectStation: true
   blockForcedBuckle: true
   blockPlayerHarmfulInteractions: true
-  protectNonHostileMobs: true
-  blockFireAndHighTemperature: true
   blockClassOffensiveActions: true
-  blockClassDeviceInteractions: true
-  blockClassAreaEffects: true
-  blockClassMobilityActions: true
 
 - type: koronusSafetyProfile
   id: KoronusStationSafeZone
@@ -42,6 +36,9 @@
 
 - type: koronusSafetyProfile
   id: KoronusFootfallStationRestrictions
+  protectStation: true
+  protectNonHostileMobs: true
+  autoCleanupHostileNpcs: true
   autoCleanPuddles: true
   blockMaintenancePanelScrewdriving: true
   blockAnchoring: true
@@ -49,8 +46,6 @@
   blockHandheldEntityPlacement: true
   blockChemicalEffects: true
   blockRadiationMunitions: true
-  autoCleanupArtifacts: true
-  autoCleanupHostileNpcs: true
   blockPlayerDisposal: true
   blockAtmosphericRelease: true
   blockFireAndHighTemperature: true

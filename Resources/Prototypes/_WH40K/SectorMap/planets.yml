@@ -44,6 +44,7 @@
   # Its central 85 x 85 m clearing is reserved before the biome can place flora or other features.
   mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
   planet: FoulstoneForestWorld
+  safetyProfile: KoronusPlanetSafeSurface
   # The authored landing grid is 256 x 192 m. Leave 100 m of playable terrain beyond every edge.
   playableSize: 456, 392
   sceneryBuffer: 25
@@ -106,6 +107,7 @@
   id: TrinnitosDesertSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosDesertWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -161,6 +163,7 @@
   id: TrinnitosRockSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosRockWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -213,6 +216,7 @@
   id: TrinnitosFlamingSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosFlamingWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -278,6 +282,7 @@
   # Reuses the existing neutral landing complex; PlanetSystem generates the surrounding Snow biome.
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: SottosTombIceWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -341,6 +346,7 @@
   id: AivoriusBurningSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusBurningWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -393,6 +399,7 @@
   id: AivoriusJungleSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusJungleWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -448,6 +455,7 @@
   id: AivoriusDesertSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusDesertWorldSurface
+  safetyProfile: KoronusPlanetSafeSurface
   playableSize: 100, 100
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -550,6 +558,7 @@
   id: FootfallDeadWorldSurface
   mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
   planet: FootfallDeadWorldProfile
+  safetyProfile: KoronusPlanetSafeSurface
   # The authored landing grid is 288 x 288 m. Leave 100 m of playable terrain beyond every edge.
   playableSize: 488, 488
   sceneryBuffer: 25

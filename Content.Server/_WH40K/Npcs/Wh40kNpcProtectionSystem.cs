@@ -46,9 +46,9 @@ public sealed partial class Wh40kNpcProtectionSystem : EntitySystem
     }
 
     private void OnStartup(EntityUid uid, Wh40kNpcProtectionComponent comp, ComponentStartup ev)
-        => ApplyProtection(uid, comp);
+        => ApplyProtection(uid, comp, initialize: true);
 
-    private void ApplyProtection(EntityUid uid, Wh40kNpcProtectionComponent comp)
+    private void ApplyProtection(EntityUid uid, Wh40kNpcProtectionComponent comp, bool initialize = false)
     {
         // Native starting-gear internals checks require a respirator; disable both as one protected-NPC policy.
         RemComp<InternalsComponent>(uid);
@@ -58,13 +58,16 @@ public sealed partial class Wh40kNpcProtectionSystem : EntitySystem
         if (comp.PreserveDamage)
         {
             EnsureComp<GodmodeComponent>(uid);
-            foreach (var (id, _) in _bodySystem.GetBodyChildren(uid))
-                EnsureComp<GodmodeComponent>(id);
         }
-        else
+        else if (initialize || !HasComp<GodmodeComponent>(uid))
         {
+            // Enabling godmode rejuvenates the entire body. Existing protection only needs
+            // to be restored when the component is missing, not reapplied every second.
             _godmode.EnableGodmode(uid);
         }
+
+        foreach (var (id, _) in _bodySystem.GetBodyChildren(uid))
+            EnsureComp<GodmodeComponent>(id);
     }
 
     private void OnInit(EntityUid uid, Wh40kNpcProtectionComponent comp, MapInitEvent ev)

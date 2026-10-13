@@ -738,6 +738,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // End Frontier
 
         _docks = state.Docks;
+        UpdateAsteroidFields(state.AsteroidFields);
         UpdatePlanetaryState(state.PlanetaryState);
 
         NfUpdateState(state); // Frontier Update State
@@ -933,6 +934,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // This is deliberately part of the ordinary radar pass: planet positions use the same
         // world-to-view matrix as grids, IFF contacts and docking ports.
         DrawCelestialNavigation(handle, worldToView);
+        DrawAsteroidFields(handle, xform.MapID, worldToView, observerPosition);
 
         // Draw our grid in detail
         if (ourGridId.HasValue && ourGrid != null && fixturesQuery.HasComponent(ourGridId.Value))

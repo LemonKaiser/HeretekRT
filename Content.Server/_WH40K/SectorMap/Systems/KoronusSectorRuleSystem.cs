@@ -18,6 +18,8 @@ using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Maps;
+using Content.Shared.Mind;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Tiles;
 using Robust.Server.GameObjects;
 using Robust.Shared.ContentPack;
@@ -175,7 +177,8 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
             system.ColdUnloadDelay <= 0f ||
             _prototypes.Index(rule.Comp.Sector).StartSystem.Id == systemId ||
             !_maps.TryGetMap(mapId, out _) ||
-            !_maps.IsPaused(mapId))
+            !_maps.IsPaused(mapId) ||
+            HasResidentMind(mapId) || HasUnsavableMob(mapId))
         {
             return false;
         }
@@ -232,6 +235,33 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         {
             _coldOperations.Remove(systemId);
         }
+    }
+
+    private bool HasUnsavableMob(MapId mapId)
+    {
+        // Native map saves omit save:false mobs. Keep their paused map rather than lose NPCs or corpses on restore.
+        var mobs = AllEntityQuery<MobStateComponent, TransformComponent, MetaDataComponent>();
+        while (mobs.MoveNext(out _, out _, out var transform, out var metadata))
+            if (transform.MapID == mapId && metadata.EntityPrototype?.MapSavable == false)
+                return true;
+        return false;
+    }
+
+    private bool HasResidentMind(MapId mapId)
+    {
+        // Deleting and restoring a map cannot preserve live mind references to its entities.
+        // Disconnected bodies and entities visited by a mind may sleep, but must stay in memory.
+        var minds = EntityManager.AllEntityQueryEnumerator<MindComponent>();
+        while (minds.MoveNext(out _, out var mind))
+        {
+            if (TryComp<TransformComponent>(mind.OwnedEntity, out var owned) && owned.MapID == mapId ||
+                TryComp<TransformComponent>(mind.VisitingEntity, out var visited) && visited.MapID == mapId)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -690,12 +720,15 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         if (!protectGrid)
             return;
 
+        EnsureComp<KoronusProtectedFacilityComponent>(grid);
         var protectedGrid = EnsureComp<ProtectedGridComponent>(grid);
         protectedGrid.PreventFloorRemoval = true;
         protectedGrid.PreventFloorPlacement = true;
         protectedGrid.PreventRCDUse = true;
         protectedGrid.PreventEmpEvents = true;
         protectedGrid.PreventExplosions = true;
+        if (TryGetSystemId(Transform(grid).MapID, out var systemId) && systemId == "Footfall")
+            protectedGrid.PreventArtifactTriggers = true;
 
         _infrastructure.ProtectGrid(grid);
 

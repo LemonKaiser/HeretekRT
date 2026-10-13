@@ -52,6 +52,8 @@ public sealed class NavInterfaceState
     /// </summary>
     public KoronusPlanetaryInterfaceState PlanetaryState = KoronusPlanetaryInterfaceState.Unavailable();
 
+    public List<KoronusAsteroidClusterState> AsteroidFields = new();
+
     public NavInterfaceState(
         float maxRange,
         NetCoordinates? coordinates,

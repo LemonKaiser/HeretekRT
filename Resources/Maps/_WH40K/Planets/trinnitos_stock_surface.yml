@@ -20,6 +20,12 @@ entities:
     components:
     - type: MetaData
     - type: Transform
+    - type: ProtectedGrid
+      preventFloorRemoval: true
+      preventFloorPlacement: true
+      preventRCDUse: true
+      preventEmpEvents: true
+      preventExplosions: true
     - type: MapGrid
       chunks: {}
     - type: Broadphase
