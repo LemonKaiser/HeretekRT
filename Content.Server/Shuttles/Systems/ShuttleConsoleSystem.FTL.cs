@@ -33,6 +33,7 @@ public sealed partial class ShuttleConsoleSystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private KoronusSectorResidencySystem _koronusResidency = default!;
     [Dependency] private KoronusActivityDirectorSystem _koronusActivities = default!;
+    [Dependency] private KoronusWarpEncounterSystem _koronusWarp = default!;
     [Dependency] private IRobustRandom _random = default!;
 
     private const float ShuttleFTLRange = 1536f; // Mono 512 -> 1536
@@ -342,6 +343,7 @@ public sealed partial class ShuttleConsoleSystem
             if (sectorJumpSource != null && HasComp<FTLComponent>(shuttleUid.Value))
             {
                 _pendingKoronusJumps[shuttleUid.Value] = new KoronusPendingJump(sectorJumpSource, sectorJumpTarget);
+                _koronusWarp.BeginJump(shuttleUid.Value, sectorJumpSource, sectorJumpTarget);
                 // FTLToCoordinates refreshes once before the Koronus context exists. Refresh again so the
                 // sector UI immediately receives the departure/destination pair for the travel animation.
                 UpdateConsoles(shuttleUid.Value);
@@ -416,11 +418,14 @@ public sealed partial class ShuttleConsoleSystem
         if (_pendingKoronusJumps.TryGetValue(shuttleUid, out var jump) &&
             mapState.FTLState is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
         {
+            var warpStatus = _koronusWarp.GetStatus(shuttleUid);
             var travel = new KoronusSectorTravelState(
                 jump.SourceSystem,
                 jump.TargetSystem,
                 mapState.FTLState,
-                mapState.FTLTime);
+                mapState.FTLTime,
+                warpStatus.Risk,
+                warpStatus.Incident);
             sectorState = _koronusSector.GetInterfaceState(jump.SourceSystem, false, travel);
         }
         else
@@ -429,7 +434,8 @@ public sealed partial class ShuttleConsoleSystem
         }
 
         sectorState.ActivityMarkers = _koronusActivities.GetMarkers();
-        sectorState.ActivityDossiers = _koronusActivities.GetDossiers();
+        sectorState.ActivityDossiers = _koronusActivities.GetDossiers(shuttleMap,
+            _transform.ToMapCoordinates(Transform(shuttleUid).Coordinates).Position);
         return sectorState;
     }
 

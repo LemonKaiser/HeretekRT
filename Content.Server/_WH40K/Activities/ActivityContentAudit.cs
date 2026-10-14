@@ -10,6 +10,10 @@ using Content.Shared.Ghost.Roles.Components;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Shuttles.Components;
+using Content.Shared.Doors.Systems;
+using Content.Shared.Tools.Components;
+using Content.Shared.Prying.Components;
+using Content.Shared.Tag;
 using Robust.Shared.Map.Components;
 
 namespace Content.Server._WH40K.Activities;
@@ -20,6 +24,18 @@ namespace Content.Server._WH40K.Activities;
 /// </summary>
 public sealed class ActivityContentAudit : EntitySystem
 {
+    [Dependency] private TagSystem _tags = default!;
+
+    public bool TryPrepareHostile(EntityUid uid, out KoronusActivityRejectReason reason)
+    {
+        if (!TryValidateSetPieceEntity(uid, out reason))
+            return false;
+        RemComp<PryingComponent>(uid);
+        RemComp<ToolComponent>(uid);
+        _tags.RemoveTag(uid, SharedDoorSystem.DoorBumpTag);
+        return true;
+    }
+
     public bool TryValidateEntity(EntityUid uid, out KoronusActivityRejectReason reason)
     {
         if (HasComp<GhostRoleComponent>(uid) ||
@@ -75,7 +91,7 @@ public sealed class ActivityContentAudit : EntitySystem
     /// <summary>
     /// Curates an explicitly whitelisted stock map before it becomes an RT activity. Stock ruins
     /// are useful for their authored rooms, damage and environmental storytelling, but their
-    /// loot, NPC and random-spawn payloads do not belong to a fixed no-reward activity. Those
+    /// loot, NPC and random-spawn payloads are replaced by the expedition's curated content. Those
     /// payloads are deleted immediately, then every surviving child must pass the normal
     /// fail-closed capability audit.
     /// </summary>

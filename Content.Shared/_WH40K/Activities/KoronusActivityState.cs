@@ -175,7 +175,7 @@ public enum KoronusActivityRejectReason : byte
 
 public static class KoronusActivityRuntimePolicy
 {
-    public const int MinimumActiveActivities = 3;
+    public const int MinimumActiveActivities = 4;
     public const int MaximumActiveActivities = 6;
 
     public static bool IsSystemEligible(string systemId, bool enabled, bool activityEligible)
@@ -185,10 +185,7 @@ public static class KoronusActivityRuntimePolicy
 
     public static int GetInitialPopulation(int eligibleSystemCount, int templateCount)
     {
-        return Math.Clamp(
-            Math.Min(eligibleSystemCount, templateCount),
-            0,
-            MinimumActiveActivities);
+        return eligibleSystemCount > 0 ? Math.Clamp(templateCount, 0, MinimumActiveActivities) : 0;
     }
 
     public static bool IsPhysicalExecution(KoronusActivityExecutionKind execution)
@@ -440,6 +437,23 @@ public static class KoronusActivityRuntimePolicy
                 objectivePrototypeId == "KoronusSottosCryoSample",
             KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece =>
                 objectivePrototypeId == "KoronusAivoriusCutterFlightLog",
+            _ => false,
+        };
+    }
+
+    public static bool IsApprovedSetPieceHostile(KoronusActivityExecutionKind execution, string prototype)
+    {
+        return execution switch
+        {
+            KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
+            KoronusActivityExecutionKind.AivoriusCargoSetPiece or
+            KoronusActivityExecutionKind.FoulstoneSurveySetPiece or
+            KoronusActivityExecutionKind.AivoriusSurveyCutterDockSetPiece => prototype == "MobWH40KActivityRaiderDeckhand",
+            KoronusActivityExecutionKind.FoulstoneMineshaftSetPiece or
+            KoronusActivityExecutionKind.FoulstoneAssayAnnexSetPiece => prototype == "MobHormagaunt",
+            KoronusActivityExecutionKind.SottosCryoArchiveSetPiece or
+            KoronusActivityExecutionKind.SottosIceRescueSetPiece => prototype == "MobWH40KWarpDoppelganger",
+            KoronusActivityExecutionKind.SottosColdRelaySetPiece => prototype == "MobWH40KWarpSpitter",
             _ => false,
         };
     }

@@ -1,0 +1,59 @@
+- type: entity
+  id: KoronusSalvageEngineering
+  parent: CrateEngineering
+  name: recovered engineering supplies
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetSteel10
+    - id: CableApcStack10
+    - id: PowerCellHigh
+
+- type: entity
+  id: KoronusSalvageMedical
+  parent: CrateMedical
+  name: recovered medical supplies
+  components:
+  - type: StorageFill
+    contents:
+    - id: Gauze
+    - id: Ointment
+    - id: SyringeEphedrine
+
+- type: entity
+  id: KoronusSalvageMinerals
+  parent: CrateGenericSteel
+  name: recovered mineral samples
+  components:
+  - type: StorageFill
+    contents:
+    - id: GoldOre1
+      amount: 3
+    - id: SilverOre1
+      amount: 3
+    - id: PlasmaOre1
+      amount: 2
+
+- type: entity
+  id: KoronusSalvageArcheotech
+  parent: CrateGenericSteel
+  name: recovered archeotech
+  components:
+  - type: StorageFill
+    contents:
+    - id: TreasureCPUSupercharged
+    - id: TreasureHardDiskDrive
+    - id: TreasureDatadiskEncrypted
+
+- type: entity
+  id: KoronusSalvageXenology
+  parent: CrateGenericSteel
+  name: recovered anomalous specimens
+  components:
+  - type: StorageFill
+    contents:
+    - id: TreasureSampleTube
+      amount: 2
+    - id: SheetPlasma1
+      amount: 3
+    - id: ResearchDisk5000

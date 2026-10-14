@@ -8,6 +8,8 @@ using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.Bosses;
+using Content.Server._WH40K.Activities;
+using Content.Shared._WH40K.SectorMap;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.VendingMachines.Components;
 using Content.Shared._Mono.Ships.Components;
@@ -58,6 +60,8 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
     [Dependency] private Wh40kBossSpawnSystem _bossSpawns = default!;
+    [Dependency] private KoronusActivityDirectorSystem _activities = default!;
+    [Dependency] private KoronusWarpEncounterSystem _warp = default!;
 
     private readonly Dictionary<string, HashSet<string>> _warpAdjacency = new();
     private readonly List<KoronusRoutePrototype> _sectorRoutes = new();
@@ -71,6 +75,13 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         SubscribeLocalEvent<LoadingMapsEvent>(OnLoadingMaps);
         SubscribeLocalEvent<PostGameMapLoad>(OnPostGameMapLoad);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    protected override void Ended(EntityUid uid, KoronusSectorRuleComponent component,
+        GameRuleComponent gameRule, GameRuleEndedEvent args)
+    {
+        base.Ended(uid, component, gameRule, args);
+        _warp.ClearEncounters();
     }
 
     /// <summary>
@@ -323,7 +334,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     public bool HasWarpRoute(string fromSystem, string toSystem)
     {
-        if (!TryGetSectorRule(out var rule))
+        if (!TryGetSectorRule(out var rule) || HasComp<EndedGameRuleComponent>(rule))
             return false;
 
         EnsureTopology(rule.Comp.Sector);
@@ -335,10 +346,14 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     public KoronusSectorInterfaceState GetInterfaceState(MapId currentMap, bool canJump)
     {
-        if (!TryGetSectorRule(out var rule) || !TryGetSystemId(currentMap, out var currentSystem))
+        if (!TryGetSectorRule(out var rule))
             return KoronusSectorInterfaceState.Unavailable();
-
-        return GetInterfaceState(currentSystem, canJump);
+        if (TryGetSystemId(currentMap, out var currentSystem))
+            return GetInterfaceState(currentSystem, canJump);
+        if (_maps.TryGetMap(currentMap, out var map) &&
+            TryComp<KoronusPlanetSurfaceMapComponent>(map.Value, out var surface))
+            return GetInterfaceState(surface.SystemId, false);
+        return KoronusSectorInterfaceState.Unavailable();
     }
 
     /// <summary>
@@ -380,7 +395,9 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         {
             var available = IsSystemAvailable(rule.Comp, route.From) &&
                             IsSystemAvailable(rule.Comp, route.To);
-            routes.Add(new KoronusSectorRouteState(route.From, route.To, route.RouteClass, route.Enabled && available));
+            routes.Add(new KoronusSectorRouteState(route.From, route.To,
+                KoronusWarpRoutePolicy.GetRouteClass(GetWarpRisk(route.From, route.To)), route.Enabled && available,
+                GetWarpTravelTimeMultiplier(route.From, route.To), route.Bidirectional));
         }
 
         return new KoronusSectorInterfaceState(true, canJump, currentSystem, systems, routes, warpTravel);
@@ -392,6 +409,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     /// </summary>
     public float GetWarpTravelTimeMultiplier(string originSystem, string destinationSystem)
     {
+        _activities.GetRouteModifiers(originSystem, destinationSystem, out _, out var activityMultiplier);
         if (TryGetSectorRule(out var rule))
         {
             EnsureTopology(rule.Comp.Sector);
@@ -405,18 +423,29 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
                     continue;
 
                 if (route.TravelTimeMultiplier is > 0f)
-                    return route.TravelTimeMultiplier.Value;
+                    return route.TravelTimeMultiplier.Value * activityMultiplier;
             }
         }
 
         if (!TryGetSystemPrototype(originSystem, out var origin) ||
             !TryGetSystemPrototype(destinationSystem, out var destination))
         {
-            return 1.5f;
+            return 1.5f * activityMultiplier;
         }
 
         var distance = Vector2.Distance(origin.UiPosition, destination.UiPosition);
-        return Math.Clamp(1.3f + distance * 10f, 1.5f, 4.5f);
+        return Math.Clamp(1.3f + distance * 10f, 1.5f, 4.5f) * activityMultiplier;
+    }
+
+    public KoronusWarpRisk GetWarpRisk(string from, string to)
+    {
+        if (TryGetSectorRule(out var rule))
+            EnsureTopology(rule.Comp.Sector);
+        var route = _sectorRoutes.FirstOrDefault(candidate => candidate.Enabled &&
+            ((candidate.From == from && candidate.To == to) ||
+             candidate.Bidirectional && candidate.From == to && candidate.To == from));
+        _activities.GetRouteModifiers(from, to, out var modifier, out _);
+        return KoronusWarpRoutePolicy.GetRisk(route?.RouteClass ?? "Stable", modifier);
     }
 
     /// <summary>

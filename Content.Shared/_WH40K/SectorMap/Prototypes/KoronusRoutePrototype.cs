@@ -34,7 +34,7 @@ public sealed partial class KoronusRoutePrototype : IPrototype
     public float? TravelTimeMultiplier;
 
     /// <summary>
-    /// UI-only route classification. Navigation rules will interpret it in a later stage.
+    /// Base warp risk. Active route windows may temporarily adjust risk and travel time.
     /// </summary>
     [DataField]
     public string RouteClass = "Stable";

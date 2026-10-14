@@ -32,7 +32,7 @@ public sealed partial class KoronusActivityStatusCommand : IConsoleCommand
 
         shell.WriteLine(
             $"Koronus activity director: seed={status.RoundSeed}; day={status.DayIndex}; focus={status.DayFocus}; " +
-            $"active={status.ActiveCount}; journal={status.HistoryCount}; nextSpawn={status.NextSpawnAt:hh\\:mm\\:ss}.");
+            $"active={status.ActiveCount}; routes={status.EligibleRouteCount}; journal={status.HistoryCount}; nextSpawn={status.NextSpawnAt:hh\\:mm\\:ss}.");
         foreach (var instance in director.GetActiveInstances())
         {
             var route = instance.RouteFromSystem == null

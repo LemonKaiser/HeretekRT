@@ -50,7 +50,7 @@
   # The outer Gas Giant and all controlled orbital launches remain inside the system boundary.
   boundaryRadius: 24000
   enabled: true
-  activityEligible: false
+  activityEligible: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
   protectInitialGrid: true

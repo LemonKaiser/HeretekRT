@@ -3,15 +3,12 @@ using System.Linq;
 using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.NPC.HTN;
+using Content.Server.Shuttles.Components;
 using Content.Shared._WH40K.Activities;
 using Content.Shared._WH40K.Activities.Prototypes;
-using Content.Shared.Doors.Systems;
 using Content.Shared.Ghost;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
-using Content.Shared.Prying.Components;
-using Content.Shared.Tag;
-using Content.Shared.Tools.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
@@ -48,12 +45,12 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private ITileDefinitionManager _tiles = default!;
-    [Dependency] private TagSystem _tags = default!;
     [Dependency] private HTNSystem _htn = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private ActivitySafetyGuard _safety = default!;
     [Dependency] private ActivityContentAudit _contentAudit = default!;
     [Dependency] private KoronusActivityDirectorSystem _director = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
 
     private TimeSpan _nextCheck;
 
@@ -112,6 +109,8 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
             grid,
             new Vector2(profile.Size.X / 2f + 0.5f, profile.Size.Y / 2f + 0.5f));
         var objective = Spawn(template.ObjectivePrototype!.Value, objectiveCoordinates);
+        _metadata.SetEntityName(grid, Loc.GetString(template.TitleLocId));
+        EnsureComp<FTLBeaconComponent>(grid);
         spawned.Add(objective);
         if (!_contentAudit.TryValidateEntity(objective, out _) ||
             !TryValidateOwnedEntity(objective, instance.SystemId, context.TargetMap, grid, profile.LeashRadius))
@@ -211,14 +210,9 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
             var local = new Vector2(2.5f + index * 2f, profile.Size.Y - 2.5f);
             var raider = Spawn(hostilePrototype, new EntityCoordinates(grid, local));
             spawned.Add(raider);
-            if (!_contentAudit.TryValidateEntity(raider, out _))
+            if (!_contentAudit.TryPrepareHostile(raider, out _))
                 return false;
 
-            // Inherited hostile bases may pry, use a tool, or bump doors. A cache raider is not
-            // allowed to breach a visiting ship, and the set piece has no dockable door anyway.
-            RemComp<PryingComponent>(raider);
-            RemComp<ToolComponent>(raider);
-            _tags.RemoveTag(raider, SharedDoorSystem.DoorBumpTag);
             AssignOwned(raider, instance.Id, KoronusActivityOwnedKind.Npc);
             if (!TryValidateOwnedEntity(raider, instance.SystemId, context.TargetMap, grid, profile.LeashRadius))
                 return false;
@@ -250,11 +244,9 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
             if (marker.InstanceId != instance.Id || marker.Kind != KoronusActivityOwnedKind.Npc)
                 continue;
 
-            if (!TryValidateOwnedEntity(uid, instance.SystemId, gridComponent.MapId, grid, profile.LeashRadius))
-            {
-                TerminateGrid(instance.Id, KoronusActivityTerminalReason.SafetyViolation);
-                return;
-            }
+            if (!_safety.IsGuardianSafe(uid, instance.SystemId, gridComponent.MapId, gridComponent.SpawnPosition,
+                profile.LeashRadius, grid))
+                QueueDel(uid);
         }
     }
 

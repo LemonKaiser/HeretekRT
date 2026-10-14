@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Carrying;
+using Content.Shared.Hands.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Server._WH40K.Activities.Components;
 using Content.Server._WH40K.SectorMap.Components;
@@ -35,8 +36,8 @@ namespace Content.Server._WH40K.Activities;
 
 /// <summary>
 /// Materializes the nine authored Koronus locations admitted by stages two through five. The
-/// executor never reads a path, system, surface, NPC, docking target, role or reward from a
-/// prototype: all of those boundaries are fixed by its small code catalogue and audited again
+/// executor accepts only code-approved maps, destinations and guardian prototypes. Its boundaries
+/// are audited again
 /// after loading. Only one fixed profile is permitted to retain one receive-only docking port.
 /// </summary>
 public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
@@ -59,6 +60,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
     [Dependency] private ActivityContentAudit _contentAudit = default!;
     [Dependency] private KoronusActivityDirectorSystem _director = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
 
     private TimeSpan _nextCheck;
 
@@ -111,10 +114,9 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             return;
         }
 
-        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid, args.User))
-            return;
-
-        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-completed"), args.User, PopupType.Medium);
+        var instance = _director.GetActiveInstances().FirstOrDefault(active => active.Id == component.InstanceId);
+        if (instance != null)
+            instance.CompletingActor = args.User;
     }
 
     private void OnPatientCarried(
@@ -127,11 +129,9 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (args.Cancelled || !args.Handled || component.InstanceId == 0 || !IsLivingAttachedPlayer(args.Args.User))
             return;
 
-        if (!_director.TryCompleteExtractedObjective(component.InstanceId, uid, args.Args.User))
-            return;
-
-        component.InstanceId = 0;
-        _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.Args.User, "koronus-activity-rescue-extracted"), args.Args.User, PopupType.Medium);
+        var instance = _director.GetActiveInstances().FirstOrDefault(active => active.Id == component.InstanceId);
+        if (instance != null)
+            instance.CompletingActor = args.Args.User;
     }
 
     private void TryMaterialize(
@@ -183,10 +183,38 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (TryComp<KoronusActivityRecoveryPatientComponent>(objective, out var patient))
             patient.InstanceId = instance.Id;
 
+        if (!TrySpawnGuardians(instance, template, grid, gridComponent))
+        {
+            _director.TryTerminateObjective(instance.Id, KoronusActivityTerminalReason.ContentAuditFailed);
+            return;
+        }
+        _metadata.SetEntityName(grid, Loc.GetString(template.TitleLocId));
+        EnsureComp<FTLBeaconComponent>(grid);
+
         if (_director.TryBeginObjective(instance.Id, objective, template.Execution, requiresSystemLease: true))
             return;
 
         QueueDel(grid);
+    }
+
+    private bool TrySpawnGuardians(KoronusActivityRuntimeInstance instance, KoronusActivityTemplatePrototype template,
+        EntityUid grid, MapGridComponent gridComponent)
+    {
+        if (template.HostilePrototype is not { } prototype)
+            return true;
+        if (!KoronusActivityRuntimePolicy.IsApprovedSetPieceHostile(template.Execution, prototype.Id))
+            return false;
+        var count = Math.Clamp(template.MaximumHostiles, 1, 3);
+        for (var i = 0; i < count; i++)
+        {
+            if (!TryFindFreeFloorPosition(grid, gridComponent, preferEdge: true, out var position))
+                return false;
+            var hostile = Spawn(prototype, new EntityCoordinates(grid, position));
+            AssignOwned(hostile, instance.Id, KoronusActivityOwnedKind.Npc);
+            if (!_contentAudit.TryPrepareHostile(hostile, out _))
+                return false;
+        }
+        return true;
     }
 
     private bool TryBuildSetPiece(
@@ -404,6 +432,21 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
 
     private void MonitorSetPiece(KoronusActivityRuntimeInstance instance, in SetPieceProfile profile)
     {
+        if (instance.Objective is { } recoverable && instance.CompletingActor is { } actor &&
+            IsLivingAttachedPlayer(actor) && TryGetSetPieceGrid(instance.Id, out var recoveryGrid, out _) &&
+            Transform(actor).GridUid != recoveryGrid &&
+            (_hands.IsHolding(actor, recoverable, out _) ||
+             TryComp<CarryingComponent>(actor, out var carrying) && carrying.Carried == recoverable))
+        {
+            if (_director.TryCompleteExtractedObjective(instance.Id, recoverable, actor))
+            {
+                if (TryComp<KoronusActivityRecoveryPatientComponent>(recoverable, out var patient))
+                    patient.InstanceId = 0;
+                _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(actor,
+                    "koronus-activity-objective-completed"), actor, PopupType.Medium);
+            }
+            return;
+        }
         if (!TryGetSetPieceGrid(instance.Id, out var grid, out var component) ||
             !TryValidateSetPiece(grid, instance.SystemId, profile,
                 new SetPieceSpawnContext(component.MapId, component.SystemId, component.SpawnPosition,
@@ -423,6 +466,14 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         {
             if (marker.InstanceId != instance.Id || marker.Kind == KoronusActivityOwnedKind.Grid)
                 continue;
+
+            if (marker.Kind == KoronusActivityOwnedKind.Npc)
+            {
+                if (!_safety.IsGuardianSafe(uid, instance.SystemId, component.MapId, component.SpawnPosition,
+                    profile.LeashRadius, grid, component.AllowedSurfaceGrid))
+                    QueueDel(uid);
+                continue;
+            }
 
             if (!TryValidateImportedEntity(uid, profile.AllowsDocking, out _) ||
                 !TryValidateOwnedEntity(uid, instance.SystemId, component.MapId, grid,
@@ -698,7 +749,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (!KoronusActivityRuntimePolicy.IsSetPieceExecution(template.Execution) ||
             template.ObjectivePrototype is not { } objective ||
             !KoronusActivityRuntimePolicy.IsApprovedSetPieceObjective(template.Execution, objective.Id) ||
-            template.HostilePrototype != null ||
+            template.HostilePrototype is { } hostile &&
+                !KoronusActivityRuntimePolicy.IsApprovedSetPieceHostile(template.Execution, hostile.Id) ||
             template.MinimumLivingParticipants < 1 ||
             template.ParticipantRadius <= 0f)
         {

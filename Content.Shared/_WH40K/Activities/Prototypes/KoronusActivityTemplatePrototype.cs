@@ -4,8 +4,8 @@ namespace Content.Shared._WH40K.Activities.Prototypes;
 
 /// <summary>
 /// A sector activity template. Default templates only publish a marker and dossier; a limited
-/// stage-three executor may additionally name one audited objective root, never a map, grid,
-/// reward, ghost role, or player spawn.
+/// executor may additionally name one audited objective root. Maps and salvage manifests are
+/// selected by closed execution profiles; templates cannot select ghost roles or player spawns.
 /// </summary>
 [Prototype("koronusActivityTemplate")]
 public sealed partial class KoronusActivityTemplatePrototype : IPrototype
@@ -46,6 +46,12 @@ public sealed partial class KoronusActivityTemplatePrototype : IPrototype
     [DataField]
     public float Cooldown = 1800f;
 
+    [DataField]
+    public int WarpRiskModifier;
+
+    [DataField]
+    public float WarpTravelMultiplier = 1f;
+
     /// <summary>
     /// Optional physical executor. A marker remains data-only until a living player reaches its
     /// eligible system or planetary surface; it never causes a remote map to load on its own.
@@ -61,8 +67,8 @@ public sealed partial class KoronusActivityTemplatePrototype : IPrototype
     public EntProtoId? ObjectivePrototype;
 
     /// <summary>
-    /// Optional hostile profile. All fields are inert unless <see cref="Execution"/> is one of
-    /// the explicitly allowed hostile executors; no general mob table exists.
+    /// Optional hostile or guardian profile. The executor accepts only its approved catalogue;
+    /// no general mob table exists.
     /// </summary>
     [DataField]
     public KoronusActivityThreatFamily ThreatFamily;

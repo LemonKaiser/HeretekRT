@@ -21,18 +21,21 @@
   from: Footfall
   to: Trinnitos
   travelTimeMultiplier: 2.70
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: AivoriusToSottosTomb
   sector: KoronusExpanse
   from: Aivorius
   to: SottosTomb
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: AivoriusToTrinnitos
   sector: KoronusExpanse
   from: Aivorius
   to: Trinnitos
+  routeClass: Unstable
 
 - type: koronusRoute
   id: AivoriusToCradleOfKhepri

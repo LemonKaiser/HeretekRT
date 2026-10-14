@@ -41,10 +41,8 @@
     name: Физзо
   - type: HTN
     rootTask:
-      task: IdleCompound
+      task: WH40KMerchantIdleCompound
     blackboard:
-      IdleRange: !type:Single
-        0
       MinimumIdleTime: !type:Single
         30
       MaximumIdleTime: !type:Single

@@ -42,24 +42,23 @@ public sealed class KoronusSectorMapControl : Control
     private readonly Font _labelFont;
     private readonly List<Vector2> _thickSegmentVertices = new(6);
     private readonly KoronusCurrentSystemBeacon _currentSystemBeacon = new();
+    private readonly KoronusSectorDossierPanel _dossier = new();
     private readonly Dictionary<string, KoronusSectorNodeState> _systemsById = new();
     private readonly Dictionary<string, string[]> _systemLabelLines = new();
     private readonly List<KoronusSectorNodeState> _orderedLabelNodes = new();
     private readonly List<UIBox2> _occupiedLabelBounds = new();
-    private readonly List<string> _cardDetailLines = new();
     private readonly Comparison<KoronusSectorNodeState> _labelNodeComparison;
     private KoronusSectorInterfaceState _state = KoronusSectorInterfaceState.Unavailable();
     private Vector2 _pan;
     private float _zoom = 1f;
     private float _animationTime;
+    private TimeSpan _nextDossierUpdate;
     private Vector2 _focusPan;
     private float _focusZoom;
     private bool _dragging;
     private bool _focusingSystem;
     private string? _hoveredSystem;
     private string? _selectedSystem;
-    private UIBox2? _warpButtonBounds;
-    private bool _warpButtonHovered;
 
     public event Action<string>? RequestSectorJump;
 
@@ -80,6 +79,13 @@ public sealed class KoronusSectorMapControl : Control
         VerticalExpand = true;
         RectClipContent = true;
         MouseFilter = MouseFilterMode.Stop;
+        AddChild(_dossier);
+        _dossier.JumpRequested += system => RequestSectorJump?.Invoke(system);
+        _dossier.SystemSelected += system =>
+        {
+            if (FindSystem(system) is { } node)
+                SelectSystem(node);
+        };
     }
 
     public void UpdateState(KoronusSectorInterfaceState state)
@@ -90,24 +96,27 @@ public sealed class KoronusSectorMapControl : Control
         if (state.WarpTravel != null)
         {
             _selectedSystem = null;
-            _warpButtonBounds = null;
-            _warpButtonHovered = false;
             _focusingSystem = false;
+            _dossier.UpdateState(state, null, _timing.CurTime);
             return;
         }
 
         if (_selectedSystem != null && FindSystem(_selectedSystem) == null)
         {
             _selectedSystem = null;
-            _warpButtonBounds = null;
-            _warpButtonHovered = false;
             _focusingSystem = false;
         }
+        _dossier.UpdateState(state, _selectedSystem, _timing.CurTime);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        if (_timing.CurTime >= _nextDossierUpdate)
+        {
+            _nextDossierUpdate = _timing.CurTime + TimeSpan.FromSeconds(1);
+            _dossier.UpdateState(_state, _selectedSystem, _timing.CurTime);
+        }
 
         // This uses client frame time only: animations are presentational and must not depend on map pan,
         // zoom, or server ticks.
@@ -157,16 +166,6 @@ public sealed class KoronusSectorMapControl : Control
                 return;
             }
 
-            if (_warpButtonBounds?.Contains(args.RelativePixelPosition) == true)
-            {
-                var selected = FindSystem(_selectedSystem);
-                if (selected != null && selected.Reachable && _state.CanJump)
-                    RequestSectorJump?.Invoke(selected.Id);
-
-                args.Handle();
-                return;
-            }
-
             var node = FindNode(args.RelativePixelPosition);
             if (node != null)
             {
@@ -176,8 +175,7 @@ public sealed class KoronusSectorMapControl : Control
             }
 
             _selectedSystem = null;
-            _warpButtonBounds = null;
-            _warpButtonHovered = false;
+            _dossier.UpdateState(_state, null, _timing.CurTime);
         }
 
         base.KeyBindUp(args);
@@ -193,8 +191,7 @@ public sealed class KoronusSectorMapControl : Control
             _pan += new Vector2(args.Relative.X, args.Relative.Y);
         }
 
-        _warpButtonHovered = _warpButtonBounds?.Contains(args.RelativePixelPosition) == true;
-        _hoveredSystem = _warpButtonHovered ? null : FindNode(args.RelativePixelPosition)?.Id;
+        _hoveredSystem = FindNode(args.RelativePixelPosition)?.Id;
     }
 
     protected override void MouseWheel(GUIMouseWheelEventArgs args)
@@ -250,16 +247,15 @@ public sealed class KoronusSectorMapControl : Control
         DrawSystemLabels(handle);
         if (_state.WarpTravel != null)
             DrawWarpTravelStatus(handle, systems, _state.WarpTravel);
-        else
-            DrawSelectedSystemCard(handle);
         DrawLegend(handle);
         DrawControlsHint(handle);
     }
 
     private void DrawActivityMarkers(DrawingHandleScreen handle)
     {
-        foreach (var marker in _state.ActivityMarkers)
+        foreach (var group in _state.ActivityMarkers.GroupBy(marker => marker.SystemId))
         {
+            var marker = group.OrderByDescending(entry => entry.Risk).First();
             if (!_systemsById.TryGetValue(marker.SystemId, out var system))
                 continue;
 
@@ -269,6 +265,9 @@ public sealed class KoronusSectorMapControl : Control
 
             handle.DrawCircle(position, radius, color.WithAlpha(0.85f), filled: false);
             handle.DrawCircle(position, Math.Max(radius - 3f * UIScale, 1f), color.WithAlpha(0.25f), filled: false);
+            if (group.Count() > 1)
+                handle.DrawString(_font, position + new Vector2(12f, -14f) * UIScale,
+                    group.Count().ToString(), UIScale, Color.White);
         }
     }
 
@@ -773,6 +772,7 @@ public sealed class KoronusSectorMapControl : Control
     private void SelectSystem(KoronusSectorNodeState node)
     {
         _selectedSystem = node.Id;
+        _dossier.UpdateState(_state, _selectedSystem, _timing.CurTime);
         _focusZoom = Math.Clamp(MathF.Max(_zoom, 1.65f), MinimumZoom, MaximumZoom);
 
         var baseScale = MathF.Min(PixelWidth / (float) _background.Width, PixelHeight / (float) _background.Height);
@@ -782,242 +782,18 @@ public sealed class KoronusSectorMapControl : Control
         _focusingSystem = true;
     }
 
+    protected override Vector2 ArrangeOverride(Vector2 finalSize)
+    {
+        base.ArrangeOverride(finalSize);
+        var width = Math.Min(360f, Math.Max(220f, finalSize.X * 0.38f));
+        _dossier.Arrange(UIBox2.FromDimensions(new Vector2(Math.Max(0f, finalSize.X - width - 12f), 12f),
+            new Vector2(Math.Min(width, finalSize.X), Math.Max(140f, finalSize.Y - 125f))));
+        return finalSize;
+    }
+
     private KoronusSectorNodeState? FindSystem(string? id)
     {
         return id != null && _systemsById.TryGetValue(id, out var node) ? node : null;
-    }
-
-    private void DrawSelectedSystemCard(DrawingHandleScreen handle)
-    {
-        _warpButtonBounds = null;
-        var node = FindSystem(_selectedSystem);
-        if (node == null)
-            return;
-
-        var cardSize = new Vector2(210f, 138f) * UIScale;
-        var nodePosition = NormalizedToScreen(node.Position);
-        // Keep the dossier visually attached to its beacon; it should read as an inspection popup, not a remote panel.
-        var cardPosition = nodePosition + new Vector2(20f, -18f) * UIScale;
-
-        if (cardPosition.X + cardSize.X > PixelWidth - 10f * UIScale)
-            cardPosition.X = nodePosition.X - cardSize.X - 20f * UIScale;
-        if (cardPosition.Y + cardSize.Y > PixelHeight - 10f * UIScale)
-            cardPosition.Y = nodePosition.Y - cardSize.Y - 18f * UIScale;
-
-        cardPosition.X = Math.Clamp(cardPosition.X, 10f * UIScale, PixelWidth - cardSize.X - 10f * UIScale);
-        cardPosition.Y = Math.Clamp(cardPosition.Y, 48f * UIScale, PixelHeight - cardSize.Y - 10f * UIScale);
-        var card = UIBox2.FromDimensions(cardPosition, cardSize);
-        var canWarp = node.Reachable && _state.CanJump;
-        var accent = node.Current ? CurrentSystemColor : node.Reachable ? ReachableSystemColor : UnavailableSystemColor;
-
-        handle.DrawRect(card, Color.Black.WithAlpha(0.88f));
-        handle.DrawRect(card, accent.WithAlpha(0.92f), filled: false);
-        handle.DrawRect(UIBox2.FromDimensions(card.TopLeft, new Vector2(card.Size.X, 2f * UIScale)), accent);
-
-        var titleScale = 0.76f * UIScale;
-        var titleLines = _systemLabelLines[node.Id];
-        for (var i = 0; i < titleLines.Length; i++)
-        {
-            var titlePosition = card.TopLeft + new Vector2(9f, 7f + 13f * i) * UIScale;
-            DrawReadableString(handle, titlePosition, titleLines[i], titleScale, Color.White);
-        }
-
-        var detailScale = 0.58f * UIScale;
-        WrapCardText(
-            handle,
-            GetSystemCardDetail(node),
-            detailScale,
-            card.Size.X - 18f * UIScale,
-            _cardDetailLines);
-        for (var i = 0; i < _cardDetailLines.Count; i++)
-        {
-            var detailPosition = card.TopLeft + new Vector2(9f, 40f + 12f * i) * UIScale;
-            handle.DrawString(_font, detailPosition, _cardDetailLines[i], detailScale, accent.WithAlpha(0.94f));
-        }
-
-        var button = UIBox2.FromDimensions(
-            card.TopLeft + new Vector2(9f, card.Size.Y / UIScale - 29f) * UIScale,
-            new Vector2(card.Size.X / UIScale - 18f, 20f) * UIScale);
-        _warpButtonBounds = button;
-        var buttonHovered = canWarp && _warpButtonHovered;
-        var buttonPulse = (MathF.Sin(_animationTime * 5f) + 1f) * 0.5f;
-        var buttonColor = !canWarp
-            ? Color.FromHex("#555850")
-            : buttonHovered
-                ? Color.InterpolateBetween(ReachableSystemColor, Color.White, 0.42f)
-                : ReachableSystemColor;
-
-        if (buttonHovered)
-        {
-            var glow = UIBox2.FromDimensions(
-                button.TopLeft - new Vector2(2f, 2f) * UIScale,
-                button.Size + new Vector2(4f, 4f) * UIScale);
-            handle.DrawRect(glow, ReachableSystemColor.WithAlpha(0.52f + buttonPulse * 0.24f), filled: false);
-        }
-
-        handle.DrawRect(
-            button,
-            !canWarp
-                ? Color.FromHex("#252725")
-                : buttonHovered
-                    ? Color.FromHex("#315E22")
-                    : Color.FromHex("#173619"));
-        handle.DrawRect(button, buttonColor.WithAlpha(canWarp ? 0.98f : 0.52f), filled: false);
-
-        if (buttonHovered)
-        {
-            var centerY = button.TopLeft.Y + button.Size.Y / 2f;
-            var left = button.TopLeft.X + 14f * UIScale;
-            var right = button.BottomRight.X - 14f * UIScale;
-            var chevronSize = 3.3f * UIScale;
-            DrawThickSegment(handle, new Vector2(left - chevronSize, centerY - chevronSize), new Vector2(left, centerY), 1.1f * UIScale, buttonColor);
-            DrawThickSegment(handle, new Vector2(left - chevronSize, centerY + chevronSize), new Vector2(left, centerY), 1.1f * UIScale, buttonColor);
-            DrawThickSegment(handle, new Vector2(right + chevronSize, centerY - chevronSize), new Vector2(right, centerY), 1.1f * UIScale, buttonColor);
-            DrawThickSegment(handle, new Vector2(right + chevronSize, centerY + chevronSize), new Vector2(right, centerY), 1.1f * UIScale, buttonColor);
-        }
-
-        var buttonText = canWarp
-            ? Loc.GetString("koronus-sector-card-warp")
-            : Loc.GetString("koronus-sector-card-warp-unavailable");
-        var buttonDimensions = handle.GetDimensions(_font, buttonText, 0.62f * UIScale);
-        handle.DrawString(
-            _font,
-            button.TopLeft + (button.Size - buttonDimensions) / 2f,
-            buttonText,
-            0.62f * UIScale,
-            canWarp ? buttonHovered ? Color.White : Color.White.WithAlpha(0.92f) : Color.LightGray.WithAlpha(0.62f));
-    }
-
-    private string GetSystemCardDetail(KoronusSectorNodeState node)
-    {
-        var activity = _state.ActivityDossiers
-            .Where(dossier => dossier.SystemId == node.Id &&
-                              dossier.State is KoronusActivityState.Available or KoronusActivityState.Engaged)
-            .OrderByDescending(dossier => dossier.Risk)
-            .ThenBy(dossier => dossier.ExpiresAt)
-            .FirstOrDefault();
-        if (activity != null)
-        {
-            var remaining = Math.Max(0, (int) Math.Ceiling((activity.ExpiresAt - _timing.CurTime).TotalMinutes));
-            var threat = activity.ThreatFamily == KoronusActivityThreatFamily.None
-                ? string.Empty
-                : Loc.GetString(
-                    "koronus-sector-card-threat",
-                    ("family", Loc.GetString(GetActivityThreatFamilyLocId(activity.ThreatFamily))),
-                    ("level", Loc.GetString(GetActivityThreatLevelLocId(activity.ThreatLevel))),
-                    ("state", Loc.GetString(GetActivityThreatStateLocId(activity.ThreatState))));
-            return Loc.GetString(
-                "koronus-sector-card-activity",
-                ("title", Loc.GetString(activity.TitleLocId)),
-                ("summary", Loc.GetString(activity.SummaryLocId)),
-                ("risk", Loc.GetString(GetActivityRiskLocId(activity.Risk))),
-                ("reliability", Loc.GetString(GetActivityReliabilityLocId(activity.Reliability))),
-                ("threat", threat),
-                ("remaining", remaining));
-        }
-
-        if (node.Current)
-            return Loc.GetString("koronus-sector-card-current");
-        if (!_state.CanJump)
-            return Loc.GetString("koronus-sector-card-drive-offline");
-        if (!node.Reachable)
-            return Loc.GetString("koronus-sector-card-no-route");
-
-        var route = _state.Routes.FirstOrDefault(candidate =>
-            candidate.Enabled &&
-            ((candidate.From == _state.CurrentSystem && candidate.To == node.Id) ||
-             (candidate.To == _state.CurrentSystem && candidate.From == node.Id)));
-        var routeName = route?.RouteClass switch
-        {
-            "Dangerous" => Loc.GetString("koronus-sector-card-route-dangerous"),
-            "Forbidden" => Loc.GetString("koronus-sector-card-route-forbidden"),
-            _ => Loc.GetString("koronus-sector-card-route-stable"),
-        };
-        return Loc.GetString("koronus-sector-card-route", ("route", routeName));
-    }
-
-    private static string GetActivityRiskLocId(KoronusActivityRisk risk)
-    {
-        return risk switch
-        {
-            KoronusActivityRisk.Informational => "koronus-sector-activity-risk-informational",
-            KoronusActivityRisk.Low => "koronus-sector-activity-risk-low",
-            KoronusActivityRisk.Moderate => "koronus-sector-activity-risk-moderate",
-            KoronusActivityRisk.High => "koronus-sector-activity-risk-high",
-            _ => "koronus-sector-activity-risk-informational",
-        };
-    }
-
-    private static string GetActivityReliabilityLocId(KoronusActivityReliability reliability)
-    {
-        return reliability switch
-        {
-            KoronusActivityReliability.Verified => "koronus-sector-activity-reliability-verified",
-            KoronusActivityReliability.Partial => "koronus-sector-activity-reliability-partial",
-            KoronusActivityReliability.Suspicious => "koronus-sector-activity-reliability-suspicious",
-            KoronusActivityReliability.Stale => "koronus-sector-activity-reliability-stale",
-            _ => "koronus-sector-activity-reliability-partial",
-        };
-    }
-
-    private static string GetActivityThreatFamilyLocId(KoronusActivityThreatFamily family)
-    {
-        return family switch
-        {
-            KoronusActivityThreatFamily.Warp => "koronus-sector-activity-threat-family-warp",
-            KoronusActivityThreatFamily.Tyranid => "koronus-sector-activity-threat-family-tyranid",
-            KoronusActivityThreatFamily.Raider => "koronus-sector-activity-threat-family-raider",
-            _ => "koronus-sector-activity-threat-family-none",
-        };
-    }
-
-    private static string GetActivityThreatLevelLocId(KoronusActivityThreatLevel level)
-    {
-        return level switch
-        {
-            KoronusActivityThreatLevel.Intel => "koronus-sector-activity-threat-level-intel",
-            KoronusActivityThreatLevel.Contained => "koronus-sector-activity-threat-level-contained",
-            KoronusActivityThreatLevel.Combat => "koronus-sector-activity-threat-level-combat",
-            KoronusActivityThreatLevel.Vessel => "koronus-sector-activity-threat-level-vessel",
-            _ => "koronus-sector-activity-threat-level-none",
-        };
-    }
-
-    private static string GetActivityThreatStateLocId(KoronusActivityThreatState state)
-    {
-        return state switch
-        {
-            KoronusActivityThreatState.Intel => "koronus-sector-activity-threat-state-intel",
-            KoronusActivityThreatState.Active => "koronus-sector-activity-threat-state-active",
-            KoronusActivityThreatState.Contained => "koronus-sector-activity-threat-state-contained",
-            KoronusActivityThreatState.Defeated => "koronus-sector-activity-threat-state-defeated",
-            KoronusActivityThreatState.Evaded => "koronus-sector-activity-threat-state-evaded",
-            KoronusActivityThreatState.SafetyViolation => "koronus-sector-activity-threat-state-safety",
-            _ => "koronus-sector-activity-threat-state-none",
-        };
-    }
-
-    private void WrapCardText(DrawingHandleScreen handle, string text, float scale, float maxWidth, List<string> lines)
-    {
-        lines.Clear();
-        var line = string.Empty;
-
-        foreach (var word in text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-        {
-            var candidate = line.Length == 0 ? word : $"{line} {word}";
-            if (line.Length > 0 && handle.GetDimensions(_font, candidate, scale).X > maxWidth)
-            {
-                lines.Add(line);
-                line = word;
-            }
-            else
-            {
-                line = candidate;
-            }
-        }
-
-        if (line.Length > 0)
-            lines.Add(line);
     }
 
     private void RebuildRenderCaches()
@@ -1042,10 +818,11 @@ public sealed class KoronusSectorMapControl : Control
             (ReachableSystemColor, Loc.GetString("koronus-sector-map-legend-reachable")),
             (StableRouteColor, Loc.GetString("koronus-sector-map-legend-stable")),
             (DangerousRouteColor, Loc.GetString("koronus-sector-map-legend-dangerous")),
+            (ForbiddenRouteColor, Loc.GetString("koronus-sector-map-legend-unstable")),
         };
 
         var scale = 0.7f * UIScale;
-        var rowHeight = 16f * UIScale;
+        var rowHeight = 16f;
         var size = new Vector2(198f, entries.Length * rowHeight + 12f) * UIScale;
         var origin = new Vector2(12f, PixelSize.Y - size.Y - 12f * UIScale);
         handle.DrawRect(UIBox2.FromDimensions(origin, size), Color.Black.WithAlpha(0.72f));
@@ -1145,7 +922,7 @@ public sealed class KoronusSectorMapControl : Control
         return routeClass switch
         {
             "Dangerous" => DangerousRouteColor,
-            "Forbidden" => ForbiddenRouteColor,
+            "Forbidden" or "Unstable" => ForbiddenRouteColor,
             _ => StableRouteColor,
         };
     }

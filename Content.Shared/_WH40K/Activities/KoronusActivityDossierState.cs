@@ -1,5 +1,6 @@
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
+using System.Numerics;
 
 namespace Content.Shared._WH40K.Activities;
 
@@ -26,6 +27,9 @@ public sealed class KoronusActivityDossierState
     public string TitleLocId;
     public string SummaryLocId;
     public TimeSpan ExpiresAt;
+    public KoronusActivityExecutionKind Execution;
+    public int MinimumParticipants;
+    public Vector2? LocalSignalOffset;
 
     public KoronusActivityDossierState(
         long instanceId,
@@ -43,7 +47,9 @@ public sealed class KoronusActivityDossierState
         KoronusActivityTerminalReason? terminalReason,
         string titleLocId,
         string summaryLocId,
-        TimeSpan expiresAt)
+        TimeSpan expiresAt,
+        KoronusActivityExecutionKind execution = KoronusActivityExecutionKind.None,
+        int minimumParticipants = 1)
     {
         InstanceId = instanceId;
         SystemId = systemId;
@@ -61,6 +67,8 @@ public sealed class KoronusActivityDossierState
         TitleLocId = titleLocId;
         SummaryLocId = summaryLocId;
         ExpiresAt = expiresAt;
+        Execution = execution;
+        MinimumParticipants = minimumParticipants;
     }
 }
 

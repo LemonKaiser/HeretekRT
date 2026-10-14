@@ -135,16 +135,6 @@
   - type: Wh40kNpcScene
     pose: Standing
     smoking: true
-  - type: HTN
-    rootTask:
-      task: IdleCompound
-    blackboard:
-      IdleRange: !type:Single
-        1.25
-      MinimumIdleTime: !type:Single
-        8
-      MaximumIdleTime: !type:Single
-        15
   - type: Wh40kNpcProtection
     homeRadius: 2
   - type: Loadout

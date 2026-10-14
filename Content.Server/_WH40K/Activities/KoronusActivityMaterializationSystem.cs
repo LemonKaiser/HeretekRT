@@ -3,9 +3,11 @@ using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared._WH40K.Activities;
 using Content.Server._WH40K.Localizations;
+using Content.Server.Shuttles.Components;
 using Content.Shared._WH40K.Activities.Prototypes;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
+using Content.Shared.DoAfter;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
@@ -43,6 +45,8 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
     [Dependency] private ActivityContentAudit _contentAudit = default!;
     [Dependency] private KoronusActivityDirectorSystem _director = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
 
     private TimeSpan _nextCheck;
 
@@ -50,6 +54,7 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<KoronusActivityObjectiveComponent, InteractHandEvent>(OnInteractHand);
+        SubscribeLocalEvent<KoronusActivityObjectiveComponent, KoronusActivityWorkDoAfterEvent>(OnWorkCompleted);
     }
 
     public override void Update(float frameTime)
@@ -108,6 +113,22 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
         }
 
         args.Handled = true;
+        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User,
+            KoronusActivityChallengePolicy.GetWorkDuration(component.Execution),
+            new KoronusActivityWorkDoAfterEvent(), uid, target: uid)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            NeedHand = true,
+        });
+    }
+
+    private void OnWorkCompleted(EntityUid uid, KoronusActivityObjectiveComponent component,
+        KoronusActivityWorkDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled || !IsLivingAttachedPlayer(args.User))
+            return;
+        args.Handled = true;
         if (!_director.TryCompleteObjective(component.InstanceId, uid, args.User))
         {
             _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
@@ -155,6 +176,8 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
         var objective = EnsureComp<KoronusActivityObjectiveComponent>(root);
         objective.InstanceId = instance.Id;
         objective.Execution = template.Execution;
+        _metadata.SetEntityName(root, Loc.GetString(template.TitleLocId));
+        EnsureComp<FTLBeaconComponent>(root);
 
         var requiresSystemLease = KoronusActivityRuntimePolicy.RequiresSystemLease(template.Execution);
         if (_director.TryBeginObjective(instance.Id, root, template.Execution, requiresSystemLease))

@@ -22,6 +22,18 @@ public sealed class ActivitySafetyGuard : EntitySystem
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private KoronusSafetyPolicySystem _safety = default!;
     [Dependency] private MapSystem _maps = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+
+    public bool IsGuardianSafe(EntityUid guardian, string systemId, MapId mapId, Vector2 center,
+        float leashRadius, EntityUid activityGrid, EntityUid? surfaceTerrain = null)
+    {
+        if (!TryComp<TransformComponent>(guardian, out var transform) || transform.MapID != mapId ||
+            transform.GridUid is { } grid && grid != activityGrid && grid != surfaceTerrain)
+            return false;
+        var position = _transform.ToMapCoordinates(transform.Coordinates).Position;
+        return Vector2.DistanceSquared(position, center) <= leashRadius * leashRadius &&
+               TryValidate(new KoronusActivityTarget(systemId, mapId, position, transform.GridUid), out _);
+    }
 
     public bool TryValidate(
         in KoronusActivityTarget target,

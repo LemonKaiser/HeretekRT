@@ -40,8 +40,10 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private DockingSystem _docking = default!;
+    [Dependency] private KoronusActivitySalvageSystem _salvage = default!;
 
     private EntityUid? _activeDirector;
+    private TimeSpan _nextUpdate;
 
     public override void Initialize()
     {
@@ -83,6 +85,10 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     {
         base.Update(frameTime);
 
+        if (_timing.CurTime < _nextUpdate)
+            return;
+        _nextUpdate = _timing.CurTime + TimeSpan.FromSeconds(1);
+
         if (_activeDirector is not { } uid ||
             !TryComp(uid, out KoronusActivityDirectorComponent? component) ||
             !component.Active)
@@ -114,6 +120,37 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         RaiseLocalEvent(new KoronusActivityPresentationChangedEvent());
     }
 
+    protected override void Ended(EntityUid uid, KoronusActivityDirectorComponent component,
+        GameRuleComponent gameRule, GameRuleEndedEvent args)
+    {
+        foreach (var instance in component.Instances.ToArray())
+            Archive(component, instance, KoronusActivityTerminalReason.RoundEnded);
+        component.Active = false;
+        component.Markers.Clear();
+        if (_activeDirector == uid)
+            _activeDirector = null;
+        RaiseLocalEvent(new KoronusActivityPresentationChangedEvent());
+    }
+
+    public void GetRouteModifiers(string from, string to, out int riskModifier, out float travelMultiplier)
+    {
+        riskModifier = 0;
+        travelMultiplier = 1f;
+        if (!TryGetActiveComponent(out var component))
+            return;
+        foreach (var instance in component.Instances)
+        {
+            if (instance.ExpiresAt <= _timing.CurTime ||
+                !((instance.RouteFromSystem == from && instance.RouteToSystem == to) ||
+                  (instance.RouteFromSystem == to && instance.RouteToSystem == from)) ||
+                !_prototypes.TryIndex<KoronusActivityTemplatePrototype>(instance.TemplateId, out var template))
+                continue;
+            riskModifier += Math.Clamp(template.WarpRiskModifier, -1, 1);
+            travelMultiplier *= Math.Clamp(template.WarpTravelMultiplier, 0.5f, 1.5f);
+        }
+        travelMultiplier = Math.Clamp(travelMultiplier, 0.5f, 1.5f);
+    }
+
     /// <summary>
     /// Returns a BUI-safe snapshot. The client cannot use a marker identifier as an authority token.
     /// </summary>
@@ -126,10 +163,11 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     }
 
     /// <summary>
-    /// Returns the active dossiers followed by a bounded terminal journal. No coordinate, entity,
-    /// reward, or participant data leaves the server through this method.
+    /// Returns the active dossiers followed by a bounded terminal journal. Entity, reward and
+    /// participant identities stay on the server. A local signal offset is included only
+    /// for objectives on the requesting ship's current map.
     /// </summary>
-    public List<KoronusActivityDossierState> GetDossiers()
+    public List<KoronusActivityDossierState> GetDossiers(MapId? currentMap = null, Vector2? viewerPosition = null)
     {
         if (!TryGetActiveComponent(out var component))
             return [];
@@ -140,7 +178,11 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             if (!_prototypes.TryIndex<KoronusActivityTemplatePrototype>(instance.TemplateId, out var template))
                 continue;
 
-            dossiers.Add(CreateDossier(instance, template, null));
+            var dossier = CreateDossier(instance, template, null);
+            if (currentMap != null && viewerPosition != null && instance.Objective is { } objective &&
+                TryComp<TransformComponent>(objective, out var transform) && transform.MapID == currentMap)
+                dossier.LocalSignalOffset = _transform.ToMapCoordinates(transform.Coordinates).Position - viewerPosition.Value;
+            dossiers.Add(dossier);
         }
 
         foreach (var history in component.History.AsEnumerable().Reverse())
@@ -164,7 +206,9 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
                 history.Reason,
                 template.TitleLocId,
                 template.SummaryLocId,
-                history.OccurredAt));
+                history.OccurredAt,
+                template.Execution,
+                template.MinimumLivingParticipants));
         }
 
         return dossiers;
@@ -335,8 +379,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
 
     /// <summary>
     /// Resolves a hostile contact exactly once after its own anchor was reached. Defeated is
-    /// used for a cleared group, Contained for an alternate anchor interaction; neither creates a
-    /// reward or a child encounter.
+    /// used for a cleared group, Contained for an alternate anchor interaction. Either successful
+    /// outcome releases its physical salvage once, without creating a child encounter.
     /// </summary>
     public bool TryCompleteThreat(long instanceId, EntityUid anchor, KoronusActivityTerminalReason reason, EntityUid? actor = null)
     {
@@ -438,7 +482,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             component.DayFocus,
             component.NextSpawnAt,
             component.Instances.Count,
-            component.History.Count);
+            component.History.Count,
+            GetEligibleRoutes(component, GetEligibleSystems(component)).Count);
         return true;
     }
 
@@ -646,15 +691,27 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return false;
 
         var routes = GetEligibleRoutes(component, systems);
+        var physicalCount = component.Instances.Count(active =>
+            _prototypes.TryIndex<KoronusActivityTemplatePrototype>(active.TemplateId, out var activeTemplate) &&
+            KoronusActivityRuntimePolicy.IsPhysicalExecution(activeTemplate.Execution));
+        var physicalOnly = physicalCount < Math.Min(systems.Count, 3);
+        var underserved = systems.FirstOrDefault(system => !component.Instances.Any(active =>
+            active.SystemId == system.ID &&
+            _prototypes.TryIndex<KoronusActivityTemplatePrototype>(active.TemplateId, out var activeTemplate) &&
+            KoronusActivityRuntimePolicy.IsPhysicalExecution(activeTemplate.Execution)));
         var candidates = new List<(KoronusActivityTemplatePrototype Template, int Weight)>();
         foreach (var template in templates)
         {
+            var physical = KoronusActivityRuntimePolicy.IsPhysicalExecution(template.Execution);
+            if ((physicalOnly && !physical) || (!physical && component.Instances.Count - physicalCount >= 2))
+                continue;
             // A set piece has a code-fixed destination. Exclude it before the deterministic
             // weighted pick when that system is disabled or outside the active sector; otherwise
             // the same NextInstanceId keeps selecting the unusable template and population can
             // remain permanently below its minimum.
             if (KoronusActivityRuntimePolicy.TryGetSetPieceSystem(template.Execution, out var fixedSystemId) &&
-                systems.All(system => system.ID != fixedSystemId))
+                (systems.All(system => system.ID != fixedSystemId) ||
+                 physicalOnly && underserved != null && fixedSystemId != underserved.ID))
             {
                 continue;
             }
@@ -688,11 +745,11 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             var route = PickRoute(component, routes);
             routeFrom = route.From.Id;
             routeTo = route.To.Id;
-            systemId = route.To.Id;
+            systemId = systems.Any(system => system.ID == route.To.Id) ? route.To.Id : route.From.Id;
         }
         else
         {
-            var system = PickSystem(component, systems);
+            var system = physicalOnly && underserved != null ? underserved : PickSystem(component, systems);
             systemId = system.ID;
         }
 
@@ -728,9 +785,11 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         }
 
         if (template.Family == KoronusActivityFamily.Threat &&
+            KoronusActivityRuntimePolicy.IsPhysicalExecution(template.Execution) &&
             component.Instances.Any(instance =>
                 _prototypes.TryIndex<KoronusActivityTemplatePrototype>(instance.TemplateId, out var activeTemplate) &&
-                activeTemplate.Family == KoronusActivityFamily.Threat))
+                activeTemplate.Family == KoronusActivityFamily.Threat &&
+                KoronusActivityRuntimePolicy.IsPhysicalExecution(activeTemplate.Execution)))
         {
             return false;
         }
@@ -788,12 +847,15 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return [];
 
         var systemIds = systems.Select(system => system.ID).ToHashSet(StringComparer.Ordinal);
+        var enabledIds = _prototypes.EnumeratePrototypes<KoronusSystemPrototype>()
+            .Where(system => system.Sector == sector && system.Enabled)
+            .Select(system => system.ID).ToHashSet(StringComparer.Ordinal);
         return _prototypes.EnumeratePrototypes<KoronusRoutePrototype>()
             .Where(route =>
                 route.Sector == sector &&
                 route.Enabled &&
-                systemIds.Contains(route.From.Id) &&
-                systemIds.Contains(route.To.Id))
+                enabledIds.Contains(route.From.Id) && enabledIds.Contains(route.To.Id) &&
+                (systemIds.Contains(route.From.Id) || systemIds.Contains(route.To.Id)))
             .OrderBy(route => route.ID, StringComparer.Ordinal)
             .ToList();
     }
@@ -885,7 +947,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
 
     private void ScheduleNextSpawn(KoronusActivityDirectorComponent component)
     {
-        var delaySeconds = 600u + GetDeterministicValue(component.RoundSeed, component.NextInstanceId, 0x771Cu) % 901u;
+        var delaySeconds = 180u + GetDeterministicValue(component.RoundSeed, component.NextInstanceId, 0x771Cu) % 241u;
         component.NextSpawnAt = _timing.CurTime + TimeSpan.FromSeconds(delaySeconds);
     }
 
@@ -903,6 +965,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return false;
 
         instance.State = KoronusActivityState.Archived;
+        MapCoordinates? salvageOrigin = instance.Objective is { } root && Exists(root)
+            ? _transform.ToMapCoordinates(Transform(root).Coordinates) : null;
         RaiseLocalEvent(new Content.Server._WH40K.Quests.Wh40kQuestActivityOutcomeEvent(instance.Id, instance.TemplateId,
             instance.SystemId, reason, instance.CompletingActor, preservedObjective));
         CleanupOwnedEntities(instance, preservedObjective);
@@ -913,6 +977,15 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         {
             family = template.Family;
             lane = template.Lane;
+            if (salvageOrigin is { } origin && reason is (KoronusActivityTerminalReason.Completed or
+                KoronusActivityTerminalReason.Defeated or KoronusActivityTerminalReason.Contained))
+            {
+                var coordinates = instance.CompletingActor is { } actor && Exists(actor) &&
+                    _players.TryGetSessionByEntity(actor, out _)
+                    ? Transform(actor).Coordinates : _transform.ToCoordinates(origin);
+                _salvage.SpawnSalvage(KoronusActivityChallengePolicy.GetSalvageProfile(template.Execution),
+                    template.Risk, coordinates);
+            }
         }
 
         component.History.Add(new KoronusActivityHistoryEntry
@@ -1044,7 +1117,9 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             terminalReason,
             template.TitleLocId,
             template.SummaryLocId,
-            instance.ExpiresAt);
+            instance.ExpiresAt,
+            template.Execution,
+            template.MinimumLivingParticipants);
     }
 
     private static KoronusActivityThreatState GetTerminalThreatState(
@@ -1107,4 +1182,5 @@ public readonly record struct KoronusActivityDirectorStatus(
     KoronusActivityDayFocus DayFocus,
     TimeSpan NextSpawnAt,
     int ActiveCount,
-    int HistoryCount);
+    int HistoryCount,
+    int EligibleRouteCount);

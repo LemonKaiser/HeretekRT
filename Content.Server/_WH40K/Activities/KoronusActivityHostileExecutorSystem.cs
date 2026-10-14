@@ -7,15 +7,12 @@ using Content.Server.NPC.HTN;
 using Content.Shared._WH40K.Activities;
 using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Activities.Prototypes;
-using Content.Shared.Doors.Systems;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
+using Content.Shared.DoAfter;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
-using Content.Shared.Prying.Components;
-using Content.Shared.Tag;
-using Content.Shared.Tools.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
@@ -54,7 +51,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
     [Dependency] private KoronusActivityDirectorSystem _director = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private HTNSystem _htn = default!;
-    [Dependency] private TagSystem _tags = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
 
     private TimeSpan _nextCheck;
 
@@ -62,6 +59,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<KoronusActivityThreatAnchorComponent, InteractHandEvent>(OnAnchorInteract);
+        SubscribeLocalEvent<KoronusActivityThreatAnchorComponent, KoronusActivityWorkDoAfterEvent>(OnContainmentCompleted);
         SubscribeLocalEvent<KoronusActivityHostileComponent, MobStateChangedEvent>(OnHostileDeath);
     }
 
@@ -119,9 +117,22 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
             return;
         }
 
-        // Containment is the non-lethal alternative: a living crew member reaches the single
-        // telegraphed anchor and seals it. The director then deletes the same owned group, so no
-        // hostile stays behind even if the interaction races an AI tick.
+        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User,
+            KoronusActivityChallengePolicy.GetWorkDuration(anchor.Execution),
+            new KoronusActivityWorkDoAfterEvent(), uid, target: uid)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            NeedHand = true,
+        });
+    }
+
+    private void OnContainmentCompleted(EntityUid uid, KoronusActivityThreatAnchorComponent anchor,
+        KoronusActivityWorkDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled || !IsLivingAttachedPlayer(args.User))
+            return;
+        args.Handled = true;
         if (!_director.TryCompleteThreat(anchor.InstanceId, uid, KoronusActivityTerminalReason.Contained, args.User))
         {
             _popup.PopupCursor(EntityManager.System<WH40KPlayerCultureManager>().GetPlayerString(args.User, "koronus-activity-objective-unavailable"), args.User, PopupType.SmallCaution);
@@ -180,18 +191,12 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
 
             var hostile = Spawn(hostilePrototype, hostileCoordinates);
             spawned.Add(hostile);
-            if (!_contentAudit.TryValidateEntity(hostile, out _))
+            if (!_contentAudit.TryPrepareHostile(hostile, out _))
             {
                 AbortMaterialization(instance.Id, spawned, KoronusActivityTerminalReason.ContentAuditFailed);
                 return;
             }
 
-            // Hormagaunts inherit tool and pry components. Activity hostiles must never acquire
-            // access to a shuttle or protected facility, so remove those capabilities before the
-            // AI can run; the tag blocks automatic door-bumping as well.
-            RemComp<PryingComponent>(hostile);
-            RemComp<ToolComponent>(hostile);
-            _tags.RemoveTag(hostile, SharedDoorSystem.DoorBumpTag);
             AssignOwned(hostile, instance.Id, KoronusActivityOwnedKind.Npc);
             var hostileComponent = EnsureComp<KoronusActivityHostileComponent>(hostile);
             hostileComponent.InstanceId = instance.Id;

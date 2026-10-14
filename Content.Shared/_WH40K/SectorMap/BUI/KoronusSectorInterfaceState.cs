@@ -55,17 +55,23 @@ public sealed class KoronusSectorTravelState
     public string DestinationSystem;
     public FTLState State;
     public StartEndTime StateTime;
+    public KoronusWarpRisk Risk;
+    public KoronusWarpIncident Incident;
 
     public KoronusSectorTravelState(
         string originSystem,
         string destinationSystem,
         FTLState state,
-        StartEndTime stateTime)
+        StartEndTime stateTime,
+        KoronusWarpRisk risk = KoronusWarpRisk.Stable,
+        KoronusWarpIncident incident = KoronusWarpIncident.None)
     {
         OriginSystem = originSystem;
         DestinationSystem = destinationSystem;
         State = state;
         StateTime = stateTime;
+        Risk = risk;
+        Incident = incident;
     }
 }
 
@@ -97,12 +103,17 @@ public sealed class KoronusSectorRouteState
     public string To;
     public string RouteClass;
     public bool Enabled;
+    public float TravelTimeMultiplier;
+    public bool Bidirectional;
 
-    public KoronusSectorRouteState(string from, string to, string routeClass, bool enabled)
+    public KoronusSectorRouteState(string from, string to, string routeClass, bool enabled,
+        float travelTimeMultiplier = 1f, bool bidirectional = true)
     {
         From = from;
         To = to;
         RouteClass = routeClass;
         Enabled = enabled;
+        TravelTimeMultiplier = travelTimeMultiplier;
+        Bidirectional = bidirectional;
     }
 }

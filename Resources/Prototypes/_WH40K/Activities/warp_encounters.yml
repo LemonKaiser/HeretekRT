@@ -1,0 +1,39 @@
+- type: statusEffect
+  id: KoronusWarpVertigo
+  alwaysAllowed: true
+
+- type: entity
+  id: KoronusWarpRift
+  parent: BaseStructure
+  name: unstable warp rift
+  description: A breach in the Gellar field. Hold an empty hand against its stabilizer to seal it before anything emerges.
+  components:
+  - type: Sprite
+    sprite: Structures/Specific/anomaly.rsi
+    drawdepth: Effects
+    layers:
+    - state: anom1
+    - state: anom1-pulse
+  - type: InteractionOutline
+  - type: PointLight
+    radius: 5
+    energy: 2
+    color: "#A268F5"
+  - type: KoronusWarpRift
+
+- type: entity
+  id: KoronusWarpFieldRelay
+  parent: BaseStructure
+  name: emergency field relay
+  description: An overloaded Gellar field bypass. Work on it with an empty hand for four seconds to restore power.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/fulton.rsi
+    drawdepth: SmallObjects
+    state: extraction_point
+  - type: InteractionOutline
+  - type: PointLight
+    radius: 5
+    energy: 2
+    color: "#FFD166"
+  - type: KoronusWarpRift
