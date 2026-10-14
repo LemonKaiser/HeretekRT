@@ -6,10 +6,8 @@ using Content.Shared.Durability.Events;
 using Content.Shared.Durability.Systems;
 using Content.Shared.Examine;
 using Content.Shared.Interaction.Events;
-using Content.Shared.Popups;
 using Content.Shared.Tools.Components;
 using Content.Shared.Weapons.Melee.Events;
-using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -21,7 +19,6 @@ namespace Content.Server.Durability;
 /// </summary>
 public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
 {
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
@@ -29,7 +26,6 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
         base.Initialize();
 
         SubscribeLocalEvent<ItemDurabilityComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<ItemDurabilityComponent, ShotAttemptedEvent>(OnShotAttempted);
         SubscribeLocalEvent<ItemDurabilityComponent, GunShotEvent>(OnGunShot);
         SubscribeLocalEvent<ItemDurabilityComponent, AttemptMeleeEvent>(OnMeleeAttempt);
         SubscribeLocalEvent<ItemDurabilityComponent, MeleeHitEvent>(OnMeleeHit);
@@ -186,15 +182,6 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
         Dirty(ent);
     }
 
-    private void OnShotAttempted(Entity<ItemDurabilityComponent> ent, ref ShotAttemptedEvent args)
-    {
-        if (IsUsable(ent.Owner, ent.Comp))
-            return;
-
-        args.Cancel();
-        _popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
-    }
-
     private void OnGunShot(Entity<ItemDurabilityComponent> ent, ref GunShotEvent args)
     {
         if (ent.Comp.ShotDrain <= 0f || args.Ammo.Count == 0)
@@ -226,7 +213,7 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
             return;
 
         args.Cancel();
-        _popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
+        Popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
     }
 
     private void OnToolUseCompleted(Entity<ItemDurabilityComponent> ent, ref ToolUseCompletedEvent args)
@@ -243,7 +230,7 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
             return;
 
         args.Cancelled = true;
-        _popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
+        Popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
     }
 
     private void OnSurgeryToolUseCompleted(Entity<ItemDurabilityComponent> ent, ref SurgeryToolUseCompletedEvent args)
@@ -279,7 +266,7 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
             return;
 
         args.Handled = true;
-        _popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
+        Popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
     }
 
     private void OnExamined(Entity<ItemDurabilityComponent> ent, ref ExaminedEvent args)

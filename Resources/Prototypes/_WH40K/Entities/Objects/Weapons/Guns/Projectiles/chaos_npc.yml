@@ -1,0 +1,64 @@
+- type: entity
+  id: WH40KChaosFlame
+  parent: BaseBullet
+  name: promethium flame
+  categories: [HideSpawnMenu]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Projectiles/flame.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: Projectile
+    damage:
+      types:
+        Heat: 8
+  - type: IgniteOnCollide
+    fireStacks: 2
+    count: 1
+  - type: TimedDespawn
+    lifetime: 0.24
+
+- type: entity
+  id: WH40KChaosShotgunPellet
+  parent: BaseBullet
+  name: shotgun pellet
+  categories: [HideSpawnMenu]
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 6
+  - type: TimedDespawn
+    lifetime: 1
+
+- type: entity
+  id: WH40KChaosShotgunSpread
+  parent: WH40KChaosShotgunPellet
+  categories: [HideSpawnMenu]
+  components:
+  - type: ProjectileSpread
+    proto: WH40KChaosShotgunPellet
+    count: 6
+    spread: 12
+
+- type: entity
+  id: WH40KChaosFragGrenade
+  parent: FragGrenade
+  name: chaos fragmentation grenade
+  categories: [HideSpawnMenu]
+  components:
+  - type: Explosive
+    totalIntensity: 45
+    intensitySlope: 3
+    maxIntensity: 5
+  - type: Wh40kChaosGrenade
+
+- type: entity
+  id: WH40KChaosBola
+  parent: Bola
+  name: chaos shock bola
+  categories: [HideSpawnMenu]
+  components:
+  - type: StaminaDamageOnCollide
+    damage: 200

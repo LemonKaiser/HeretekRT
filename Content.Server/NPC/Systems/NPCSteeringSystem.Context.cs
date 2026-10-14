@@ -34,7 +34,6 @@ public sealed partial class NPCSteeringSystem
     }
 
     #region Seek
-
     /// <summary>
     /// Takes into account agent-specific context that may allow it to bypass a node which is not FreeSpace.
     /// </summary>
@@ -55,7 +54,6 @@ public sealed partial class NPCSteeringSystem
         {
             return true;
         }
-
         // TODO: Ideally for "FreeSpace" we check all entities on the tile and build flags dynamically (pathfinder refactor in future).
         var ents = _entSetPool.Get();
         _lookup.GetLocalEntitiesIntersecting(node.GraphUid, node.Box.Enlarged(-0.04f), ents, flags: LookupFlags.Static);
@@ -81,7 +79,6 @@ public sealed partial class NPCSteeringSystem
         _entSetPool.Return(ents);
         return result;
     }
-
     /// <summary>
     /// Attempts to head to the target destination, either via the next pathfinding node or the final target.
     /// </summary>
@@ -103,10 +100,8 @@ public sealed partial class NPCSteeringSystem
         var ourCoordinates = xform.Coordinates;
         var destinationCoordinates = steering.Coordinates;
         var inLos = true;
-
         // Monolith - check if we should ignore all pathing logic and go straight to the target coordinates
         var directMove = steering.DirectMove;
-
         // Check if we're in LOS if that's required.
         // TODO: Need something uhh better not sure on the interaction between these.
         if (!steering.ForceMove && steering.ArriveOnLineOfSight)
@@ -135,7 +130,6 @@ public sealed partial class NPCSteeringSystem
             steering.LineOfSightTimer = 0f;
             steering.ForceMove = false;
         }
-
         // <Monolith> - early port of wizden#38846
         var velLen = body.LinearVelocity.Length();
 
@@ -145,7 +139,6 @@ public sealed partial class NPCSteeringSystem
         // if we're in range and we care about velocity, stop trying to move if we early return
         if (finalInRange && careAboutSpeed)
             moveMultiplier = 0f;
-
         // We've arrived and velocity is acceptable, nothing else matters.
         if (finalInRange && !velocityHigh)
         // </Monolith>
@@ -154,7 +147,6 @@ public sealed partial class NPCSteeringSystem
             ResetStuck(steering, ourCoordinates);
             return true;
         }
-
         // Grab the target position, either the next path node or our end goal..
         var targetCoordinates = steering.DirectMove ? steering.Coordinates : GetTargetCoordinates(steering);
 
@@ -165,7 +157,6 @@ public sealed partial class NPCSteeringSystem
         }
 
         var needsPath = false;
-
         // If the next node is invalid then get new ones
         if (!targetCoordinates.IsValid(EntityManager))
         {
@@ -179,7 +170,6 @@ public sealed partial class NPCSteeringSystem
                 ResetStuck(steering, ourCoordinates);
             }
         }
-
         // Check if mapids match.
         var targetMap = _transform.ToMapCoordinates(targetCoordinates);
         var ourMap = _transform.ToMapCoordinates(ourCoordinates);
@@ -191,7 +181,6 @@ public sealed partial class NPCSteeringSystem
         }
 
         var direction = targetMap.Position - ourMap.Position;
-
         // Need to be pretty close if it's just a node to make sure LOS for door bashes or the likes.
         bool arrived;
 
@@ -213,7 +202,6 @@ public sealed partial class NPCSteeringSystem
         {
             arrived = direction.Length() <= SharedInteractionSystem.InteractionRange - 0.05f;
         }
-
         // Are we in range
         if (arrived)
         {
@@ -223,7 +211,6 @@ public sealed partial class NPCSteeringSystem
                 // Ignore stuck while handling obstacles.
                 ResetStuck(steering, ourCoordinates);
                 SteeringObstacleStatus status;
-
                 // Breaking behaviours and the likes.
                 lock (_obstacles)
                 {
@@ -235,7 +222,6 @@ public sealed partial class NPCSteeringSystem
 
                     status = TryHandleFlags(uid, steering, node);
                 }
-
                 // TODO: Need to handle re-pathing in case the target moves around.
                 switch (status)
                 {
@@ -254,14 +240,12 @@ public sealed partial class NPCSteeringSystem
                         throw new ArgumentOutOfRangeException();
                 }
             }
-
             // Distance should already be handled above.
             // It was just a node, not the target, so grab the next destination (either the target or next node).
             if (!directMove && steering.CurrentPath.Count > 0)
             {
                 forceSteer = true;
                 steering.CurrentPath.Dequeue();
-
                 // Alright just adjust slightly and grab the next node so we don't stop moving for a tick.
                 // TODO: If it's the last node just grab the target instead.
                 targetCoordinates = GetTargetCoordinates(steering);
@@ -274,7 +258,6 @@ public sealed partial class NPCSteeringSystem
                 }
 
                 targetMap = _transform.ToMapCoordinates(targetCoordinates);
-
                 // Can't make it again.
                 if (ourMap.MapId != targetMap.MapId)
                 {
@@ -282,7 +265,6 @@ public sealed partial class NPCSteeringSystem
                     steering.Status = SteeringStatus.NoPath;
                     return false;
                 }
-
                 // Gonna resume now business as usual
                 direction = targetMap.Position - ourMap.Position;
                 ResetStuck(steering, ourCoordinates);
@@ -323,7 +305,6 @@ public sealed partial class NPCSteeringSystem
         {
             ResetStuck(steering, ourCoordinates);
         }
-
         // If not in LOS and no path then get a new one fam.
         if (!directMove &&
             ((!inLos && steering.ArriveOnLineOfSight && steering.CurrentPath.Count == 0) ||
@@ -331,15 +312,12 @@ public sealed partial class NPCSteeringSystem
         {
             needsPath = true;
         }
-
         // TODO: Probably need partial planning support i.e. patch from the last node to where the target moved to.
         if (!directMove)
             CheckPath(uid, steering, xform, needsPath, targetDistance);
-
         // <Monolith> - early port of wizden#38846
         // whether we should want to brake right now
         var haveToBrake = finalInRange && velocityHigh;
-
         // If we don't have a path yet then do nothing; this is to avoid stutter-stepping if it turns out there's no path
         // available but we assume there was. Brake if we have to, though.
         if (!directMove && steering is { Pathfind: true, CurrentPath.Count: 0 } && !haveToBrake)
@@ -355,11 +333,9 @@ public sealed partial class NPCSteeringSystem
 
         var realAccel = acceleration * moveSpeed;
         var frameAccel = realAccel * frameTime;
-
         // check our tangential velocity
         var normVel = direction * Vector2.Dot(body.LinearVelocity, direction) / direction.LengthSquared();
         var tgVel = body.LinearVelocity - normVel;
-
         // we're near final node but haven't braked, do so
         if (haveToBrake)
         {
@@ -414,10 +390,8 @@ public sealed partial class NPCSteeringSystem
                 break;
         }
         // </Monolith>
-
         return true;
     }
-
     // Monolith - used in TrySeek()
     private enum MovementType
     {
@@ -446,7 +420,6 @@ public sealed partial class NPCSteeringSystem
         if (!needsPath && steering.CurrentPath.Count > 0)
         {
             needsPath = steering.CurrentPath.Count > 0 && (steering.CurrentPath.Peek().Data.Flags & PathfindingBreadcrumbFlag.Invalid) != 0x0;
-
             // If the target has sufficiently moved.
             var lastNode = GetCoordinates(steering.CurrentPath.Last());
 
@@ -456,14 +429,12 @@ public sealed partial class NPCSteeringSystem
                 needsPath = true;
             }
         }
-
         // Request the new path.
         if (needsPath)
         {
             RequestPath(uid, steering, xform, targetDistance);
         }
     }
-
     /// <summary>
     /// We may be pathfinding and moving at the same time in which case early nodes may be out of date.
     /// </summary>
@@ -471,7 +442,6 @@ public sealed partial class NPCSteeringSystem
     {
         if (nodes.Count <= 1)
             return;
-
         // Work out if we're inside any nodes, then use the next one as the starting point.
         var index = 0;
         var found = false;
@@ -480,7 +450,6 @@ public sealed partial class NPCSteeringSystem
         {
             var node = nodes[i];
             var matrix = _transform.GetWorldMatrix(node.GraphUid);
-
             // Always want to prune the poly itself so we point to the next poly and don't backtrack.
             if (matrix.TransformBox(node.Box).Contains(mapCoordinates.Position))
             {
@@ -496,9 +465,7 @@ public sealed partial class NPCSteeringSystem
             _pathfindingSystem.Simplify(nodes);
             return;
         }
-
         // Otherwise, take the node after the nearest node.
-
         // TODO: Really need layer support
         CollisionGroup mask = 0;
 
@@ -515,7 +482,6 @@ public sealed partial class NPCSteeringSystem
                 break;
 
             var nodeMap = _transform.ToMapCoordinates(node.Coordinates);
-
             // If any nodes are 'behind us' relative to the target we'll prune them.
             // This isn't perfect but should fix most cases of stutter stepping.
             if (nodeMap.MapId == mapCoordinates.MapId &&
@@ -530,14 +496,12 @@ public sealed partial class NPCSteeringSystem
 
         _pathfindingSystem.Simplify(nodes);
     }
-
     /// <summary>
     /// Get the coordinates we should be heading towards.
     /// </summary>
     private EntityCoordinates GetTargetCoordinates(NPCSteeringComponent steering)
     {
         // Depending on what's going on we may return the target or a pathfind node.
-
         // Even if we're at the last node may not be able to head to target in case we get stuck on a corner or the likes.
         if (_pathfinding && steering.CurrentPath.Count >= 1 && steering.CurrentPath.TryPeek(out var nextTarget))
         {
@@ -546,7 +510,6 @@ public sealed partial class NPCSteeringSystem
 
         return steering.Coordinates;
     }
-
     /// <summary>
     /// Gets the fraction this value is between min and max
     /// </summary>
@@ -565,7 +528,6 @@ public sealed partial class NPCSteeringSystem
     #endregion
 
     #region Static Avoidance
-
     /// <summary>
     /// Tries to avoid static blockers such as walls.
     /// </summary>
@@ -588,6 +550,7 @@ public sealed partial class NPCSteeringSystem
         {
             // TODO: If we can access the door or smth.
             if (!_physicsQuery.TryGetComponent(ent, out var otherBody) ||
+                _chaosFriendlyFire.ShouldPassProjectile(ent, uid) ||
                 !otherBody.Hard ||
                 !otherBody.CanCollide ||
                 otherBody.BodyType == BodyType.KinematicController ||
@@ -611,7 +574,6 @@ public sealed partial class NPCSteeringSystem
 
             var weight = 1f;
             var obstacleDirection = pointB - pointA;
-
             // Inside each other so just use worldPos
             if (distance == 0f)
             {
@@ -641,7 +603,6 @@ public sealed partial class NPCSteeringSystem
     #endregion
 
     #region Dynamic Avoidance
-
     /// <summary>
     /// Tries to avoid mobs of the same faction.
     /// </summary>
@@ -691,12 +652,10 @@ public sealed partial class NPCSteeringSystem
 
             var weight = 1f;
             var obstacleDirection = pointB - pointA;
-
             // Inside each other so just use worldPos
             if (distance == 0f)
             {
                 obstacleDirection = _transform.GetWorldPosition(xformB) - worldPos;
-
                 // Welp
                 if (obstacleDirection == Vector2.Zero)
                 {
@@ -723,24 +682,14 @@ public sealed partial class NPCSteeringSystem
     }
 
     #endregion
-
     // TODO: Alignment
-
     // TODO: Cohesion
     private void Blend(NPCSteeringComponent steering, float frameTime, Span<float> interest, Span<float> danger)
     {
         /*
          * Future sloth notes:
          * Pathfinder cleanup:
-            - Cleanup whatever the fuck is happening in pathfinder
-            - Use Flee for melee behavior / actions and get the seek direction from that rather than bulldozing
-            - Must always have a path
-            - Path should return the full version + the snipped version
-            - Pathfinder needs to do diagonals
-            - Next node is either <current node + 1> or <nearest node + 1> (on the full path)
-            - If greater than <1.5m distance> repath
          */
-
         // IDK why I didn't do this sooner but blending is a lot better than lastdir for fixing stuttering.
         const float BlendWeight = 10f;
         var blendValue = Math.Min(1f, frameTime * BlendWeight);

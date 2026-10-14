@@ -29,10 +29,7 @@ public sealed partial class NPCCombatSystem
     private EntityQuery<TransformComponent> _xformQuery;
     private EntityQuery<RequireProjectileTargetComponent> _requireTargetQuery; // Mono
     private EntityQuery<NpcFactionMemberComponent> _factionQuery; // Mono
-
     // TODO: Don't predict for hitscan
-    private const float ShootSpeed = 20f;
-
     /// <summary>
     /// Cooldown on raycasting to check LOS.
     /// </summary>
@@ -70,7 +67,6 @@ public sealed partial class NPCCombatSystem
         {
             _combat.SetInCombatMode(uid, false, combat);
         }
-
         // Goobstation
         if (_gun.TryGetGun(uid, out var gunUid, out _) && TryComp(gunUid, out LaserPointerComponent? laser) &&
             TryComp(gunUid, out WieldableComponent? wieldable) && TryComp(gunUid, out TransformComponent? xform))
@@ -149,17 +145,14 @@ public sealed partial class NPCCombatSystem
             }
 
             comp.LOSAccumulator -= frameTime;
-
             // We'll work out the projected spot of the target and shoot there instead of where they are.
             var distance = (targetPos - worldPos).Length();
             var oldInLos = comp.TargetInLOS;
-
             // TODO: Should be doing these raycasts in parallel
             // Ideally we'd have 2 steps, 1. to go over the normal details for shooting and then 2. to handle beep / rotate / shoot
             if (comp.LOSAccumulator < 0f)
             {
                 comp.LOSAccumulator += UnoccludedCooldown;
-
                 // For consistency with NPC steering.
                 var collisionGroup = comp.UseOpaqueForLOSChecks ? CollisionGroup.Opaque : (CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
                 comp.TargetInLOS = _interaction.InRangeUnobstructed(uid, comp.Target, distance + 0.1f, collisionGroup);
@@ -193,8 +186,9 @@ public sealed partial class NPCCombatSystem
             }
 
             var mapVelocity = targetBody.LinearVelocity;
-            var targetSpot = targetPos + mapVelocity * distance / ShootSpeed;
-
+            var targetSpot = HasComp<HitscanBatteryAmmoProviderComponent>(gunUid)
+                ? targetPos
+                : targetPos + mapVelocity * distance / MathF.Max(gun.ProjectileSpeedModified, 0.1f);
             // If we have a max rotation speed then do that.
             var goalRotation = (targetSpot - worldPos).ToWorldAngle();
             var rotationSpeed = comp.RotationSpeed;
@@ -204,15 +198,12 @@ public sealed partial class NPCCombatSystem
                 UpdatePointerLine(gunUid, targetPos, worldPos, comp.Target); // Goobstation
                 continue;
             }
-
             // TODO: LOS
             // TODO: Ammo checks
             // TODO: Burst fire
             // TODO: Cycling
             // Max rotation speed
-
             // TODO: Check if we can face
-
             if (!Enabled || !_gun.CanShoot(gun))
             {
                 UpdatePointerLine(gunUid, targetPos, worldPos, comp.Target); // Goobstation
@@ -236,14 +227,13 @@ public sealed partial class NPCCombatSystem
 
             if (gun.NextFire > _timing.CurTime)
             {
-                return;
+                continue;
             }
 
             _gun.SetTarget(gun, comp.Target); // Frontier - This ensures that the bullet won't fly over the target if it's downed
             _gun.AttemptShoot(uid, gunUid, gun, targetCordinates);
         }
     }
-
     // Goobstation - Helper methods moved outside the loop to avoid redefinition
     private void UpdatePointerLineNoTarget(EntityUid gunUid)
     {
@@ -270,7 +260,6 @@ public sealed partial class NPCCombatSystem
                 target);
         }
     }
-
     // Mono
     public bool InRangeGoodTarget(Entity<GunComponent?> gun, EntityUid source, EntityUid target, float distance, float shotsThreshold, CollisionGroup obstructedMask = CollisionGroup.Opaque, CollisionGroup bulletMask = CollisionGroup.Impassable | CollisionGroup.BulletImpassable)
     {
@@ -291,7 +280,6 @@ public sealed partial class NPCCombatSystem
 
                 if (_requireTargetQuery.HasComponent(uid)) // requires targeting so it won't collide
                     return true;
-
                 // do not consider living things for shoot-through
                 if (!_factionQuery.HasComp(uid)
                     && _destructible.TryGetDestroyedAt(uid, out var at))

@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._WH40K.NPC;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Gravity;
@@ -18,6 +19,7 @@ namespace Content.Shared.Throwing
     public sealed partial class ThrownItemSystem : EntitySystem
     {
         [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+        [Dependency] private Wh40kChaosFriendlyFireSystem _chaosFriendlyFire = default!;
         [Dependency] private IGameTiming _gameTiming = default!;
         [Dependency] private SharedBroadphaseSystem _broadphase = default!;
         [Dependency] private FixtureSystem _fixtures = default!;
@@ -70,7 +72,8 @@ namespace Content.Shared.Throwing
 
         private void PreventCollision(EntityUid uid, ThrownItemComponent component, ref PreventCollideEvent args)
         {
-            if (args.OtherEntity == component.Thrower)
+            if (args.OtherEntity == component.Thrower ||
+                _chaosFriendlyFire.ShouldPassProjectile(uid, component.Thrower, args.OtherEntity))
             {
                 args.Cancelled = true;
             }
@@ -118,7 +121,6 @@ namespace Content.Shared.Throwing
                 return;
 
             thrownItem.Landed = true;
-
             // Assume it's uninteresting if it has no thrower. For now anyway.
             if (thrownItem.Thrower is not null)
                 _adminLogger.Add(LogType.Landed, LogImpact.Low, $"{ToPrettyString(uid):entity} thrown by {ToPrettyString(thrownItem.Thrower.Value):thrower} landed.");
@@ -127,7 +129,6 @@ namespace Content.Shared.Throwing
             var landEvent = new LandEvent(thrownItem.Thrower, playSound);
             RaiseLocalEvent(uid, ref landEvent);
         }
-
         /// <summary>
         ///     Raises collision events on the thrown and target entities.
         /// </summary>
@@ -137,10 +138,10 @@ namespace Content.Shared.Throwing
                 _adminLogger.Add(LogType.ThrowHit, LogImpact.Low,
                     $"{ToPrettyString(thrown):thrown} thrown by {ToPrettyString(component.Thrower.Value):thrower} hit {ToPrettyString(target):target}.");
 
-            if (component.Thrower is not null)// Nyano - Summary: Gotta check if there was a thrower. 
+            if (component.Thrower is not null)// Nyano - Summary: Gotta check if there was a thrower.
                 RaiseLocalEvent(target, new ThrowHitByEvent(component.Thrower.Value, thrown, target, component), true); // Nyano - Summary: Gotta update for who threw it.
             else
-                RaiseLocalEvent(target, new ThrowHitByEvent(null, thrown, target, component), true); // Nyano - Summary: No thrower. 
+                RaiseLocalEvent(target, new ThrowHitByEvent(null, thrown, target, component), true); // Nyano - Summary: No thrower.
             RaiseLocalEvent(thrown, new ThrowDoHitEvent(thrown, target, component), true);
         }
 

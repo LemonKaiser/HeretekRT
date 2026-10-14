@@ -33,7 +33,7 @@ public sealed partial class ItemDurabilityComponent : Component
     /// If true, the entity is deleted when durability reaches zero. If false, it remains present but unusable.
     /// </summary>
     [DataField]
-    public bool DestroyAtZero = true;
+    public bool DestroyAtZero;
 
     /// <summary>
     /// If true, durability is reduced when this entity's own DamageableComponent takes damage.

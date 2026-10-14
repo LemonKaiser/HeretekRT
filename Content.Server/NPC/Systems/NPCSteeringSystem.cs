@@ -9,6 +9,7 @@ using Content.Server.NPC.Components;
 using Content.Server.NPC.Events;
 using Content.Server.NPC.Pathfinding;
 using Content.Shared.CCVar;
+using Content.Shared._WH40K.NPC;
 using Content.Shared.Climbing.Systems;
 using Content.Shared.CombatMode;
 using Content.Shared.Ghost;
@@ -42,10 +43,10 @@ namespace Content.Server.NPC.Systems;
 
 public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 {
+    [Dependency] private Wh40kChaosFriendlyFireSystem _chaosFriendlyFire = default!;
     private static readonly Gauge ActiveSteeringGauge = Metrics.CreateGauge(
         "npc_steering_active_count",
         "Amount of NPCs trying to actively do steering");
-
     /*
      * We use context steering to determine which way to move.
      * This involves creating an array of possible directions and assigning a value for the desireability of each direction.
@@ -55,7 +56,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
      * See http://www.gameaipro.com/GameAIPro2/GameAIPro2_Chapter18_Context_Steering_Behavior-Driven_Steering_at_the_Macro_Scale.pdf
      * (though in their case it was for an F1 game so used context steering across the width of the road).
      */
-
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private IConfigurationManager _configManager = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -84,7 +84,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
     private ObjectPool<HashSet<EntityUid>> _entSetPool =
         new DefaultObjectPool<HashSet<EntityUid>>(new SetPolicy<EntityUid>());
-
     /// <summary>
     /// Enabled antistuck detection so if an NPC is in the same spot for a while it will re-path.
     /// </summary>
@@ -172,7 +171,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         component.PathfindToken?.Cancel();
         component.PathfindToken = null;
     }
-
     /// <summary>
     /// Adds the AI to the steering system to move towards a specific target
     /// </summary>
@@ -197,7 +195,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         component.Coordinates = coordinates;
         return component;
     }
-
     /// <summary>
     /// Attempts to register the entity. Does nothing if the coordinates already registered.
     /// </summary>
@@ -211,7 +208,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         Register(uid, coordinates, component);
         return true;
     }
-
     /// <summary>
     /// Stops the steering behavior for the AI and cleans up.
     /// </summary>
@@ -274,7 +270,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         if (!_enabled)
             return;
-
         // Not every mob has the modifier component so do it as a separate query.
         var npcs = new (EntityUid, NPCSteeringComponent, InputMoverComponent, TransformComponent)[
             Count<ActiveNPCComponent>() + Count<DialogueMovementActiveComponent>()];
@@ -298,7 +293,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             npcs[index] = (uid, steering, mover, xform);
             index++;
         }
-
         // Dependency issues across threads.
         var options = new ParallelOptions
         {
@@ -355,7 +349,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         var ev = new SpriteMoveEvent(true);
         RaiseLocalEvent(uid, ref ev);
     }
-
     /// <summary>
     /// Go through each steerer and combine their vectors
     /// </summary>
@@ -373,14 +366,12 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             steering.Status = SteeringStatus.NoPath;
             return;
         }
-
         // No path set from pathfinding or the likes.
         if (steering.Status == SteeringStatus.NoPath)
         {
             SetDirection(uid, mover, steering, Vector2.Zero);
             return;
         }
-
         // Can't move at all, just noop input.
         if (!mover.CanMove)
         {
@@ -399,7 +390,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         _modifierQuery.TryGetComponent(uid, out var modifier);
         var body = _physicsQuery.GetComponent(uid);
-
         // Monolith - early port of wizden#38846
         var weightless = _gravity.IsWeightless(uid);
         var moveSpeed = GetSprintSpeed(uid, modifier);
@@ -410,7 +400,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         dangerPoints.Clear();
         Span<float> interest = stackalloc float[InterestDirections];
         Span<float> danger = stackalloc float[InterestDirections];
-
         // TODO: This should be fly
         steering.CanSeek = true;
 
@@ -427,27 +416,22 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         }
 
         DebugTools.Assert(!float.IsNaN(interest[0]));
-
         // Don't steer too frequently to avoid twitchiness.
         // This should also implicitly solve tie situations.
         // I think doing this after all the ops above is best?
         // Originally I had it way above but sometimes mobs would overshoot their tile targets.
-
         if (!forceSteer)
         {
             SetDirection(uid, mover, steering, steering.LastSteerDirection, false);
             return;
         }
-
         // Avoid static objects like walls
         CollisionAvoidance(uid, offsetRot, worldPos, agentRadius, layer, mask, xform, danger);
         DebugTools.Assert(!float.IsNaN(danger[0]));
 
         Separation(uid, offsetRot, worldPos, agentRadius, layer, mask, body, xform, danger);
-
         // Blend last and current tick
         Blend(steering, frameTime, interest, danger);
-
         // Remove the danger map from the interest map.
         var desiredDirection = -1;
         var desiredValue = 0f;
@@ -482,7 +466,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         return new EntityCoordinates(poly.GraphUid, poly.Box.Center);
     }
-
     /// <summary>
     /// Get a new job from the pathfindingsystem
     /// </summary>
@@ -492,10 +475,8 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         // If we're in range then just beeline them; this can avoid stutter stepping and is an easy way to look nicer.
         if (steering.Pathfind || targetDistance < steering.RepathRange)
             return;
-
         // Short-circuit with no path.
         var targetPoly = _pathfindingSystem.GetPoly(steering.Coordinates);
-
         // If this still causes issues future sloth adjust the collision mask.
         // Thanks past sloth I already realised.
         if (targetPoly != null &&
@@ -541,9 +522,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
         PrunePath(uid, ourPos, targetPos.Position - ourPos.Position, result.Path);
         steering.CurrentPath = new Queue<PathPoly>(result.Path);
     }
-
     // TODO: Move these to movercontroller
-
     private float GetSprintSpeed(EntityUid uid, MovementSpeedModifierComponent? modifier = null)
     {
         if (!Resolve(uid, ref modifier, false))
@@ -553,7 +532,6 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         return modifier.CurrentSprintSpeed;
     }
-
     // <Monolith> - early port of wizden#38846
     private float GetAcceleration(Entity<MovementSpeedModifierComponent?> ent, bool weightless)
     {

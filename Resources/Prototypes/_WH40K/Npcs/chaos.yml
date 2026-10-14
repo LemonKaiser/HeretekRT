@@ -1,0 +1,21 @@
+- type: htnCompound
+  id: Wh40kChaosRangedCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:Wh40kChaosSelectTargetOperator
+    - !type:HTNPrimitiveTask
+      operator: !type:Wh40kChaosCombatOperator
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:Wh40kChaosPatrolOperator
+      preconditions:
+      - !type:BuckledPrecondition
+        isBuckled: false
+      - !type:PulledPrecondition
+        isPulled: false
+    - !type:HTNCompoundTask
+      task: IdleSpinCompound
+  - tasks:
+    - !type:HTNCompoundTask
+      task: IdleSpinCompound

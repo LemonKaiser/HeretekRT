@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared._WH40K.Combat;
+using Content.Shared._WH40K.NPC;
 using Content.Shared.Damage.Components;
 using Content.Shared.Database;
 using Content.Shared.Weapons.Hitscan.Components;
@@ -19,6 +20,7 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _log = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedWH40KDirectionalBarricadeSystem _barricades = default!;
+    [Dependency] private Wh40kChaosFriendlyFireSystem _chaosFriendlyFire = default!;
 
     public override void Initialize()
     {
@@ -41,8 +43,10 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         //  1.) Hit the first entity that you targeted.
         //  2.) Hit the first entity that doesn't require you to aim at it specifically to be hit.
         var result = _container.IsEntityOrParentInContainer(shooter)
-            ? rayCastResults.FirstOrNull(hit => !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection))
-            : rayCastResults.FirstOrNull(hit => !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection) &&
+            ? rayCastResults.FirstOrNull(hit => !_chaosFriendlyFire.ShouldPass(shooter, hit.HitEntity) &&
+                                               !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection))
+            : rayCastResults.FirstOrNull(hit => !_chaosFriendlyFire.ShouldPass(shooter, hit.HitEntity) &&
+                                               !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection) &&
                                                 (hit.HitEntity == target ||
                                                  CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true));
 

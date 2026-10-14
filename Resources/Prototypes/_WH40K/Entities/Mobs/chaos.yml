@@ -1,0 +1,329 @@
+- type: entity
+  id: BaseMobWH40KChaos
+  parent: SimpleSpaceMobBase
+  abstract: true
+  suffix: WH40K, Chaos
+  components:
+  - type: Wh40kChaosCombatant
+  - type: NpcFactionMember
+    factions: [Heretics]
+  - type: HTN
+    rootTask:
+      task: Wh40kChaosRangedCompound
+    blackboard:
+      MeleeRange: !type:Single
+        2
+      MeleeMissChance: !type:Single
+        0
+      NavClimb: !type:Bool
+        true
+      NavInteract: !type:Bool
+        true
+      NavPry: !type:Bool
+        true
+      NavSmash: !type:Bool
+        true
+  - type: Prying
+    pryPowered: true
+    instaPry: false
+    speedModifier: 3
+  - type: RotationVisuals
+    defaultRotation: 90
+    horizontalRotation: 90
+  - type: Sprite
+    drawdepth: Mobs
+    layers:
+    - state: base
+      map: ["enum.DamageStateVisualLayers.Base"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.35
+        density: 100
+        mask: [MobMask]
+        layer: [MobLayer]
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      160: Critical
+      200: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 3.5
+  - type: SlowOnDamage
+    speedModifierThresholds: {}
+  - type: Wh40kInnateArmor
+    armorRating: 75
+  - type: Wh40kChaosTactics
+  - type: NPCRetaliation
+    attackMemoryLength: 8
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    angle: 0
+    range: 2
+    attackRate: 1
+    animation: WeaponArcPunch
+    damage:
+      types:
+        Blunt: 12
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: base
+      Critical:
+        Base: base
+      Dead:
+        Base: base
+  - type: Butcherable
+    spawned: []
+  - type: Destructible
+    thresholds: []
+
+- type: entity
+  id: BaseMobWH40KChaosRanged
+  parent: BaseMobWH40KChaos
+  abstract: true
+  components:
+  - type: HTN
+    rootTask:
+      task: Wh40kChaosRangedCompound
+
+- type: entity
+  id: BaseMobWH40KChaosLasgun
+  parent: BaseMobWH40KChaosRanged
+  abstract: true
+  components:
+  - type: Gun
+    fireRate: 1
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes: [SemiAuto]
+    soundGunshot: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedMediumLaserLasgun
+    fireCost: 100
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 500
+
+- type: entity
+  id: MobWH40KChaosBomber
+  parent: BaseMobWH40KChaosRanged
+  name: chaos bomber
+  description: A heretic who lobs fragmentation grenades and fights hand to hand at close range.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/bomber.rsi
+  - type: Wh40kChaosThrower
+    prototype: WH40KChaosFragGrenade
+    minRange: 5
+    range: 8
+    cooldown: 6
+
+- type: entity
+  id: MobWH40KChaosBruiser
+  parent: BaseMobWH40KChaos
+  name: chaos bruiser
+  description: An armored heretic who closes in and batters enemies with a brutal melee weapon.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/bruiser.rsi
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      250: Dead
+  - type: MeleeWeapon
+    attackRate: 1.2
+    damage:
+      types:
+        Blunt: 22
+
+- type: entity
+  id: MobWH40KChaosFlamer
+  parent: BaseMobWH40KChaosRanged
+  name: chaos flamer
+  description: A heretic closing in to spray burning promethium at short range, with a melee weapon for enemies within reach.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/flamer.rsi
+  - type: Gun
+    fireRate: 3
+    projectileSpeed: 16
+    useKey: false
+    selectedMode: FullAuto
+    availableModes: [FullAuto]
+    soundGunshot: /Audio/_WH40K/Weapons/flamethrower.ogg
+  - type: BasicEntityAmmoProvider
+    proto: WH40KChaosFlame
+    capacity: 12
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 0.2
+    rechargeSound: null
+  - type: Wh40kChaosTactics
+    rangedRange: 3.5
+  - type: HTN
+    blackboard:
+      VisionRadius: !type:Single
+        10
+      AggroVisionRadius: !type:Single
+        10
+      RangedRange: !type:Single
+        3.5
+
+- type: entity
+  id: MobWH40KChaosGunner
+  parent: BaseMobWH40KChaosLasgun
+  name: chaos gunner
+  description: A heavily armored heretic laying down rapid laser fire.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/gunner.rsi
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      240: Critical
+      300: Dead
+  - type: Wh40kInnateArmor
+    armorRating: 150
+  - type: Gun
+    fireRate: 5
+    selectedMode: FullAuto
+    availableModes: [FullAuto]
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KRedMediumLaserVoss
+  - type: Wh40kChaosTactics
+    burstDuration: 2
+    burstPause: 1.5
+
+- type: entity
+  id: MobWH40KChaosMauler
+  parent: BaseMobWH40KChaos
+  name: chaos mauler
+  description: A slow, heavily armored executioner whose melee strikes deal devastating damage.
+  components:
+  - type: Wh40kChaosTactics
+    meleeWindup: 0.5
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/mauler.rsi
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      360: Critical
+      450: Dead
+  - type: Wh40kInnateArmor
+    armorRating: 250
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.2
+    baseSprintSpeed: 2.8
+  - type: MeleeWeapon
+    attackRate: 0.8
+    damage:
+      types:
+        Slash: 45
+        Blunt: 15
+
+- type: entity
+  id: MobWH40KChaosRager
+  parent: BaseMobWH40KChaos
+  name: chaos rager
+  description: A fast berserker resistant to ordinary blades and bullets, but vulnerable to powered chain weapons and armor piercing attacks.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/rager.rsi
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      256: Critical
+      320: Dead
+  - type: Wh40kInnateArmor
+    armorRating: 300
+    chainWeaponWeakness: true
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.5
+    baseSprintSpeed: 5.5
+  - type: MeleeWeapon
+    attackRate: 3
+    damage:
+      types:
+        Slash: 16
+        Blunt: 4
+
+- type: entity
+  id: MobWH40KChaosShooter
+  parent: BaseMobWH40KChaosLasgun
+  name: chaos shooter
+  description: A heretic armed with a lasgun and a melee weapon for close quarters.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/shooter.rsi
+
+- type: entity
+  id: MobWH40KChaosShotgunner
+  parent: BaseMobWH40KChaosRanged
+  name: chaos shotgunner
+  description: A heretic firing volleys of shotgun pellets, switching to melee at close range.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/shotgunner.rsi
+  - type: Gun
+    fireRate: 0.8
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes: [SemiAuto]
+    soundGunshot: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
+  - type: BasicEntityAmmoProvider
+    proto: WH40KChaosShotgunSpread
+    capacity: 4
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 1
+    rechargeSound: null
+  - type: Wh40kChaosTactics
+    rangedRange: 7
+    friendlyFireSpread: 14
+
+- type: entity
+  id: MobWH40KChaosStalker
+  parent: BaseMobWH40KChaosLasgun
+  name: chaos stalker
+  description: A lightly armored skirmisher dangerous with both lasgun and blade, but less durable than other heretics.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/stalker.rsi
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Critical
+      150: Dead
+  - type: Wh40kInnateArmor
+    armorRating: 50
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 4.5
+  - type: Gun
+    fireRate: 1.2
+  - type: Wh40kChaosTactics
+    retreatRange: 4.5
+  - type: MeleeWeapon
+    attackRate: 1.5
+    damage:
+      types:
+        Slash: 20
+
+- type: entity
+  id: MobWH40KChaosTrapper
+  parent: BaseMobWH40KChaosRanged
+  name: chaos trapper
+  description: A heretic throwing bolas that exhaust and restrain victims, with a melee weapon for close quarters.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/Chaos/trapper.rsi
+  - type: Wh40kChaosThrower
+    prototype: WH40KChaosBola
+    range: 7
+    cooldown: 8

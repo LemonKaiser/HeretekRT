@@ -3,6 +3,7 @@
   id: ChainswordEvestiator
   suffix: WH40K
   components:
+  - type: WH40KChainsword
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/chainsword_evestiator/long.rsi
     layers:

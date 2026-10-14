@@ -1,4 +1,6 @@
 using Content.Shared.Durability.Components;
+using Content.Shared.Popups;
+using Content.Shared.Weapons.Ranged.Events;
 
 namespace Content.Shared.Durability.Systems;
 
@@ -7,6 +9,24 @@ namespace Content.Shared.Durability.Systems;
 /// </summary>
 public abstract partial class SharedItemDurabilitySystem : EntitySystem
 {
+    [Dependency] protected readonly SharedPopupSystem Popup = default!;
+
+    public override void Initialize()
+    {
+        base.Initialize();
+
+        SubscribeLocalEvent<ItemDurabilityComponent, ShotAttemptedEvent>(OnShotAttempted);
+    }
+
+    private void OnShotAttempted(Entity<ItemDurabilityComponent> ent, ref ShotAttemptedEvent args)
+    {
+        if (IsUsable(ent.Owner, ent.Comp))
+            return;
+
+        args.Cancel();
+        Popup.PopupClient(Loc.GetString("durability-item-broken"), ent.Owner, args.User);
+    }
+
     public bool IsUsable(EntityUid uid, ItemDurabilityComponent? component = null)
     {
         if (!Resolve(uid, ref component, false))
