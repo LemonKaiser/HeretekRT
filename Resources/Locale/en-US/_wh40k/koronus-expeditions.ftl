@@ -1,5 +1,8 @@
 koronus-sector-dossier-overview = Koronus Expanse expeditions
-koronus-sector-dossier-help = Select a system on the map. Green routes are stable, yellow routes dangerous, red routes unstable. Available tasks appear below; press a title to locate its system.
+koronus-sector-dossier-title = Sector dossier
+koronus-sector-dossier-open = SECTOR DOSSIER
+koronus-sector-dossier-all-systems = Tasks in all systems
+koronus-sector-dossier-help = Select a system on the map. Green routes are stable, yellow routes dangerous, red routes unstable. Available tasks appear below; press "Show system" to locate one on the map.
 koronus-sector-dossier-unexplored = This system is not yet open for expeditions.
 koronus-sector-dossier-travelling = The ship is in warp. Monitor the Gellar field and crew alerts.
 koronus-sector-dossier-route = Route: { $risk }. Incident chance: { $chance }%. Travel time: ×{ $multiplier }.

@@ -28,10 +28,10 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     [Dependency] private IEntityNetworkManager _net = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private ISharedPlayerManager _players = default!;
-    [UISystemDependency] private readonly AudioSystem _audio = default!;
-    [UISystemDependency] private readonly ContentAudioSystem _contentAudio = default!;
-    [UISystemDependency] private readonly Wh40kMusicOverrideSystem _music = default!;
-    [UISystemDependency] private readonly DialoguePreviewSystem _preview = default!;
+    [UISystemDependency] private readonly AudioSystem? _audio = default!;
+    [UISystemDependency] private readonly ContentAudioSystem? _contentAudio = default!;
+    [UISystemDependency] private readonly Wh40kMusicOverrideSystem? _music = default!;
+    [UISystemDependency] private readonly DialoguePreviewSystem? _preview = default!;
 
     private DialogueOverlay? _overlay;
     private int? _sessionId;
@@ -190,9 +190,9 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             ResetDialogueState();
 
         if (_duckBackgroundMusic && !ev.Scene.DuckBackgroundMusic)
-            _contentAudio.PopMusicDuck();
+            _contentAudio?.PopMusicDuck();
         else if (!_duckBackgroundMusic && ev.Scene.DuckBackgroundMusic)
-            _contentAudio.PushMusicDuck(ev.Scene.BackgroundMusicDuckGain);
+            _contentAudio?.PushMusicDuck(ev.Scene.BackgroundMusicDuckGain);
 
         _sessionId = ev.SessionId;
         _defaultTypewriterCps = ev.TypewriterCps;
@@ -425,7 +425,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         _pendingScene = null;
         _pendingLine = null;
         if (_duckBackgroundMusic)
-            _contentAudio.PopMusicDuck();
+            _contentAudio?.PopMusicDuck();
 
         _duckBackgroundMusic = false;
         _backgroundMusicDuckGain = 0.08f;
@@ -481,7 +481,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void PlayLineSound(DialogueSoundCueData? cue)
     {
-        if (cue == null)
+        if (cue == null || _audio == null)
             return;
 
         _audio.PlayGlobal(cue.Sound, Filter.Local(), false, cue.Audio);
@@ -490,7 +490,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private float? PlayVoiceTrack(DialogueSoundCueData? cue)
     {
-        if (cue == null)
+        if (cue == null || _audio == null)
             return null;
 
         var playResult = _audio.PlayGlobal(cue.Sound, Filter.Local(), false, cue.Audio);
@@ -504,7 +504,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void ApplyMusicCue(DialogueMusicCueData? cue)
     {
-        if (cue == null)
+        if (cue == null || _music == null)
             return;
 
         if (cue.Stop || cue.Sound == null || ResolvedSoundSpecifier.IsNullOrEmpty(cue.Sound))
@@ -523,10 +523,10 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void StopDialogueMusic(bool immediate, float? fadeOut = null)
     {
-        _music.Release(this, immediate, fadeOut);
+        _music?.Release(this, immediate, fadeOut);
         _currentMusic = null;
         _musicLineDuckRemaining = 0f;
-        _music.SetVoiceDuck(this, false);
+        _music?.SetVoiceDuck(this, false);
     }
 
     private void StopVoiceTrack()
@@ -534,13 +534,16 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         if (_voiceStream == null)
             return;
 
-        _audio.Stop(_voiceStream);
+        _audio?.Stop(_voiceStream);
         _voiceStream = null;
         ApplyDialogueMusicMix();
     }
 
     private void DuckDialogueMusicForLine(ResolvedSoundSpecifier cue)
     {
+        if (_audio == null)
+            return;
+
         var duration = MathF.Max((float) _audio.GetAudioLength(cue).TotalSeconds, 0.05f);
         _musicLineDuckRemaining = MathF.Max(_musicLineDuckRemaining, duration + DialogueMusicSidechainTail);
         ApplyDialogueMusicMix();
@@ -562,7 +565,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void ApplyDialogueMusicMix()
     {
-        _music.SetVoiceDuck(this, _musicLineDuckRemaining > 0f || _voiceStream != null);
+        _music?.SetVoiceDuck(this, _musicLineDuckRemaining > 0f || _voiceStream != null);
     }
 
     private void UpdateVoiceTrackState()
@@ -607,7 +610,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
         if (actor.PortraitPrototype is { } portrait)
         {
-            var staticPreview = _preview.TryCreatePrototypePreview(portrait);
+            var staticPreview = _preview?.TryCreatePrototypePreview(portrait);
             if (staticPreview != null)
             {
                 _actorPreviewEntities.Add(staticPreview.Value);
@@ -623,7 +626,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         if (resolved == EntityUid.Invalid || !EntityManager.EntityExists(resolved))
             return null;
 
-        var preview = _preview.TryCreatePreview(resolved);
+        var preview = _preview?.TryCreatePreview(resolved);
         if (preview != null)
             _actorPreviewEntities.Add(preview.Value);
 
@@ -635,7 +638,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         foreach (var preview in _actorPreviewEntities)
         {
             EntityUid? entity = preview;
-            _preview.DeletePreview(ref entity);
+            _preview?.DeletePreview(ref entity);
         }
 
         _actorPreviewEntities.Clear();

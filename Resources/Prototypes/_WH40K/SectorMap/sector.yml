@@ -29,8 +29,6 @@
         ambientMusicPrototype: FootfallMusic
       - type: VesselInfo
         description: "Footfall: an Imperial void port in the Cauldron, a wealthy waystation and rare island of stability before the uncharted Koronus Expanse."
-      - type: SpawnPoint
-        spawn_type: LateJoin
       components:
       - type: StationNameSetup
         mapNameTemplate: 'Футфол'

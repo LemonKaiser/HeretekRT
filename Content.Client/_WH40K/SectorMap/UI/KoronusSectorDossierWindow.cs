@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client.UserInterface.Controls;
 using Content.Shared._WH40K.Activities;
 using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
@@ -8,52 +9,59 @@ using Robust.Shared.Maths;
 
 namespace Content.Client._WH40K.SectorMap.UI;
 
-public sealed class KoronusSectorDossierPanel : PanelContainer
+public sealed class KoronusSectorDossierWindow : FancyWindow
 {
     private readonly BoxContainer _content = new() { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 10 };
-    private readonly Label _title = new() { FontColorOverride = Color.FromHex("#E4CE98"), ClipText = true };
+    private readonly RichTextLabel _title = new();
     private readonly RichTextLabel _navigation = new();
     private readonly BoxContainer _activities = new() { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 10 };
-    private readonly Button _jump = new();
     private string _signature = string.Empty;
-    private string? _destination;
 
-    public event Action<string>? JumpRequested;
     public event Action<string>? SystemSelected;
+    public event Action? OverviewRequested;
 
-    public KoronusSectorDossierPanel()
+    public KoronusSectorDossierWindow()
     {
-        PanelOverride = new StyleBoxFlat
+        Title = Loc.GetString("koronus-sector-dossier-title");
+        MinSize = new(340, 280);
+        SetSize = new(520, 580);
+        var panel = new PanelContainer
         {
-            BackgroundColor = Color.FromHex("#111510").WithAlpha(0.97f),
-            BorderColor = Color.FromHex("#8A7956"),
-            BorderThickness = new Thickness(1),
-            ContentMarginLeftOverride = 14,
-            ContentMarginRightOverride = 14,
-            ContentMarginTopOverride = 12,
-            ContentMarginBottomOverride = 12,
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.FromHex("#111510").WithAlpha(0.97f),
+                BorderColor = Color.FromHex("#8A7956"),
+                BorderThickness = new Thickness(1),
+                ContentMarginLeftOverride = 14,
+                ContentMarginRightOverride = 14,
+                ContentMarginTopOverride = 12,
+                ContentMarginBottomOverride = 12,
+            },
         };
-        AddChild(_content);
+        ContentsContainer.AddChild(panel);
+        var layout = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 10 };
+        panel.AddChild(layout);
+        var overview = new Button { Text = Loc.GetString("koronus-sector-dossier-all-systems") };
+        overview.OnPressed += _ => OverviewRequested?.Invoke();
+        layout.AddChild(overview);
+        var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false };
+        scroll.AddChild(_content);
+        layout.AddChild(scroll);
         _content.AddChild(_title);
         _content.AddChild(_navigation);
-        var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true };
-        scroll.AddChild(_activities);
-        _content.AddChild(scroll);
-        _content.AddChild(_jump);
-        _jump.OnPressed += _ =>
-        {
-            if (_destination != null && !_jump.Disabled)
-                JumpRequested?.Invoke(_destination);
-        };
+        _content.AddChild(_activities);
     }
 
     public void UpdateState(KoronusSectorInterfaceState state, string? selectedSystem, TimeSpan now)
     {
-        Visible = state.Available;
-        if (!Visible)
+        if (!state.Available)
+        {
+            Close();
             return;
+        }
         var selected = state.Systems.FirstOrDefault(system => system.Id == selectedSystem);
-        var signature = $"{selectedSystem}:{state.CurrentSystem}:{state.CanJump}:{state.WarpTravel?.Incident}:" +
+        var signature = $"{selectedSystem}:{selected?.Name}:{selected?.Enabled}:{selected?.Current}:{state.CurrentSystem}:{state.CanJump}:" +
+                        $"{state.WarpTravel?.DestinationSystem}:{state.WarpTravel?.Incident}:" +
                         string.Join(';', state.Routes.Select(route => $"{route.From}:{route.To}:{route.RouteClass}:{route.TravelTimeMultiplier}")) +
                         string.Join(';', state.ActivityDossiers.Select(activity =>
                             $"{activity.InstanceId}:{activity.State}:{Math.Ceiling((activity.ExpiresAt - now).TotalMinutes)}:{activity.LocalSignalOffset}"));
@@ -61,11 +69,7 @@ public sealed class KoronusSectorDossierPanel : PanelContainer
             return;
         _signature = signature;
 
-        _title.Text = selected?.Name ?? Loc.GetString("koronus-sector-dossier-overview");
-        _destination = selected?.Id;
-        _jump.Visible = selected != null && state.WarpTravel == null;
-        _jump.Disabled = selected == null || !selected.Reachable || !state.CanJump;
-        _jump.Text = Loc.GetString(_jump.Disabled ? "koronus-sector-card-warp-unavailable" : "koronus-sector-card-warp");
+        _title.SetMessage(selected?.Name ?? Loc.GetString("koronus-sector-dossier-overview"), Color.FromHex("#E4CE98"));
 
         var route = selected == null ? null : state.Routes.FirstOrDefault(candidate => candidate.Enabled &&
             ((candidate.From == state.CurrentSystem && candidate.To == selected.Id) ||
@@ -152,7 +156,21 @@ public sealed class KoronusSectorDossierPanel : PanelContainer
             var locate = new Button { Text = Loc.GetString("koronus-sector-dossier-locate"), HorizontalExpand = true };
             locate.OnPressed += _ => SystemSelected?.Invoke(activity.SystemId);
             entry.AddChild(locate);
-            _activities.AddChild(entry);
+            var card = new PanelContainer
+            {
+                PanelOverride = new StyleBoxFlat
+                {
+                    BackgroundColor = Color.FromHex("#1C241C"),
+                    BorderColor = Color.FromHex("#405640"),
+                    BorderThickness = new Thickness(1),
+                    ContentMarginLeftOverride = 10,
+                    ContentMarginRightOverride = 10,
+                    ContentMarginTopOverride = 8,
+                    ContentMarginBottomOverride = 8,
+                },
+            };
+            card.AddChild(entry);
+            _activities.AddChild(card);
         }
         var journal = state.ActivityDossiers.Where(activity => activity.State == KoronusActivityState.Archived &&
             (selected == null || activity.SystemId == selected.Id)).Take(3).ToArray();

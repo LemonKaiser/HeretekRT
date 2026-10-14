@@ -1,5 +1,8 @@
 koronus-sector-dossier-overview = Экспедиции Пространства Коронус
-koronus-sector-dossier-help = Выберите систему на карте. Зелёные маршруты спокойные, жёлтые опасные, красные нестабильные. Ниже — доступные задачи; нажмите название, чтобы найти их систему.
+koronus-sector-dossier-title = Досье сектора
+koronus-sector-dossier-open = ДОСЬЕ СЕКТОРА
+koronus-sector-dossier-all-systems = Задачи во всех системах
+koronus-sector-dossier-help = Выберите систему на карте. Зелёные маршруты спокойные, жёлтые опасные, красные нестабильные. Ниже — доступные задачи; нажмите «Показать систему», чтобы найти её на карте.
 koronus-sector-dossier-unexplored = Эта система ещё не открыта для экспедиций.
 koronus-sector-dossier-travelling = Корабль в варпе. Следите за состоянием поля Геллера и сообщениями экипажу.
 koronus-sector-dossier-route = Маршрут: { $risk }. Вероятность происшествия: { $chance }%. Время перелёта: ×{ $multiplier }.
