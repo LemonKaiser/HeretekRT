@@ -1,5 +1,6 @@
 wh40k-boss-default-name = Неизвестная угроза
 wh40k-boss-hive-ship-name = Корабль-улей
+wh40k-boss-hive-ship-spore-mine-name = Споровая мина
 wh40k-boss-health = { $current } / { $max }
 wh40k-boss-distance = { $distance } м
 

@@ -36,6 +36,9 @@
   suffix: WH40K, Dialogue, Casino owner
   save: false
   components:
+  - type: NpcFactionMember
+    factions:
+    - Passive
   - type: Wh40kNpcProtection
   - type: DialogueDisplayName
     name: Физзо

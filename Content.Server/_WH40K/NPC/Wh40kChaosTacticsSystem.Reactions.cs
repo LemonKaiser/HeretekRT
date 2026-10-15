@@ -20,8 +20,8 @@ public sealed partial class Wh40kChaosTacticsSystem
     private const float AlertVisionRange = 24f;
     private const float ShotDangerWidth = 1.5f;
     private static readonly TimeSpan HearingCooldown = TimeSpan.FromSeconds(0.25);
-    private static readonly TimeSpan DodgeDuration = TimeSpan.FromSeconds(0.45);
-    private static readonly TimeSpan DodgeCooldown = TimeSpan.FromSeconds(0.9);
+    private static readonly TimeSpan DodgeDuration = TimeSpan.FromSeconds(0.75);
+    private static readonly TimeSpan DodgeCooldown = TimeSpan.FromSeconds(1.2);
 
     [Dependency] private NPCRetaliationSystem _retaliation = default!;
     [Dependency] private NPCSystem _npcs = default!;
@@ -61,7 +61,7 @@ public sealed partial class Wh40kChaosTacticsSystem
         _nextHeardShot[gun] = _timing.CurTime + HearingCooldown;
 
         var attacker = args.User;
-        if (Deleted(attacker) || !TryComp<MobStateComponent>(attacker, out var state) || state.CurrentState != MobState.Alive)
+        if (!IsCombatTarget(attacker))
             return;
 
         var origin = _transform.GetMapCoordinates(gun);
@@ -99,7 +99,7 @@ public sealed partial class Wh40kChaosTacticsSystem
     {
         if (!_npcs.Enabled || Paused(uid) || Deleted(attacker) ||
             !TryComp<MobStateComponent>(uid, out var state) || state.CurrentState != MobState.Alive ||
-            !TryComp<MobStateComponent>(attacker, out var attackerState) || attackerState.CurrentState != MobState.Alive ||
+            !IsCombatTarget(attacker) || _factions.IsEntityFriendly(uid, attacker) ||
             !TryComp<HTNComponent>(uid, out var htn) || !htn.Enabled ||
             TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind ||
             !TryComp<NPCRetaliationComponent>(uid, out var retaliation))
@@ -107,8 +107,11 @@ public sealed partial class Wh40kChaosTacticsSystem
 
         var attackerTransform = Transform(attacker);
         if (attackerTransform.MapID != Transform(uid).MapID || attackerTransform.MapUid == null ||
-            !attacked && comp.TargetVisible && comp.Target != null && comp.Target != attacker ||
-            !_retaliation.TryRetaliate((uid, retaliation), attacker))
+            !attacked && comp.TargetVisible && comp.Target != null && comp.Target != attacker)
+            return false;
+
+        // Native retaliation only accepts mobs. Machines use the existing local threat memory without a faction override.
+        if (HasComp<MobStateComponent>(attacker) && !_retaliation.TryRetaliate((uid, retaliation), attacker))
             return false;
 
         comp.ThreatTarget = attacker;
@@ -124,13 +127,11 @@ public sealed partial class Wh40kChaosTacticsSystem
             comp.LastSeenAt = comp.ThreatObservedAt;
         }
 
-        // The current combat operator reads this on its next update; an idle plan is replaced by HTN.
-        var newTarget = !htn.Blackboard.TryGetValue<EntityUid>("Target", out var current, EntityManager) || current != attacker;
-        htn.Blackboard.SetValue("Target", attacker);
-        htn.Blackboard.SetValue("TargetCoordinates", comp.ThreatPosition.Value);
+        // Let combat compare the threat with nearby enemies instead of overwriting an ongoing melee fight.
+        comp.NextTargetCheck = TimeSpan.Zero;
         if (!_npcs.IsAwake(uid, htn))
             _npcs.WakeNPC(uid, htn);
-        if (newTarget)
+        if (comp.Target != attacker)
         {
             comp.NextSightCheck = TimeSpan.Zero;
             _htn.Replan(htn);
@@ -142,15 +143,39 @@ public sealed partial class Wh40kChaosTacticsSystem
     {
         if (_timing.CurTime < comp.NextDodge || !_blocker.CanMove(uid))
             return;
+        comp.NextCoverSearch = _timing.CurTime;
+        if (comp.CoverPosition != null)
+        {
+            // Give native aiming time to return fire, but never stay exposed indefinitely under suppression.
+            if (comp.CoverPeeking && _timing.CurTime - comp.CoverPeekStartedAt < TimeSpan.FromSeconds(1.4) &&
+                (comp.CoverFirstFireAt == TimeSpan.Zero ||
+                 TryComp<GunComponent>(uid, out var gun) && gun.FireRateModified >= 2f &&
+                 _timing.CurTime - comp.CoverFirstFireAt < TimeSpan.FromSeconds(0.8)))
+            {
+                comp.NextDodge = _timing.CurTime + TimeSpan.FromSeconds(0.2);
+                return;
+            }
+            ReturnToCover(comp);
+            comp.NextDodge = _timing.CurTime + DodgeCooldown;
+            return;
+        }
         var incoming = _transform.GetMapCoordinates(uid).Position - _transform.GetMapCoordinates(attacker).Position;
         if (incoming.LengthSquared() < 0.01f)
             return;
         incoming = Vector2.Normalize(incoming);
-        if (comp.NextDodge == TimeSpan.Zero)
+        var side = new Vector2(-incoming.Y, incoming.X);
+        var radius = CompOrNull<NPCSteeringComponent>(uid)?.Radius ?? 0.35f;
+        var leftClear = HasClearance(uid, side, radius);
+        var rightClear = HasClearance(uid, -side, radius);
+        if (!leftClear && !rightClear)
+            return;
+        if (leftClear != rightClear)
+            comp.DodgeLeft = leftClear;
+        else if (comp.DodgeShooter != attacker || _timing.CurTime >= comp.DodgeSideUntil)
             comp.DodgeLeft = (uid.GetHashCode() & 1) == 0;
-        else
-            comp.DodgeLeft = !comp.DodgeLeft;
-        comp.DodgeDirection = new Vector2(-incoming.Y, incoming.X) * (comp.DodgeLeft ? 1f : -1f);
+        comp.DodgeShooter = attacker;
+        comp.DodgeSideUntil = _timing.CurTime + TimeSpan.FromSeconds(3);
+        comp.DodgeDirection = side * (comp.DodgeLeft ? 1f : -1f);
         comp.DodgeUntil = _timing.CurTime + DodgeDuration;
         comp.NextDodge = _timing.CurTime + DodgeCooldown;
         comp.NextDirectionUpdate = TimeSpan.Zero;
@@ -164,10 +189,8 @@ public sealed partial class Wh40kChaosTacticsSystem
     public bool TryGetThreatTarget(EntityUid uid, Wh40kChaosTacticsComponent comp, out EntityUid target)
     {
         target = EntityUid.Invalid;
-        if (comp.ThreatTarget is not { } attacker || !IsAlertedTo(comp, attacker) || Deleted(attacker) ||
-            comp.IgnoredTarget == attacker && _timing.CurTime < comp.IgnoreUntil ||
-            !TryComp<MobStateComponent>(attacker, out var state) || state.CurrentState != MobState.Alive ||
-            Transform(attacker).MapID != Transform(uid).MapID)
+        if (comp.ThreatTarget is not { } attacker || !IsAlertedTo(comp, attacker) ||
+            !CanFightTarget(uid, attacker, comp))
             return false;
         target = attacker;
         return true;

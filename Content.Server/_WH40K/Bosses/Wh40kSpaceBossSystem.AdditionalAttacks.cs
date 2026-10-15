@@ -17,6 +17,7 @@ using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Events;
 
 namespace Content.Server._WH40K.Bosses;
@@ -193,6 +194,12 @@ public sealed partial class Wh40kSpaceBossSystem
             !TryComp<MapGridComponent>(vessel, out var grid) || IsProtectedTarget(vessel))
             return;
 
+        // Damage alone does not guarantee a breach: a surviving hull must not admit boarders.
+        if (!_maps.TryGetTileRef(vessel, grid, impact, out var breach) ||
+            _turf.IsTileBlocked(breach, CollisionGroup.MobMask))
+            return;
+
+        var breachPosition = _transform.ToMapCoordinates(impact);
         var count = Math.Min(component.BoardingCount, component.MaxBoarders - CountSpawned(uid, mines: false));
         for (var i = 0; i < count; i++)
         {
@@ -204,6 +211,13 @@ public sealed partial class Wh40kSpaceBossSystem
                 var centre = _turf.GetTileCenter(tile);
                 if (Vector2.DistanceSquared(centre.Position, impact.Position) > component.BoardingRadius * component.BoardingRadius ||
                     _turf.IsTileBlocked(tile, CollisionGroup.MobMask))
+                    continue;
+
+                var offset = _transform.ToMapCoordinates(centre).Position - breachPosition.Position;
+                if (offset.LengthSquared() > 0.0001f &&
+                    _physics.IntersectRay(breachPosition.MapId,
+                        new CollisionRay(breachPosition.Position, offset.Normalized(), (int) CollisionGroup.MobMask),
+                        offset.Length(), uid, false).Any())
                     continue;
 
                 var creature = SpawnAtPosition(prototype, centre);
@@ -221,7 +235,7 @@ public sealed partial class Wh40kSpaceBossSystem
 
         component.NextSpore = _timing.CurTime + component.SporeInterval;
         if (_physics.GetMapLinearVelocity(uid, xform: xform).LengthSquared() < 25 ||
-            CountSpawned(uid, mines: true) >= Math.Min(50, component.MaxSporeMines))
+            CountSpawned(uid, mines: true) >= Math.Min(100, component.MaxSporeMines))
             return;
 
         var origin = _transform.GetWorldPosition(xform);

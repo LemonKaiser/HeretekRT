@@ -51,6 +51,8 @@ public sealed partial class Wh40kSpaceBossSystem
                 origin: uid, tool: uid, armorPenetration: weapon.ArmorPenetration,
                 partMultiplier: weapon.ClickPartDamageMultiplier, impactCoordinates: point);
         }
-        QueueBoardingWave(uid, component, primary.GridUid, point);
+        // Boarding follows a hull breach, not a passenger bitten through an open deck.
+        if (!HasComp<MobStateComponent>(args.Target))
+            QueueBoardingWave(uid, component, primary.GridUid, point);
     }
 }

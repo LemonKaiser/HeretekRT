@@ -115,7 +115,7 @@
   id: MobWH40KChaosBomber
   parent: BaseMobWH40KChaosRanged
   name: chaos bomber
-  description: A heretic who lobs fragmentation grenades and fights hand to hand at close range.
+  description: A heretic who lobs fragmentation grenades and uses a combat knife at close range.
   components:
   - type: Sprite
     sprite: _WH40K/Mobs/Chaos/bomber.rsi
@@ -123,7 +123,15 @@
     prototype: WH40KChaosFragGrenade
     minRange: 5
     range: 8
-    cooldown: 6
+    cooldown: 5
+  - type: MeleeWeapon
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+    damage:
+      types:
+        Blunt: 0
+        Slash: 22
 
 - type: entity
   id: MobWH40KChaosBruiser
@@ -167,20 +175,12 @@
     rechargeSound: null
   - type: Wh40kChaosTactics
     rangedRange: 3.5
-  - type: HTN
-    blackboard:
-      VisionRadius: !type:Single
-        10
-      AggroVisionRadius: !type:Single
-        10
-      RangedRange: !type:Single
-        3.5
 
 - type: entity
   id: MobWH40KChaosGunner
   parent: BaseMobWH40KChaosLasgun
   name: chaos gunner
-  description: A heavily armored heretic laying down rapid laser fire.
+  description: A heavily armored heretic laying down rapid laser fire and using a combat knife at close range.
   components:
   - type: Sprite
     sprite: _WH40K/Mobs/Chaos/gunner.rsi
@@ -200,6 +200,14 @@
   - type: Wh40kChaosTactics
     burstDuration: 2
     burstPause: 1.5
+  - type: MeleeWeapon
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+    damage:
+      types:
+        Blunt: 0
+        Slash: 22
 
 - type: entity
   id: MobWH40KChaosMauler
@@ -258,16 +266,24 @@
   id: MobWH40KChaosShooter
   parent: BaseMobWH40KChaosLasgun
   name: chaos shooter
-  description: A heretic armed with a lasgun and a melee weapon for close quarters.
+  description: A heretic armed with a lasgun and a combat knife for close quarters.
   components:
   - type: Sprite
     sprite: _WH40K/Mobs/Chaos/shooter.rsi
+  - type: MeleeWeapon
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+    damage:
+      types:
+        Blunt: 0
+        Slash: 22
 
 - type: entity
   id: MobWH40KChaosShotgunner
   parent: BaseMobWH40KChaosRanged
   name: chaos shotgunner
-  description: A heretic firing volleys of shotgun pellets, switching to melee at close range.
+  description: A heretic firing volleys of shotgun pellets, switching to a combat knife at close range.
   components:
   - type: Sprite
     sprite: _WH40K/Mobs/Chaos/shotgunner.rsi
@@ -286,6 +302,14 @@
   - type: Wh40kChaosTactics
     rangedRange: 7
     friendlyFireSpread: 14
+  - type: MeleeWeapon
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+    damage:
+      types:
+        Blunt: 0
+        Slash: 22
 
 - type: entity
   id: MobWH40KChaosStalker
@@ -311,6 +335,9 @@
     retreatRange: 4.5
   - type: MeleeWeapon
     attackRate: 1.5
+    animation: WeaponArcSlash
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
     damage:
       types:
         Slash: 20

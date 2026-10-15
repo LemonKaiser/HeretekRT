@@ -10,6 +10,7 @@ using Content.Server.NPC.Systems;
 using Content.Shared.ActionBlocker;
 using Content.Shared.CombatMode;
 using Content.Shared.Explosion.Components;
+using Content.Shared.Ensnaring.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -53,8 +54,18 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
         var tactics = _entities.GetComponent<Wh40kChaosTacticsComponent>(owner);
         var safety = _entities.System<Wh40kChaosTacticsSystem>();
-        if (safety.TryGetThreatTarget(owner, tactics, out var attacker))
-            blackboard.SetValue(TargetKey, attacker);
+        if (_timing.CurTime >= tactics.NextTargetCheck ||
+            !blackboard.TryGetValue<EntityUid>(TargetKey, out var previous, _entities) ||
+            !safety.CanFightTarget(owner, previous, tactics))
+        {
+            tactics.NextTargetCheck = _timing.CurTime + TimeSpan.FromSeconds(0.5);
+            var selected = safety.SelectCombatTarget(blackboard, tactics, MeleeRange, TargetKey);
+            if (!selected.IsValid())
+                return HTNOperatorStatus.Finished;
+            blackboard.SetValue(TargetKey, selected);
+            blackboard.SetValue("TargetCoordinates", new EntityCoordinates(selected, Vector2.Zero));
+            safety.AssignTarget(owner, selected, tactics);
+        }
         if (!blackboard.TryGetValue<EntityUid>(TargetKey, out var target, _entities) ||
             _entities.Deleted(target) ||
             !_entities.TryGetComponent<TransformComponent>(target, out var targetXform))
@@ -74,13 +85,37 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         tactics.EvadingWithoutTarget = false;
         var visible = _entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, target,
             distance + 0.1f, CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
+        if (safety.TryUseCover(owner, target, tactics, distance, out var canShoot))
+        {
+            _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);
+            // Native aiming can track the target during the short exit; the shot guard still requires arrival.
+            if (canShoot || tactics.CoverPeeking)
+            {
+                var ranged = _entities.EnsureComponent<NPCRangedCombatComponent>(owner);
+                ranged.Target = target;
+                if (canShoot)
+                    safety.CheckShooting(owner, target, tactics, visible, distance);
+                else
+                    tactics.SilentSince = _timing.CurTime;
+            }
+            else
+            {
+                _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
+                tactics.SilentSince = _timing.CurTime;
+            }
+            _entities.System<SharedCombatModeSystem>().SetInCombatMode(owner, true);
+            return HTNOperatorStatus.Continuing;
+        }
         if (!safety.RetryPath(owner, target, tactics, visible))
             return HTNOperatorStatus.Failed;
         if (!tactics.TargetVisible)
         {
             _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
             _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);
-            safety.CancelThrowWarning(owner);
+            if (_entities.TryGetComponent<Wh40kChaosThrowerComponent>(owner, out var hiddenThrower))
+                TryThrow(owner, target, hiddenThrower);
+            else
+                safety.CancelThrowWarning(owner);
             tactics.SilentSince = _timing.CurTime;
             if (tactics.LastSeenPosition is not { } remembered ||
                 !remembered.IsValid(_entities) ||
@@ -101,12 +136,14 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         }
         _entities.TryGetComponent<Wh40kChaosThrowerComponent>(owner, out var thrower);
         var restrained = thrower != null && safety.IsRestrained(target);
+        var cannotEnsnare = thrower != null && !_entities.HasComponent<EnsnareableComponent>(target) &&
+                            safety.GetBlastRadius(thrower.Prototype) == 0f;
 
         var meleeDistance = _entities.HasComponent<NPCMeleeCombatComponent>(owner) ? MeleeRange + 0.75f : MeleeRange;
         // A small exit margin lets an NPC brake after retreating without immediately switching back to ranged combat.
-        if (distance <= meleeDistance || restrained || thrower == null && !_entities.HasComponent<GunComponent>(owner))
+        if (distance <= meleeDistance || restrained || cannotEnsnare || thrower == null && !_entities.HasComponent<GunComponent>(owner))
         {
-            safety.CancelThrowWarning(owner);
+            safety.CancelThrowWarning(owner, true);
             _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
             var melee = _entities.EnsureComponent<NPCMeleeCombatComponent>(owner);
             melee.Target = target;
@@ -133,7 +170,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
             {
                 steering.Range = visible ? thrower.Range : 0.6f;
                 steering.ArriveOnLineOfSight = visible && distance <= thrower.Range;
-                TryThrow(owner, target, targetXform, distance, thrower);
+                TryThrow(owner, target, thrower);
             }
             else
             {
@@ -152,43 +189,48 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         return HTNOperatorStatus.Continuing;
     }
 
-    private void TryThrow(EntityUid owner, EntityUid target, TransformComponent targetXform,
-        float distance, Wh40kChaosThrowerComponent thrower)
+    private void TryThrow(EntityUid owner, EntityUid target, Wh40kChaosThrowerComponent thrower)
     {
         var safety = _entities.System<Wh40kChaosTacticsSystem>();
+        if (!_entities.System<NPCCombatSystem>().Enabled || _timing.CurTime < thrower.NextThrow ||
+            !_entities.System<ActionBlockerSystem>().CanAttack(owner, target))
+        {
+            safety.CancelThrowWarning(owner, true);
+            return;
+        }
         var blastRadius = safety.GetBlastRadius(thrower.Prototype);
-        if (!_entities.System<NPCCombatSystem>().Enabled ||
-            _timing.CurTime < thrower.NextThrow || distance < thrower.MinRange || distance > thrower.Range ||
-            blastRadius == 0f && safety.IsRestrained(target) ||
-            !_entities.System<ActionBlockerSystem>().CanAttack(owner, target) ||
-            !_entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, target, thrower.Range))
+        if (!safety.TryGetThrowAim(owner, target, thrower, out var aim))
         {
-            safety.CancelThrowWarning(owner);
+            safety.CancelThrowWarning(owner, true);
             return;
         }
-
         var transform = _entities.System<SharedTransformSystem>();
-        var aim = transform.GetMapCoordinates(target, targetXform);
-        if (_entities.TryGetComponent<PhysicsComponent>(target, out var body))
+        var distance = Vector2.Distance(transform.GetMapCoordinates(owner).Position, aim.Position);
+        if (distance < thrower.MinRange || distance > thrower.Range ||
+            blastRadius == 0f && (safety.IsRestrained(target) || !_entities.HasComponent<EnsnareableComponent>(target)))
         {
-            var lead = body.LinearVelocity * MathF.Min(distance / 10f, 0.6f);
-            if (lead.LengthSquared() > 1.25f * 1.25f)
-                lead = Vector2.Normalize(lead) * 1.25f;
-            aim = new MapCoordinates(aim.Position + lead, aim.MapId);
+            safety.CancelThrowWarning(owner, true);
+            return;
         }
 
-        if (blastRadius > 0f && !safety.IsSafeAttack(owner, aim, blastRadius) ||
-            !_entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, aim, thrower.Range))
+        var ignoreSafety = blastRadius > 0f && safety.CanIgnoreThrowSafety(owner, target, thrower);
+        if (blastRadius > 0f && !ignoreSafety && !safety.IsSafeAttack(owner, aim, blastRadius))
         {
+            safety.RecordBlockedThrow(owner, target, thrower);
             safety.CancelThrowWarning(owner);
             return;
         }
-        if (!safety.PrepareThrow(owner, target, thrower, blastRadius > 0f, ref aim))
+        if (!safety.PrepareThrow(owner, target, thrower, blastRadius > 0f, ref aim, ignoreSafety))
             return;
         // Recheck the announced, fixed landing point when the warning finishes.
-        if (blastRadius > 0f && !safety.IsSafeAttack(owner, aim, blastRadius) ||
-            !_entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, aim, thrower.Range))
+        if (!_entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, aim, thrower.Range))
         {
+            safety.CancelThrowWarning(owner, true);
+            return;
+        }
+        if (blastRadius > 0f && !ignoreSafety && !safety.IsSafeAttack(owner, aim, blastRadius))
+        {
+            safety.RecordBlockedThrow(owner, target, thrower);
             safety.CancelThrowWarning(owner);
             return;
         }
@@ -197,7 +239,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         if (!_entities.System<ActionBlockerSystem>().CanThrow(owner, item))
         {
             _entities.DeleteEntity(item);
-            safety.CancelThrowWarning(owner);
+            safety.CancelThrowWarning(owner, true);
             return;
         }
 
@@ -210,28 +252,31 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         if (!_entities.HasComponent<ThrownItemComponent>(item))
         {
             _entities.DeleteEntity(item);
-            safety.CancelThrowWarning(owner);
+            safety.CancelThrowWarning(owner, true);
             return;
         }
         if (_entities.HasComponent<OnUseTimerTriggerComponent>(item))
             _entities.System<TriggerSystem>().StartTimer(item, owner);
         thrower.NextThrow = _timing.CurTime + thrower.Cooldown;
-        safety.CompleteThrow(thrower);
+        safety.CompleteThrow(owner, thrower);
     }
 
     public override void TaskShutdown(NPCBlackboard blackboard, HTNOperatorStatus status)
     {
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
-        _entities.System<Wh40kChaosTacticsSystem>().CancelThrowWarning(owner);
+        _entities.System<Wh40kChaosTacticsSystem>().CancelThrowWarning(owner, true);
         _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
         _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);
         _entities.System<NPCSteeringSystem>().Unregister(owner);
         _entities.System<SharedCombatModeSystem>().SetInCombatMode(owner, false);
         if (_entities.TryGetComponent<Wh40kChaosTacticsComponent>(owner, out var tactics))
         {
+            _entities.System<Wh40kChaosTacticsSystem>().ClearAssignment(owner, tactics);
+            _entities.System<Wh40kChaosTacticsSystem>().CancelCover(tactics);
             tactics.Target = null;
             tactics.TargetVisible = false;
             tactics.MeleeReadyAt = TimeSpan.Zero;
+            tactics.NextTargetCheck = TimeSpan.Zero;
         }
         blackboard.Remove<EntityUid>(TargetKey);
     }

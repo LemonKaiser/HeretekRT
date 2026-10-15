@@ -21,8 +21,10 @@ public sealed partial class Wh40kChaosThrowerComponent : Component
 
     [DataField] public TimeSpan Windup = TimeSpan.FromSeconds(0.5);
     [ViewVariables] public EntityUid? WarningTarget;
-    [ViewVariables] public MapCoordinates? WarningAim;
+    [ViewVariables] public EntityCoordinates? WarningAim;
     [ViewVariables] public bool WarningExplosive;
+    [ViewVariables] public EntityUid? SafetyBlockedTarget;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan SafetyBlockedSince;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan ReadyAt;
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]

@@ -1,5 +1,6 @@
 wh40k-boss-default-name = Unknown threat
 wh40k-boss-hive-ship-name = Hive Ship
+wh40k-boss-hive-ship-spore-mine-name = Spore mine
 wh40k-boss-health = { $current } / { $max }
 wh40k-boss-distance = { $distance } m
 

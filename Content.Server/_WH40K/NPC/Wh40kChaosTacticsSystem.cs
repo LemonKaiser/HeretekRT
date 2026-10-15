@@ -5,6 +5,7 @@ using Content.Server.NPC.Events;
 using Content.Server.NPC.Systems;
 using Content.Shared.Explosion.Components;
 using Content.Shared.Ensnaring.Components;
+using Content.Shared.DoAfter;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -38,6 +39,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private NPCSteeringSystem _steering = default!;
+    [Dependency] private SharedDoAfterSystem _obstacleDoAfter = default!;
 
     private float _hazardAccumulator;
     // Steering runs on worker threads; every lookup must rent its own cleared buffer.
@@ -54,6 +56,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
         SubscribeLocalEvent<Wh40kChaosTacticsComponent, AttemptMeleeEvent>(OnMeleeAttempt);
         InitializeReactions();
         InitializePatrol();
+        InitializeSquad();
     }
 
     public override void Update(float frameTime)
@@ -137,7 +140,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
             foreach (var (friend, faction) in friends)
             {
                 if (friend == owner || !_factions.IsEntityFriendly(owner, (friend, faction)) ||
-                    TryComp<MobStateComponent>(friend, out var state) && state.CurrentState == MobState.Dead)
+                    TryComp<MobStateComponent>(friend, out var state) && state.CurrentState != MobState.Alive)
                     continue;
                 var position = _transform.GetMapCoordinates(friend);
                 if (position.MapId != origin.MapId)
@@ -177,8 +180,10 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
         var aim = _transform.ToMapCoordinates(coordinates);
         var origin = _transform.GetMapCoordinates(uid);
         var targetPoint = comp.Target is { } enemy && !Deleted(enemy) ? _transform.GetMapCoordinates(enemy) : aim;
-        if (!origin.InRange(targetPoint, comp.RangedRange) ||
-            _timing.CurTime < comp.ResumeFire)
+        if (origin.MapId != targetPoint.MapId ||
+            Vector2.DistanceSquared(origin.Position, targetPoint.Position) > comp.RangedRange * comp.RangedRange ||
+            _timing.CurTime < comp.ResumeFire || _timing.CurTime < comp.RegroupUntil && !origin.InRange(targetPoint, 3f) ||
+            comp.CoverPosition != null && (!comp.CoverPeeking || comp.CoverPhaseUntil == TimeSpan.Zero))
         {
             args.Cancel();
             return;
@@ -195,6 +200,8 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
 
     private void OnGunShot(EntityUid uid, Wh40kChaosTacticsComponent comp, ref GunShotEvent args)
     {
+        if (args.User == uid && comp.CoverPeeking && comp.CoverFirstFireAt == TimeSpan.Zero)
+            comp.CoverFirstFireAt = _timing.CurTime;
         if (args.User == uid && comp.BurstDuration > TimeSpan.Zero && comp.BurstEnd == TimeSpan.Zero)
             comp.BurstEnd = _timing.CurTime + comp.BurstDuration;
     }
@@ -202,21 +209,63 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
     private void OnSteering(EntityUid uid, Wh40kChaosTacticsComponent comp, ref NPCSteeringEvent args)
     {
         var direction = comp.EscapeDirection;
+        // Follow the selected route into shelter instead of interrupting it with a sideways dodge.
+        if (direction == Vector2.Zero && comp.CoverPosition != null)
+        {
+            StopTacticalMovement(comp, args.Steering);
+            return;
+        }
+        // Native seeking owns obstacle interactions. Sidesteps must not interrupt prying or pull a crowd off its path.
+        if (direction == Vector2.Zero && (IsClearingObstacle(args.Steering) ||
+            comp.Target != null && !args.Steering.DirectMove))
+        {
+            StopTacticalMovement(comp, args.Steering);
+            return;
+        }
         var separating = false;
         var origin = _transform.GetMapCoordinates(uid);
         var dodging = direction == Vector2.Zero && _timing.CurTime < comp.DodgeUntil;
         if (dodging)
         {
             direction = comp.DodgeDirection;
-            if (comp.ThreatPosition is { } threat && threat.IsValid(EntityManager))
+            var pursuit = comp.Target is { } enemyTarget && !Deleted(enemyTarget)
+                ? _transform.GetMapCoordinates(enemyTarget)
+                : comp.ThreatPosition is { } threat && threat.IsValid(EntityManager)
+                    ? _transform.ToMapCoordinates(threat)
+                    : (MapCoordinates?) null;
+            if (pursuit is { } target && target.MapId == origin.MapId)
             {
-                var toward = _transform.ToMapCoordinates(threat).Position - origin.Position;
+                var toward = target.Position - origin.Position;
                 var attackRange = HasComp<NPCMeleeCombatComponent>(uid)
                     ? Comp<MeleeWeaponComponent>(uid).Range
                     : TryComp<Wh40kChaosThrowerComponent>(uid, out var throwing) ? throwing.Range : comp.RangedRange;
                 if (toward.LengthSquared() > attackRange * attackRange)
-                    direction += Vector2.Normalize(toward) * 0.5f;
+                {
+                    var forward = Vector2.Normalize(toward);
+                    // Keep a lateral component while closing the distance, even if another player fired the shot.
+                    var side = comp.DodgeDirection - forward * Vector2.Dot(comp.DodgeDirection, forward);
+                    direction = forward + side * 0.8f;
+                }
             }
+        }
+
+        if (direction == Vector2.Zero && _timing.CurTime < comp.RegroupUntil &&
+            comp.Target is { } regroupTarget && !Deleted(regroupTarget) &&
+            comp.RegroupOrigin is { } regroupOrigin && regroupOrigin.IsValid(EntityManager))
+        {
+            var targetPosition = _transform.GetMapCoordinates(regroupTarget);
+            var from = _transform.ToMapCoordinates(regroupOrigin);
+            if (origin.InRange(targetPosition, 3f))
+                comp.RegroupUntil = TimeSpan.Zero;
+            else if (!origin.InRange(from, 2f))
+            {
+                Array.Clear(args.Steering.Interest);
+                args.Steering.CanSeek = false;
+                comp.TacticalDirection = Vector2.Zero;
+                return;
+            }
+            else
+                direction = origin.Position - targetPosition.Position;
         }
 
         if (direction == Vector2.Zero && (comp.Target != null && !comp.TargetVisible ||
@@ -255,7 +304,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
                 !(TryComp<EnsnareableComponent>(enemy, out var ensnared) && ensnared.IsEnsnared))
                 direction = -delta;
             // Grenadiers still need a safe throwing lane and blast area.
-            else if (blastRadius > 0 && !IsSafeAttack(uid, aim, blastRadius))
+            else if (thrower != null && blastRadius > 0 && !CanIgnoreThrowSafety(uid, enemy, thrower) && !IsSafeAttack(uid, aim, blastRadius))
             {
 
                 direction = new Vector2(-delta.Y, delta.X);
@@ -363,6 +412,11 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
         Array.Clear(steering.Interest);
     }
 
+    private bool IsClearingObstacle(NPCSteeringComponent steering)
+    {
+        return steering.DoAfterId != null && _obstacleDoAfter.GetStatus(steering.DoAfterId) == DoAfterStatus.Running;
+    }
+
     private Vector2 FindClearDirection(EntityUid uid, Wh40kChaosTacticsComponent comp, Vector2 desired,
         Angle offsetRotation, float radius, bool separating, bool dodging)
     {
@@ -395,9 +449,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
             // Escaping a live grenade must still avoid advancing towards its blast area.
             // Prefer an empty neighbouring spot instead of pushing into the next member of the crowd.
                 continue;
-            var score = alignment + Vector2.Dot(candidate, comp.TacticalDirection) * 0.35f;
-            if (dodging)
-                score += MathF.Abs(Vector2.Dot(candidate, comp.DodgeDirection)) * 1.5f;
+            var score = alignment + (dodging ? 0f : Vector2.Dot(candidate, comp.TacticalDirection) * 0.35f);
             if (separating)
             {
 

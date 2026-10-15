@@ -6,6 +6,8 @@ namespace Content.Server._WH40K.NPC;
 /// <summary>Short reservations on a victim prevent simultaneous grenade and bola volleys.</summary>
 public sealed partial class Wh40kChaosAttackReservationsComponent : Component
 {
+    public readonly Dictionary<EntityUid, TimeSpan> Attackers = new();
+
     public EntityUid? Grenadier;
     public EntityUid? Trapper;
 

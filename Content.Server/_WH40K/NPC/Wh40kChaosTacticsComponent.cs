@@ -32,6 +32,33 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [ViewVariables]
     public EntityUid? Target;
 
+    [ViewVariables] public EntityUid? AssignedTarget;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan TargetCommittedUntil;
+
+    [ViewVariables] public EntityCoordinates? CoverPosition;
+    [ViewVariables] public EntityCoordinates? PeekPosition;
+    [ViewVariables] public EntityUid? CoverTarget;
+    [ViewVariables] public bool CoverPeeking;
+    [ViewVariables] public bool CoverEntering;
+    [ViewVariables] public Vector2 CoverProgressPosition;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextCoverSearch;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextCoverValidation;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan CoverExpiresAt;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan CoverPhaseUntil;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan CoverPeekStartedAt;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan CoverFirstFireAt;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan CoverProgressAt;
+
+    [ViewVariables] public EntityUid? LastLostAlly;
+    [ViewVariables] public int RecentLosses;
+    [ViewVariables] public EntityCoordinates? RegroupOrigin;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan LossWindowUntil;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan RegroupUntil;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextRegroup;
+
+    [ViewVariables] public EntityCoordinates? CampPosition;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan StationarySince;
+
     [DataField] public float PatrolRadius = 6f;
     [ViewVariables] public EntityCoordinates? PatrolOrigin;
     [ViewVariables] public bool Patrolling;
@@ -59,6 +86,8 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan ThreatObservedAt;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan DodgeUntil;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextDodge;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan DodgeSideUntil;
+    [ViewVariables] public EntityUid? DodgeShooter;
 
     [DataField] public TimeSpan MemoryDuration = TimeSpan.FromSeconds(4);
     [DataField] public TimeSpan ThreatMemoryDuration = TimeSpan.FromSeconds(8);
@@ -67,6 +96,7 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [ViewVariables] public MapCoordinates? MeleeWarningPosition;
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextSightCheck;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextTargetCheck;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan LastSeenAt;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan IgnoreUntil;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextPathRetry;

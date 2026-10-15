@@ -2,7 +2,6 @@ using System.Numerics;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.Systems;
 using Content.Shared.ActionBlocker;
-using Content.Shared.Physics;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
@@ -17,7 +16,10 @@ public sealed partial class Wh40kChaosTacticsSystem
     {
         if (comp.Target != target)
         {
-            CancelThrowWarning(uid);
+            CancelThrowWarning(uid, true);
+            if (comp.CoverPosition != null)
+                CancelCover(comp);
+            comp.CampPosition = null;
             comp.Target = target;
             comp.LastSeenPosition = IsAlertedTo(comp, target) ? comp.ThreatPosition : null;
             if (comp.LastSeenPosition != null)
@@ -29,25 +31,39 @@ public sealed partial class Wh40kChaosTacticsSystem
             comp.NextPathRetry = TimeSpan.Zero;
             comp.SilentSince = _timing.CurTime;
             comp.MeleeReadyAt = TimeSpan.Zero;
+            if (TryComp<NPCRangedCombatComponent>(uid, out var ranged))
+            {
+                ranged.TargetInLOS = false;
+                ranged.LOSAccumulator = 0f;
+                ranged.ShootAccumulator = 0f;
+            }
         }
         if (_timing.CurTime < comp.NextSightCheck)
             return;
         comp.NextSightCheck = _timing.CurTime + TimeSpan.FromSeconds(0.2);
-        if (IsAlertedTo(comp, target))
-            vision = MathF.Max(vision, AlertVisionRange);
-        comp.TargetVisible = _interaction.InRangeUnobstructed(uid, target, vision, CollisionGroup.Opaque,
-            e => _factions.IsEntityFriendly(uid, e));
+        comp.TargetVisible = CanSeeTarget(uid, target, comp, vision);
         if (!comp.TargetVisible)
+        {
+            if (TryComp<Wh40kChaosThrowerComponent>(uid, out var thrower))
+                thrower.SafetyBlockedTarget = null;
             return;
+        }
         var targetTransform = Transform(target);
         comp.LastSeenPosition = _transform.WithEntityId(targetTransform.Coordinates,
             targetTransform.GridUid ?? targetTransform.MapUid!.Value);
         comp.LastSeenAt = _timing.CurTime;
+        if (HasComp<Wh40kChaosThrowerComponent>(uid) &&
+            (comp.CampPosition is not { } camp || !camp.IsValid(EntityManager) ||
+             !camp.TryDistance(EntityManager, comp.LastSeenPosition.Value, out var travel) || travel > 0.75f))
+        {
+            comp.CampPosition = comp.LastSeenPosition;
+            comp.StationarySince = _timing.CurTime;
+        }
     }
 
     public void IgnoreTarget(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp)
     {
-        CancelThrowWarning(uid);
+        CancelThrowWarning(uid, true);
         comp.IgnoredTarget = target;
         comp.IgnoreUntil = _timing.CurTime + TimeSpan.FromSeconds(5);
         comp.LastSeenPosition = null;

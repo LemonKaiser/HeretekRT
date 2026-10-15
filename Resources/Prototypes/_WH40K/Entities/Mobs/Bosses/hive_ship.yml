@@ -56,9 +56,14 @@
     turnSpeed: 2.2
     turnAcceleration: 6
     evasionDamageThreshold: 1200
+    biteReach: 2.5
     deathLoot: CrateWh40kHiveShipSpoils
     boardingPrototype: MobWh40kHiveShipBoarder
+    boardingCount: 3
+    maxBoarders: 6
     sporeMinePrototype: Wh40kHiveShipSporeMine
+    sporeInterval: 1.5
+    maxSporeMines: 100
   - type: ExplosionResistance
     worn: false
     modifiers:
@@ -86,7 +91,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-12,-4,8,4"
+          bounds: "-18,-7,8,7"
         density: 50
         mask:
         - LargeMobMask
@@ -95,7 +100,7 @@
       head:
         shape:
           !type:PhysShapeAabb
-          bounds: "8,-5,15,5"
+          bounds: "8,-7,18,7"
         density: 50
         mask:
         - LargeMobMask
@@ -106,7 +111,7 @@
     altDisarm: false
     autoAttack: false
     attackRate: 0.4
-    range: 19
+    range: 18.5
     animation: WeaponArcBite
     damage:
       types:
@@ -160,6 +165,13 @@
   components:
   - type: Wh40kBossMinion
     sporeMine: true
+  - type: RadarBlip
+    useRadarRange: true
+    config:
+      color: "#E65950"
+      shape: Diamond
+      bounds: "-1.5,-1.5,1.5,1.5"
+      label: wh40k-boss-hive-ship-spore-mine-name
   - type: TimedDespawn
     lifetime: 300
   - type: MobPrice

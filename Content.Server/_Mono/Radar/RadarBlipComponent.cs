@@ -9,12 +9,6 @@ namespace Content.Server._Mono.Radar;
 public sealed partial class RadarBlipComponent : Component
 {
     /// <summary>
-    /// How to display normally.
-    /// </summary>
-    [DataField]
-    public BlipConfig Config = new();
-
-    /// <summary>
     /// Whether this blip should be shown even when parented to a grid.
     /// </summary>
     [DataField]
@@ -63,4 +57,11 @@ public sealed partial class RadarBlipComponent : Component
     public RadarBlipShape _shape { set => Config.Shape = value; get => Config.Shape; }
 
     #endregion
+
+    /// <summary>
+    /// How to display normally. Keep after the legacy aliases for generated copying, and load it last from YAML.
+    /// Legacy scale cannot represent rectangular bounds.
+    /// </summary>
+    [DataField(priority: 0)]
+    public BlipConfig Config = new();
 }
