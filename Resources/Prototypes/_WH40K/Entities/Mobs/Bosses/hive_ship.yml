@@ -51,6 +51,10 @@
   name: hive ship
   description: A colossal void organism whose armoured head and hooked mandibles tear at passing ships.
   components:
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      130000: Dead
   - type: Wh40kSpaceBoss
     detectionRadius: 2000
     turnSpeed: 2.2
@@ -66,6 +70,7 @@
     maxSporeMines: 100
   - type: ExplosionResistance
     worn: false
+    damageCoefficient: 0.7
     modifiers:
       SporeBomb: 0
   - type: Wh40kBoss

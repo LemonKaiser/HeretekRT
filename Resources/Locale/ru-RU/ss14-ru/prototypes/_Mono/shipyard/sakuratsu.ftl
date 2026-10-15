@@ -1,2 +1,2 @@
-vessel-sakuratsu-name = СКР «Сакурацу»
+vessel-sakuratsu-name = «Копьё сакуры»
 vessel-sakuratsu-desc = Судно для ксеноархеологии с отдельной усиленной камерой. Есть и шахтёрское оборудование.

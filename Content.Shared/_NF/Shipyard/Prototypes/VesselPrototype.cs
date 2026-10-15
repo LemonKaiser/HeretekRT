@@ -1,5 +1,6 @@
 using Content.Shared.Guidebook;
 using Content.Shared.Tag;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 using Robust.Shared.Utility;
@@ -22,7 +23,9 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     /// <summary>
     ///     Vessel name.
     /// </summary>
-    [DataField] public string Name = string.Empty;
+    [DataField("name")] private string _name = string.Empty;
+
+    public string Name => Loc.TryGetString($"vessel-{ID.ToLowerInvariant()}-name", out var name) ? name : _name;
 
     /// <summary>
     ///     The amount of this ship that can active at any given time.
@@ -45,7 +48,9 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     /// <summary>
     ///     Short description of the vessel.
     /// </summary>
-    [DataField] public string Description = string.Empty;
+    [DataField("description")] private string _description = string.Empty;
+
+    public string Description => Loc.TryGetString($"vessel-{ID.ToLowerInvariant()}-desc", out var description) ? description : _description;
 
     /// <summary>
     ///     The price of the vessel

@@ -898,6 +898,15 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         foreach (var vessel in _prototypeManager.EnumeratePrototypes<VesselPrototype>())
         {
+            var listedExplicitly = listing?.Shuttles.Contains(vessel.ID) ?? false;
+            var listedByGroup = listing?.Groups is { } groups
+                ? groups.Contains(vessel.Group)
+                : key != null && key != ShipyardConsoleUiKey.Custom && vessel.Group == key;
+
+            if ((!listedExplicitly && !listedByGroup) ||
+                (listing?.ExcludedShuttles.Contains(vessel.ID) ?? false))
+                continue;
+
             bool hasAccess = initialHasAccess;
             // If the vessel needs access to be bought, check the user's access.
             if (!string.IsNullOrEmpty(vessel.Access))
@@ -922,17 +931,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 }
             }
 
-            // Check that the listing contains the shuttle or that the shuttle is in the group that the console is looking for
-            if (listing?.Shuttles.Contains(vessel.ID) ?? false ||
-                key != null && key != ShipyardConsoleUiKey.Custom &&
-                vessel.Group == key)
-            {
-                // if not purchasable, only allow it if voucher says so
-                if (vessel.Purchasable && hasAccess || voucherAllowed.Contains(vessel.ID))
-                    available.Add(vessel.ID);
-                else
-                    unavailable.Add(vessel.ID);
-            }
+            // If not purchasable, only allow it if the voucher says so.
+            if (vessel.Purchasable && hasAccess || voucherAllowed.Contains(vessel.ID))
+                available.Add(vessel.ID);
+            else
+                unavailable.Add(vessel.ID);
         }
 
         return (available, unavailable);

@@ -48,6 +48,24 @@
   parent: ComputerShipyardBase
   id: ComputerShipyard
   components:
+  - type: ShipyardListing
+    # An explicit catalog: no automatic ships from the UI's Shipyard group.
+    groups: []
+    shuttles:
+    - Aquila
+    - Arvus
+    - RavenWh40k
+    - IntrepidWh40k
+    - CobraWh40k
+    - PerditionWh40k
+    - SwordWh40k
+    - ClaymoreWh40k
+    - FalchionWh40k
+    - DesolatorWh40k
+    - ArkMechanicus
+    - MiningArvus
+    - MiningTier2
+    - MiningTier3
   - type: ShipyardConsole
     newJobTitle: Captain
   - type: CompanyAccessReader
@@ -177,6 +195,9 @@
   name: expedition shipyard console
   description: Used to buy ships outfitted for planetary expeditions
   components:
+  - type: ShipyardListing
+    groups: [Expedition]
+    shuttles: []
   - type: ActivatableUI
     key: enum.ShipyardConsoleUiKey.Expedition
   - type: UserInterface
@@ -205,6 +226,9 @@
   name: scrapyard console
   description: Used to purchase and sell "shuttles"
   components:
+  - type: ShipyardListing
+    groups: [Scrap]
+    shuttles: []
   - type: ActivatableUI
     key: enum.ShipyardConsoleUiKey.Scrap
   - type: UserInterface
@@ -233,6 +257,9 @@
   name: medical shipyard console
   description: Used to purchase and sell medical shuttles
   components:
+  - type: ShipyardListing
+    groups: [Medical]
+    shuttles: []
   - type: ActivatableUI
     key: enum.ShipyardConsoleUiKey.Medical
   - type: UserInterface
