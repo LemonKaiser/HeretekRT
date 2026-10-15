@@ -1,4 +1,8 @@
 ## UI
+shipyard-console-sell-button = Sell
+shipyard-console-registered-none = None
+shipyard-console-rename-button = Rename
+shipyard-console-rename-placeholder = Name
 shipyard-console-invalid-vessel = Cannot purchase vessel:
 shipyard-console-menu-title = Shipyard Menu
 shipyard-console-menu-listing-free = Free

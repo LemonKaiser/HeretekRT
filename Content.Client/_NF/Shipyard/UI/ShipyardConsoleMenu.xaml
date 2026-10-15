@@ -1,8 +1,9 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
                            xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                            xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                           SetSize="640 680"
-                           Resizable="False">
+                           SetSize="840 680"
+                           MinSize="640 500"
+                           Resizable="True">
     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
         <PanelContainer.PanelOverride>
             <gfx:StyleBoxFlat BorderThickness="7" BorderColor="#252525" BackgroundColor="#3d474d"/>
@@ -79,15 +80,16 @@
         </BoxContainer>
         <ScrollContainer HorizontalExpand="True"
                          VerticalExpand="True"
+                         HScrollEnabled="False"
                          SizeFlagsStretchRatio="6">
             <BoxContainer Name="Vessels"
                           Orientation="Vertical"
                           HorizontalExpand="True"
-                          VerticalExpand="True">
+                          SeparationOverride="8">
                 <!-- Vessels get added here by code -->
             </BoxContainer>
         </ScrollContainer>
-        <PanelContainer VerticalExpand="True" HorizontalExpand="False" Margin="0 8 0 2">
+        <PanelContainer HorizontalExpand="True" Margin="0 8 0 2">
             <PanelContainer.PanelOverride>
                 <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#333333" BackgroundColor="#333333"/>
             </PanelContainer.PanelOverride>
@@ -95,34 +97,40 @@
                 <PanelContainer.PanelOverride>
                     <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#636363" BackgroundColor="#141414"/>
                 </PanelContainer.PanelOverride>
-        <GridContainer Columns="4" HorizontalExpand="True" Margin="2 2 2 2">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="6" SeparationOverride="6">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
             <Button Name="TargetIdButton" Access="Public"
-                    StyleClasses="ButtonSquare"/>
+                    StyleClasses="ButtonSquare"
+                    HorizontalExpand="True" MinHeight="32" TextAlign="Center"/>
             <controls:ConfirmButton Name="SellShipButton"
-                Text="Sell"
+                Text="{Loc 'shipyard-console-sell-button'}"
                 ConfirmationText="{Loc 'shipyard-console-confirm-unassign'}"
                 StyleClasses="ButtonSquare"
+                HorizontalExpand="True" MinHeight="32" TextAlign="Center"
                 Disabled="True" />
             <controls:ConfirmButton Name="UnassignDeedButton"
                 Text="{Loc 'shipyard-console-unassign-deed'}"
                 ConfirmationText="{Loc 'shipyard-console-confirm-unassign'}"
                 StyleClasses="ButtonSquare"
+                HorizontalExpand="True" MinHeight="32" TextAlign="Center"
                 Disabled="True" />
+            </BoxContainer>
             <BoxContainer Orientation="Vertical">
                 <Label Text="{Loc 'shipyard-console-deed-label'}" />
-                <Label Name="DeedTitle"
+                <RichTextLabel Name="DeedTitle" HorizontalExpand="True"
                     Text=""/>
             </BoxContainer>
-        </GridContainer>
+        </BoxContainer>
             </PanelContainer>
         </PanelContainer>
-        <BoxContainer Orientation="Horizontal" Margin="0 2 0 2" Name="RenameContainer" Visible="False">
+        <BoxContainer Orientation="Horizontal" Margin="0 2 0 2" SeparationOverride="8" Name="RenameContainer" Visible="False">
             <LineEdit Name="RenameLineEdit"
-                      PlaceHolder="Name"
+                      PlaceHolder="{Loc 'shipyard-console-rename-placeholder'}"
+                      HorizontalExpand="True"
                       MinWidth="140"
                       Editable="False" />
             <Button Name="RenameButton"
-                    Text="Rename"
+                    Text="{Loc 'shipyard-console-rename-button'}"
                     Disabled="True" />
         </BoxContainer>
 
