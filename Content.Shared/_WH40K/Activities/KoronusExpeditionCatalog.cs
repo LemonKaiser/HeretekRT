@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.Activities;
 /// </summary>
 public static class KoronusExpeditionCatalog
 {
-    public static readonly IReadOnlyList<KoronusExpeditionProfile> Profiles = Array.AsReadOnly<KoronusExpeditionProfile>(
+    public static readonly IReadOnlyList<KoronusExpeditionProfile> Profiles =
     [
         new(KoronusActivityExecutionKind.ExpeditionMonolith, "KoronusExpeditionRelicCasket",
             "MobKoronusExpeditionEcho", KoronusActivitySalvageProfile.Archeotech,
@@ -50,7 +50,7 @@ public static class KoronusExpeditionCatalog
             "MobKoronusExpeditionRaider", KoronusActivitySalvageProfile.Minerals, KoronusActivityTrophyConsumer.MinersGuild),
         Dungeon(KoronusActivityExecutionKind.ExpeditionScrapSurvey, "Scrap", "KoronusExpeditionDataCore",
             "MobKoronusExpeditionRaider", KoronusActivitySalvageProfile.Engineering, KoronusActivityTrophyConsumer.AivoriusArchive),
-    ]);
+    ];
 
     public static bool TryGet(KoronusActivityExecutionKind execution, out KoronusExpeditionProfile profile)
     {
@@ -69,8 +69,15 @@ public static class KoronusExpeditionCatalog
 
     public static bool IsExpedition(KoronusActivityExecutionKind execution) => TryGet(execution, out _);
 
-    private static IReadOnlyList<string> Paths(string directory, params string[] names) =>
-        Array.AsReadOnly(Array.ConvertAll(names, name => $"{directory}{name}.yml"));
+    private static string[] Paths(string directory, params string[] names)
+    {
+        var paths = new string[names.Length];
+        for (var i = 0; i < names.Length; i++)
+        {
+            paths[i] = $"{directory}{names[i]}.yml";
+        }
+        return paths;
+    }
 
     private static KoronusExpeditionProfile Dungeon(KoronusActivityExecutionKind execution, string biome,
         string objective, string? guardian, KoronusActivitySalvageProfile salvage, KoronusActivityTrophyConsumer consumer) =>
