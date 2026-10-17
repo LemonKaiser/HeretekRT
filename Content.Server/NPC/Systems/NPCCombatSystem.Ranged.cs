@@ -12,6 +12,7 @@ using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Wieldable.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 
 namespace Content.Server.NPC.Systems;
 
@@ -21,6 +22,7 @@ public sealed partial class NPCCombatSystem
     [Dependency] private RotateToFaceSystem _rotate = default!;
     [Dependency] private SharedLaserPointerSystem _pointer = default!; // Goobstation
     [Dependency] private DestructibleSystem _destructible = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -185,10 +187,11 @@ public sealed partial class NPCCombatSystem
                 continue;
             }
 
-            var mapVelocity = targetBody.LinearVelocity;
+            var relativeVelocity = _physics.GetMapLinearVelocity(comp.Target, targetBody) -
+                                   _physics.GetMapLinearVelocity(gunUid);
             var targetSpot = HasComp<HitscanBatteryAmmoProviderComponent>(gunUid)
                 ? targetPos
-                : targetPos + mapVelocity * distance / MathF.Max(gun.ProjectileSpeedModified, 0.1f);
+                : GetInterceptPosition(worldPos, targetPos, relativeVelocity, gun.ProjectileSpeedModified);
             // If we have a max rotation speed then do that.
             var goalRotation = (targetSpot - worldPos).ToWorldAngle();
             var rotationSpeed = comp.RotationSpeed;
@@ -233,6 +236,31 @@ public sealed partial class NPCCombatSystem
             _gun.SetTarget(gun, comp.Target); // Frontier - This ensures that the bullet won't fly over the target if it's downed
             _gun.AttemptShoot(uid, gunUid, gun, targetCordinates);
         }
+    }
+
+    /// <summary>Accounts for flight time and the velocity inherited from the shooter.</summary>
+    public static Vector2 GetInterceptPosition(Vector2 origin, Vector2 target, Vector2 relativeVelocity, float speed)
+    {
+        if (speed <= 0f)
+            return target;
+        var offset = target - origin;
+        var a = relativeVelocity.LengthSquared() - speed * speed;
+        var b = 2f * Vector2.Dot(offset, relativeVelocity);
+        var c = offset.LengthSquared();
+        float time;
+        if (MathF.Abs(a) < 0.0001f)
+            time = b < -0.0001f ? -c / b : 0f;
+        else
+        {
+            var discriminant = b * b - 4f * a * c;
+            if (discriminant < 0f)
+                return target;
+            var root = MathF.Sqrt(discriminant);
+            var first = (-b - root) / (2f * a);
+            var second = (-b + root) / (2f * a);
+            time = first > 0f && second > 0f ? MathF.Min(first, second) : MathF.Max(first, second);
+        }
+        return time > 0f && float.IsFinite(time) ? target + relativeVelocity * time : target;
     }
     // Goobstation - Helper methods moved outside the loop to avoid redefinition
     private void UpdatePointerLineNoTarget(EntityUid gunUid)

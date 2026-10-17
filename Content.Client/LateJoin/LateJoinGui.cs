@@ -180,7 +180,10 @@ namespace Content.Client.LateJoin
                         if (!stationAvailable.JobsAvailable.ContainsKey(jobId))
                             continue;
 
-                        jobsAvailable.Add(_prototypeManager.Index<JobPrototype>(jobId));
+                        var job = _prototypeManager.Index<JobPrototype>(jobId);
+                        var profile = _preferencesManager.Preferences?.SelectedCharacter as HumanoidCharacterProfile;
+                        if (job.IsCompanyAllowed(profile?.Company))
+                            jobsAvailable.Add(job);
                     }
 
                     jobsAvailable.Sort(JobUIComparer.Instance);

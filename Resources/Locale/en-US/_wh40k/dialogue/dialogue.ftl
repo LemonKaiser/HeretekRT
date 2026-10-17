@@ -4,6 +4,8 @@ heretek-dialogue-conversation-examine = [color=lightblue]This character is curre
    *[other] people
 }.[/color]
 heretek-dialogue-ui-raw-name = { $name }
+heretek-dialogue-ui-your-response = YOUR RESPONSE
+heretek-dialogue-ui-scroll-responses = ↕ Scroll for more responses
 
 heretek-dialogue-demo-001 = This time we are not only testing the scene itself, but the choice UI as well. Watch the window carefully: buttons will appear under the text, and nothing should overlap or collapse into a mess.
 heretek-dialogue-demo-002 = If this survives long lines, music, and choice buttons at the same time, then the framework is finally starting to resemble a proper system.

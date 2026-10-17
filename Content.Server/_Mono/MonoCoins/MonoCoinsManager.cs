@@ -56,8 +56,10 @@ public sealed partial class MonoCoinsManager
         long balance = -1;
         if (!_cachedBalance.TryGetValue(userId, out balance))
         {
+            var generation = _balanceGenerations.GetOrAdd(userId, 0);
             balance = await _db.GetMonoCoinsAsync(userId);
-            _cachedBalance[userId] = balance;
+            if (_balanceGenerations.GetOrAdd(userId, 0) == generation)
+                _cachedBalance[userId] = balance;
         }
         return balance;
     }
@@ -73,7 +75,11 @@ public sealed partial class MonoCoinsManager
     /// </summary>
     /// <param name="userId">The player's UserId</param>
     /// <param name="balance">The new balance</param>
-    public async Task SetMonoCoinsBalanceAsync(NetUserId userId, long balance)
+    public Task SetMonoCoinsBalanceAsync(NetUserId userId, long balance)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => SetMonoCoinsBalanceCoreAsync(userId, balance));
+
+    private async Task SetMonoCoinsBalanceCoreAsync(NetUserId userId, long balance)
     {
         var wasBalance = await GetMonoCoinsBalanceAsync(userId);
         _cachedBalance[userId] = Math.Max(0L, balance);
@@ -89,7 +95,11 @@ public sealed partial class MonoCoinsManager
     /// <param name="userId">The player's UserId</param>
     /// <param name="amount">The amount to add</param>
     /// <returns>The new balance</returns>
-    public async Task<long> AddMonoCoinsAsync(NetUserId userId, long amount)
+    public Task<long> AddMonoCoinsAsync(NetUserId userId, long amount)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => AddMonoCoinsCoreAsync(userId, amount));
+
+    private async Task<long> AddMonoCoinsCoreAsync(NetUserId userId, long amount)
     {
         var wasBalance = await GetMonoCoinsBalanceAsync(userId);
         _cachedBalance[userId] = Math.Max(0L, _cachedBalance[userId] + amount);

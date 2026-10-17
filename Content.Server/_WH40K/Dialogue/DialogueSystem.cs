@@ -31,6 +31,7 @@ using Robust.Shared.Asynchronous;
 using Content.Shared.Verbs;
 using Content.Shared._WH40K.Dialogue;
 using Content.Shared._WH40K.Merchant;
+using Content.Shared._WH40K.Npcs;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Server.GameObjects;
@@ -106,10 +107,10 @@ public sealed partial class DialogueSystem : EntitySystem
         SubscribeNetworkEvent<DialogueCancelRequestEvent>(OnCancelRequest);
         SubscribeLocalEvent<DialogueInteractableComponent, InteractHandEvent>(
             OnInteractHand,
-            before: [typeof(InteractionPopupSystem)]);
+            before: [typeof(Wh40kNpcInteractionProtectionSystem), typeof(InteractionPopupSystem)]);
         SubscribeLocalEvent<DialogueInteractableComponent, ActivateInWorldEvent>(
             OnActivate,
-            before: [typeof(InteractionPopupSystem)]);
+            before: [typeof(Wh40kNpcInteractionProtectionSystem), typeof(InteractionPopupSystem)]);
         SubscribeLocalEvent<DialogueInteractableComponent, GetVerbsEvent<ActivationVerb>>(OnGetVerbs);
         SubscribeLocalEvent<DialogueInteractableComponent, ComponentStartup>(OnInteractableStartup);
         SubscribeLocalEvent<DialogueInteractableComponent, ComponentShutdown>(OnInteractableShutdown);

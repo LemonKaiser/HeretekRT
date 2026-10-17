@@ -1,15 +1,11 @@
-using Content.Shared._NF.Bank.Components;
 using Content.Shared._WH40K.Merchant;
 using Robust.Client.GameObjects;
-using Robust.Client.Player;
 using Robust.Client.UserInterface;
 
 namespace Content.Client._WH40K.Merchant;
 
 public sealed class MerchantBoundUserInterface : BoundUserInterface
 {
-    [Dependency] private IPlayerManager _playerManager = default!;
-
     private MerchantWindow? _window;
     private Action<string>? _buyHandler;
     private Action? _refreshHandler;
@@ -48,7 +44,7 @@ public sealed class MerchantBoundUserInterface : BoundUserInterface
         };
         _window.OnBuy += _buyHandler;
         _window.OnRequestRefresh += _refreshHandler;
-        if (Snapshot != null) _window.UpdateState(Snapshot, GetBalance());
+        if (Snapshot != null) _window.UpdateState(Snapshot);
         if (Appraisal != null) _window.SetAppraisal(Appraisal);
         // As in the quest journal, private messages may arrive before the replicated actor list opens the BUI.
         SendMessage(new MerchantRequestRefreshMessage());
@@ -63,7 +59,7 @@ public sealed class MerchantBoundUserInterface : BoundUserInterface
             if (Snapshot?.CatalogId != merchantState.CatalogId)
             { Appraisal = null; _window?.SetAppraisal(null); }
             Snapshot = merchantState;
-            _window?.UpdateState(merchantState, GetBalance());
+            _window?.UpdateState(merchantState);
         }
         else if (message is MerchantAppraisalState appraisal)
         { Appraisal = appraisal; _window?.SetAppraisal(appraisal); }
@@ -92,23 +88,5 @@ public sealed class MerchantBoundUserInterface : BoundUserInterface
         // CreateWindowCenteredLeft registers the window for disposal in the
         // base BUI, so do not dispose it a second time here.
         base.Dispose(disposing);
-    }
-
-    private int GetBalance()
-    {
-        if (_playerManager.LocalEntity is { } local
-            && EntMan.TryGetComponent<BankAccountComponent>(local, out var localBank))
-        {
-            return localBank.Balance;
-        }
-
-        var uiSystem = EntMan.System<UserInterfaceSystem>();
-        foreach (var actor in uiSystem.GetActors(Owner, UiKey))
-        {
-            if (EntMan.TryGetComponent<BankAccountComponent>(actor, out var bank))
-                return bank.Balance;
-        }
-
-        return 0;
     }
 }

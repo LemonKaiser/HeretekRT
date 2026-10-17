@@ -48,7 +48,7 @@
                                             FontColorOverride="#D6D6D6"
                                             ClipText="True"/>
 
-                            <controls:PanelContainer MinHeight="54" MaxHeight="142" Margin="0 6 0 6">
+                            <controls:PanelContainer Name="PlanetaryLandingSitesPanel" MinHeight="54" MaxHeight="142" Margin="0 6 0 6">
                                 <controls:PanelContainer.PanelOverride>
                                     <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#5A5A5A" BackgroundColor="#010101E8"/>
                                 </controls:PanelContainer.PanelOverride>

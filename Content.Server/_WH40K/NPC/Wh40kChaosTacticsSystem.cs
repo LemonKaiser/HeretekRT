@@ -54,6 +54,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
         SubscribeLocalEvent<Wh40kChaosTacticsComponent, GunShotEvent>(OnGunShot);
         SubscribeLocalEvent<Wh40kChaosTacticsComponent, NPCSteeringEvent>(OnSteering);
         SubscribeLocalEvent<Wh40kChaosTacticsComponent, AttemptMeleeEvent>(OnMeleeAttempt);
+        SubscribeLocalEvent<Wh40kChaosTacticsComponent, MeleeDamageAppliedEvent>(OnMeleeDamageApplied);
         InitializeReactions();
         InitializePatrol();
         InitializeSquad();

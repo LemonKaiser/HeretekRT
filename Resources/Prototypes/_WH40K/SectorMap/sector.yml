@@ -40,6 +40,8 @@
       - type: StationJobs
         availableJobs:
           Wanderer: [ -1, -1 ]
+          WH40KKasballicaMember: [ 10, -1 ]
+          WH40KFleetCrewman: [ 10, -1 ]
         tags:
         - HeadOfPersonnel
         - HeadOfSecurity

@@ -4,14 +4,19 @@ using Content.Shared.Pulling.Events;
 using Content.Shared.Verbs;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Hands.Components;
+using Content.Shared.Interaction;
 
 namespace Content.Shared._WH40K.Npcs;
 
-/// <summary>Block pulling and player seat removal on both authoritative and predicted NPC interactions.</summary>
+/// <summary>Block unwanted interactions with authored NPCs on both the server and client.</summary>
 public sealed class Wh40kNpcInteractionProtectionSystem : EntitySystem
 {
     public override void Initialize()
     {
+        SubscribeLocalEvent<Wh40kNpcProtectionComponent, InteractHandEvent>(OnInteractHand,
+            before: [typeof(InteractionPopupSystem)]);
+        SubscribeLocalEvent<Wh40kNpcProtectionComponent, ActivateInWorldEvent>(OnActivate,
+            before: [typeof(InteractionPopupSystem)]);
         SubscribeLocalEvent<Wh40kNpcProtectionComponent, BeingPulledAttemptEvent>(OnPull);
         SubscribeLocalEvent<Wh40kNpcProtectionComponent, UnbuckleAttemptEvent>(OnUnbuckle);
         SubscribeLocalEvent<Wh40kNpcProtectionComponent, GetVerbsEvent<InteractionVerb>>(OnNpcVerbs,
@@ -19,6 +24,16 @@ public sealed class Wh40kNpcInteractionProtectionSystem : EntitySystem
         // Native uncuff attempts are directed at the user, not broadcast or raised on the target.
         // Starting the native uncuff do-after requires hands, including non-human users.
         SubscribeLocalEvent<HandsComponent, UncuffAttemptEvent>(OnUncuff);
+    }
+
+    // Dialogue runs first on the server; consume the fallback on both sides to prevent predicted hugs.
+    private void OnInteractHand(EntityUid uid, Wh40kNpcProtectionComponent comp, InteractHandEvent args)
+        => args.Handled = true;
+
+    private void OnActivate(EntityUid uid, Wh40kNpcProtectionComponent comp, ActivateInWorldEvent args)
+    {
+        if (args.Complex)
+            args.Handled = true;
     }
 
     private void OnPull(EntityUid uid, Wh40kNpcProtectionComponent comp, BeingPulledAttemptEvent args)

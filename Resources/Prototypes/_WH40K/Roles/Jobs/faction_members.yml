@@ -1,0 +1,115 @@
+- type: job
+  id: WH40KKasballicaMember
+  name: job-name-wh40k-kasballica-member
+  description: job-description-wh40k-kasballica-member
+  playTimeTracker: JobWH40KKasballicaMember
+  startingGear: WH40KKasballicaMemberGear
+  icon: JobIconSecurityOfficer
+  supervisors: job-supervisors-wh40k-kasballica
+  displayWeight: 40
+  assignedCompany: KasballicaMission
+  requiredCompany: KasballicaMission
+  alwaysUseSpawner: true
+  canBeAntag: false
+  accessGroups:
+  - GeneralAccess
+
+- type: job
+  id: WH40KFleetCrewman
+  name: job-name-wh40k-fleet-crewman
+  description: job-description-wh40k-fleet-crewman
+  playTimeTracker: JobWH40KFleetCrewman
+  startingGear: WH40KFleetCrewmanGear
+  icon: JobIconCargoTechnician
+  supervisors: job-supervisors-wh40k-fleet
+  displayWeight: 40
+  assignedCompany: ChartistFleet
+  requiredCompany: ChartistFleet
+  alwaysUseSpawner: true
+  canBeAntag: false
+  accessGroups:
+  - GeneralAccess
+
+- type: playTimeTracker
+  id: JobWH40KKasballicaMember
+
+- type: playTimeTracker
+  id: JobWH40KFleetCrewman
+
+- type: startingGear
+  id: WH40KKasballicaMemberGear
+  parent: WH40KFootfallKasballicaMerchantGear
+  equipment:
+    back: ClothingBackpackSatchelWanderer
+    ears: ClothingHeadsetWanderer
+    wallet: ClothingWalletLeatherBrown
+  storage:
+    back:
+    - DoubleEmergencyOxygenTankFilled
+    - ClothingMaskBreath
+    - EmergencyMedipen
+    - FoodSnackImperialHardtack
+    - DrinkWaterBottleFull
+    wallet:
+    - SpaceCash250
+
+- type: startingGear
+  id: WH40KFleetCrewmanGear
+  parent: WH40KFootfallChartistCrewmanGear
+  equipment:
+    back: ClothingBackpackSatchelWanderer
+    ears: ClothingHeadsetWanderer
+    wallet: ClothingWalletLeatherBrown
+  storage:
+    back:
+    - DoubleEmergencyOxygenTankFilled
+    - ClothingMaskBreath
+    - EmergencyMedipen
+    - FoodSnackImperialHardtack
+    - DrinkWaterBottleFull
+    wallet:
+    - SpaceCash250
+
+- type: department
+  id: WH40KKasballica
+  name: department-wh40k-kasballica
+  description: department-wh40k-kasballica-description
+  color: "#A66B9E"
+  roles:
+  - WH40KKasballicaMember
+
+- type: department
+  id: WH40KFleet
+  name: department-wh40k-fleet
+  description: department-wh40k-fleet-description
+  color: "#4B8FC9"
+  roles:
+  - WH40KFleetCrewman
+
+- type: entity
+  id: SpawnPointWH40KKasballicaMember
+  parent: SpawnPointJobBase
+  name: Kasballica member spawn point
+  suffix: WH40K, Job Spawn
+  categories: [Spawner]
+  components:
+  - type: SpawnPoint
+    job_id: WH40KKasballicaMember
+  - type: Sprite
+    layers:
+    - state: green
+    - state: security_officer
+
+- type: entity
+  id: SpawnPointWH40KFleetCrewman
+  parent: SpawnPointJobBase
+  name: Fleet crewman spawn point
+  suffix: WH40K, Job Spawn
+  categories: [Spawner]
+  components:
+  - type: SpawnPoint
+    job_id: WH40KFleetCrewman
+  - type: Sprite
+    layers:
+    - state: green
+    - state: cargo_tech

@@ -11,7 +11,6 @@ using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using Robust.Shared.Input;
 using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._WH40K.Dialogue.UI;
@@ -31,19 +30,15 @@ public sealed class DialogueOverlay : LayoutContainer
     // making the footer's measured height disagree with its arranged height.
     private const float ContinueBottomInset = 7f;
     private const float ContinueRowHeight = ContinueRowMinHeight + ContinueBottomInset;
-    private const float ChoiceAreaPadding = 4f;
-    private const float ChoiceButtonHeight = 46f;
-    private const float ChoiceButtonGap = 12f;
-    private const float ChoiceRowGap = 10f;
-    private const int MaxChoiceButtonsPerRow = 3;
-    private const float ChoiceButtonMinWidth = 164f;
-    private const float ChoiceButtonMaxWidth = 360f;
+    private const float ChoiceButtonMinHeight = 46f;
+    private const int ChoiceButtonGap = 8;
+    private const float ConversationColumnGap = 22f;
+    private const float ChoiceColumnsMinWidth = 900f;
+    private const float ChoiceRevealDuration = 0.18f;
     private const float PanelEntranceDuration = 0.24f;
+    private const float PanelResizeDuration = 0.26f;
     private const float ActorEntranceDuration = 0.34f;
     private const float ActorEntranceDistance = 120f;
-    private const int MinimumBodyFontSize = 14;
-    private const float MinimumBodyFontScale = 0.75f;
-    private const string Ellipsis = "...";
     private static readonly Color DialogueTextColor = new(232, 224, 210);
     private static readonly Color ThoughtTextColor = new(170, 176, 184);
     private static readonly Color NarrationTextColor = new(198, 194, 186);
@@ -66,16 +61,14 @@ public sealed class DialogueOverlay : LayoutContainer
     // primitive-based cut-corner box is suitable for dark decoration, but its vertex colour path
     // makes authored button palettes much darker than ordinary UI colours.
     private static readonly StyleBoxFlat ChoiceButtonNormalStyle = CreateChoiceButtonStyle(
-        new Color(5, 7, 10, 245),
-        new Color(152, 126, 63));
+        new Color(14, 19, 24, 150),
+        new Color(89, 83, 65, 170));
     private static readonly StyleBoxFlat ChoiceButtonHoverStyle = CreateChoiceButtonStyle(
-        new Color(31, 24, 6, 245),
-        new Color(255, 204, 64),
-        borderThickness: 2f);
+        new Color(54, 45, 25, 220),
+        AccentGoldBright);
     private static readonly StyleBoxFlat ChoiceButtonPressedStyle = CreateChoiceButtonStyle(
-        new Color(19, 15, 4, 245),
-        new Color(220, 167, 47),
-        borderThickness: 2f);
+        new Color(37, 30, 18, 240),
+        AccentGold);
     private static readonly StyleBoxFlat ChoiceButtonDisabledStyle = CreateChoiceButtonStyle(
         new Color(8, 10, 12, 220),
         new Color(73, 61, 35));
@@ -111,17 +104,26 @@ public sealed class DialogueOverlay : LayoutContainer
     private readonly DialoguePortraitView _rightActorView;
     private readonly PanelContainer _dialoguePanel;
     private readonly BoxContainer _dialogueContent;
+    private readonly LayoutContainer _conversationColumns;
+    private readonly PanelContainer _choicePanel;
+    private readonly Label _choiceHint;
     private readonly BoxContainer _header;
     private readonly Control _headerSpacer;
     private readonly PanelContainer _speakerPlate;
     private readonly Label _speakerLabel;
-    private readonly Label _operationLabel = new() { Visible = false };
+    private readonly Label _operationLabel = new() { Visible = false, ClipText = true };
     public void SetOperationStatus(string text) { _operationLabel.Text = text; _operationLabel.Visible = text.Length > 0; }
-    private readonly RichTextLabel _bodyLabel;
-    private readonly LayoutContainer _choiceArea;
+    private readonly DialogueTypewriterLabel _bodyLabel;
+    private readonly ScrollContainer _bodyScroll;
+    private readonly ScrollContainer _choiceArea;
+    private readonly BoxContainer _choiceList;
+    private readonly BoxContainer _footer;
     private readonly DialogueCloseButton _cancelButton;
     private readonly Button _continueButton;
-    private readonly List<Button> _choiceButtons = new();
+    private readonly List<DialogueChoiceButton> _choiceButtons = new();
+    private DialogueSceneData? _scene;
+    private Vector2? _layoutViewport;
+    private bool _layoutHasChoices;
     private DialogueActorSide _initiatorSide = DialogueActorSide.Left;
     private DialogueActorSide _npcSide = DialogueActorSide.Right;
     private bool _showActors = true;
@@ -133,13 +135,17 @@ public sealed class DialogueOverlay : LayoutContainer
     private Font _speakerFont = default!;
     private Font _continueFont = default!;
     private int _bodyBaseFontSize = 18;
-    private int _bodyMinFontSize = MinimumBodyFontSize;
-    private float _bodyMeasureWidth = 1f;
-    private float _bodyMeasureHeight = 1f;
+    private Font? _choiceFont;
     private string _currentBodyFontPath = BodyFontPath;
     private Color _currentBodyTextColor = DialogueTextColor;
     private float _panelEntranceElapsed = PanelEntranceDuration;
+    private float _panelResizeElapsed = PanelResizeDuration;
+    private float _panelResizeStartHeight;
+    private float _panelResizeTargetHeight;
     private float _continueShimmerTime;
+    private float _choiceRevealElapsed = ChoiceRevealDuration;
+    private bool _choicesVisible;
+    private bool _choicesDisabled;
     private float _leftActorTargetOffsetX;
     private float _leftActorTargetOffsetY;
     private float _rightActorTargetOffsetX;
@@ -182,6 +188,7 @@ public sealed class DialogueOverlay : LayoutContainer
 
         _actorStage = new LayoutContainer
         {
+            Name = "DialogueActorStage",
             HorizontalExpand = true,
             MinSize = new Vector2(0f, 400f)
         };
@@ -199,6 +206,7 @@ public sealed class DialogueOverlay : LayoutContainer
 
         _dialoguePanel = new PanelContainer
         {
+            Name = "DialoguePanel",
             HorizontalExpand = false,
             // Make the panel itself the click target whenever the pointer is not
             // over a real button.  PanelContainer defaults to Ignore, which was
@@ -243,6 +251,7 @@ public sealed class DialogueOverlay : LayoutContainer
         _speakerLabel = new Label
         {
             FontColorOverride = AccentGoldBright,
+            ClipText = true,
             HorizontalExpand = true,
             VAlign = Label.VAlignMode.Center,
             Margin = new Thickness(14f, 4f, 14f, 4f)
@@ -285,38 +294,112 @@ public sealed class DialogueOverlay : LayoutContainer
         _header.AddChild(_cancelButton);
         _dialogueContent.AddChild(_header);
 
-        _bodyLabel = new RichTextLabel
+        _bodyLabel = new DialogueTypewriterLabel
         {
             StyleIdentifier = BodyLabelStyleId,
             HorizontalExpand = true,
-            VerticalExpand = true,
             VerticalAlignment = VAlignment.Top,
             LineHeightScale = 1.08f
         };
 
         _bodyLabel.OnKeyBindDown += HandleDialoguePanelKeyBindDown;
-        _dialogueContent.AddChild(_bodyLabel);
-
-        _choiceArea = new LayoutContainer
+        _bodyScroll = new ScrollContainer
+        {
+            Name = "DialogueBodyScroll",
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+            ReserveScrollbarSpace = true
+        };
+        _bodyScroll.AddChild(_bodyLabel);
+        _conversationColumns = new LayoutContainer
         {
             HorizontalExpand = true,
+            VerticalExpand = true,
+            InheritChildMeasure = false
+        };
+        _conversationColumns.AddChild(_bodyScroll);
+        _dialogueContent.AddChild(_conversationColumns);
+
+        _choiceArea = new ScrollContainer
+        {
+            Name = "DialogueChoicesScroll",
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            HScrollEnabled = false,
+            ReserveScrollbarSpace = true,
             Visible = false
         };
 
+        _choiceList = new BoxContainer
+        {
+            Name = "DialogueChoicesList",
+            Orientation = LayoutOrientation.Vertical,
+            HorizontalExpand = true,
+            SeparationOverride = ChoiceButtonGap,
+            Margin = new Thickness(0f, 2f, 6f, 2f)
+        };
+        _choiceArea.AddChild(_choiceList);
         _choiceArea.OnKeyBindDown += HandleDialoguePanelKeyBindDown;
-        _dialogueContent.AddChild(_choiceArea);
+        var choiceContent = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 8
+        };
+        choiceContent.AddChild(new Label
+        {
+            Text = Loc.GetString("heretek-dialogue-ui-your-response"),
+            FontColorOverride = AccentGold,
+            Margin = new Thickness(4f, 0f, 0f, 0f)
+        });
+        choiceContent.AddChild(_choiceArea);
+        _choiceHint = new Label
+        {
+            Name = "DialogueChoicesHint",
+            SetHeight = 20f,
+            ClipText = true,
+            HorizontalExpand = true,
+            FontColorOverride = AccentGold,
+            HorizontalAlignment = HAlignment.Right,
+            MouseFilter = MouseFilterMode.Ignore
+        };
+        choiceContent.AddChild(_choiceHint);
+        _choicePanel = new PanelContainer
+        {
+            Name = "DialogueChoicesPanel",
+            HorizontalExpand = true,
+            VerticalExpand = true,
+            Visible = false,
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = Color.Transparent,
+                BorderColor = new Color(118, 102, 70, 140),
+                BorderThickness = new Thickness(1f, 0f, 0f, 0f),
+                ContentMarginLeftOverride = 18f
+            }
+        };
+        _choicePanel.AddChild(choiceContent);
+        _conversationColumns.AddChild(_choicePanel);
+        // Constrain both measurement and arrangement to the same anchored slots.
+        // BoxContainer measures expanding children sequentially at wider sizes,
+        // which can replace a rich label's wrapping between arrange passes.
+        SetGrowHorizontal(_bodyScroll, GrowDirection.Constrain);
+        SetGrowVertical(_bodyScroll, GrowDirection.Constrain);
+        SetGrowHorizontal(_choicePanel, GrowDirection.Constrain);
+        SetGrowVertical(_choicePanel, GrowDirection.Constrain);
         _dialogueContent.AddChild(_operationLabel);
 
-        var footer = new BoxContainer
+        _footer = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             HorizontalExpand = true,
+            Visible = false,
             MinSize = new Vector2(0f, ContinueRowHeight)
         };
 
-        footer.OnKeyBindDown += HandleDialoguePanelKeyBindDown;
+        _footer.OnKeyBindDown += HandleDialoguePanelKeyBindDown;
 
-        footer.AddChild(new Control
+        _footer.AddChild(new Control
         {
             HorizontalExpand = true
         });
@@ -325,6 +408,7 @@ public sealed class DialogueOverlay : LayoutContainer
         {
             Text = Loc.GetString("heretek-dialogue-ui-continue"),
             Visible = false,
+            ReservesSpace = true,
             MinSize = new Vector2(64f, ContinueRowMinHeight),
             MaxSize = new Vector2(64f, ContinueRowMinHeight),
             // The footer owns the bottom inset. Keeping this margin horizontal
@@ -337,8 +421,8 @@ public sealed class DialogueOverlay : LayoutContainer
         _continueButton.OnMouseEntered += _ => ApplyContinueButtonStyle(hovered: true);
         _continueButton.OnMouseExited += _ => ApplyContinueButtonStyle(hovered: false);
         _continueButton.OnPressed += _ => AdvancePressed?.Invoke();
-        footer.AddChild(_continueButton);
-        _dialogueContent.AddChild(footer);
+        _footer.AddChild(_continueButton);
+        _dialogueContent.AddChild(_footer);
     }
 
     private static DialoguePortraitView CreateActorView(Direction direction)
@@ -384,20 +468,18 @@ public sealed class DialogueOverlay : LayoutContainer
 
     public void ApplyScene(DialogueSceneData scene, bool playEntrance = true)
     {
+        _scene = scene;
+        _layoutViewport = null;
         SetDimOpacity(scene.DimOpacity);
         SetCancelVisible(scene.AllowCancel);
 
-        var dialogueHeight = MathF.Max(scene.WindowMinHeight, scene.WindowMaxHeight);
         var actorWidth = MathF.Max(scene.ActorWidth, 1f);
         var actorHeight = MathF.Max(scene.ActorHeight, 1f);
         var actorGap = MathF.Max(scene.ActorGap, 0f);
         var actorOverlap = Math.Clamp(scene.ActorOverlap, 0f, actorHeight - 1f);
         var actorStageHeight = MathF.Max(1f, actorHeight - actorOverlap);
-        var actorBottomOffset = MathF.Max(scene.WindowMargin + dialogueHeight - MathF.Max(scene.ActorWindowOverlap, 0f), 0f);
-        var actorStageOffsetY = scene.ActorStageOffsetY;
         var leftActorOffsetX = scene.LeftActorOffsetX;
         var rightActorOffsetX = scene.RightActorOffsetX;
-        var dialogueSize = new Vector2(scene.WindowWidth, dialogueHeight);
 
         if (Math.Abs(leftActorOffsetX) < 0.01f && Math.Abs(rightActorOffsetX) < 0.01f)
         {
@@ -406,17 +488,11 @@ public sealed class DialogueOverlay : LayoutContainer
             rightActorOffsetX = legacyActorBaseOffsetX + ResolveActorAlignmentOffset(scene.RightActorAlignmentX, actorWidth);
         }
 
-        _dialoguePanel.MinSize = dialogueSize;
-        _dialoguePanel.MaxSize = dialogueSize;
-        _dialoguePanel.SetSize = dialogueSize;
-        ApplyDialoguePosition(scene.WindowAnchor, scene.WindowMargin, dialogueSize);
         _leftActorPanel.SetSize = new Vector2(actorWidth, actorHeight);
         _rightActorPanel.SetSize = new Vector2(actorWidth, actorHeight);
         _actorStage.MinSize = new Vector2(0f, actorStageHeight);
         SetMarginLeft(_actorStage, scene.WindowMargin);
         SetMarginRight(_actorStage, scene.WindowMargin);
-        SetMarginTop(_actorStage, -(actorStageHeight + actorBottomOffset) + actorStageOffsetY);
-        SetMarginBottom(_actorStage, -actorBottomOffset - actorStageOffsetY);
         _leftActorView.SetDialogueScale(scene.ActorScale);
         _rightActorView.SetDialogueScale(scene.ActorScale);
         _leftActorTargetOffsetX = leftActorOffsetX;
@@ -426,8 +502,7 @@ public sealed class DialogueOverlay : LayoutContainer
         ApplyActorPosition(_leftActorPanel, _leftActorTargetOffsetX, _leftActorTargetOffsetY);
         ApplyActorPosition(_rightActorPanel, _rightActorTargetOffsetX, _rightActorTargetOffsetY);
         ApplyTypography(scene);
-        UpdateBodyMeasureBounds();
-        LayoutChoiceButtons();
+        InvalidateMeasure();
 
         _showActors = scene.ShowActors;
         _initiatorSide = scene.InitiatorSide;
@@ -513,7 +588,6 @@ public sealed class DialogueOverlay : LayoutContainer
         _speakerPlate.Visible = !string.IsNullOrWhiteSpace(speakerName);
         _speakerLabel.Visible = _speakerPlate.Visible;
         UpdateHeaderVisibility();
-        UpdateBodyMeasureBounds();
     }
 
     public void SetLineType(DialogueLineType lineType)
@@ -542,35 +616,37 @@ public sealed class DialogueOverlay : LayoutContainer
         Func<DialogueTextData, string> localize)
     {
         ClearChoiceButtons();
+        _choicesVisible = false;
+        _choicesDisabled = false;
+        _choiceRevealElapsed = 0f;
+        _choiceArea.Modulate = Color.Transparent;
 
         if (choices.Count == 0)
         {
             _choiceArea.Visible = false;
-            UpdateBodyMeasureBounds();
+            _choicePanel.Visible = false;
+            InvalidateMeasure();
             return;
         }
 
         _choiceArea.Visible = true;
-        _choiceArea.MinSize = new Vector2(0f, GetChoiceAreaHeight(choices.Count));
+        _choicePanel.Visible = true;
+        _choiceArea.VScroll = 0f;
+        _choiceArea.VScrollTarget = 0f;
 
         for (var i = 0; i < choices.Count; i++)
         {
             var choiceIndex = choices[i].ChoiceIndex;
-            var button = new Button
+            var text = localize(choices[i].Text);
+            var button = new DialogueChoiceButton(text, _choiceFont, i + 1)
             {
-                Text = localize(choices[i].Text),
-                ToolTip = localize(choices[i].Text),
-                Visible = false,
-                ClipText = true,
-                // A button is created before the typewriter line finishes.
-                // Reserve and arrange its final slot while hidden, otherwise a
-                // just-revealed button can render one frame at (0, 0) before
-                // LayoutContainer catches up on the following UI tick.
-                ReservesSpace = true,
+                Disabled = true,
+                HorizontalExpand = true,
+                MinHeight = ChoiceButtonMinHeight,
                 StyleBoxOverride = ChoiceButtonNormalStyle
             };
 
-            button.Label.FontColorOverride = ChoiceTextColor;
+            button.TextColor = ChoiceTextColor;
             var hovered = false;
             button.OnMouseEntered += _ =>
             {
@@ -586,26 +662,35 @@ public sealed class DialogueOverlay : LayoutContainer
             button.OnButtonUp += _ => ApplyChoiceButtonStyle(button, hovered);
             button.OnPressed += _ => ChoiceSelected?.Invoke(choiceIndex);
             _choiceButtons.Add(button);
-            _choiceArea.AddChild(button);
+            _choiceList.AddChild(button);
         }
 
-        UpdateBodyMeasureBounds();
-        LayoutChoiceButtons();
+        InvalidateMeasure();
     }
 
     public void SetChoicesVisible(bool visible)
     {
+        if (visible && !_choicesVisible)
+            _choiceRevealElapsed = 0f;
+
+        _choicesVisible = visible;
+        _choiceArea.Modulate = Color.White.WithAlpha(visible ? SmoothStep(_choiceRevealElapsed / ChoiceRevealDuration) : 0f);
         foreach (var button in _choiceButtons)
         {
-            button.Visible = visible;
+            // Keep the complete list measured during speech, while preventing
+            // interaction until its reveal. This also avoids a layout jump.
+            button.Disabled = !visible || _choicesDisabled;
+            button.ToolTip = visible ? button.Text : null;
+            ApplyChoiceButtonStyle(button, hovered: false);
         }
     }
 
     public void SetChoicesDisabled(bool disabled)
     {
+        _choicesDisabled = disabled;
         foreach (var button in _choiceButtons)
         {
-            button.Disabled = disabled;
+            button.Disabled = disabled || !_choicesVisible;
             ApplyChoiceButtonStyle(button, hovered: false);
         }
     }
@@ -613,52 +698,27 @@ public sealed class DialogueOverlay : LayoutContainer
     public void ClearChoices()
     {
         ClearChoiceButtons();
+        _choicesVisible = false;
+        _choicesDisabled = false;
         _choiceArea.Visible = false;
-        _choiceArea.MinSize = Vector2.Zero;
-        UpdateBodyMeasureBounds();
+        _choicePanel.Visible = false;
+        _choiceHint.Text = string.Empty;
+        InvalidateMeasure();
     }
 
     public string PrepareBodyText(string text)
     {
-        UpdateBodyMeasureBounds();
-
-        if (string.IsNullOrEmpty(text))
-        {
-            ApplyBodyFont(_bodyBaseFontSize);
-            return text;
-        }
-
-        for (var fontSize = _bodyBaseFontSize; fontSize >= _bodyMinFontSize; fontSize--)
-        {
-            ApplyBodyFont(fontSize);
-
-            if (DoesBodyTextFit(text))
-                return text;
-        }
-
-        ApplyBodyFont(_bodyMinFontSize);
-        return TruncateBodyText(text);
+        // Preserve the entire line, including during typewriter playback. Long
+        // speeches scroll instead of being shrunk or permanently truncated.
+        ApplyBodyFont(_bodyBaseFontSize);
+        _bodyScroll.VScroll = 0f;
+        _bodyScroll.VScrollTarget = 0f;
+        return text;
     }
 
     public void SetBodyText(string text, string? layoutText = null)
     {
-        // Lay out against the complete line while only drawing the revealed
-        // prefix. The old approach measured a different string on every
-        // typewriter tick, so a word close to the right edge could repeatedly
-        // jump between an unwrapped and wrapped line for one frame.
-        layoutText ??= text;
-        var message = new FormattedMessage();
-        message.AddText(text);
-
-        if (text.Length < layoutText.Length)
-        {
-            message.PushColor(Color.Transparent);
-            message.AddText(layoutText[text.Length..]);
-            message.Pop();
-        }
-
-        _bodyLabel.SetMessage(message, _currentBodyTextColor);
-        _bodyLabel.Measure(new Vector2(_bodyMeasureWidth, _bodyMeasureHeight));
+        _bodyLabel.SetRevealedText(layoutText ?? text, text.Length, _currentBodyTextColor);
     }
 
     public void SetContinueVisible(bool visible)
@@ -680,7 +740,6 @@ public sealed class DialogueOverlay : LayoutContainer
         _cancelButton.Visible = visible;
         _cancelButton.Disabled = false;
         UpdateHeaderVisibility();
-        UpdateBodyMeasureBounds();
     }
 
     public void SetCancelDisabled(bool disabled)
@@ -706,7 +765,16 @@ public sealed class DialogueOverlay : LayoutContainer
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        if (_layoutViewport is { } viewport)
+            UpdateDialogueBounds(viewport);
+        UpdatePanelResize(args.DeltaSeconds);
         UpdateActorEntrances(args.DeltaSeconds);
+        if (_choicesVisible)
+        {
+            _choiceRevealElapsed = MathF.Min(ChoiceRevealDuration, _choiceRevealElapsed + args.DeltaSeconds);
+            _choiceArea.Modulate = Color.White.WithAlpha(SmoothStep(_choiceRevealElapsed / ChoiceRevealDuration));
+        }
+        UpdateChoiceHint();
 
         if (_panelEntranceElapsed < PanelEntranceDuration)
         {
@@ -1113,9 +1181,7 @@ public sealed class DialogueOverlay : LayoutContainer
         _speakerFont = _resourceCache.GetFont(SpeakerFontPath, Math.Max(scene.SpeakerFontSize, 8));
         _continueFont = _resourceCache.GetFont(ContinueFontPath, Math.Max(scene.ContinueFontSize, 8));
         _bodyBaseFontSize = Math.Max(scene.BodyFontSize, 8);
-        _bodyMinFontSize = Math.Min(
-            _bodyBaseFontSize,
-            Math.Max(MinimumBodyFontSize, (int) MathF.Floor(_bodyBaseFontSize * MinimumBodyFontScale)));
+        _choiceFont = _resourceCache.GetFont(BodyFontPath, Math.Max(scene.BodyFontSize - 2, 14));
 
         _speakerLabel.FontOverride = _speakerFont;
         _continueButton.Label.FontOverride = _continueFont;
@@ -1125,126 +1191,131 @@ public sealed class DialogueOverlay : LayoutContainer
     private void ApplyBodyFont(int fontSize)
     {
         var bodyFont = _resourceCache.GetFont(_currentBodyFontPath, Math.Max(fontSize, 8));
-
-        _bodyLabel.Stylesheet = new Stylesheet(new[]
-        {
-            new StyleRule(
-                new SelectorElement(typeof(RichTextLabel), null, BodyLabelStyleId, null),
-                new[]
-                {
-                    new StyleProperty("font", bodyFont)
-                })
-        });
-
-        _bodyLabel.ForceRunStyleUpdate();
+        _bodyLabel.SetFont(bodyFont);
     }
 
-    private void UpdateBodyMeasureBounds()
+    protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
-        var uiScale = MathF.Max(UIScale, 0.01f);
-        var speakerHeight = _header.Visible
-            ? MathF.Max(SpeakerPlateHeight, (_speakerFont?.GetLineHeight(uiScale) ?? 0f) / uiScale)
-            : 0f;
-        var continueHeight = MathF.Max(
-            ContinueRowHeight,
-            (_continueFont?.GetLineHeight(uiScale) ?? ContinueRowMinHeight * uiScale) / uiScale + ContinueBottomInset);
-        var choiceHeight = _choiceArea.Visible
-            ? _choiceArea.MinSize.Y
-            : 0f;
-        var dialogueWidth = _dialoguePanel.SetSize.X > 0f ? _dialoguePanel.SetSize.X : _dialoguePanel.MaxSize.X;
-        var dialogueHeight = _dialoguePanel.SetSize.Y > 0f ? _dialoguePanel.SetSize.Y : _dialoguePanel.MaxSize.Y;
-        var visibleChildren = 2; // body + footer
-
-        if (_header.Visible)
-            visibleChildren++;
-
-        if (_choiceArea.Visible)
-            visibleChildren++;
-
-        // PanelContainer first removes its StyleBox's content margins, then
-        // DialogueContent applies its own margin. Match that exact rectangle
-        // here; a two/three-pixel disagreement is enough to destabilize a word
-        // sitting on a wrap boundary.
-        _bodyMeasureWidth = MathF.Max(
-            1f,
-            dialogueWidth - DialoguePanelStyle.MinimumSize.X - DialogueContentMargin * 2f);
-        _bodyMeasureHeight = MathF.Max(
-            1f,
-            dialogueHeight - DialoguePanelStyle.MinimumSize.Y
-            - DialogueContentMargin * 2f
-            - speakerHeight
-            - choiceHeight
-            - continueHeight
-            - DialogueContentSeparation * Math.Max(visibleChildren - 1, 0));
+        UpdateDialogueBounds(availableSize);
+        return base.MeasureOverride(availableSize);
     }
 
-    private bool DoesBodyTextFit(string text)
+    protected override Vector2 ArrangeOverride(Vector2 finalSize)
     {
-        _bodyLabel.SetMessage(FormattedMessage.FromUnformatted(text), _currentBodyTextColor);
-        _bodyLabel.Measure(new Vector2(_bodyMeasureWidth, _bodyMeasureHeight));
-        return _bodyLabel.DesiredSize.Y <= _bodyMeasureHeight + 0.5f;
+        // Size is assigned after ArrangeOverride. Use the incoming viewport so
+        // children receive their final bounds on the same layout pass.
+        UpdateDialogueBounds(finalSize);
+        var result = base.ArrangeOverride(finalSize);
+        UpdateChoiceHint();
+        return result;
     }
 
-    private void LayoutChoiceButtons()
+    private void UpdateDialogueBounds(Vector2 viewport)
     {
-        if (_choiceButtons.Count == 0)
+        if (_scene is not { } scene)
             return;
 
-        var count = _choiceButtons.Count;
-        var availableWidth = MathF.Max(1f, _bodyMeasureWidth);
-        var rows = (count + MaxChoiceButtonsPerRow - 1) / MaxChoiceButtonsPerRow;
-        _choiceArea.MinSize = new Vector2(0f, GetChoiceAreaHeight(count));
+        var hasChoices = _choicePanel.Visible;
+        // UI-scale conversion can introduce sub-pixel roundoff between measure
+        // and arrange. It must not cancel or restart a height transition.
+        var sameViewport = _layoutViewport is { } previousViewport && previousViewport.EqualsApprox(viewport, 0.01f);
+        if (sameViewport && _layoutHasChoices == hasChoices)
+            return;
 
-        for (var row = 0; row < rows; row++)
+        // A new scene or a viewport resize must fit immediately. Only changes
+        // within an already visible dialogue animate from its current height.
+        var animateResize = sameViewport && _dialoguePanel.VisibleInTree;
+        _layoutViewport = viewport;
+        _layoutHasChoices = hasChoices;
+        var baseHeight = MathF.Max(scene.WindowMinHeight, scene.WindowMaxHeight);
+        var width = MathF.Min(scene.WindowWidth, MathF.Max(1f, viewport.X - scene.WindowMargin * 2f));
+        var stacked = width < ChoiceColumnsMinWidth;
+        SetAnchorAndMarginPreset(_bodyScroll, LayoutPreset.Wide);
+        SetAnchorAndMarginPreset(_choicePanel, LayoutPreset.Wide);
+        if (hasChoices)
         {
-            var firstIndex = row * MaxChoiceButtonsPerRow;
-            var rowCount = Math.Min(MaxChoiceButtonsPerRow, count - firstIndex);
-            var maxWidth = MathF.Max(64f, (availableWidth - ChoiceButtonGap * Math.Max(rowCount - 1, 0)) / rowCount);
-            var minimumWidth = MathF.Min(ChoiceButtonMinWidth, maxWidth);
-            var buttonWidth = MathF.Max(minimumWidth, MathF.Min(ChoiceButtonMaxWidth, maxWidth));
-            var totalWidth = buttonWidth * rowCount + ChoiceButtonGap * Math.Max(rowCount - 1, 0);
-            var firstCenter = -totalWidth * 0.5f + buttonWidth * 0.5f;
-            var top = ChoiceAreaPadding + row * (ChoiceButtonHeight + ChoiceRowGap);
-
-            for (var column = 0; column < rowCount; column++)
+            if (stacked)
             {
-                var button = _choiceButtons[firstIndex + column];
-                var centerX = firstCenter + column * (buttonWidth + ChoiceButtonGap);
-                var size = new Vector2(buttonWidth, ChoiceButtonHeight);
-
-                button.MinSize = size;
-                button.MaxSize = size;
-                button.SetSize = size;
-                SetAnchorPreset(button, LayoutPreset.CenterTop);
-                SetMarginLeft(button, centerX - buttonWidth * 0.5f);
-                SetMarginRight(button, centerX + buttonWidth * 0.5f);
-                SetMarginTop(button, top);
-                SetMarginBottom(button, top + ChoiceButtonHeight);
+                SetAnchorBottom(_bodyScroll, 1f / 3f);
+                SetMarginBottom(_bodyScroll, -ConversationColumnGap / 2f);
+                SetAnchorTop(_choicePanel, 1f / 3f);
+                SetMarginTop(_choicePanel, ConversationColumnGap / 2f);
+            }
+            else
+            {
+                const float bodyShare = 1.15f / 2.15f;
+                SetAnchorRight(_bodyScroll, bodyShare);
+                SetMarginRight(_bodyScroll, -ConversationColumnGap / 2f);
+                SetAnchorLeft(_choicePanel, bodyShare);
+                SetMarginLeft(_choicePanel, ConversationColumnGap / 2f);
             }
         }
+        // Keep the footer's slot throughout ordinary speech, including while
+        // its indicator is hidden, so finishing the typewriter cannot move text.
+        _footer.Visible = !hasChoices;
+        // Reserve a viewport-based space for a choice step before the answers
+        // appear. Counts, wrapping and typewriter updates never resize it.
+        // Ordinary speech retains the scene's compact authored dimensions.
+        var choiceHeight = stacked
+            ? Math.Clamp(viewport.Y * 0.65f, 340f, 440f)
+            : Math.Clamp(viewport.Y * 0.42f, 300f, 360f);
+        var requestedHeight = hasChoices ? MathF.Max(baseHeight, choiceHeight) : baseHeight;
+        var height = MathF.Min(requestedHeight, MathF.Max(1f, viewport.Y - scene.WindowMargin * 2f));
+        _panelResizeStartHeight = _dialoguePanel.SetHeight;
+        _panelResizeTargetHeight = height;
+        _panelResizeElapsed = animateResize && float.IsFinite(_panelResizeStartHeight) && _panelResizeStartHeight != height
+            ? 0f
+            : PanelResizeDuration;
+        ApplyDialogueSize(width, _panelResizeElapsed < PanelResizeDuration ? _panelResizeStartHeight : height);
     }
 
-    private static float GetChoiceAreaHeight(int count)
+    private void UpdatePanelResize(float deltaSeconds)
     {
-        if (count <= 0)
-            return 0f;
+        if (_panelResizeElapsed >= PanelResizeDuration)
+            return;
 
-        var rows = (count + MaxChoiceButtonsPerRow - 1) / MaxChoiceButtonsPerRow;
-        return ChoiceAreaPadding * 2f
-               + rows * ChoiceButtonHeight
-               + Math.Max(rows - 1, 0) * ChoiceRowGap;
+        _panelResizeElapsed = MathF.Min(PanelResizeDuration, _panelResizeElapsed + deltaSeconds);
+        var height = _panelResizeElapsed >= PanelResizeDuration
+            ? _panelResizeTargetHeight
+            : MathHelper.Lerp(_panelResizeStartHeight, _panelResizeTargetHeight, SmoothStep(_panelResizeElapsed / PanelResizeDuration));
+        ApplyDialogueSize(_dialoguePanel.SetWidth, height);
+    }
+
+    private void ApplyDialogueSize(float width, float height)
+    {
+        if (_scene is not { } scene)
+            return;
+
+        var size = new Vector2(width, height);
+        _dialoguePanel.MinSize = size;
+        _dialoguePanel.MaxSize = size;
+        _dialoguePanel.SetSize = size;
+        ApplyDialoguePosition(scene.WindowAnchor, scene.WindowMargin, size);
+
+        // Keep portraits attached to the top of the dialogue as the frame grows.
+        var actorStageHeight = _actorStage.MinSize.Y;
+        var actorBottomOffset = MathF.Max(scene.WindowMargin + height - MathF.Max(scene.ActorWindowOverlap, 0f), 0f);
+        SetMarginTop(_actorStage, -(actorStageHeight + actorBottomOffset) + scene.ActorStageOffsetY);
+        SetMarginBottom(_actorStage, -actorBottomOffset - scene.ActorStageOffsetY);
+    }
+
+    private void UpdateChoiceHint()
+    {
+        var overflowing = _choiceButtons.Count > 0
+                          && _choicesVisible
+                          && _choiceList.Height > _choiceArea.Height + 1f;
+        _choiceHint.Text = overflowing ? Loc.GetString("heretek-dialogue-ui-scroll-responses") : string.Empty;
     }
 
     private static StyleBoxFlat CreateChoiceButtonStyle(
         Color background,
-        Color border,
-        float borderThickness = 1f)
+        Color border)
     {
         return new StyleBoxFlat
         {
             BackgroundColor = background,
             BorderColor = border,
-            BorderThickness = new Thickness(borderThickness),
+            BorderThickness = new Thickness(3f, 0f, 0f, 0f),
             ContentMarginLeftOverride = 14f,
             ContentMarginRightOverride = 14f,
             ContentMarginTopOverride = 4f,
@@ -1252,14 +1323,14 @@ public sealed class DialogueOverlay : LayoutContainer
         };
     }
 
-    private static void ApplyChoiceButtonStyle(Button button, bool hovered, bool pressed = false)
+    private static void ApplyChoiceButtonStyle(DialogueChoiceButton button, bool hovered, bool pressed = false)
     {
         button.StyleBoxOverride = button.Disabled
             ? ChoiceButtonDisabledStyle
             : pressed ? ChoiceButtonPressedStyle
             : hovered ? ChoiceButtonHoverStyle
             : ChoiceButtonNormalStyle;
-        button.Label.FontColorOverride = button.Disabled ? ChoiceDisabledTextColor : ChoiceTextColor;
+        button.TextColor = button.Disabled ? ChoiceDisabledTextColor : ChoiceTextColor;
     }
 
     private void ApplyContinueButtonStyle(bool hovered)
@@ -1278,51 +1349,10 @@ public sealed class DialogueOverlay : LayoutContainer
     {
         foreach (var button in _choiceButtons)
         {
-            button.Orphan();
+            button.Dispose();
         }
 
         _choiceButtons.Clear();
     }
 
-    private string TruncateBodyText(string text)
-    {
-        if (DoesBodyTextFit(Ellipsis))
-            return Ellipsis;
-
-        var low = 0;
-        var high = text.Length;
-        var best = 0;
-
-        while (low <= high)
-        {
-            var mid = (low + high) / 2;
-            var candidate = BuildEllipsizedText(text, mid);
-
-            if (DoesBodyTextFit(candidate))
-            {
-                best = mid;
-                low = mid + 1;
-            }
-            else
-            {
-                high = mid - 1;
-            }
-        }
-
-        return BuildEllipsizedText(text, best);
-    }
-
-    private static string BuildEllipsizedText(string text, int length)
-    {
-        if (length <= 0)
-            return Ellipsis;
-
-        var slice = text[..Math.Min(length, text.Length)].TrimEnd();
-        var lastSpace = slice.LastIndexOf(' ');
-
-        if (lastSpace > 0 && slice.Length - lastSpace <= 16)
-            slice = slice[..lastSpace].TrimEnd();
-
-        return string.IsNullOrEmpty(slice) ? Ellipsis : slice + Ellipsis;
-    }
 }

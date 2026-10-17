@@ -199,7 +199,17 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
         return _reconciliation;
     }
 
-    public async Task<PersistentInventorySaveResult> TrySaveAsync(
+    public Task<PersistentInventorySaveResult> TrySaveAsync(
+        PersistentInventorySaveRequest request,
+        CancellationToken cancel = default)
+    {
+        var reset = EntityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>();
+        if (reset.IsResetting(request.UserId))
+            return Task.FromResult(Result(PersistentInventorySaveStatus.Busy, "Player reset is in progress.", request));
+        return reset.RunPlayerOperationAsync(request.UserId, () => TrySaveCoreAsync(request, cancel));
+    }
+
+    private async Task<PersistentInventorySaveResult> TrySaveCoreAsync(
         PersistentInventorySaveRequest request,
         CancellationToken cancel = default)
     {

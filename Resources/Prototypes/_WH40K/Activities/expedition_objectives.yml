@@ -1,0 +1,83 @@
+- type: entity
+  parent: KoronusMissionBlackBox
+  id: KoronusExpeditionDataCore
+  name: recovered voidship data core
+  description: A sealed cogitator core. Extract it and deliver it to the archive intake on Footfall.
+
+- type: entity
+  parent: KoronusMissionBlackBox
+  id: KoronusExpeditionXenoSample
+  name: quarantined xenobiological sample
+  description: A sealed sample from an infested site. Extract it and deliver it to the astropathic intake on Footfall.
+
+- type: entity
+  parent: KoronusMissionBlackBox
+  id: KoronusExpeditionRelicCasket
+  name: shielded xenorelic casket
+  description: An isolated relic in a shielded casket. Extract it and deliver it to the astropathic intake on Footfall.
+
+- type: entity
+  parent: KoronusAivoriusCargoManifest
+  id: KoronusExpeditionContrabandLedger
+  name: sealed contraband ledger
+  description: A smuggler's ledger with route codes and cargo seals. Extract it and deliver it to the cargo Officio on Footfall.
+
+- type: entity
+  parent: KoronusAivoriusCargoManifest
+  id: KoronusExpeditionSealedBonds
+  name: recovered charter bonds
+  description: Sealed proof of a lost merchant charter. Extract it and deliver it to the cargo Officio on Footfall.
+
+- type: entity
+  parent: KoronusFoulstoneMineCore
+  id: KoronusExpeditionOreCore
+  name: expedition assay core
+  description: A labelled sample from an uncharted asteroid. Extract it and deliver it to the Miners' Guild on Footfall.
+
+- type: entity
+  parent: KoronusSottosRescuePatient
+  id: KoronusExpeditionSurvivor
+  name: stranded expedition survivor
+  description: A living survivor in a sealed evacuation harness. Carry them off the site and deliver them to the Medicae intake on Footfall.
+  components:
+  - type: BreathingImmunity
+  - type: PressureImmunity
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 1000
+
+- type: entity
+  parent: MobWH40KActivityRaiderDeckhand
+  id: MobKoronusExpeditionRaider
+  name: void scavenger
+  description: A hardened scavenger protecting a claim in the void.
+  components:
+  - type: BreathingImmunity
+  - type: PressureImmunity
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 1000
+
+- type: entity
+  parent: MobWH40KWarpDoppelganger
+  id: MobKoronusExpeditionEcho
+  name: voidbound warp echo
+  description: A hostile reflection that follows the living through airless ruins.
+  components:
+  - type: BreathingImmunity
+  - type: PressureImmunity
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 1000
+
+- type: entity
+  parent: MobWH40KChaosShooter
+  id: MobKoronusExpeditionHeretic
+  name: heretic depot guard
+  description: A void-equipped heretic guarding stolen weapons with a lasgun.
+  components:
+  - type: BreathingImmunity
+  - type: PressureImmunity
+  - type: Temperature
+    coldDamageThreshold: 0
+    heatDamageThreshold: 1000

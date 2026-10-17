@@ -30,6 +30,7 @@ namespace Content.Shared.Stacks
         [Dependency] private SharedPhysicsSystem _physics = default!;
         [Dependency] protected SharedPopupSystem Popup = default!;
         [Dependency] private SharedStorageSystem _storage = default!;
+        [Dependency] private Content.Shared._WH40K.SectorMap.SharedKoronusStationPropertySystem _stationProperty = default!;
 
         public override void Initialize()
         {
@@ -137,6 +138,7 @@ namespace Content.Shared.Stacks
 
         private bool CanTransferQuestUnits(EntityUid donor, EntityUid recipient)
         {
+            if (_stationProperty.IsProperty(donor) || _stationProperty.IsProperty(recipient)) return false;
             if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(donor) ||
                 HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(recipient) ||
                 HasComp<Content.Shared._WH40K.Quests.Wh40kQuestReservationComponent>(donor) ||
@@ -268,6 +270,8 @@ namespace Content.Shared.Stacks
         /// </summary>
         public bool Use(EntityUid uid, int amount, StackComponent? stack = null)
         {
+            if (TryComp<Content.Shared._WH40K.SectorMap.Components.KoronusStationPropertyComponent>(uid, out var property) &&
+                !_stationProperty.CanUse(uid, property)) return false;
             if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(uid) ||
                 HasComp<Content.Shared._WH40K.Quests.Wh40kQuestReservationComponent>(uid)) return false;
             if (!Resolve(uid, ref stack))

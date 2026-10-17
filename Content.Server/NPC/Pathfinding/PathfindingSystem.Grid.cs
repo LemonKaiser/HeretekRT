@@ -8,6 +8,7 @@ using Robust.Shared.Collections;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -406,6 +407,11 @@ public sealed partial class PathfindingSystem
         var gridOrigin = chunk.Origin * ChunkSize;
         var tileEntities = new ValueList<EntityUid>();
         var chunkPolys = chunk.BufferPolygons;
+        // A center point can miss thin fences and railings between adjacent samples.
+        // Inset the cell slightly so merely touching its edge does not block a neighbouring cell.
+        var cellShape = new PolygonShape();
+        cellShape.SetAsBox(StepOffset - 0.001f, StepOffset - 0.001f);
+        var cellEntities = new HashSet<EntityUid>();
 
         for (var i = 0; i < chunkPolys.Length; i++)
         {
@@ -464,6 +470,7 @@ public sealed partial class PathfindingSystem
                         var collisionMask = 0x0;
                         var collisionLayer = 0x0;
                         var damage = 0f;
+                        var queriedCell = false;
 
                         foreach (var ent in tileEntities)
                         {
@@ -487,7 +494,7 @@ public sealed partial class PathfindingSystem
 
                                 foreach (var proxy in fixture.Proxies)
                                 {
-                                    if (!proxy.AABB.Contains(localPos))
+                                    if (!proxy.AABB.Enlarged(StepOffset).Contains(localPos))
                                         continue;
 
                                     intersects = true;
@@ -499,9 +506,19 @@ public sealed partial class PathfindingSystem
                                     continue;
                                 }
 
-                                if (!_fixtures.TestPoint(fixture.Shape, new Transform(xform.LocalPosition, xform.LocalRotation), localPos))
+                                var fixtureTransform = new Transform(xform.LocalPosition, xform.LocalRotation);
+                                if (!_fixtures.TestPoint(fixture.Shape, fixtureTransform, localPos))
                                 {
-                                    continue;
+                                    if (!queriedCell)
+                                    {
+                                        cellEntities.Clear();
+                                        _lookup.GetLocalEntitiesIntersecting(grid.Owner, cellShape,
+                                            new Transform(localPos, Angle.Zero), cellEntities,
+                                            LookupFlags.Static | LookupFlags.Dynamic);
+                                        queriedCell = true;
+                                    }
+                                    if (!cellEntities.Contains(ent))
+                                        continue;
                                 }
 
                                 collisionLayer |= fixture.CollisionLayer;

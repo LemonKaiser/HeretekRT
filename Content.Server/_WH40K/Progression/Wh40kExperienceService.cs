@@ -30,7 +30,16 @@ public sealed class Wh40kExperienceService
 
     private readonly Wh40kPvpAntiFarmTracker _pvpAntiFarm = new();
 
-    public async Task<Wh40kExperienceAwardResult> AwardAsync(
+    public Task<Wh40kExperienceAwardResult> AwardAsync(
+        NetUserId userId,
+        Wh40kXpAwardRequest request,
+        CancellationToken cancel = default)
+    {
+        return _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => AwardCoreAsync(userId, request, cancel));
+    }
+
+    private async Task<Wh40kExperienceAwardResult> AwardCoreAsync(
         NetUserId userId,
         Wh40kXpAwardRequest request,
         CancellationToken cancel = default)

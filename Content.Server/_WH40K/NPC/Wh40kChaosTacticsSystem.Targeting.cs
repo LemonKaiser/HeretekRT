@@ -13,6 +13,7 @@ namespace Content.Server._WH40K.NPC;
 public sealed partial class Wh40kChaosTacticsSystem
 {
     [Dependency] private NPCUtilitySystem _utility = default!;
+    [ViewVariables] public long TargetSelectionCount;
 
     private bool IsCombatTarget(EntityUid target)
     {
@@ -45,6 +46,7 @@ public sealed partial class Wh40kChaosTacticsSystem
     public EntityUid SelectCombatTarget(NPCBlackboard blackboard, Wh40kChaosTacticsComponent comp,
         float meleeRange = 2f, string targetKey = "Target")
     {
+        TargetSelectionCount++;
         var uid = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
         var vision = blackboard.GetValueOrDefault<float>(blackboard.GetVisionRadiusKey(EntityManager), EntityManager);
         var origin = _transform.GetMapCoordinates(uid);
@@ -58,6 +60,10 @@ public sealed partial class Wh40kChaosTacticsSystem
         var closeDistance = meleeRange;
         foreach (var candidate in result.Entities.Keys.ToArray())
         {
+            // A previously unreachable enemy can step onto our side of the obstacle during the retry cooldown.
+            if (comp.IgnoredTarget == candidate && origin.InRange(_transform.GetMapCoordinates(candidate), meleeRange) &&
+                CanMoveDirectly(uid, candidate))
+                comp.IgnoredTarget = null;
             if (!CanFightTarget(uid, candidate, comp) || !CanSeeTarget(uid, candidate, comp, vision))
             {
                 result.Entities.Remove(candidate);

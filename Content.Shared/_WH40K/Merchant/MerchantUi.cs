@@ -40,6 +40,7 @@ public sealed class MerchantUpdateState : BoundUserInterfaceMessage
 {
     public Guid CatalogId;
     public bool Buyback;
+    public int Balance;
     public string Title;
     public string Greeting;
     public float RefreshInSeconds;
@@ -53,7 +54,8 @@ public sealed class MerchantUpdateState : BoundUserInterfaceMessage
         int refreshNumber,
         List<MerchantOfferState> offers,
         Guid catalogId,
-        bool buyback = false)
+        bool buyback = false,
+        int balance = 0)
     {
         Title = title;
         Greeting = greeting;
@@ -62,6 +64,7 @@ public sealed class MerchantUpdateState : BoundUserInterfaceMessage
         Offers = offers;
         CatalogId = catalogId;
         Buyback = buyback;
+        Balance = balance;
     }
 }
 

@@ -146,6 +146,21 @@ namespace Content.Server.Preferences.Managers
 
         private async void HandleCompleteWh40kOnboardingMessage(MsgCompleteWh40kOnboarding message)
         {
+            var reset = _entityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>();
+            if (reset.IsResetting(message.MsgChannel.UserId))
+                return;
+            try
+            {
+                await reset.RunPlayerOperationAsync(message.MsgChannel.UserId, () => CompleteWh40kOnboardingAsync(message));
+            }
+            catch (Exception error)
+            {
+                _sawmill.Error($"WH40K onboarding operation failed: {error}");
+            }
+        }
+
+        private async Task CompleteWh40kOnboardingAsync(MsgCompleteWh40kOnboarding message)
+        {
             var userId = message.MsgChannel.UserId;
             var result = new Wh40kOnboardingCompletionResult(
                 Wh40kOnboardingCompletionStatus.NotAllowed,
@@ -344,7 +359,11 @@ namespace Content.Server.Preferences.Managers
             }, channel);
         }
 
-        public async Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile,
+        public Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile, bool authoritative = true)
+            => _entityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+                .RunPlayerOperationAsync(userId, () => SetProfileCoreAsync(userId, slot, profile, authoritative));
+
+        private async Task SetProfileCoreAsync(NetUserId userId, int slot, ICharacterProfile profile,
             bool authoritative = true) // Mono
         {
             if (!_cachedPlayerPrefs.TryGetValue(userId, out var prefsData) || !prefsData.PrefsLoaded)
@@ -612,7 +631,11 @@ namespace Content.Server.Preferences.Managers
             return prefs;
         }
 
-        public async Task RefreshPreferencesAsync(ICommonSession session, CancellationToken cancel)
+        public Task RefreshPreferencesAsync(ICommonSession session, CancellationToken cancel)
+            => _entityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+                .RunPlayerOperationAsync(session.UserId, () => RefreshPreferencesCoreAsync(session, cancel));
+
+        private async Task RefreshPreferencesCoreAsync(ICommonSession session, CancellationToken cancel)
         {
             if (!_cachedPlayerPrefs.TryGetValue(session.UserId, out var prefsData))
                 return;

@@ -91,6 +91,19 @@ public enum KoronusActivityExecutionKind : byte
     FoulstoneAssayAnnexSetPiece,
     SottosCryoArchiveSetPiece,
     AivoriusSurveyCutterDockSetPiece,
+    ExpeditionMonolith,
+    ExpeditionWeaponsCache,
+    ExpeditionVault,
+    ExpeditionRaiderBoarding,
+    ExpeditionWreckSalvage,
+    ExpeditionWreckRescue,
+    ExpeditionBasaltSurvey,
+    ExpeditionSnowRescue,
+    ExpeditionCaveSurvey,
+    ExpeditionChromiteSurvey,
+    ExpeditionScrapSurvey,
+    ExpeditionInfestedShip,
+    ExpeditionMachineSalvage,
 }
 
 /// <summary>
@@ -223,14 +236,14 @@ public static class KoronusActivityRuntimePolicy
     }
 
     /// <summary>
-    /// Stages two through five admit exactly nine authored map set pieces. The stage-five profile
-    /// is the sole exception that can create one receive-only docking port after its map is
-    /// audited; no generic room generator can select arbitrary maps or content. Their location,
-    /// map path and recoverable item are all closed by code, not supplied by activity YAML.
+    /// Authored locations and independent expeditions share the extraction lifecycle. Their
+    /// layouts and recoverables are code-approved; YAML cannot introduce an arbitrary map or
+    /// ghost-driven ship. Only the survey cutter can create a receive-only docking port.
     /// </summary>
     public static bool IsSetPieceExecution(KoronusActivityExecutionKind execution)
     {
-        return execution is KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
+        return KoronusExpeditionCatalog.IsExpedition(execution) ||
+            execution is KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
             KoronusActivityExecutionKind.FoulstoneSurveySetPiece or
             KoronusActivityExecutionKind.SottosIceRescueSetPiece or
             KoronusActivityExecutionKind.AivoriusCargoSetPiece or
@@ -260,7 +273,8 @@ public static class KoronusActivityRuntimePolicy
 
     public static bool RequiresSystemLease(KoronusActivityExecutionKind execution)
     {
-        return execution is KoronusActivityExecutionKind.OrbitAuspexProbe or
+        return KoronusExpeditionCatalog.IsExpedition(execution) ||
+            execution is KoronusActivityExecutionKind.OrbitAuspexProbe or
             KoronusActivityExecutionKind.HostileWarpRunnerPack or
             KoronusActivityExecutionKind.OrbitSecureCacheGrid or
             KoronusActivityExecutionKind.OrbitSalvageClusterGrid or
@@ -394,6 +408,9 @@ public static class KoronusActivityRuntimePolicy
         KoronusActivityExecutionKind execution,
         string? surfaceId)
     {
+        if (KoronusExpeditionCatalog.IsExpedition(execution))
+            return surfaceId == null;
+
         return execution switch
         {
             KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece => surfaceId == null,
@@ -417,6 +434,9 @@ public static class KoronusActivityRuntimePolicy
         KoronusActivityExecutionKind execution,
         string objectivePrototypeId)
     {
+        if (KoronusExpeditionCatalog.TryGet(execution, out var expedition))
+            return objectivePrototypeId == expedition.Objective;
+
         return execution switch
         {
             KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece =>
@@ -443,6 +463,9 @@ public static class KoronusActivityRuntimePolicy
 
     public static bool IsApprovedSetPieceHostile(KoronusActivityExecutionKind execution, string prototype)
     {
+        if (KoronusExpeditionCatalog.TryGet(execution, out var expedition))
+            return expedition.Guardian == prototype;
+
         return execution switch
         {
             KoronusActivityExecutionKind.AivoriusBlackBoxSetPiece or
@@ -467,6 +490,12 @@ public static class KoronusActivityRuntimePolicy
         string prototypeId,
         bool isRecoveryPatient)
     {
+        foreach (var expedition in KoronusExpeditionCatalog.Profiles)
+        {
+            if (expedition.Consumer == consumer && expedition.Objective == prototypeId)
+                return isRecoveryPatient == (prototypeId == "KoronusExpeditionSurvivor");
+        }
+
         return consumer switch
         {
             KoronusActivityTrophyConsumer.AivoriusArchive =>

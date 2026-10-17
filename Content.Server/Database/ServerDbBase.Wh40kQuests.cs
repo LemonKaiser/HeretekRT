@@ -270,7 +270,7 @@ public abstract partial class ServerDbBase : IWh40kQuestRepository
                 return new(Wh40kQuestOperationResult.NotReady, quest.Id, quest.Revision);
             if (!snapshot.Recipients.Contains(actor) || !await CommitQuestBranch(db, snapshot, cancel))
                 return new(Wh40kQuestOperationResult.NotOwner, quest.Id, quest.Revision);
-            CompleteQuest(db, quest, snapshot, now);
+            await CompleteQuestAsync(db, quest, snapshot, now, cancel);
             return new(Wh40kQuestOperationResult.Succeeded, quest.Id, quest.Revision);
         }
         else quest.State = (int) (request.Kind == Wh40kQuestMutation.AdminFail ? Wh40kQuestState.Failed : Wh40kQuestState.Abandoned);
@@ -279,14 +279,20 @@ public abstract partial class ServerDbBase : IWh40kQuestRepository
         return new(Wh40kQuestOperationResult.Succeeded, quest.Id, quest.Revision);
     }
 
-    private static void CompleteQuest(ServerDbContext db, Wh40kQuestInstance quest, Wh40kQuestContractSnapshot snapshot, DateTime now)
+    private static async Task CompleteQuestAsync(ServerDbContext db, Wh40kQuestInstance quest,
+        Wh40kQuestContractSnapshot snapshot, DateTime now, CancellationToken cancel)
     {
+        // Party contracts freeze recipients on acceptance. A former character must not earn rewards after a wipe.
+        var resetRecipients = await db.Wh40kPlayerProgresses
+            .Where(progress => snapshot.Recipients.Contains(progress.UserId) && progress.CreatedAt > snapshot.AcceptedAt.UtcDateTime)
+            .Select(progress => progress.UserId).ToListAsync(cancel);
         quest.State = (int) Wh40kQuestState.Completed;
         quest.ClosedAt = now;
         quest.Revision++;
         foreach (var reward in snapshot.Rewards)
         foreach (var recipient in snapshot.Recipients.OrderBy(x => x))
         {
+            if (resetRecipients.Contains(recipient)) continue;
             var amount = snapshot.RewardAmount(reward, recipient);
             if (amount == 0) continue;
             db.Wh40kQuestRewardIntents.Add(new()
@@ -432,7 +438,8 @@ public abstract partial class ServerDbBase : IWh40kQuestRepository
                 });
                 inbox.State = 1; current.Revision++;
                 current.State = objectives.All(x => x.Count == x.RequiredCount) ? (int) Wh40kQuestState.ReadyToTurnIn : (int) Wh40kQuestState.Active;
-                if (current.State == 1 && snapshot.Completion == Wh40kQuestCompletionPolicy.Automatic) CompleteQuest(db, current, snapshot, now);
+                if (current.State == 1 && snapshot.Completion == Wh40kQuestCompletionPolicy.Automatic)
+                    await CompleteQuestAsync(db, current, snapshot, now, cancel);
                 db.Wh40kQuestAudits.Add(new() { OwnerKey = current.OwnerKey, QuestId = current.Id, Action = "Progress", Reason = objective.ObjectiveId, At = now });
                 return 1;
             }, cancel);

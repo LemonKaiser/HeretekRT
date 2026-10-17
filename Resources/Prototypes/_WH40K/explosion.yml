@@ -30,3 +30,19 @@
   fireStates: 3
   throwEntitiesOnExplosion: false
   temperature: 300
+
+- type: explosion
+  id: Wh40kHiveShipSporeBomb
+  damagePerIntensity:
+    types:
+      Caustic: 10
+      Toxin: 5
+      Structural: 160
+  tileBreakChance: [0]
+  tileBreakIntensity: [0]
+  lightColor: Green
+  fireColor: Green
+  texturePath: /Textures/Effects/fire_greyscale.rsi
+  fireStates: 3
+  throwEntitiesOnExplosion: false
+  temperature: 300

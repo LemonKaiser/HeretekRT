@@ -7,7 +7,7 @@ ent-MobWH40KChaosFlamer = chaos flamer
 ent-MobWH40KChaosGunner = chaos gunner
     .desc = A heavily armored heretic laying down rapid laser fire and using a combat knife at close range.
 ent-MobWH40KChaosMauler = chaos mauler
-    .desc = A slow, heavily armored executioner whose melee strikes deal devastating damage.
+    .desc = A slow, heavily armored executioner whose heavy swings briefly stun their victims.
 ent-MobWH40KChaosRager = chaos rager
     .desc = A fast berserker resistant to ordinary blades and bullets, but vulnerable to powered chain weapons and armor piercing attacks.
 ent-MobWH40KChaosShooter = chaos shooter
@@ -30,3 +30,4 @@ ent-WH40KChaosBola = chaos shock bola
     .desc = A bola that exhausts and restrains its victim on impact.
 
 wh40k-chaos-grenade-warning = The bomber prepares to throw a grenade!
+wh40k-chaos-mauler-warning = The mauler winds up a heavy strike!

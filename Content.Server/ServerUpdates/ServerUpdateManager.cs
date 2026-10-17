@@ -187,5 +187,6 @@ public sealed partial class ServerUpdateManager : IPostInjectInit
     void IPostInjectInit.PostInject()
     {
         _sawmill = _logManager.GetSawmill("restart");
+        InitializeWatchdogCountdown();
     }
 }

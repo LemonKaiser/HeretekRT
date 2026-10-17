@@ -95,7 +95,14 @@ public sealed class Wh40kRewardDeliverySystem : EntitySystem
         _ = TryDeliverForUserAsync(args.Player.UserId);
     }
 
-    public async Task TryDeliverForUserAsync(NetUserId userId, CancellationToken cancel = default)
+    public Task TryDeliverForUserAsync(NetUserId userId, CancellationToken cancel = default)
+    {
+        var reset = EntityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>();
+        return reset.IsResetting(userId) ? Task.CompletedTask
+            : reset.RunPlayerOperationAsync(userId, () => TryDeliverForUserCoreAsync(userId, cancel));
+    }
+
+    private async Task TryDeliverForUserCoreAsync(NetUserId userId, CancellationToken cancel)
     {
         var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         while (!_activeDeliveries.TryAdd(userId, completion))

@@ -1,0 +1,43 @@
+- type: entity
+  id: WH40KHostileDronePatrol
+  parent: BluespaceSyndicateFTLInterception
+  name: hostile AI drone patrol
+  components:
+  - type: BluespaceErrorRule
+    groups:
+      grid: !type:GridSpawnGroup
+        nameLoc: []
+        nameGrid: false
+        minimumDistance: 1500
+        maximumDistance: 2500
+        addComponents:
+        - type: IFF
+          flags: AlwaysShowColor
+          color: "#9a2020"
+        - type: LinkedLifecycleGridParent
+        paths:
+        - /SharedMaps/_WH40K/Drones/drone_t0.yml
+        - /SharedMaps/_WH40K/Drones/drone_t1.yml
+        - /SharedMaps/_WH40K/Drones/drone_t2.yml
+
+- type: entity
+  id: WH40KHostileDroneHeavyPatrol
+  parent: BluespacePreFractureFTLInterception
+  name: hostile AI drone heavy patrol
+  components:
+  - type: BluespaceErrorRule
+    groups:
+      grid: !type:GridSpawnGroup
+        nameLoc: []
+        nameGrid: false
+        minimumDistance: 2500
+        maximumDistance: 4000
+        addComponents:
+        - type: IFF
+          flags: AlwaysShowColor
+          color: "#9a2020"
+        - type: LinkedLifecycleGridParent
+        paths:
+        - /SharedMaps/_WH40K/Drones/drone_t3.yml
+        - /SharedMaps/_WH40K/Drones/drone_t4.yml
+        - /SharedMaps/_WH40K/Drones/drone_t5.yml

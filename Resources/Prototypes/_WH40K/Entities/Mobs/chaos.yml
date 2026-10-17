@@ -213,10 +213,11 @@
   id: MobWH40KChaosMauler
   parent: BaseMobWH40KChaos
   name: chaos mauler
-  description: A slow, heavily armored executioner whose melee strikes deal devastating damage.
+  description: A slow, heavily armored executioner whose heavy swings briefly stun their victims.
   components:
   - type: Wh40kChaosTactics
     meleeWindup: 0.5
+    meleeStunDuration: 0.75
   - type: Sprite
     sprite: _WH40K/Mobs/Chaos/mauler.rsi
   - type: MobThresholds
@@ -231,10 +232,11 @@
     baseSprintSpeed: 2.8
   - type: MeleeWeapon
     attackRate: 0.8
+    animation: WeaponArcSlash
     damage:
       types:
-        Slash: 45
-        Blunt: 15
+        Slash: 50
+        Blunt: 20
 
 - type: entity
   id: MobWH40KChaosRager

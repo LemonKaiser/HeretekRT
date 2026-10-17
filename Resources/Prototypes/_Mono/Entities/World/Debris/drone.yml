@@ -34,9 +34,7 @@
   components:
   - type: RandomSpawner
     prototypes:
-    - SpawnDroneMote
-    - SpawnDroneDander
-    - SpawnDroneMPulsar
+    - SpawnWH40KDroneMavic
 
 - type: entity
   id: MonoDroneSpawnerT1
@@ -45,10 +43,7 @@
   components:
   - type: RandomSpawner
     prototypes:
-    - SpawnDroneBasicSmall
-    - SpawnDroneBasicMedium
-    - SpawnDroneMPulsar
-    - SpawnDroneLance
+    - SpawnWH40KDroneMessenger
 
 - type: entity
   id: MonoDroneSpawnerT2Inner
@@ -57,10 +52,7 @@
   components:
   - type: RandomSpawner
     prototypes:
-    - SpawnDroneWasp
-    - SpawnDroneCrown
-    - SpawnDroneGust
-    - SpawnDronePiercer
+    - SpawnWH40KDroneWatcher
 
 - type: entity
   id: MonoDroneSpawnerT2Middle
@@ -88,44 +80,32 @@
   id: DroneTableT21
   table: !type:GroupSelector
     children:
-    - id: SpawnDroneWasp
-      weight: 10
-    - id: SpawnDroneCrown
-      weight: 10
-    - id: SpawnDroneGust
-      weight: 10
-    - id: SpawnDronePiercer
+    - id: SpawnWH40KDroneCastellan
       weight: 10
 
 - type: entityTable
   id: DroneTableT22
   table: !type:GroupSelector
     children:
-    - id: SpawnDroneMedusa
-      weight: 10
-    - id: SpawnDroneAssembly
-      weight: 10
-    - id: SpawnDroneBracket
+    - id: SpawnWH40KDroneEmissary
       weight: 10
 
 - type: entityTable
   id: DroneTableT23
   table: !type:GroupSelector
     children:
-    - id: SpawnDroneMauler
-      weight: 10
-    - id: SpawnDroneQuake
+    - id: SpawnWH40KDroneGuardian
       weight: 10
 
 - type: entityTable
   id: DroneSpawnTableT2Middle
   table: !type:GroupSelector
     children:
-    # T2 small
+    # WH40K T3
     - !type:NestedSelector
       tableId: DroneTableT21
       weight: 20
-    # T2 medium
+    # WH40K T4
     - !type:NestedSelector
       tableId: DroneTableT22
       weight: 10
@@ -134,11 +114,11 @@
   id: DroneSpawnTableT2Far
   table: !type:GroupSelector
     children:
-    # T2 medium
+    # WH40K T4
     - !type:NestedSelector
       tableId: DroneTableT22
       weight: 20
-    # T2 large
+    # WH40K T5
     - !type:NestedSelector
       tableId: DroneTableT23
       weight: 10

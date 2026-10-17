@@ -79,7 +79,8 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
         out PersistentInventoryRestoreReservation reservation)
     {
         reservation = default!;
-        return PersistentInventoryRollout.GetDecision(_configuration, userId) ==
+        return !EntityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>().IsResetting(userId) &&
+               PersistentInventoryRollout.GetDecision(_configuration, userId) ==
                    PersistentInventoryRolloutDecision.Full &&
                _manager.TryReserveRestore(userId, out reservation);
     }
@@ -111,7 +112,21 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
         _manager.ReleaseRestore(reservation);
     }
 
-    public async Task<PersistentInventoryRestoreOutcome> RestoreAndBindAsync(
+    public Task<PersistentInventoryRestoreOutcome> RestoreAndBindAsync(
+        EntityUid body,
+        PersistentInventoryRestoreReservation reservation,
+        CancellationToken cancel = default)
+    {
+        var reset = EntityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>();
+        if (reset.IsResetting(reservation.UserId))
+        {
+            CancelRestore(reservation);
+            return Task.FromResult(Outcome(PersistentInventoryRestoreStatus.RevisionConflict, "Player reset is in progress."));
+        }
+        return reset.RunPlayerOperationAsync(reservation.UserId, () => RestoreAndBindCoreAsync(body, reservation, cancel));
+    }
+
+    private async Task<PersistentInventoryRestoreOutcome> RestoreAndBindCoreAsync(
         EntityUid body,
         PersistentInventoryRestoreReservation reservation,
         CancellationToken cancel = default)

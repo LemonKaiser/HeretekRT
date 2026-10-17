@@ -11,6 +11,7 @@ using Content.Shared.Physics;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using ClimbingComponent = Content.Shared.Climbing.Components.ClimbingComponent;
 
 namespace Content.Server.NPC.Systems;
@@ -62,14 +63,19 @@ public sealed partial class NPCSteeringSystem
         if (ents.Count > 0)
         {
             var fixtures = _fixturesQuery.GetComponent(uid);
-            var physics = _physicsQuery.GetComponent(uid);
+            var (layer, mask) = SharedPhysicsSystem.GetHardCollision(fixtures);
 
             foreach (var intersecting in ents)
             {
-                if (!_physics.IsCurrentlyHardCollidable((uid, fixtures, physics), intersecting))
+                if (!_physicsQuery.TryGetComponent(intersecting, out var other) || !other.CanCollide)
                 {
                     continue;
                 }
+
+                // Compare both bodies' hard fixtures; the mob's own layer need not intersect its mask.
+                var (otherLayer, otherMask) = _physics.GetHardCollision(intersecting);
+                if ((layer & otherMask) == 0 && (mask & otherLayer) == 0)
+                    continue;
 
                 result = false;
                 break;
@@ -210,6 +216,11 @@ public sealed partial class NPCSteeringSystem
             {
                 // Ignore stuck while handling obstacles.
                 ResetStuck(steering, ourCoordinates);
+                // Discard the previous seek input while braking and during obstacle do_afters.
+                // Otherwise blended movement can keep the NPC sliding along a closed door forever.
+                moveMultiplier = 0f;
+                interest.Clear();
+                Array.Clear(steering.Interest);
                 SteeringObstacleStatus status;
                 // Breaking behaviours and the likes.
                 lock (_obstacles)

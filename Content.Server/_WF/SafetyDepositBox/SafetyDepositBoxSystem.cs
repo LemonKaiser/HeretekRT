@@ -24,6 +24,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.EntitySerialization.Systems;
+using Robust.Shared.Network;
 
 namespace Content.Server._WF.SafetyDepositBox;
 
@@ -236,7 +237,12 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
             return 0;
     }
 
-    private async void PurchaseBoxAsync(
+    private void PurchaseBoxAsync(EntityUid consoleUid, SafetyDepositConsoleComponent component, EntityUid player,
+        Guid userId, int characterIndex, string characterName, EntityPrototype prototypeId, int cost)
+        => RunPlayerOperation(new NetUserId(userId),
+            () => PurchaseBoxCoreAsync(consoleUid, component, player, userId, characterIndex, characterName, prototypeId, cost));
+
+    private async System.Threading.Tasks.Task PurchaseBoxCoreAsync(
         EntityUid consoleUid,
         SafetyDepositConsoleComponent component,
         EntityUid player,
@@ -329,7 +335,12 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         DepositBoxAsync(uid, component, player, boxEntity.Value, boxComp, storageComp);
     }
 
-    private async void DepositBoxAsync(
+    private void DepositBoxAsync(EntityUid consoleUid, SafetyDepositConsoleComponent component, EntityUid player,
+        EntityUid boxEntity, SafetyDepositBoxComponent boxComp, StorageComponent storageComp)
+        => RunPlayerOperation(new NetUserId(boxComp.OwnerId!.Value),
+            () => DepositBoxCoreAsync(consoleUid, component, player, boxEntity, boxComp, storageComp));
+
+    private async System.Threading.Tasks.Task DepositBoxCoreAsync(
         EntityUid consoleUid,
         SafetyDepositConsoleComponent component,
         EntityUid player,
@@ -425,7 +436,12 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         ReclaimBoxAsync(uid, component, player, userId.UserId, characterIndex, args.BoxId);
     }
 
-    private async void ReclaimBoxAsync(
+    private void ReclaimBoxAsync(EntityUid consoleUid, SafetyDepositConsoleComponent component, EntityUid player,
+        Guid userId, int characterIndex, Guid boxId)
+        => RunPlayerOperation(new NetUserId(userId),
+            () => ReclaimBoxCoreAsync(consoleUid, component, player, userId, characterIndex, boxId));
+
+    private async System.Threading.Tasks.Task ReclaimBoxCoreAsync(
         EntityUid consoleUid,
         SafetyDepositConsoleComponent component,
         EntityUid player,
@@ -510,7 +526,12 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         UpdateUI(consoleUid, component, player);
     }
 
-    private async void WithdrawBoxAsync(
+    private void WithdrawBoxAsync(EntityUid consoleUid, SafetyDepositConsoleComponent component, EntityUid player,
+        Guid userId, int characterIndex, Guid boxId)
+        => RunPlayerOperation(new NetUserId(userId),
+            () => WithdrawBoxCoreAsync(consoleUid, component, player, userId, characterIndex, boxId));
+
+    private async System.Threading.Tasks.Task WithdrawBoxCoreAsync(
         EntityUid consoleUid,
         SafetyDepositConsoleComponent component,
         EntityUid player,

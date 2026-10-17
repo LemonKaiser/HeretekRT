@@ -14,6 +14,10 @@ using Content.Shared.Doors.Systems;
 using Content.Shared.Tools.Components;
 using Content.Shared.Prying.Components;
 using Content.Shared.Tag;
+using Content.Server.Warps;
+using Content.Shared._Mono.ShipGuns;
+using Content.Shared.Silicons.StationAi;
+using Content.Shared.Placeable;
 using Robust.Shared.Map.Components;
 
 namespace Content.Server._WH40K.Activities;
@@ -110,6 +114,11 @@ public sealed class ActivityContentAudit : EntitySystem
             if (uid == grid || !IsOnGrid(transform, grid))
                 continue;
 
+            // Preserve the hull airlock, but never import its docking capability.
+            RemComp<DockingComponent>(uid);
+            // Stock display surfaces can serialize references to the loot being discarded.
+            // Retaining those references would send deleted entity ids to connected clients.
+            RemComp<ItemPlacerComponent>(uid);
             if (ShouldDiscardImportedSetPieceEntity(uid))
                 discarded.Add(uid);
         }
@@ -164,11 +173,17 @@ public sealed class ActivityContentAudit : EntitySystem
                HasComp<RandomHumanoidSpawnerComponent>(uid) ||
                HasComp<GhostRoleMobSpawnerComponent>(uid) ||
                HasComp<ConditionalSpawnerComponent>(uid) ||
+               HasComp<RandomSpawnerComponent>(uid) ||
                HasComp<EntityTableSpawnerComponent>(uid) ||
                HasComp<TimedSpawnerComponent>(uid) ||
                HasComp<RandomDecalSpawnerComponent>(uid) ||
                HasComp<ShuttleConsoleComponent>(uid) ||
-               HasComp<ThrusterComponent>(uid);
+               HasComp<ThrusterComponent>(uid) ||
+               HasComp<ShipGunTypeComponent>(uid) ||
+               HasComp<WarpPointComponent>(uid) ||
+               HasComp<SpawnPointComponent>(uid) ||
+               HasComp<StationAiCoreComponent>(uid) ||
+               HasComp<StationAiHolderComponent>(uid);
     }
 
     private static bool IsOnGrid(TransformComponent transform, EntityUid grid)

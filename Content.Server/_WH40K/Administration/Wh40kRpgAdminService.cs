@@ -81,7 +81,12 @@ public sealed class Wh40kRpgAdminService
         return result;
     }
 
-    public async Task<Wh40kDevelopmentPointGrantResult> GrantDevelopmentPointsAsync(
+    public Task<Wh40kDevelopmentPointGrantResult> GrantDevelopmentPointsAsync(NetUserId target, string targetName,
+        int amount, Wh40kAdminAudit audit, CancellationToken cancel = default)
+        => _entities.System<Wh40kPlayerResetSystem>().RunPlayerOperationAsync(target,
+            () => GrantDevelopmentPointsCoreAsync(target, targetName, amount, audit, cancel));
+
+    private async Task<Wh40kDevelopmentPointGrantResult> GrantDevelopmentPointsCoreAsync(
         NetUserId target,
         string targetName,
         int amount,
@@ -100,7 +105,12 @@ public sealed class Wh40kRpgAdminService
         return result;
     }
 
-    public async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateCurrencyAsync(
+    public Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateCurrencyAsync(NetUserId target, string targetName,
+        long amount, Wh40kAdminAudit audit, CancellationToken cancel = default)
+        => _entities.System<Wh40kPlayerResetSystem>().RunPlayerOperationAsync(target,
+            () => CompensateCurrencyCoreAsync(target, targetName, amount, audit, cancel));
+
+    private async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateCurrencyCoreAsync(
         NetUserId target,
         string targetName,
         long amount,
@@ -134,7 +144,12 @@ public sealed class Wh40kRpgAdminService
         return result;
     }
 
-    public async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateItemAsync(
+    public Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateItemAsync(NetUserId target, string targetName,
+        EntProtoId prototype, int count, Wh40kAdminAudit audit, CancellationToken cancel = default)
+        => _entities.System<Wh40kPlayerResetSystem>().RunPlayerOperationAsync(target,
+            () => CompensateItemCoreAsync(target, targetName, prototype, count, audit, cancel));
+
+    private async Task<IReadOnlyList<Wh40kRewardDeliveryRecord>> CompensateItemCoreAsync(
         NetUserId target,
         string targetName,
         EntProtoId prototype,
@@ -279,7 +294,13 @@ public sealed class Wh40kRpgAdminService
             cancel);
     }
 
-    private async Task<Wh40kClassAdminMutationResult> MutateClassAsync(
+    private Task<Wh40kClassAdminMutationResult> MutateClassAsync(NetUserId target, string targetName,
+        Wh40kClassAdminOperation operation, long expectedRevision, string newClassId, IReadOnlyList<string> skillIds,
+        Wh40kAdminAudit audit, CancellationToken cancel)
+        => _entities.System<Wh40kPlayerResetSystem>().RunPlayerOperationAsync(target,
+            () => MutateClassCoreAsync(target, targetName, operation, expectedRevision, newClassId, skillIds, audit, cancel));
+
+    private async Task<Wh40kClassAdminMutationResult> MutateClassCoreAsync(
         NetUserId target,
         string targetName,
         Wh40kClassAdminOperation operation,

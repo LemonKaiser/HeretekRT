@@ -24,6 +24,11 @@ public sealed partial class UserDbDataManager : IPostInjectInit
     private readonly List<OnLoadPlayer> _onLoadPlayer = [];
     private readonly List<OnFinishLoad> _onFinishLoad = [];
     private readonly List<OnPlayerDisconnect> _onPlayerDisconnect = [];
+    private readonly Dictionary<NetUserId, Task> _loadBarriers = new();
+
+    public void SetLoadBarrier(NetUserId userId, Task barrier) => _loadBarriers.Add(userId, barrier);
+
+    public void RemoveLoadBarrier(NetUserId userId) => _loadBarriers.Remove(userId);
 
     private ISawmill _sawmill = default!;
 
@@ -64,6 +69,10 @@ public sealed partial class UserDbDataManager : IPostInjectInit
         // As such, this task must NOT throw a non-cancellation error!
         try
         {
+            if (_loadBarriers.TryGetValue(session.UserId, out var barrier))
+                await barrier.WaitAsync(cancel);
+            cancel.ThrowIfCancellationRequested();
+
             var tasks = new List<Task>();
             foreach (var action in _onLoadPlayer)
             {

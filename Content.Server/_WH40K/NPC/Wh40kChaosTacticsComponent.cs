@@ -67,6 +67,8 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan PatrolDeadline;
 
     [ViewVariables] public bool TargetVisible;
+    [ViewVariables] public bool ClearShot;
+    [ViewVariables] public bool DirectPathClear;
     [ViewVariables] public EntityCoordinates? LastSeenPosition;
     [ViewVariables] public EntityUid? IgnoredTarget;
     [ViewVariables] public int PathRetries;
@@ -89,15 +91,17 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan DodgeSideUntil;
     [ViewVariables] public EntityUid? DodgeShooter;
 
-    [DataField] public TimeSpan MemoryDuration = TimeSpan.FromSeconds(4);
-    [DataField] public TimeSpan ThreatMemoryDuration = TimeSpan.FromSeconds(8);
+    [DataField] public TimeSpan MemoryDuration = TimeSpan.FromSeconds(16);
+    [DataField] public TimeSpan ThreatMemoryDuration = TimeSpan.FromSeconds(16);
+    [DataField] public TimeSpan SearchWaitDuration = TimeSpan.FromSeconds(4);
     [DataField] public TimeSpan MeleeWindup;
+    [DataField] public TimeSpan MeleeStunDuration;
     [ViewVariables] public EntityUid? MeleeWarningTarget;
-    [ViewVariables] public MapCoordinates? MeleeWarningPosition;
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextSightCheck;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextTargetCheck;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan LastSeenAt;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan SearchArrivedAt;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan IgnoreUntil;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextPathRetry;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan SilentSince;

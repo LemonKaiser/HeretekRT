@@ -14,7 +14,6 @@ using Content.Shared.Ensnaring.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
-using Content.Shared.Physics;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Map;
@@ -83,8 +82,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         safety.ObserveTarget(owner, target, tactics,
             blackboard.GetValueOrDefault<float>(blackboard.GetVisionRadiusKey(_entities), _entities));
         tactics.EvadingWithoutTarget = false;
-        var visible = _entities.System<SharedInteractionSystem>().InRangeUnobstructed(owner, target,
-            distance + 0.1f, CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
+        var visible = tactics.ClearShot;
         if (safety.TryUseCover(owner, target, tactics, distance, out var canShoot))
         {
             _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);
@@ -108,6 +106,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         }
         if (!safety.RetryPath(owner, target, tactics, visible))
             return HTNOperatorStatus.Failed;
+        var directMove = visible && tactics.DirectPathClear;
         if (!tactics.TargetVisible)
         {
             _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
@@ -124,14 +123,27 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
                 _entities.System<SharedTransformSystem>().ToMapCoordinates(remembered).MapId !=
                 _entities.GetComponent<TransformComponent>(owner).MapID)
             {
-                safety.IgnoreTarget(owner, target, tactics);
+                safety.ForgetTarget(owner, target, tactics);
                 return HTNOperatorStatus.Finished;
             }
             var searching = steeringSystem.Register(owner, remembered);
-            searching.Range = 0.6f;
+            // Approach the remembered corner closely enough to see around it before waiting.
+            searching.Range = 0.3f;
             searching.InRangeMaxSpeed = 0.03f;
             searching.DirectMove = false;
             searching.ArriveOnLineOfSight = false;
+            if (searching.Status == SteeringStatus.InRange)
+            {
+                if (tactics.SearchArrivedAt == TimeSpan.Zero)
+                    tactics.SearchArrivedAt = _timing.CurTime;
+                if (_timing.CurTime - tactics.SearchArrivedAt >= tactics.SearchWaitDuration)
+                {
+                    safety.ForgetTarget(owner, target, tactics);
+                    return HTNOperatorStatus.Finished;
+                }
+            }
+            else
+                tactics.SearchArrivedAt = TimeSpan.Zero;
             return HTNOperatorStatus.Continuing;
         }
         _entities.TryGetComponent<Wh40kChaosThrowerComponent>(owner, out var thrower);
@@ -145,14 +157,23 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
         {
             safety.CancelThrowWarning(owner, true);
             _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
-            var melee = _entities.EnsureComponent<NPCMeleeCombatComponent>(owner);
-            melee.Target = target;
-            melee.MissChance = blackboard.GetValueOrDefault<float>(NPCBlackboard.MeleeMissChance, _entities);
+            if (directMove)
+            {
+                var melee = _entities.EnsureComponent<NPCMeleeCombatComponent>(owner);
+                melee.Target = target;
+                melee.MissChance = blackboard.GetValueOrDefault<float>(NPCBlackboard.MeleeMissChance, _entities);
+            }
+            else
+            {
+                // Obstacle handling temporarily leaves combat mode; native melee shutdown would discard its route.
+                _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);
+            }
             var steering = steeringSystem.Register(owner, new EntityCoordinates(target, Vector2.Zero));
-            steering.Range = visible ? MeleeRange : 0.6f;
+            // Leave room to follow a moving target before it leaves the weapon's reach.
+            steering.Range = directMove ? MathF.Max(0.6f, MeleeRange - 0.4f) : 0.6f;
             steering.InRangeMaxSpeed = 0.03f;
             steering.ArriveOnLineOfSight = false;
-            steering.DirectMove = visible;
+            steering.DirectMove = directMove;
             if (steering.DirectMove && steering.Status == SteeringStatus.NoPath)
                 steering.Status = SteeringStatus.Moving;
         }
@@ -164,7 +185,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
             steering.Range = visible ? MathF.Min(tactics.RangedRange, 6f) : 0.6f;
             steering.ArriveOnLineOfSight = visible && distance <= tactics.RangedRange;
             steering.LineOfSightTimeRequired = 0f;
-            steering.DirectMove = visible;
+            steering.DirectMove = directMove;
             // A weapon's range is not an arrival radius when a wall or closed door blocks the shot.
             if (thrower != null)
             {
@@ -264,6 +285,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
     public override void TaskShutdown(NPCBlackboard blackboard, HTNOperatorStatus status)
     {
         var owner = blackboard.GetValue<EntityUid>(NPCBlackboard.Owner);
+        _entities.System<Wh40kChaosTacticsSystem>().CancelObstacleInteraction(owner);
         _entities.System<Wh40kChaosTacticsSystem>().CancelThrowWarning(owner, true);
         _entities.RemoveComponent<NPCRangedCombatComponent>(owner);
         _entities.RemoveComponent<NPCMeleeCombatComponent>(owner);

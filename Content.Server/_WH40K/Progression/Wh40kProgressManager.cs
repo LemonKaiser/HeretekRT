@@ -135,7 +135,12 @@ public sealed class Wh40kProgressManager
             cancel);
     }
 
-    public async Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsAsync(
+    public Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsAsync(ICommonSession session,
+        long expectedRevision, IReadOnlyList<Wh40kCharacteristicAllocation> allocations, CancellationToken cancel = default)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(session.UserId, () => SpendCharacteristicsCoreAsync(session, expectedRevision, allocations, cancel));
+
+    private async Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsCoreAsync(
         ICommonSession session,
         long expectedRevision,
         IReadOnlyList<Wh40kCharacteristicAllocation> allocations,
@@ -175,7 +180,12 @@ public sealed class Wh40kProgressManager
             cancel);
     }
 
-    public async Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsAsync(
+    public Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsAsync(NetUserId userId,
+        long expectedRevision, IReadOnlyList<Wh40kCharacteristicAllocation> allocations, CancellationToken cancel = default)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => SpendCharacteristicsCoreAsync(userId, expectedRevision, allocations, cancel));
+
+    private async Task<Wh40kCharacteristicSpendResult> SpendCharacteristicsCoreAsync(
         NetUserId userId,
         long expectedRevision,
         IReadOnlyList<Wh40kCharacteristicAllocation> allocations,

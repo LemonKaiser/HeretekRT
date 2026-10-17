@@ -527,6 +527,7 @@ namespace Content.Client.Lobby.UI
                     var oldCompany = Profile?.Company;
                     // Update the profile with the new company
                     Profile = Profile?.WithCompany(companyId);
+                    RefreshJobs();
 
                     // Debug logging to verify selection
                     //Logger.Debug($"Company changed from {oldCompany} to {companyId}");
@@ -1488,6 +1489,12 @@ namespace Content.Client.Lobby.UI
 
             foreach (var department in departments)
             {
+                var jobs = department.Roles.Select(jobId => _prototypeManager.Index(jobId))
+                    .Where(job => job.SetPreference && job.IsCompanyAllowed(Profile?.Company))
+                    .ToArray();
+                if (jobs.Length == 0)
+                    continue;
+
                 var departmentName = Loc.GetString(department.Name);
 
                 if (!_jobCategories.TryGetValue(department.ID, out var category))
@@ -1530,10 +1537,6 @@ namespace Content.Client.Lobby.UI
                     JobList.AddChild(category);
                 }
 
-                var jobs = department.Roles.Select(jobId => _prototypeManager.Index(jobId))
-                    .Where(job => job.SetPreference)
-                    .ToArray();
-
                 Array.Sort(jobs, JobUIComparer.Instance);
 
                 foreach (var job in jobs)
@@ -1558,7 +1561,7 @@ namespace Content.Client.Lobby.UI
                     icon.Texture = jobIcon.Icon.Frame0();
                     selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
-                    if (!_requirements.IsAllowed(job, (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter, out var reason))
+                    if (!_requirements.IsAllowed(job, Profile, out var reason))
                     {
                         selector.LockRequirements(reason);
                     }

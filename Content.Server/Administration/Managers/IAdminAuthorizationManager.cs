@@ -63,6 +63,7 @@ public enum AdminOperation : byte
     Wh40kProfileRead,
     Wh40kScreenCheck,
     GhostPermission,
+    Wh40kPlayerReset,
 }
 
 internal static class AdminOperationExtensions
@@ -80,6 +81,7 @@ internal static class AdminOperationExtensions
             AdminOperation.Wh40kProfileRead => "admin-authorization-operation-wh40k-profile",
             AdminOperation.Wh40kScreenCheck => "admin-authorization-operation-wh40k-screencheck",
             AdminOperation.GhostPermission => "admin-authorization-operation-ghost-permission",
+            AdminOperation.Wh40kPlayerReset => "wh40k-player-reset-operation",
             _ => "admin-authorization-operation-generic",
         };
     }

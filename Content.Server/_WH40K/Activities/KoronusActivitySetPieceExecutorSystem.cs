@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
+using Content.Server.Procedural;
 using Content.Server.Carrying;
 using Content.Shared.Hands.EntitySystems;
 using Content.Server.Shuttles.Components;
@@ -17,11 +19,13 @@ using Content.Shared.Maps;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Physics;
+using Content.Shared.Procedural;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.ContentPack;
 using Robust.Shared.EntitySerialization.Systems;
+using Robust.Shared.EntitySerialization;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -35,10 +39,9 @@ using Robust.Shared.Utility;
 namespace Content.Server._WH40K.Activities;
 
 /// <summary>
-/// Materializes the nine authored Koronus locations admitted by stages two through five. The
-/// executor accepts only code-approved maps, destinations and guardian prototypes. Its boundaries
-/// are audited again
-/// after loading. Only one fixed profile is permitted to retain one receive-only docking port.
+/// Materializes authored Koronus locations and independent expeditions from a closed catalogue.
+/// Layouts, objectives and guardians are audited before reaching a live sector map. Only the
+/// fixed survey-cutter profile may retain one receive-only docking port.
 /// </summary>
 public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
 {
@@ -62,8 +65,10 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private MetaDataSystem _metadata = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private DungeonSystem _dungeons = default!;
 
     private TimeSpan _nextCheck;
+    private readonly Dictionary<long, PendingExpedition> _pendingExpeditions = new();
 
     public override void Initialize()
     {
@@ -84,7 +89,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         foreach (var instance in _director.GetActiveInstances())
         {
             if (!_prototypes.TryIndex<KoronusActivityTemplatePrototype>(instance.TemplateId, out var template) ||
-                !TryGetProfile(template, out var profile))
+                !TryGetProfile(template, instance.ContentSeed, out var profile))
             {
                 continue;
             }
@@ -98,8 +103,130 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             if (instance.State == KoronusActivityState.Available &&
                 TryGetReachedTarget(instance, template, profile, out var context))
             {
-                TryMaterialize(instance, template, profile, context);
+                if (KoronusExpeditionCatalog.IsExpedition(template.Execution))
+                {
+                    if (!_pendingExpeditions.ContainsKey(instance.Id))
+                        _pendingExpeditions.Add(instance.Id, new PendingExpedition(instance.TemplateId, instance.ContentSeed,
+                            LoadExpeditionLayout(template.Execution, instance.ContentSeed)));
+                }
+                else
+                    TryMaterialize(instance, template, profile, context);
             }
+        }
+
+        FinishExpeditions();
+    }
+
+    /// <summary>
+    /// Stock layouts are quarantined on an uninitialized map. Their original spawners, crew,
+    /// loot and flight controls never receive map initialization on a live Koronus system.
+    /// Procedural sites reuse the Frontier terrain layers with an RT expedition payload.
+    /// The caller owns the returned staging map and must delete it after transferring the grid.
+    /// </summary>
+    public async Task<KoronusExpeditionLayout?> LoadExpeditionLayout(KoronusActivityExecutionKind execution, uint seed)
+    {
+        if (!KoronusExpeditionCatalog.TryGet(execution, out var expedition))
+            return null;
+
+        var stagingMap = _maps.CreateMap(out var mapId, runMapInit: false);
+        try
+        {
+            Entity<MapGridComponent> grid;
+            if (expedition.DungeonConfig is { } dungeonId)
+            {
+                grid = _maps.CreateGridEntity(mapId);
+                grid.Comp.CanSplit = false;
+                await _dungeons.GenerateDungeonAsync(_prototypes.Index<DungeonConfigPrototype>(dungeonId),
+                    dungeonId, grid.Owner, grid.Comp, Vector2i.Zero, unchecked((int) seed));
+            }
+            else if (expedition.SelectMap(seed) is { } path &&
+                     _mapLoader.TryLoadGrid(mapId, new ResPath(path), out var loaded,
+                         new DeserializationOptions { InitializeMaps = false }))
+            {
+                grid = loaded.Value;
+            }
+            else
+            {
+                QueueDel(stagingMap);
+                return null;
+            }
+
+            if (!_contentAudit.TrySanitizeLoadedSetPieceGrid(grid, out _) ||
+                !_contentAudit.TrySanitizeImportedSetPieceContents(grid, out _))
+            {
+                QueueDel(stagingMap);
+                return null;
+            }
+
+            // A temporary site remains one cleanup root even if its hull or terrain is breached.
+            grid.Comp.CanSplit = false;
+
+            // StorageFill and similar furniture payloads run at map init. They are curated a
+            // second time before the layout is exposed to players or assigned an objective.
+            _maps.InitializeMap(stagingMap);
+            if (!_contentAudit.TrySanitizeImportedSetPieceContents(grid, out _))
+            {
+                QueueDel(stagingMap);
+                return null;
+            }
+
+            return new KoronusExpeditionLayout(stagingMap, grid);
+        }
+        catch
+        {
+            if (Exists(stagingMap))
+                QueueDel(stagingMap);
+            throw;
+        }
+    }
+
+    private void FinishExpeditions()
+    {
+        foreach (var (instanceId, pending) in _pendingExpeditions.ToArray())
+        {
+            var task = pending.Task;
+            if (!task.IsCompleted)
+                continue;
+
+            _pendingExpeditions.Remove(instanceId);
+            var instance = _director.GetActiveInstances().FirstOrDefault(active => active.Id == instanceId &&
+                active.TemplateId == pending.TemplateId && active.ContentSeed == pending.Seed);
+            if (!task.IsCompletedSuccessfully)
+            {
+                Log.Error($"Expedition {instanceId} failed to generate: {task.Exception}");
+                if (instance != null)
+                    _director.TryTerminateObjective(instanceId, KoronusActivityTerminalReason.ContentAuditFailed);
+                continue;
+            }
+
+            if (task.GetAwaiter().GetResult() is not { } layout)
+            {
+                if (instance != null)
+                    _director.TryTerminateObjective(instanceId, KoronusActivityTerminalReason.ContentAuditFailed);
+                continue;
+            }
+
+            if (instance == null)
+            {
+                QueueDel(layout.StagingMap);
+                continue;
+            }
+            if (instance.State != KoronusActivityState.Available ||
+                !_prototypes.TryIndex<KoronusActivityTemplatePrototype>(instance.TemplateId, out var template) ||
+                !TryGetProfile(template, instance.ContentSeed, out var profile) ||
+                !TryGetReachedTarget(instance, template, profile, out var context))
+            {
+                QueueDel(layout.StagingMap);
+                _director.TryTerminateObjective(instanceId, KoronusActivityTerminalReason.TargetUnreachable);
+                continue;
+            }
+
+            _transform.SetMapCoordinates(layout.Grid, new MapCoordinates(context.Center, context.MapId));
+            if (TryPrepareSetPieceGrid(layout.Grid, layout.Grid.Comp, instanceId, profile, context))
+                TryCompleteMaterialization(instance, template, profile, context, layout.Grid);
+            else
+                _director.TryTerminateObjective(instanceId, KoronusActivityTerminalReason.ContentAuditFailed);
+            QueueDel(layout.StagingMap);
         }
     }
 
@@ -183,7 +310,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         if (TryComp<KoronusActivityRecoveryPatientComponent>(objective, out var patient))
             patient.InstanceId = instance.Id;
 
-        if (!TrySpawnGuardians(instance, template, grid, gridComponent))
+        if (!TrySpawnGuardians(instance, template, grid, gridComponent, context.Participants))
         {
             _director.TryTerminateObjective(instance.Id, KoronusActivityTerminalReason.ContentAuditFailed);
             return;
@@ -198,17 +325,26 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
     }
 
     private bool TrySpawnGuardians(KoronusActivityRuntimeInstance instance, KoronusActivityTemplatePrototype template,
-        EntityUid grid, MapGridComponent gridComponent)
+        EntityUid grid, MapGridComponent gridComponent, int participants)
     {
         if (template.HostilePrototype is not { } prototype)
             return true;
         if (!KoronusActivityRuntimePolicy.IsApprovedSetPieceHostile(template.Execution, prototype.Id))
             return false;
+        var positions = new List<Vector2>();
+        if (instance.Objective is { } objective)
+            positions.Add(Transform(objective).Coordinates.Position);
         var count = Math.Clamp(template.MaximumHostiles, 1, 3);
+        if (KoronusExpeditionCatalog.IsExpedition(template.Execution))
+        {
+            count = Math.Clamp(template.MinimumHostiles + Math.Max(0, participants - 1),
+                template.MinimumHostiles, template.MaximumHostiles);
+        }
         for (var i = 0; i < count; i++)
         {
-            if (!TryFindFreeFloorPosition(grid, gridComponent, preferEdge: true, out var position))
+            if (!TryFindFreeFloorPosition(grid, gridComponent, preferEdge: true, out var position, positions))
                 return false;
+            positions.Add(position);
             var hostile = Spawn(prototype, new EntityCoordinates(grid, position));
             AssignOwned(hostile, instance.Id, KoronusActivityOwnedKind.Npc);
             if (!_contentAudit.TryPrepareHostile(hostile, out _))
@@ -390,7 +526,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         EntityUid grid,
         MapGridComponent gridComponent,
         bool preferEdge,
-        out Vector2 position)
+        out Vector2 position,
+        IReadOnlyList<Vector2>? occupied = null)
     {
         position = default;
         var bestScore = float.MaxValue;
@@ -405,6 +542,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             }
 
             var candidate = _maps.ToCenterCoordinates(tileRef.Value, gridComponent).Position;
+            if (occupied != null && occupied.Any(existing => Vector2.DistanceSquared(existing, candidate) < 9f))
+                continue;
             var score = Vector2.DistanceSquared(candidate, gridComponent.LocalAABB.Center);
             if (preferEdge)
             {
@@ -432,6 +571,26 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
 
     private void MonitorSetPiece(KoronusActivityRuntimeInstance instance, in SetPieceProfile profile)
     {
+        if (KoronusExpeditionCatalog.IsExpedition(profile.Execution) && instance.Objective is { } patientObjective &&
+            HasComp<KoronusActivityRecoveryPatientComponent>(patientObjective) &&
+            TryComp<MobStateComponent>(patientObjective, out var patientState) && patientState.CurrentState == MobState.Dead)
+        {
+            _director.TryTerminateObjective(instance.Id, KoronusActivityTerminalReason.TargetUnreachable);
+            return;
+        }
+
+        if (KoronusExpeditionCatalog.IsExpedition(profile.Execution) && instance.Objective is { } carriedObjective)
+        {
+            foreach (var session in _players.Sessions)
+            {
+                if (session.AttachedEntity is { } carrier && IsLivingAttachedPlayer(carrier) &&
+                    TryComp<CarryingComponent>(carrier, out var carried) && carried.Carried == carriedObjective)
+                {
+                    instance.CompletingActor = carrier;
+                    break;
+                }
+            }
+        }
         if (instance.Objective is { } recoverable && instance.CompletingActor is { } actor &&
             IsLivingAttachedPlayer(actor) && TryGetSetPieceGrid(instance.Id, out var recoveryGrid, out _) &&
             Transform(actor).GridUid != recoveryGrid &&
@@ -492,8 +651,9 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         out SetPieceSpawnContext context)
     {
         context = default;
-        if (!KoronusActivityRuntimePolicy.TryGetSetPieceSystem(template.Execution, out var expectedSystem) ||
-            expectedSystem != instance.SystemId)
+        if (!KoronusExpeditionCatalog.IsExpedition(template.Execution) &&
+            (!KoronusActivityRuntimePolicy.TryGetSetPieceSystem(template.Execution, out var expectedSystem) ||
+             expectedSystem != instance.SystemId))
         {
             return false;
         }
@@ -529,14 +689,14 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
                 bounds = surface.PlayableBounds;
             }
 
-            if (CountLivingParticipants(transform.MapID, position, template.ParticipantRadius) <
-                template.MinimumLivingParticipants ||
+            var participants = CountLivingParticipants(transform.MapID, position, template.ParticipantRadius);
+            if (participants < template.MinimumLivingParticipants ||
                 !TryFindSafeSpawn(instance, profile, transform.MapID, position, terrainGrid, bounds, out var center))
             {
                 continue;
             }
 
-            context = new SetPieceSpawnContext(transform.MapID, instance.SystemId, center, terrainGrid);
+            context = new SetPieceSpawnContext(transform.MapID, instance.SystemId, center, terrainGrid, participants);
             return true;
         }
 
@@ -743,7 +903,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         return bounds.Value.Contains(center - half) && bounds.Value.Contains(center + half);
     }
 
-    private static bool TryGetProfile(KoronusActivityTemplatePrototype template, out SetPieceProfile profile)
+    private static bool TryGetProfile(KoronusActivityTemplatePrototype template, uint seed, out SetPieceProfile profile)
     {
         profile = default;
         if (!KoronusActivityRuntimePolicy.IsSetPieceExecution(template.Execution) ||
@@ -755,6 +915,20 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             template.ParticipantRadius <= 0f)
         {
             return false;
+        }
+
+        if (KoronusExpeditionCatalog.TryGet(template.Execution, out var expedition))
+        {
+            if (template.HostilePrototype?.Id != expedition.Guardian ||
+                template.MinimumHostiles < 1 || template.MaximumHostiles < template.MinimumHostiles ||
+                template.MaximumHostiles > 6)
+                return false;
+
+            var radius = expedition.DungeonConfig != null ? 240f : 180f;
+            profile = new SetPieceProfile(new ResPath(expedition.SelectMap(seed) ?? "/"), null,
+                new Vector2i((int) radius * 2, (int) radius * 2), radius + 24f, radius,
+                radius + 160f, 24f, Execution: template.Execution);
+            return true;
         }
 
         switch (template.Execution)
@@ -876,7 +1050,10 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         MapId MapId,
         string SystemId,
         Vector2 Center,
-        EntityUid? SurfaceTerrainGrid);
+        EntityUid? SurfaceTerrainGrid,
+        int Participants = 1);
+
+    private sealed record PendingExpedition(string TemplateId, uint Seed, Task<KoronusExpeditionLayout?> Task);
 
     private readonly record struct SetPieceProfile(
         ResPath MapPath,
@@ -886,5 +1063,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         float LeashRadius,
         float FirstSpawnDistance,
         float SpawnDistanceStep,
-        bool AllowsDocking = false);
+        bool AllowsDocking = false,
+        KoronusActivityExecutionKind Execution = KoronusActivityExecutionKind.None);
 }
+
+public readonly record struct KoronusExpeditionLayout(EntityUid StagingMap, Entity<MapGridComponent> Grid);

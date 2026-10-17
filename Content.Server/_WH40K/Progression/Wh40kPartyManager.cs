@@ -247,6 +247,13 @@ public sealed class Wh40kPartyManager
         }
     }
 
+    public void InvalidatePlayer(NetUserId userId)
+    {
+        OnDisconnected(userId);
+        RemoveUserSnapshot(userId);
+        PartyChanged?.Invoke(null);
+    }
+
     public async Task CleanupExpiredAsync(CancellationToken cancel = default)
     {
         var now = DateTime.UtcNow;

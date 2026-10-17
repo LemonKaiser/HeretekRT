@@ -1,0 +1,137 @@
+- type: entity
+  id: SpawnWH40KDroneMavic
+  parent: SpawnDroneBase
+  name: hostile AI drone Mavic spawner
+  suffix: WH40K, T0
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t0.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-mavic-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
+  id: SpawnWH40KDroneMessenger
+  parent: SpawnDroneBase
+  name: hostile AI drone Messenger spawner
+  suffix: WH40K, T1
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t1.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-messenger-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
+  id: SpawnWH40KDroneWatcher
+  parent: SpawnDroneBase
+  name: hostile AI drone Watcher spawner
+  suffix: WH40K, T2
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t2.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-watcher-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
+  id: SpawnWH40KDroneCastellan
+  parent: SpawnDroneBase
+  name: hostile AI drone Castellan spawner
+  suffix: WH40K, T3
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t3.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-castellan-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
+  id: SpawnWH40KDroneEmissary
+  parent: SpawnDroneBase
+  name: hostile AI drone Emissary spawner
+  suffix: WH40K, T4
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t4.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-emissary-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
+  id: SpawnWH40KDroneGuardian
+  parent: SpawnDroneBase
+  name: hostile AI drone Guardian spawner
+  suffix: WH40K, T5
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t5.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-guardian-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false

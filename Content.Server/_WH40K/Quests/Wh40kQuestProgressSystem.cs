@@ -131,6 +131,7 @@ public sealed partial class Wh40kQuestProgressSystem : EntitySystem
     public bool Matches(EntityUid entity, Wh40kQuestTargetSnapshot target, Guid quest, string objective)
     {
         if (TerminatingOrDeleted(entity) || TryComp(entity, out Wh40kQuestReservationComponent? _) ||
+            HasComp<Content.Server._WH40K.SectorMap.Components.KoronusStationPropertyOriginComponent>(entity) ||
             TryComp(entity, out Content.Shared._WH40K.Merchant.MerchantItemTokenComponent? title) && !title.Verified) return false;
         if (TryComp(entity, out Wh40kQuestItemComponent? marker) && (marker.QuestId != quest || marker.ObjectiveId != objective)) return false;
         var id = MetaData(entity).EntityPrototype?.ID;

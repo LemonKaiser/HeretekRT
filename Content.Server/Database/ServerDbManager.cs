@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading;
@@ -685,6 +686,20 @@ namespace Content.Server.Database
         private SqliteConnection? _sqliteInMemoryConnection;
 
         private readonly List<Action<DatabaseNotification>> _notificationHandlers = [];
+        private readonly HashSet<Task> _pendingCommands = [];
+
+        public async Task WaitForPendingCommandsAsync(CancellationToken cancel = default)
+        {
+            while (true)
+            {
+                Task[] pending;
+                lock (_pendingCommands)
+                    pending = _pendingCommands.ToArray();
+                if (pending.Length == 0)
+                    return;
+                await Task.WhenAll(pending).WaitAsync(cancel);
+            }
+        }
 
         public void Init()
         {
@@ -2000,25 +2015,49 @@ namespace Content.Server.Database
 
         private async Task<T> RunDbCommand<T>(Func<Task<T>> command)
         {
-            using var _ = DbActiveOps.TrackInProgress();
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            lock (_pendingCommands)
+                _pendingCommands.Add(completion.Task);
+            try
+            {
+                using var _ = DbActiveOps.TrackInProgress();
 
-            if (_synchronous)
-                return await RunDbCommandCoreSync(command);
+                if (_synchronous)
+                    return await RunDbCommandCoreSync(command);
 
-            return await Task.Run(command);
+                return await Task.Run(command);
+            }
+            finally
+            {
+                lock (_pendingCommands)
+                    _pendingCommands.Remove(completion.Task);
+                completion.TrySetResult();
+            }
         }
 
         private async Task RunDbCommand(Func<Task> command)
         {
-            using var _ = DbActiveOps.TrackInProgress();
-
-            if (_synchronous)
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            lock (_pendingCommands)
+                _pendingCommands.Add(completion.Task);
+            try
             {
-                await RunDbCommandCoreSync(command);
-                return;
-            }
+                using var _ = DbActiveOps.TrackInProgress();
 
-            await Task.Run(command);
+                if (_synchronous)
+                {
+                    await RunDbCommandCoreSync(command);
+                    return;
+                }
+
+                await Task.Run(command);
+            }
+            finally
+            {
+                lock (_pendingCommands)
+                    _pendingCommands.Remove(completion.Task);
+                completion.TrySetResult();
+            }
         }
 
         private static T RunDbCommandCoreSync<T>(Func<T> command) where T : IAsyncResult

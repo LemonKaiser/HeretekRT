@@ -1,4 +1,5 @@
 using Content.Server._NF.Bank;
+using Content.Shared._NF.Bank.Events;
 using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Merchant;
 using Content.Shared.Hands.EntitySystems;
@@ -56,6 +57,7 @@ public sealed partial class MerchantSystem : EntitySystem
         SubscribeLocalEvent<MerchantComponent, MerchantRequestRefreshMessage>(OnRequestRefresh);
         SubscribeLocalEvent<MerchantComponent, BoundUIOpenedEvent>(OnOpened);
         SubscribeLocalEvent<MerchantComponent, InteractHandEvent>(OnInteractHand);
+        SubscribeLocalEvent<BalanceChangedEvent>(OnBalanceChanged);
         InitializeBuyback();
     }
 
@@ -195,6 +197,19 @@ public sealed partial class MerchantSystem : EntitySystem
         if (ValidViewer(uid, component, args.Actor)) UpdateUi(uid, component);
     }
 
+    private void OnBalanceChanged(BalanceChangedEvent args)
+    {
+        if (args.Session.AttachedEntity is not { } buyer ||
+            !TryComp<UserInterfaceUserComponent>(buyer, out var user))
+            return;
+
+        foreach (var (uid, keys) in user.OpenInterfaces.ToArray())
+        {
+            if (keys.Contains(MerchantUiKey.Key) && TryComp<MerchantComponent>(uid, out var component))
+                UpdateUi(uid, component);
+        }
+    }
+
     public bool CanTrade(EntityUid buyer)
     {
         if (TerminatingOrDeleted(buyer) || !TryComp(buyer, out ActorComponent? actor) ||
@@ -256,8 +271,12 @@ public sealed partial class MerchantSystem : EntitySystem
                 PurchasePrepared?.Invoke();
                 if (!CanTrade(buyer) || !ValidViewer(uid, component, buyer) || TerminatingOrDeleted(product.Value))
                     outcome = "wh40k-service-failed";
-                else if (stock.Offer.Price <= 0 || !_bank.TryBankWithdraw(buyer, stock.Offer.Price))
+                else if (stock.Offer.Price <= 0 || !_bank.TryGetBalance(buyer, out var balance))
+                    outcome = "wh40k-service-failed";
+                else if (balance < stock.Offer.Price)
                     outcome = "wh40k-merchant-insufficient-funds";
+                else if (!_bank.TryBankWithdraw(buyer, stock.Offer.Price))
+                    outcome = "wh40k-service-failed";
                 else
                 {
                     paid = true;
@@ -339,6 +358,7 @@ public sealed partial class MerchantSystem : EntitySystem
 
         foreach (var actor in _ui.GetActors(uid, MerchantUiKey.Key).ToArray())
         {
+            _bank.TryGetBalance(actor, out var balance);
             var state = new MerchantUpdateState(
                 component.Title.Id,
                 component.Greeting.Id,
@@ -350,7 +370,7 @@ public sealed partial class MerchantSystem : EntitySystem
                     entry.Remaining,
                     entry.InitialStock,
                     entry.Offer.DisplayName?.Id,
-                    entry.Offer.Description?.Id)).ToList(), component.CatalogId, component.Buyback != null);
+                    entry.Offer.Description?.Id)).ToList(), component.CatalogId, component.Buyback != null, balance);
             _ui.ServerSendUiMessage(uid, MerchantUiKey.Key, state, actor);
         }
     }

@@ -18,6 +18,7 @@ public sealed class Wh40kClassProgressManager
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IWh40kAdditionalSkillPointSource _additionalPoints = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     private readonly Dictionary<NetUserId, Wh40kAccountClassProgressRecord> _progress = new();
 
@@ -33,7 +34,11 @@ public sealed class Wh40kClassProgressManager
         _progress.Remove(userId);
     }
 
-    public async Task<Wh40kClassTreeOperationResult> GetSnapshotAsync(
+    public Task<Wh40kClassTreeOperationResult> GetSnapshotAsync(NetUserId userId, CancellationToken cancel = default)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => GetSnapshotCoreAsync(userId, cancel));
+
+    private async Task<Wh40kClassTreeOperationResult> GetSnapshotCoreAsync(
         NetUserId userId,
         CancellationToken cancel = default)
     {
@@ -89,7 +94,12 @@ public sealed class Wh40kClassProgressManager
             progress);
     }
 
-    public async Task<Wh40kClassTreeOperationResult> PurchaseAsync(
+    public Task<Wh40kClassTreeOperationResult> PurchaseAsync(NetUserId userId, string skillId,
+        long expectedRevision, CancellationToken cancel = default)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => PurchaseCoreAsync(userId, skillId, expectedRevision, cancel));
+
+    private async Task<Wh40kClassTreeOperationResult> PurchaseCoreAsync(
         NetUserId userId,
         string skillId,
         long expectedRevision,
@@ -137,7 +147,12 @@ public sealed class Wh40kClassProgressManager
             result.ClassProgress);
     }
 
-    public async Task<Wh40kClassAdminMutationResult> MutateAsync(
+    public Task<Wh40kClassAdminMutationResult> MutateAsync(NetUserId userId,
+        Wh40kClassAdminMutationRequest request, CancellationToken cancel = default)
+        => _entities.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+            .RunPlayerOperationAsync(userId, () => MutateCoreAsync(userId, request, cancel));
+
+    private async Task<Wh40kClassAdminMutationResult> MutateCoreAsync(
         NetUserId userId,
         Wh40kClassAdminMutationRequest request,
         CancellationToken cancel = default)

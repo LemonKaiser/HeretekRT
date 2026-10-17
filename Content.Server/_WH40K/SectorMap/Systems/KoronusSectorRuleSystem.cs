@@ -57,6 +57,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private ForceAnchorSystem _forceAnchor = default!;
     [Dependency] private KoronusInfrastructureSystem _infrastructure = default!;
+    [Dependency] private KoronusStationPropertySystem _stationProperty = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IResourceManager _resources = default!;
     [Dependency] private Wh40kBossSpawnSystem _bossSpawns = default!;
@@ -759,7 +760,10 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         protectedGrid.PreventEmpEvents = true;
         protectedGrid.PreventExplosions = true;
         if (TryGetSystemId(Transform(grid).MapID, out var systemId) && systemId == "Footfall")
+        {
             protectedGrid.PreventArtifactTriggers = true;
+            _stationProperty.ProtectGrid(grid);
+        }
 
         _infrastructure.ProtectGrid(grid);
 

@@ -1,3 +1,9 @@
+- type: damageModifierSet
+  id: Wh40kHiveShipArmor
+  coefficients:
+    Blunt: 0.8
+    Piercing: 0.8
+
 - type: entity
   abstract: true
   parent: BaseMob
@@ -51,16 +57,21 @@
   name: hive ship
   description: A colossal void organism whose armoured head and hooked mandibles tear at passing ships.
   components:
+  - type: Damageable
+    damageModifierSet: Wh40kHiveShipArmor
   - type: MobThresholds
     thresholds:
       0: Alive
-      130000: Dead
+      180000: Dead
   - type: Wh40kSpaceBoss
     detectionRadius: 2000
     turnSpeed: 2.2
     turnAcceleration: 6
     evasionDamageThreshold: 1200
-    biteReach: 2.5
+    biteReach: 2
+    biteHullDamage:
+      types:
+        Structural: 7000
     deathLoot: CrateWh40kHiveShipSpoils
     boardingPrototype: MobWh40kHiveShipBoarder
     boardingCount: 3
@@ -73,6 +84,7 @@
     damageCoefficient: 0.7
     modifiers:
       SporeBomb: 0
+      Wh40kHiveShipSporeBomb: 0
   - type: Wh40kBoss
     title: wh40k-boss-hive-ship-name
     awarenessRadius: 2000
@@ -116,12 +128,12 @@
     altDisarm: false
     autoAttack: false
     attackRate: 0.4
-    range: 18.5
+    range: 18
     animation: WeaponArcBite
     damage:
       types:
-        Blunt: 300
-        Slash: 200
+        Blunt: 180
+        Slash: 120
     soundHit:
       path: /Audio/_WH40K/Voice/Tyranid/genestealerattack1.ogg
 
@@ -170,13 +182,17 @@
   components:
   - type: Wh40kBossMinion
     sporeMine: true
+  - type: Explosive
+    explosionType: Wh40kHiveShipSporeBomb
+    totalIntensity: 220
+    intensitySlope: 5
+    maxIntensity: 10
   - type: RadarBlip
     useRadarRange: true
     config:
       color: "#E65950"
-      shape: Diamond
+      shape: Circle
       bounds: "-1.5,-1.5,1.5,1.5"
-      label: wh40k-boss-hive-ship-spore-mine-name
   - type: TimedDespawn
     lifetime: 300
   - type: MobPrice

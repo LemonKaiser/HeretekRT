@@ -757,6 +757,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         instance = new KoronusActivityRuntimeInstance
         {
             Id = id,
+            ContentSeed = GetDeterministicValue(component.RoundSeed, id, 0xE7EDu),
             TemplateId = selected.ID,
             SystemId = systemId,
             RouteFromSystem = routeFrom,
@@ -1060,10 +1061,12 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
             return;
 
         var gridPosition = _transform.ToMapCoordinates(gridTransform.Coordinates);
-        // Activity grids reserve an empty 36 m band on creation. Thirty metres puts a body
-        // outside even the cutter hull while retaining a known-safe system map rather than a map
-        // or grid selected by player input.
-        var fallback = new MapCoordinates(gridPosition.Position + Vector2.UnitX * 30f, gridPosition.MapId);
+        // Imported wrecks can be much wider than the original cutter. Use their actual bounds
+        // so evacuation leaves the hull, while retaining the same already-loaded system map.
+        var offset = TryComp<Robust.Shared.Map.Components.MapGridComponent>(grid, out var gridComponent)
+            ? new Vector2(gridComponent.LocalAABB.Right + 12f, gridComponent.LocalAABB.Center.Y)
+            : Vector2.UnitX * 30f;
+        var fallback = new MapCoordinates(gridPosition.Position + offset, gridPosition.MapId);
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { Valid: true } player ||

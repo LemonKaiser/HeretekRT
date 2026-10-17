@@ -1799,6 +1799,9 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         KoronusSystemPrototype system,
         KoronusCelestialBodyPrototype body)
     {
+        if (body.Surface == null)
+            return false;
+
         if (body.LandingApproachRadius <= 0f)
             return true;
 

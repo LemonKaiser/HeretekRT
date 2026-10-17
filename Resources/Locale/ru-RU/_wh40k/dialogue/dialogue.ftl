@@ -5,6 +5,8 @@ heretek-dialogue-conversation-examine = [color=lightblue]Сейчас этот �
    *[other] людьми
 }.[/color]
 heretek-dialogue-ui-raw-name = { $name }
+heretek-dialogue-ui-your-response = ВАШ ОТВЕТ
+heretek-dialogue-ui-scroll-responses = ↕ Прокрутите список ответов
 
 heretek-dialogue-demo-001 = На этот раз проверяем не только сцену, но и выборы. Смотри на окно внимательно: после моей реплики под текстом появятся кнопки, и ничего не должно налезть друг на друга.
 heretek-dialogue-demo-002 = Если это переживет длинные строки, музыку и еще кнопки выбора, значит каркас наконец становится похож на нормальную систему.

@@ -582,8 +582,9 @@ public sealed partial class NavScreen : BoxContainer
             PlanetaryLandingSites.AddChild(button);
         }
 
-        PlanetaryLandingSiteScroll.Visible = true;
-        PlanetaryLandingButton.Visible = !isLandedHere;
+        var hasLandingSites = body.LandingSites.Count > 0;
+        PlanetaryLandingSitesPanel.Visible = hasLandingSites;
+        PlanetaryLandingButton.Visible = hasLandingSites && !isLandedHere;
         PlanetaryLaunchButton.Visible = isLandedHere;
         PlanetaryLaunchButton.Disabled = !_planetaryState.CanLaunch || _planetaryState.Transit != null;
         PlanetaryLaunchButton.Label.FontColorOverride = PlanetaryLaunchButton.Disabled

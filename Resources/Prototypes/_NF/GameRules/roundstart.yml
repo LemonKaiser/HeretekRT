@@ -25,11 +25,11 @@
 #    - id: BluespaceCave # Mono edit
     - id: BluespaceVaultError
     - id: BluespaceVaultSmallError
-    - id: BluespaceSyndicateFTLInterception
+    - id: WH40KHostileDronePatrol
 # Mono edit start
 #    - id: BluespaceWizardFederationScout
 #    - id: BluespaceBloodMoon
-    - id: BluespacePreFractureFTLInterception
+    - id: WH40KHostileDroneHeavyPatrol
 # Mono edit end
 
 - type: entity

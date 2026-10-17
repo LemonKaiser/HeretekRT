@@ -85,6 +85,14 @@ namespace Content.Shared.Roles
         [DataField]
         public ProtoId<CompanyPrototype> AssignedCompany { get; private set; } = "None";
 
+        /// <summary>
+        /// Company the selected character must belong to before choosing this job.
+        /// </summary>
+        [DataField]
+        public ProtoId<CompanyPrototype>? RequiredCompany { get; private set; }
+
+        public bool IsCompanyAllowed(string? company) => RequiredCompany is not { } required || required.Id == company;
+
 
         /// <summary>
         ///     Should the selected traits be applied for this job?

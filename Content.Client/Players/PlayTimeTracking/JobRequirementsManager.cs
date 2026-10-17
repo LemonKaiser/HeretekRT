@@ -95,6 +95,12 @@ public sealed partial class JobRequirementsManager : ISharedPlaytimeManager
     {
         reason = null;
 
+        if (!job.IsCompanyAllowed(profile?.Company))
+        {
+            reason = FormattedMessage.FromUnformatted(Loc.GetString("wh40k-job-requires-faction"));
+            return false;
+        }
+
         if (_roleBans.Contains($"Job:{job.ID}"))
         {
             reason = FormattedMessage.FromUnformatted(Loc.GetString("role-ban"));

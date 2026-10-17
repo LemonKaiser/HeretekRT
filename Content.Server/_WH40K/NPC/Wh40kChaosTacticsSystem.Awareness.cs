@@ -2,15 +2,68 @@ using System.Numerics;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.Systems;
 using Content.Shared.ActionBlocker;
+using Content.Shared.DoAfter;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Physics;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
+using Robust.Shared.Map;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Server._WH40K.NPC;
 
 public sealed partial class Wh40kChaosTacticsSystem
 {
     [Dependency] private ActionBlockerSystem _blocker = default!;
+
+    [ViewVariables] public long SightCheckCount;
+    [ViewVariables] public long MovementRayCount;
+    [ViewVariables] public long CombatRayCount;
+    [ViewVariables] public long PathRetryCount;
+
+    public void CancelObstacleInteraction(EntityUid uid)
+    {
+        if (!TryComp<NPCSteeringComponent>(uid, out var steering) || steering.DoAfterId is not { } id)
+            return;
+        if (_obstacleDoAfter.GetStatus(id) == DoAfterStatus.Running)
+            _obstacleDoAfter.Cancel(id);
+        steering.DoAfterId = null;
+    }
+
+    private bool HasClearShot(EntityUid uid, EntityUid target, float distance)
+    {
+        CombatRayCount++;
+        return _interaction.InRangeUnobstructed(uid, target, distance + 0.1f,
+            CollisionGroup.Impassable | CollisionGroup.InteractImpassable);
+    }
+
+    public bool CanMoveDirectly(EntityUid uid, EntityUid target)
+    {
+        if (!TryComp<PhysicsComponent>(uid, out var body))
+            return false;
+        var start = _transform.GetMapCoordinates(uid);
+        var end = _transform.GetMapCoordinates(target);
+        if (start.MapId != end.MapId)
+            return false;
+        var delta = end.Position - start.Position;
+        var distance = delta.Length();
+        if (distance < 0.01f)
+            return true;
+        var radius = CompOrNull<NPCSteeringComponent>(uid)?.Radius ?? 0.35f;
+        var edge = new Vector2(-delta.Y, delta.X) / distance * (radius + 0.05f);
+        for (var i = -1; i <= 1; i++)
+        {
+            MovementRayCount++;
+            if (!_interaction.InRangeUnobstructed(
+                    new MapCoordinates(start.Position + edge * i, start.MapId),
+                    new MapCoordinates(end.Position + edge * i, end.MapId), distance + 0.1f,
+                    (CollisionGroup) body.CollisionMask,
+                    e => e == uid || e == target || HasComp<MobStateComponent>(e)))
+                return false;
+        }
+        return true;
+    }
 
     public void ObserveTarget(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp, float vision)
     {
@@ -31,6 +84,7 @@ public sealed partial class Wh40kChaosTacticsSystem
             comp.NextPathRetry = TimeSpan.Zero;
             comp.SilentSince = _timing.CurTime;
             comp.MeleeReadyAt = TimeSpan.Zero;
+            comp.SearchArrivedAt = TimeSpan.Zero;
             if (TryComp<NPCRangedCombatComponent>(uid, out var ranged))
             {
                 ranged.TargetInLOS = false;
@@ -41,13 +95,22 @@ public sealed partial class Wh40kChaosTacticsSystem
         if (_timing.CurTime < comp.NextSightCheck)
             return;
         comp.NextSightCheck = _timing.CurTime + TimeSpan.FromSeconds(0.2);
+        SightCheckCount++;
         comp.TargetVisible = CanSeeTarget(uid, target, comp, vision);
+        comp.DirectPathClear = comp.TargetVisible && CanMoveDirectly(uid, target);
+        var distance = Vector2.Distance(_transform.GetMapCoordinates(uid).Position, _transform.GetMapCoordinates(target).Position);
+        comp.ClearShot = comp.TargetVisible && HasClearShot(uid, target, distance);
         if (!comp.TargetVisible)
         {
             if (TryComp<Wh40kChaosThrowerComponent>(uid, out var thrower))
                 thrower.SafetyBlockedTarget = null;
             return;
         }
+        comp.SearchArrivedAt = TimeSpan.Zero;
+        if (comp.DirectPathClear || comp.ClearShot &&
+            (HasComp<GunComponent>(uid) && distance <= comp.RangedRange ||
+             TryComp<Wh40kChaosThrowerComponent>(uid, out var throwing) && distance <= throwing.Range))
+            CancelObstacleInteraction(uid);
         var targetTransform = Transform(target);
         comp.LastSeenPosition = _transform.WithEntityId(targetTransform.Coordinates,
             targetTransform.GridUid ?? targetTransform.MapUid!.Value);
@@ -63,12 +126,28 @@ public sealed partial class Wh40kChaosTacticsSystem
 
     public void IgnoreTarget(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp)
     {
-        CancelThrowWarning(uid, true);
+        ForgetTarget(uid, target, comp);
         comp.IgnoredTarget = target;
         comp.IgnoreUntil = _timing.CurTime + TimeSpan.FromSeconds(5);
+    }
+
+    public void ForgetTarget(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp)
+    {
+        CancelThrowWarning(uid, true);
         comp.LastSeenPosition = null;
         comp.TargetVisible = false;
+        comp.ClearShot = false;
+        comp.DirectPathClear = false;
         comp.MeleeReadyAt = TimeSpan.Zero;
+        comp.SearchArrivedAt = TimeSpan.Zero;
+        if (comp.IgnoredTarget == target)
+            comp.IgnoredTarget = null;
+        if (comp.ThreatTarget == target)
+        {
+            comp.ThreatTarget = null;
+            comp.ThreatPosition = null;
+            comp.ThreatUntil = TimeSpan.Zero;
+        }
     }
 
     public bool RetryPath(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp, bool clearShot)
@@ -80,10 +159,12 @@ public sealed partial class Wh40kChaosTacticsSystem
             comp.PathRetries = 0;
         }
         if (!TryComp<NPCSteeringComponent>(uid, out var steering) ||
+            IsClearingObstacle(steering) ||
             steering.Status != SteeringStatus.NoPath && (clearShot || steering.FailedPathCount < NPCSteeringComponent.FailedPathLimit) ||
             _timing.CurTime < comp.NextPathRetry || !_blocker.CanMove(uid))
             return true;
         comp.NextPathRetry = _timing.CurTime + TimeSpan.FromSeconds(1.25);
+        PathRetryCount++;
         if (++comp.PathRetries >= 3)
         {
             IgnoreTarget(uid, target, comp);

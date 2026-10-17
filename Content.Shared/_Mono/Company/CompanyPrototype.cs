@@ -16,8 +16,10 @@ public sealed partial class CompanyPrototype : IPrototype
     /// <summary>
     /// The name of the company.
     /// </summary>
-    [DataField(required: true)]
-    public string Name { get; private set; } = default!;
+    [DataField("name", required: true)]
+    private string _name = default!;
+
+    public string Name => Loc.TryGetString(_name, out var localized) ? localized : _name;
 
     /// <summary>
     /// The description of the company.

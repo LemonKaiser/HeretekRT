@@ -1,0 +1,9 @@
+wh40k-player-reset-description = Fully resets a WH40K player's account progress and deletes their characters.
+wh40k-player-reset-operation = full character and progress reset
+wh40k-player-reset-help = wh40kwipe <player|UserId> [reason, up to 512 characters]. Immediately performs a full player wipe.
+wh40k-player-reset-not-found = Player not found.
+wh40k-player-reset-default-reason = Full character and progress reset by an administrator.
+wh40k-player-reset-start = Starting a full wipe of { $player }.
+wh40k-player-reset-success = Reset all progress for { $player }. They must create a new character when they reconnect.
+wh40k-player-reset-failed = The full wipe did not complete. Check permissions, other wipes/restarts and the server log, then retry if needed.
+wh40k-player-reset-disconnect = An administrator is fully resetting your character and progress. Reconnect after the operation completes and create a new character.

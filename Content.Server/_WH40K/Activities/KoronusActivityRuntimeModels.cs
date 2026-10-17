@@ -9,6 +9,7 @@ namespace Content.Server._WH40K.Activities;
 public sealed class KoronusActivityRuntimeInstance
 {
     public long Id;
+    public uint ContentSeed;
     public string TemplateId = string.Empty;
     public string SystemId = string.Empty;
     public string? RouteFromSystem;

@@ -90,6 +90,7 @@ public sealed partial class MerchantSystem
     private bool Eligible(EntityUid body, EntityUid item)
     {
         if (TerminatingOrDeleted(item) || !_hands.IsHolding(body, item, out var hand) ||
+            HasComp<Content.Server._WH40K.SectorMap.Components.KoronusStationPropertyOriginComponent>(item) ||
             !_hands.CanDropHeld(body, hand, checkActionBlocker: false) || !TryComp(item, out MerchantItemTokenComponent? title) ||
             !title.Verified || title.Token == Guid.Empty || HasComp<Wh40kQuestReservationComponent>(item) ||
             HasComp<Wh40kQuestItemComponent>(item) || HasComp<Wh40kNpcGearComponent>(item) || HasComp<UnremoveableComponent>(item) ||

@@ -64,7 +64,8 @@ public abstract partial class ServerDbBase
             db.Wh40kQuestReceipts.Add(new() { QuestId = quest.Id, ObjectiveId = objective.ObjectiveId, EventId = id, AppliedAt = now });
             quest.Revision++;
             quest.State = rows.All(x => x.Count == x.RequiredCount) ? 1 : 0;
-            if (quest.State == 1 && snapshot.Completion == Wh40kQuestCompletionPolicy.Automatic) CompleteQuest(db, quest, snapshot, now);
+            if (quest.State == 1 && snapshot.Completion == Wh40kQuestCompletionPolicy.Automatic)
+                await CompleteQuestAsync(db, quest, snapshot, now, cancel);
             db.Wh40kQuestAudits.Add(new() { OwnerKey = key, QuestId = quest.Id, Actor = owner.Id, Action = "SubmitItems", Reason = id.ToString(), At = now });
             return true;
         }, cancel);

@@ -5,6 +5,7 @@ using Content.Shared.Ensnaring.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.Stunnable;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Audio;
@@ -18,6 +19,7 @@ public sealed partial class Wh40kChaosTacticsSystem
 {
     [Dependency] private SharedPopupSystem _popups = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
     [ViewVariables] public long ThrowAimCheckCount;
 
     public bool IsRestrained(EntityUid target)
@@ -182,20 +184,17 @@ public sealed partial class Wh40kChaosTacticsSystem
 
         if (Deleted(target) || !_interaction.InRangeUnobstructed(uid, target, weapon.Range))
             return;
-        var aim = _transform.GetMapCoordinates(target);
         if (comp.MeleeReadyAt == TimeSpan.Zero || comp.MeleeWarningTarget != target ||
             _timing.CurTime - comp.MeleeReadyAt > TimeSpan.FromSeconds(0.5))
         {
             comp.MeleeWarningTarget = target;
-            comp.MeleeWarningPosition = aim;
             comp.MeleeReadyAt = _timing.CurTime + comp.MeleeWindup;
             weapon.NextAttack = comp.MeleeReadyAt;
+            _popups.PopupEntity(Loc.GetString("wh40k-chaos-mauler-warning"), uid, PopupType.MediumCaution);
             args.Cancelled = true;
             return;
         }
-        if (_timing.CurTime < comp.MeleeReadyAt || comp.MeleeWarningPosition is not { } announced ||
-            announced.MapId != aim.MapId || Vector2.Distance(announced.Position, aim.Position) > 0.8f ||
-            !_interaction.InRangeUnobstructed(uid, target, weapon.Range))
+        if (_timing.CurTime < comp.MeleeReadyAt)
         {
             args.Cancelled = true;
             comp.MeleeReadyAt = TimeSpan.Zero;
@@ -203,6 +202,13 @@ public sealed partial class Wh40kChaosTacticsSystem
             return;
         }
         comp.MeleeReadyAt = TimeSpan.Zero;
+    }
+
+    private void OnMeleeDamageApplied(EntityUid uid, Wh40kChaosTacticsComponent comp, MeleeDamageAppliedEvent args)
+    {
+        if (args.User == uid && comp.MeleeStunDuration > TimeSpan.Zero &&
+            IsCombatTarget(args.Target) && !_factions.IsEntityFriendly(uid, args.Target))
+            _stun.TryStun(args.Target, comp.MeleeStunDuration, true);
     }
 
     private void CheckMeleeWarning(EntityUid uid, Wh40kChaosTacticsComponent comp)
