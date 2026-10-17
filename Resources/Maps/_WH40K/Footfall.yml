@@ -157712,7 +157712,6 @@ entities:
     - type: Transform
       pos: 7.188237,-20.291098
       parent: 2
-...
 - proto: SpawnPointWH40KKasballicaMember
   entities:
   - uid: 25328
@@ -157727,3 +157726,4 @@ entities:
     - type: Transform
       pos: -29.5,25.5
       parent: 2
+...
