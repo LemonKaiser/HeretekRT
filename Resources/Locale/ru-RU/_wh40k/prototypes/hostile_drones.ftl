@@ -33,3 +33,5 @@ ent-WH40KHostileDronePatrol = патруль враждебного ИИ-дро�
 
 ent-WH40KHostileDroneHeavyPatrol = тяжёлый патруль враждебного ИИ-дрона
     .desc = Враждебный автономный корабль уровня Т3–Т5 выходит из варпа.
+
+wh40k-drone-wreckage-name = Обломки

@@ -16,6 +16,7 @@ namespace Content.Client.Entry
             "GasVentPump",
             "GasVentScrubber",
             "HostileDroneGrid",
+            "DroneAiCore",
             "BecomesStation",
             "Advertise",
             "RadarBlip",

@@ -17,8 +17,11 @@ public sealed partial class DeleteNearbyDronesSystem : EntitySystem
         while (gridQuery.MoveNext(out var gridUid, out var delComp))
         {
             var droneQuery = EntityQueryEnumerator<HostileDroneGridComponent>();
-            while (droneQuery.MoveNext(out var droneUid, out _))
+            while (droneQuery.MoveNext(out var droneUid, out var droneComp))
             {
+                if (droneComp.Defeated)
+                    continue;
+
                 var distance = _xform.GetWorldPosition(gridUid) - _xform.GetWorldPosition(droneUid);
                 if (distance.Length() > delComp.Distance)
                     continue;

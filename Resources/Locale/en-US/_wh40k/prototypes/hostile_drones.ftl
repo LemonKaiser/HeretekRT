@@ -33,3 +33,5 @@ ent-WH40KHostileDronePatrol = hostile AI drone patrol
 
 ent-WH40KHostileDroneHeavyPatrol = hostile AI drone heavy patrol
     .desc = A hostile tier T3–T5 autonomous ship emerges from the warp.
+
+wh40k-drone-wreckage-name = Debris

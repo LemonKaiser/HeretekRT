@@ -7,7 +7,7 @@
     - MonoGreenshift
   name: mono-standard-title
   description: mono-standard-description
-  showInVote: true
+  showInVote: false
   rules:
   - NFAdventure
   - BasicStationEventScheduler
@@ -113,7 +113,7 @@
   weight: 0.5
   name: mono-chimera-tsf-title
   description: mono-chimera-tsf-description
-  showInVote: true
+  showInVote: false
   minPlayers: 30
   rules:
   - NFAdventure
@@ -135,7 +135,7 @@
   weight: 0.5
   name: mono-chimera-pdv-title
   description: mono-chimera-pdv-description
-  showInVote: true
+  showInVote: false
   minPlayers: 30
   rules:
   - NFAdventure
@@ -201,7 +201,7 @@
   id: MonoRogueTSFHyperwar
   name: mono-roguetsf-hyperwar-title
   description: mono-roguetsf-hyperwar-description
-  showInVote: true # we ball
+  showInVote: false
   weight: 0.15 # Giant majority needed
   autobalancerEnabled: true
   supportedMaps: HyperwarMapPool
@@ -220,7 +220,7 @@
   - monocrocus
   name: mono-crocus-title
   description: mono-crocus-description
-  showInVote: true
+  showInVote: false
   weight: 0.25 # 80% majority needed
   respawnMultiplier: 0.25
   autobalancerEnabled: true

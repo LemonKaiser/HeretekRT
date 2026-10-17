@@ -15,7 +15,10 @@ public sealed partial class Wh40kSpaceBossComponent : Component
     [DataField] public float HeadDistance = 16f;
     [DataField] public float BiteReach = 3f;
     [DataField] public float BiteRadius = 8f;
-    [DataField] public float BiteDepth = 4f;
+    /// <summary>Thickness of the bite around the first hull segment, independent of jaw reach.</summary>
+    [DataField] public float BiteDepth = 0.75f;
+    /// <summary>Exposed targets selected before the primary hit can destroy its obstruction.</summary>
+    public readonly List<EntityUid> BiteVictims = new();
     [DataField] public DamageSpecifier BiteHullDamage = new() { DamageDict = { ["Structural"] = 1500 } };
     [DataField] public EntProtoId? DeathLoot;
     [DataField] public bool DeleteOnDeath = true;

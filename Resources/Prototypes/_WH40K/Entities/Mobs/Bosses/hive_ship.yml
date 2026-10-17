@@ -1,8 +1,9 @@
 - type: damageModifierSet
   id: Wh40kHiveShipArmor
   coefficients:
-    Blunt: 0.8
-    Piercing: 0.8
+    Blunt: 0.5
+    Piercing: 0.5
+    Structural: 0.5
 
 - type: entity
   abstract: true
@@ -62,16 +63,16 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      180000: Dead
+      400000: Dead
   - type: Wh40kSpaceBoss
     detectionRadius: 2000
     turnSpeed: 2.2
     turnAcceleration: 6
     evasionDamageThreshold: 1200
-    biteReach: 2
+    biteReach: 6
     biteHullDamage:
       types:
-        Structural: 7000
+        Structural: 14000
     deathLoot: CrateWh40kHiveShipSpoils
     boardingPrototype: MobWh40kHiveShipBoarder
     boardingCount: 3
@@ -81,7 +82,7 @@
     maxSporeMines: 100
   - type: ExplosionResistance
     worn: false
-    damageCoefficient: 0.7
+    damageCoefficient: 0.3
     modifiers:
       SporeBomb: 0
       Wh40kHiveShipSporeBomb: 0
@@ -108,7 +109,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-18,-7,8,7"
+          bounds: "-15,-5,5,5"
         density: 50
         mask:
         - LargeMobMask
@@ -117,7 +118,7 @@
       head:
         shape:
           !type:PhysShapeAabb
-          bounds: "8,-7,18,7"
+          bounds: "5,-3.5,13,3.5"
         density: 50
         mask:
         - LargeMobMask
@@ -128,12 +129,12 @@
     altDisarm: false
     autoAttack: false
     attackRate: 0.4
-    range: 18
+    range: 28
     animation: WeaponArcBite
     damage:
       types:
-        Blunt: 180
-        Slash: 120
+        Blunt: 360
+        Slash: 240
     soundHit:
       path: /Audio/_WH40K/Voice/Tyranid/genestealerattack1.ogg
 

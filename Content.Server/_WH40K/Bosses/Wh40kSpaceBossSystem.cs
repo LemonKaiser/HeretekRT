@@ -379,6 +379,21 @@ public sealed partial class Wh40kSpaceBossSystem : EntitySystem
         }
 
         component.LookPosition = point;
+        var facing = _transform.GetWorldRotation(xform).ToVec();
+        var head = origin + facing * component.HeadDistance;
+        if (Vector2.Dot(facing, direction) >= 0.9f &&
+            Vector2.DistanceSquared(head, point) <= component.BiteReach * component.BiteReach &&
+            CanTarget(uid, enemy, component) && !IsProtectedTarget(attackTarget) &&
+            TryComp<MeleeWeaponComponent>(uid, out var weapon))
+        {
+            // Bite before planning the next movement: grid edges must not prevent
+            // an already reachable hull from being attacked. Only applied damage starts retreat.
+            _combat.SetInCombatMode(uid, true);
+            _melee.AttemptLightAttack(uid, uid, weapon, attackTarget);
+            if (component.Phase == Wh40kSpaceBossPhase.Retreat)
+                return;
+        }
+
         var speed = TryComp<MovementSpeedModifierComponent>(uid, out var movement) ? movement.WeightlessSprintSpeed : 28f;
         var leadTime = MathF.Min(component.PursuitLeadTime, MathF.Max(0, length - component.HeadDistance - 4) / MathF.Max(1, speed));
         var velocity = _physics.GetMapLinearVelocity(enemy, xform: targetTransform);
@@ -396,17 +411,6 @@ public sealed partial class Wh40kSpaceBossSystem : EntitySystem
             return;
         }
         SetDestination(uid, component, xform.MapUid!.Value, destination);
-        var facing = _transform.GetWorldRotation(xform).ToVec();
-        var head = origin + facing * component.HeadDistance;
-        if (Vector2.Dot(facing, direction) < 0.9f ||
-            Vector2.DistanceSquared(head, point) > component.BiteReach * component.BiteReach ||
-            !CanTarget(uid, enemy, component) || IsProtectedTarget(attackTarget) ||
-            !TryComp<MeleeWeaponComponent>(uid, out var weapon))
-            return;
-
-        _combat.SetInCombatMode(uid, true);
-        if (_melee.AttemptLightAttack(uid, uid, weapon, attackTarget))
-            BeginRetreat(uid, component, xform, direction);
     }
 
     private void ClearDestination(EntityUid uid, Wh40kSpaceBossComponent component)

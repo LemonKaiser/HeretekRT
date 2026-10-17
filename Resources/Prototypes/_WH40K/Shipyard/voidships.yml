@@ -175,7 +175,7 @@
   parent: BaseVessel
   name: Perdition-class Light Cruiser
   description: A Kasballica-pattern cruiser whose name is a warning in Low Gothic. It carries brutal firepower in a compact hull and is favoured by captains who expect every negotiation to end in a boarding action.
-  price: 670000
+  price: 680000
   category: Large
   group: Shipyard
   shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/perdition.yml
@@ -209,7 +209,7 @@
   parent: BaseVessel
   name: Sword-class Strike Corvette
   description: A Kasballica assault corvette designed to close the distance and put its guns on target. The Sword is quick, aggressive, and unforgiving when its captain commits to an attack run.
-  price: 280000
+  price: 340000
   category: Medium
   group: Shipyard
   shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/sword.yml
@@ -243,7 +243,7 @@
   parent: BaseVessel
   name: Claymore-class Corvette
   description: A frontier corvette built around a heavy forward battery. The Claymore rewards disciplined attack runs and punishes anyone who lets a target reach its flanks.
-  price: 260000
+  price: 290000
   category: Medium
   group: Shipyard
   shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/claymore.yml
@@ -456,7 +456,7 @@
   parent: BaseVessel
   name: Mechanicus Prospector Mk III
   description: A heavy mining vessel maintained according to Mechanicus rites. It carries the power and machinery to break open rich deposits while keeping a small crew protected from the void.
-  price: 150000
+  price: 180000
   category: Large
   group: Shipyard
   shuttlePath: /SharedMaps/_Mono/Shuttles/WH40K/mining_tier3.yml

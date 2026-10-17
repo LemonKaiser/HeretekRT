@@ -1,4 +1,4 @@
-﻿using Content.Shared.Roles;
+using Content.Shared.Roles;
 using Robust.Shared.Configuration;
 
 namespace Content.Shared.CCVar;
@@ -49,7 +49,7 @@ public sealed partial class CCVars
     ///     Controls the default game preset.
     /// </summary>
     public static readonly CVarDef<string>
-        GameLobbyDefaultPreset = CVarDef.Create("game.defaultpreset", "nfpirate", CVar.ARCHIVE); // Frontier: secret<nfpirate
+        GameLobbyDefaultPreset = CVarDef.Create("game.defaultpreset", "RogueTrader", CVar.ARCHIVE); // HeretekRT: RogueTrader
 
     /// <summary>
     ///     Controls if the game can force a different preset if the current preset's criteria are not met.
@@ -61,7 +61,7 @@ public sealed partial class CCVars
     ///     The preset for the game to fall back to if the selected preset could not be used, and fallback is enabled.
     /// </summary>
     public static readonly CVarDef<string>
-        GameLobbyFallbackPreset = CVarDef.Create("game.fallbackpreset", "Deathmatch", CVar.ARCHIVE); // mono - trol
+        GameLobbyFallbackPreset = CVarDef.Create("game.fallbackpreset", "RogueTrader", CVar.ARCHIVE); // HeretekRT: RogueTrader
 
     /// <summary>
     ///     Controls if people can win the game in Suspicion or Deathmatch.
@@ -98,7 +98,7 @@ public sealed partial class CCVars
     ///     Prototype to use for map pool.
     /// </summary>
     public static readonly CVarDef<string>
-        GameMapPool = CVarDef.Create("game.map_pool", "DefaultMapPool", CVar.SERVERONLY);
+        GameMapPool = CVarDef.Create("game.map_pool", "KoronusExpanseMapPool", CVar.SERVERONLY);
 
     /// <summary>
     ///     The depth of the queue used to calculate which map is next in rotation.

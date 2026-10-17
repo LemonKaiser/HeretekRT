@@ -32,6 +32,9 @@ public sealed partial class SpawnPointSystem : EntitySystem
             if (args.Station != null && _stationSystem.GetOwningStation(uid, xform) != args.Station)
                 continue;
 
+            if (spawnPoint.Job != null && spawnPoint.Job != args.Job)
+                continue;
+
             // Delta-V: Allow setting a desired SpawnPointType
             if (args.DesiredSpawnPointType != SpawnPointType.Unset)
             {
@@ -45,9 +48,9 @@ public sealed partial class SpawnPointSystem : EntitySystem
                     case SpawnPointType.Observer when spawnPoint.SpawnType == SpawnPointType.Observer:
                         possiblePositions.Add(xform.Coordinates);
                         break;
-                    default:
-                        continue;
                 }
+
+                continue;
             }
 
             if (_gameTicker.RunLevel == GameRunLevel.InRound && spawnPoint.SpawnType == SpawnPointType.LateJoin)
@@ -66,9 +69,11 @@ public sealed partial class SpawnPointSystem : EntitySystem
         if (possiblePositions.Count == 0)
         {
             // Ok we've still not returned, but we need to put them /somewhere/.
-            // However, we should only use spawn points from the same station to prevent cross-faction spawning.
+            // Never fall back to another role's dedicated/faction spawner.
+            // First prefer LateJoin spawn points on the same station.
             var points2 = EntityQueryEnumerator<SpawnPointComponent, TransformComponent>();
-            var stationFallbackPositions = new List<EntityCoordinates>();
+            var lateJoinFallbackPositions = new List<EntityCoordinates>();
+            var unassignedFallbackPositions = new List<EntityCoordinates>();
 
             while (points2.MoveNext(out var uid, out var spawnPoint, out var xform))
             {
@@ -76,19 +81,34 @@ public sealed partial class SpawnPointSystem : EntitySystem
                 if (args.Station != null && _stationSystem.GetOwningStation(uid, xform) != args.Station)
                     continue;
 
-                stationFallbackPositions.Add(xform.Coordinates);
+                // Never fall back to another job's dedicated spawner
+                if (spawnPoint.Job != null && spawnPoint.Job != args.Job)
+                    continue;
+
+                if (spawnPoint.SpawnType == SpawnPointType.LateJoin)
+                {
+                    lateJoinFallbackPositions.Add(xform.Coordinates);
+                }
+                else if (spawnPoint.SpawnType == SpawnPointType.Job)
+                {
+                    unassignedFallbackPositions.Add(xform.Coordinates);
+                }
             }
 
-            if (stationFallbackPositions.Count > 0)
+            if (lateJoinFallbackPositions.Count > 0)
             {
-                possiblePositions.AddRange(stationFallbackPositions);
+                possiblePositions.AddRange(lateJoinFallbackPositions);
+            }
+            else if (unassignedFallbackPositions.Count > 0)
+            {
+                possiblePositions.AddRange(unassignedFallbackPositions);
             }
             else
             {
                 if (TryComp<MetaDataComponent>(args.Station, out var data) && data.EntityPrototype != null)
-                    Log.Error($"No spawn points were available for station {data.EntityPrototype}! (uid: {args.Station}, name: {data.EntityName})");
+                    Log.Error($"No spawn points were available for job {args.Job} on station {data.EntityPrototype}! (uid: {args.Station}, name: {data.EntityName})");
                 else
-                    Log.Error($"No spawn points were available for station {args.Station}!, station prototype is null.");
+                    Log.Error($"No spawn points were available for job {args.Job} on station {args.Station}!, station prototype is null.");
                 return;
             }
         }

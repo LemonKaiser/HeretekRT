@@ -5,7 +5,7 @@ meta:
   forkId: ebengrad
   forkVersion: b38783231d616bd70398b00366c568bea7e2a437
   time: 10/15/2026 19:00:45
-  entityCount: 25329
+  entityCount: 25332
 maps:
 - 1
 grids:
@@ -157725,5 +157725,22 @@ entities:
     components:
     - type: Transform
       pos: -29.5,25.5
+      parent: 2
+- proto: SpawnPointWanderer
+  entities:
+  - uid: 25330
+    components:
+    - type: Transform
+      pos: 20.5,-17.5
+      parent: 2
+  - uid: 25331
+    components:
+    - type: Transform
+      pos: 21.5,-17.5
+      parent: 2
+  - uid: 25332
+    components:
+    - type: Transform
+      pos: 20.5,-16.5
       parent: 2
 ...
