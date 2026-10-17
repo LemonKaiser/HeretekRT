@@ -102,6 +102,7 @@ namespace Content.Client.Entry
             _contentLoc.Initialize();
             _componentFactory.DoAutoRegistrations();
             _componentFactory.IgnoreMissingComponents();
+            _componentFactory.RegisterIgnore(IgnoredComponents.List);
 
             // Do not add to these, they are legacy.
             _componentFactory.RegisterClass<SharedGravityGeneratorComponent>();

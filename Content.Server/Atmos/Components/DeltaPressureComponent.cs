@@ -45,7 +45,7 @@ public sealed partial class DeltaPressureComponent : Component
     /// Required for proper deletion, as we cannot reference the grid
     /// for removal while the entity is being deleted.
     /// </summary>
-    [DataField]
+    [DataField(readOnly: true)]
     public EntityUid? GridUid;
 
     /// <summary>

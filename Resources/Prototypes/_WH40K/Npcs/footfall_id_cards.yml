@@ -314,7 +314,7 @@
   components:
   - type: IdCard
     jobTitle: wh40k-footfall-id-chartist-title
-    jobIcon: JobIconCargoTechnician
+    jobIcon: JobIconWH40KFleetCrewman
     companyName: ChartistFleet
 
 - type: entity
@@ -326,7 +326,7 @@
   components:
   - type: IdCard
     jobTitle: wh40k-footfall-id-kasballica-title
-    jobIcon: JobIconServiceWorker
+    jobIcon: JobIconWH40KKasballicaMember
     companyName: KasballicaMission
 
 - type: entity

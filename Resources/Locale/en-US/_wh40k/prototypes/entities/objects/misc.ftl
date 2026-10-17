@@ -49,3 +49,11 @@ ent-WandererPDA = wanderer PDA
     .desc = A battered personal data assistant that has seen more roads than its owner remembers.
 ent-WandererIDCard = wanderer ID card
     .desc = An identification card for a traveler without a fixed destination.
+
+ent-WH40KKasballicaPDA = Kasballica PDA
+    .desc = A personal data assistant marked with the insignia of the Kasballica Mission.
+    .suffix = WH40K, Kasballica
+
+ent-WH40KFleetPDA = Fleet crewman PDA
+    .desc = A regulation personal data assistant issued to Chartist Fleet crew.
+    .suffix = WH40K, Fleet

@@ -1,0 +1,51 @@
+- type: entity
+  parent: BasePDA
+  id: WH40KKasballicaPDA
+  name: Kasballica PDA
+  description: A personal data assistant marked with the insignia of the Kasballica Mission.
+  suffix: WH40K, Kasballica
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Wh40kQuestUi
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+  - type: Pda
+    id: WH40KFootfallKasballicaIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-pirate
+  - type: Icon
+    state: pda-pirate
+  - type: PdaBorderColor
+    borderColor: "#A66B9E"
+
+- type: entity
+  parent: BasePDA
+  id: WH40KFleetPDA
+  name: fleet crewman PDA
+  description: A regulation personal data assistant issued to Chartist Fleet crew.
+  suffix: WH40K, Fleet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Wh40kQuestUi
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kQuestUiKey.Key:
+        type: Wh40kQuestBoundUserInterface
+        interactionRange: 3
+  - type: Pda
+    id: WH40KFootfallChartistIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-interncadet
+  - type: Icon
+    state: pda-interncadet
+  - type: PdaBorderColor
+    borderColor: "#4B8FC9"

@@ -5,43 +5,43 @@
 - type: startingGear
   id: WH40KFootfallChartistOfficerGear
   equipment:
-    id: WH40KFootfallChartistIDCard
+    id: WH40KFleetPDA
     jumpsuit: ClothingUniformJumpsuitImperialFleetOfficer
     outerClothing: ClothingOuterCoatImperialFleetOfficer
     head: ClothingHeadHatImperialFleetOfficer
     belt: ClothingBeltImperialFleetOfficer
-    shoes: ClothingShoesBootsCombat
+    shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombatColonel
 
 - type: startingGear
   id: WH40KFootfallChartistMerchantGear
   equipment:
-    id: WH40KFootfallChartistIDCard
+    id: WH40KFleetPDA
     jumpsuit: ClothingUniformJumpsuitImperialFleetOfficer
     outerClothing: ClothingOuterArmorJuniorOfficerArmoredJacket
     belt: ClothingBeltImperialFleetOfficer
-    shoes: ClothingShoesBootsCombat
+    shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesColorBlack
 
 - type: startingGear
   id: WH40KFootfallChartistCrewmanGear
   equipment:
-    id: WH40KFootfallChartistIDCard
+    id: WH40KFleetPDA
     jumpsuit: ClothingUniformJumpsuitCommandUniform
     outerClothing: ClothingOuterArmorFlakVest
-    belt: ClothingBeltUtility
-    shoes: ClothingShoesBootsCombat
+    belt: ClothingBeltMilitaryWebbing
+    shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombatVoidsman
 
 - type: startingGear
   id: WH40KFootfallChartistGuardGear
   equipment:
-    id: WH40KFootfallChartistIDCard
+    id: WH40KFleetPDA
     jumpsuit: ClothingUniformJumpsuitCommandUniform
     outerClothing: ClothingOuterArmorFlakVest
     head: ClothingHeadHelmetFlak
     belt: ClothingBeltImperialFleetOfficer
-    shoes: ClothingShoesBootsCombat
+    shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
   inhand:
   - WeaponRifleAk

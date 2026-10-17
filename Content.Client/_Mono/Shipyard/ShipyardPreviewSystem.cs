@@ -33,6 +33,7 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 
     public bool TryPreviewGrid(VesselPrototype vessel)
     {
+        Dispose();
         CachePreviewMap();
 
         var opts = new DeserializationOptions();

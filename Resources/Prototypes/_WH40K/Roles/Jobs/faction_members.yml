@@ -4,7 +4,7 @@
   description: job-description-wh40k-kasballica-member
   playTimeTracker: JobWH40KKasballicaMember
   startingGear: WH40KKasballicaMemberGear
-  icon: JobIconSecurityOfficer
+  icon: JobIconWH40KKasballicaMember
   supervisors: job-supervisors-wh40k-kasballica
   displayWeight: 40
   assignedCompany: KasballicaMission
@@ -20,7 +20,7 @@
   description: job-description-wh40k-fleet-crewman
   playTimeTracker: JobWH40KFleetCrewman
   startingGear: WH40KFleetCrewmanGear
-  icon: JobIconCargoTechnician
+  icon: JobIconWH40KFleetCrewman
   supervisors: job-supervisors-wh40k-fleet
   displayWeight: 40
   assignedCompany: ChartistFleet
@@ -36,10 +36,31 @@
 - type: playTimeTracker
   id: JobWH40KFleetCrewman
 
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconWH40KKasballicaMember
+  icon:
+    sprite: /Textures/_NF/Interface/Misc/job_icons.rsi
+    state: pirate
+  jobName: job-name-wh40k-kasballica-member
+  allowSelection: false
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconWH40KFleetCrewman
+  icon:
+    sprite: /Textures/_Mono/Interface/Misc/job_icons.rsi
+    state: TSFCiv
+  jobName: job-name-wh40k-fleet-crewman
+  allowSelection: false
+
 - type: startingGear
   id: WH40KKasballicaMemberGear
   parent: WH40KFootfallKasballicaMerchantGear
   equipment:
+    id: WH40KKasballicaPDA
+    shoes: ClothingShoesBootsJackFilled
+    belt: guardbelt
     back: ClothingBackpackSatchelWanderer
     ears: ClothingHeadsetWanderer
     wallet: ClothingWalletLeatherBrown
@@ -57,6 +78,9 @@
   id: WH40KFleetCrewmanGear
   parent: WH40KFootfallChartistCrewmanGear
   equipment:
+    id: WH40KFleetPDA
+    shoes: ClothingShoesBootsCombatFilled
+    belt: ClothingBeltMilitaryWebbing
     back: ClothingBackpackSatchelWanderer
     ears: ClothingHeadsetWanderer
     wallet: ClothingWalletLeatherBrown

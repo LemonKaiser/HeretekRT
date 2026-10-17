@@ -14048,64 +14048,48 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 3.5,-47.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2140
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 3.5,-46.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2141
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 3.5,-45.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2142
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 3.5,-44.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2143
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -2.5,-44.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2144
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -2.5,-45.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2145
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -2.5,-46.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
   - uid: 2146
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -2.5,-47.5
       parent: 1
-    - type: DeltaPressure
-      gridUid: 1
 - proto: VendingMachineTankDispenserEVA
   entities:
   - uid: 2147

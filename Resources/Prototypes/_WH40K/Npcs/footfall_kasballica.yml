@@ -5,12 +5,12 @@
 - type: startingGear
   id: WH40KFootfallKasballicaOfficerGear
   equipment:
-    id: WH40KFootfallKasballicaIDCard
+    id: WH40KKasballicaPDA
     jumpsuit: ClothingUniformRogueWarm
     outerClothing: ClothingOuterArmorBPVestMediumPDV
     head: ClothingHeadHatSyndieMAA
     belt: guardbelt
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsMercenaryGlovesCombat
 
 - type: wh40kNpcProfile
@@ -65,12 +65,12 @@
 - type: startingGear
   id: WH40KFootfallKasballicaMerchantGear
   equipment:
-    id: WH40KFootfallKasballicaIDCard
+    id: WH40KKasballicaPDA
     jumpsuit: ClothingUniformRogueWarm
     outerClothing: ClothingOuterArmorBPVestMediumPDV
     head: ClothingHeadHatBlacksoft
     belt: guardbelt
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsMercenaryGlovesCombat
 
 - type: wh40kNpcProfile
@@ -184,11 +184,11 @@
 - type: startingGear
   id: WH40KFootfallKasballicaAmmunitionWorkerGear
   equipment:
-    id: WH40KFootfallKasballicaIDCard
+    id: WH40KKasballicaPDA
     jumpsuit: ClothingUniformRogue
     outerClothing: ClothingOuterArmorBPVestMediumPDV
     belt: guardbelt
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsMercenaryGlovesCombat
   inhand:
   - Screwdriver
@@ -245,12 +245,12 @@
 - type: startingGear
   id: WH40KFootfallKasballicaGuardGear
   equipment:
-    id: WH40KFootfallKasballicaIDCard
+    id: WH40KKasballicaPDA
     jumpsuit: ClothingUniformRogue
     outerClothing: ClothingOuterArmorBPVestMediumPDV
     head: ClothingHeadHelmetMoebian6
     belt: guardbelt
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsMercenaryGlovesCombat
   inhand:
   - WeaponStubPistol
