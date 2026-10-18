@@ -1,25 +1,19 @@
 - type: entity
   id: MachineFTLDrive
   parent: BaseMachinePowered
-  name: CTLA-25 bluespace drive
-  description: A FTL drive that extends a ship's FTL range to ~5 kilometers. Does not stack.
-  placement:
-    mode: SnapgridCenter
+  name: Navigator TypeG
+  description: A mutant of the Navis Nobilite whose third eye pierces the Warp chaos to find a path where whole fleets perish.
   components:
     - type: Transform
       anchored: true
     - type: Physics
       bodyType: Static
     - type: Sprite
-      sprite: _Mono/Structures/ShuttleComponents/drive.rsi
-      snapCardinals: true
+      sprite: _WH40K/Structures/ShuttleComponents/navigator.rsi
+      offset: 0,0.5
       layers:
-      - state: control
-      - state: control_on
-        map: ["enum.PowerDeviceVisualLayers.Powered"]
-        visible: false
-        shader: unshaded
-        color: "#349BEB"
+      - state: TNav
+      - state: Nav
     - type: FTLDrive
       range: 5000
       thermalSignature: 2000000 # ~2828m range
@@ -102,19 +96,15 @@
 - type: entity
   parent: MachineFTLDrive
   id: MachineFTLDrive50
-  name: CTLA-50 bluespace drive
-  description: A FTL drive that extends a ship's FTL range to ~10 kilometers. Does not stack.
+  name: Navigator TypeA
+  description: A mutant of the Navis Nobilite whose third eye pierces the Warp chaos to find a path where whole fleets perish.
   components:
   - type: Sprite
-    sprite: _Mono/Structures/ShuttleComponents/drive.rsi
-    snapCardinals: true
+    sprite: _WH40K/Structures/ShuttleComponents/navigator.rsi
+    offset: 0,0.5
     layers:
-    - state: control
-    - state: control_on
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      visible: false
-      shader: unshaded
-      color: "#E6173E"
+    - state: TNav
+    - state: Nav
   - type: FTLDrive
     range: 10000
     thermalSignature: 4000000 # ~4000m range
@@ -139,19 +129,15 @@
 - type: entity
   parent: MachineFTLDrive
   id: MachineFTLDrive25S
-  name: CTLA-25s bluespace drive
-  description: An advanced FTL drive that extends a ship's FTL range to ~5 kilometers, but with upgrades to allow for faster recharge and flight times. Does not stack.
+  name: Navigator TypeB
+  description: A mutant of the Navis Nobilite whose third eye pierces the Warp chaos to find a path where whole fleets perish.
   components:
   - type: Sprite
-    sprite: _Mono/Structures/ShuttleComponents/drive.rsi
-    snapCardinals: true
+    sprite: _WH40K/Structures/ShuttleComponents/navigator.rsi
+    offset: 0,0.5
     layers:
-    - state: control
-    - state: control_on
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-      visible: false
-      shader: unshaded
-      color: "#7E16F7"
+    - state: TNav
+    - state: Nav
   - type: FTLDrive
     range: 5000
     cooldown: 7.5
