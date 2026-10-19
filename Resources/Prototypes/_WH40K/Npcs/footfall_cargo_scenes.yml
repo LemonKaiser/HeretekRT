@@ -14,8 +14,7 @@
   equipment:
     id: WH40KFootfallMinerIDCard
     jumpsuit: ClothingUniformJumpsuitGuardsman
-    outerClothing: ClothingOuterArmorLithosMining
-    head: ClothingHeadHelmetLithosMining
+    outerClothing: ClothingOuterHardsuitSalvage
     shoes: ClothingShoesBootsworkTechpriest
     gloves: ClothingHandsGlovesCombatVoidsman
     belt: ClothingBeltUtility

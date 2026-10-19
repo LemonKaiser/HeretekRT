@@ -98,11 +98,7 @@
       price: 300
       minStock: 5
       maxStock: 5
-    - product: ClothingHeadHelmetLithosMining
-      price: 90
-      minStock: 8
-      maxStock: 8
-    - product: ClothingOuterArmorLithosMining
+    - product: ClothingOuterHardsuitSalvage
       price: 150
       minStock: 6
       maxStock: 6
