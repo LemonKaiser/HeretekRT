@@ -3279,18 +3279,12 @@ ent-ClothingHeadHatImperialFleetOfficer = Imperial Navy officer's peaked cap
 
 ent-ClothingHeadHelmetAstartesAquilaRaptors = Raptors Chapter Aquila helmet
 
-ent-ClothingHeadHelmetLithosMining = "Lithos" mining helmet
-    .desc = A hard-wearing miner's helmet with a lamp for dust-choked tunnels and a lining that keeps out more than falling stone.
-
 ent-ClothingHeadHoodImperialPilgrim = Imperial pilgrim's hood
     .desc = A modest hood that keeps dust and unwelcome attention away from a pilgrim's face.
     .desc = Hard-wearing shoes made for the next thousand steps towards a distant shrine.
 
 ent-ClothingOuterArmorAstartesAquilaRaptors = Raptors Chapter Aquila power armor
     .desc = Camouflaged Mk.VII Aquila-pattern power armor worn by the loyal Raptors Chapter. Its muted colors favour the patient hunter over the parade ground.
-
-ent-ClothingOuterArmorLithosMining = "Lithos" mining carapace
-    .desc = A reinforced work carapace built from flak plates, shock padding and rad-lined seals. Issued to crews who cut deeper than a sensible overseer would permit.
 
 ent-ClothingOuterCoatImperialCitizen = hive citizen's coat
 
