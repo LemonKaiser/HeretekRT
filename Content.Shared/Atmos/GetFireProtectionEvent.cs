@@ -18,6 +18,8 @@ public sealed class GetFireProtectionEvent : EntityEventArgs, IInventoryRelayEve
     /// </summary>
     public float Multiplier;
 
+    public bool IgnoreAtmosphere;
+
     public GetFireProtectionEvent()
     {
         Multiplier = 1f;

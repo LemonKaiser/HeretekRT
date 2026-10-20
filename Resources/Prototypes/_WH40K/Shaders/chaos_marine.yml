@@ -1,0 +1,39 @@
+- type: shader
+  id: Wh40kMarineRage
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_rage.swsl
+
+- type: shader
+  id: Wh40kMarineWeapon
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_weapon.swsl
+
+- type: shader
+  id: Wh40kMarineImpact
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_impact.swsl
+
+- type: shader
+  id: Wh40kMarineRocketMark
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_rocket_mark.swsl
+
+- type: shader
+  id: Wh40kMarineDeath
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_death.swsl
+
+- type: shader
+  id: Wh40kMarineExhaust
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_exhaust.swsl
+
+- type: shader
+  id: Wh40kMarineLandingWave
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_landing.swsl
+
+- type: shader
+  id: Wh40kMarineTransitionWave
+  kind: source
+  path: /Textures/_WH40K/Shaders/chaos_marine_transition.swsl

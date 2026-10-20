@@ -45,6 +45,29 @@
     nameGrid: false
 
 - type: entity
+  id: SpawnWH40KDroneSpearman
+  parent: SpawnDroneBase
+  name: hostile AI drone Spearman spawner
+  suffix: WH40K, T1-1
+  categories: [Spawner]
+  components:
+  - type: GridSpawner
+    path: /SharedMaps/_WH40K/Drones/drone_t1_1.yml
+    addComponents:
+    - type: RandomMetadata
+      nameSeparator: ""
+      nameSegments:
+      - wh40k-drone-spearman-name
+      - " 0x"
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+      - DroneHex
+    nameGrid: false
+
+- type: entity
   id: SpawnWH40KDroneWatcher
   parent: SpawnDroneBase
   name: hostile AI drone Watcher spawner

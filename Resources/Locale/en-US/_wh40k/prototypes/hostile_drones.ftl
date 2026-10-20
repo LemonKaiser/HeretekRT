@@ -8,6 +8,11 @@ ent-SpawnWH40KDroneMessenger = hostile AI drone Messenger spawner
     .suffix = WH40K, T1
 wh40k-drone-messenger-name = Hostile AI drone Messenger
 
+ent-SpawnWH40KDroneSpearman = hostile AI drone Spearman spawner
+    .desc = A tier T1-1 autonomous missile ship that attacks other ships.
+    .suffix = WH40K, T1-1
+wh40k-drone-spearman-name = Hostile AI drone Spearman
+
 ent-SpawnWH40KDroneWatcher = hostile AI drone Watcher spawner
     .desc = A tier T2 autonomous combat ship that attacks other ships.
     .suffix = WH40K, T2

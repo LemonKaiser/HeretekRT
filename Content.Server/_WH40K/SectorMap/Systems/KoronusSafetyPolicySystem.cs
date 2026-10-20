@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.Localizations;
+using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.Components;
@@ -93,9 +94,13 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private SharedIgnitionSourceSystem _ignitionSource = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private DockingSystem _docking = default!;
+    [Dependency] private OperationalDomainSystem _domains = default!;
 
     private EntityQuery<TransformComponent> _transformQuery;
     private TimeSpan _nextEnvironmentalSafetySweep;
+    private readonly HashSet<EntityUid> _checkedDockGrids = new();
+    private readonly Stack<EntityUid> _dockGrids = new();
 
     public override void Initialize()
     {
@@ -202,6 +207,46 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     public bool HasRule(EntityUid entity, KoronusSafetyRule rule)
     {
         return (GetRules(entity) & rule) != 0;
+    }
+
+    /// <summary>
+    /// Excludes safe areas, protected facilities and their docked vessels from space NPC targets.
+    /// Bosses additionally restrict their targets to independent vessels.
+    /// </summary>
+    public bool IsProtectedSpaceTarget(EntityUid target, bool requireVessel = false)
+    {
+        if (TerminatingOrDeleted(target) || !TryComp(target, out TransformComponent? xform))
+            return true;
+
+        const KoronusSafetyRule rules = KoronusSafetyRule.StationProtection |
+                                       KoronusSafetyRule.HostileNpcAutoCleanup |
+                                       KoronusSafetyRule.ShipWeapons;
+        if (HasRule(target, rules))
+            return true;
+
+        var grid = HasComp<MapGridComponent>(target) ? target : xform.GridUid;
+        if (grid is not { } gridUid)
+            return false;
+
+        // Follow the full docking chain so a vessel cannot expose station occupants as targets.
+        _checkedDockGrids.Clear();
+        _dockGrids.Clear();
+        _dockGrids.Push(gridUid);
+        while (_dockGrids.TryPop(out var connected))
+        {
+            if (!_checkedDockGrids.Add(connected) || TerminatingOrDeleted(connected))
+                continue;
+            if (HasComp<ProtectedGridComponent>(connected) || HasComp<KoronusProtectedFacilityComponent>(connected) ||
+                requireVessel && !_domains.IsVesselGrid(connected) || HasRule(connected, rules))
+                return true;
+            foreach (var dock in _docking.GetDocks(connected))
+            {
+                if (TryComp(dock.Comp.DockedWith, out TransformComponent? other) && other.GridUid is { } otherGrid)
+                    _dockGrids.Push(otherGrid);
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

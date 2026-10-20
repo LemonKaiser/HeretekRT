@@ -4,11 +4,8 @@ using Content.Server._Mono.Radar;
 using Content.Server._Mono.FireControl;
 using Content.Server._WH40K.OperationalDomain;
 using Content.Server._WH40K.SectorMap.Systems;
-using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.NPC.Components;
 using Content.Server.NPC.Systems;
-using Content.Server.Shuttles.Systems;
-using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared.CombatMode;
@@ -20,13 +17,11 @@ using Content.Shared.Movement.Components;
 using Content.Shared.NPC;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
-using Content.Shared.Tiles;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Server.Player;
 using Robust.Shared.Map;
-using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
@@ -50,10 +45,7 @@ public sealed partial class Wh40kSpaceBossSystem : EntitySystem
     [Dependency] private KoronusSafetyPolicySystem _safety = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private DockingSystem _docking = default!;
     private readonly HashSet<EntityUid> _nearby = new();
-    private readonly HashSet<EntityUid> _checkedDockGrids = new();
-    private readonly Stack<EntityUid> _dockGrids = new();
     private TimeSpan _nextThink;
 
     public override void Initialize()
@@ -163,34 +155,7 @@ public sealed partial class Wh40kSpaceBossSystem : EntitySystem
 
     public bool IsProtectedTarget(EntityUid target)
     {
-        if (!TryComp(target, out TransformComponent? xform))
-            return true;
-
-        var grid = HasComp<MapGridComponent>(target) ? target : xform.GridUid;
-        if (_safety.HasRule(target, KoronusSafetyRule.StationProtection | KoronusSafetyRule.HostileNpcAutoCleanup))
-            return true;
-        if (grid is not { } gridUid)
-            return false;
-
-        // Docked vessels share the station's protection, including chains through another vessel.
-        _checkedDockGrids.Clear();
-        _dockGrids.Clear();
-        _dockGrids.Push(gridUid);
-        while (_dockGrids.TryPop(out var connected))
-        {
-            if (!_checkedDockGrids.Add(connected) || TerminatingOrDeleted(connected))
-                continue;
-            if (HasComp<ProtectedGridComponent>(connected) || HasComp<KoronusProtectedFacilityComponent>(connected) ||
-                !_domains.IsVesselGrid(connected) ||
-                _safety.HasRule(connected, KoronusSafetyRule.StationProtection | KoronusSafetyRule.HostileNpcAutoCleanup))
-                return true;
-            foreach (var dock in _docking.GetDocks(connected))
-            {
-                if (TryComp(dock.Comp.DockedWith, out TransformComponent? other) && other.GridUid is { } otherGrid)
-                    _dockGrids.Push(otherGrid);
-            }
-        }
-        return false;
+        return _safety.IsProtectedSpaceTarget(target, requireVessel: true);
     }
 
     public bool CanTarget(EntityUid boss, EntityUid player, Wh40kSpaceBossComponent component)

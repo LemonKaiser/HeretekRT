@@ -1,0 +1,18 @@
+uniform highp float BurnProgress;
+
+void fragment()
+{
+    highp vec4 body = zTexture(UV);
+    highp float t = clamp(BurnProgress, 0.0, 1.0);
+    highp vec2 cell = floor(UV2 * vec2(52.0, 72.0));
+    highp float grain = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
+    highp float erosion = smoothstep(0.45, 0.98, t);
+    highp float threshold = 0.15 + 0.7 * (UV2.y * 0.65 + grain * 0.35);
+    highp float remains = smoothstep(erosion - 0.025, erosion + 0.025, threshold);
+    highp float hotEdge = exp(-pow((threshold - erosion) * 40.0, 2.0)) * step(0.02, erosion);
+    highp float charred = smoothstep(0.08, 0.65, t);
+    highp vec3 charcoal = body.rgb * vec3(0.12, 0.09, 0.08);
+    highp vec3 colour = mix(body.rgb, charcoal, charred);
+    colour += vec3(1.0, 0.24, 0.035) * hotEdge * 0.8;
+    COLOR = vec4(colour, body.a * remains);
+}

@@ -1,0 +1,19 @@
+light_mode unshaded;
+
+void fragment()
+{
+    highp vec2 p = UV * 2.0 - vec2(1.0);
+    highp float diamond = step(0.5, UV2.y);
+    highp vec2 q = abs(mix(p, vec2(p.x + p.y, p.y - p.x) * 0.70710678, diamond));
+    highp float extent = mix(0.8, 0.66, diamond);
+    highp float distanceToEdge = abs(max(q.x, q.y) - extent);
+    highp float corners = smoothstep(extent - 0.32, extent - 0.23, min(q.x, q.y));
+    highp float stroke = 1.0 - smoothstep(0.012, 0.04, distanceToEdge);
+    highp float halo = exp(-distanceToEdge * 38.0) * 0.12;
+    highp float charge = clamp(UV2.x, 0.0, 1.0);
+    highp float edgeAlpha = (stroke * 0.68 + halo) * mix(0.24, 1.0, corners);
+    highp float centerDot = (1.0 - smoothstep(mix(0.035, 0.065, diamond), mix(0.065, 0.11, diamond), length(p))) * 0.72;
+    highp float alpha = max(edgeAlpha, centerDot) * (0.78 + charge * 0.22);
+    highp vec3 crimson = mix(vec3(0.86, 0.025, 0.065), vec3(1.0, 0.16, 0.12), corners * charge);
+    COLOR = vec4(crimson, alpha);
+}

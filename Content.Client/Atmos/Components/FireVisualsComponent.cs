@@ -19,6 +19,13 @@ public sealed partial class FireVisualsComponent : Component
     [DataField("sprite")]
     public string? Sprite;
 
+    /// <summary>
+    /// Adds the shared fire, smoke and ember emitters alongside the burning sprite layer.
+    /// Disable for visuals that already provide their own fitted flame.
+    /// </summary>
+    [DataField]
+    public bool Particles = true;
+
     [DataField("lightEnergyPerStack")]
     public float LightEnergyPerStack = 0.5f;
 

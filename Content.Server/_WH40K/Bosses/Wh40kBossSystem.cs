@@ -23,6 +23,7 @@ public sealed partial class Wh40kBossSystem : EntitySystem
     [Dependency] private MobThresholdSystem _thresholds = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private Wh40kBossArenaSystem _arena = default!;
 
     private readonly Dictionary<ICommonSession, EntityUid> _recipients = new();
     private readonly Dictionary<EntityUid, ResolvedSoundSpecifier?> _themes = new();
@@ -89,6 +90,8 @@ public sealed partial class Wh40kBossSystem : EntitySystem
             component.SameGridOnly && (bossTransform.GridUid == null || bossTransform.GridUid != playerTransform.GridUid))
             return false;
 
+        if (HasComp<Wh40kBossArenaComponent>(boss))
+            return _arena.Contains(boss, player);
         return Vector2.DistanceSquared(_transform.GetWorldPosition(bossTransform),
             _transform.GetWorldPosition(playerTransform)) <= component.AwarenessRadius * component.AwarenessRadius;
     }
@@ -144,7 +147,10 @@ public sealed partial class Wh40kBossSystem : EntitySystem
             RaiseNetworkEvent(new Wh40kBossHudStateEvent(new Wh40kBossHudData(GetNetEntity(uid), GetNetEntity(map),
                 _transform.GetWorldPosition(transform), selectedComponent.Title, health, maximum,
                 _themes.GetValueOrDefault(uid), selectedComponent.Theme?.Params ?? AudioParams.Default,
-                selectedComponent.ThemeFadeIn, selectedComponent.ThemeFadeOut)), session);
+                selectedComponent.ThemeFadeIn, selectedComponent.ThemeFadeOut)
+            {
+                Protected = TryComp<Wh40kChaosMarineComponent>(uid, out var marine) && marine.TransitionProtected,
+            }), session);
         }
 
         _removed.Clear();

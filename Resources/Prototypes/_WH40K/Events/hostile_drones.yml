@@ -13,11 +13,12 @@
         addComponents:
         - type: IFF
           flags: AlwaysShowColor
-          color: "#9a2020"
+          color: "#C6A692"
         - type: LinkedLifecycleGridParent
         paths:
         - /SharedMaps/_WH40K/Drones/drone_t0.yml
         - /SharedMaps/_WH40K/Drones/drone_t1.yml
+        - /SharedMaps/_WH40K/Drones/drone_t1_1.yml
         - /SharedMaps/_WH40K/Drones/drone_t2.yml
 
 - type: entity
@@ -35,7 +36,7 @@
         addComponents:
         - type: IFF
           flags: AlwaysShowColor
-          color: "#9a2020"
+          color: "#C6A692"
         - type: LinkedLifecycleGridParent
         paths:
         - /SharedMaps/_WH40K/Drones/drone_t3.yml

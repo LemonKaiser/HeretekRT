@@ -1,0 +1,280 @@
+- type: damageContainer
+  id: Wh40kChaosMarine
+  supportedTypes: [Blunt, Slash, Piercing, Heat]
+
+- type: explosion
+  id: Wh40kMarineExplosion
+  damagePerIntensity:
+    types:
+      Blunt: 10
+      Structural: 15
+  lightColor: "#ff8c42"
+
+- type: explosion
+  id: Wh40kMarineBarrageExplosion
+  maxCombineDistance: 0
+  fireColor: "#ffffff00"
+  damagePerIntensity:
+    types:
+      Blunt: 10
+  lightColor: "#ff8c42"
+
+- type: entity
+  id: MobWH40KChaosMarine
+  parent: BaseMob
+  name: Chaos Space Marine
+  description: An ancient executioner encased in scorched ceramite, armed with a bolter and a chained mace.
+  suffix: WH40K, Boss, Arena 25x25
+  components:
+  - type: Wh40kChaosMarine
+  - type: Wh40kChaosMarineBrain
+  - type: WH40KPhantomStep
+    enabled: false
+    maxCharges: 0
+    dodgeRanged: false
+    dodgeMelee: false
+  - type: Wh40kBossArena
+    halfSize: 12.5, 12.5
+  - type: Wh40kBoss
+    title: wh40k-boss-chaos-marine-name
+    awarenessRadius: 36
+    sameGridOnly: true
+    priority: 100
+    theme: /Audio/_WH40K/Bosses/ChaosMarine/theme.ogg
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+    offset: 0, 0.45
+    layers:
+    - texture: _WH40K/Mobs/Bosses/ChaosMarine/ranged_south.png
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.35
+        density: 100
+        mask: [MobMask]
+        layer: [MobLayer]
+      hitbox:
+        shape: !type:PhysShapeCircle
+          radius: 0.75
+        density: 0
+        hard: true
+        mask: []
+        layer: [BulletImpassable, Opaque]
+  - type: Damageable
+    damageContainer: Wh40kChaosMarine
+  - type: MobState
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      2500: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.75
+    baseSprintSpeed: 4.95
+  - type: CombatMode
+  - type: NpcFactionMember
+    factions: [Heretics]
+  - type: Wh40kChaosCombatant
+  - type: Wh40kChaosTactics
+    externallyDirected: true
+  - type: Climbing
+  - type: Prying
+    pryPowered: true
+    speedModifier: 3
+  - type: MeleeWeapon
+    hidden: true
+    altDisarm: false
+    attackRate: 1
+    range: 1.6
+    damage:
+      types:
+        Blunt: 30
+        Structural: 600
+  - type: Gun
+    fireRate: 1
+    recoil: 0
+    recoilRotation: 0
+    projectileSpeed: 20
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes: [SemiAuto]
+    minAngle: 0
+    maxAngle: 0
+    angleIncrease: 0
+    soundGunshot: /Audio/_WH40K/Weapons/Guns/Gunshots/bolter.ogg
+  - type: BasicEntityAmmoProvider
+    proto: Wh40kMarineBolt
+    capacity: null
+    count: null
+  - type: Reflect
+    reflectProb: 0.3
+    reflects: NonEnergy
+    spread: 90
+    soundOnReflect: /Audio/Weapons/Guns/Hits/ric2.ogg
+  - type: ItemToggle
+    activated: true
+  - type: Flammable
+    maximumFireStacks: 2
+    fireSpread: false
+    canResistFire: false
+    alwaysCombustible: true
+    firestacksOnIgnite: 1
+    damage:
+      types:
+        Heat: 1.5
+  - type: FireVisuals
+    sprite: Mobs/Effects/onfire.rsi
+    normalState: Generic_mob_burning
+    particles: false
+  - type: Tag
+    tags: [DoorBumpOpener, FootstepSound, StunImmune, CannotSuicide]
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepThud
+
+- type: entity
+  id: Wh40kMarineMaceGrip
+  name: Chaos Marine mace attachment
+  description: The wrist attachment of the articulated chain.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Wh40kMarineMacePart
+  - type: Physics
+    bodyType: Kinematic
+  - type: Fixtures
+    fixtures:
+      grip:
+        shape: !type:PhysShapeCircle
+          radius: 0.02
+        density: 0
+        hard: false
+        mask: []
+        layer: []
+
+- type: entity
+  id: Wh40kMarineMaceHead
+  name: Chaos Marine mace head
+  description: A heavy spiked head attached to the Astartes by a chain.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Wh40kMarineMacePart
+    head: true
+  - type: Sprite
+    texture: _WH40K/Mobs/Bosses/ChaosMarine/ball.png
+    scale: 0.8533333, 0.8533333
+    noRot: false
+    drawdepth: Mobs
+  - type: Physics
+    bodyType: Dynamic
+    linearDamping: 0.15
+    angularDamping: 0.4
+  - type: Fixtures
+    fixtures:
+      mace:
+        shape: !type:PhysShapeCircle
+          radius: 0.28
+        density: 2
+        restitution: 0.72
+        friction: 0.08
+        hard: true
+        mask: [ItemMask, MidImpassable]
+        layer: []
+      mace-hit:
+        shape: !type:PhysShapeCircle
+          radius: 0.28
+        density: 0
+        hard: false
+        mask: [MobLayer]
+        layer: []
+  - type: TileFrictionModifier
+    modifier: 0
+
+- type: entity
+  id: Wh40kMarineMaceLink
+  name: Chaos Marine chain link
+  description: A physical link in the mace's articulated chain.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Wh40kMarineMacePart
+  - type: Physics
+    bodyType: Dynamic
+    linearDamping: 0.2
+    angularDamping: 0.4
+  - type: Fixtures
+    fixtures:
+      link:
+        shape: !type:PhysShapeCircle
+          radius: 0.045
+        density: 8
+        restitution: 0.15
+        friction: 0.05
+        hard: true
+        mask: [ItemMask]
+        layer: []
+  - type: TileFrictionModifier
+    modifier: 0
+
+- type: entity
+  id: Wh40kMarineBolt
+  parent: BaseBullet
+  name: explosive bolt
+  description: A heavy explosive round fired by the Chaos Space Marine.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/Projectiles/bolter.rsi
+    noRot: false
+    layers:
+    - state: base
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 50
+  - type: Wh40kMarineShot
+  - type: TimedDespawn
+    lifetime: 3
+
+- type: entity
+  id: Wh40kMarineRocket
+  parent: Wh40kMarineBolt
+  name: shoulder rocket
+  description: A rocket from the Chaos Space Marine's shoulder launcher.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
+    rotation: -90
+    layers:
+    - state: rpg
+    noRot: false
+    scale: 0.65, 0.65
+  - type: Projectile
+    damage:
+      types:
+        Blunt: 0
+  - type: TimedDespawn
+    lifetime: 7
+
+- type: entity
+  id: Wh40kMarineEffect
+  name: warp afterglow
+  description: A brief remnant of the Chaos Space Marine's assault.
+  categories: [HideSpawnMenu]
+  components:
+  - type: Wh40kMarineEffect
+  - type: TimedDespawn
+    lifetime: 12
+
+- type: entity
+  id: Wh40kMarineSummonCircle
+  parent: Wh40kMarineEffect
+  name: summoning seal
+  description: A ritual seal beneath the Chaos Space Marine. Reinforcements appear within two tiles of its center.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Cult/Goobstation/Heretic/ritual_rune.rsi
+    state: icon_ritualanim
+    scale: 1.333333, 1.333333
+    noRot: true
+    drawdepth: FloorObjects

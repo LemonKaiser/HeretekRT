@@ -39,11 +39,14 @@ public sealed partial class Wh40kChaosTacticsSystem
     }
 
     public bool CanMoveDirectly(EntityUid uid, EntityUid target)
+        => CanMoveDirectly(uid, new EntityCoordinates(target, System.Numerics.Vector2.Zero));
+
+    public bool CanMoveDirectly(EntityUid uid, EntityCoordinates destination)
     {
         if (!TryComp<PhysicsComponent>(uid, out var body))
             return false;
         var start = _transform.GetMapCoordinates(uid);
-        var end = _transform.GetMapCoordinates(target);
+        var end = _transform.ToMapCoordinates(destination);
         if (start.MapId != end.MapId)
             return false;
         var delta = end.Position - start.Position;
@@ -59,7 +62,7 @@ public sealed partial class Wh40kChaosTacticsSystem
                     new MapCoordinates(start.Position + edge * i, start.MapId),
                     new MapCoordinates(end.Position + edge * i, end.MapId), distance + 0.1f,
                     (CollisionGroup) body.CollisionMask,
-                    e => e == uid || e == target || HasComp<MobStateComponent>(e)))
+                    e => e == uid || e == destination.EntityId || HasComp<MobStateComponent>(e)))
                 return false;
         }
         return true;

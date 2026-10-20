@@ -129,6 +129,11 @@ public sealed partial class BodySystem : SharedBodySystem // Shitmed change: mad
         if (xform.MapUid is null)
             return new HashSet<EntityUid>();
 
+        var attempt = new GibbingAttemptEvent();
+        RaiseLocalEvent(bodyId, attempt);
+        if (attempt.Cancelled)
+            return new HashSet<EntityUid>();
+
         var beforeEv = new BeforeGibbedEvent(bodyId); // Frontier: before gibbed event
         RaiseLocalEvent(bodyId, ref beforeEv); // Frontier: before gibbed event
 
@@ -162,6 +167,11 @@ public sealed partial class BodySystem : SharedBodySystem // Shitmed change: mad
         if (Transform(partId).MapUid is null)
             return new HashSet<EntityUid>();
 
+        var attempt = new GibbingAttemptEvent();
+        RaiseLocalEvent(partId, attempt);
+        if (attempt.Cancelled)
+            return new HashSet<EntityUid>();
+
         var gibs = base.GibPart(partId, part, launchGibs: launchGibs,
             splatDirection: splatDirection, splatModifier: splatModifier, splatCone: splatCone);
 
@@ -179,6 +189,11 @@ public sealed partial class BodySystem : SharedBodySystem // Shitmed change: mad
         if (!Resolve(partId, ref part, logMissing: false)
             || TerminatingOrDeleted(partId)
             || EntityManager.IsQueuedForDeletion(partId))
+            return false;
+
+        var attempt = new GibbingAttemptEvent();
+        RaiseLocalEvent(partId, attempt);
+        if (attempt.Cancelled)
             return false;
 
         return base.BurnPart(partId, part);

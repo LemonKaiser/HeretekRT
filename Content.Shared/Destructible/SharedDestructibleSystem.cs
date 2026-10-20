@@ -7,6 +7,11 @@ public abstract class SharedDestructibleSystem : EntitySystem
     /// </summary>
     public void DestroyEntity(EntityUid owner)
     {
+        var attempt = new DestructionAttemptEvent();
+        RaiseLocalEvent(owner, attempt);
+        if (attempt.Cancelled)
+            return;
+
         var eventArgs = new DestructionEventArgs();
 
         RaiseLocalEvent(owner, eventArgs);
@@ -21,6 +26,13 @@ public abstract class SharedDestructibleSystem : EntitySystem
         var eventArgs = new BreakageEventArgs();
         RaiseLocalEvent(owner, eventArgs);
     }
+}
+
+/// <summary>
+/// Raised before destruction effects or deletion of an entity.
+/// </summary>
+public sealed class DestructionAttemptEvent : CancellableEntityEventArgs
+{
 }
 
 /// <summary>

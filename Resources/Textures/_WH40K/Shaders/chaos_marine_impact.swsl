@@ -1,0 +1,26 @@
+void fragment()
+{
+    highp vec2 p = UV * 2.0 - vec2(1.0);
+    highp float radius = length(p);
+    highp float angle = atan(p.y, p.x);
+    highp float t = clamp(UV2.x, 0.0, 1.0);
+    if (UV2.y > 0.5)
+    {
+        // A short flash inside the marked tile, without the large native fire sheet.
+        highp float edge = 1.0 - smoothstep(0.88, 1.0, max(abs(p.x), abs(p.y)));
+        highp float flash = exp(-radius * radius * 14.0) * exp(-t * 28.0);
+        highp float flame = exp(-pow((radius - (0.12 + sqrt(t) * 0.76)) * 11.0, 2.0));
+        highp float shards = pow(max(0.0, sin(angle * 7.0 + radius * 9.0)), 10.0);
+        highp float fade = pow(1.0 - t, 2.0);
+        highp float alpha = (flash + flame * (0.5 + shards * 0.5)) * fade * edge;
+        highp vec3 fire = mix(vec3(1.0, 0.18, 0.035), vec3(1.0, 0.86, 0.5), flash);
+        COLOR = vec4(fire, alpha);
+        return;
+    }
+    highp float noise = 0.7 + 0.3 * sin(angle * 13.0 + radius * 27.0 + t * 12.0);
+    highp float front = exp(-pow((radius - (0.08 + t * 0.85)) * 18.0, 2.0));
+    highp float smoke = (1.0 - smoothstep(0.05, 0.95, radius)) * (1.0 - t) * 0.18 * noise;
+    highp float sparks = pow(max(0.0, sin(angle * 9.0 + t * 2.0)), 18.0) * front;
+    highp float alpha = (front * 0.5 + sparks * 0.4 + smoke) * (1.0 - t) * (1.0 - smoothstep(0.92, 1.0, radius));
+    COLOR = vec4(vec3(1.0, 0.65 - t * 0.35, 0.25 - t * 0.18), alpha);
+}

@@ -266,6 +266,9 @@ namespace Content.Server.Hands.Systems
 
         private void OnDropHandItems(Entity<HandsComponent> entity, ref DropHandItemsEvent args)
         {
+            if (args.Cancelled)
+                return;
+
             var direction = EntityManager.TryGetComponent(entity, out PhysicsComponent? comp) ? comp.LinearVelocity / 50 : Vector2.Zero;
             var dropAngle = _random.NextFloat(0.8f, 1.2f);
 

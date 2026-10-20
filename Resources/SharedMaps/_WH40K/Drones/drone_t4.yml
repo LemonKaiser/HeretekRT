@@ -91,7 +91,7 @@ entities:
       - DroneHex
     - type: IFF
       flags: AlwaysShowColor
-      color: "#9a2020"
+      color: "#C6A692"
     - type: Shuttle
       dampingModifier: 0.25
     - type: ImplicitRoof

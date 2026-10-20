@@ -1,0 +1,775 @@
+- type: entity
+  abstract: true
+  parent: MobWH40KChaosMarine
+  id: BaseWH40KChaosMarineTest
+  categories: [HideSpawnMenu]
+  components:
+  - type: Wh40kChaosMarineTest
+
+- type: entity
+  abstract: true
+  parent: MarkerBase
+  id: BaseSpawnWH40KChaosMarineTest
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - texture: _WH40K/Mobs/Bosses/ChaosMarine/ranged_south.png
+      scale: 0.5, 0.5
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestE
+  name: Chaos Marine test - E - Smoke screen
+  suffix: TEST, E
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestE
+  - type: Wh40kChaosMarineTest
+    attack: E
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestDeath
+  name: Chaos Marine test - Death and war chest
+  suffix: TEST, Death
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestDeath
+  - type: Damageable
+    damage:
+      types:
+        Blunt: 2499
+  - type: Wh40kChaosMarineTest
+    attack: None
+    movement: false
+    invulnerable: false
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestDeath
+  name: Chaos Marine test spawner - Death and war chest
+  suffix: TEST, Death
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestDeath
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestE
+  name: Chaos Marine test spawner - E - Smoke screen
+  suffix: TEST, E
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestE
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR1
+  name: Chaos Marine test - R1 - Single bolter shot
+  suffix: TEST, R1
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR1
+  - type: Wh40kChaosMarineTest
+    attack: R1
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR1
+  name: Chaos Marine test spawner - R1 - Single bolter shot
+  suffix: TEST, R1
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR1
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR2
+  name: Chaos Marine test - R2 - Cowboy fan
+  suffix: TEST, R2
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR2
+  - type: Wh40kChaosMarineTest
+    attack: R2
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR2
+  name: Chaos Marine test spawner - R2 - Cowboy fan
+  suffix: TEST, R2
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR2
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR3
+  name: Chaos Marine test - R3 - Accelerating barrage
+  suffix: TEST, R3
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR3
+  - type: Wh40kChaosMarineTest
+    attack: R3
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR3
+  name: Chaos Marine test spawner - R3 - Accelerating barrage
+  suffix: TEST, R3
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR3
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR4
+  name: Chaos Marine test - R4 - Ricochet rounds
+  suffix: TEST, R4
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR4
+  - type: Wh40kChaosMarineTest
+    attack: R4
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR4
+  name: Chaos Marine test spawner - R4 - Ricochet rounds
+  suffix: TEST, R4
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR4
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR5
+  name: Chaos Marine test - R5 - Hexagon of delayed blasts
+  suffix: TEST, R5
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR5
+  - type: Wh40kChaosMarineTest
+    attack: R5
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR5
+  name: Chaos Marine test spawner - R5 - Hexagon of delayed blasts
+  suffix: TEST, R5
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR5
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestR6
+  name: Chaos Marine test - R6 - Phantom circle
+  suffix: TEST, R6
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestR6
+  - type: Wh40kChaosMarineTest
+    attack: R6
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestR6
+  name: Chaos Marine test spawner - R6 - Phantom circle
+  suffix: TEST, R6
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestR6
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM1
+  name: Chaos Marine test - M1 - Short mace strike
+  suffix: TEST, M1
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM1
+  - type: Wh40kChaosMarineTest
+    attack: M1
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM1
+  name: Chaos Marine test spawner - M1 - Short mace strike
+  suffix: TEST, M1
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM1
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM2
+  name: Chaos Marine test - M2 - Fourfold sentence
+  suffix: TEST, M2
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM2
+  - type: Wh40kChaosMarineTest
+    attack: M2
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM2
+  name: Chaos Marine test spawner - M2 - Fourfold sentence
+  suffix: TEST, M2
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM2
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM3
+  name: Chaos Marine test - M3 - Reaving rush
+  suffix: TEST, M3
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM3
+  - type: Wh40kChaosMarineTest
+    attack: M3
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM3
+  name: Chaos Marine test spawner - M3 - Reaving rush
+  suffix: TEST, M3
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM3
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM4
+  name: Chaos Marine test - M4 - Iron tempest
+  suffix: TEST, M4
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM4
+  - type: Wh40kChaosMarineTest
+    attack: M4
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM4
+  name: Chaos Marine test spawner - M4 - Iron tempest
+  suffix: TEST, M4
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM4
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM5
+  name: Chaos Marine test - M5 - Relentless casts
+  suffix: TEST, M5
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM5
+  - type: Wh40kChaosMarineTest
+    attack: M5
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM5
+  name: Chaos Marine test spawner - M5 - Relentless casts
+  suffix: TEST, M5
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM5
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestM6
+  name: Chaos Marine test - M6 - Executioner's figure eight
+  suffix: TEST, M6
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestM6
+  - type: Wh40kChaosMarineTest
+    attack: M6
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestM6
+  name: Chaos Marine test spawner - M6 - Executioner's figure eight
+  suffix: TEST, M6
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestM6
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestS1
+  name: Chaos Marine test - S1 - Target lock
+  suffix: TEST, S1
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestS1
+  - type: Wh40kChaosMarineTest
+    attack: S1
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestS1
+  name: Chaos Marine test spawner - S1 - Target lock
+  suffix: TEST, S1
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestS1
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestS2
+  name: Chaos Marine test - S2 - Checkerboard barrage
+  suffix: TEST, S2
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestS2
+  - type: Wh40kChaosMarineTest
+    attack: S2
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestS2
+  name: Chaos Marine test spawner - S2 - Checkerboard barrage
+  suffix: TEST, S2
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestS2
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestS3
+  name: Chaos Marine test - S3 - Line barrage
+  suffix: TEST, S3
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestS3
+  - type: Wh40kChaosMarineTest
+    attack: S3
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestS3
+  name: Chaos Marine test spawner - S3 - Line barrage
+  suffix: TEST, S3
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestS3
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestS4
+  name: Chaos Marine test - S4 - Random bombardment
+  suffix: TEST, S4
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestS4
+  - type: Wh40kChaosMarineTest
+    attack: S4
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestS4
+  name: Chaos Marine test spawner - S4 - Random bombardment
+  suffix: TEST, S4
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestS4
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestPunch
+  name: Chaos Marine test - Punch - Punch after 3 seconds of proximity
+  suffix: TEST, Punch
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestPunch
+  - type: Wh40kChaosMarineTest
+    attack: Punch
+    movement: false
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestPunch
+  name: Chaos Marine test spawner - Punch - Punch after 3 seconds of proximity
+  suffix: TEST, Punch
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestPunch
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestJump
+  name: Chaos Marine test - Jump - Stunning jump
+  suffix: TEST, Jump
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestJump
+  - type: Wh40kChaosMarineTest
+    attack: Jump
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestJump
+  name: Chaos Marine test spawner - Jump - Stunning jump
+  suffix: TEST, Jump
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestJump
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestSwitch
+  name: Chaos Marine test - Switch - Weapon switch without attacks
+  suffix: TEST, Switch
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestSwitch
+  - type: Wh40kChaosMarineTest
+    attack: Switch
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestSwitch
+  name: Chaos Marine test spawner - Switch - Weapon switch without attacks
+  suffix: TEST, Switch
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestSwitch
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestTransition
+  name: Chaos Marine test - Transition - Phase transition without summons
+  suffix: TEST, Transition
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestTransition
+  - type: Wh40kChaosMarineTest
+    attack: Transition
+    movement: false
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestTransition
+  name: Chaos Marine test spawner - Transition - Phase transition without summons
+  suffix: TEST, Transition
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestTransition
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestSummon2
+  name: Chaos Marine test - Summon2 - Summon 2 allies
+  suffix: TEST, Summon2
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestSummon2
+  - type: Wh40kChaosMarineTest
+    attack: Summon
+    summonCount: 2
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestSummon2
+  name: Chaos Marine test spawner - Summon2 - Summon 2 allies
+  suffix: TEST, Summon2
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestSummon2
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestSummon4
+  name: Chaos Marine test - Summon4 - Summon 4 allies
+  suffix: TEST, Summon4
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestSummon4
+  - type: Wh40kChaosMarineTest
+    attack: Summon
+    summonCount: 4
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestSummon4
+  name: Chaos Marine test spawner - Summon4 - Summon 4 allies
+  suffix: TEST, Summon4
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestSummon4
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestSummon8
+  name: Chaos Marine test - Summon8 - Summon 8 allies
+  suffix: TEST, Summon8
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestSummon8
+  - type: Wh40kChaosMarineTest
+    attack: Summon
+    summonCount: 8
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestSummon8
+  name: Chaos Marine test spawner - Summon8 - Summon 8 allies
+  suffix: TEST, Summon8
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestSummon8
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestHealth51
+  name: Chaos Marine test - 51% HP, full combat
+  suffix: TEST, Health51
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestHealth51
+  - type: Damageable
+    damage:
+      types:
+        Blunt: 1225
+  - type: Wh40kChaosMarineTest
+    invulnerable: false
+    completedWaves: 1
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestHealth51
+  name: Chaos Marine test spawner - 51% HP, full combat
+  suffix: TEST, Health51
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestHealth51
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestPhaseTwo
+  name: Chaos Marine test - Phase 2, 50% HP, full combat
+  suffix: TEST, PhaseTwo
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestPhaseTwo
+  - type: Damageable
+    damage:
+      types:
+        Blunt: 1250
+  - type: Wh40kChaosMarine
+    phaseTwo: true
+  - type: Wh40kChaosMarineTest
+    invulnerable: false
+    completedWaves: 3
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestPhaseTwo
+  name: Chaos Marine test spawner - Phase 2, 50% HP, full combat
+  suffix: TEST, PhaseTwo
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestPhaseTwo
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestFire2Percent
+  name: Chaos Marine test - Fire at 2% HP, stationary
+  suffix: TEST, Fire2Percent
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestFire2Percent
+  - type: Damageable
+    damage:
+      types:
+        Blunt: 2450
+  - type: Wh40kChaosMarine
+    phaseTwo: true
+  - type: Wh40kChaosMarineTest
+    attack: None
+    movement: false
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestFire2Percent
+  name: Chaos Marine test spawner - Fire at 2% HP, stationary
+  suffix: TEST, Fire2Percent
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestFire2Percent
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestMovement
+  name: Chaos Marine test - Movement and dodges without attacks
+  suffix: TEST, Movement
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestMovement
+  - type: Wh40kChaosMarineTest
+    attack: None
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestMovement
+  name: Chaos Marine test spawner - Movement and dodges without attacks
+  suffix: TEST, Movement
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestMovement
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseWH40KChaosMarineTest
+  id: MobWH40KChaosMarineTestArmorTarget
+  name: Chaos Marine test - Armor damage target
+  suffix: TEST, ArmorTarget
+  components:
+  - type: Wh40kBoss
+    title: ent-MobWH40KChaosMarineTestArmorTarget
+  - type: Wh40kChaosMarineTest
+    attack: None
+    movement: false
+    invulnerable: false
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestArmorTarget
+  name: Chaos Marine test spawner - Armor damage target
+  suffix: TEST, ArmorTarget
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestArmorTarget
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestFull
+  name: Chaos Marine test spawner - Normal full fight, 100% HP
+  suffix: TEST, Full
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarine
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: MobHuman
+  id: MobWH40KChaosMarineTestTarget
+  name: Chaos Marine test target
+  categories: [HideSpawnMenu]
+  components:
+  - type: Physics
+    bodyType: Static
+  - type: Wh40kChaosMarineTestTarget
+  - type: Godmode
+
+- type: entity
+  parent: BaseSpawnWH40KChaosMarineTest
+  id: SpawnWH40KChaosMarineTestTarget
+  name: Chaos Marine test spawner - Additional test target
+  suffix: TEST, Target
+  components:
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarineTestTarget
+    chance: 1
+    offset: 0

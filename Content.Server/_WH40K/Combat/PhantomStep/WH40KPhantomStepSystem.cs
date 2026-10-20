@@ -307,26 +307,50 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         var dashDuration = ent.Comp.DashDuration > TimeSpan.Zero
             ? ent.Comp.DashDuration
             : TimeSpan.FromMilliseconds(1);
-        ent.Comp.Dashing = true;
-        ent.Comp.DashStartedAt = now;
-        ent.Comp.DashEndsAt = now + dashDuration;
-        ent.Comp.DashStart = originMap;
-        ent.Comp.DashEnd = targetMap;
-        ent.Comp.DashEndCoordinates = targetCoords;
+        StartDash(ent.Owner, ent.Comp, originCoords, targetCoords, originMap, targetMap, dashDuration);
+        SyncAction(ent.Comp, ent.Owner);
+        return true;
+    }
+
+    /// <summary>Starts an ability-directed dash without consuming reactive dodge charges.</summary>
+    public bool TryDashTo(EntityUid uid, EntityCoordinates target, TimeSpan duration)
+    {
+        if (!TryComp<WH40KPhantomStepComponent>(uid, out var step) || step.Dashing ||
+            duration <= TimeSpan.Zero || !CanDash(uid)) return false;
+        var start = _transform.GetMapCoordinates(uid);
+        var end = _transform.ToMapCoordinates(target);
+        if (!IsDashPathSafe(uid, start, end)) return false;
+        StartDash(uid, step, Transform(uid).Coordinates, target, start, end, duration);
+        return true;
+    }
+
+    public void CancelDash(EntityUid uid)
+    {
+        if (TryComp<WH40KPhantomStepComponent>(uid, out var step) && step.Dashing)
+            StopDash(uid, step, Transform(uid), snapToEnd: false);
+    }
+
+    private void StartDash(EntityUid uid, WH40KPhantomStepComponent step,
+        EntityCoordinates originCoords, EntityCoordinates targetCoords,
+        MapCoordinates originMap, MapCoordinates targetMap, TimeSpan dashDuration)
+    {
+        step.Dashing = true;
+        step.DashStartedAt = _timing.CurTime;
+        step.DashEndsAt = _timing.CurTime + dashDuration;
+        step.DashStart = originMap;
+        step.DashEnd = targetMap;
+        step.DashEndCoordinates = targetCoords;
 
         RaiseNetworkEvent(
             new WH40KPhantomStepTrailEvent(
-                GetNetEntity(ent.Owner),
+                GetNetEntity(uid),
                 GetNetCoordinates(originCoords),
                 GetNetCoordinates(targetCoords),
                 (float) dashDuration.TotalSeconds,
-                (float) ent.Comp.TrailLifetime.TotalSeconds,
-                ent.Comp.TrailCopies),
-            Filter.Pvs(ent.Owner));
-
-        Dirty(ent.Owner, ent.Comp);
-        SyncAction(ent.Comp, ent.Owner);
-        return true;
+                (float) step.TrailLifetime.TotalSeconds,
+                step.TrailCopies),
+            Filter.Pvs(uid));
+        Dirty(uid, step);
     }
 
     private void UpdateDash(

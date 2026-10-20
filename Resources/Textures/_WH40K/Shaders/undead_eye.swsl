@@ -1,0 +1,82 @@
+light_mode unshaded;
+blend_mode add;
+
+uniform highp float seed;
+uniform highp float trailDirection;
+uniform highp float coreVisibility;
+uniform highp float godmode;
+
+highp float hash21(highp vec2 p)
+{
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+highp float noise21(highp vec2 p)
+{
+    highp vec2 cell = floor(p);
+    highp vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash21(cell), hash21(cell + vec2(1.0, 0.0)), f.x),
+        mix(hash21(cell + vec2(0.0, 1.0)), hash21(cell + vec2(1.0)), f.x), f.y);
+}
+
+void fragment()
+{
+    // The quad is measured in sprite-local metres, with its origin at the eye's actual pixels.
+    highp vec2 p = vec2((UV2.x - 0.5) * 0.72, UV2.y * 0.62 - 0.12);
+    highp float t = TIME * 1.45 + seed;
+    highp float pulse = 0.94 + 0.06 * sin(TIME * 2.4 + seed);
+    highp float edge = (1.0 - smoothstep(0.31, 0.36, abs(p.x)))
+        * smoothstep(-0.12, -0.085, p.y) * (1.0 - smoothstep(0.43, 0.50, p.y));
+
+    highp float r = length(p);
+    highp float halo = exp(-r * r / 0.0085) * 0.38 * coreVisibility;
+    highp float core = exp(-dot(p * vec2(1.0, 1.25), p * vec2(1.0, 1.25)) / 0.0007);
+    highp float flare = exp(-p.y * p.y / 0.000045) * exp(-abs(p.x) * 17.0) * 0.20;
+    highp vec3 light = vec3(1.0, 0.008, 0.012) * halo;
+    light += vec3(1.0, 0.025, 0.035) * flare * coreVisibility;
+    light += mix(vec3(1.0, 0.035, 0.045), vec3(1.0, 0.55, 0.58), core)
+        * core * coreVisibility * 1.55;
+
+    highp float rise = clamp(p.y / 0.46, 0.0, 1.0);
+    highp float lift = smoothstep(-0.035, 0.035, p.y) * (1.0 - smoothstep(0.68, 1.0, rise));
+    highp float turbulence = noise21(vec2(p.x * 23.0, p.y * 16.0 - t * 2.0));
+    highp float fineNoise = noise21(vec2(p.x * 49.0 + 4.0, p.y * 38.0 - t * 3.4));
+
+    // Three continuous tongues curl away from the eye. Their tips move slowly, without frame-stepped sprites.
+    for (int i = 0; i < 3; i++)
+    {
+        highp float strand = float(i);
+        highp float bend = p.y * (0.35 + strand * 0.14);
+        highp float wave = sin(p.y * (15.0 + strand * 4.0) - t * (1.7 + strand * 0.22) + strand * 2.1);
+        highp float centre = trailDirection * (bend + wave * rise * 0.043);
+        centre += (turbulence - 0.5) * rise * 0.048;
+        highp float width = mix(0.037 - strand * 0.007, 0.006, rise);
+        highp float d = abs(p.x - centre);
+        highp float body = exp(-d * d / max(width * width, 0.00001));
+        highp float aura = exp(-d * d / max(width * width * 6.5, 0.00001));
+        highp float heat = clamp(body * (0.65 + fineNoise * 0.55), 0.0, 1.0);
+        highp vec3 flameColor = mix(vec3(0.65, 0.002, 0.008), vec3(1.0, 0.045, 0.06), heat);
+        light += (flameColor * body * 0.55 + vec3(1.0, 0.008, 0.012) * aura * 0.12)
+            * lift * (1.0 - rise * 0.65) * (0.82 - strand * 0.16);
+    }
+
+    // A few small embers detach above the plume; their fade also keeps the rectangle invisible.
+    for (int j = 0; j < 4; j++)
+    {
+        highp float ember = float(j);
+        highp float life = fract(TIME * (0.36 + ember * 0.035) + seed * 0.13 + ember * 0.27);
+        highp vec2 centre = vec2(trailDirection * (0.02 + life * 0.19)
+            + sin(t + ember * 2.4) * 0.018, 0.07 + life * 0.40);
+        highp vec2 delta = p - centre;
+        highp float spark = exp(-dot(delta, delta) / 0.000025)
+            * sin(life * 3.14159265) * 0.32;
+        light += vec3(1.0, 0.035, 0.045) * spark;
+    }
+
+    light = mix(light, light.bgr, godmode) * edge * pulse;
+    highp float alpha = clamp(max(light.r, max(light.g, light.b)), 0.0, 1.0);
+    if (alpha < 0.002)
+        discard;
+    COLOR = vec4(light / max(alpha, 0.001), alpha);
+}

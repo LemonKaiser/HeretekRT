@@ -1,5 +1,7 @@
 using System.Numerics;
 using Content.Server.Destructible; // Mono
+using Content.Server._Mono.Drone.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.NPC.Components;
 using Content.Shared._Goobstation.Weapons.SmartGun;
 using Content.Shared.CombatMode;
@@ -23,6 +25,7 @@ public sealed partial class NPCCombatSystem
     [Dependency] private SharedLaserPointerSystem _pointer = default!; // Goobstation
     [Dependency] private DestructibleSystem _destructible = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -113,10 +116,12 @@ public sealed partial class NPCCombatSystem
                 continue;
             }
 
-            if (targetXform.MapID != xform.MapID)
+            if (targetXform.MapID != xform.MapID ||
+                HasComp<HostileDroneGridComponent>(xform.GridUid) && _safety.IsProtectedSpaceTarget(comp.Target))
             {
                 comp.Status = CombatStatus.TargetUnreachable;
                 comp.ShootAccumulator = 0f;
+                UpdatePointerLineNoTarget(gunUid);
                 continue;
             }
 

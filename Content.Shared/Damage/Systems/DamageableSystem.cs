@@ -227,99 +227,109 @@ namespace Content.Shared.Damage
             if (before.Cancelled)
                 return null;
 
-            // Shitmed Change Start
-            var partDamage = new TryChangePartDamageEvent(damage, origin, targetPart, ignoreResistances, canSever ?? true, canEvade ?? false, partMultiplier ?? 1.00f)
+            var started = new DamageChangeStartedEvent();
+            RaiseLocalEvent(uid.Value, ref started);
+            try
             {
-                ResolvedTargetPart = targetPart,
-                ArmorPenetration = armorPenetration,
-                Tool = tool,
-                ImpactCoordinates = impactCoordinates,
-            };
-            RaiseLocalEvent(uid.Value, ref partDamage);
-
-            if (partDamage.Evaded || partDamage.Cancelled)
-                return null;
-
-            // Shitmed Change End
-
-            // Apply resistances
-            if (!ignoreResistances)
-            {
-                if (damageable.DamageModifierSetId != null &&
-                    _prototypeManager.Resolve(damageable.DamageModifierSetId, out var modifierSet))
+                // Shitmed Change Start
+                var partDamage = new TryChangePartDamageEvent(damage, origin, targetPart, ignoreResistances, canSever ?? true, canEvade ?? false, partMultiplier ?? 1.00f)
                 {
-                    damage = DamageSpecifier.ApplyModifierSet(damage, modifierSet);
+                    ResolvedTargetPart = targetPart,
+                    ArmorPenetration = armorPenetration,
+                    Tool = tool,
+                    ImpactCoordinates = impactCoordinates,
+                };
+                RaiseLocalEvent(uid.Value, ref partDamage);
+
+                if (partDamage.Evaded || partDamage.Cancelled)
+                    return null;
+
+                // Shitmed Change End
+
+                // Apply resistances
+                if (!ignoreResistances)
+                {
+                    if (damageable.DamageModifierSetId != null &&
+                        _prototypeManager.Resolve(damageable.DamageModifierSetId, out var modifierSet))
+                    {
+                        damage = DamageSpecifier.ApplyModifierSet(damage, modifierSet);
+                    }
+
+                    var ev = new DamageModifyEvent(damage,
+                        origin,
+                        armorPenetration,
+                        targetPart,
+                        tool,
+                        partDamage.ResolvedTargetPart); // Shitmed Change
+                    RaiseLocalEvent(uid.Value, ev);
+                    var damageBeforeRating = ev.Damage;
+                    var armorResult = ArmorRatingMath.Apply(
+                        damageBeforeRating,
+                        ev.ArmorRating,
+                        ev.ArmorPenetration);
+                    ev.Damage = armorResult.Damage;
+                    var ratingAbsorbedDamage = ev.CalculateArmorRatingAbsorbedDamage(damageBeforeRating, ev.Damage);
+                    ev.ArmorAbsorbedDamage = ev.CalculateArmorAbsorbedDamage(ratingAbsorbedDamage);
+                    var durabilityAbsorbedDamage = ev.SelectArmorDurabilityCandidate(ratingAbsorbedDamage);
+                    damage = ev.Damage;
+
+                    if (_netMan.IsServer &&
+                        durabilityAbsorbedDamage > 0f &&
+                        ev.ArmorDurabilityCandidate is { } armor &&
+                        !TerminatingOrDeleted(armor))
+                    {
+                        RaiseLocalEvent(armor,
+                            new ArmorProtectionAppliedEvent(ev.ArmorTargetPart, durabilityAbsorbedDamage));
+                    }
+
+                    if (damage.Empty)
+                    {
+                        return damage;
+                    }
                 }
 
-                var ev = new DamageModifyEvent(damage,
-                    origin,
-                    armorPenetration,
-                    targetPart,
-                    tool,
-                    partDamage.ResolvedTargetPart); // Shitmed Change
-                RaiseLocalEvent(uid.Value, ev);
-                var damageBeforeRating = ev.Damage;
-                var armorResult = ArmorRatingMath.Apply(
-                    damageBeforeRating,
-                    ev.ArmorRating,
-                    ev.ArmorPenetration);
-                ev.Damage = armorResult.Damage;
-                var ratingAbsorbedDamage = ev.CalculateArmorRatingAbsorbedDamage(damageBeforeRating, ev.Damage);
-                ev.ArmorAbsorbedDamage = ev.CalculateArmorAbsorbedDamage(ratingAbsorbedDamage);
-                var durabilityAbsorbedDamage = ev.SelectArmorDurabilityCandidate(ratingAbsorbedDamage);
-                damage = ev.Damage;
+                if (!ignoreGlobalModifiers)
+                    damage = ApplyUniversalAllModifiers(damage);
 
-                if (_netMan.IsServer &&
-                    durabilityAbsorbedDamage > 0f &&
-                    ev.ArmorDurabilityCandidate is { } armor &&
-                    !TerminatingOrDeleted(armor))
+                var delta = new DamageSpecifier();
+                delta.DamageDict.EnsureCapacity(damage.DamageDict.Count);
+
+                var dict = damageable.Damage.DamageDict;
+                foreach (var (type, value) in damage.DamageDict)
                 {
-                    RaiseLocalEvent(armor,
-                        new ArmorProtectionAppliedEvent(ev.ArmorTargetPart, durabilityAbsorbedDamage));
+                    // CollectionsMarshal my beloved.
+                    if (!dict.TryGetValue(type, out var oldValue))
+                        continue;
+
+                    var newValue = FixedPoint2.Max(FixedPoint2.Zero, oldValue + value);
+                    if (newValue == oldValue)
+                        continue;
+
+                    dict[type] = newValue;
+                    delta.DamageDict[type] = newValue - oldValue;
                 }
 
-                if (damage.Empty)
+                if (delta.DamageDict.Count > 0)
                 {
-                    return damage;
+                    DamageChanged(
+                        uid.Value,
+                        damageable,
+                        delta,
+                        interruptsDoAfters,
+                        origin,
+                        canSever,
+                        targetPart: partDamage.ResolvedTargetPart,
+                        impactCoordinates: impactCoordinates,
+                        tool: tool); // Shitmed Change
                 }
+
+                return delta;
             }
-
-            if (!ignoreGlobalModifiers)
-                damage = ApplyUniversalAllModifiers(damage);
-
-            var delta = new DamageSpecifier();
-            delta.DamageDict.EnsureCapacity(damage.DamageDict.Count);
-
-            var dict = damageable.Damage.DamageDict;
-            foreach (var (type, value) in damage.DamageDict)
+            finally
             {
-                // CollectionsMarshal my beloved.
-                if (!dict.TryGetValue(type, out var oldValue))
-                    continue;
-
-                var newValue = FixedPoint2.Max(FixedPoint2.Zero, oldValue + value);
-                if (newValue == oldValue)
-                    continue;
-
-                dict[type] = newValue;
-                delta.DamageDict[type] = newValue - oldValue;
+                var finished = new DamageChangeFinishedEvent();
+                RaiseLocalEvent(uid.Value, ref finished);
             }
-
-            if (delta.DamageDict.Count > 0)
-            {
-                DamageChanged(
-                    uid.Value,
-                    damageable,
-                    delta,
-                    interruptsDoAfters,
-                    origin,
-                    canSever,
-                    targetPart: partDamage.ResolvedTargetPart,
-                    impactCoordinates: impactCoordinates,
-                    tool: tool); // Shitmed Change
-            }
-
-            return delta;
         }
 
         /// <summary>

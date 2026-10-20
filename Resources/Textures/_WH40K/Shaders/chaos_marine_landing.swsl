@@ -1,0 +1,27 @@
+light_mode unshaded;
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp vec2 CenterPixels;
+uniform highp float Progress;
+
+void fragment()
+{
+    highp vec2 local = UV2 * 2.0 - vec2(1.0);
+    highp float radius = length(local);
+    highp float age = clamp(Progress, 0.0, 1.0);
+    highp float front = 0.04 + 0.91 * (1.0 - pow(1.0 - age, 1.6));
+    highp float width = 0.045 + age * 0.045;
+    highp float phase = (radius - front) / width;
+    highp float envelope = exp(-phase * phase * 2.0);
+    highp float fade = (1.0 - age) * (1.0 - smoothstep(0.90, 1.0, radius));
+    highp vec2 screenDelta = FRAGCOORD.xy - CenterPixels;
+    highp vec2 direction = screenDelta / max(length(screenDelta), 0.001);
+    highp vec2 screenUv = FRAGCOORD.xy * SCREEN_PIXEL_SIZE;
+    // Refraction follows the viewport rather than world axes, including rotated cameras.
+    highp vec2 displacement = direction * SCREEN_PIXEL_SIZE * phase * envelope * fade * 5.0;
+    highp vec3 scene = zTextureSpec(SCREEN_TEXTURE, clamp(screenUv + displacement, vec2(0.001), vec2(0.999))).rgb;
+    highp float dust = exp(-pow((radius - front + 0.055) / (width * 2.2), 2.0)) * fade;
+    highp vec3 colour = mix(scene, vec3(0.36, 0.32, 0.27), dust * 0.13);
+    highp float opacity = clamp((envelope * 0.85 + dust * 0.12) * fade, 0.0, 0.9);
+    COLOR = vec4(colour, opacity);
+}

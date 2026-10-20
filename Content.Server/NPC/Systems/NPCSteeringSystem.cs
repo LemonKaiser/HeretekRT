@@ -491,7 +491,7 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
 
         steering.PathfindToken = new CancellationTokenSource();
 
-        var flags = _pathfindingSystem.GetFlags(uid);
+        var flags = steering.Flags;
 
         var result = await _pathfindingSystem.GetPathSafe(
             uid,

@@ -1,0 +1,47 @@
+light_mode unshaded;
+blend_mode add;
+
+uniform highp float Strength;
+uniform highp float EffectTime;
+uniform highp float Seed;
+
+highp float exhaustNoise(highp vec2 point)
+{
+    highp vec2 cell = floor(point);
+    highp vec2 local = fract(point);
+    local = local * local * (3.0 - 2.0 * local);
+    highp vec4 hashes = fract(sin(vec4(dot(cell, vec2(127.1, 311.7)),
+        dot(cell + vec2(1.0, 0.0), vec2(127.1, 311.7)),
+        dot(cell + vec2(0.0, 1.0), vec2(127.1, 311.7)),
+        dot(cell + vec2(1.0), vec2(127.1, 311.7)))) * 43758.5453);
+    return mix(mix(hashes.x, hashes.y, local.x), mix(hashes.z, hashes.w, local.x), local.y);
+}
+
+void fragment()
+{
+    // UV2 is the local quad, independent of white-texture atlas coordinates.
+    highp vec2 point = vec2((UV2.x - 0.5) * 0.8, UV2.y * 1.4 - 1.25);
+    highp float depth = -point.y;
+    highp float extent = (0.20 + Strength * 0.88) * 0.7;
+    highp float travel = clamp(depth / extent, 0.0, 1.0);
+    highp float clock = EffectTime * 7.4 + Seed;
+    highp float flow = exhaustNoise(vec2(point.x * 19.0, depth * 11.0 + clock));
+    highp float detail = exhaustNoise(vec2(point.x * 43.0 + Seed, depth * 28.0 + clock * 1.8));
+    highp float bend = sin(depth * 15.0 + clock * 2.1) * travel * 0.035
+        + (flow - 0.5) * travel * 0.11;
+    highp float width = mix(0.085, 0.012, travel) * (0.55 + Strength * 0.45);
+    highp float radial = abs(point.x - bend) / max(width, 0.001);
+    highp float plume = exp(-radial * radial * (0.85 + detail * 0.8));
+    highp float core = exp(-radial * radial * 4.5) * (1.0 - smoothstep(0.0, 0.48, travel));
+    highp float lengthFade = 1.0 - smoothstep(0.45 + flow * 0.18, 1.0, travel);
+    highp float sourceFade = smoothstep(-0.08, 0.015, depth);
+    highp float edge = (1.0 - smoothstep(0.30, 0.39, abs(point.x)))
+        * smoothstep(-1.25, -1.15, point.y) * (1.0 - smoothstep(0.05, 0.15, point.y));
+    highp vec3 colour = mix(vec3(1.0, 0.11, 0.015), vec3(1.0, 0.58, 0.08), plume);
+    highp vec3 light = colour * plume * (0.75 + detail * 0.25) * lengthFade * sourceFade;
+    light += vec3(0.72, 0.88, 1.0) * core * sourceFade * 0.8;
+    light *= edge * clamp(Strength * 1.6, 0.0, 1.0);
+    highp float alpha = clamp(max(light.r, max(light.g, light.b)), 0.0, 1.0);
+    if (alpha < 0.002) discard;
+    COLOR = vec4(light / max(alpha, 0.001), alpha);
+}

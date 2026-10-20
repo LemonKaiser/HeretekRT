@@ -1,0 +1,35 @@
+wh40k-boss-chaos-marine-name = Chaos Space Marine
+ent-MobWH40KChaosMarine = Chaos Space Marine
+    .desc = An ancient executioner encased in scorched ceramite, armed with a bolter and a chained mace.
+    .suffix = WH40K, Boss, Arena 25x25
+ent-Wh40kMarineBolt = explosive bolt
+    .desc = A heavy explosive round fired by the Chaos Space Marine.
+ent-Wh40kMarineRocket = shoulder rocket
+    .desc = A rocket from the Chaos Space Marine's shoulder launcher.
+ent-Wh40kMarineEffect = warp afterglow
+    .desc = A brief remnant of the Chaos Space Marine's assault.
+ent-Wh40kMarineSummonCircle = summoning seal
+    .desc = A ritual seal beneath the Chaos Space Marine. Reinforcements appear within two tiles of its center.
+wh40k-marine-protected = PHASE TRANSITION
+wh40k-marine-attack-command = Force an announced Chaos Space Marine attack for arena testing.
+wh40k-marine-attack-help = wh40k_marine_attack <boss uid> <R1-R6|M1-M6|S1-S4|E|Punch|Jump|Switch> <target uid> [additional target uid ...]
+
+wh40k-marine-ricochet-load = switches ammunition: ricochet rounds click into the bolter.
+ent-Wh40kMarineMaceHead = Chaos Marine mace head
+    .desc = A heavy spiked head attached to the Astartes by a chain.
+ent-Wh40kMarineMaceLink = Chaos Marine chain link
+    .desc = A physical link in the mace's articulated chain.
+ent-Wh40kMarineMaceGrip = Chaos Marine mace attachment
+    .desc = The wrist attachment of the articulated chain.
+
+ent-Wh40kChaosMarineRelicBolter = Executioner's Voice
+    .desc = A reclaimed relic bolter. Its restored mechanisms retain the fury of the defeated Astartes.
+    .suffix = WH40K, Relic, Boss reward
+ent-Wh40kChaosMarineRelicSabre = Oathbreaker
+    .desc = A relic power sabre claimed from the war chest of a Chaos champion.
+    .suffix = WH40K, Relic, Boss reward
+ent-Wh40kChaosMarineWarFund = executioner's war fund
+    .desc = The champion's accumulated war spoils in throne gelt.
+    .suffix = WH40K, Boss reward
+ent-CrateWh40kChaosMarineSpoils = Chaos champion's war chest
+    .desc = A sealed cache of relic weapons, heavy armaments and the champion's war fund.

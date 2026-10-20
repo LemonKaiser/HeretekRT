@@ -1,0 +1,10 @@
+wh40k-undead-description = Toggles automatic recovery before critical condition, death or gibbing, with private damage reports and a flaming right eye.
+wh40k-undead-help = Usage: undead [ckey|entityUid]. Without an argument, toggles the mode for your character. Tab lists connected players. Enabling heals the target and resets the counters.
+wh40k-undead-target-hint = player ckey or entity ID
+wh40k-undead-no-target = Specify a player ckey or entity ID when you are not controlling a character.
+wh40k-undead-invalid-target = No player or entity found for { $target }.
+wh40k-undead-player-no-entity = Player { $player } is not currently controlling a character.
+wh40k-undead-invalid-mob = The target must be alive and have damage and mob thresholds.
+wh40k-undead-enabled = Undead enabled for { $entity }. Damage and effects still apply; recovery happens before incapacitation or destruction.
+wh40k-undead-disabled = Undead disabled for { $entity }.
+wh40k-undead-recovered = Deaths: { $deaths }. Total damage: { $total }.

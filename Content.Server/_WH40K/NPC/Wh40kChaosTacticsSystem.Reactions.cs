@@ -20,8 +20,6 @@ public sealed partial class Wh40kChaosTacticsSystem
     private const float AlertVisionRange = 24f;
     private const float ShotDangerWidth = 1.5f;
     private static readonly TimeSpan HearingCooldown = TimeSpan.FromSeconds(0.25);
-    private static readonly TimeSpan DodgeDuration = TimeSpan.FromSeconds(0.75);
-    private static readonly TimeSpan DodgeCooldown = TimeSpan.FromSeconds(1.2);
 
     [Dependency] private NPCRetaliationSystem _retaliation = default!;
     [Dependency] private NPCSystem _npcs = default!;
@@ -91,12 +89,22 @@ public sealed partial class Wh40kChaosTacticsSystem
             if (!RememberThreat(uid, attacker, comp, threatened))
                 continue;
             if (threatened)
-                StartDodge(uid, attacker, comp);
+                StartDodge(uid, attacker, comp, aimedShot: true);
         }
     }
 
     private bool RememberThreat(EntityUid uid, EntityUid attacker, Wh40kChaosTacticsComponent comp, bool attacked)
     {
+        if (comp.ExternallyDirected)
+        {
+            if (!_npcs.Enabled || comp.DirectedMovementLocked || Paused(uid) || Deleted(attacker) ||
+                !TryComp<MobStateComponent>(uid, out var mob) || mob.CurrentState != MobState.Alive ||
+                !IsCombatTarget(attacker) || _factions.IsEntityFriendly(uid, attacker) ||
+                Transform(uid).MapID != Transform(attacker).MapID) return false;
+            comp.ThreatTarget = attacker;
+            comp.ThreatUntil = _timing.CurTime + comp.ThreatMemoryDuration;
+            return true;
+        }
         if (!_npcs.Enabled || Paused(uid) || Deleted(attacker) ||
             !TryComp<MobStateComponent>(uid, out var state) || state.CurrentState != MobState.Alive ||
             !IsCombatTarget(attacker) || _factions.IsEntityFriendly(uid, attacker) ||
@@ -139,10 +147,22 @@ public sealed partial class Wh40kChaosTacticsSystem
         return true;
     }
 
-    private void StartDodge(EntityUid uid, EntityUid attacker, Wh40kChaosTacticsComponent comp)
+    private void StartDodge(EntityUid uid, EntityUid attacker, Wh40kChaosTacticsComponent comp, bool aimedShot = false)
     {
         if (_timing.CurTime < comp.NextDodge || !_blocker.CanMove(uid))
             return;
+        if (comp.DodgeShotThreshold > 1)
+        {
+            if (!aimedShot) return;
+            if (_timing.CurTime >= comp.DodgeShotWindowUntil)
+            {
+                comp.DodgeShots = 0;
+                comp.DodgeShotWindowUntil = _timing.CurTime + comp.DodgeShotWindow;
+            }
+            if (++comp.DodgeShots < comp.DodgeShotThreshold) return;
+            comp.DodgeShots = 0;
+            comp.DodgeShotWindowUntil = TimeSpan.Zero;
+        }
         comp.NextCoverSearch = _timing.CurTime;
         if (comp.CoverPosition != null)
         {
@@ -156,7 +176,7 @@ public sealed partial class Wh40kChaosTacticsSystem
                 return;
             }
             ReturnToCover(comp);
-            comp.NextDodge = _timing.CurTime + DodgeCooldown;
+            comp.NextDodge = _timing.CurTime + comp.DodgeCooldown;
             return;
         }
         var incoming = _transform.GetMapCoordinates(uid).Position - _transform.GetMapCoordinates(attacker).Position;
@@ -176,8 +196,8 @@ public sealed partial class Wh40kChaosTacticsSystem
         comp.DodgeShooter = attacker;
         comp.DodgeSideUntil = _timing.CurTime + TimeSpan.FromSeconds(3);
         comp.DodgeDirection = side * (comp.DodgeLeft ? 1f : -1f);
-        comp.DodgeUntil = _timing.CurTime + DodgeDuration;
-        comp.NextDodge = _timing.CurTime + DodgeCooldown;
+        comp.DodgeUntil = _timing.CurTime + comp.DodgeDuration;
+        comp.NextDodge = _timing.CurTime + comp.DodgeCooldown;
         comp.NextDirectionUpdate = TimeSpan.Zero;
     }
 

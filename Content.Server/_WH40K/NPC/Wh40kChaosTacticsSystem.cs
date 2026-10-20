@@ -80,7 +80,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
         var query = EntityQueryEnumerator<Wh40kChaosTacticsComponent, ActiveNPCComponent>();
         while (query.MoveNext(out var uid, out var comp, out _))
         {
-            if (Paused(uid))
+            if (Paused(uid) || comp.ExternallyDirected && comp.DirectedMovementLocked)
                 continue;
             comp.EscapeDirection = hazards ? GetEscapeDirection(uid, comp) : Vector2.Zero;
             comp.SeparationDirection = GetSeparationDirection(uid, comp);
@@ -175,6 +175,7 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
 
     private void OnShotAttempt(EntityUid uid, Wh40kChaosTacticsComponent comp, ref ShotAttemptedEvent args)
     {
+        if (comp.ExternallyDirected) return;
         if (args.User != uid || args.Used.Comp.ShootCoordinates is not { } coordinates)
             return;
 
@@ -209,6 +210,12 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
 
     private void OnSteering(EntityUid uid, Wh40kChaosTacticsComponent comp, ref NPCSteeringEvent args)
     {
+        if (comp.ExternallyDirected && comp.DirectedMovementLocked)
+        {
+            Array.Clear(args.Steering.Interest);
+            args.Steering.CanSeek = false;
+            return;
+        }
         var direction = comp.EscapeDirection;
         // Follow the selected route into shelter instead of interrupting it with a sideways dodge.
         if (direction == Vector2.Zero && comp.CoverPosition != null)
@@ -250,6 +257,8 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
             }
         }
 
+        if (direction == Vector2.Zero && comp.ExternallyDirected && args.Steering.DirectMove)
+            direction = comp.DirectedDirection;
         if (direction == Vector2.Zero && _timing.CurTime < comp.RegroupUntil &&
             comp.Target is { } regroupTarget && !Deleted(regroupTarget) &&
             comp.RegroupOrigin is { } regroupOrigin && regroupOrigin.IsValid(EntityManager))
@@ -276,7 +285,8 @@ public sealed partial class Wh40kChaosTacticsSystem : EntitySystem
             return;
         }
 
-        if (direction == Vector2.Zero && !HasComp<NPCMeleeCombatComponent>(uid) &&
+        // External directors own their stance distance and relocation destinations.
+        if (direction == Vector2.Zero && !comp.ExternallyDirected && !HasComp<NPCMeleeCombatComponent>(uid) &&
             comp.Target is { } enemy && !Deleted(enemy))
         {
             var aim = _transform.GetMapCoordinates(enemy);

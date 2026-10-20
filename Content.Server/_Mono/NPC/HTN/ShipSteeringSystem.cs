@@ -1,4 +1,6 @@
 using Content.Server._Mono.Projectiles.TargetSeeking;
+using Content.Server._WH40K.Drones.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Emp;
 using Content.Server.Physics.Controllers;
 using Content.Server.Shuttles.Components;
@@ -30,6 +32,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private ShuttleSystem _shuttle = default!;
     [Dependency] private TargetSeekingSystem _seeking = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     [Dependency] private EntityQuery<MapGridComponent> _gridQuery;
     [Dependency] private EntityQuery<ProjectileGridPhaseComponent> _phaseQuery;
@@ -65,6 +68,12 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
         var target = ent.Comp.Coordinates;
         var targetUid = target.EntityId;
+
+        if (HasComp<DroneAiCoreComponent>(ent) && _safety.IsProtectedSpaceTarget(targetUid))
+        {
+            ent.Comp.Status = ShipSteeringStatus.InRange;
+            return;
+        }
 
         if (shipUid == null
             || TerminatingOrDeleted(targetUid)
@@ -991,6 +1000,12 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     /// </summary>
     public ShipSteererComponent? Steer(Entity<ShipSteererComponent?> ent, EntityCoordinates coordinates)
     {
+        if (HasComp<DroneAiCoreComponent>(ent) && _safety.IsProtectedSpaceTarget(coordinates.EntityId))
+        {
+            Stop(ent);
+            return null;
+        }
+
         var xform = Transform(ent);
         var shipUid = xform.GridUid;
         if (_shuttleQuery.TryComp(shipUid, out _))

@@ -429,8 +429,10 @@ namespace Content.Server.NPC.Pathfinding
             if (!TryGetChunk(origin, comp, out var chunk))
                 return null;
 
-            var chunkPos = new Vector2(MathHelper.Mod(localPos.X, ChunkSize), MathHelper.Mod(localPos.Y, ChunkSize));
-            var polys = chunk.Polygons[(int)chunkPos.X * ChunkSize + (int)chunkPos.Y];
+            // Floating-point modulo can round a tiny negative coordinate up to ChunkSize.
+            var tile = new Vector2i((int)MathF.Floor(localPos.X), (int)MathF.Floor(localPos.Y));
+            var chunkPos = tile - origin * ChunkSize;
+            var polys = chunk.Polygons[GetIndex(chunkPos.X, chunkPos.Y)];
 
             foreach (var poly in polys)
             {

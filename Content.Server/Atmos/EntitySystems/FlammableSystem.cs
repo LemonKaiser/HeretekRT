@@ -269,6 +269,7 @@ namespace Content.Server.Atmos.EntitySystems
 
         private void OnRejuvenate(EntityUid uid, FlammableComponent component, RejuvenateEvent args)
         {
+            _fireEvents.Remove((uid, component));
             Extinguish(uid, component);
         }
 
@@ -465,10 +466,15 @@ namespace Content.Server.Atmos.EntitySystems
 
                 if (flammable.FireStacks > 0)
                 {
+                    var ev = new GetFireProtectionEvent();
+                    RaiseLocalEvent(uid, ref ev);
+                    if (_inventoryQuery.TryComp(uid, out var inv))
+                        _inventory.RelayEvent((uid, inv), ref ev);
+
                     var air = _atmosphereSystem.GetContainingMixture(uid);
 
                     // If we're in an oxygenless environment, put the fire out.
-                    if (air == null || air.GetMoles(Gas.Oxygen) < 1f)
+                    if (!ev.IgnoreAtmosphere && (air == null || air.GetMoles(Gas.Oxygen) < 1f))
                     {
                         Extinguish(uid, flammable);
                         continue;
@@ -480,14 +486,10 @@ namespace Content.Server.Atmos.EntitySystems
                     if (TryComp(uid, out TemperatureComponent? temp))
                         _temperatureSystem.ChangeHeat(uid, 12500 * flammable.FireStacks, false, temp);
 
-                    var ev = new GetFireProtectionEvent();
-                    // let the thing on fire handle it
-                    RaiseLocalEvent(uid, ref ev);
-                    // and whatever it's wearing
-                    if (_inventoryQuery.TryComp(uid, out var inv))
-                        _inventory.RelayEvent((uid, inv), ref ev);
-
                     _damageableSystem.TryChangeDamage(uid, flammable.Damage * flammable.FireStacks * ev.Multiplier, interruptsDoAfters: false);
+
+                    if (!flammable.OnFire)
+                        continue;
 
                     AdjustFireStacks(uid, flammable.FirestackFade * (flammable.Resisting ? 15f : 1f), flammable, flammable.OnFire);
                 }

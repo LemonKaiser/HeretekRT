@@ -8,6 +8,9 @@ namespace Content.Server._WH40K.NPC;
 /// <summary>Includes weapon spread as well as a margin for moving allies.</summary>
 public sealed partial class Wh40kChaosTacticsComponent : Component
 {
+    [DataField] public bool ExternallyDirected;
+    [ViewVariables] public bool DirectedMovementLocked = true;
+    [ViewVariables] public Vector2 DirectedDirection;
     [DataField]
     public float RetreatRange;
 
@@ -90,6 +93,14 @@ public sealed partial class Wh40kChaosTacticsComponent : Component
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan NextDodge;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan DodgeSideUntil;
     [ViewVariables] public EntityUid? DodgeShooter;
+
+    // Thresholds above one require sustained aimed gunfire, rather than individual damage/melee events.
+    [DataField] public int DodgeShotThreshold = 1;
+    [DataField] public TimeSpan DodgeShotWindow = TimeSpan.FromSeconds(1.5);
+    [DataField] public TimeSpan DodgeDuration = TimeSpan.FromSeconds(.75);
+    [DataField] public TimeSpan DodgeCooldown = TimeSpan.FromSeconds(1.2);
+    [ViewVariables] public int DodgeShots;
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField] public TimeSpan DodgeShotWindowUntil;
 
     [DataField] public TimeSpan MemoryDuration = TimeSpan.FromSeconds(16);
     [DataField] public TimeSpan ThreatMemoryDuration = TimeSpan.FromSeconds(16);

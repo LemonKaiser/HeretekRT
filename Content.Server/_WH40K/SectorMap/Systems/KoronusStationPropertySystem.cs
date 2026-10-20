@@ -22,6 +22,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
@@ -39,8 +40,15 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
     [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     private static readonly TimeSpan ReturnDelay = TimeSpan.FromSeconds(15);
+    private static readonly Dictionary<string, KoronusStationPropertyPolicy> PrototypePolicies = new()
+    {
+        ["Lighter"] = KoronusStationPropertyPolicy.Free,
+        ["FlippoLighter"] = KoronusStationPropertyPolicy.Free,
+        ["PirateBreachingAnchor"] = KoronusStationPropertyPolicy.Display,
+    };
 
     private readonly EntityWhitelist _free = new()
     {
@@ -124,7 +132,21 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
                     Dirty(uid, storage);
                 }
 
-                if (TryComp<KoronusStationPropertyComponent>(uid, out var configured))
+                if (!TryComp<KoronusStationPropertyComponent>(uid, out var configured) &&
+                    MetaData(uid).EntityPrototype is { } prototype)
+                {
+                    foreach (var parent in _prototypes.EnumerateParents(prototype, includeSelf: true))
+                    {
+                        if (!PrototypePolicies.TryGetValue(parent.ID, out var policy))
+                            continue;
+
+                        configured = AddComp<KoronusStationPropertyComponent>(uid);
+                        configured.Policy = policy;
+                        break;
+                    }
+                }
+
+                if (configured != null)
                     local = stationaryKit || configured.Policy == KoronusStationPropertyPolicy.LocalUse;
                 else
                     local = !_whitelist.IsWhitelistPass(_dangerous, uid) &&
@@ -316,8 +338,28 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
     }
 
     private bool IsAtHome(EntityUid uid, KoronusStationPropertyOriginComponent origin)
-        => Transform(uid).Coordinates == origin.OriginalPosition &&
-           (origin.OriginalContainer == null || origin.OriginalContainer.Contains(uid));
+    {
+        if (TryGetOpenHomeStorage(origin, out var position))
+            return !_containers.IsEntityInContainer(uid) && _transform.InRange(Transform(uid).Coordinates, position, 0.01f);
+
+        return Transform(uid).Coordinates == origin.OriginalPosition &&
+               (origin.OriginalContainer == null || origin.OriginalContainer.Contains(uid));
+    }
+
+    private bool TryGetOpenHomeStorage(KoronusStationPropertyOriginComponent origin, out EntityCoordinates position)
+    {
+        position = default;
+        if (origin.OriginalContainer is not { } container || TerminatingOrDeleted(container.Owner) ||
+            Transform(container.Owner).GridUid != origin.HomePosition.EntityId ||
+            !TryComp<EntityStorageComponent>(container.Owner, out var storage) ||
+            storage.Contents != container || !storage.Open)
+            return false;
+
+        // Opening a crate legitimately empties it. Its contents belong at the release point
+        // until it closes, rather than being returned into an invisible, open container.
+        position = new EntityCoordinates(container.Owner, storage.EnteringOffset);
+        return true;
+    }
 
     private bool IsInUse(EntityUid uid)
     {
@@ -384,7 +426,7 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
             return false;
 
         if (property.Policy == KoronusStationPropertyPolicy.Display)
-            return Transform(uid).Coordinates == origin.OriginalPosition;
+            return IsAtHome(uid, origin);
 
         var current = uid;
         while (_containers.TryGetContainingContainer((current, null, null), out var container))
@@ -408,22 +450,26 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
         if (TryComp<PullableComponent>(uid, out var pullable))
             _pulling.TryStopPull(uid, pullable);
 
-        var destination = origin.HomePosition;
-        if (origin.OriginalContainer == null &&
+        var openStorage = TryGetOpenHomeStorage(origin, out var releasePosition);
+        var destination = openStorage ? releasePosition : origin.HomePosition;
+        if (!openStorage && origin.OriginalContainer == null &&
             !TerminatingOrDeleted(origin.OriginalPosition.EntityId) &&
             (origin.OriginalPosition.EntityId == property.HomeGrid ||
              Transform(origin.OriginalPosition.EntityId).GridUid == property.HomeGrid))
             destination = origin.OriginalPosition;
         _transform.SetCoordinates(uid, destination);
-        if (origin.OriginalContainer is { } original && !TerminatingOrDeleted(original.Owner) &&
+        if (!openStorage && origin.OriginalContainer is { } original && !TerminatingOrDeleted(original.Owner) &&
             Transform(original.Owner).GridUid == property.HomeGrid &&
             _containers.TryGetContainer(original.Owner, original.ID, out var existing) && existing == original &&
             (original is not ContainerSlot slot || slot.ContainedEntity == null))
             _containers.Insert(uid, original, force: property.Policy == KoronusStationPropertyPolicy.Display);
 
         // A deleted/full/exported original container cannot be the destination of repeated returns.
-        origin.OriginalPosition = Transform(uid).Coordinates;
-        _containers.TryGetContainingContainer((uid, null, null), out origin.OriginalContainer);
+        if (!openStorage)
+        {
+            origin.OriginalPosition = Transform(uid).Coordinates;
+            _containers.TryGetContainingContainer((uid, null, null), out origin.OriginalContainer);
+        }
 
         if (TryComp<PhysicsComponent>(uid, out var body))
         {

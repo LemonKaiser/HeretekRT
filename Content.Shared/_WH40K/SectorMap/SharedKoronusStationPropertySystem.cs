@@ -6,6 +6,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Pulling.Events;
 using Content.Shared.Storage;
+using Content.Shared.Storage.Components;
 using Content.Shared.Storage.EntitySystems;
 using Robust.Shared.Containers;
 
@@ -15,6 +16,7 @@ namespace Content.Shared._WH40K.SectorMap;
 public sealed partial class SharedKoronusStationPropertySystem : EntitySystem
 {
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedEntityStorageSystem _entityStorage = default!;
 
     public override void Initialize()
     {
@@ -43,8 +45,11 @@ public sealed partial class SharedKoronusStationPropertySystem : EntitySystem
         if (property.HomeGrid is not { } home || property.Policy == KoronusStationPropertyPolicy.Free)
             return true;
 
-        if (!CanMove(property) || Transform(destination.Owner).GridUid != home)
+        if (Transform(destination.Owner).GridUid != home)
             return false;
+
+        if (!CanMove(property))
+            return CanTransferDisplay(property, destination, opening: false);
 
         if (TryComp<HandsComponent>(destination.Owner, out var hands) &&
             _hands.TryGetHand(destination.Owner, destination.ID, out var hand, hands) && hand.Container == destination)
@@ -54,6 +59,15 @@ public sealed partial class SharedKoronusStationPropertySystem : EntitySystem
                storage.HomeGrid == home &&
                (TryComp<StorageComponent>(destination.Owner, out var itemStorage) && itemStorage.Container == destination ||
                 destination.ID == SharedEntityStorageSystem.ContainerName);
+    }
+
+    private bool CanTransferDisplay(KoronusStationPropertyComponent property, BaseContainer container, bool opening)
+    {
+        SharedEntityStorageComponent? storage = null;
+        return TryComp<KoronusStationPropertyStorageComponent>(container.Owner, out var stationStorage) &&
+               stationStorage.HomeGrid == property.HomeGrid && Transform(container.Owner).GridUid == property.HomeGrid &&
+               _entityStorage.ResolveStorage(container.Owner, ref storage) &&
+               storage.Contents == container && storage.Open == opening;
     }
 
     private void OnPickup(EntityUid uid, KoronusStationPropertyComponent property, GettingPickedUpAttemptEvent args)
@@ -76,7 +90,7 @@ public sealed partial class SharedKoronusStationPropertySystem : EntitySystem
 
     private void OnRemove(EntityUid uid, KoronusStationPropertyComponent property, ContainerGettingRemovedAttemptEvent args)
     {
-        if (!CanMove(property))
+        if (!CanMove(property) && !CanTransferDisplay(property, args.Container, opening: true))
             args.Cancel();
     }
 

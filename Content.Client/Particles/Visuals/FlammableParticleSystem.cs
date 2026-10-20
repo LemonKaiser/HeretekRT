@@ -1,3 +1,4 @@
+using Content.Client.Atmos.Components;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Particles;
@@ -55,6 +56,9 @@ public sealed class FlammableParticleSystem : EntitySystem
     private void OnAppearanceChange(Entity<FlammableComponent> ent, ref AppearanceChangeEvent args)
     {
         if (!_appearance.TryGetData(ent, FireVisuals.OnFire, out bool onFire))
+            onFire = false;
+
+        if (TryComp<FireVisualsComponent>(ent, out var visuals) && !visuals.Particles)
             onFire = false;
 
         if (!_appearance.TryGetData(ent, FireVisuals.FireStacks, out float stacks))

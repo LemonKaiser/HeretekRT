@@ -1,4 +1,9 @@
 - type: shader
+  id: WH40KUndeadEye
+  kind: source
+  path: "/Textures/_WH40K/Shaders/undead_eye.swsl"
+
+- type: shader
   id: WH40KWave
   kind: source
   path: "/Textures/_WH40K/Shaders/wave.swsl"

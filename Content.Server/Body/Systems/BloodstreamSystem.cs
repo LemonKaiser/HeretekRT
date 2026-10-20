@@ -171,6 +171,10 @@ public sealed partial class BloodstreamSystem : EntitySystem
                 _damageableSystem.TryChangeDamage(uid, amt,
                     ignoreResistances: false, interruptsDoAfters: false);
 
+                // Damage handlers may fully restore blood before this update resumes.
+                if (GetBloodLevelPercentage(uid, bloodstream) >= bloodstream.BloodlossThreshold)
+                    continue;
+
                 // Apply dizziness as a symptom of bloodloss.
                 // The effect is applied in a way that it will never be cleared without being healthy.
                 // Multiplying by 2 is arbitrary but works for this case, it just prevents the time from running out
@@ -371,6 +375,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
 
     private void OnRejuvenate(Entity<BloodstreamComponent> entity, ref RejuvenateEvent args)
     {
+        entity.Comp.StatusTime = TimeSpan.Zero;
         TryModifyBleedAmount(entity.Owner, -entity.Comp.BleedAmount, entity.Comp);
 
         if (_solutionContainerSystem.ResolveSolution(entity.Owner, entity.Comp.BloodSolutionName, ref entity.Comp.BloodSolution, out var bloodSolution))

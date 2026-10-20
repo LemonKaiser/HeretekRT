@@ -1,0 +1,14 @@
+uniform highp float Charge;
+uniform highp float Rage;
+uniform highp float EffectTime;
+
+void fragment()
+{
+    highp vec4 metal = zTexture(UV);
+    highp float veins = 0.5 + 0.5 * sin(UV.y * 24.0 + UV.x * 13.0 - EffectTime * 7.0);
+    highp float glint = pow(max(0.0, sin(UV.x * 8.0 - UV.y * 5.0 + EffectTime * 4.0)), 12.0);
+    highp float heat = Charge * 0.32 + Rage * 0.22;
+    highp vec3 ember = vec3(1.0, 0.18, 0.035);
+    highp vec3 lit = metal.rgb + ember * heat * veins + vec3(0.65, 0.42, 0.25) * glint * (0.12 + Charge * 0.25);
+    COLOR = vec4(lit, metal.a);
+}

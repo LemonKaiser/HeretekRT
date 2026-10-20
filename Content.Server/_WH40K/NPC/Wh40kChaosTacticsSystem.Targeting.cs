@@ -26,6 +26,10 @@ public sealed partial class Wh40kChaosTacticsSystem
 
     public bool CanFightTarget(EntityUid uid, EntityUid target, Wh40kChaosTacticsComponent comp)
     {
+        if (TryComp<Content.Server._WH40K.Bosses.Wh40kMarineMinionComponent>(uid, out var minion) &&
+            (_timing.CurTime < minion.ReadyAt || minion.Boss is not { } boss || TerminatingOrDeleted(boss) ||
+             !EntityManager.System<Content.Server._WH40K.Bosses.Wh40kChaosMarineSystem>().CanTarget(boss, target)))
+            return false;
         return target != uid && IsCombatTarget(target) &&
                Transform(target).MapID == Transform(uid).MapID && Transform(target).MapUid != null &&
                !_factions.IsEntityFriendly(uid, target) &&

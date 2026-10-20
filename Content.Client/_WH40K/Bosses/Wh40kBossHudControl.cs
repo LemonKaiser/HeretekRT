@@ -21,6 +21,8 @@ public sealed class Wh40kBossHudControl : Control
     public Wh40kBossHudData? State;
     public Vector2 ScreenDirection;
     public float Distance;
+    public bool ShowPointer;
+    public UIBox2 PointerBounds;
 
     public Wh40kBossHudControl()
     {
@@ -74,14 +76,16 @@ public sealed class Wh40kBossHudControl : Control
         var titleTop = top - _titleFont.GetLineHeight(UIScale) - 6f * UIScale;
         DrawCentered(handle, _titleFont, title, new Vector2(PixelSize.X / 2, titleTop), Color.FromHex("#ead7b3"));
         var health = Loc.GetString("wh40k-boss-health", ("current", MathF.Ceiling(State.Health)), ("max", State.MaxHealth));
+        if (State.Protected)
+            health += " · " + Loc.GetString("wh40k-marine-protected");
         DrawCentered(handle, _smallFont, health, new Vector2(PixelSize.X / 2, top + 40f * scale + 4f * UIScale),
             Color.FromHex("#ddd6c9"));
 
-        if (ScreenDirection.LengthSquared() < 0.001f)
+        if (!ShowPointer || ScreenDirection.LengthSquared() < 0.001f)
             return;
         var direction = Vector2.Normalize(ScreenDirection);
-        var centre = PixelSize / 2;
-        var half = Vector2.Max(centre - new Vector2(62f, 76f) * UIScale, Vector2.One);
+        var centre = PointerBounds.Center;
+        var half = Vector2.Max(PointerBounds.Size / 2 - new Vector2(62f, 76f) * UIScale, Vector2.One);
         var tx = MathF.Abs(direction.X) > 0.001f ? half.X / MathF.Abs(direction.X) : float.MaxValue;
         var ty = MathF.Abs(direction.Y) > 0.001f ? half.Y / MathF.Abs(direction.Y) : float.MaxValue;
         var point = centre + direction * MathF.Min(tx, ty);

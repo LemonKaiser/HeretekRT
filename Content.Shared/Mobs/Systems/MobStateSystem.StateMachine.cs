@@ -1,5 +1,6 @@
 ﻿using Content.Shared.Database;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Events;
 using Content.Shared._Shitmed.Body.Organ;
 
 namespace Content.Shared.Mobs.Systems;
@@ -105,6 +106,11 @@ public partial class MobStateSystem
             return;
 
         if (oldState == MobState.Dead && HasComp<DebrainedComponent>(target)) // Shitmed Change
+            return;
+
+        var attempt = new MobStateChangingEvent(newState);
+        RaiseLocalEvent(target, attempt);
+        if (attempt.Cancelled)
             return;
 
         OnExitState(target, component, oldState);

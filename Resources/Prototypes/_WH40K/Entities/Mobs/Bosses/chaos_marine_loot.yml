@@ -1,0 +1,65 @@
+- type: entity
+  parent: WeaponRifleBolter
+  id: Wh40kChaosMarineRelicBolter
+  name: Executioner's Voice
+  description: A reclaimed relic bolter. Its restored mechanisms retain the fury of the defeated Astartes.
+  suffix: WH40K, Relic, Boss reward
+  components:
+  - type: ItemRarity
+    rarity: Relic
+    bonusPercent: 35
+    isRolled: true
+  - type: StaticPrice
+    price: 10000
+
+- type: entity
+  parent: WHPowerSaberImperial
+  id: Wh40kChaosMarineRelicSabre
+  name: Oathbreaker
+  description: A relic power sabre claimed from the war chest of a Chaos champion.
+  suffix: WH40K, Relic, Boss reward
+  components:
+  - type: ItemRarity
+    rarity: Relic
+    bonusPercent: 35
+    isRolled: true
+  - type: StaticPrice
+    price: 10000
+
+- type: entity
+  parent: SpaceCash30000
+  id: Wh40kChaosMarineWarFund
+  name: executioner's war fund
+  description: The champion's accumulated war spoils in throne gelt.
+  suffix: WH40K, Boss reward
+  components:
+  - type: Stack
+    count: 76305
+
+- type: entity
+  parent: CrateGenericSteel
+  id: CrateWh40kChaosMarineSpoils
+  name: Chaos champion's war chest
+  description: A sealed cache of relic weapons, heavy armaments and the champion's war fund.
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: Wh40kChaosMarineRelicBolter
+        - id: Wh40kChaosMarineRelicSabre
+        - id: WeaponLaserPlasmagun
+        - id: WeaponLaserMeltagun
+        - id: PlasmGunPowerCell
+          amount: !type:ConstantNumberSelector
+            value: 2
+        - id: MeltPowerCell
+          amount: !type:ConstantNumberSelector
+            value: 2
+        - id: SheetPlasteel
+          amount: !type:ConstantNumberSelector
+            value: 2
+        - id: IngotGold
+          amount: !type:ConstantNumberSelector
+            value: 2
+        - id: Wh40kChaosMarineWarFund

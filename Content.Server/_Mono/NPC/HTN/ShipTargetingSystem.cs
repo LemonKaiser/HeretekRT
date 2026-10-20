@@ -1,5 +1,7 @@
 using Content.Server._Mono.FireControl;
 using Content.Server._Mono.Projectiles.TargetSeeking;
+using Content.Server._WH40K.Drones.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -20,6 +22,7 @@ public sealed partial class ShipTargetingSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TargetSeekingSystem _seeking = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     [Dependency] private EntityQuery<GunComponent> _gunQuery;
     [Dependency] private EntityQuery<PhysicsComponent> _physQuery;
@@ -51,6 +54,12 @@ public sealed partial class ShipTargetingSystem : EntitySystem
 
             var target = comp.Target;
             var targetUid = target.EntityId; // if we have a target try to lead it
+
+            if (HasComp<DroneAiCoreComponent>(uid) && _safety.IsProtectedSpaceTarget(targetUid))
+            {
+                Stop(uid);
+                continue;
+            }
 
             if (shipUid == null
                 || TerminatingOrDeleted(targetUid)
@@ -183,6 +192,12 @@ public sealed partial class ShipTargetingSystem : EntitySystem
     /// </summary>
     public ShipTargetingComponent? Target(Entity<ShipTargetingComponent?> ent, EntityCoordinates coordinates)
     {
+        if (HasComp<DroneAiCoreComponent>(ent) && _safety.IsProtectedSpaceTarget(coordinates.EntityId))
+        {
+            Stop(ent);
+            return null;
+        }
+
         var xform = Transform(ent);
         var shipUid = xform.GridUid;
 

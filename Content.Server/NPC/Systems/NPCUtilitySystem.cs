@@ -2,6 +2,8 @@ using Content.Server.Atmos.Components;
 using Content.Server.Destructible; // Mono
 using Content.Server.Fluids.EntitySystems;
 using Content.Server._Mono.NPC.HTN; // Mono
+using Content.Server._Mono.Drone.Components;
+using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.NPC.Queries;
 using Content.Server.NPC.Queries.Considerations;
 using Content.Server.NPC.Queries.Curves;
@@ -71,6 +73,7 @@ public sealed partial class NPCUtilitySystem : EntitySystem
     [Dependency] private GunSystem _gun = default!; // Mono
     [Dependency] private NPCCombatSystem _npcCombat = default!;
     [Dependency] private TurretTargetSettingsSystem _turretTargetSettings = default!;
+    [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 
     private EntityQuery<PuddleComponent> _puddleQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -532,6 +535,10 @@ public sealed partial class NPCUtilitySystem : EntitySystem
             {
                 foreach (var ent in _npcFaction.GetNearbyHostiles(owner, vision))
                 {
+                    if (HasComp<HostileDroneGridComponent>(Transform(owner).GridUid) &&
+                        _safety.IsProtectedSpaceTarget(ent))
+                        continue;
+
                     entities.Add(ent);
                 }
                 break;
@@ -551,6 +558,7 @@ public sealed partial class NPCUtilitySystem : EntitySystem
                         || targetGrid == ownGrid
                         || (_transform.GetWorldPosition(target) - _transform.GetWorldPosition(xform)).Length() > shuttlesQuery.Range
                         || targetComp.NeedPower && !this.IsPowered(target, EntityManager)
+                        || _safety.IsProtectedSpaceTarget(target)
                         || targetGrid != null && _whitelistSystem.IsBlacklistPass(shuttlesQuery.Blacklist, targetGrid.Value))
                     {
                         continue;

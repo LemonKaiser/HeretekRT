@@ -8,6 +8,11 @@ ent-SpawnWH40KDroneMessenger = спавнер враждебного ИИ-дро
     .suffix = WH40K, Т1
 wh40k-drone-messenger-name = Враждебный ИИ-дрон «Посланник»
 
+ent-SpawnWH40KDroneSpearman = спавнер враждебного ИИ-дрона «Копейщик»
+    .desc = Автономный ракетный корабль уровня Т1-1, атакующий чужие корабли.
+    .suffix = WH40K, Т1-1
+wh40k-drone-spearman-name = Враждебный ИИ-дрон «Копейщик»
+
 ent-SpawnWH40KDroneWatcher = спавнер враждебного ИИ-дрона «Смотритель»
     .desc = Автономный боевой корабль уровня Т2, атакующий чужие корабли.
     .suffix = WH40K, Т2

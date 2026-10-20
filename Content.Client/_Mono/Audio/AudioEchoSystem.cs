@@ -195,6 +195,10 @@ public sealed partial class AreaEchoSystem : EntitySystem
     public bool TryProcessAreaSpaceMagnitude(Entity<TransformComponent> entity, float maximumMagnitude, out float magnitude)
     {
         magnitude = 0f;
+        if (!float.IsFinite(maximumMagnitude) || maximumMagnitude <= 0f
+            || !float.IsFinite(_calculationalFidelity) || _calculationalFidelity <= 0f)
+            return false;
+
         var transformComponent = entity.Comp;
 
         // get either the grid or other parent entity this entity is on, and it's rotation
@@ -228,6 +232,8 @@ public sealed partial class AreaEchoSystem : EntitySystem
 
         var originTileIndices = tileRef.GridIndices;
         var worldPosition = _transformSystem.GetWorldPosition(transformComponent);
+        if (!float.IsFinite(worldPosition.X) || !float.IsFinite(worldPosition.Y))
+            return false;
 
         // At this point, we are ready for war against the client's pc.
         foreach (var direction in _calculatedDirections)
@@ -254,6 +260,9 @@ public sealed partial class AreaEchoSystem : EntitySystem
                     remainingDistance
                 );
 
+                if (!float.IsFinite(distanceCovered) || distanceCovered < 0f)
+                    break;
+
                 totalDistance += distanceCovered;
                 remainingDistance -= distanceCovered;
 
@@ -261,7 +270,8 @@ public sealed partial class AreaEchoSystem : EntitySystem
                 if (reflectIteration == _echoMaxReflections)
                     break;
 
-                if (raycastResults is not { }) // means we didnt hit anything
+                if (raycastResults is not { } hit || remainingDistance <= 0f
+                    || !float.IsFinite(hit.HitPos.X) || !float.IsFinite(hit.HitPos.Y))
                     break;
 
                 // i think cross-grid would actually be pretty easy here? but the tile-marching doesnt often account for that at fidelities above 1 so whatever.
@@ -285,35 +295,29 @@ public sealed partial class AreaEchoSystem : EntitySystem
                     break;
                 }
 
-                var normalVector = GetNormalVector(delta);
-                normalVector = GetTileHitNormal(currentOriginLocalPosition, _mapSystem.TileToVector(gridRoofEntity, currentOriginTileIndices), gridRoofEntity.Comp1.TileSize);
+                if (!TryGetTileHitNormal(currentOriginLocalPosition,
+                        _mapSystem.TileToVector(gridRoofEntity, currentOriginTileIndices),
+                        gridRoofEntity.Comp1.TileSize, out var normalVector))
+                    break;
+
                 currentDirectionVector = Reflect(currentDirectionVector, normalVector);
             }
 
             magnitude += totalDistance;
         }
 
-        magnitude /= _calculatedDirections.Length * _echoMaxReflections;
+        magnitude /= _calculatedDirections.Length * Math.Max(1, _echoMaxReflections);
         return true;
     }
 
-    /// <summary>
-    ///     Gets the normal angle of a Vector2, relative to
-    ///         0, 0.
-    /// </summary>
-    [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector2 GetNormalVector(in Vector2 deltaVector)
+    internal static bool TryGetTileHitNormal(Vector2 rayHitPos, Vector2 tileOrigin, float tileSize, out Vector2 normal)
     {
-        return Vector2.Normalize(
-            MathF.Abs(deltaVector.X) > MathF.Abs(deltaVector.Y) ?
-            new Vector2(MathF.Sign(deltaVector.X), 0f) :
-            new Vector2(0f, MathF.Sign(deltaVector.Y))
-        );
-    }
+        normal = Vector2.Zero;
+        if (!float.IsFinite(rayHitPos.X) || !float.IsFinite(rayHitPos.Y)
+            || !float.IsFinite(tileOrigin.X) || !float.IsFinite(tileOrigin.Y)
+            || !float.IsFinite(tileSize) || tileSize <= 0f)
+            return false;
 
-    Vector2 GetTileHitNormal(Vector2 rayHitPos, Vector2 tileOrigin, float tileSize)
-    {
         // Position inside the tile (0..tileSize)
         Vector2 local = rayHitPos - tileOrigin;
 
@@ -326,10 +330,11 @@ public sealed partial class AreaEchoSystem : EntitySystem
         // Find smallest distance
         float minDist = MathF.Min(MathF.Min(left, right), MathF.Min(bottom, top));
 
-        if (minDist == left) return new Vector2(-1, 0);
-        if (minDist == right) return new Vector2(1, 0);
-        if (minDist == bottom) return new Vector2(0, -1);
-        return new Vector2(0, 1); // must be top
+        normal = minDist == left ? new Vector2(-1, 0)
+            : minDist == right ? new Vector2(1, 0)
+            : minDist == bottom ? new Vector2(0, -1)
+            : new Vector2(0, 1);
+        return true;
     }
 
     /// <remarks>

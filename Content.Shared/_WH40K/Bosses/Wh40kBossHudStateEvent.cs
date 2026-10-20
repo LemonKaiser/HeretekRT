@@ -29,6 +29,7 @@ public sealed class Wh40kBossHudData
     public AudioParams ThemeAudio;
     public float FadeIn;
     public float FadeOut;
+    public bool Protected;
 
     public Wh40kBossHudData(NetEntity boss, NetEntity map, Vector2 position, string title,
         float health, float maxHealth, ResolvedSoundSpecifier? theme, AudioParams themeAudio, float fadeIn, float fadeOut)

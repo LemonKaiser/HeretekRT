@@ -74,6 +74,9 @@ namespace Content.Client.Clickable
         }
 
         public bool IsOccluding(RSI rsi, RSI.StateId state, RsiDirection dir, int frame, Vector2i pos)
+            => IsOccluding(rsi, state, dir, frame, pos, false);
+
+        public bool IsOccluding(RSI rsi, RSI.StateId state, RsiDirection dir, int frame, Vector2i pos, bool precise)
         {
             if (!_rsiMaps.TryGetValue(rsi, out var rsiData))
             {
@@ -92,6 +95,12 @@ namespace Content.Client.Clickable
             }
 
             var offset = dirDat[frame];
+            if (precise)
+            {
+                return pos.X >= 0 && pos.Y >= 0 && pos.X < rsi.Size.X && pos.Y < rsi.Size.Y
+                    && rsiData.ClickMap.IsOccluded(pos + offset);
+            }
+
             return SampleClickMap(rsiData.ClickMap, pos, rsi.Size, offset);
         }
 
@@ -213,5 +222,8 @@ namespace Content.Client.Clickable
         public bool IsOccluding(Texture texture, Vector2i pos);
 
         public bool IsOccluding(RSI rsi, RSI.StateId state, RsiDirection dir, int frame, Vector2i pos);
+
+        /// <summary>Samples an exact opaque pixel when precise is true, without the mouse click tolerance.</summary>
+        public bool IsOccluding(RSI rsi, RSI.StateId state, RsiDirection dir, int frame, Vector2i pos, bool precise);
     }
 }

@@ -3,8 +3,8 @@ meta:
   category: Grid
   engineVersion: 278.0.2
   forkId: ebengrad
-  forkVersion: b38783231d616bd70398b00366c568bea7e2a437
-  time: 10/17/2026 12:12:54
+  forkVersion: 709754a01e78599ac8b505efc062922c79055046
+  time: 10/18/2026 08:51:33
   entityCount: 64
 maps: []
 grids:
@@ -66,10 +66,10 @@ entities:
     - type: ThermalSignature
     - type: SpreaderGrid
       spreadQueues:
+        MetalFoam: []
         Puddle: []
         Smoke: []
         Kudzu: []
-        MetalFoam: []
     - type: HostileDroneGrid
     - type: RandomMetadata
       nameSeparator: ""
@@ -84,7 +84,7 @@ entities:
       - DroneHex
     - type: IFF
       flags: AlwaysShowColor
-      color: "#9a2020"
+      color: "#C6A692"
     - type: Shuttle
       dampingModifier: 0.25
     - type: ImplicitRoof
@@ -106,110 +106,110 @@ entities:
     - type: ExplosionAirtightGrid
 - proto: APCBasic
   entities:
-  - uid: 48
+  - uid: 2
     components:
     - type: Transform
       pos: 0.5,1.5
       parent: 1
 - proto: CableApcExtension
   entities:
-  - uid: 56
+  - uid: 3
     components:
     - type: Transform
       pos: 0.5,1.5
       parent: 1
-  - uid: 57
+  - uid: 4
     components:
     - type: Transform
       pos: 0.5,0.5
       parent: 1
-  - uid: 58
+  - uid: 5
     components:
     - type: Transform
       pos: -0.5,0.5
       parent: 1
-  - uid: 59
+  - uid: 6
     components:
     - type: Transform
       pos: 1.5,0.5
       parent: 1
-  - uid: 60
+  - uid: 7
     components:
     - type: Transform
       pos: 0.5,-0.5
       parent: 1
-  - uid: 61
+  - uid: 8
     components:
     - type: Transform
       pos: -0.5,1.5
       parent: 1
-  - uid: 62
+  - uid: 9
     components:
     - type: Transform
       pos: 1.5,1.5
       parent: 1
-  - uid: 63
+  - uid: 10
     components:
     - type: Transform
       pos: -1.5,1.5
       parent: 1
-  - uid: 64
+  - uid: 11
     components:
     - type: Transform
       pos: 2.5,1.5
       parent: 1
 - proto: CableHV
   entities:
-  - uid: 40
+  - uid: 12
     components:
     - type: Transform
       pos: 0.5,-0.5
       parent: 1
-  - uid: 41
+  - uid: 13
     components:
     - type: Transform
       pos: 0.5,0.5
       parent: 1
-  - uid: 42
+  - uid: 14
     components:
     - type: Transform
       pos: 0.5,1.5
       parent: 1
-  - uid: 43
+  - uid: 15
     components:
     - type: Transform
       pos: -0.5,1.5
       parent: 1
-  - uid: 44
+  - uid: 16
     components:
     - type: Transform
       pos: 1.5,1.5
       parent: 1
 - proto: CableMV
   entities:
-  - uid: 45
+  - uid: 17
     components:
     - type: Transform
       pos: 0.5,-0.5
       parent: 1
-  - uid: 46
+  - uid: 18
     components:
     - type: Transform
       pos: 0.5,0.5
       parent: 1
-  - uid: 47
+  - uid: 19
     components:
     - type: Transform
       pos: 0.5,1.5
       parent: 1
 - proto: GeneratorWallmountAPU
   entities:
-  - uid: 37
+  - uid: 20
     components:
     - type: Transform
       pos: -0.5,1.5
       parent: 1
-  - uid: 38
+  - uid: 21
     components:
     - type: Transform
       pos: 1.5,1.5
@@ -221,65 +221,65 @@ entities:
     - type: Transform
       pos: -1.5,3.5
       parent: 1
-  - uid: 26
+  - uid: 23
     components:
     - type: Transform
       pos: 2.5,3.5
       parent: 1
 - proto: RMCCatwalkAI
   entities:
-  - uid: 49
+  - uid: 24
     components:
     - type: Transform
       pos: -1.5,1.5
       parent: 1
-  - uid: 50
+  - uid: 25
     components:
     - type: Transform
       pos: 2.5,1.5
       parent: 1
-  - uid: 51
+  - uid: 26
     components:
     - type: Transform
       pos: 2.5,0.5
       parent: 1
-  - uid: 52
+  - uid: 27
     components:
     - type: Transform
       pos: -1.5,0.5
       parent: 1
-  - uid: 53
+  - uid: 28
     components:
     - type: Transform
       pos: 0.5,-1.5
       parent: 1
-  - uid: 54
+  - uid: 29
     components:
     - type: Transform
       pos: -1.5,4.5
       parent: 1
-  - uid: 55
+  - uid: 30
     components:
     - type: Transform
       pos: 2.5,4.5
       parent: 1
 - proto: SmallGyroscope
   entities:
-  - uid: 18
+  - uid: 31
     components:
     - type: Transform
       pos: -1.5,1.5
       parent: 1
 - proto: SpawnMobAttackerCore
   entities:
-  - uid: 16
+  - uid: 32
     components:
     - type: Transform
       pos: 0.5,0.5
       parent: 1
 - proto: SubstationWallBasic
   entities:
-  - uid: 39
+  - uid: 33
     components:
     - type: Transform
       rot: 3.141592653589793 rad
@@ -287,123 +287,123 @@ entities:
       parent: 1
 - proto: Thruster
   entities:
-  - uid: 5
+  - uid: 34
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -1.5,0.5
       parent: 1
-  - uid: 19
+  - uid: 35
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 2.5,0.5
       parent: 1
-  - uid: 35
+  - uid: 36
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 0.5,-1.5
       parent: 1
-  - uid: 36
+  - uid: 37
     components:
     - type: Transform
       pos: 0.5,2.5
       parent: 1
 - proto: WallSolid
   entities:
-  - uid: 3
+  - uid: 38
     components:
     - type: Transform
       pos: -1.5,2.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 6
+  - uid: 39
     components:
     - type: Transform
       pos: -0.5,2.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 7
+  - uid: 40
     components:
     - type: Transform
       pos: -0.5,1.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 8
+  - uid: 41
     components:
     - type: Transform
       pos: -0.5,0.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 9
+  - uid: 42
     components:
     - type: Transform
       pos: -0.5,-0.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 10
+  - uid: 43
     components:
     - type: Transform
       pos: -0.5,-1.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 11
+  - uid: 44
     components:
     - type: Transform
       pos: 1.5,2.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 12
+  - uid: 45
     components:
     - type: Transform
       pos: 1.5,1.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 13
+  - uid: 46
     components:
     - type: Transform
       pos: 1.5,0.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 14
+  - uid: 47
     components:
     - type: Transform
       pos: 1.5,-0.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 15
+  - uid: 48
     components:
     - type: Transform
       pos: 1.5,-1.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 17
+  - uid: 49
     components:
     - type: Transform
       pos: 2.5,2.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 20
+  - uid: 50
     components:
     - type: Transform
       pos: 0.5,1.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 21
+  - uid: 51
     components:
     - type: Transform
       pos: 0.5,-0.5
@@ -412,7 +412,7 @@ entities:
       color: '#C6A692FF'
 - proto: WallSolidDiagonal
   entities:
-  - uid: 24
+  - uid: 52
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
@@ -420,14 +420,14 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 25
+  - uid: 53
     components:
     - type: Transform
       pos: 1.5,3.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 27
+  - uid: 54
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
@@ -435,7 +435,7 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 28
+  - uid: 55
     components:
     - type: Transform
       rot: 3.141592653589793 rad
@@ -443,7 +443,7 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 29
+  - uid: 56
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
@@ -451,14 +451,14 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 30
+  - uid: 57
     components:
     - type: Transform
       pos: -2.5,2.5
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 31
+  - uid: 58
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
@@ -466,7 +466,7 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 32
+  - uid: 59
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
@@ -474,7 +474,7 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 33
+  - uid: 60
     components:
     - type: Transform
       rot: 3.141592653589793 rad
@@ -482,7 +482,7 @@ entities:
       parent: 1
     - type: WallPaint
       color: '#C6A692FF'
-  - uid: 34
+  - uid: 61
     components:
     - type: Transform
       rot: 3.141592653589793 rad
@@ -492,13 +492,13 @@ entities:
       color: '#C6A692FF'
 - proto: WeaponLaserTurretFlayer
   entities:
-  - uid: 2
+  - uid: 62
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -1.5,3.5
       parent: 1
-  - uid: 23
+  - uid: 63
     components:
     - type: Transform
       rot: 3.141592653589793 rad
@@ -506,7 +506,7 @@ entities:
       parent: 1
 - proto: WHTauBanner
   entities:
-  - uid: 4
+  - uid: 64
     components:
     - type: Transform
       pos: 2.5,1.5

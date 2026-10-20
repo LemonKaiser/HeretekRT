@@ -84,7 +84,7 @@ public sealed partial class Wh40kChaosTacticsSystem
             {
                 if (friend == uid || Paused(friend) || !_factions.IsEntityFriendly(uid, (friend, faction)) ||
                     !HasComp<GunComponent>(friend) || HasComp<Wh40kChaosThrowerComponent>(friend) ||
-                    !TryComp<Wh40kChaosTacticsComponent>(friend, out var tactics) ||
+                    !TryComp<Wh40kChaosTacticsComponent>(friend, out var tactics) || tactics.ExternallyDirected ||
                     !TryComp<MobStateComponent>(friend, out var state) || state.CurrentState != MobState.Alive ||
                     !_interaction.InRangeUnobstructed(friend, uid, 8f, Content.Shared.Physics.CollisionGroup.Opaque,
                         e => _factions.IsEntityFriendly(friend, e)))
