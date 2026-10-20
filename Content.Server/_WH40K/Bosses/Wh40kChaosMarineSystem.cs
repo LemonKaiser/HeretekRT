@@ -81,6 +81,10 @@ public sealed partial class Wh40kChaosMarineSystem : EntitySystem
 
     private void OnInit(EntityUid uid, Wh40kChaosMarineBrainComponent brain, MapInitEvent args)
     {
+        if (!TryComp<Wh40kChaosMarineComponent>(uid, out var state) ||
+            !TryComp<Wh40kChaosTacticsComponent>(uid, out var tactics))
+            return;
+
         var xform = Transform(uid);
         var arena = EnsureComp<Wh40kBossArenaComponent>(uid);
         arena.Anchor = xform.GridUid ?? xform.MapUid;
@@ -88,14 +92,12 @@ public sealed partial class Wh40kChaosMarineSystem : EntitySystem
             return;
         arena.Center = _arena.Position(anchor, uid);
         Dirty(uid, arena);
-        var state = Comp<Wh40kChaosMarineComponent>(uid);
         state.Anchor = anchor;
         state.Origin = state.Aim = arena.Center;
         Dirty(uid, state);
         // This director owns combat; native steering needs ActiveNPC, not a competing HTN plan.
         RemComp<HTNComponent>(uid);
         EnsureComp<ActiveNPCComponent>(uid);
-        var tactics = Comp<Wh40kChaosTacticsComponent>(uid);
         tactics.DodgeShotThreshold = 4;
         tactics.DodgeShotWindow = TimeSpan.FromSeconds(1.5);
         tactics.DodgeDuration = TimeSpan.FromSeconds(.4);

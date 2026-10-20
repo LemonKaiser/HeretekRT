@@ -70,6 +70,13 @@ public sealed partial class GameTicker
     public EntityUid AddGameRule(string ruleId)
     {
         var ruleEntity = Spawn(ruleId, MapCoordinates.Nullspace);
+        if (!IsGameRuleAllowedInCurrentMode(ruleEntity))
+        {
+            EnsureComp<EndedGameRuleComponent>(ruleEntity);
+            _sawmill.Info($"Blocked game rule {ToPrettyString(ruleEntity)} in Rogue Trader mode.");
+            return ruleEntity;
+        }
+
         _sawmill.Info($"Added game rule {ToPrettyString(ruleEntity)}");
         _adminLogger.Add(LogType.EventStarted, $"Added game rule {ToPrettyString(ruleEntity)}");
         var str = Loc.GetString("station-event-system-run-event", ("eventName", ToPrettyString(ruleEntity)));
@@ -126,6 +133,12 @@ public sealed partial class GameTicker
         // can't start an already active rule
         if (HasComp<ActiveGameRuleComponent>(ruleEntity) || HasComp<EndedGameRuleComponent>(ruleEntity))
             return false;
+
+        if (!IsGameRuleAllowedInCurrentMode(ruleEntity))
+        {
+            EndGameRule(ruleEntity, ruleData);
+            return false;
+        }
 
         if (MetaData(ruleEntity).EntityPrototype?.ID is not { } id) // you really fucked up
             return false;

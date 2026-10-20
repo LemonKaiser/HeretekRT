@@ -266,6 +266,9 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     /// </summary>
     public bool TryMakeAntag(Entity<AntagSelectionComponent> ent, ICommonSession? session, AntagSelectionDefinition def, bool ignoreSpawner = false, bool checkPref = true)
     {
+        if (!GameTicker.IsGameRuleAllowedInCurrentMode(ent))
+            return false;
+
         if (checkPref && !HasPrimaryAntagPreference(session, def))
             return false;
 
@@ -281,6 +284,9 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     /// </summary>
     public void MakeAntag(Entity<AntagSelectionComponent> ent, ICommonSession? session, AntagSelectionDefinition def, bool ignoreSpawner = false)
     {
+        if (!GameTicker.IsGameRuleAllowedInCurrentMode(ent))
+            return;
+
         EntityUid? antagEnt = null;
         var isSpawner = false;
 

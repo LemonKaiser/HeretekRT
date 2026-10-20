@@ -119,7 +119,7 @@ namespace Content.Server.RoundEnd
 
         public bool CanCallOrRecall()
         {
-            return _cooldownTokenSource == null;
+            return !_gameTicker.IsKoronusRound && _cooldownTokenSource == null;
         }
 
         public bool IsRoundEndRequested()
@@ -148,6 +148,9 @@ namespace Content.Server.RoundEnd
 
         public void RequestRoundEnd(TimeSpan countdownTime, EntityUid? requester = null, bool checkCooldown = true, string text = "round-end-system-shuttle-called-announcement", string name = "round-end-system-shuttle-sender-announcement")
         {
+            if (_gameTicker.IsKoronusRound)
+                return;
+
             if (_gameTicker.RunLevel != GameRunLevel.InRound)
                 return;
 
@@ -309,6 +312,9 @@ namespace Content.Server.RoundEnd
             string textCall = "round-end-system-shuttle-called-announcement",
             string textAnnounce = "round-end-system-shuttle-already-called-announcement")
         {
+            if (_gameTicker.IsKoronusRound)
+                return;
+
             switch (behavior)
             {
                 case RoundEndBehavior.InstantEnd:

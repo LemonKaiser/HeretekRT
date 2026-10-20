@@ -3,6 +3,7 @@ using System.Linq;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.GameTicking.Rules;
+using Content.Server.RoundEnd;
 using Content.Server._NF.Shuttles.Components;
 using Content.Server._NF.Shuttles.Systems;
 using Content.Server.Station.Systems;
@@ -63,6 +64,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     [Dependency] private Wh40kBossSpawnSystem _bossSpawns = default!;
     [Dependency] private KoronusActivityDirectorSystem _activities = default!;
     [Dependency] private KoronusWarpEncounterSystem _warp = default!;
+    [Dependency] private RoundEndSystem _roundEnd = default!;
 
     private readonly Dictionary<string, HashSet<string>> _warpAdjacency = new();
     private readonly List<KoronusRoutePrototype> _sectorRoutes = new();
@@ -76,6 +78,20 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         SubscribeLocalEvent<LoadingMapsEvent>(OnLoadingMaps);
         SubscribeLocalEvent<PostGameMapLoad>(OnPostGameMapLoad);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    protected override void Added(EntityUid uid, KoronusSectorRuleComponent component,
+        GameRuleComponent gameRule, GameRuleAddedEvent args)
+    {
+        base.Added(uid, component, gameRule, args);
+
+        foreach (var rule in GameTicker.GetAddedGameRules().ToArray())
+        {
+            if (!GameTicker.IsGameRuleAllowedInCurrentMode(rule))
+                GameTicker.EndGameRule(rule);
+        }
+
+        _roundEnd.CancelRoundEndCountdown(checkCooldown: false);
     }
 
     protected override void Ended(EntityUid uid, KoronusSectorRuleComponent component,
