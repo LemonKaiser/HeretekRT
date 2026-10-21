@@ -160,6 +160,19 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
+        if (!_vesselPricing.TryGetPrice(vessel, out var purchasePrice))
+        {
+            ConsolePopup(player, Loc.GetString("wh40k-shipyard-price-unavailable"));
+            PlayDenySound(player, shipyardConsoleUid, component);
+            return;
+        }
+
+        if (voucher == null && args.Price != purchasePrice)
+        {
+            RejectChangedPurchasePrice(shipyardConsoleUid, component, player, bank.Balance, targetId, (ShipyardConsoleUiKey) args.UiKey);
+            return;
+        }
+
         if (!TryPurchaseShuttle(station, vessel.ShuttlePath, out var shuttleUidOut))
         {
             PlayDenySound(player, shipyardConsoleUid, component);
@@ -169,7 +182,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         var shuttleUid = shuttleUidOut.Value;
         if (!_entityManager.TryGetComponent<ShuttleComponent>(shuttleUid, out var shuttle))
         {
-            ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
+            ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", purchasePrice)));
             PlayDenySound(player, shipyardConsoleUid, component);
             return;
         }
@@ -194,6 +207,23 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             }
             _hullmods.ModifyGrid(ev.Shuttle, modifiers);
         }
+
+        if (!_vesselPricing.TryGetPrice(vessel, shuttleUid, out var actualPrice))
+        {
+            Del(shuttleUid);
+            ConsolePopup(player, Loc.GetString("wh40k-shipyard-price-unavailable"));
+            PlayDenySound(player, shipyardConsoleUid, component);
+            return;
+        }
+
+        if (voucher == null && actualPrice != purchasePrice)
+        {
+            Del(shuttleUid);
+            RejectChangedPurchasePrice(shipyardConsoleUid, component, player, bank.Balance, targetId, (ShipyardConsoleUiKey) args.UiKey);
+            return;
+        }
+
+        purchasePrice = actualPrice;
 
         // Keep track of whether or not a voucher was used.
         // TODO: voucher purchase should be done in a separate function.
@@ -239,18 +269,18 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
         else
         {
-            if (bank.Balance <= vessel.Price)
+            if (bank.Balance < purchasePrice)
             {
                 Del(shuttleUid);
-                ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
+                ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", purchasePrice)));
                 PlayDenySound(player, shipyardConsoleUid, component);
                 return;
             }
 
-            if (!_bank.TryBankWithdraw(player, vessel.Price))
+            if (!_bank.TryBankWithdraw(player, purchasePrice))
             {
                 Del(shuttleUid);
-                ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
+                ConsolePopup(player, Loc.GetString("cargo-console-insufficient-funds", ("cost", purchasePrice)));
                 PlayDenySound(player, shipyardConsoleUid, component);
                 return;
             }
@@ -434,7 +464,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (voucherUsed)
             _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} used {ToPrettyString(targetId)} to purchase shuttle {ToPrettyString(shuttleUid)} with a voucher via {ToPrettyString(shipyardConsoleUid)}");
         else
-            _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} used {ToPrettyString(targetId)} to purchase shuttle {ToPrettyString(shuttleUid)} for {vessel.Price} credits via {ToPrettyString(shipyardConsoleUid)}");
+            _adminLogger.Add(LogType.ShipYardUsage, LogImpact.Low, $"{ToPrettyString(player):actor} used {ToPrettyString(targetId)} to purchase shuttle {ToPrettyString(shuttleUid)} for {purchasePrice} credits via {ToPrettyString(shipyardConsoleUid)}");
 
         // Adding the record to the shuttle records system makes them eligible to be copied.
         // Can be set on the component of the shipyard.
@@ -447,7 +477,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                     ownerName: shuttleOwner,
                     entityUid: _entityManager.GetNetEntity(shuttleUid),
                     purchasedWithVoucher: voucherUsed,
-                    purchasePrice: (uint)vessel.Price
+                    purchasePrice: (uint)purchasePrice
                 )
             );
         }
@@ -943,6 +973,15 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
     private void RefreshState(EntityUid uid, int balance, bool access, string? shipDeed, int shipSellValue, EntityUid? targetId, ShipyardConsoleUiKey uiKey, bool freeListings)
     {
+        var vessels = GetAvailableShuttles(uid, uiKey, targetId: targetId);
+        var prices = new Dictionary<string, int>();
+        foreach (var id in vessels.available.Concat(vessels.unavailable))
+        {
+            if (_prototypeManager.TryIndex<VesselPrototype>(id, out var vessel) &&
+                vessel.Price > 0 && _vesselPricing.TryGetPrice(vessel, out var price))
+                prices[id] = price;
+        }
+
         var newState = new ShipyardConsoleInterfaceState(
             balance,
             access,
@@ -950,10 +989,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             shipSellValue,
             targetId.HasValue,
             ((byte)uiKey),
-            GetAvailableShuttles(uid, uiKey, targetId: targetId),
+            vessels,
             uiKey.ToString(),
             freeListings,
-            CalculateSellRate(uid));
+            CalculateSellRate(uid),
+            prices);
 
         _ui.SetUiState(uid, uiKey, newState);
     }
@@ -989,6 +1029,13 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     #endregion
 
     #region Ship Pricing
+    private void RejectChangedPurchasePrice(EntityUid uid, ShipyardConsoleComponent component, EntityUid player, int balance, EntityUid targetId, ShipyardConsoleUiKey uiKey)
+    {
+        ConsolePopup(player, Loc.GetString("wh40k-shipyard-price-changed"));
+        PlayDenySound(player, uid, component);
+        RefreshState(uid, balance, true, null, 0, targetId, uiKey, false);
+    }
+
     // Calculates the sell rate of a given shipyard console
     private float CalculateSellRate(Entity<ShipyardConsoleComponent?> console)
     {

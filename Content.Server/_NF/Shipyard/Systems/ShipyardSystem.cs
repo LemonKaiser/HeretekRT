@@ -3,6 +3,7 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Cargo.Systems;
 using Content.Server.Station.Systems;
 using Content.Server._WH40K.OperationalDomain;
+using Content.Server._WH40K.Shipyard;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._NF.Shipyard;
 using Content.Shared.GameTicking;
@@ -43,6 +44,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private ShipOwnershipSystem _shipOwnership = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private OperationalDomainSystem _operationalDomains = default!;
+    [Dependency] private ShipyardPricingSystem _vesselPricing = default!;
 
     public MapId? ShipyardMap { get; private set; }
     private float _shuttleIndex;

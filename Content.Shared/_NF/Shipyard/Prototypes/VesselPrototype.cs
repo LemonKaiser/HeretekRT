@@ -53,7 +53,7 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     public string Description => Loc.TryGetString($"vessel-{ID.ToLowerInvariant()}-desc", out var description) ? description : _description;
 
     /// <summary>
-    ///     The price of the vessel
+    ///     Minimum purchase price. The shipyard raises this to cover the starting equipment.
     /// </summary>
     [DataField(required: true)]
     public int Price;
@@ -115,7 +115,7 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     public ProtoId<GuideEntryPrototype>? GuidebookPage = default!;
 
     /// <summary>
-    ///     The price markup of the vessel testing
+    ///     Minimum markup over the starting equipment appraisal, clamped to at least 1.
     /// </summary>
     [DataField("minPriceMarkup")]
     public float MinPriceMarkup = 1f; // Mono change: 1.05 > 1

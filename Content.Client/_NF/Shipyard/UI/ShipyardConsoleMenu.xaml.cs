@@ -35,6 +35,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
     private List<string> _lastUnavailableProtos = new();
     private bool _freeListings = false;
     private bool _validId = false;
+    private Dictionary<string, int> _vesselPrices = new();
 
     public ShipyardConsoleMenu(ShipyardConsoleBoundUserInterface owner)
     {
@@ -156,20 +157,24 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
             if (search.Length > 0 && !prototype!.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase))
                 continue;
 
+            var hasPrice = _vesselPrices.TryGetValue(prototype!.ID, out var purchasePrice);
             string priceText;
             if (free)
                 priceText = Loc.GetString("shipyard-console-menu-listing-free");
             else if (prototype != null && !prototype.Purchasable) // Mono
                 priceText = Loc.GetString("shipyard-console-menu-listing-voucher");
             else
-                priceText = BankSystemExtensions.ToSpesoString(prototype!.Price);
+                priceText = hasPrice
+                    ? BankSystemExtensions.ToSpesoString(purchasePrice)
+                    : Loc.GetString("wh40k-shipyard-price-unavailable");
 
             var vesselEntry = new VesselRow
             {
                 Vessel = prototype,
+                PurchasePrice = purchasePrice,
                 VesselName = { Text = prototype!.Name },
                 VesselDescription = { Text = prototype!.Description }, // Mono
-                Purchase = { Text = Loc.GetString("shipyard-console-purchase-available"), Disabled = !canPurchase },
+                Purchase = { Text = Loc.GetString("shipyard-console-purchase-available"), Disabled = !canPurchase || !free && !hasPrice },
                 Guidebook = { Disabled = prototype.GuidebookPage is null, TooltipDelay = 0.2f, ToolTip = prototype.Description },
                 Price = { Text = priceText },
             };
@@ -304,6 +309,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
 
     public void UpdateState(ShipyardConsoleInterfaceState state)
     {
+        _vesselPrices = state.VesselPrices;
         BalanceLabel.Text = BankSystemExtensions.ToSpesoString(state.Balance);
         var shipPrice = 0;
         if (!state.FreeListings)

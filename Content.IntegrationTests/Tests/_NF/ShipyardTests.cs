@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Cargo.Systems;
+using Content.Server._WH40K.Shipyard;
 using Content.Shared._NF.Shipyard.Prototypes;
 using Robust.Server.GameObjects;
 using Robust.Shared.EntitySerialization.Systems;
@@ -69,6 +70,7 @@ public sealed class ShipyardTest
         var map = entManager.System<MapSystem>();
         var protoManager = server.ResolveDependency<IPrototypeManager>();
         var pricing = server.ResolveDependency<IEntitySystemManager>().GetEntitySystem<PricingSystem>();
+        var shipyardPricing = entManager.System<ShipyardPricingSystem>();
 
         await server.WaitAssertion(() =>
         {
@@ -77,22 +79,24 @@ public sealed class ShipyardTest
                 foreach (var vessel in protoManager.EnumeratePrototypes<VesselPrototype>())
                 {
                     map.CreateMap(out var mapId);
-                    double appraisePrice = 0;
-
-                    Assert.That(mapLoader.TryLoadGrid(mapId, vessel.ShuttlePath, out var shuttle));
-                    Assert.That(entManager.HasComponent<MapGridComponent>(shuttle.Value), Is.True);
-
-                    pricing.AppraiseGrid(shuttle.Value, null, (uid, price) =>
+                    try
                     {
-                        appraisePrice += price;
-                    });
+                        Assert.That(mapLoader.TryLoadGrid(mapId, vessel.ShuttlePath, out var shuttle));
+                        Assert.That(entManager.HasComponent<MapGridComponent>(shuttle.Value), Is.True);
 
-                    var idealMinPrice = appraisePrice * vessel.MinPriceMarkup;
+                        var appraisePrice = pricing.AppraiseGrid(shuttle.Value);
+                        Assert.That(shipyardPricing.TryGetPrice(vessel, shuttle.Value, out var purchasePrice), Is.True,
+                            $"Unable to price {vessel.ID}.");
+                        var idealMinPrice = appraisePrice * Math.Max(1.0, vessel.MinPriceMarkup);
 
-                    Assert.That(vessel.Price, Is.AtLeast(idealMinPrice),
-                        $"Arbitrage possible on {vessel.ID}. Minimal price should be {idealMinPrice}, {(vessel.MinPriceMarkup - 1.0f) * 100}% over the appraise price ({appraisePrice}).");
-                    
-                    map.DeleteMap(mapId);
+                        Assert.That(purchasePrice, Is.AtLeast(idealMinPrice),
+                            $"Arbitrage possible on {vessel.ID}: purchase {purchasePrice}, minimum {idealMinPrice}, appraisal {appraisePrice}.");
+                        Assert.That(purchasePrice, Is.AtLeast(vessel.Price), $"YAML price floor ignored for {vessel.ID}.");
+                    }
+                    finally
+                    {
+                        map.DeleteMap(mapId);
+                    }
                 }
             });
         });

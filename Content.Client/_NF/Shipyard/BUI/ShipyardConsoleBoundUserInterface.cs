@@ -87,7 +87,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         }
 
         var vesselId = row.Vessel.ID;
-        SendMessage(new ShipyardConsolePurchaseMessage(vesselId));
+        SendMessage(new ShipyardConsolePurchaseMessage(vesselId, row.PurchasePrice));
     }
 
     private void SellShip(ButtonEventArgs args)
