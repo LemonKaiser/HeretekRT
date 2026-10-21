@@ -503,6 +503,8 @@
   description: wh40k-footfall-bar-ivomercer-desc
   suffix: WH40K, Footfall, Bar scene
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallIvoMercerAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallIvoMercer
   - type: Loadout
@@ -592,6 +594,8 @@
   description: wh40k-footfall-bar-bastianrook-desc
   suffix: WH40K, Footfall, Bar scene
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallBastianRookAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallBastianRook
   - type: Loadout

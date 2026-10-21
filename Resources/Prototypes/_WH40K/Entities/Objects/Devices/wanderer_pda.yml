@@ -4,7 +4,6 @@
   name: wanderer PDA
   description: A battered personal data assistant that has seen more roads than its owner remembers.
   suffix: WH40K
-  categories: [ HideSpawnMenu ]
   components:
   - type: Wh40kQuestUi
   - type: UserInterface

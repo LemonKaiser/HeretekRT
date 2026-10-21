@@ -131,6 +131,8 @@
   description: wh40k-footfall-npc-chartistofficer-desc
   suffix: WH40K, Footfall, Chartist
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallChartistOfficerAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallChartistOfficer
   - type: Wh40kNpcScene
@@ -161,6 +163,8 @@
   description: wh40k-footfall-npc-chartistmerchant-desc
   suffix: WH40K, Footfall, Chartist
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallChartistMerchantAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallChartistMerchant
   - type: Wh40kNpcScene

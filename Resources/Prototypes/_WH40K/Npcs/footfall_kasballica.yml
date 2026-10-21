@@ -37,6 +37,8 @@
   suffix: WH40K, Footfall, Kasballica, Officer
   description: wh40k-footfall-npc-kasballicaofficer-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallKasballicaOfficerAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallKasballicaOfficer
   - type: Wh40kNpcScene
@@ -97,6 +99,8 @@
   suffix: WH40K, Footfall, Kasballica, Merchant
   description: wh40k-footfall-npc-kasballicamerchant-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallKasballicaMerchantAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallKasballicaMerchant
   - type: Wh40kNpcScene

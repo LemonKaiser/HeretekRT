@@ -1,0 +1,25 @@
+wh40k-chaos-spawner-desc = При инициализации карты создаёт одного выбранного NPC точно на месте маркера.
+
+ent-SpawnWH40KChaosBomber = спавнер бомбера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosBruiser = спавнер бруисёра Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosFlamer = спавнер флеймера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosGunner = спавнер ганнера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosMauler = спавнер маулера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosRager = спавнер рейджера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosShooter = спавнер шутера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosShotgunner = спавнер шотганера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosStalker = спавнер сталкера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosTrapper = спавнер траппера Хаоса
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosMarine = спавнер космодесантника Хаоса
+    .desc = При инициализации карты создаёт обычного босса с полным здоровьем. Центр арены 25x25 м находится на месте маркера.
+    .suffix = WH40K, Хаос, Босс, Маппинг, Арена 25x25

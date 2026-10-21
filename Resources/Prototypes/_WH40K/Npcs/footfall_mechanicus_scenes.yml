@@ -21,6 +21,8 @@
   description: wh40k-footfall-mechanicus-gados-desc
   suffix: WH40K, Footfall, Mechanicus scene, Standing
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallGadosAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallGados
   - type: Wh40kNpcScene

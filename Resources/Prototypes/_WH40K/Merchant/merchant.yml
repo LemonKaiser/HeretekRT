@@ -30,10 +30,9 @@
   suffix: WH40K, Merchant
   save: false
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallKassAppearance
   - type: Wh40kNpcProtection
-  - type: RandomHumanoidAppearance
-    randomizeName: false
-    hair: HairBald
   - type: Loadout
     prototypes:
     - WH40KFootfallSmugglerKassGear

@@ -14,6 +14,8 @@
   description: wh40k-footfall-npc-odranpell-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallOdranPellAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallOdranPell
   - type: Loadout
@@ -74,6 +76,8 @@
   description: wh40k-footfall-npc-kappaspanner-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallKappaSpannerAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallKappaSpanner
   - type: Loadout
@@ -137,6 +141,8 @@
   description: wh40k-footfall-npc-vennors-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallVennOrsAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallVennOrs
   - type: Loadout
@@ -165,6 +171,8 @@
   description: wh40k-footfall-npc-brannakest-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallBrannaKestAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallBrannaKest
   - type: Loadout
@@ -237,6 +245,8 @@
   description: wh40k-footfall-npc-marasevrin-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallMaraSevrinAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallMaraSevrin
   - type: Loadout
@@ -308,6 +318,8 @@
   description: wh40k-footfall-npc-dorianbale-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallDorianBaleAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallDorianBale
   - type: Loadout

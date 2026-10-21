@@ -111,6 +111,8 @@
   description: wh40k-footfall-hab-cryopriest-desc
   suffix: WH40K, Footfall, Hab scene, Standing
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallCryoPriestAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallCryoPriest
   - type: Wh40kNpcScene

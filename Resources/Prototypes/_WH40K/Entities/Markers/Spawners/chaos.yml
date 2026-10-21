@@ -1,0 +1,186 @@
+- type: entity
+  abstract: true
+  parent: MarkerBase
+  id: BaseSpawnWH40KChaos
+  suffix: WH40K, Chaos, Mapping
+  components:
+  - type: RandomSpawner
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosBomber
+  name: chaos bomber spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/bomber.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosBomber
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosBruiser
+  name: chaos bruiser spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/bruiser.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosBruiser
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosFlamer
+  name: chaos flamer spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/flamer.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosFlamer
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosGunner
+  name: chaos gunner spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/gunner.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosGunner
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosMauler
+  name: chaos mauler spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/mauler.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMauler
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosRager
+  name: chaos rager spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/rager.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosRager
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosShooter
+  name: chaos shooter spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/shooter.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosShooter
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosShotgunner
+  name: chaos shotgunner spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/shotgunner.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosShotgunner
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosStalker
+  name: chaos stalker spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/stalker.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosStalker
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosTrapper
+  name: chaos trapper spawner
+  description: Spawns one chaos NPC at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Chaos/trapper.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosTrapper
+
+- type: entity
+  parent: BaseSpawnWH40KChaos
+  id: SpawnWH40KChaosMarine
+  name: Chaos Space Marine spawner
+  suffix: WH40K, Chaos, Boss, Mapping, Arena 25x25
+  description: Spawns a normal Chaos Space Marine boss at this marker when the map initializes.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - texture: _WH40K/Mobs/Bosses/ChaosMarine/ranged_south.png
+      scale: 0.5, 0.5
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KChaosMarine

@@ -24,6 +24,8 @@
   description: wh40k-footfall-npc-marisveyra-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallMarisVeyraAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallMarisVeyra
   - type: Wh40kNpcScene
@@ -56,6 +58,8 @@
   description: wh40k-footfall-npc-hestvarn-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallHestVarnAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallHestVarn
   - type: Wh40kNpcScene
@@ -186,6 +190,8 @@
   description: wh40k-footfall-npc-avelinequill-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallAvelineQuillAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallAvelineQuill
   - type: Wh40kNpcScene
@@ -227,6 +233,8 @@
   description: wh40k-footfall-npc-omicronkhepra-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallOmicronKhepraAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallOmicronKhepra
   - type: Loadout
@@ -257,6 +265,8 @@
   description: wh40k-footfall-npc-seraholt-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallSeraHoltAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallSeraHolt
   - type: Loadout

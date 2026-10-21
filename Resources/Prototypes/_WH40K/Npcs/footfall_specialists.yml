@@ -5,6 +5,8 @@
   description: wh40k-footfall-npc-lucanrho-desc
   suffix: WH40K, Footfall
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallLucanRhoAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallLucanRho
   - type: Wh40kNpcScene

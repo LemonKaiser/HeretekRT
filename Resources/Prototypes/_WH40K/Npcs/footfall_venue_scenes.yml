@@ -132,6 +132,7 @@
   description: wh40k-venue-bahamabrig-desc
   components:
   - type: HumanoidAppearance
+    initial: WH40KFootfallBahamaBrigAppearance
     species: Human
   - type: Body
     prototype: Dwarf
@@ -139,11 +140,8 @@
     scale: 1, 0.8
   - type: Wh40kNpcIdentity
     anchor: FootfallBahamaBrig
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Standing
-    markings: [HumanFacialHairDwarf]
   - type: Loadout
     prototypes: [WH40KBahamaBrigGear]
   - type: DialogueInteractable
@@ -229,10 +227,10 @@
   suffix: WH40K, Bahama, Standing
   description: wh40k-venue-bahamaengineer-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallBahamaEngineerAppearance
   - type: Wh40kAmbientNpc
     profile: FootfallBahamaEngineer
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Standing
   - type: Loadout
@@ -279,10 +277,10 @@
   suffix: WH40K, Bahama, Seated
   description: wh40k-venue-bahamavacationer-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallBahamaVacationerAppearance
   - type: Wh40kAmbientNpc
     profile: FootfallBahamaVacationer
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Seated
   - type: Loadout
@@ -329,16 +327,14 @@
   description: wh40k-venue-casinolumen-desc
   components:
   - type: HumanoidAppearance
+    initial: WH40KFootfallCasinoLumenAppearance
     species: Moth
   - type: Body
     prototype: Moth
   - type: Wh40kNpcIdentity
     anchor: FootfallCasinoLumen
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Standing
-    markings: [MothAntennasRoyal, MothWingsRoyal]
   - type: Loadout
     prototypes: [WH40KCasinoLumenGear]
   - type: DialogueInteractable
@@ -428,10 +424,10 @@
   suffix: WH40K, Casino, Seated
   description: wh40k-venue-casinoplayeraccountant-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallCasinoPlayerAccountantAppearance
   - type: Wh40kAmbientNpc
     profile: FootfallCasinoPlayerAccountant
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Seated
   - type: Loadout
@@ -478,10 +474,10 @@
   suffix: WH40K, Casino, Seated
   description: wh40k-venue-casinoplayerveteran-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallCasinoPlayerVeteranAppearance
   - type: Wh40kAmbientNpc
     profile: FootfallCasinoPlayerVeteran
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Seated
   - type: Loadout
@@ -528,10 +524,10 @@
   suffix: WH40K, Casino, Standing
   description: wh40k-venue-casinoplayerlucky-desc
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallCasinoPlayerLuckyAppearance
   - type: Wh40kAmbientNpc
     profile: FootfallCasinoPlayerLucky
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Standing
   - type: Loadout
@@ -579,6 +575,7 @@
   description: wh40k-venue-casinoengineer-desc
   components:
   - type: HumanoidAppearance
+    initial: WH40KFootfallCasinoEngineerAppearance
     species: Human
   - type: Body
     prototype: Dwarf
@@ -586,11 +583,8 @@
     scale: 1, 0.8
   - type: Wh40kAmbientNpc
     profile: FootfallCasinoEngineer
-  - type: RandomHumanoidAppearance
-    randomizeName: false
   - type: Wh40kNpcScene
     pose: Standing
-    markings: [HumanFacialHairFullbeard]
   - type: Loadout
     prototypes: [WH40KCasinoEngineerGear]
   - type: DialogueInteractable

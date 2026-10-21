@@ -1,0 +1,532 @@
+# Native initial profiles keep named NPCs recognizable and bypass inherited randomization.
+# Anonymous residents and workers continue to use their existing random appearance.
+
+- type: humanoidProfile
+  id: WH40KFootfallMarisVeyraAppearance
+  profile:
+    species: Human
+    age: 42
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairUpdo
+      hairColor: "#57372F"
+      facialHair: FacialHairShaved
+      facialHairColor: "#57372F"
+      eyeColor: "#66866C"
+      skinColor: "#E6BEA1"
+
+- type: humanoidProfile
+  id: WH40KFootfallHestVarnAppearance
+  profile:
+    species: Human
+    age: 53
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairCrewcut
+      hairColor: "#8B8176"
+      facialHair: HumanFacialHairMoustache
+      facialHairColor: "#8B8176"
+      eyeColor: "#786448"
+      skinColor: "#AD7953"
+
+- type: humanoidProfile
+  id: WH40KFootfallAvelineQuillAppearance
+  profile:
+    species: Human
+    age: 31
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBraidfront
+      hairColor: "#D7D1C5"
+      facialHair: FacialHairShaved
+      facialHairColor: "#D7D1C5"
+      eyeColor: "#8875A6"
+      skinColor: "#FFE3CC"
+
+- type: humanoidProfile
+  id: WH40KFootfallOmicronKhepraAppearance
+  profile:
+    species: Human
+    age: 67
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HairBald
+      hairColor: "#706963"
+      facialHair: FacialHairShaved
+      facialHairColor: "#706963"
+      eyeColor: "#AC4B36"
+      skinColor: "#FADAC3"
+
+- type: humanoidProfile
+  id: WH40KFootfallSeraHoltAppearance
+  profile:
+    species: Human
+    age: 46
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairTightbun
+      hairColor: "#302B29"
+      facialHair: FacialHairShaved
+      facialHairColor: "#302B29"
+      eyeColor: "#758A98"
+      skinColor: "#99633D"
+
+- type: humanoidProfile
+  id: WH40KFootfallLucanRhoAppearance
+  profile:
+    species: Human
+    age: 36
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBraided
+      hairColor: "#242127"
+      facialHair: FacialHairShaved
+      facialHairColor: "#242127"
+      eyeColor: "#758997"
+      skinColor: "#F0CBB1"
+
+- type: humanoidProfile
+  id: WH40KFootfallKassAppearance
+  profile:
+    species: Human
+    age: 47
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HairBald
+      hairColor: "#392E28"
+      facialHair: HumanFacialHairCroppedfullbeard
+      facialHairColor: "#392E28"
+      eyeColor: "#86734D"
+      skinColor: "#B27E59"
+
+- type: humanoidProfile
+  id: WH40KFootfallOdranPellAppearance
+  profile:
+    species: Human
+    age: 61
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairThinning
+      hairColor: "#ADA79C"
+      facialHair: HumanFacialHairVandyke
+      facialHairColor: "#ADA79C"
+      eyeColor: "#93764A"
+      skinColor: "#D1A382"
+
+- type: humanoidProfile
+  id: WH40KFootfallKappaSpannerAppearance
+  profile:
+    species: Human
+    age: 56
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBuzzcut
+      hairColor: "#8A5033"
+      facialHair: HumanFacialHairGt
+      facialHairColor: "#8A5033"
+      eyeColor: "#A46543"
+      skinColor: "#BF8D69"
+
+- type: humanoidProfile
+  id: WH40KFootfallVennOrsAppearance
+  profile:
+    species: Human
+    age: 43
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBusiness
+      hairColor: "#292423"
+      facialHair: HumanFacialHairPencilstache
+      facialHairColor: "#292423"
+      eyeColor: "#7C7955"
+      skinColor: "#C49370"
+
+- type: humanoidProfile
+  id: WH40KFootfallBrannaKestAppearance
+  profile:
+    species: Human
+    age: 38
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBraidtail
+      hairColor: "#A75C35"
+      facialHair: FacialHairShaved
+      facialHairColor: "#A75C35"
+      eyeColor: "#6F814F"
+      skinColor: "#EBC4A9"
+
+- type: humanoidProfile
+  id: WH40KFootfallMaraSevrinAppearance
+  profile:
+    species: Human
+    age: 34
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBobcurl
+      hairColor: "#C5A773"
+      facialHair: FacialHairShaved
+      facialHairColor: "#C5A773"
+      eyeColor: "#648F9B"
+      skinColor: "#E0B799"
+
+- type: humanoidProfile
+  id: WH40KFootfallDorianBaleAppearance
+  profile:
+    species: Human
+    age: 48
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairUndercut
+      hairColor: "#756E65"
+      facialHair: HumanFacialHairFiveoclock
+      facialHairColor: "#756E65"
+      eyeColor: "#7B8487"
+      skinColor: "#A8734D"
+
+- type: humanoidProfile
+  id: WH40KFootfallIvoMercerAppearance
+  profile:
+    species: Human
+    age: 39
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairGelled
+      hairColor: "#51382B"
+      facialHair: HumanFacialHairSelleck
+      facialHairColor: "#51382B"
+      eyeColor: "#73816A"
+      skinColor: "#C2906D"
+
+- type: humanoidProfile
+  id: WH40KFootfallBastianRookAppearance
+  profile:
+    species: Human
+    age: 52
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairCrewcut2
+      hairColor: "#35302D"
+      facialHair: HumanFacialHairFullbeard
+      facialHairColor: "#35302D"
+      eyeColor: "#5E4C36"
+      skinColor: "#915C36"
+
+- type: humanoidProfile
+  id: WH40KFootfallChartistOfficerAppearance
+  profile:
+    species: Human
+    age: 55
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairClassicBusiness
+      hairColor: "#A9A8A1"
+      facialHair: HumanFacialHairSmallstache
+      facialHairColor: "#A9A8A1"
+      eyeColor: "#6C8B9D"
+      skinColor: "#D4A685"
+
+- type: humanoidProfile
+  id: WH40KFootfallChartistMerchantAppearance
+  profile:
+    species: Human
+    age: 33
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBun
+      hairColor: "#282329"
+      facialHair: FacialHairShaved
+      facialHairColor: "#282329"
+      eyeColor: "#947148"
+      skinColor: "#945E38"
+
+- type: humanoidProfile
+  id: WH40KFootfallCryoPriestAppearance
+  profile:
+    species: Human
+    age: 72
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBalding
+      hairColor: "#DBD4C8"
+      facialHair: HumanFacialHairLongbeard
+      facialHairColor: "#DBD4C8"
+      eyeColor: "#8C9189"
+      skinColor: "#F5D3BA"
+
+- type: humanoidProfile
+  id: WH40KFootfallKasballicaOfficerAppearance
+  profile:
+    species: Human
+    age: 41
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairTightbun
+      hairColor: "#6B302C"
+      facialHair: FacialHairShaved
+      facialHairColor: "#6B302C"
+      eyeColor: "#748558"
+      skinColor: "#BD8A66"
+
+- type: humanoidProfile
+  id: WH40KFootfallKasballicaMerchantAppearance
+  profile:
+    species: Human
+    age: 49
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairParted
+      hairColor: "#302B27"
+      facialHair: HumanFacialHairMoustache
+      facialHairColor: "#302B27"
+      eyeColor: "#64503B"
+      skinColor: "#A6714B"
+
+- type: humanoidProfile
+  id: WH40KFootfallEdricMossAppearance
+  profile:
+    species: Human
+    age: 58
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairCombover
+      hairColor: "#96918A"
+      facialHair: HumanFacialHairChin
+      facialHairColor: "#96918A"
+      eyeColor: "#776A4E"
+      skinColor: "#B8845F"
+
+- type: humanoidProfile
+  id: WH40KFootfallBorsGrantAppearance
+  profile:
+    species: Human
+    age: 44
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBuzzcut
+      hairColor: "#8F5634"
+      facialHair: HumanFacialHairCroppedfullbeard
+      facialHairColor: "#8F5634"
+      eyeColor: "#7B6544"
+      skinColor: "#8C5731"
+
+- type: humanoidProfile
+  id: WH40KFootfallNeraQuinnAppearance
+  profile:
+    species: Human
+    age: 29
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairPixie
+      hairColor: "#48323F"
+      facialHair: FacialHairShaved
+      facialHairColor: "#48323F"
+      eyeColor: "#63977E"
+      skinColor: "#B5815C"
+
+- type: humanoidProfile
+  id: WH40KFootfallGadosAppearance
+  profile:
+    species: Human
+    age: 45
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HairBald
+      hairColor: "#514C49"
+      facialHair: HumanFacialHair3oclock
+      facialHairColor: "#514C49"
+      eyeColor: "#71695B"
+      skinColor: "#E8C1A5"
+
+- type: humanoidProfile
+  id: WH40KFootfallAdrianVeyAppearance
+  profile:
+    species: Human
+    age: 37
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairSidecut
+      hairColor: "#4A332A"
+      facialHair: FacialHairShaved
+      facialHairColor: "#4A332A"
+      eyeColor: "#72886F"
+      skinColor: "#A6714B"
+
+- type: humanoidProfile
+  id: WH40KFootfallMiraFennAppearance
+  profile:
+    species: Human
+    age: 30
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBob
+      hairColor: "#A75F3A"
+      facialHair: FacialHairShaved
+      facialHairColor: "#A75F3A"
+      eyeColor: "#6F94AA"
+      skinColor: "#F2CFB6"
+
+- type: humanoidProfile
+  id: WH40KFootfallQuarantineOfficerAppearance
+  profile:
+    species: Human
+    age: 59
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBigflattop
+      hairColor: "#9C968C"
+      facialHair: HumanFacialHairCroppedfullbeard
+      facialHairColor: "#9C968C"
+      eyeColor: "#947C50"
+      skinColor: "#8F5933"
+
+- type: humanoidProfile
+  id: WH40KFootfallBahamaBrigAppearance
+  profile:
+    species: Human
+    age: 63
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairBalding
+      hairColor: "#A96139"
+      facialHair: HumanFacialHairDwarf
+      facialHairColor: "#A96139"
+      eyeColor: "#8B7148"
+      skinColor: "#C2906D"
+
+- type: humanoidProfile
+  id: WH40KFootfallBahamaEngineerAppearance
+  profile:
+    species: Human
+    age: 35
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairUndercutleft
+      hairColor: "#68503A"
+      facialHair: HumanFacialHairFiveoclock
+      facialHairColor: "#68503A"
+      eyeColor: "#6F8898"
+      skinColor: "#CC9C7A"
+
+- type: humanoidProfile
+  id: WH40KFootfallBahamaVacationerAppearance
+  profile:
+    species: Human
+    age: 46
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairSwept
+      hairColor: "#B69862"
+      facialHair: FacialHairShaved
+      facialHairColor: "#B69862"
+      eyeColor: "#7B936C"
+      skinColor: "#96613B"
+
+- type: humanoidProfile
+  id: WH40KFootfallCasinoLumenAppearance
+  profile:
+    species: Moth
+    age: 32
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HairBald
+      hairColor: "#695478"
+      facialHair: FacialHairShaved
+      facialHairColor: "#695478"
+      eyeColor: "#B28CBE"
+      skinColor: "#D4C5A9"
+      markings:
+      - markingId: MothAntennasRoyal
+        markingColor: ["#BBA7C9"]
+      - markingId: MothWingsRoyal
+        markingColor: ["#9A78AF", "#E4D2A8"]
+
+- type: humanoidProfile
+  id: WH40KFootfallCasinoPlayerAccountantAppearance
+  profile:
+    species: Human
+    age: 51
+    sex: Female
+    gender: Female
+    appearance:
+      hair: HumanHairBun3
+      hairColor: "#776B5B"
+      facialHair: FacialHairShaved
+      facialHairColor: "#776B5B"
+      eyeColor: "#71888B"
+      skinColor: "#D9AD8D"
+
+- type: humanoidProfile
+  id: WH40KFootfallCasinoPlayerVeteranAppearance
+  profile:
+    species: Human
+    age: 64
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairCrewcut
+      hairColor: "#CBC4B6"
+      facialHair: HumanFacialHairBrokenman
+      facialHairColor: "#CBC4B6"
+      eyeColor: "#718590"
+      skinColor: "#A16B45"
+
+- type: humanoidProfile
+  id: WH40KFootfallCasinoPlayerLuckyAppearance
+  profile:
+    species: Human
+    age: 27
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairQuiff
+      hairColor: "#713F2C"
+      facialHair: FacialHairShaved
+      facialHairColor: "#713F2C"
+      eyeColor: "#819650"
+      skinColor: "#CFA07E"
+
+- type: humanoidProfile
+  id: WH40KFootfallCasinoEngineerAppearance
+  profile:
+    species: Human
+    age: 57
+    sex: Male
+    gender: Male
+    appearance:
+      hair: HumanHairMohawk
+      hairColor: "#6B655D"
+      facialHair: HumanFacialHairFullbeard
+      facialHairColor: "#6B655D"
+      eyeColor: "#886D45"
+      skinColor: "#B27E59"

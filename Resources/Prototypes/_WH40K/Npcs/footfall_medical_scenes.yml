@@ -22,6 +22,8 @@
   description: wh40k-footfall-medical-adrianvey-desc
   suffix: WH40K, Footfall, Medical scene, Seated
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallAdrianVeyAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallAdrianVey
   - type: Wh40kNpcScene
@@ -79,6 +81,8 @@
   description: wh40k-footfall-medical-mirafenn-desc
   suffix: WH40K, Footfall, Medical scene, Seated
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallMiraFennAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallMiraFenn
   - type: Wh40kNpcScene
@@ -605,6 +609,8 @@
   description: wh40k-footfall-medical-quarantineofficer-desc
   suffix: WH40K, Footfall, Medical scene, Seated
   components:
+  - type: HumanoidAppearance
+    initial: WH40KFootfallQuarantineOfficerAppearance
   - type: Wh40kNpcIdentity
     anchor: FootfallQuarantineOfficer
   - type: Wh40kNpcScene

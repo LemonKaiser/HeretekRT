@@ -1,0 +1,25 @@
+wh40k-chaos-spawner-desc = Spawns one NPC of the chosen type at the marker when the map initializes.
+
+ent-SpawnWH40KChaosBomber = chaos bomber spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosBruiser = chaos bruiser spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosFlamer = chaos flamer spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosGunner = chaos gunner spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosMauler = chaos mauler spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosRager = chaos rager spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosShooter = chaos shooter spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosShotgunner = chaos shotgunner spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosStalker = chaos stalker spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosTrapper = chaos trapper spawner
+    .desc = { wh40k-chaos-spawner-desc }
+ent-SpawnWH40KChaosMarine = Chaos Space Marine spawner
+    .desc = Spawns the normal boss at full health when the map initializes. The marker is the center of its 25x25 m arena.
+    .suffix = WH40K, Chaos, Boss, Mapping, Arena 25x25
