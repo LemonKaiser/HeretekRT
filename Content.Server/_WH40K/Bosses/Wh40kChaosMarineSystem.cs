@@ -103,7 +103,7 @@ public sealed partial class Wh40kChaosMarineSystem : EntitySystem
         tactics.DodgeDuration = TimeSpan.FromSeconds(.4);
         tactics.DodgeCooldown = TimeSpan.FromSeconds(5);
         brain.NextStance = Now + TimeSpan.FromSeconds(15);
-        brain.NextJump = Now + TimeSpan.FromSeconds(15);
+        brain.NextJump = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.JumpInitialDelaySeconds);
         brain.NextRocket = Now + TimeSpan.FromSeconds(60);
         brain.NextSmoke = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.SmokeCooldownSeconds);
         ConfigureTest(uid, brain, state);

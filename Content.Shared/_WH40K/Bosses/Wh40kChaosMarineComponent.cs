@@ -15,7 +15,7 @@ public sealed partial class Wh40kChaosMarineComponent : Component
     [DataField, AutoNetworkedField] public bool Engaged;
     [DataField, AutoNetworkedField] public bool Dying;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
-    public TimeSpan DeathBurnAt;
+    public TimeSpan DeathDissolveAt;
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan DeathEndsAt;
     [DataField, AutoNetworkedField] public bool TransitionProtected;

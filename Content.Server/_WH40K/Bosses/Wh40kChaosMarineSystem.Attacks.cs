@@ -51,7 +51,7 @@ public sealed partial class Wh40kChaosMarineSystem
             brain.Activated = true;
             brain.NextRocket = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(60, state));
             brain.NextSmoke = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.SmokeCooldownSeconds);
-            brain.NextJump = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(15, state));
+            brain.NextJump = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(Wh40kChaosMarineCombat.JumpInitialDelaySeconds, state));
             brain.NextStance = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(6, state));
             brain.NextPattern = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(Wh40kChaosMarineCombat.PatternGapSeconds, state));
         }
@@ -82,10 +82,11 @@ public sealed partial class Wh40kChaosMarineSystem
                 return;
             }
         }
-        if (Now >= brain.NextJump && distance is > 3 and < 9 && Visible(uid, target))
+        if (Now >= brain.NextJump && distance > 3 &&
+            distance <= Wh40kChaosMarineCombat.Spec(MarineAttack.Jump).Reach && Visible(uid, target))
         {
             BeginAction(uid, brain, state, MarineAttack.Jump);
-            brain.NextJump = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(60, state));
+            brain.NextJump = Now + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.Delay(Wh40kChaosMarineCombat.JumpCooldownSeconds, state));
             return;
         }
         if (Now >= brain.NextStance &&

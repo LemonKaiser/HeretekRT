@@ -13,7 +13,9 @@ public static class Wh40kChaosMarineCombat
     public const float PunchProximitySeconds = 3;
     public const float WeaponReturnSeconds = .65f;
     public const float PatternGapSeconds = 1.5f;
-    public const float DeathBurnSeconds = 4;
+    public const float DeathDissolveSeconds = 1;
+    public const float JumpInitialDelaySeconds = 6;
+    public const float JumpCooldownSeconds = 20;
     public const float SmokeCooldownSeconds = 240;
     public const float RicochetReadSeconds = 1;
     public const float BarrageWindup = 4;
@@ -62,7 +64,7 @@ public static class Wh40kChaosMarineCombat
         MarineAttack.S1 => new(1.2f, 1.8f, 3, 1.5f, Damage: 38, Shots: 4),
         MarineAttack.S2 or MarineAttack.S3 or MarineAttack.S4 => new(BarrageWindup, 1.9f, 3, 1, Damage: 50, Shots: BarrageLimit),
         MarineAttack.Punch => new(.35f, .1f, .8f, 2, Damage: 25),
-        MarineAttack.Jump => new(1, .6f, 2.8f, 6, 2),
+        MarineAttack.Jump => new(.8f, .4f, 1.5f, 10, 2),
         MarineAttack.Summon => new(2, 2, .5f),
         MarineAttack.Transition => new(0, 5, .65f),
         MarineAttack.Switch => new(0, .35f, .15f),
@@ -92,7 +94,7 @@ public static class Wh40kChaosMarineCombat
         MarineAttack.R4 => RicochetReadSeconds + Delay(Spec(attack).Windup, state, .3f),
         MarineAttack.S2 or MarineAttack.S3 or MarineAttack.S4 => BarrageWindup,
         MarineAttack.M1 => Delay(Spec(attack).Windup, state, .17f),
-        MarineAttack.Jump => Delay(1.2f, state, .65f),
+        MarineAttack.Jump => Delay(Spec(attack).Windup, state, .45f),
         _ => Delay(Spec(attack).Windup, state, IsMelee(attack) ? .4f : IsRocket(attack) ? .65f : .3f),
     };
 
@@ -139,7 +141,7 @@ public static class Wh40kChaosMarineCombat
             MarineAttack.Switch => .08f,
             MarineAttack.E => .2f,
             MarineAttack.Transition => .4f,
-            MarineAttack.Jump => 1.4f,
+            MarineAttack.Jump => 1,
             _ => IsRocket(attack) ? 1.5f : IsStationarySpecial(attack) ? 1.2f : .6f,
         };
         return MathF.Max(minimum, spec.Recovery / AttackSpeed(true, heatStep));

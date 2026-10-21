@@ -154,10 +154,14 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
             var prefix = swinging || dead ? "body" : state.Stance == MarineStance.Ranged ? "ranged" : "melee";
             var frame = (int) (now.TotalSeconds * 8) % (facing is "east" or "west" ? 16 : 17);
             sprite.LayerSetTexture(0, prefix == "melee" ? IdleFrame(facing, frame) : Texture(prefix + "_" + facing));
+            var deathDuration = Math.Max(.01, (state.DeathEndsAt - state.DeathDissolveAt).TotalSeconds);
+            var deathProgress = state.Dying
+                ? (float) Math.Clamp((now - state.DeathDissolveAt).TotalSeconds / deathDuration, 0, 1) : 0;
             if (sprite.LayerMapTryGet(FireVisualLayers.Fire, out var fireLayer))
             {
                 var heat = state.PhaseTwo && !dead ? Math.Clamp(state.HeatStep, 0, 9) : 0;
-                var scale = state.Dying && now >= state.DeathBurnAt ? new Vector2(2.3f, 3.3f) :
+                // The 23-pixel flame fits inside all four 44-46-pixel body silhouettes at this scale.
+                var scale = state.Dying ? new Vector2(1.8f) :
                     new Vector2(1.2f + heat * .05f, 1.1f + heat * .1f);
                 // Sprite-local metres, measured from the body and Generic_mob_burning frames.
                 // Anchor the last opaque fire row to the boots so heat grows upwards.
@@ -166,6 +170,7 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
                 var flameCenter = facing switch { "east" or "south" => -1 / 32f, "west" => 1 / 32f, _ => 0 };
                 sprite.LayerSetScale(fireLayer, scale);
                 sprite.LayerSetOffset(fireLayer, new Vector2(bodyCenter - flameCenter * scale.X, feet + 15 / 32f * scale.Y));
+                sprite.LayerSetColor(fireLayer, Color.White.WithAlpha(1 - Wh40kChaosMarineCombat.Smooth(deathProgress)));
             }
             var elapsed = (float) (now - state.StartedAt).TotalSeconds;
             var pulse = state.Attack == MarineAttack.Transition
@@ -176,9 +181,8 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
             {
                 if (!_deathShaders.TryGetValue(uid, out var deathShader))
                     _deathShaders[uid] = deathShader = _prototypes.Index<ShaderPrototype>("Wh40kMarineDeath").InstanceUnique();
-                var duration = Math.Max(.01, (state.DeathEndsAt - state.DeathBurnAt).TotalSeconds);
-                deathShader.SetParameter("BurnProgress", (float) Math.Clamp((now - state.DeathBurnAt).TotalSeconds / duration, 0, 1));
-                // Only the armour dissolves; the native fire layer must stay bright at 100 stacks.
+                deathShader.SetParameter("BurnProgress", deathProgress);
+                // Keep the native flame independent of the armour's dissolve shader.
                 sprite.PostShader = null;
                 sprite.LayerSetShader(0, deathShader);
                 continue;

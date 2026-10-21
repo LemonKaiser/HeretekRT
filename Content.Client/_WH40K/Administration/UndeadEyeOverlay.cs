@@ -5,6 +5,7 @@ using Content.Shared._WH40K.Administration;
 using Content.Shared.Damage.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Eye;
+using Content.Shared.Mind.Components;
 using Content.Shared.Stealth.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -68,7 +69,7 @@ public partial class UndeadEyeOverlay : Overlay
 
         foreach (var uid in _candidates)
         {
-            var godmode = _entities.HasComponent<GodmodeComponent>(uid);
+            var godmode = HasGodmodeEye(uid);
             if ((!godmode && !_entities.HasComponent<UndeadComponent>(uid))
                 || !_entities.TryGetComponent<SpriteComponent>(uid, out var sprite)
                 || !sprite.Visible || sprite.ContainerOccluded || sprite.Color.A <= 0.01f
@@ -162,13 +163,20 @@ public partial class UndeadEyeOverlay : Overlay
         return _geometry.GetOpaqueGeometry(state, direction, layer.AnimationFrame);
     }
 
+    private bool HasGodmodeEye(EntityUid uid)
+    {
+        return _entities.HasComponent<GodmodeComponent>(uid)
+            && _entities.TryGetComponent<MindContainerComponent>(uid, out var mind)
+            && mind.HasMind;
+    }
+
     private void RemoveInactiveShaders()
     {
         _removed.Clear();
         foreach (var (uid, _) in _shaders)
         {
             if (!_entities.HasComponent<UndeadComponent>(uid)
-                && !_entities.HasComponent<GodmodeComponent>(uid))
+                && !HasGodmodeEye(uid))
                 _removed.Add(uid);
         }
 

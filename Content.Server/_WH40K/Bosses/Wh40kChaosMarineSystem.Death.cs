@@ -12,23 +12,23 @@ public sealed partial class Wh40kChaosMarineSystem
     {
         if (state.Dying || brain.DeathFinished) return;
         Cleanup(uid, brain);
-        _fire.Extinguish(uid);
         RequestVoice(uid, brain, 100);
         state.Dying = true;
-        state.DeathBurnAt = brain.VoiceUntil > Now ? brain.VoiceUntil : Now + TimeSpan.FromSeconds(.25);
-        state.DeathEndsAt = state.DeathBurnAt + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.DeathBurnSeconds);
+        state.DeathDissolveAt = brain.VoiceUntil > Now ? brain.VoiceUntil : Now;
+        state.DeathEndsAt = state.DeathDissolveAt + TimeSpan.FromSeconds(Wh40kChaosMarineCombat.DeathDissolveSeconds);
         RemComp<ActiveNPCComponent>(uid);
         RemComp<Content.Shared.Weapons.Reflect.ReflectComponent>(uid);
         _physics.SetLinearVelocity(uid, Vector2.Zero);
         _physics.SetAngularVelocity(uid, 0);
         _physics.SetBodyType(uid, BodyType.Static);
+        UpdateDeath(uid, brain, state);
         Dirty(uid, state);
         _speed.RefreshMovementSpeedModifiers(uid);
     }
 
     private void UpdateDeath(EntityUid uid, Wh40kChaosMarineBrainComponent brain, Wh40kChaosMarineComponent state)
     {
-        if (brain.DeathFinished || Now < state.DeathBurnAt) return;
+        if (brain.DeathFinished) return;
         if (Now >= state.DeathEndsAt)
         {
             // Mark before spawning: repeated death events/updates must never duplicate the reward.
