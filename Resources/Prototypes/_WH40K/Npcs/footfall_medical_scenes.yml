@@ -103,45 +103,45 @@
     lookAtRange: 1
     offers:
     - product: Gauze
-      price: 45
-      minStock: 5
-      maxStock: 6
+      price: 250
+      minStock: 6
+      maxStock: 10
     - product: Ointment
-      price: 55
-      minStock: 5
-      maxStock: 6
+      price: 240
+      minStock: 2
+      maxStock: 7
     - product: Brutepack
-      price: 55
+      price: 255
       minStock: 5
-      maxStock: 6
+      maxStock: 8
     - product: Bloodpack
-      price: 70
+      price: 395
+      minStock: 3
+      maxStock: 7
+    - product: BodyBagFolded
+      price: 1000
       minStock: 5
       maxStock: 6
-    - product: Tourniquet
-      price: 35
+    - product: Syringe
+      price: 199
+      minStock: 6
+      maxStock: 10
+    - product: EmergencyMedipen
+      price: 5999
+      minStock: 1
+      maxStock: 5
+    - product: PillCanisterTricordrazine
+      price: 300
       minStock: 5
       maxStock: 6
-    - product: SyringeInaprovaline
-      price: 65
+    - product: PillCanister
+      price: 100
       minStock: 5
       maxStock: 6
-    - product: SyringeSaline
-      price: 60
-      minStock: 5
-      maxStock: 6
-    - product: PillCanisterDylovene
-      price: 75
-      minStock: 5
-      maxStock: 6
-    - product: PillCanisterDexalin
-      price: 75
-      minStock: 5
-      maxStock: 6
-    - product: HandheldHealthAnalyzer
-      price: 180
-      minStock: 5
-      maxStock: 6
+    - product: DefibrillatorEmpty
+      price: 4000
+      minStock: 1
+      maxStock: 2
 
 - type: entity
   id: MarkerWH40KFootfallMiraFenn
