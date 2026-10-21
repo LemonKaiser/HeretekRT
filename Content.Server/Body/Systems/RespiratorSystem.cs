@@ -17,9 +17,11 @@ using Content.Shared.Chat; // Einstein Engines - Language
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Database;
 using Content.Shared.EntityEffects;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Rejuvenate;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -52,6 +54,20 @@ public sealed partial class RespiratorSystem : EntitySystem
         SubscribeLocalEvent<RespiratorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RespiratorComponent, EntityUnpausedEvent>(OnUnpaused);
         SubscribeLocalEvent<RespiratorComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
+        SubscribeLocalEvent<RespiratorComponent, RejuvenateEvent>(OnRejuvenate);
+    }
+
+    private void OnRejuvenate(Entity<RespiratorComponent> ent, ref RejuvenateEvent args)
+    {
+        if (HasComp<GodmodeComponent>(ent))
+            RestoreBreath(ent);
+    }
+
+    private void RestoreBreath(Entity<RespiratorComponent> ent)
+    {
+        UpdateSaturation(ent, ent.Comp.MaxSaturation - ent.Comp.Saturation, ent.Comp);
+        StopSuffocation(ent);
+        ent.Comp.SuffocationCycles = 0;
     }
 
     private void OnMapInit(Entity<RespiratorComponent> ent, ref MapInitEvent args)
@@ -75,6 +91,12 @@ public sealed partial class RespiratorSystem : EntitySystem
                 continue;
 
             respirator.NextUpdate += respirator.UpdateInterval;
+
+            if (HasComp<GodmodeComponent>(uid))
+            {
+                RestoreBreath((uid, respirator));
+                continue;
+            }
 
             if (_mobState.IsDead(uid) || HasComp<BreathingImmunityComponent>(uid)) // Shitmed: BreathingImmunity
                 continue;

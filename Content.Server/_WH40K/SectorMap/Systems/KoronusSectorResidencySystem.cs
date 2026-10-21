@@ -30,7 +30,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     private readonly HashSet<MapId> _planetaryTransitMaps = new();
     private readonly Dictionary<string, HashSet<long>> _activityLeases = new(StringComparer.Ordinal);
     private readonly List<string> _coldUnloadCandidates = new();
-    private static readonly TimeSpan ColdUnloadRetryDelay = TimeSpan.FromMinutes(1);
+    internal static readonly TimeSpan ColdUnloadRetryDelay = TimeSpan.FromMinutes(1);
 
     public override void Initialize()
     {
@@ -87,6 +87,9 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         // the query. Snapshot candidates are therefore processed only after both residency scans finish.
         foreach (var systemId in _coldUnloadCandidates)
         {
+            if (_sector.ColdUnloadPending)
+                break;
+
             if (_sector.TryColdUnloadSystem(systemId) ||
                 !TryGetRuntime(systemId, out var runtime, out _))
             {

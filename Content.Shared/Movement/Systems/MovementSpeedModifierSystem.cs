@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization.Metadata;
 using Content.Shared.CCVar;
+using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
@@ -86,7 +87,11 @@ namespace Content.Shared.Movement.Systems
             if (_timing.ApplyingState)
                 return;
 
-            var ev = new RefreshMovementSpeedModifiersEvent();
+            var ev = new RefreshMovementSpeedModifiersEvent
+            {
+                IgnoreSlowdown = TryComp<GodmodeComponent>(uid, out var godmode)
+                    && godmode.LifeStage <= ComponentLifeStage.Running,
+            };
             RaiseLocalEvent(uid, ev);
 
             // Mono
@@ -168,8 +173,19 @@ namespace Content.Shared.Movement.Systems
         public float WalkSpeedModifier { get; private set; } = 1.0f;
         public float SprintSpeedModifier { get; private set; } = 1.0f;
 
+        /// <summary>
+        /// Ignore each slowing factor individually, preserving independent speed boosts.
+        /// </summary>
+        public bool IgnoreSlowdown { get; init; }
+
         public void ModifySpeed(float walk, float sprint)
         {
+            if (IgnoreSlowdown)
+            {
+                walk = MathF.Max(walk, 1f);
+                sprint = MathF.Max(sprint, 1f);
+            }
+
             WalkSpeedModifier *= walk;
             SprintSpeedModifier *= sprint;
         }

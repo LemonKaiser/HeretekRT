@@ -1,4 +1,5 @@
 # All native materials share the same size distribution. Rare giants keep nearby loading affordable.
+# Massive and larger: about 6.7% combined; ExtraGigantic: about 1.2% of all sites.
 # Used both for the initial finite sector plan and replacement of depleted sites.
 - type: weightedRandomEntity
   id: KoronusMiningAsteroids
@@ -7,95 +8,95 @@
     NFAsteroidDebrisMedium: 20
     NFAsteroidDebrisLarge: 10
     NFAsteroidDebrisExtraLarge: 5
-    NFAsteroidDebrisHuge: 2
-    NFAsteroidDebrisExtraHuge: 1
-    NFAsteroidDebrisEnormous: 1
-    NFAsteroidDebrisExtraEnormous: 1
-    NFAsteroidDebrisMassive: 0.75
-    NFAsteroidDebrisExtraMassive: 0.5
-    NFAsteroidDebrisGigantic: 0.5
-    NFAsteroidDebrisExtraGigantic: 0.25
+    NFAsteroidDebrisHuge: 4
+    NFAsteroidDebrisExtraHuge: 3
+    NFAsteroidDebrisEnormous: 2.5
+    NFAsteroidDebrisExtraEnormous: 2
+    NFAsteroidDebrisMassive: 1.75
+    NFAsteroidDebrisExtraMassive: 1.5
+    NFAsteroidDebrisGigantic: 1.25
+    NFAsteroidDebrisExtraGigantic: 1
     NFAsteroidIceDebrisSmall: 30
     NFAsteroidIceDebrisMedium: 20
     NFAsteroidIceDebrisLarge: 10
     NFAsteroidIceDebrisExtraLarge: 5
-    NFAsteroidIceDebrisHuge: 2
-    NFAsteroidIceDebrisExtraHuge: 1
-    NFAsteroidIceDebrisEnormous: 1
-    NFAsteroidIceDebrisExtraEnormous: 1
-    NFAsteroidIceDebrisMassive: 0.75
-    NFAsteroidIceDebrisExtraMassive: 0.5
-    NFAsteroidIceDebrisGigantic: 0.5
-    NFAsteroidIceDebrisExtraGigantic: 0.25
+    NFAsteroidIceDebrisHuge: 4
+    NFAsteroidIceDebrisExtraHuge: 3
+    NFAsteroidIceDebrisEnormous: 2.5
+    NFAsteroidIceDebrisExtraEnormous: 2
+    NFAsteroidIceDebrisMassive: 1.75
+    NFAsteroidIceDebrisExtraMassive: 1.5
+    NFAsteroidIceDebrisGigantic: 1.25
+    NFAsteroidIceDebrisExtraGigantic: 1
     NFAsteroidAndesiteDebrisSmall: 30
     NFAsteroidAndesiteDebrisMedium: 20
     NFAsteroidAndesiteDebrisLarge: 10
     NFAsteroidAndesiteDebrisExtraLarge: 5
-    NFAsteroidAndesiteDebrisHuge: 2
-    NFAsteroidAndesiteDebrisExtraHuge: 1
-    NFAsteroidAndesiteDebrisEnormous: 1
-    NFAsteroidAndesiteDebrisExtraEnormous: 1
-    NFAsteroidAndesiteDebrisMassive: 0.75
-    NFAsteroidAndesiteDebrisExtraMassive: 0.5
-    NFAsteroidAndesiteDebrisGigantic: 0.5
-    NFAsteroidAndesiteDebrisExtraGigantic: 0.25
+    NFAsteroidAndesiteDebrisHuge: 4
+    NFAsteroidAndesiteDebrisExtraHuge: 3
+    NFAsteroidAndesiteDebrisEnormous: 2.5
+    NFAsteroidAndesiteDebrisExtraEnormous: 2
+    NFAsteroidAndesiteDebrisMassive: 1.75
+    NFAsteroidAndesiteDebrisExtraMassive: 1.5
+    NFAsteroidAndesiteDebrisGigantic: 1.25
+    NFAsteroidAndesiteDebrisExtraGigantic: 1
     NFAsteroidBasaltDebrisSmall: 30
     NFAsteroidBasaltDebrisMedium: 20
     NFAsteroidBasaltDebrisLarge: 10
     NFAsteroidBasaltDebrisExtraLarge: 5
-    NFAsteroidBasaltDebrisHuge: 2
-    NFAsteroidBasaltDebrisExtraHuge: 1
-    NFAsteroidBasaltDebrisEnormous: 1
-    NFAsteroidBasaltDebrisExtraEnormous: 1
-    NFAsteroidBasaltDebrisMassive: 0.75
-    NFAsteroidBasaltDebrisExtraMassive: 0.5
-    NFAsteroidBasaltDebrisGigantic: 0.5
-    NFAsteroidBasaltDebrisExtraGigantic: 0.25
+    NFAsteroidBasaltDebrisHuge: 4
+    NFAsteroidBasaltDebrisExtraHuge: 3
+    NFAsteroidBasaltDebrisEnormous: 2.5
+    NFAsteroidBasaltDebrisExtraEnormous: 2
+    NFAsteroidBasaltDebrisMassive: 1.75
+    NFAsteroidBasaltDebrisExtraMassive: 1.5
+    NFAsteroidBasaltDebrisGigantic: 1.25
+    NFAsteroidBasaltDebrisExtraGigantic: 1
     NFAsteroidSandDebrisSmall: 30
     NFAsteroidSandDebrisMedium: 20
     NFAsteroidSandDebrisLarge: 10
     NFAsteroidSandDebrisExtraLarge: 5
-    NFAsteroidSandDebrisHuge: 2
-    NFAsteroidSandDebrisExtraHuge: 1
-    NFAsteroidSandDebrisEnormous: 1
-    NFAsteroidSandDebrisExtraEnormous: 1
-    NFAsteroidSandDebrisMassive: 0.75
-    NFAsteroidSandDebrisExtraMassive: 0.5
-    NFAsteroidSandDebrisGigantic: 0.5
-    NFAsteroidSandDebrisExtraGigantic: 0.25
+    NFAsteroidSandDebrisHuge: 4
+    NFAsteroidSandDebrisExtraHuge: 3
+    NFAsteroidSandDebrisEnormous: 2.5
+    NFAsteroidSandDebrisExtraEnormous: 2
+    NFAsteroidSandDebrisMassive: 1.75
+    NFAsteroidSandDebrisExtraMassive: 1.5
+    NFAsteroidSandDebrisGigantic: 1.25
+    NFAsteroidSandDebrisExtraGigantic: 1
     NFAsteroidChromiteDebrisSmall: 30
     NFAsteroidChromiteDebrisMedium: 20
     NFAsteroidChromiteDebrisLarge: 10
     NFAsteroidChromiteDebrisExtraLarge: 5
-    NFAsteroidChromiteDebrisHuge: 2
-    NFAsteroidChromiteDebrisExtraHuge: 1
-    NFAsteroidChromiteDebrisEnormous: 1
-    NFAsteroidChromiteDebrisExtraEnormous: 1
-    NFAsteroidChromiteDebrisMassive: 0.75
-    NFAsteroidChromiteDebrisExtraMassive: 0.5
-    NFAsteroidChromiteDebrisGigantic: 0.5
-    NFAsteroidChromiteDebrisExtraGigantic: 0.25
+    NFAsteroidChromiteDebrisHuge: 4
+    NFAsteroidChromiteDebrisExtraHuge: 3
+    NFAsteroidChromiteDebrisEnormous: 2.5
+    NFAsteroidChromiteDebrisExtraEnormous: 2
+    NFAsteroidChromiteDebrisMassive: 1.75
+    NFAsteroidChromiteDebrisExtraMassive: 1.5
+    NFAsteroidChromiteDebrisGigantic: 1.25
+    NFAsteroidChromiteDebrisExtraGigantic: 1
     NFAsteroidRockDebrisSmall: 30
     NFAsteroidRockDebrisMedium: 20
     NFAsteroidRockDebrisLarge: 10
     NFAsteroidRockDebrisExtraLarge: 5
-    NFAsteroidRockDebrisHuge: 2
-    NFAsteroidRockDebrisExtraHuge: 1
-    NFAsteroidRockDebrisEnormous: 1
-    NFAsteroidRockDebrisExtraEnormous: 1
-    NFAsteroidRockDebrisMassive: 0.75
-    NFAsteroidRockDebrisExtraMassive: 0.5
-    NFAsteroidRockDebrisGigantic: 0.5
-    NFAsteroidRockDebrisExtraGigantic: 0.25
+    NFAsteroidRockDebrisHuge: 4
+    NFAsteroidRockDebrisExtraHuge: 3
+    NFAsteroidRockDebrisEnormous: 2.5
+    NFAsteroidRockDebrisExtraEnormous: 2
+    NFAsteroidRockDebrisMassive: 1.75
+    NFAsteroidRockDebrisExtraMassive: 1.5
+    NFAsteroidRockDebrisGigantic: 1.25
+    NFAsteroidRockDebrisExtraGigantic: 1
     NFAsteroidScrapDebrisSmall: 30
     NFAsteroidScrapDebrisMedium: 20
     NFAsteroidScrapDebrisLarge: 10
     NFAsteroidScrapDebrisExtraLarge: 5
-    NFAsteroidScrapDebrisHuge: 2
-    NFAsteroidScrapDebrisExtraHuge: 1
-    NFAsteroidScrapDebrisEnormous: 1
-    NFAsteroidScrapDebrisExtraEnormous: 1
-    NFAsteroidScrapDebrisMassive: 0.75
-    NFAsteroidScrapDebrisExtraMassive: 0.5
-    NFAsteroidScrapDebrisGigantic: 0.5
-    NFAsteroidScrapDebrisExtraGigantic: 0.25
+    NFAsteroidScrapDebrisHuge: 4
+    NFAsteroidScrapDebrisExtraHuge: 3
+    NFAsteroidScrapDebrisEnormous: 2.5
+    NFAsteroidScrapDebrisExtraEnormous: 2
+    NFAsteroidScrapDebrisMassive: 1.75
+    NFAsteroidScrapDebrisExtraMassive: 1.5
+    NFAsteroidScrapDebrisGigantic: 1.25
+    NFAsteroidScrapDebrisExtraGigantic: 1

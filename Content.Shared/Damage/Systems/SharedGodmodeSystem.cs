@@ -1,8 +1,11 @@
 using System.Linq;
 using Content.Shared.Damage.Components;
+using Content.Shared.Electrocution;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Slippery;
 using Content.Shared.StatusEffect;
+using Content.Shared.Temperature;
 using Content.Shared.Body.Systems; // Shitmed Change
 using Robust.Shared.GameObjects;
 
@@ -11,6 +14,7 @@ namespace Content.Shared.Damage.Systems;
 public abstract partial class SharedGodmodeSystem : EntitySystem
 {
     [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
 
     [Dependency] private SharedBodySystem _bodySystem = default!; // Shitmed Change
 
@@ -27,6 +31,31 @@ public abstract partial class SharedGodmodeSystem : EntitySystem
         SubscribeLocalEvent<GodmodeComponent, BeforeStatusEffectAddedEvent>(OnBeforeStatusEffect);
         SubscribeLocalEvent<GodmodeComponent, BeforeStaminaDamageEvent>(OnBeforeStaminaDamage);
         SubscribeLocalEvent<GodmodeComponent, SlipAttemptEvent>(OnSlipAttempt);
+        SubscribeLocalEvent<GodmodeComponent, ModifyChangedTemperatureEvent>(OnTemperatureChange);
+        SubscribeLocalEvent<GodmodeComponent, ElectrocutionAttemptEvent>(OnElectrocutionAttempt);
+        SubscribeLocalEvent<GodmodeComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<GodmodeComponent, ComponentShutdown>(OnShutdown);
+    }
+
+    private void OnStartup(Entity<GodmodeComponent> ent, ref ComponentStartup args)
+    {
+        _movement.RefreshMovementSpeedModifiers(ent);
+    }
+
+    private void OnShutdown(Entity<GodmodeComponent> ent, ref ComponentShutdown args)
+    {
+        if (!TerminatingOrDeleted(ent))
+            _movement.RefreshMovementSpeedModifiers(ent);
+    }
+
+    private void OnTemperatureChange(Entity<GodmodeComponent> ent, ref ModifyChangedTemperatureEvent args)
+    {
+        args.TemperatureDelta = 0f;
+    }
+
+    private void OnElectrocutionAttempt(Entity<GodmodeComponent> ent, ref ElectrocutionAttemptEvent args)
+    {
+        args.Cancel();
     }
 
     public override void Update(float frameTime)

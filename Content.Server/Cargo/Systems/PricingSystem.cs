@@ -179,7 +179,7 @@ public sealed partial class PricingSystem : EntitySystem
             }
         }
 
-        return price;
+        return NormalizePrice(price);
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public sealed partial class PricingSystem : EntitySystem
         RaiseLocalEvent(ref ev);
 
         if (ev.Handled)
-            return ev.Price;
+            return NormalizePrice(ev.Price);
 
         var price = ev.Price;
         price += GetMaterialsPrice(prototype);
@@ -211,7 +211,7 @@ public sealed partial class PricingSystem : EntitySystem
 
         // TODO: Proper container support.
 
-        return price;
+        return NormalizePrice(price);
     }
 
     /// <summary>
@@ -227,14 +227,14 @@ public sealed partial class PricingSystem : EntitySystem
         RaiseLocalEvent(ref ev);
 
         if (ev.Handled)
-            return ev.Price;
+            return NormalizePrice(ev.Price);
 
         var price = ev.Price;
         price += GetVendPrice(prototype);
 
         // TODO: Proper container support.
 
-        return price;
+        return NormalizePrice(price);
     }
 
     /// <summary>
@@ -248,12 +248,17 @@ public sealed partial class PricingSystem : EntitySystem
     /// </remarks>
     public double GetPrice(EntityUid uid, bool includeContents = true)
     {
+        return GetPrice(uid, includeContents, null);
+    }
+
+    private double GetPrice(EntityUid uid, bool includeContents, EntityUid? currentGrid)
+    {
         var ev = new PriceCalculationEvent();
         ev.Price = 0; // Structs doesnt initialize doubles when called by constructor.
         RaiseLocalEvent(uid, ref ev);
 
         if (ev.Handled)
-            return ev.Price;
+            return NormalizePrice(ev.Price);
 
         var price = ev.Price;
         //TODO: Add an OpaqueToAppraisal component or similar for blocking the recursive descent into containers, or preventing material pricing.
@@ -267,8 +272,14 @@ public sealed partial class PricingSystem : EntitySystem
 
         if (oldPrice.Equals(price))
         {
-            price += GetStaticPrice(uid);
+            price += currentGrid is { } grid
+                ? GetStaticPriceWithVendingDiscount(uid, grid)
+                : GetStaticPrice(uid);
         }
+
+        // Penalties can reduce an item's own value, but must not consume the value
+        // of other goods, including items stored inside this entity.
+        price = NormalizePrice(price);
 
         if (includeContents && TryComp<ContainerManagerComponent>(uid, out var containers))
         {
@@ -276,12 +287,12 @@ public sealed partial class PricingSystem : EntitySystem
             {
                 foreach (var ent in container.ContainedEntities)
                 {
-                    price += GetPrice(ent);
+                    price += GetPrice(ent, true, currentGrid);
                 }
             }
         }
 
-        return price;
+        return NormalizePrice(price);
     }
 
     /// <summary>
@@ -294,39 +305,12 @@ public sealed partial class PricingSystem : EntitySystem
     /// <returns>The price with vending machine discount applied if applicable</returns>
     public double GetPriceWithVendingDiscount(EntityUid uid, EntityUid currentGrid, bool includeContents = true)
     {
-        var ev = new PriceCalculationEvent();
-        ev.Price = 0;
-        RaiseLocalEvent(uid, ref ev);
+        return GetPrice(uid, includeContents, currentGrid);
+    }
 
-        if (ev.Handled)
-            return ev.Price;
-
-        var price = ev.Price;
-        price += GetMaterialsPrice(uid);
-        price += GetSolutionsPrice(uid);
-
-        // Can't use static price with stackprice
-        var oldPrice = price;
-        price += GetStackPrice(uid);
-
-        if (oldPrice.Equals(price))
-        {
-            // Use the vending machine discount version of static price
-            price += GetStaticPriceWithVendingDiscount(uid, currentGrid);
-        }
-
-        if (includeContents && TryComp<ContainerManagerComponent>(uid, out var containers))
-        {
-            foreach (var container in containers.Containers.Values)
-            {
-                foreach (var ent in container.ContainedEntities)
-                {
-                    price += GetPriceWithVendingDiscount(ent, currentGrid);
-                }
-            }
-        }
-
-        return price;
+    private static double NormalizePrice(double price)
+    {
+        return double.IsFinite(price) ? Math.Max(0, price) : 0;
     }
 
     // Begin Frontier - GetPrice variant that uses predicate
@@ -354,7 +338,7 @@ public sealed partial class PricingSystem : EntitySystem
                 }
             }
         }
-        return price;
+        return NormalizePrice(price);
     }
     // End Frontier - GetPrice variant that uses predicate
 
@@ -542,7 +526,7 @@ public sealed partial class PricingSystem : EntitySystem
             }
         }
 
-        return price;
+        return NormalizePrice(price);
     }
 }
 

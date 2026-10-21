@@ -395,9 +395,8 @@ public sealed partial class CargoSystem
 
                 // Mono: Use vending machine discount pricing for cargo sales
                 var price = _pricing.GetPriceWithVendingDiscount(ent, gridUid);
-                if (price == 0)
+                if (price <= 0)
                     continue;
-                toSell.Add(ent);
 
                 double multiplier = 1;
 
@@ -419,10 +418,15 @@ public sealed partial class CargoSystem
                 }
 
                 // Frontier: check for items that are immune to market modifiers
+                var salePrice = price * multiplier;
+                if (!double.IsFinite(salePrice) || salePrice <= 0)
+                    continue;
+
+                toSell.Add(ent);
                 if (HasComp<IgnoreMarketModifierComponent>(ent))
                     noMultiplierAmount += price;
                 else
-                    amount += price * multiplier;
+                    amount += salePrice;
 
 
                 // End Frontier: check for items that are immune to market modifiers

@@ -40,7 +40,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Replaces the round's main map with Footfall and preloads every configured remote system on a paused map.
 /// </summary>
-public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleComponent>
+public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleComponent>
 {
     private const int AngularPlacementAttempts = 360;
     private const float ObjectPlacementPadding = 300f;
@@ -194,19 +194,21 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     }
 
     /// <summary>
-    /// Serializes a paused, empty remote system and removes its live map. The same map id is
-    /// retained in the sector index and will be reused by <see cref="TryEnsureSystemMapLoaded"/>.
-    /// A failed snapshot never deletes the live map.
+    /// Starts preparing a snapshot of a paused, empty remote system over several updates.
+    /// The live map remains authoritative until its complete snapshot has passed validation.
     /// </summary>
     public bool TryColdUnloadSystem(string systemId)
     {
+        if (_coldUnload != null)
+            return _coldUnload.SystemId == systemId;
+
         if (!TryGetSectorRule(out var rule) ||
             !rule.Comp.SystemMaps.TryGetValue(systemId, out var mapId) ||
             !_prototypes.TryIndex<KoronusSystemPrototype>(systemId, out var system) ||
             !system.AllowColdUnload ||
             system.ColdUnloadDelay <= 0f ||
             _prototypes.Index(rule.Comp.Sector).StartSystem.Id == systemId ||
-            !_maps.TryGetMap(mapId, out _) ||
+            !_maps.TryGetMap(mapId, out var mapUid) ||
             !_maps.IsPaused(mapId) ||
             HasResidentMind(mapId) || HasUnsavableMob(mapId))
         {
@@ -216,49 +218,14 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
         if (!_coldOperations.Add(systemId))
             return false;
 
-        var snapshotPath = GetColdSnapshotPath(systemId);
         try
         {
             // A live map with a cold marker is a recoverable remnant of an interrupted
             // previous operation. The live map is authoritative until it is deleted.
             ReconcileLiveSystem(rule.Comp, systemId);
 
-            if (!TryWriteColdSnapshot(mapId, systemId, snapshotPath))
-            {
-                Log.Error($"Cold snapshot failed for Koronus system {systemId}; the live map was kept paused.");
-                return false;
-            }
-
-            rule.Comp.ColdUnloadedSystems.Add(systemId);
-            try
-            {
-                _maps.DeleteMap(mapId);
-            }
-            catch (Exception exception)
-            {
-                // Some deletion events may throw after the map has already gone away. In that
-                // case the committed snapshot is still the only valid authoritative state.
-                if (!_maps.TryGetMap(mapId, out _))
-                {
-                    Log.Warning($"Map deletion for cold Koronus system {systemId} threw after removing map {mapId}: {exception}");
-                    return true;
-                }
-
-                rule.Comp.ColdUnloadedSystems.Remove(systemId);
-                DeleteSnapshotBestEffort(snapshotPath, systemId);
-                Log.Error($"Could not delete live map {mapId} after snapshotting Koronus system {systemId}: {exception}");
-                return false;
-            }
-
-            if (_maps.TryGetMap(mapId, out _))
-            {
-                rule.Comp.ColdUnloadedSystems.Remove(systemId);
-                DeleteSnapshotBestEffort(snapshotPath, systemId);
-                Log.Error($"Live map {mapId} remained after cold-unloading Koronus system {systemId}.");
-                return false;
-            }
-
-            Log.Info($"Cold-unloaded Koronus system {systemId} from map {mapId} into {snapshotPath}.");
+            _coldUnload = new ColdUnloadOperation(systemId, mapId, mapUid.Value,
+                Timing.CurTime - _metaData.GetPauseTime(mapUid.Value));
             return true;
         }
         finally
@@ -996,54 +963,6 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
     }
 
     /// <summary>
-    /// Writes and parses a temporary snapshot before replacing the committed file. The live map
-    /// remains authoritative until this entire method succeeds.
-    /// </summary>
-    private bool TryWriteColdSnapshot(MapId mapId, string systemId, ResPath snapshotPath)
-    {
-        var tempPath = GetColdSnapshotTempPath(systemId);
-        if (!TryDeleteSnapshot(tempPath, systemId))
-            return false;
-
-        var committed = false;
-        try
-        {
-            if (!_mapLoader.TrySaveMap(mapId, tempPath))
-                return false;
-
-            if (!_resources.UserData.Exists(tempPath) ||
-                !_mapLoader.TryReadFile(tempPath, out _))
-            {
-                Log.Error($"Temporary cold snapshot for Koronus system {systemId} failed validation: {tempPath}.");
-                return false;
-            }
-
-            if (!TryDeleteSnapshot(snapshotPath, systemId))
-                return false;
-
-            _resources.UserData.Rename(tempPath, snapshotPath);
-            if (!_resources.UserData.Exists(snapshotPath))
-            {
-                Log.Error($"Committed cold snapshot for Koronus system {systemId} is missing after rename: {snapshotPath}.");
-                return false;
-            }
-
-            committed = true;
-            return true;
-        }
-        catch (Exception exception)
-        {
-            Log.Error($"Exception while writing cold snapshot for Koronus system {systemId}: {exception}");
-            return false;
-        }
-        finally
-        {
-            if (!committed)
-                DeleteSnapshotBestEffort(tempPath, systemId);
-        }
-    }
-
-    /// <summary>
     /// Resolves the only safe inconsistent state: a live map accompanied by a stale cold marker.
     /// The live entity tree always wins because it may contain changes made after the snapshot.
     /// </summary>
@@ -1093,6 +1012,7 @@ public sealed class KoronusSectorRuleSystem : GameRuleSystem<KoronusSectorRuleCo
 
     private void ResetColdSnapshotStorage()
     {
+        CancelColdUnload();
         _coldOperations.Clear();
 
         try
