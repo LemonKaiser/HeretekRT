@@ -30,7 +30,7 @@
       enum.RadarConsoleUiKey.Key:
         type: RadarConsoleBoundUserInterface
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -90,7 +90,6 @@
       enum.RadarConsoleUiKey.Key:
         type: RadarConsoleBoundUserInterface
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9

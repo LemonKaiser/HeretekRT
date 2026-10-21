@@ -14,12 +14,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.65
   - type: Armor # like syndie suit, but weaker (not combat faction)
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.55
+        Blunt: 0.867
+        Slash: 0.867
+        Piercing: 0.85
         Heat: 0.6
         Radiation: 0.6
         Caustic: 0.6
@@ -61,9 +61,9 @@
   - type: Armor # like syndie suit, but weaker (not combat faction)
     modifiers:
       coefficients:
-        Blunt: 0.55
-        Slash: 0.55
-        Piercing: 0.5
+        Blunt: 0.865
+        Slash: 0.865
+        Piercing: 0.85
         Heat: 0.55
         Radiation: 0.55
         Caustic: 0.55

@@ -13,12 +13,12 @@
     equipDelay: 5 # to avoid accidentally falling into the trap associated with SelfUnremovableClothing
   - type: SelfUnremovableClothing
   - type: Armor
-    armorRating: 640
+    armorRating: 800
     modifiers:
       coefficients:
-        Blunt: 0.55 # nanomachines are brittle
-        Slash: 0.2
-        Piercing: 0.6
+        Blunt: 0.916 # nanomachines are brittle
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.35
         Cold: 0.35
         Shock: 0.15

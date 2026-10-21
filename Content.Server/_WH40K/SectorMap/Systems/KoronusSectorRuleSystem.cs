@@ -820,6 +820,20 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         var runtime = EnsureComp<KoronusSystemMapComponent>(mapUid);
         runtime.SystemId = system.ID;
 
+        // Reapply presentation settings after loading a cold snapshot as well as on first load.
+        // Existing snapshots may still contain the old visible facility boundary.
+        if (!system.ShowSafetyBoundaries)
+        {
+            foreach (var grid in _mapManager.GetAllGrids(Comp<MapComponent>(mapUid).MapId))
+            {
+                if (!TryComp<KoronusSafetyZoneComponent>(grid.Owner, out var zone) || !zone.ShowBoundary)
+                    continue;
+
+                zone.ShowBoundary = false;
+                Dirty(grid.Owner, zone);
+            }
+        }
+
         KoronusPlanetarySystemVisualComponent? visual = null;
         if (system.SpaceMode == KoronusSpaceMode.Planetary)
         {

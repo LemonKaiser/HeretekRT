@@ -111,7 +111,7 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.92
@@ -136,7 +136,7 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.92
@@ -161,7 +161,7 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.92
@@ -186,7 +186,7 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.92

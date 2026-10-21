@@ -211,7 +211,6 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -236,7 +235,6 @@
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -258,7 +256,7 @@
   - type: PointLight
     color: "#00FFFF"
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -288,7 +286,6 @@
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -391,7 +388,6 @@
     highPressureMultiplier: 0.45
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -437,7 +433,6 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -463,7 +458,6 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -494,7 +488,6 @@
   - type: FireProtection
     reduction: 0.2
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -520,7 +513,6 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -543,7 +535,6 @@
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -569,7 +560,6 @@
     highPressureMultiplier: 0.27
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -639,7 +629,6 @@
   - type: PointLight
     color: "#addbff"
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -675,7 +664,6 @@
   - type: PointLight
     color: "#f4ffad"
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -711,7 +699,6 @@
   - type: PointLight
     color: "#ffadc6"
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -765,7 +752,6 @@
     heatingCoefficient: 0.005
     coolingCoefficient: 0.005
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -791,12 +777,12 @@
   - type: FireProtection
     reduction: 0.2
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.80
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.80
         Radiation: 0.80
         Caustic: 0.95

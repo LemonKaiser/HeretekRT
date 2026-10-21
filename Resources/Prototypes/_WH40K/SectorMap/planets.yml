@@ -309,8 +309,8 @@
     - 21.824779
     - 82.10312
 
-# Aivorius follows the four-world configuration from Rogue Trader. The initial grid is the
-# separate Drifting Voidship marker below; only solid worlds receive a generated surface.
+# Aivorius follows the four-world configuration from Rogue Trader. The drifting voidship is
+# an ordinary grid on NAV, without a duplicate celestial marker. Only solid worlds receive a surface.
 - type: koronusCelestialBody
   id: AivoriusStar
   system: Aivorius
@@ -505,19 +505,6 @@
   cloudSeed: 7.6
   atmosphereColor: "#E4D4B3"
   atmosphereIntensity: 0.32
-
-# This marker and the authored grid share the same fixed coordinates: the grid root is 0,0,
-# while the star is 6600 m above it. It therefore remains aligned with the physical voidship.
-- type: koronusCelestialBody
-  id: AivoriusDriftingVoidship
-  system: Aivorius
-  bodyType: Station
-  displayName: Дрейфующий пустотный корабль
-  description: Потерявший ход корабль, дрейфующий в системе Aivorius.
-  climate: koronus-planetary-climate-voidship
-  orbitRadius: 6600
-  orbitPhase: 90
-  navVisualRadius: 90
 
 # A static landable body in the ordinary Footfall space map. Its angle is selected once per round;
 # zero angular speeds keep both its map position and visible surface fixed afterward.

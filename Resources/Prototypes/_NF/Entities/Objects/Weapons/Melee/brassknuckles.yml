@@ -60,7 +60,6 @@
   - type: StaminaDamageOnHit
     damage: 4 # 8 per second, similar to the toy hammer
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Shock: 1.0 # Nothing special.

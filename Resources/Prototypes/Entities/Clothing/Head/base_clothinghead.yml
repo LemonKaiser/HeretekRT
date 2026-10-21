@@ -165,7 +165,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.90

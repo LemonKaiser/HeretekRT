@@ -94,7 +94,6 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients: # Mono
         Caustic: 0.75
@@ -273,7 +272,7 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients: # CL suit, seems fine to have something - Mono
         Blunt: 0.9
@@ -341,7 +340,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetCaptain
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Cap suit, seems fine to have something - Mono
         Blunt: 0.95
@@ -368,7 +367,7 @@
     - state: icon-unshaded
       shader: unshaded
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Engie suit gets something - Mono
         Blunt: 0.95
@@ -470,7 +469,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetAtmosTech
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Engie suit gets something - Mono
         Blunt: 0.95
@@ -591,7 +590,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetSalvage
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Salv suit, seems fine to have something - Mono
         Blunt: 0.95
@@ -657,7 +656,6 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetMedic
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients: # Med suit, seems fine to have something - Mono
         Caustic: 0.75
@@ -718,7 +716,6 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients: # Mono
         Caustic: 0.75
@@ -781,7 +778,6 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients: # Mono
         Caustic: 0.75
@@ -1311,7 +1307,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetMercenary
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95
@@ -1376,7 +1372,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetPrivateSec
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95
@@ -1442,7 +1438,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetNfsd
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95
@@ -1513,7 +1509,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetLvhi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95
@@ -1590,7 +1586,7 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetArcadia
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95
@@ -1615,7 +1611,7 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Suits/fsb_voidsuit.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Mono
         Blunt: 0.95

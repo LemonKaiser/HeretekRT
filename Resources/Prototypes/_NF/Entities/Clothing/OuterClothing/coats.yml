@@ -9,12 +9,12 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Coats/bounty_hunter_coat.rsi
   - type: Armor # ClothingOuterArmorBulletproof stats
-    armorRating: 480
+    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.4
+        Blunt: 0.975
+        Slash: 0.975
+        Piercing: 0.85
         Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.80
@@ -151,12 +151,12 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Coats/arcadia_trench.rsi
   - type: Armor # ClothingOuterArmorBulletproof stats + caustic
-    armorRating: 480
+    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.4
+        Blunt: 0.975
+        Slash: 0.975
+        Piercing: 0.85
         Heat: 0.9
         Caustic: 0.75
   - type: ExplosionResistance
@@ -168,12 +168,12 @@
   name: arcadia flak trenchcoat
   components:
   - type: Armor # Open = less armor
-    armorRating: 400
+    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.5
+        Blunt: 0.97
+        Slash: 0.97
+        Piercing: 0.85
         Heat: 0.9
         Caustic: 0.8
   - type: ExplosionResistance

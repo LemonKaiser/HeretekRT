@@ -7,7 +7,7 @@
   abstract: true
   components:
   - type: Armor #Values seem to let the user survive one extra hit if attacked consistently.
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -75,12 +75,12 @@
   - type: Clothing
     sprite: Clothing/Head/Helmets/swat.rsi
   - type: Armor #This is intentionally not spaceproof, when the time comes to port the values from SS13 this should be buffed from what it was.
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.80
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.80
         Radiation: 0.80
         Caustic: 0.95
@@ -119,12 +119,12 @@
     sprite: Clothing/Head/Helmets/light_riot.rsi
   - type: IngestionBlocker
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.8
-        Piercing: 0.95
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.963
   - type: Tag
     tags:
     - PetWearable
@@ -144,7 +144,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -189,12 +189,12 @@
     sprite: Clothing/Head/Helmets/cult.rsi
   - type: IngestionBlocker
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.8
-        Piercing: 0.9
+        Blunt: 0.925
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.9
   - type: Tag
     tags:
@@ -351,12 +351,12 @@
   - type: Clothing
     sprite: Clothing/Head/Helmets/linghelmet.rsi
   - type: Armor #admeme item so it should be fine being overpowered while helmets are still intentionally kneecapped.
-    armorRating: 400
+    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.5
-        Slash: 0.5
-        Piercing: 0.5
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.9
   - type: Tag
     tags:
@@ -449,7 +449,7 @@
   - type: Clothing
     sprite: Clothing/Head/Helmets/syndie-raid.rsi
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers: #There's gotta be SOME reason to use this over other helmets.
       coefficients:
         Blunt: 0.85

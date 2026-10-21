@@ -84,12 +84,12 @@
   - type: Clothing
     sprite: Nyanotrasen/Clothing/Head/Helmets/men.rsi
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.95
-        Piercing: 0.95
+        Blunt: 0.85
+        Slash: 0.963
+        Piercing: 0.963
 
 - type: entity
   parent: ClothingHeadBase
@@ -104,9 +104,9 @@
   - type: Item
     size: Small
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.80
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85

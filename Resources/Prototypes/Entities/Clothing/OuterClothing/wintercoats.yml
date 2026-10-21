@@ -14,7 +14,7 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95
@@ -157,7 +157,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatchem.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -179,7 +178,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatcmo.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -225,7 +223,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatgen.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -313,7 +310,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatjani.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -335,7 +331,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatmed.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -385,7 +380,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatparamed.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -422,7 +416,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatrd.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -459,7 +452,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatsci.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95
@@ -495,7 +487,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/WinterCoats/coatviro.rsi
   - type: Armor
-    armorRating: 40
     modifiers:
       coefficients:
         Slash: 0.95

@@ -22,7 +22,6 @@
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 10000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -126,12 +125,12 @@
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.8
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
   - type: Tag
     tags:
     - PetWearable
@@ -153,7 +152,6 @@
     highPressureMultiplier: 0.45
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.9

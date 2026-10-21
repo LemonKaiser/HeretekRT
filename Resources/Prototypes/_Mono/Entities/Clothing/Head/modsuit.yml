@@ -8,7 +8,7 @@
   - type: Sprite
     sprite: _Mono/Clothing/Head/Modsuits/ussp-varyag.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -58,7 +58,7 @@
   - type: Sprite
     sprite: _Mono/Clothing/Head/Modsuits/ussp-zastavnik.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -129,7 +129,7 @@
   - type: Sprite
     sprite: _Mono/Clothing/Head/Modsuits/rogue.rsi
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -215,7 +215,7 @@
   - type: Sprite
     sprite: _Mono/Clothing/Head/Modsuits/tsfmc-volta.rsi
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -298,7 +298,7 @@
       enum.RadarConsoleUiKey.Key:
         type: RadarConsoleBoundUserInterface
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.90

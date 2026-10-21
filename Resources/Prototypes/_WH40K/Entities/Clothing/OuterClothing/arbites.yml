@@ -10,12 +10,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/arbites/minoris/suit.rsi
   - type: Armor
-    armorRating: 250
+    armorRating: 312.5
     modifiers:
       coefficients:
-        Blunt: 0.90
-        Slash: 0.80
-        Piercing: 0.80
+        Blunt: 0.925
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.80
   - type: ItemDurability
     maxDurability: 500
@@ -37,12 +37,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/arbites/medius/suit.rsi
   - type: Armor
-    armorRating: 275
+    armorRating: 343.75
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.75
-        Piercing: 0.75
+        Blunt: 0.91
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.75
   - type: ItemDurability
     maxDurability: 500
@@ -70,12 +70,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/arbites/majoris/suit.rsi
   - type: Armor
-    armorRating: 300
+    armorRating: 375
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.70
-        Piercing: 0.70
+        Blunt: 0.9
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.70
   - type: ItemDurability
     maxDurability: 750

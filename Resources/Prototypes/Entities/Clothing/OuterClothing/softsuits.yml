@@ -116,7 +116,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients: # Added Blunt, Slash, and Pierce - Mono
         Blunt: 0.95

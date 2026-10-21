@@ -81,6 +81,13 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public float InitialGridSafetyRadius;
 
     /// <summary>
+    /// Shows facility safety-zone outlines in the world and NAV. Hiding them does not change
+    /// the server-side protection rules or the ordinary radar presentation of the facility grid.
+    /// </summary>
+    [DataField]
+    public bool ShowSafetyBoundaries = true;
+
+    /// <summary>
     /// Optional rules attached directly to the authored facility grid. Unlike a circular safety
     /// zone, these rules never apply to open space or another grid on the same system map.
     /// </summary>

@@ -16,12 +16,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.65
   - type: Armor
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.7
-        Piercing: 0.45
+        Blunt: 0.891
+        Slash: 0.918
+        Piercing: 0.85
         Heat: 0.65
         Radiation: 0.8
         Caustic: 0.6
@@ -61,12 +61,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.7
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.8
-        Piercing: 0.8
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.75
         Radiation: 0.7
         Caustic: 0.7
@@ -106,12 +106,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.8
   - type: Armor
-    armorRating: 200
+    armorRating: 250
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.75
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.7
         Radiation: 0.7
         Caustic: 0.7
@@ -151,12 +151,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.8
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.8
-        Piercing: 0.7
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.85
         Heat: 0.7
         Radiation: 0.7
         Caustic: 0.7
@@ -195,12 +195,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
-    armorRating: 480
+    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.45
-        Piercing: 0.4
+        Blunt: 0.9
+        Slash: 0.863
+        Piercing: 0.85
         Heat: 0.8
         Radiation: 0.6
         Caustic: 0.6
@@ -240,12 +240,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.45
   - type: Armor
-    armorRating: 520
+    armorRating: 650
     modifiers:
       coefficients:
-        Blunt: 0.55
-        Slash: 0.40
-        Piercing: 0.35
+        Blunt: 0.896
+        Slash: 0.862
+        Piercing: 0.85
         Heat: 0.75
         Radiation: 0.55
         Caustic: 0.55

@@ -940,7 +940,7 @@
   - type: Clothing
     sprite: Clothing/Head/Hats/melon.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95

@@ -10,12 +10,12 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_light.rsi
   - type: Armor
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.45
+        Blunt: 0.959
+        Slash: 0.959
+        Piercing: 0.85
         Heat: 0.85
         Caustic: 0.9 # Frontier
   - type: Tag  # Mono
@@ -41,12 +41,12 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_medium.rsi
   - type: Armor
-    armorRating: 520
+    armorRating: 650
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.7
-        Piercing: 0.35
+        Blunt: 0.954
+        Slash: 0.931
+        Piercing: 0.85
         Heat: 0.75
         Caustic: 0.9 # Frontier
   - type: Tag  # Mono
@@ -74,12 +74,12 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_heavy.rsi
   - type: Armor
-    armorRating: 600
+    armorRating: 750
     modifiers:
       coefficients:
-        Blunt: 0.3
-        Slash: 0.3
-        Piercing: 0.25
+        Blunt: 0.86
+        Slash: 0.86
+        Piercing: 0.85
         Heat: 0.9
         Caustic: 0.3 # Frontier
   - type: Tag  # Mono
@@ -108,12 +108,12 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_polyvalent.rsi
   - type: Armor
-    armorRating: 360
+    armorRating: 450
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.55
+        Blunt: 0.867
+        Slash: 0.867
+        Piercing: 0.85
         Heat: 0.6
         Caustic: 0.9 # Frontier
   - type: Tag  # Mono
@@ -139,12 +139,12 @@
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Armor/bulletproof_stabproof.rsi
   - type: Armor
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.65
-        Slash: 0.45
-        Piercing: 0.7 #old basic armor vest
+        Blunt: 0.905
+        Slash: 0.85
+        Piercing: 0.918 #old basic armor vest
         Heat: 0.85
         Caustic: 0.9 # Frontier
   - type: Tag  # Mono
@@ -172,9 +172,9 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.7
-        Piercing: 0.4
+        Blunt: 0.95
+        Slash: 0.925
+        Piercing: 0.85
         Heat: 0.75
         Caustic: 0.9
   - type: ClothingSpeedModifier

@@ -19,7 +19,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -67,7 +67,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -100,7 +100,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 220
+    armorRating: 275
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -126,7 +126,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.30
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -151,7 +151,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.85
   - type: Armor
-    armorRating: 140
+    armorRating: 175
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -177,7 +177,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.7
   - type: Armor
-    armorRating: 180
+    armorRating: 225
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -212,7 +212,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.2
   - type: Armor
-    armorRating: 220
+    armorRating: 275
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -248,7 +248,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.8
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -287,7 +287,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.8
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
         Blunt: 0.85

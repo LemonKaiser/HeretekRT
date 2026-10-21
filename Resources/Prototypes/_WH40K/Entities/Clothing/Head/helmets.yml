@@ -10,7 +10,6 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -52,7 +51,7 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 48
+    armorRating: 60
     modifiers:
       coefficients:
         Blunt: 1.00
@@ -91,7 +90,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/flakhelmet_white_shield.rsi
   - type: Armor
-    armorRating: 24
+    armorRating: 30
     modifiers:
       coefficients:
         Blunt: 1.00
@@ -191,7 +190,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/heresiarch_cardinal_helmet/head.rsi
   - type: Armor
-    armorRating: 120
+    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -243,7 +242,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/flak_helmetchaos.rsi
   - type: Armor
-    armorRating: 48
+    armorRating: 60
     modifiers:
       coefficients:
         Blunt: 1.00

@@ -19,7 +19,7 @@
       outerClothing:
       - state: equipped-OUTERCLOTHING
   - type: Armor
-    armorRating: 190
+    armorRating: 237.5
     modifiers:
       coefficients:
         Blunt: 0.91
@@ -50,7 +50,7 @@
       head:
       - state: equipped-HEAD
   - type: Armor
-    armorRating: 95
+    armorRating: 118.75
     modifiers:
       coefficients:
         Blunt: 0.93

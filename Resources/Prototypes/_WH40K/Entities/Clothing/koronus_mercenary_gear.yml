@@ -150,12 +150,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_recruit_vest.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.78
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.868
         Heat: 0.85
         Caustic: 0.95
 
@@ -170,12 +170,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/arcandian_med_vest.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.78
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.868
         Heat: 0.85
         Caustic: 0.95
 
@@ -190,12 +190,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_pilot_vest.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.78
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.868
         Heat: 0.85
         Caustic: 0.95
 
@@ -210,12 +210,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_vest.rsi
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.68
-        Slash: 0.68
-        Piercing: 0.72
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.869
         Heat: 0.82
         Caustic: 0.92
 
@@ -230,12 +230,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/arcadian_sgt_vest.rsi
   - type: Armor
-    armorRating: 300
+    armorRating: 375
     modifiers:
       coefficients:
-        Blunt: 0.63
-        Slash: 0.63
-        Piercing: 0.67
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.866
         Heat: 0.80
         Caustic: 0.90
 
@@ -394,7 +394,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Helmets/arcadian_sgt_helmet.rsi
   - type: Armor
-    armorRating: 100
+    armorRating: 125
     modifiers:
       coefficients:
         Blunt: 0.86
@@ -435,7 +435,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Hardsuits/arcadian_sgt_spacesuit.rsi
   - type: Armor
-    armorRating: 200
+    armorRating: 250
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -456,7 +456,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hardsuits/arcadian_sgt_spacesuit_helmet.rsi
   - type: Armor
-    armorRating: 95
+    armorRating: 118.75
     modifiers:
       coefficients:
         Blunt: 0.90

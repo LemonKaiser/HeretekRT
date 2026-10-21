@@ -34,7 +34,7 @@
   - type: Clothing
     sprite: Clothing/Mask/gassecurity.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -58,7 +58,7 @@
   # - type: FlashImmunity # Mono
   - type: EyeProtection
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -130,7 +130,7 @@
   - type: Clothing
     sprite: Clothing/Mask/gasexplorer.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -173,7 +173,7 @@
   - type: Clothing
     sprite: Clothing/Mask/medicalsecurity.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -275,7 +275,7 @@
   - type: Clothing
     sprite: Clothing/Mask/clown_security.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -431,7 +431,7 @@
     - Snout
     hideOnToggle: true
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -450,7 +450,7 @@
   - type: Clothing
     sprite: Clothing/Mask/merc.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95 # Frontier 0.90<0.95
@@ -485,7 +485,7 @@
   - type: FlashImmunity
   - type: EyeProtection
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -504,12 +504,12 @@
   - type: Clothing
     sprite: Clothing/Mask/squadron.rsi
   - type: Armor
-    armorRating: 160
+    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.90
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.90
   - type: Tag
     tags:

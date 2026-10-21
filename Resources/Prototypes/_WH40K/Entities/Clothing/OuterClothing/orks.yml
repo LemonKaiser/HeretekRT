@@ -35,12 +35,12 @@
     whitelist:
     - Ork
   - type: Armor
-    armorRating: 300
+    armorRating: 375
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.90
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.3

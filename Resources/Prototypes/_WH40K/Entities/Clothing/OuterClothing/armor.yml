@@ -10,7 +10,7 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest.rsi
   - type: Appearance
   - type: Armor
-    armorRating: 100
+    armorRating: 125
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -83,7 +83,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight.rsi
   - type: Armor
-    armorRating: 80
+    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 1.00
@@ -162,7 +162,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadv.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -190,12 +190,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestgen.rsi
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.80
-        Piercing: 0.90
+        Blunt: 0.888
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.95
   - type: ExplosionResistance
     damageCoefficient: 0.6
@@ -323,12 +323,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_cardinal.rsi
   - type: Armor
-    armorRating: 340
+    armorRating: 425
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.80
-        Piercing: 0.85
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.888
         Heat: 0.90
   - type: ExplosionResistance
     damageCoefficient: 0.55
@@ -363,12 +363,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
   - type: Armor
-    armorRating: 260
+    armorRating: 325
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.80
-        Piercing: 0.90
+        Blunt: 0.888
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.4
@@ -505,7 +505,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_old.rsi
   - type: Armor
-    armorRating: 48
+    armorRating: 60
     modifiers:
       coefficients:
         Blunt: 1.00

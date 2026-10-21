@@ -9,12 +9,12 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/navy_gold.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.70
+        Blunt: 0.875
+        Slash: 0.875
+        Piercing: 0.85
         Heat: 0.75
 
 - type: entity
@@ -28,12 +28,12 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/specialoperations.rsi
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.70
-        Slash: 0.70
-        Piercing: 0.65
+        Blunt: 0.871
+        Slash: 0.871
+        Piercing: 0.85
         Heat: 0.70
 
 - type: entity
@@ -47,10 +47,10 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Uniforms/Jumpsuit/diplomat.rsi
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.75
-        Slash: 0.75
-        Piercing: 0.70
+        Blunt: 0.875
+        Slash: 0.875
+        Piercing: 0.85
         Heat: 0.75

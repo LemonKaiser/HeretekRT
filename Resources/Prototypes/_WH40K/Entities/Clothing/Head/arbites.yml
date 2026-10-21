@@ -12,12 +12,12 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 150
+    armorRating: 187.5
     modifiers:
       coefficients:
-        Blunt: 0.90
-        Slash: 0.80
-        Piercing: 0.80
+        Blunt: 0.925
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.80
   - type: ItemDurability
     maxDurability: 500
@@ -68,12 +68,12 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 165
+    armorRating: 206.25
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.75
-        Piercing: 0.75
+        Blunt: 0.91
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.75
   - type: ItemDurability
     maxDurability: 500
@@ -148,12 +148,12 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 180
+    armorRating: 225
     modifiers:
       coefficients:
-        Blunt: 0.80
-        Slash: 0.70
-        Piercing: 0.70
+        Blunt: 0.9
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.70
   - type: ItemDurability
     maxDurability: 750

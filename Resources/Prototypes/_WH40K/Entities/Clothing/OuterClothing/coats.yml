@@ -8,7 +8,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/commissar.rsi
   - type: Armor
-    armorRating: 220
+    armorRating: 275
     modifiers:
       coefficients:
         Blunt: 0.90
@@ -60,7 +60,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/captain.rsi
   - type: Armor
-    armorRating: 100
+    armorRating: 125
     modifiers:
       coefficients:
         Blunt: 0.95
@@ -87,7 +87,7 @@
   suffix: WH40K, флот
   components:
   - type: Armor
-    armorRating: 72
+    armorRating: 90
     modifiers:
       coefficients:
         Blunt: 0.98
@@ -142,7 +142,7 @@
   suffix: WH40K, Священник
   components:
   - type: Armor
-    armorRating: 100
+    armorRating: 125
     modifiers:
       coefficients:
         Blunt: 0.95

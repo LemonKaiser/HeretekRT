@@ -8,7 +8,7 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hats/commissar.rsi
   - type: Armor
-    armorRating: 60
+    armorRating: 75
     modifiers:
       coefficients:
         Blunt: 0.95

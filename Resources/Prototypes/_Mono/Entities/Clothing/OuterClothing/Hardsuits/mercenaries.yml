@@ -14,12 +14,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
-    armorRating: 320
+    armorRating: 400
     modifiers:
       coefficients:
-        Blunt: 0.65
-        Slash: 0.6
-        Piercing: 0.6
+        Blunt: 0.869
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.65
         Radiation: 0.6
         Caustic: 0.8
@@ -52,12 +52,12 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/scaf.rsi
   - type: Armor
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients: # Mono - all of these values are changed
-        Blunt: 0.5
-        Slash: 0.5
-        Piercing: 0.45 # Mono
+        Blunt: 0.864
+        Slash: 0.864
+        Piercing: 0.85 # Mono
         Heat: 0.55
         Radiation: 0.5 # Added Radiation Resist
         Caustic: 0.65

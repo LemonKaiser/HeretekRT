@@ -22,12 +22,12 @@
   - type: SpeechSoundsReplacer
     speechSounds: Chrono
   - type: Armor
-    armorRating: 720
+    armorRating: 900
     modifiers:
       coefficients:
-        Blunt: 0.10
-        Slash: 0.10
-        Piercing: 0.10
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.10
         Cold: 0.10
         Radiation: 0.10
@@ -52,7 +52,7 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95

@@ -53,6 +53,7 @@
   activityEligible: true
   initialGridSafetyProfile: KoronusStationSafeZone
   initialGridSafetyRadius: 100
+  showSafetyBoundaries: false
   protectInitialGrid: true
   allowColdUnload: true
   coldUnloadDelay: 120

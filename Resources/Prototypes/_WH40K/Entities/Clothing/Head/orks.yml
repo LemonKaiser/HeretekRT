@@ -10,7 +10,6 @@
   - type: Item
     size: Normal
   - type: Armor
-    armorRating: 80
     modifiers:
       coefficients:
         Blunt: 0.90

@@ -64,12 +64,12 @@
   id: ClothingOuterArmorHoS
   components:
   - type: Armor
-    armorRating: 440
+    armorRating: 550
     modifiers:
       coefficients: # Mono edit - Changed coefficients
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.45
+        Blunt: 0.891
+        Slash: 0.891
+        Piercing: 0.85
         Heat: 0.5
         Caustic: 0.75 # not the full 90% from ss13 because of the head
   - type: ExplosionResistance
@@ -81,12 +81,12 @@
   id: ClothingOuterArmorWarden
   components:
   - type: Armor
-    armorRating: 240
+    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.7
-        Slash: 0.7
-        Piercing: 0.7
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.7
   - type: ExplosionResistance
     damageCoefficient: 0.9
@@ -130,7 +130,7 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95
@@ -239,7 +239,7 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_cmo.rsi
   - type: Armor
-    armorRating: 40
+    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95
@@ -370,12 +370,12 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/dogi.rsi
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.65
-        Piercing: 0.85
+        Blunt: 0.914
+        Slash: 0.85
+        Piercing: 0.936
 
 - type: entity
   parent: ClothingOuterStorageBase
@@ -421,12 +421,12 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/brigmedic.rsi
   - type: Armor
-    armorRating: 280
+    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.85
-        Piercing: 0.65
+        Blunt: 0.914
+        Slash: 0.936
+        Piercing: 0.85
         Heat: 0.85
         Caustic: 0.75
 

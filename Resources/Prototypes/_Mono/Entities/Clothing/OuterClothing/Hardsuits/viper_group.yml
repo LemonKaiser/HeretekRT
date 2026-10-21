@@ -16,12 +16,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
-    armorRating: 400
+    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.67
-        Slash: 0.5
-        Piercing: 0.5
+        Blunt: 0.901
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.67
         Radiation: 0.5
         Caustic: 0.5
@@ -64,12 +64,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.75
   - type: Armor
-    armorRating: 528
+    armorRating: 660
     modifiers:
       coefficients:
-        Blunt: 0.67
-        Slash: 0.34
-        Piercing: 0.67
+        Blunt: 0.925
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.4
         Radiation: 0.25
         Caustic: 0.1
@@ -114,12 +114,12 @@
   - type: FireProtection # Mono
     reduction: 0.67
   - type: Armor
-    armorRating: 528
+    armorRating: 660
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.34
-        Piercing: 0.34
+        Blunt: 0.909
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.6
         Radiation: 0.5
         Caustic: 0.25
@@ -166,9 +166,9 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.67
-        Slash: 0.34
-        Piercing: 0.67
+        Blunt: 0.925
+        Slash: 0.85
+        Piercing: 0.925
         Heat: 0.34
         Radiation: 0.34
         Caustic: 0.25
@@ -252,12 +252,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
-    armorRating: 264
+    armorRating: 330
     modifiers:
       coefficients:
-        Blunt: 0.8
-        Slash: 0.88
-        Piercing: 0.67
+        Blunt: 0.909
+        Slash: 0.945
+        Piercing: 0.85
         Heat: 0.84
         Radiation: 0.5
         Caustic: 0.5
