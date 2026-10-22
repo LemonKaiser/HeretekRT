@@ -87,90 +87,62 @@
     refreshInterval: 900
     displayCount: 14
     offers:
-    - product: AppraisalTool
-      price: 200
-      displayName: wh40k-footfall-cargo-shop-appraisal-name
-      description: wh40k-footfall-cargo-shop-appraisal-desc
-      minStock: 2
-      maxStock: 4
-    - product: ContrabandAppraisalTool
-      price: 300
-      displayName: wh40k-footfall-cargo-shop-contraband-name
-      description: wh40k-footfall-cargo-shop-contraband-desc
-      minStock: 2
+    - product: FultonBeacon
+      price: 10000
+      minStock: 1
       maxStock: 3
+    - product: Fulton1
+      price: 4000
+      minStock: 5
+      maxStock: 10
     - product: HandLabeler
-      price: 60
-      displayName: wh40k-footfall-cargo-shop-labeler-name
-      description: wh40k-footfall-cargo-shop-labeler-desc
+      price: 100
       minStock: 2
       maxStock: 4
     - product: BoxCardboard
-      price: 15
-      displayName: wh40k-footfall-cargo-shop-box-name
-      description: wh40k-footfall-cargo-shop-box-desc
+      price: 150
       minStock: 12
       maxStock: 20
     - product: MaterialCardboard10
-      price: 25
-      displayName: wh40k-footfall-cargo-shop-cardboard-name
-      description: wh40k-footfall-cargo-shop-cardboard-desc
+      price: 250
       minStock: 6
       maxStock: 10
     - product: BoxFolderClipboard
-      price: 35
-      displayName: wh40k-footfall-cargo-shop-clipboard-name
-      description: wh40k-footfall-cargo-shop-clipboard-desc
+      price: 500
       minStock: 3
       maxStock: 5
     - product: Paper
       price: 5
-      displayName: wh40k-footfall-cargo-shop-paper-name
-      description: wh40k-footfall-cargo-shop-paper-desc
       minStock: 20
       maxStock: 30
     - product: Pen
       price: 8
-      displayName: wh40k-footfall-cargo-shop-pen-name
-      description: wh40k-footfall-cargo-shop-pen-desc
       minStock: 8
       maxStock: 12
     - product: RubberStampApproved
       price: 40
-      displayName: wh40k-footfall-cargo-shop-approved-name
-      description: wh40k-footfall-cargo-shop-approved-desc
       minStock: 2
       maxStock: 4
     - product: RubberStampDenied
       price: 40
-      displayName: wh40k-footfall-cargo-shop-denied-name
-      description: wh40k-footfall-cargo-shop-denied-desc
       minStock: 2
       maxStock: 4
-    - product: Crowbar
-      price: 45
-      displayName: wh40k-footfall-cargo-shop-crowbar-name
-      description: wh40k-footfall-cargo-shop-crowbar-desc
+    - product: MaterialSiloFlatpack
+      price: 15000
       minStock: 3
       maxStock: 5
-    - product: Wrench
-      price: 45
-      displayName: wh40k-footfall-cargo-shop-wrench-name
-      description: wh40k-footfall-cargo-shop-wrench-desc
+    - product: AmeJar
+      price: 2500
       minStock: 3
       maxStock: 5
-    - product: FlashlightLantern
-      price: 65
-      displayName: wh40k-footfall-cargo-shop-light-name
-      description: wh40k-footfall-cargo-shop-light-desc
-      minStock: 3
-      maxStock: 5
-    - product: ClothingBackpackDuffelCargo
-      price: 160
-      displayName: wh40k-footfall-cargo-shop-duffel-name
-      description: wh40k-footfall-cargo-shop-duffel-desc
-      minStock: 2
-      maxStock: 4
+    - product: AmeControllerUnanchoredFlatpack
+      price: 6500
+      minStock: 1
+      maxStock: 2
+    - product: AmePartFlatpack
+      price: 1000
+      minStock: 9
+      maxStock: 18
 
 - type: entity
   id: MarkerWH40KFootfallHestVarn
