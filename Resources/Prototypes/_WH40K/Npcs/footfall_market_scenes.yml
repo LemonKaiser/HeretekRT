@@ -97,15 +97,15 @@
     displayCount: 8
     offers:
     - product: WH40KFootfallSteelBundle
-      price: 500
+      price: 1500
       minStock: 80
       maxStock: 80
     - product: WH40KFootfallGlassBundle
-      price: 600
+      price: 1500
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallPlasticBundle
-      price: 800
+      price: 3000
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallWoodBundle
@@ -113,18 +113,18 @@
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallRodBundle
-      price: 400
+      price: 1500
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallClothBundle
+      price: 3000
+      minStock: 40
+      maxStock: 40
+    - product: WH40KInflatableDoorStackImperium
       price: 400
       minStock: 40
       maxStock: 40
-    - product: WH40KFootfallCardboardBundle
-      price: 100
-      minStock: 40
-      maxStock: 40
-    - product: WH40KFootfallFloorBundle
+    - product: WH40KInflatableWallStackImperium
       price: 300
       minStock: 60
       maxStock: 60
@@ -189,11 +189,11 @@
     refreshInterval: 900
     displayCount: 6
     offers:
-    - product: ClothingHeadsetVoxBackpackImperium
-      price: 220
+    - product: AppraisalTool
+      price: 199
       minStock: 6
       maxStock: 6
-    - product: EncryptionKeyVoxImperium
+    - product: EncryptionKeyCommon
       price: 120
       minStock: 6
       maxStock: 6
@@ -201,7 +201,7 @@
       price: 200
       minStock: 10
       maxStock: 10
-    - product: RadioHandheld
+    - product: RadioHandheldNF
       price: 90
       minStock: 8
       maxStock: 8

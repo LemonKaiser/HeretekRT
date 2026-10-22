@@ -98,30 +98,30 @@
     refreshInterval: 900
     displayCount: 7
     offers:
-    - product: WH40KMiningDrillVoidpiercer
-      price: 300
-      minStock: 5
-      maxStock: 5
+    - product: NFEnergyPickaxe
+      price: 25000
+      minStock: 1
+      maxStock: 1
     - product: ClothingOuterHardsuitSalvage
-      price: 150
+      price: 10000
+      minStock: 3
+      maxStock: 5
+    - product: WeaponGrapplingGun
+      price: 3500
+      minStock: 7
+      maxStock: 18
+    - product: ClothingShoesBootsMagTechpriest
+      price: 3500
       minStock: 6
       maxStock: 6
-    - product: WH40KInflatableWallStackImperium
-      price: 240
-      minStock: 6
-      maxStock: 6
-    - product: WH40KInflatableDoorStackImperium
-      price: 220
-      minStock: 6
-      maxStock: 6
-    - product: WH40KSignalFlareImperium
-      price: 30
+    - product: OreBoxFlatpack
+      price: 1000
       minStock: 12
       maxStock: 12
-    - product: ClothingBackpackWanderer
-      price: 140
-      minStock: 6
-      maxStock: 6
+    - product: BoxFlare
+      price: 500
+      minStock: 8
+      maxStock: 10
 
 - type: entity
   id: MarkerWH40KFootfallKappaSpanner
