@@ -14,6 +14,7 @@ public sealed partial class VesselRow : PanelContainer
     [Dependency] private IEntitySystemManager _entitySystem = default!;
     private readonly GuidebookSystem _guidebook = default!;
     public VesselPrototype? Vessel;
+    public int PurchasePrice;
     public VesselRow()
     {
         RobustXamlLoader.Load(this);
