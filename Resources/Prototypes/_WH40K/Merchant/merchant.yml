@@ -57,28 +57,28 @@
     lookAtRange: 1
     returnDistance: 3
     offers:
-    - product: Emag
+    - product: ClothingHeadScarfChaos
       price: 1000
       minStock: 2
       maxStock: 2
     - product: RadioJammer
-      price: 600
-      minStock: 3
+      price: 6000
+      minStock: 1
+      maxStock: 1
+    - product: WeaponMeleeChaosNailBoard
+      price: 500
+      minStock: 1
+      maxStock: 1
+    - product: ClothingUniformJumpsuitCultist1
+      price: 340
+      minStock: 4
+      maxStock: 4
+    - product: PillSpaceDrugs
+      price: 2000
+      minStock: 2
       maxStock: 3
-    - product: ClothingHeadsetVoxBackpackHeretics
-      price: 280
-      minStock: 4
-      maxStock: 4
-    - product: EncryptionKeyVoxHeretics
-      price: 180
-      minStock: 4
-      maxStock: 4
-    - product: ChaosMedkit
-      price: 350
-      minStock: 4
-      maxStock: 4
     - product: ClothingNeckCloakRainChs
-      price: 240
+      price: 780
       minStock: 4
       maxStock: 4
   - type: DialogueInteractable
