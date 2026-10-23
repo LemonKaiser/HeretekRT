@@ -3,40 +3,30 @@ armor-plate-examine-with-plate = Has a [color=yellow]{$plateName}[/color] instal
 armor-plate-examine-with-plate-simple = Has a [color=yellow]{$plateName}[/color] installed.
 armor-plate-examine-no-plate = No armor plate installed.
 armor-plate-examine-no-storage = No storage compartment for armor plates.
-
 armor-plate-examinable-verb-text = Plate attributes
-armor-plate-examinable-verb-message = Examine protection and durability characteristics.
-
+armor-plate-examinable-verb-message = Examine the armor wear buffer and movement effects.
 armor-plate-attributes-examine = This armor plate:
-armor-plate-initial-durability = Is rated for [color=yellow]{ $durability }[/color] standard units of damage.
-
+armor-plate-initial-durability = Provides [color=yellow]{$durability}[/color] units of replaceable armor durability.
+armor-plate-wear-buffer = Extends armor durability. It does not add damage resistance.
 armor-plate-item-durability = Durability: [color={$durabilityColor}]{$percent}%[/color]
-
 armor-plate-gait-speed = speed
 armor-plate-gait-walk = walking speed
 armor-plate-gait-sprint = running speed
-
 armor-plate-speed-display =
     { $stringClause ->
-         [1] Increases your {$gait} by [color=yellow]{$speedPercent}%[/color].
-         [-1] Decreases your {$gait} by [color=yellow]{$speedPercent}%[/color].
-        *[other] Shouldn't be have this speed clause!
+        [1] Increases your {$gait} by [color=yellow]{$speedPercent}%[/color].
+        [-1] Decreases your {$gait} by [color=yellow]{$speedPercent}%[/color].
+       *[other] Does not affect your {$gait}.
     }
-
-armor-plate-ratios-display =
-    { $stringClause ->
-        [1] [color=cyan]Absorbs[/color] [color=yellow]{$ratioPercent}%[/color] of [color=yellow]{$dmgType}[/color]
-        [-1] [color=fuchsia]Amplifies[/color] [color=yellow]{$dmgType}[/color] by [color=yellow]{$ratioPercent}%[/color]
-        [0] Does not affect [color=yellow]{$dmgType}[/color]
-       *[other] {$dmgType} shouldn't have this absorption clause!
-    }
-
-armor-plate-multiplier-display = and deducts [color=yellow]{$multiplier}%[/color] of raw damage value from durability.
+armor-plate-ratios-display = Takes [color=yellow]{$ratioPercent}%[/color] of armor wear caused by [color=yellow]{$dmgType}[/color]
+armor-plate-multiplier-display = and spends [color=yellow]{$multiplier}%[/color] of transferred wear from plate durability.
 armor-plate-multiplier-none = and does not damage the plate.
 
-armor-plate-stamina-source-absorb = [color=cyan]Absorbed[/color]
-armor-plate-stamina-concat = and
-armor-plate-stamina-source-amplified = [color=fuchsia]Amplified[/color]
-armor-plate-stamina-source-raw = [color=red]All Oncoming[/color]
-armor-plate-stamina-value = Inflicts [color=yellow]{$multiplier}%[/color] of {$sources} damage as stamina damage.
-
+ent-ArmorPlateBlunt_Slash = trauma armor plate
+    .desc = A replaceable wear buffer for compatible armor. Takes blunt and slash wear instead of the armor, without adding damage resistance.
+ent-ArmorPlatePierce = ballistic armor plate
+    .desc = A replaceable wear buffer for compatible armor. Takes piercing wear instead of the armor, without adding damage resistance.
+ent-ArmorPlateHeat = diffusion armor plate
+    .desc = A replaceable wear buffer for compatible armor. Takes thermal wear and part of radiation and electrical wear, without adding damage resistance.
+ent-ArmorPlateSpeed = speed armor plate
+    .desc = A light replacement plate that increases movement speed and takes a quarter of physical and thermal armor wear.

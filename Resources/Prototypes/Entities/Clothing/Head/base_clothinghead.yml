@@ -165,13 +165,12 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
-        Blunt: 0.90
-        Slash: 0.90
+        Blunt: 0.9
+        Slash: 0.9
         Piercing: 0.95
-        Heat: 0.90
+        Heat: 0.9
         Radiation: 0.25
   - type: GroupExamine
   - type: IngestionBlocker

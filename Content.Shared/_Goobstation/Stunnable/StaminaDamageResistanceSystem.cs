@@ -1,5 +1,6 @@
 using Content.Shared.Armor;
 using Content.Shared.Damage.Events;
+using Content.Shared.Durability.Components;
 using Content.Shared.Inventory;
 
 namespace Content.Shared.Stunnable;
@@ -16,6 +17,9 @@ public sealed partial class StaminaDamageResistanceSystem : EntitySystem
 
     private void OnStaminaMeleeHit(Entity<StaminaDamageResistanceComponent> ent, ref InventoryRelayedEvent<TakeStaminaDamageEvent> args)
     {
+        if (TryComp<ItemDurabilityComponent>(ent, out var durability) && durability.Broken)
+            return;
+
         args.Args.Multiplier *= ent.Comp.Coefficient;
     }
     private void OnExamine(Entity<StaminaDamageResistanceComponent> ent, ref ArmorExamineEvent args)

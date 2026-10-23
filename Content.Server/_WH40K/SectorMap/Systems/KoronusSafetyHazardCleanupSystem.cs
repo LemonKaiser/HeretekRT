@@ -1,10 +1,14 @@
 using Content.Server.Xenoarchaeology.XenoArtifacts;
+using Content.Server.NPC.HTN;
 using Content.Shared.NPC.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Systems;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Shared.Timing;
 using System.Linq;
+using System.Numerics;
+using Content.Server._WH40K.SectorMap.Components;
+using Robust.Shared.Map.Components;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
@@ -20,9 +24,10 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private KoronusSafetyPolicySystem _safety = default!;
     [Dependency] private NpcFactionSystem _npcFaction = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, TimeSpan> _artifactCleanupAt = [];
-    private readonly Dictionary<EntityUid, TimeSpan> _hostileNpcCleanupAt = [];
     private TimeSpan _nextScan;
 
     public override void Update(float frameTime)
@@ -32,7 +37,7 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
 
         _nextScan = _timing.CurTime + ScanInterval;
         UpdateArtifacts(_timing.CurTime);
-        UpdateHostileNpcs(_timing.CurTime);
+        CleanupHostileNpcs();
     }
 
     private void UpdateArtifacts(TimeSpan now)
@@ -62,44 +67,51 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
         }
     }
 
-    private void UpdateHostileNpcs(TimeSpan now)
+    /// <summary>Also runs at bootstrap, before paused stations can admit their first visitors.</summary>
+    public void CleanupHostileNpcs()
     {
-        var npcs = EntityQueryEnumerator<MobStateComponent, NpcFactionMemberComponent>();
-        while (npcs.MoveNext(out var uid, out _, out var faction))
+        var npcs = AllEntityQuery<NpcFactionMemberComponent>();
+        while (npcs.MoveNext(out var uid, out var faction))
         {
             Entity<NpcFactionMemberComponent?> factionEntity = new(uid, faction);
-            if (!_safety.IsPlayerCharacter(uid) &&
+            if ((HasComp<MobStateComponent>(uid) || HasComp<HTNComponent>(uid)) &&
+                !_safety.IsPlayerCharacter(uid) &&
                 _safety.HasRule(uid, KoronusSafetyRule.HostileNpcAutoCleanup) &&
-                _npcFaction.IsFactionHostile("NanoTrasen", factionEntity))
+                _npcFaction.IsFactionHostile("NanoTrasen", factionEntity) &&
+                !IsAllowedSurfaceWildlife(uid))
             {
-                _hostileNpcCleanupAt.TryAdd(uid, _safety.IsFootfallSpace(uid) ? now : now + CleanupDelay);
+                QueueDel(uid);
             }
         }
+    }
 
-        foreach (var (uid, cleanupAt) in _hostileNpcCleanupAt.ToArray())
+    private bool IsAllowedSurfaceWildlife(EntityUid uid)
+    {
+        if (!TryComp<KoronusSurfaceWildlifeComponent>(uid, out var wildlife) ||
+            !TryComp<TransformComponent>(uid, out var transform) ||
+            !_maps.TryGetMap(transform.MapID, out var map) ||
+            !TryComp<KoronusPlanetSurfaceMapComponent>(map, out var surface) ||
+            surface.SurfaceId != wildlife.Surface.Id || surface.AuthoredBaseGrids.Count == 0)
         {
-            if (TerminatingOrDeleted(uid) ||
-                !TryComp<NpcFactionMemberComponent>(uid, out var faction) ||
-                !HasComp<MobStateComponent>(uid) ||
-                _safety.IsPlayerCharacter(uid) ||
-                !_safety.HasRule(uid, KoronusSafetyRule.HostileNpcAutoCleanup))
-            {
-                _hostileNpcCleanupAt.Remove(uid);
-                continue;
-            }
-
-            Entity<NpcFactionMemberComponent?> factionEntity = new(uid, faction);
-            if (!_npcFaction.IsFactionHostile("NanoTrasen", factionEntity))
-            {
-                _hostileNpcCleanupAt.Remove(uid);
-                continue;
-            }
-
-            if (cleanupAt > now)
-                continue;
-
-            QueueDel(uid);
-            _hostileNpcCleanupAt.Remove(uid);
+            return false;
         }
+
+        var position = _transform.GetWorldPosition(transform);
+        var playableBounds = surface.PlayableBounds;
+        if (!playableBounds.Contains(position))
+            return false;
+
+        foreach (var grid in surface.AuthoredBaseGrids)
+        {
+            if (!TryComp<MapGridComponent>(grid, out var baseGrid))
+                continue;
+
+            var local = Vector2.Transform(position, _transform.GetInvWorldMatrix(grid));
+            // Remove fauna before it can reach the base or an outdoor landing pad.
+            if (baseGrid.LocalAABB.Enlarged(12f).Contains(local))
+                return false;
+        }
+
+        return true;
     }
 }

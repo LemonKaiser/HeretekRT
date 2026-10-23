@@ -15,12 +15,11 @@
   - type: StaminaDamageResistance
     coefficient: 0.4
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.875
-        Slash: 0.875
-        Piercing: 0.85 # Modsuits are pain to use. Needs some kind of benefit.
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.4
         Heat: 0.75
         Radiation: 0.5
         Caustic: 0.5
@@ -44,12 +43,11 @@
   - type: StaminaDamageResistance
     coefficient: 0.4
   - type: Armor
-    armorRating: 700
     modifiers:
       coefficients:
-        Blunt: 0.882
-        Slash: 0.882
-        Piercing: 0.85 # It has a lot of slowdown, I want to jugglarp
+        Blunt: 0.45
+        Slash: 0.45
+        Piercing: 0.3
         Heat: 0.55
         Caustic: 0.4
         Radiation: 0.35
@@ -75,12 +73,11 @@
     walkModifier: 0.95
     sprintModifier: 0.95
   - type: Armor
-    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.87
+        Blunt: 0.45
+        Slash: 0.45
+        Piercing: 0.525
         Heat: 0.5
         Radiation: 0.2
         Caustic: 0.3
@@ -111,12 +108,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.2
   - type: Armor
-    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.893
-        Slash: 0.914
-        Piercing: 0.85
+        Blunt: 0.75
+        Slash: 0.8
+        Piercing: 0.65
         Heat: 0.5
         Shock: 0.9
         Radiation: 0.1
@@ -153,14 +149,13 @@
   - type: ExplosionResistance
     damageCoefficient: 0.7 # Mono
   - type: Armor
-    armorRating: 450
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.55
+        Slash: 0.55
+        Piercing: 0.55
         Heat: 0.6
-        Caustic: 0.45 # Mono
-        Radiation: 0.75 # Mono
+        Caustic: 0.45
+        Radiation: 0.75
   - type: StaminaDamageResistance
     coefficient: 0.7 # Mono

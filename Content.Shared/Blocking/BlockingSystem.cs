@@ -204,7 +204,7 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
     /// <returns></returns>
     public bool StartBlocking(EntityUid item, BlockingComponent component, EntityUid user)
     {
-        if (component.IsBlocking)
+        if (component.IsBlocking || !_durability.IsUsable(item))
             return false;
 
         var xform = Transform(user);

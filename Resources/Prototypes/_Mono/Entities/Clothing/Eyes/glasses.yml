@@ -14,7 +14,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_goggles_red.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95
@@ -45,7 +44,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_glasses_red.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95
@@ -75,7 +73,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_goggles_green.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95
@@ -105,7 +102,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_glasses_green.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95
@@ -135,7 +131,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_goggles_orange.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95
@@ -165,7 +160,6 @@
   - type: Clothing
     sprite: _Mono/Clothing/Eyes/Glasses/ballistic_glasses_orange.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95

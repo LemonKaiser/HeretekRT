@@ -18,7 +18,7 @@ public sealed partial class ItemRarityStatsComponent : Component
     public bool HasArmor;
 
     [DataField, AutoNetworkedField]
-    public float BaseArmorRating;
+    public DamageModifierSet BaseArmorModifiers = new();
 
     [DataField, AutoNetworkedField]
     public bool HasDurability;

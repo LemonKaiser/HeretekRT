@@ -15,14 +15,13 @@
     sprite: Clothing/OuterClothing/Armor/security.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/security.rsi
-  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
-    armorRating: 400
+  - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
-        Heat: 0.70 # Mono 0.8>0.7
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.6
+        Heat: 0.7
         Caustic: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.90
@@ -62,14 +61,13 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/riot.rsi
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.925
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.7
         Heat: 0.9
-        Caustic: 0.9 # Frontier
+        Caustic: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: GroupExamine
@@ -89,13 +87,14 @@
     sprite: Clothing/OuterClothing/Armor/bulletproof.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/bulletproof.rsi
+  - type: StaticPrice
+    price: 40
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.975
-        Slash: 0.975
-        Piercing: 0.85
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.4
         Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.80
@@ -116,13 +115,12 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/armor_reflec.rsi
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.9
         Slash: 0.9
         Piercing: 0.9
-        Heat: 0.3 # this technically means it protects against fires pretty well? -heat is just for lasers and stuff, not atmos temperature # Mono - 0.4->0.3
+        Heat: 0.3
   - type: Reflect
     reflectProb: 0.9 # mono - 0.9 from frontier 0.7 from wizden 1
     reflects:
@@ -146,12 +144,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/syndie-raid.rsi
   - type: Armor
-    armorRating: 650
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.35
+        Slash: 0.35
+        Piercing: 0.35
         Heat: 0.35
         Caustic: 0.5
   - type: ExplosionResistance
@@ -225,12 +222,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/cult_armour.rsi
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.88
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.6
         Heat: 0.5
   - type: GroupExamine
   - type: StaminaDamageResistance # Mono - Stamres
@@ -247,12 +243,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/heavy.rsi
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.88
-        Slash: 0.88
-        Piercing: 0.85
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.5
         Heat: 0.7
         Caustic: 0.75
   - type: GroupExamine
@@ -318,12 +313,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.895 # Mono: 0.6<0.65
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.65
         Heat: 0.5
         Caustic: 0.9
   - type: ClothingSpeedModifier
@@ -349,12 +343,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5
         Heat: 0.9
         Radiation: 0.8
   - type: ClothingSpeedModifier
@@ -380,12 +373,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/bone_armor.rsi
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.95
-        Piercing: 0.85
+        Blunt: 0.6
+        Slash: 0.8
+        Piercing: 0.4
   - type: ClothingSpeedModifier
     walkModifier: 0.8
   - type: HeldSpeedModifier
@@ -411,12 +403,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/podwars_armor.rsi
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.88
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.6
         Heat: 0.5
   - type: GroupExamine
   - type: ProtectedFromStepTriggers

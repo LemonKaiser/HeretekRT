@@ -1,0 +1,32 @@
+- type: tile
+  parent: CMPlanetSand
+  id: FloorKoronusQuicksand
+  name: tiles-koronus-quicksand
+
+- type: entity
+  id: KoronusQuicksand
+  name: quicksand
+  description: Pale sand with a slightly darker, damp surface. It cannot support your weight.
+  placement:
+    mode: SnapgridCenter
+    snap: [Wall]
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: SyncSprite
+  - type: Sprite
+    drawdepth: FloorTiles
+    texture: _RMC14/Tiles/planet/sand.png
+    color: "#EBE7DC"
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      sand:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        layer: [SlipLayer]
+        mask: [ItemMask]
+        hard: false
+  - type: KoronusQuicksand

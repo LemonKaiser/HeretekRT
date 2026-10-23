@@ -13,13 +13,12 @@
     highPressureMultiplier: 0.08
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
-        Blunt: 0.95
-        Slash: 0.95
-        Piercing: 0.95
-        Heat: 0.95
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
   - type: FlashImmunity
   - type: ToggleableVisuals
   - type: PointLight
@@ -63,12 +62,11 @@
     highPressureMultiplier: 0.525
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.925
-        Slash: 0.925
-        Piercing: 0.85
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.8
   - type: PointLight
     radius: 8 # 7->8 Mono
     energy: 3 # 2->3 Mono

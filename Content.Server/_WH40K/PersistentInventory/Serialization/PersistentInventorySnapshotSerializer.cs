@@ -17,6 +17,7 @@ using Content.Shared.Actions;
 using Content.Shared.CCVar;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
+using Content.Shared.Durability.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Item;
@@ -426,6 +427,33 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                         return CleanupAndFail(spawned, error ?? $"Cannot restore {componentState.ComponentId}.");
                 }
             }
+
+            // Older snapshots can predate durability on a prototype. Capture the new default after
+            // restoring rarity, so canonical verification includes its correctly scaled initial state.
+            var upgradedEntities = new List<PersistentInventoryEntityState>(payload.Entities.Count);
+            foreach (var entityState in payload.Entities)
+            {
+                if (entityState.Components.Any(component => component.ComponentId == "ItemDurability") ||
+                    !TryComp<ItemDurabilityComponent>(spawned[entityState.EntityId], out var durability))
+                {
+                    upgradedEntities.Add(entityState);
+                    continue;
+                }
+
+                if (!_adaptersById["ItemDurability"].TryCapture(
+                        spawned[entityState.EntityId], durability, out var initialState, out var error))
+                {
+                    return CleanupAndFail(spawned, error ?? "Cannot initialize legacy item durability.");
+                }
+
+                upgradedEntities.Add(entityState with
+                {
+                    Components = entityState.Components.Append(initialState).ToArray(),
+                });
+                migrationActions = migrationActions.Append($"durability-added:{entityState.EntityId}").ToArray();
+            }
+
+            payload = payload with { Entities = upgradedEntities };
 
             foreach (var entityState in payload.Entities.OrderBy(entity => entity.EntityId))
             {

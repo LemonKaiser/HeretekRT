@@ -20,6 +20,8 @@ entities:
     components:
     - type: MetaData
     - type: Transform
+    - type: Roof
+      data: {}
     - type: MapGrid
       chunks: {}
     # Only this authored central facility is protected. The procedural terrain grid created by
@@ -651,7 +653,7 @@ entities:
       parent: 1
     - type: KoronusLandingPadConsole
       padId: FootfallAsteroidPad
-      padName: Алтарь-1
+      padName: Площадка
       parkingTime: 600
       publicAccess: true
       enabled: true

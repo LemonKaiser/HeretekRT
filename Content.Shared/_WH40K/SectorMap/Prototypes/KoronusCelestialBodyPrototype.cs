@@ -192,6 +192,13 @@ public sealed partial class KoronusPlanetSurfacePrototype : IPrototype
     public Vector2 PlayableSize = new(100f, 100f);
 
     /// <summary>
+    /// Derive the playable boundary from all authored base grids, with this many additional
+    /// metres beyond each edge. PlayableSize is the fallback for surfaces without authored tiles.
+    /// </summary>
+    [DataField]
+    public float AuthoredGridMargin = 50f;
+
+    /// <summary>
     /// Decorative biome extension beyond the gameplay perimeter. Generated planet surfaces clamp
     /// this to 25 tiles so terrain fades past the hard edge without becoming an unbounded world.
     /// </summary>
@@ -220,6 +227,12 @@ public sealed partial class KoronusPlanetSurfacePrototype : IPrototype
     /// </summary>
     [DataField]
     public ProtoId<KoronusSafetyProfilePrototype>? SafetyProfile;
+
+    /// <summary>
+    /// Keep hostile surface spawns for hunting while retaining the other safety rules.
+    /// </summary>
+    [DataField]
+    public bool PreserveHostileNpcs;
 
     [DataField]
     public float OrbitalLaunchDistance = 500f;

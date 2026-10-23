@@ -8,7 +8,7 @@
     damage:
       types:
         Piercing: 35
-    armorPenetration: 20
+    armorPenetration: 0.1
 
 - type: entity
   id: Bullet357_magnumPractice
@@ -84,7 +84,7 @@
       types:
         Slash: 8
         Piercing: 37
-    armorPenetration: -100
+    armorPenetration: -0.5
 
 - type: entity
   id: Bullet357_magnumRIP
@@ -97,7 +97,7 @@
       types:
         Slash: 10
         Piercing: 50
-    armorPenetration: -180
+    armorPenetration: -0.9
 
 #armor-piercing:
 - type: entity
@@ -111,4 +111,4 @@
       types:
         Piercing: 14
         Structural: 70
-    armorPenetration: 120
+    armorPenetration: 0.8

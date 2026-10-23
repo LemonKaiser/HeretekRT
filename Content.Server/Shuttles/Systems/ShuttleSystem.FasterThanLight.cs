@@ -908,6 +908,9 @@ public sealed partial class ShuttleSystem
     private void UpdateFTLCooldown(Entity<FTLComponent, ShuttleComponent> entity)
     {
         var uid = entity.Owner;
+        // Console state is built before deferred removal. Publish the completed cooldown now,
+        // otherwise sector navigation stays disabled until an unrelated console refresh.
+        entity.Comp1.State = FTLState.Available;
         RemCompDeferred<FTLComponent>(entity);
 
         // Find any docked shuttles that might still be in cooldown from the same FTL trip
@@ -917,6 +920,7 @@ public sealed partial class ShuttleSystem
         {
             if (linkedComp.LinkedShuttle == uid && linkedComp.State == FTLState.Cooldown)
             {
+                linkedComp.State = FTLState.Available;
                 RemCompDeferred<FTLComponent>(linkedUid);
                 _console.RefreshShuttleConsoles(linkedUid);
             }

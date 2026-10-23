@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Numerics;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
@@ -132,9 +131,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         if (TerminatingOrDeleted(user) || !IsOperational(entity.Owner, entity.Comp2))
             return false;
 
-        var userPosition = _transform.GetWorldPosition(Transform(user));
-        var teleporterPosition = _transform.GetWorldPosition(entity.Comp2);
-        return Vector2.DistanceSquared(userPosition, teleporterPosition) <= UseRadius * UseRadius &&
+        return _transform.InRange(Transform(user).Coordinates, entity.Comp2.Coordinates, UseRadius) &&
                TryResolveTarget(entity.Owner, entity.Comp1, user, out target);
     }
 
@@ -144,8 +141,8 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         EntityUid target)
     {
         var targetTransform = Transform(target);
-        if (TryGetSurfaceRuntime(targetTransform.MapID, out _))
-            _maps.SetPaused(targetTransform.MapID, false);
+        // Either end can be sleeping after the last player leaves, including the return ship.
+        _maps.SetPaused(targetTransform.MapID, false);
 
         _particles.Spawn(
             entity.Owner,
@@ -381,7 +378,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
     private List<EntityUid> GetOperationalTeleporters(EntityUid grid)
     {
         var result = new List<EntityUid>();
-        var query = EntityQueryEnumerator<KoronusPlanetaryTeleporterComponent, TransformComponent>();
+        var query = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTeleporterComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
             if (transform.GridUid == grid && IsOperational(uid, transform))
@@ -396,7 +393,8 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         if (!_sector.TryGetSystemMap(systemId, out var orbitalMap))
             yield break;
 
-        var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
+        // Orbit may pause while the entire crew is exploring its surface.
+        var query = EntityManager.AllEntityQueryEnumerator<ShuttleComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
             if (transform.MapID == orbitalMap && GetOperationalTeleporters(uid).Count > 0)

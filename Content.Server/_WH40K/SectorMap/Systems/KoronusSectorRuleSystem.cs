@@ -210,7 +210,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
             _prototypes.Index(rule.Comp.Sector).StartSystem.Id == systemId ||
             !_maps.TryGetMap(mapId, out var mapUid) ||
             !_maps.IsPaused(mapId) ||
-            HasResidentMind(mapId) || HasUnsavableMob(mapId))
+            HasResidentMind(systemId, mapId) || HasUnsavableMob(mapId))
         {
             return false;
         }
@@ -244,18 +244,24 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         return false;
     }
 
-    private bool HasResidentMind(MapId mapId)
+    private bool HasResidentMind(string systemId, MapId mapId)
     {
         // Deleting and restoring a map cannot preserve live mind references to its entities.
         // Disconnected bodies and entities visited by a mind may sleep, but must stay in memory.
+        // Surface explorers also depend on orbital entity identities for their return ship and deed.
+        bool DependsOnSystem(EntityUid? entity)
+        {
+            return TryComp<TransformComponent>(entity, out var transform) &&
+                   (transform.MapID == mapId ||
+                    TryComp<KoronusPlanetSurfaceMapComponent>(transform.MapUid, out var surface) &&
+                    surface.SystemId == systemId);
+        }
+
         var minds = EntityManager.AllEntityQueryEnumerator<MindComponent>();
         while (minds.MoveNext(out _, out var mind))
         {
-            if (TryComp<TransformComponent>(mind.OwnedEntity, out var owned) && owned.MapID == mapId ||
-                TryComp<TransformComponent>(mind.VisitingEntity, out var visited) && visited.MapID == mapId)
-            {
+            if (DependsOnSystem(mind.OwnedEntity) || DependsOnSystem(mind.VisitingEntity))
                 return true;
-            }
         }
 
         return false;
@@ -521,6 +527,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         }
 
         _planetary.PreloadSurfaces(rule);
+        EntityManager.System<KoronusSafetyHazardCleanupSystem>().CleanupHostileNpcs();
     }
 
     private void LoadStartSystemAdditionalGrids(MapId mapId, KoronusSystemPrototype system)

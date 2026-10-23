@@ -138,7 +138,6 @@
   - type: ItemDurability
     maxDurability: 160
     protectsWearer: true
-    protectedBodyParts: Head
     repairMaterial: Steel
     requiredWorkbenchTier: 1
 
@@ -158,7 +157,6 @@
   - type: ItemDurability
     maxDurability: 100
     protectsWearer: true
-    protectedBodyParts: Head
     repairMaterial: Cloth
     requiredWorkbenchTier: 1
 
@@ -169,7 +167,6 @@
   - type: ItemDurability
     maxDurability: 100
     protectsWearer: true
-    protectedBodyParts: Hands
     repairMaterial: Cloth
     requiredWorkbenchTier: 1
 
@@ -180,7 +177,6 @@
   - type: ItemDurability
     maxDurability: 100
     protectsWearer: true
-    protectedBodyParts: Head
     repairMaterial: Steel
     requiredWorkbenchTier: 1
 

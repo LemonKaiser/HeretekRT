@@ -1,3 +1,4 @@
+using Content.Shared._Mono.ArmorPlate;
 using Content.Shared.Damage;
 using Content.Shared._Shitmed.Medical.Surgery.Tools;
 using Content.Shared.Durability;
@@ -20,6 +21,7 @@ namespace Content.Server.Durability;
 public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
 {
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly SharedArmorPlateSystem _plates = default!;
 
     public override void Initialize()
     {
@@ -243,12 +245,13 @@ public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
 
     private void OnArmorProtectionApplied(Entity<ItemDurabilityComponent> ent, ref ArmorProtectionAppliedEvent args)
     {
-        if (ent.Comp.ArmorDamageDrainMultiplier <= 0f || !CoversBodyPart(ent.Comp, args.TargetPart))
+        if (ent.Comp.ArmorDamageDrainMultiplier <= 0f || !ent.Comp.ProtectsWearer || ent.Comp.Broken)
             return;
 
         var drain = DurabilityMath.CalculateArmorDamageDrain(
-            args.AbsorbedDamage,
+            args.AbsorbedDamage.GetTotal().Float(),
             ent.Comp.ArmorDamageDrainMultiplier);
+        drain = _plates.AbsorbArmorWear(ent, args.AbsorbedDamage, drain);
         TryConsume(ent, drain, DurabilityReason.IncomingDamage);
     }
 

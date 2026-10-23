@@ -1,0 +1,7 @@
+- type: tile
+  parent: CMPlanetBase
+  id: KoronusOasisDryGrass
+  name: tiles-koronus-oasis-dry-grass
+  sprite: /Textures/_WH40K/Imported/Lavaland/Tiles/Planet/LightGrass/grass.png
+  variants: 2
+  placementVariants: [1.0, 1.0]

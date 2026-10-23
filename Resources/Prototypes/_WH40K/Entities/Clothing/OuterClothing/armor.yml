@@ -10,13 +10,12 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest.rsi
   - type: Appearance
   - type: Armor
-    armorRating: 125
     modifiers:
       coefficients:
-        Blunt: 0.95
-        Slash: 0.90
-        Piercing: 1.05
-        Heat: 1.10
+        Blunt: 0.75
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 1.1
   - type: StaticPrice
     price: 107
   - type: ItemDurability
@@ -83,12 +82,11 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestlight.rsi
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
-        Blunt: 1.00
-        Slash: 0.95
-        Piercing: 1.05
+        Blunt: 0.85
+        Slash: 0.8
+        Piercing: 0.85
         Heat: 1.15
   - type: ItemDurability
     maxDurability: 240
@@ -162,12 +160,11 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestadv.rsi
   - type: Armor
-    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.90
-        Slash: 0.85
-        Piercing: 0.95
+        Blunt: 0.65
+        Slash: 0.6
+        Piercing: 0.6
         Heat: 1.05
   - type: StaticPrice
     price: 55
@@ -190,12 +187,11 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvestgen.rsi
   - type: Armor
-    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.888
-        Slash: 0.85
-        Piercing: 0.925
+        Blunt: 0.55
+        Slash: 0.5
+        Piercing: 0.55
         Heat: 0.95
   - type: ExplosionResistance
     damageCoefficient: 0.6
@@ -323,13 +319,12 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/heresiarch_cardinal.rsi
   - type: Armor
-    armorRating: 425
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.888
-        Heat: 0.90
+        Blunt: 0.5
+        Slash: 0.45
+        Piercing: 0.5
+        Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.55
 
@@ -362,13 +357,14 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/mauler.rsi
+  - type: StaticPrice
+    price: 50
   - type: Armor
-    armorRating: 325
     modifiers:
       coefficients:
-        Blunt: 0.888
-        Slash: 0.85
-        Piercing: 0.925
+        Blunt: 0.55
+        Slash: 0.5
+        Piercing: 0.55
         Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.4
@@ -505,12 +501,11 @@
   - type: Clothing
     sprite: _WH40K/Clothing/OuterClothing/Armor/flakvest_old.rsi
   - type: Armor
-    armorRating: 60
     modifiers:
       coefficients:
-        Blunt: 1.00
-        Slash: 0.95
-        Piercing: 1.10
+        Blunt: 0.9
+        Slash: 0.85
+        Piercing: 0.9
         Heat: 1.15
   - type: StaticPrice
     price: 150

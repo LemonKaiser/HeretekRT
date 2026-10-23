@@ -22,7 +22,7 @@ using Robust.Shared.Timing;
 namespace Content.Server._WH40K.Npcs;
 
 /// <summary>Reuses advertisement scheduling, ordinary speech, human naming and hub protection.</summary>
-public sealed class Wh40kAmbientNpcSystem : EntitySystem
+public sealed partial class Wh40kAmbientNpcSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -32,6 +32,7 @@ public sealed class Wh40kAmbientNpcSystem : EntitySystem
     [Dependency] private DialogueSystem _dialogue = default!;
     [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private ActionBlockerSystem _blocker = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private GameTicker _ticker = default!;
@@ -112,11 +113,10 @@ public sealed class Wh40kAmbientNpcSystem : EntitySystem
         if (!direct && (now < _globalSpeech || now < _departmentSpeech.GetValueOrDefault(profile.Department)))
             return false;
         var nearby = false;
-        var speakers = EntityQueryEnumerator<ActorComponent, TransformComponent>();
         var point = _transform.GetMapCoordinates(uid);
-        while (speakers.MoveNext(out var actorUid, out var actor, out var xform))
+        foreach (var (actorUid, actor) in _lookup.GetEntitiesInRange<ActorComponent>(point, 6))
         {
-            var position = _transform.GetMapCoordinates(actorUid, xform);
+            var position = _transform.GetMapCoordinates(actorUid);
             if (position.MapId != point.MapId || (position.Position - point.Position).LengthSquared() > 36) continue;
             // A nearby player's active scene silences ambient bodies throughout this conversation area.
             if (_dialogue.IsInDialogue(actor.PlayerSession)) return false;

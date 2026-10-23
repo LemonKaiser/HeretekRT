@@ -100,7 +100,6 @@
   - type: ItemDurability
     maxDurability: 160
     protectsWearer: true
-    protectedBodyParts: Head
     repairMaterial: Steel
     requiredWorkbenchTier: 1
 
@@ -111,7 +110,6 @@
   components:
   - type: ItemDurability
     maxDurability: 100
-    protectedBodyParts: Feet
 
 - type: entity
   parent: WH40KDurableHelmet

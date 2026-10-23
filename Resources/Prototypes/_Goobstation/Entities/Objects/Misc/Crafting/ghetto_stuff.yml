@@ -377,10 +377,9 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Head/Helmets/helmet.rsi
   - type: Armor
-    armorRating: 12.5
     modifiers:
       coefficients:
-        Blunt: 0.95 # worse than a sec helmet
+        Blunt: 0.95
         Piercing: 0.95
   - type: Construction
     graph: MakeshiftHelmetGraph
@@ -399,12 +398,11 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Armor/light_armor.rsi
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: StaminaDamageResistance
@@ -426,12 +424,11 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Armor/heavy_armor.rsi
   - type: Armor
-    armorRating: 75
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85 # slightly worse than a secvest
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
         Heat: 0.9
   - type: StaminaDamageResistance
     coefficient: 1.2

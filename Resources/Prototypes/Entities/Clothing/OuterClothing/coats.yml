@@ -64,14 +64,13 @@
   id: ClothingOuterArmorHoS
   components:
   - type: Armor
-    armorRating: 550
     modifiers:
-      coefficients: # Mono edit - Changed coefficients
-        Blunt: 0.891
-        Slash: 0.891
-        Piercing: 0.85
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.45
         Heat: 0.5
-        Caustic: 0.75 # not the full 90% from ss13 because of the head
+        Caustic: 0.75
   - type: ExplosionResistance
     damageCoefficient: 0.65
 
@@ -81,12 +80,11 @@
   id: ClothingOuterArmorWarden
   components:
   - type: Armor
-    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
         Heat: 0.7
   - type: ExplosionResistance
     damageCoefficient: 0.9
@@ -130,7 +128,6 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95
@@ -155,7 +152,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -176,7 +172,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_chem.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -197,7 +192,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_viro.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -218,7 +212,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_gene.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -239,7 +232,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_cmo.rsi
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95
@@ -262,7 +254,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_sci.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -283,7 +274,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_robo.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -304,7 +294,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_rd.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -370,12 +359,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/dogi.rsi
   - type: Armor
-    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.914
-        Slash: 0.85
-        Piercing: 0.936
+        Blunt: 0.8
+        Slash: 0.65
+        Piercing: 0.85
 
 - type: entity
   parent: ClothingOuterStorageBase
@@ -421,12 +409,11 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/brigmedic.rsi
   - type: Armor
-    armorRating: 350
     modifiers:
       coefficients:
-        Blunt: 0.914
-        Slash: 0.936
-        Piercing: 0.85
+        Blunt: 0.8
+        Slash: 0.85
+        Piercing: 0.65
         Heat: 0.85
         Caustic: 0.75
 
@@ -441,7 +428,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_senior_researcher.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75
@@ -457,7 +443,6 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Coats/labcoat_senior_physician.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Caustic: 0.75

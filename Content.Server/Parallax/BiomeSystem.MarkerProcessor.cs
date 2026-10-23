@@ -312,6 +312,7 @@ public sealed partial class BiomeSystem
                 RemComp<GhostTakeoverAvailableComponent>(uid);
                 RemComp<GhostRoleComponent>(uid);
                 EntityManager.InitializeAndStartEntity(uid);
+                RecordSurfaceMarker(gridUid, uid, node, layer);
                 modified.Add(node);
             }
         }

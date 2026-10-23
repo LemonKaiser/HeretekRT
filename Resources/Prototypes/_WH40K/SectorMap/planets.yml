@@ -45,8 +45,9 @@
   mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
   planet: FoulstoneForestWorld
   safetyProfile: KoronusPlanetSafeSurface
-  # The authored landing grid is 256 x 192 m. Leave 100 m of playable terrain beyond every edge.
-  playableSize: 456, 392
+  preserveHostileNpcs: true
+  # Leave 50 tiles of playable terrain beyond every edge of the authored base grids.
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -108,7 +109,7 @@
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosDesertWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -122,7 +123,14 @@
 
 - type: planet
   id: TrinnitosDesertWorldSurface
-  biome: MonoDesertPermanentPlanet
+  biome: KoronusOrangeDesert
+  biomeMarkerLayers:
+  - OreIron
+  - OreCoal
+  - KoronusSandQuartz
+  - OreSilver
+  - OreGold
+  - KoronusOrangeDesertCrystal
   mapName: koronus-trinnitos-desert-map-name
   mapLight: "#D8A55E"
   dayDuration: 1800
@@ -152,19 +160,19 @@
   surfaceRotationPhase: 31
   axialTilt: 9
   cloudRotationSpeed: 0.2
-  cloudOpacity: 0.12
+  cloudOpacity: 0.03
   cloudScale: 3.0
   cloudSeed: 2.8
-  atmosphereColor: "#C9A47A"
-  atmosphereIntensity: 0.28
+  atmosphereColor: "#A7A9AD"
+  atmosphereIntensity: 0.12
   surface: TrinnitosRockSurface
 
 - type: koronusPlanetSurface
   id: TrinnitosRockSurface
-  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  mapPath: /Maps/_WH40K/Planets/trinnitos_rock_surface.yml
   planet: TrinnitosRockWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -178,11 +186,21 @@
 
 - type: planet
   id: TrinnitosRockWorldSurface
-  biome: Asteroid
+  biome: KoronusRockCaves
+  biomeMarkerLayers:
+  - OreIron
+  - OreQuartz
+  - OreCoal
+  - OreGold
+  - OreSilver
+  - OrePlasma
+  - OreUranium
+  - KoronusCaveCrystal
+  - KoronusCaveIronCrabs
+  - KoronusCaveQuartzCrabs
   mapName: koronus-trinnitos-rock-map-name
-  mapLight: "#B88A64"
-  dayDuration: 1800
-  nightDuration: 600
+  mapLight: "#393E45"
+  lightCycleEnabled: false
   atmosphere:
     volume: 2500
     temperature: 293.15
@@ -217,7 +235,7 @@
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosFlamingWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -279,11 +297,11 @@
 
 - type: koronusPlanetSurface
   id: SottosTombIceSurface
-  # Reuses the existing neutral landing complex; PlanetSystem generates the surrounding Snow biome.
-  mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
+  # Hokkaido's civilian facilities, without weapons, mobs or spawners, with an outdoor landing field.
+  mapPath: /Maps/_WH40K/Planets/sottos_tomb_ice_surface.yml
   planet: SottosTombIceWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -347,7 +365,7 @@
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusBurningWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -400,7 +418,7 @@
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusJungleWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -414,9 +432,15 @@
 
 - type: planet
   id: AivoriusJungleWorldSurface
-  biome: Grasslands
+  biome: KoronusJungleWetlands
+  biomeMarkerLayers:
+  - OreIron
+  - OreCoal
+  - OreQuartz
+  - OreGold
+  - KoronusJungleLightTree
   mapName: koronus-aivorius-jungle-map-name
-  mapLight: "#92C47C"
+  mapLight: "#A8B99A"
   dayDuration: 1800
   nightDuration: 600
   atmosphere:
@@ -453,10 +477,10 @@
 
 - type: koronusPlanetSurface
   id: AivoriusDesertSurface
-  mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
+  mapPath: /Maps/_WH40K/Planets/aivorius_desert_npz.yml
   planet: AivoriusDesertWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
-  playableSize: 100, 100
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -470,9 +494,16 @@
 
 - type: planet
   id: AivoriusDesertWorldSurface
-  biome: MonoDesertPermanentPlanet
+  biome: KoronusPaleDesert
+  biomeMarkerLayers:
+  - OreIron
+  - OreCoal
+  - OreQuartz
+  - OreSilver
+  - OreGold
+  - KoronusPaleDesertCrystal
   mapName: koronus-aivorius-desert-map-name
-  mapLight: "#D8A55E"
+  mapLight: "#D2CEC0"
   dayDuration: 1800
   nightDuration: 600
   atmosphere:
@@ -546,8 +577,8 @@
   mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
   planet: FootfallDeadWorldProfile
   safetyProfile: KoronusPlanetSafeSurface
-  # The authored landing grid is 288 x 288 m. Leave 100 m of playable terrain beyond every edge.
-  playableSize: 488, 488
+  # Leave 50 tiles of playable terrain beyond every edge of the authored base grids.
+  authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
   pauseWhenEmpty: true
@@ -563,9 +594,8 @@
   id: FootfallDeadWorldProfile
   biome: Lava
   mapName: koronus-footfall-dead-world-map-name
-  mapLight: "#7A4535"
-  dayDuration: 1800
-  nightDuration: 600
+  mapLight: "#603C2C"
+  lightCycleEnabled: false
   # No gas moles: the entire surface is vacuum despite using the normal planet generator.
   atmosphere:
     volume: 2500
@@ -596,8 +626,8 @@
   mapPath: /Maps/_WH40K/Planets/footfall_asteroid_surface.yml
   planet: FootfallAsteroidWorld
   safetyProfile: KoronusPlanetSafeSurface
-  # Half-sized gameplay profile compared with Foulstone, with a small generated scenery margin.
-  playableSize: 50, 50
+  # Derive the playable boundary from the landing grid, with 50 tiles beyond every edge.
+  authoredGridMargin: 50
   sceneryBuffer: 15
   preloadOnRoundStart: true
   pauseWhenEmpty: true

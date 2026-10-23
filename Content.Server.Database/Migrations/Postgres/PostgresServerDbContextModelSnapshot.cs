@@ -2169,6 +2169,55 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("wh40k_experience_ledger", (string)null);
                 });
 
+            modelBuilder.Entity("Content.Server.Database.Wh40kFactionStorageSlot", b =>
+                {
+                    b.Property<string>("Faction")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("faction");
+
+                    b.Property<int>("Slot")
+                        .HasColumnType("integer")
+                        .HasColumnName("slot");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("integer")
+                        .HasColumnName("count");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(16384)
+                        .HasColumnType("character varying(16384)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(4096)
+                        .HasColumnType("character varying(4096)")
+                        .HasColumnName("name");
+
+                    b.Property<byte[]>("Payload")
+                        .HasColumnType("bytea")
+                        .HasColumnName("payload");
+
+                    b.Property<string>("Prototype")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("prototype");
+
+                    b.Property<Guid>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid")
+                        .HasColumnName("revision");
+
+                    b.Property<byte[]>("Sha256")
+                        .HasColumnType("bytea")
+                        .HasColumnName("sha256");
+
+                    b.HasKey("Faction", "Slot")
+                        .HasName("PK_wh40k_faction_storage_slot");
+
+                    b.ToTable("wh40k_faction_storage_slot", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Wh40kMerchantSale", b =>
                 {
                     b.Property<Guid>("Token")

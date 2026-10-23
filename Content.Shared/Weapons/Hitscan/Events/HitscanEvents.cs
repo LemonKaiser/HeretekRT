@@ -81,6 +81,18 @@ public record struct HitscanRaycastFiredEvent
     public bool Canceled;
 }
 
+/// <summary>
+/// Raised on the hitscan for each target before damage is applied. Changes affect this impact only,
+/// including when the same ray is traced again after reflection.
+/// </summary>
+[ByRefEvent]
+public record struct HitscanDamageModifyEvent(EntityUid Target, DamageSpecifier Damage, float ArmorPenetration)
+{
+    public readonly EntityUid Target = Target;
+    public DamageSpecifier Damage = Damage;
+    public float ArmorPenetration = ArmorPenetration;
+}
+
 [ByRefEvent]
 public record struct HitscanDamageDealtEvent
 {

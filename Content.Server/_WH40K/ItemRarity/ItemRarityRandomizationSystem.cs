@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.ItemRarity;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._WH40K.ItemRarity.Prototypes;
 using Content.Shared._NF.Item;
@@ -116,7 +117,7 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
         if (stats.HasArmor && TryComp<ArmorComponent>(source, out var sourceArmor) &&
             TryComp<ArmorComponent>(target, out var targetArmor))
         {
-            targetArmor.ArmorRating = sourceArmor.ArmorRating;
+            targetArmor.Modifiers = ItemRarityStatMath.CopyArmorModifiers(sourceArmor.Modifiers);
             Dirty(target, targetArmor);
         }
 
@@ -149,7 +150,7 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
     {
         target.Applied = source.Applied;
         target.HasArmor = source.HasArmor;
-        target.BaseArmorRating = source.BaseArmorRating;
+        target.BaseArmorModifiers = ItemRarityStatMath.CopyArmorModifiers(source.BaseArmorModifiers);
         target.HasDurability = source.HasDurability;
         target.BaseMaxDurability = source.BaseMaxDurability;
         target.HasWeapon = source.HasWeapon;
@@ -275,8 +276,8 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
         if (TryComp<ArmorComponent>(uid, out var armor))
         {
             stats.HasArmor = true;
-            stats.BaseArmorRating = SanitizeNonNegative(armor.ArmorRating);
-            armor.ArmorRating = Scale(stats.BaseArmorRating, multiplier);
+            stats.BaseArmorModifiers = ItemRarityStatMath.CopyArmorModifiers(armor.Modifiers);
+            armor.Modifiers = ItemRarityStatMath.ScaleArmorModifiers(stats.BaseArmorModifiers, rarity.BonusPercent);
             Dirty(uid, armor);
         }
 
@@ -325,10 +326,10 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
         var baseArmorPenetration = configuredArmorPenetration >= 0f
             ? configuredArmorPenetration
             : hasMelee
-                ? SanitizeNonNegative(melee!.ArmorPenetration)
+                ? float.IsFinite(melee!.ArmorPenetration) ? melee.ArmorPenetration : 0f
                 : 0f;
         stats.BaseWeaponArmorPenetration = baseArmorPenetration;
-        stats.EffectiveWeaponArmorPenetration = Scale(baseArmorPenetration, rarityMultiplier);
+        stats.EffectiveWeaponArmorPenetration = ItemRarityStatMath.BoostArmorPenetration(baseArmorPenetration, rarityMultiplier);
 
         if (hasMelee)
         {

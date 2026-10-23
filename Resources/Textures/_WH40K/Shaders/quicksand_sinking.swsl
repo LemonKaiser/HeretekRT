@@ -1,0 +1,26 @@
+preset raw;
+light_mode unshaded;
+
+uniform highp float SinkPixels;
+uniform highp float SurfaceY;
+varying highp vec4 VtxModulate;
+
+void vertex()
+{
+    // This quad is drawn in viewport pixels after all body and clothing layers have been composed.
+    VERTEX = apply_mvp(aPos + vec2(0.0, SinkPixels));
+    UV = mix(modifyUV.xy, modifyUV.zw, tCoord);
+    UV2 = tCoord2;
+    VtxModulate = zFromSrgb(modulate);
+}
+
+void fragment()
+{
+    if (FRAGCOORD.y <= SurfaceY)
+        discard;
+
+    highp vec4 body = zTexture(UV) * VtxModulate;
+    // Feather only above the surface. Buried pixels are discarded, never translucent.
+    highp float aboveSand = smoothstep(SurfaceY, SurfaceY + 1.0, FRAGCOORD.y);
+    COLOR = vec4(body.rgb, body.a * aboveSand);
+}

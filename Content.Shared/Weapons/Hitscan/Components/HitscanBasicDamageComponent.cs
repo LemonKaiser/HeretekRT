@@ -17,7 +17,7 @@ public sealed partial class HitscanBasicDamageComponent : Component
 
     // Mono start
     /// <summary>
-    ///     Flat armor points ignored by this hitscan attack. Positive values reduce the target's ArmorRating;
+    ///     Monolith armor penetration applied to resistance coefficients. A value of 1 bypasses armor;
     ///     negative values make the target effectively more resistant.
     /// </summary>
     [DataField]

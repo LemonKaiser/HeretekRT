@@ -12,7 +12,6 @@
     walkModifier: 0.8
     sprintModifier: 0.8
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -61,7 +60,6 @@
   - type: FireProtection
     reduction: 0.65 # doesnt have a full seal so not as good
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
         Slash: 0.9
@@ -94,7 +92,6 @@
   - type: FireProtection
     reduction: 0.8 # atmos firesuit offers best protection, hardsuits are a little vulnerable
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
         Slash: 0.9
@@ -117,10 +114,9 @@
   - type: Sprite
     sprite: Clothing/OuterClothing/Suits/rad.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
-        Heat: 0.90
+        Heat: 0.9
         Radiation: 0.1
   - type: Clothing
     sprite: Clothing/OuterClothing/Suits/rad.rsi
@@ -149,12 +145,11 @@
     heatingCoefficient: 0.01
     coolingCoefficient: 0.01
   - type: Armor
-    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
         Heat: 0.8
   # phase cloak
   - type: ToggleClothing

@@ -20,10 +20,9 @@
     animation: WeaponArcFist
     mustBeEquippedToUse: true
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
-        Shock: 1.05 # oh no so conductive
+        Shock: 1.05
   - type: Insulated
     coefficient: 1.5
   - type: Tag

@@ -5,7 +5,7 @@ meta:
   forkId: ebengrad
   forkVersion: b38783231d616bd70398b00366c568bea7e2a437
   time: 10/15/2026 19:00:45
-  entityCount: 25332
+  entityCount: 25334
 maps:
 - 1
 grids:
@@ -157742,5 +157742,19 @@ entities:
     components:
     - type: Transform
       pos: 20.5,-16.5
+      parent: 2
+- proto: WH40KKasballicaFactionStorage
+  entities:
+  - uid: 25333
+    components:
+    - type: Transform
+      pos: -34.5,-50.5
+      parent: 2
+- proto: WH40KChartistFactionStorage
+  entities:
+  - uid: 25334
+    components:
+    - type: Transform
+      pos: -28.5,25.5
       parent: 2
 ...

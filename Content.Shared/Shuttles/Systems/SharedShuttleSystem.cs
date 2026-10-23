@@ -222,7 +222,8 @@ public abstract partial class SharedShuttleSystem : EntitySystem
     /// <summary>
     /// Returns true if the spot is free to be FTLd to (not close to any objects and in range).
     /// </summary>
-    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones)
+    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones,
+        bool checkRange = true)
     {
         if (!_physicsQuery.TryGetComponent(shuttleUid, out var shuttlePhysics) ||
             !_xformQuery.TryGetComponent(shuttleUid, out var shuttleXform))
@@ -241,8 +242,9 @@ public abstract partial class SharedShuttleSystem : EntitySystem
 
         var range = GetFTLRange(shuttleUid);
 
-        // Check range even if it's cross-map.
-        if (range <= 0 || (targetPosition - ourPos).Length() > range)
+        // Sector routes validate travel through their authored graph. Coordinates on separate
+        // system maps have unrelated origins and cannot measure the length of a warp route.
+        if (range <= 0 || checkRange && (targetPosition - ourPos).Length() > range)
         {
             return false;
         }

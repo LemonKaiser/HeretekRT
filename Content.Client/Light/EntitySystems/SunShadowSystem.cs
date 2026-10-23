@@ -26,7 +26,9 @@ public sealed partial class SunShadowSystem : SharedSunShadowSystem
             if (!cycle.Running || cycle.Directions.Count == 0 || cycle.Duration <= TimeSpan.Zero)
                 continue;
 
-            var pausedTime = _metadata.GetPauseTime(uid);
+            var pausedTime = TryComp<LightCycleComponent>(uid, out var lightCycle) && !lightCycle.PauseWithMap
+                ? TimeSpan.Zero
+                : _metadata.GetPauseTime(uid);
 
             var elapsed = (float) (_timing.CurTime
                 .Add(cycle.Offset)

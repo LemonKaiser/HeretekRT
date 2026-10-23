@@ -1,0 +1,43 @@
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: WH40KBaseFactionStorage
+  components:
+  - type: Sprite
+    sprite: Structures/Storage/closet.rsi
+    state: secure_icon
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 200
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: UserInterface
+    interfaces:
+      enum.FactionStorageUiKey.Key:
+        type: FactionStorageBoundUserInterface
+
+- type: entity
+  parent: WH40KBaseFactionStorage
+  id: WH40KKasballicaFactionStorage
+  name: Kasballica Mission storage
+  description: A persistent communal store for members of the Kasballica Mission. Contains 100 item slots.
+  components:
+  - type: FactionStorage
+    faction: KasballicaMission
+
+- type: entity
+  parent: WH40KBaseFactionStorage
+  id: WH40KChartistFactionStorage
+  name: Chartist Fleet storage
+  description: A persistent communal store for members of the Chartist Fleet. Contains 100 item slots.
+  components:
+  - type: FactionStorage
+    faction: ChartistFleet

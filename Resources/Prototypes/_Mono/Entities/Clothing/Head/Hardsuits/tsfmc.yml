@@ -22,7 +22,6 @@
     phosphorColor: "#00AACC"
     lightingColor: "#FFFFFF32"
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
         Blunt: 0.95

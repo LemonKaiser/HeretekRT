@@ -8,12 +8,11 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hats/commissar.rsi
   - type: Armor
-    armorRating: 75
     modifiers:
       coefficients:
         Blunt: 0.95
-        Slash: 0.90
-        Piercing: 1.00
+        Slash: 0.9
+        Piercing: 0.97
         Heat: 1.05
   - type: ExplosionResistance
     damageCoefficient: 0.7

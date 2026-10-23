@@ -33,12 +33,11 @@
   - type: StaticPrice
     price: 50000
   - type: Armor
-    armorRating: 700
     modifiers:
       coefficients:
-        Blunt: 0.861
-        Slash: 0.968
-        Piercing: 0.85
+        Blunt: 0.35
+        Slash: 0.85
+        Piercing: 0.3
         Heat: 0.4
         Radiation: 0
         Shock: 0.8

@@ -103,10 +103,9 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
-        Heat: 0.90
+        Heat: 0.9
         Radiation: 0.75
   - type: PointLight
     radius: 6 # 5->6 Mono

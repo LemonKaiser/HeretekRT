@@ -2,6 +2,7 @@
 # facility grid; planetary surfaces may opt into a map-wide profile without a green orbital ring.
 - type: koronusSafetyProfile
   id: KoronusFullSafeSystem
+  autoCleanupHostileNpcs: true
   blockShipWeapons: true
   blockPlayerDamage: true
   blockPlayerStaminaDamage: true
@@ -16,6 +17,7 @@
 
 - type: koronusSafetyProfile
   id: KoronusStationSafeZone
+  autoCleanupHostileNpcs: true
   blockShipWeapons: true
   blockPlayerDamage: true
   blockPlayerStaminaDamage: true
@@ -54,6 +56,7 @@
 
 - type: koronusSafetyProfile
   id: KoronusPlanetSafeSurface
+  autoCleanupHostileNpcs: true
   blockShipWeapons: true
   blockPlayerDamage: true
   blockPlayerStaminaDamage: true

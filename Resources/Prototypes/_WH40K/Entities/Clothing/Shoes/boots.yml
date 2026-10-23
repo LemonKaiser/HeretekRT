@@ -79,7 +79,6 @@
   - type: ClothingSlowOnDamageModifier
     modifier: 0.4
   - type: Armor
-    armorRating: 25
     modifiers:
       coefficients:
         Piercing: 0.95

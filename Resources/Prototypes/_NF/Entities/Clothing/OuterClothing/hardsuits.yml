@@ -15,14 +15,13 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5 # Removed 10%
   - type: Armor
-    armorRating: 400
     modifiers:
-      coefficients: # Buffed to be more durable
-        Blunt: 0.869 #0.75->0.65
-        Slash: 0.85 #0.75->0.6
-        Piercing: 0.869 #0.75->0.65
-        Heat: 0.7 #0.80->0.7
-        Radiation: 0.75 # 0.6->0.75
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.6
+        Piercing: 0.65
+        Heat: 0.7
+        Radiation: 0.75
         Caustic: 0.8
   - type: ClothingSpeedModifier
     walkModifier: 0.9
@@ -131,12 +130,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.4 # 10% increase
   - type: Armor
-    armorRating: 400
     modifiers:
       coefficients:
-        Blunt: 0.85 # Mono - 0.7 -> 0.6
-        Slash: 0.85 # Mono - 0.7 -> 0.6
-        Piercing: 0.869 # Mono - 0.5->0.65
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.65
         Heat: 0.8
         Radiation: 0.3
         Caustic: 0.5
@@ -245,13 +243,12 @@
   - type: ExplosionResistance
     damageCoefficient: 0.4
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
-        Heat: 0.50
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5
+        Heat: 0.5
         Radiation: 0.4
         Caustic: 0.6
   - type: ClothingSpeedModifier

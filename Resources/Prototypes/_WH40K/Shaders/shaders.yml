@@ -1,4 +1,9 @@
 - type: shader
+  id: KoronusQuicksandSinking
+  kind: source
+  path: "/Textures/_WH40K/Shaders/quicksand_sinking.swsl"
+
+- type: shader
   id: WH40KUndeadEye
   kind: source
   path: "/Textures/_WH40K/Shaders/undead_eye.swsl"

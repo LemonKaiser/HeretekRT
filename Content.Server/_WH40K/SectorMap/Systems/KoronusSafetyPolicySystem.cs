@@ -172,6 +172,8 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             surface.SafetyProfile is { } surfaceProfile)
         {
             rules |= _prototypes.Index(surfaceProfile).Rules;
+            if (surface.PreserveHostileNpcs)
+                rules &= ~KoronusSafetyRule.HostileNpcAutoCleanup;
         }
         else if (_sector.TryGetSystemId(mapId, out var systemId) &&
                  _sector.TryGetSystemPrototype(systemId, out var system))
@@ -190,7 +192,9 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         // Dynamic zones are anchored to the facility grid and therefore follow random placement,
         // docking and grid movement instead of relying on stale map coordinates.
-        var zones = EntityQueryEnumerator<KoronusSafetyZoneComponent, TransformComponent>();
+        // Preloaded stations are paused, but their safety rules must already apply when
+        // bootstrap removes hostile map spawns before the first player arrives.
+        var zones = AllEntityQuery<KoronusSafetyZoneComponent, TransformComponent>();
         while (zones.MoveNext(out _, out var zone, out var transform))
         {
             if (transform.MapID != mapId || zone.Radius <= 0f)

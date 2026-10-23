@@ -29,7 +29,7 @@ public sealed partial class LightCycleSystem : SharedLightCycleSystem
 
             // We still iterate paused entities as we still want to override the lighting color and not have
             // it apply the server state
-            var pausedTime = _metadata.GetPauseTime(uid);
+            var pausedTime = cycle.PauseWithMap ? _metadata.GetPauseTime(uid) : TimeSpan.Zero;
 
             var time = (float) _timing.CurTime
                 .Add(cycle.Offset)

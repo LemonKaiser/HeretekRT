@@ -1,0 +1,61 @@
+- type: biomeMarkerLayer
+  id: KoronusSandQuartz
+  entityMask:
+    WallRockSand: WallRockSandQuartz
+    WallRockBasalt: WallRockBasaltQuartz
+  maxCount: 18
+  minGroupSize: 4
+  maxGroupSize: 8
+  radius: 6
+
+- type: biomeMarkerLayer
+  id: KoronusPaleDesertCrystal
+  prototype: CrystalOrange
+  size: 160
+  radius: 32
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: KoronusOrangeDesertCrystal
+  prototype: CrystalGrey
+  size: 160
+  radius: 32
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: KoronusJungleLightTree
+  prototype: LightTree
+  size: 160
+  radius: 32
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: KoronusCaveCrystal
+  prototype: CrystalCyan
+  size: 160
+  radius: 32
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: KoronusCaveIronCrabs
+  prototype: KoronusCaveIronCrab
+  radius: 36
+  maxCount: 2
+  minGroupSize: 1
+  maxGroupSize: 1
+
+- type: biomeMarkerLayer
+  id: KoronusCaveQuartzCrabs
+  prototype: KoronusCaveQuartzCrab
+  radius: 44
+  maxCount: 1
+  minGroupSize: 1
+  maxGroupSize: 1

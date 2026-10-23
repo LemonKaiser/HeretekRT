@@ -54,7 +54,11 @@
   - type: SlowOnDamage
     speedModifierThresholds: {}
   - type: Wh40kInnateArmor
-    armorRating: 75
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
   - type: Wh40kChaosTactics
   - type: NPCRetaliation
     attackMemoryLength: 8
@@ -190,7 +194,11 @@
       240: Critical
       300: Dead
   - type: Wh40kInnateArmor
-    armorRating: 150
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.65
   - type: Gun
     fireRate: 5
     selectedMode: FullAuto
@@ -226,7 +234,11 @@
       360: Critical
       450: Dead
   - type: Wh40kInnateArmor
-    armorRating: 250
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.2
     baseSprintSpeed: 2.8
@@ -252,8 +264,12 @@
       256: Critical
       320: Dead
   - type: Wh40kInnateArmor
-    armorRating: 300
     chainWeaponWeakness: true
+    modifiers:
+      coefficients:
+        Blunt: 0.45
+        Slash: 0.45
+        Piercing: 0.45
   - type: MovementSpeedModifier
     baseWalkSpeed: 4.5
     baseSprintSpeed: 5.5
@@ -327,7 +343,11 @@
       120: Critical
       150: Dead
   - type: Wh40kInnateArmor
-    armorRating: 50
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
   - type: MovementSpeedModifier
     baseWalkSpeed: 3.5
     baseSprintSpeed: 4.5

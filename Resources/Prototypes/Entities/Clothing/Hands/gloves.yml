@@ -125,7 +125,6 @@
     fiberMaterial: fibers-durathread
     fiberColor: fibers-black
   - type: Armor
-    armorRating: 50
     modifiers:
       coefficients:
         Slash: 0.95

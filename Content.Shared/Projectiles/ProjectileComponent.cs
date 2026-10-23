@@ -120,7 +120,7 @@ public sealed partial class ProjectileComponent : Component
 
     // Goobstation Start
     /// <summary>
-    ///     Flat armor points ignored by this projectile. Positive values reduce the target's ArmorRating;
+    ///     Monolith armor penetration applied to resistance coefficients. A value of 1 bypasses armor;
     ///     negative values make the target effectively more resistant.
     /// </summary>
     [DataField]

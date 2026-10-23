@@ -11,6 +11,7 @@ using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._WH40K.SectorMap.Components;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.Damage;
@@ -44,7 +45,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Owns preloaded planetary maps and performs controlled, non-docking atmospheric transfers
 /// between an orbital system and a reserved surface landing site.
 /// </summary>
-public sealed class KoronusPlanetarySystem : EntitySystem
+public sealed partial class KoronusPlanetarySystem : EntitySystem
 {
     private const float LandingPadding = 1f;
     private const float BoundaryPadding = 1f;
@@ -94,6 +95,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private SharedKoronusPlanetSurfaceBoundarySystem _surfaceBoundary = default!;
 
     private TimeSpan _nextBoundaryUpdate;
     private TimeSpan _nextBoundaryTrackingRefresh;
@@ -373,8 +375,8 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         }
         if (_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(surfaceId, out var surface))
         {
-            runtime.PlayableBounds = GetPlayableBounds(surface);
-            runtime.GenerationBounds = GetGenerationBounds(surface);
+            runtime.PlayableBounds = GetPlayableBounds(surface, runtime.AuthoredBaseGrids);
+            runtime.GenerationBounds = GetGenerationBounds(surface, runtime.PlayableBounds);
 
             var visualBoundary = EnsureComp<KoronusPlanetSurfaceBoundaryComponent>(mapUid.Value);
             visualBoundary.Minimum = new Vector2(runtime.PlayableBounds.Left, runtime.PlayableBounds.Bottom);
@@ -391,6 +393,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         }
 
         rule.Comp.SurfaceMaps[surfaceId] = mapId;
+        ConfigureSurfaceLighting(mapUid.Value, runtime);
         _surfaceBoundaries[mapId] = new SurfaceBoundary(mapUid.Value, runtime.PlayableBounds, terrainGrid);
         SeedSurfaceBoundaryTracking(mapId);
     }
@@ -599,7 +602,10 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             return false;
         }
 
-        if (TryComp<FTLComponent>(shuttleGrid, out var ftl) && ftl.State != FTLState.Available)
+        // Atmospheric descent does not use the FTL drive. Its cooldown must not strand an
+        // arrived shuttle with a disabled landing button until it leaves the approach radius.
+        if (TryComp<FTLComponent>(shuttleGrid, out var ftl) &&
+            ftl.State is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
         {
             failure = KoronusPlanetaryTransferFailure.ShuttleInFtl;
             return false;
@@ -1564,7 +1570,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
                 }
 
                 var worldBounds = _physics.GetWorldAABB(gridUid, xform: transform);
-                var correction = GetBoundsCorrection(worldBounds, boundary.Bounds);
+                var correction = SharedKoronusPlanetSurfaceBoundarySystem.GetBoundsCorrection(worldBounds, boundary.Bounds);
                 if (correction == Vector2.Zero)
                     continue;
 
@@ -1662,13 +1668,13 @@ public sealed class KoronusPlanetarySystem : EntitySystem
                 !TryComp<TransformComponent>(uid, out var transform) ||
                 transform.Anchored ||
                 !_surfaceBoundaries.TryGetValue(transform.MapID, out var boundary) ||
-                !IsSurfaceBoundaryRoot(transform, boundary) ||
-                _maps.IsPaused(transform.MapID))
+                !IsSurfaceBoundaryRoot(transform, boundary))
             {
                 continue;
             }
 
-            ClampSurfaceEntity(uid, transform, boundary);
+            // Observers can move on paused maps; containment must not sleep with the biome.
+            _surfaceBoundary.ClampEntity(uid, transform, boundary.Bounds);
         }
     }
 
@@ -1695,44 +1701,12 @@ public sealed class KoronusPlanetarySystem : EntitySystem
                transform.ParentUid == boundary.MapUid && transform.GridUid == null;
     }
 
-    private void ClampSurfaceEntity(EntityUid uid, TransformComponent transform, SurfaceBoundary boundary)
-    {
-        var position = _transform.GetWorldPosition(transform);
-        var correction = TryComp<PhysicsComponent>(uid, out _)
-            ? GetBoundsCorrection(_physics.GetWorldAABB(uid, xform: transform), boundary.Bounds)
-            : GetBoundsCorrection(new Box2(position, position), boundary.Bounds);
-        if (correction == Vector2.Zero)
-            return;
-
-        _transform.SetWorldPosition((uid, transform), position + correction);
-        StopPhysics(uid);
-    }
-
     private void OnSurfaceMapShutdown(Entity<KoronusPlanetSurfaceMapComponent> entity, ref ComponentShutdown args)
     {
         if (!TryComp<MapComponent>(entity.Owner, out var map))
             return;
 
         _surfaceBoundaries.Remove(map.MapId);
-    }
-
-    private static Vector2 GetBoundsCorrection(Box2 value, Box2 bounds)
-    {
-        var x = value.Width > bounds.Width
-            ? bounds.Center.X - value.Center.X
-            : value.Left < bounds.Left
-                ? bounds.Left - value.Left
-                : value.Right > bounds.Right
-                    ? bounds.Right - value.Right
-                    : 0f;
-        var y = value.Height > bounds.Height
-            ? bounds.Center.Y - value.Center.Y
-            : value.Bottom < bounds.Bottom
-                ? bounds.Bottom - value.Bottom
-                : value.Top > bounds.Top
-                    ? bounds.Top - value.Top
-                    : 0f;
-        return new Vector2(x, y);
     }
 
     private void StopPhysics(EntityUid uid)
@@ -1777,17 +1751,30 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         return false;
     }
 
-    private static Box2 GetPlayableBounds(KoronusPlanetSurfacePrototype surface)
+    private Box2 GetPlayableBounds(KoronusPlanetSurfacePrototype surface, IReadOnlySet<EntityUid> authoredGrids)
     {
+        Box2? authoredBounds = null;
+        foreach (var uid in authoredGrids)
+        {
+            if (!TryComp<MapGridComponent>(uid, out var grid) ||
+                grid.LocalAABB.Width <= 0f || grid.LocalAABB.Height <= 0f)
+                continue;
+
+            var bounds = _transform.GetWorldMatrix(uid).TransformBox(grid.LocalAABB);
+            authoredBounds = authoredBounds?.Union(bounds) ?? bounds;
+        }
+
+        if (authoredBounds is { } baseBounds)
+            return baseBounds.Enlarged(MathF.Max(0f, surface.AuthoredGridMargin));
+
         var halfSize = surface.PlayableSize / 2f;
         return new Box2(-halfSize, halfSize);
     }
 
-    private static Box2 GetGenerationBounds(KoronusPlanetSurfacePrototype surface)
+    private static Box2 GetGenerationBounds(KoronusPlanetSurfacePrototype surface, Box2 playableBounds)
     {
         var buffer = Math.Clamp(surface.SceneryBuffer, 0f, MaxGeneratedPlanetSceneryBuffer);
-        var halfSize = surface.PlayableSize / 2f + new Vector2(buffer);
-        return new Box2(-halfSize, halfSize);
+        return playableBounds.Enlarged(buffer);
     }
 
     private static string GetReservationKey(string bodyId, string siteId) => $"{bodyId}/{siteId}";
@@ -1968,6 +1955,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             if (!_landingApproachStates.TryGetValue(shuttleGrid, out var previousState))
             {
                 _landingApproachStates[shuttleGrid] = state;
+                EntityManager.System<ShuttleConsoleSystem>().RefreshShuttleConsoles(shuttleGrid);
                 continue;
             }
 
@@ -2012,7 +2000,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
             hashXor ^= bodyHash;
         }
 
-        return new LandingApproachState(count, hashSum, hashXor);
+        return new LandingApproachState(transform.MapID, CanTransfer(shuttleGrid, out _), count, hashSum, hashXor);
     }
 
     private void PruneStaleReservations()
@@ -2136,7 +2124,7 @@ public sealed class KoronusPlanetarySystem : EntitySystem
         EntityUid SurfaceMapUid,
         KoronusPlanetSurfaceMapComponent SurfaceRuntime);
 
-    private readonly record struct LandingApproachState(int Count, long HashSum, int HashXor);
+    private readonly record struct LandingApproachState(MapId Map, bool CanTransfer, int Count, long HashSum, int HashXor);
 
     private sealed record ResolvedLandingSite(
         string Id,

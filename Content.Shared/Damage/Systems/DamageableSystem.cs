@@ -1,6 +1,5 @@
 using Content.Shared._Shitmed.Targeting;
 // Shitmed Change
-using Content.Shared.Armor;
 using Content.Shared.Body.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Chemistry;
@@ -259,27 +258,17 @@ namespace Content.Shared.Damage
                         origin,
                         armorPenetration,
                         targetPart,
-                        tool,
-                        partDamage.ResolvedTargetPart); // Shitmed Change
+                        tool); // Shitmed Change
                     RaiseLocalEvent(uid.Value, ev);
-                    var damageBeforeRating = ev.Damage;
-                    var armorResult = ArmorRatingMath.Apply(
-                        damageBeforeRating,
-                        ev.ArmorRating,
-                        ev.ArmorPenetration);
-                    ev.Damage = armorResult.Damage;
-                    var ratingAbsorbedDamage = ev.CalculateArmorRatingAbsorbedDamage(damageBeforeRating, ev.Damage);
-                    ev.ArmorAbsorbedDamage = ev.CalculateArmorAbsorbedDamage(ratingAbsorbedDamage);
-                    var durabilityAbsorbedDamage = ev.SelectArmorDurabilityCandidate(ratingAbsorbedDamage);
                     damage = ev.Damage;
 
-                    if (_netMan.IsServer &&
-                        durabilityAbsorbedDamage > 0f &&
-                        ev.ArmorDurabilityCandidate is { } armor &&
-                        !TerminatingOrDeleted(armor))
+                    if (_netMan.IsServer && ev.ArmorWear is { } wear)
                     {
-                        RaiseLocalEvent(armor,
-                            new ArmorProtectionAppliedEvent(ev.ArmorTargetPart, durabilityAbsorbedDamage));
+                        foreach (var (armor, absorbed) in wear)
+                        {
+                            if (!TerminatingOrDeleted(armor))
+                                RaiseLocalEvent(armor, new ArmorProtectionAppliedEvent(absorbed));
+                        }
                     }
 
                     if (damage.Empty)
@@ -567,7 +556,7 @@ namespace Content.Shared.Damage
         public MapCoordinates? ImpactCoordinates;
 
         /// <summary>
-        /// Flat armor penetration that must be preserved when damage is relayed to a concrete body part.
+        /// Armor penetration that must be preserved when damage is relayed to a concrete body part.
         /// </summary>
         public float ArmorPenetration;
 
@@ -586,189 +575,49 @@ namespace Content.Shared.Damage
     /// </summary>
     public sealed class DamageModifyEvent : EntityEventArgs, IInventoryRelayEvent
     {
-        // Whenever locational damage is a thing, this should just check only that bit of armour.
         public SlotFlags TargetSlots { get; } = ~SlotFlags.POCKET;
-
         public readonly DamageSpecifier OriginalDamage;
         public DamageSpecifier Damage;
         public EntityUid? Origin;
-        /// <summary>
-        ///     Flat armor points ignored by the incoming damage. Positive values reduce ArmorRating;
-        ///     negative values increase effective armor.
-        /// </summary>
-        public float ArmorPenetration; // Goobstation
-        public readonly TargetBodyPart? TargetPart; // Shitmed Change
+        public float ArmorPenetration;
+        public readonly TargetBodyPart? TargetPart;
         public EntityUid? Tool;
 
-        /// <summary>
-        /// Resolved body part used for armor coverage, numerical rating and durability selection.
-        /// </summary>
-        public readonly TargetBodyPart? ArmorTargetPart;
-
-        /// <summary>
-        /// Body-part damage relays armor a second time. Those relays still apply protection, but must not spend
-        /// item durability again; the owning body's damage event handles the single durability cost.
-        /// </summary>
+        // Body-part relays apply protection but the owning body's event spends durability once.
         public bool TrackArmorDurability = true;
-
-        /// <summary>
-        /// Best matching protective item selected while the event is relayed through equipped armor.
-        /// </summary>
-        public EntityUid? ArmorDurabilityCandidate { get; private set; }
-
-        /// <summary>
-        /// Strongest matching numerical armor selected by equipped armor relays.
-        /// </summary>
-        public EntityUid? ArmorRatingCandidate { get; private set; }
-
-        public float ArmorRating { get; private set; }
-        public float ArmorAbsorbedDamage;
-
-        private float _armorModifierAbsorbedDamage;
-        private int _armorRatingPriority = int.MaxValue;
-        private EntityUid? _armorRatingDurabilityCandidate;
-        private float _armorRatingDurabilityRating = float.MinValue;
-        private int _armorRatingDurabilityPriority = int.MaxValue;
-        private EntityUid? _armorModifierDurabilityCandidate;
-        private float _armorModifierDurabilityRating = float.MinValue;
-        private int _armorModifierDurabilityPriority = int.MaxValue;
+        public Dictionary<EntityUid, DamageSpecifier>? ArmorWear;
 
         public DamageModifyEvent(
             DamageSpecifier damage,
             EntityUid? origin = null,
             float armorPenetration = 0,
             TargetBodyPart? targetPart = null,
-            EntityUid? tool = null,
-            TargetBodyPart? armorTargetPart = null) // Shitmed Change
+            EntityUid? tool = null)
         {
             OriginalDamage = damage;
             Damage = damage;
             Origin = origin;
-            TargetPart = targetPart; // Shitmed Change
-            ArmorPenetration = armorPenetration; // Goobstation
+            ArmorPenetration = armorPenetration;
+            TargetPart = targetPart;
             Tool = tool;
-            ArmorTargetPart = armorTargetPart ?? targetPart;
         }
 
-        /// <summary>
-        /// Keeps the strongest and then most specific matching numerical armor.
-        /// </summary>
-        public void ConsiderArmorRatingCandidate(EntityUid uid, float armorRating, int priority)
+        public void RecordArmorWear(EntityUid armor, DamageSpecifier before, DamageSpecifier after)
         {
-            if (armorRating <= 0f ||
-                armorRating < ArmorRating ||
-                armorRating == ArmorRating && priority >= _armorRatingPriority)
+            var absorbed = new DamageSpecifier();
+            foreach (var (type, amount) in before.DamageDict)
             {
-                return;
-            }
-
-            ArmorRatingCandidate = uid;
-            ArmorRating = armorRating;
-            _armorRatingPriority = priority;
-        }
-
-        /// <summary>
-        /// Records only the change made by an ArmorComponent, excluding other DamageModifyEvent subscribers.
-        /// Vulnerabilities are not treated as absorption and do not subtract from protection provided by another
-        /// armor layer.
-        /// </summary>
-        public float RecordArmorModifier(DamageSpecifier before, DamageSpecifier after)
-        {
-            var absorbed = CalculatePositiveDamageReduction(before, after);
-            _armorModifierAbsorbedDamage += absorbed;
-            return absorbed;
-        }
-
-        /// <summary>
-        /// Returns positive damage prevented by the numerical armor layer alone.
-        /// </summary>
-        public float CalculateArmorRatingAbsorbedDamage(DamageSpecifier beforeRating, DamageSpecifier afterRating)
-        {
-            return CalculatePositiveDamageReduction(beforeRating, afterRating);
-        }
-
-        /// <summary>
-        /// Returns all positive damage absorbed by armor modifiers and the numerical armor layer.
-        /// </summary>
-        public float CalculateArmorAbsorbedDamage(float ratingAbsorbedDamage)
-        {
-            return _armorModifierAbsorbedDamage + Math.Max(0f, ratingAbsorbedDamage);
-        }
-
-        private static float CalculatePositiveDamageReduction(DamageSpecifier before, DamageSpecifier after)
-        {
-            var absorbed = 0f;
-            foreach (var (damageType, beforeAmount) in before.DamageDict)
-            {
-                if (beforeAmount <= FixedPoint2.Zero)
+                if (amount <= FixedPoint2.Zero)
                     continue;
 
-                var afterAmount = after.DamageDict.GetValueOrDefault(damageType, FixedPoint2.Zero);
-                afterAmount = FixedPoint2.Max(FixedPoint2.Zero, afterAmount);
-                if (afterAmount < beforeAmount)
-                    absorbed += (beforeAmount - afterAmount).Float();
+                var remaining = FixedPoint2.Max(FixedPoint2.Zero,
+                    after.DamageDict.GetValueOrDefault(type, FixedPoint2.Zero));
+                if (remaining < amount)
+                    absorbed.DamageDict[type] = amount - remaining;
             }
 
-            return absorbed;
-        }
-
-        /// <summary>
-        /// Keeps the strongest and then most specific matching armor item so one incoming damage event spends
-        /// durability once.
-        /// </summary>
-        public void ConsiderArmorDurabilityCandidate(
-            EntityUid uid,
-            float armorRating,
-            int priority,
-            float modifierAbsorbedDamage)
-        {
-            if (!TrackArmorDurability)
-                return;
-
-            if (armorRating > _armorRatingDurabilityRating ||
-                armorRating == _armorRatingDurabilityRating && priority < _armorRatingDurabilityPriority)
-            {
-                _armorRatingDurabilityCandidate = uid;
-                _armorRatingDurabilityRating = armorRating;
-                _armorRatingDurabilityPriority = priority;
-            }
-
-            if (modifierAbsorbedDamage <= 0f ||
-                armorRating < _armorModifierDurabilityRating ||
-                armorRating == _armorModifierDurabilityRating && priority >= _armorModifierDurabilityPriority)
-            {
-                return;
-            }
-
-            _armorModifierDurabilityCandidate = uid;
-            _armorModifierDurabilityRating = armorRating;
-            _armorModifierDurabilityPriority = priority;
-        }
-
-        /// <summary>
-        /// Selects the one item that spends durability for this root hit and returns the amount attributed to it.
-        /// Numerical absorption belongs to the item that supplied the selected rating. If the numerical layer did
-        /// not protect from this hit, only an item whose own modifiers absorbed damage may be selected.
-        /// </summary>
-        public float SelectArmorDurabilityCandidate(float ratingAbsorbedDamage)
-        {
-            ArmorDurabilityCandidate = null;
-            if (!TrackArmorDurability)
-                return 0f;
-
-            if (ratingAbsorbedDamage > 0f &&
-                ArmorRatingCandidate is { } ratingCandidate &&
-                _armorRatingDurabilityCandidate == ratingCandidate)
-            {
-                ArmorDurabilityCandidate = ratingCandidate;
-                return CalculateArmorAbsorbedDamage(ratingAbsorbedDamage);
-            }
-
-            if (_armorModifierDurabilityCandidate is not { } modifierCandidate)
-                return 0f;
-
-            ArmorDurabilityCandidate = modifierCandidate;
-            return _armorModifierAbsorbedDamage;
+            if (!absorbed.Empty)
+                (ArmorWear ??= new())[armor] = absorbed;
         }
     }
 

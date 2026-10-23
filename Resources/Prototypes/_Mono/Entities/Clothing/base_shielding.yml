@@ -38,10 +38,12 @@
 # If a shield is powerful enough, you can remove plates as a balance option by replacing ClothingOuterHardsuitBase
 - type: entity
   abstract: true
-  parent: [RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing] # Frontier: added RecyclableItemClothHardsuit # Mono - armor plates.
+  parent: [BaseDurableHeavyArmor, RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing] # Frontier: added RecyclableItemClothHardsuit # Mono - armor plates.
   id: ClothingOuterHardsuitBaseNoPlateholder
   name: base hardsuit no plateholder
   components:
+  - type: ItemDurability
+    maxDurability: 630
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000

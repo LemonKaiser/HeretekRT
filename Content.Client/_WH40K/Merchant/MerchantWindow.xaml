@@ -15,7 +15,9 @@
             </BoxContainer>
         </BoxContainer>
         <PanelContainer StyleClasses="Inset" Margin="0 0 0 8">
-            <RichTextLabel Name="GreetingLabel" Margin="10 8" />
+            <ScrollContainer HScrollEnabled="False" ReturnMeasure="True" MaxHeight="100" ReserveScrollbarSpace="True">
+                <RichTextLabel Name="GreetingLabel" Margin="10 8" />
+            </ScrollContainer>
         </PanelContainer>
         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
             <Label Name="BalanceLabel" HorizontalExpand="True" FontColorOverride="#9ed1aa" />

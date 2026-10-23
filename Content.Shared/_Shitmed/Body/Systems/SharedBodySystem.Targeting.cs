@@ -23,6 +23,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Shared.Inventory;
+using Content.Shared.Blocking;
 
 // Namespace has set accessors, leaving it on the default.
 namespace Content.Shared.Body.Systems;
@@ -30,6 +31,7 @@ namespace Content.Shared.Body.Systems;
 public partial class SharedBodySystem
 {
     [Dependency] private INetManager _net = default!;
+    [Dependency] private BlockingSystem _blocking = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private IRobustRandom _random = default!;
 
@@ -192,9 +194,12 @@ public partial class SharedBodySystem
         // limb damage here, but durability is spent once by the owning body's event.
         args.TrackArmorDurability = false;
 
-        if (partEnt.Comp.Body != null
-            && TryComp(partEnt.Comp.Body.Value, out InventoryComponent? inventory))
-            _inventory.RelayEvent((partEnt.Comp.Body.Value, inventory), ref args);
+        if (partEnt.Comp.Body is { } body)
+        {
+            _blocking.ApplyPartBlocking(body, args);
+            if (TryComp(body, out InventoryComponent? inventory))
+                _inventory.RelayEvent((body, inventory), ref args);
+        }
 
         if (Prototypes.TryIndex<DamageModifierSetPrototype>("PartDamage", out var partModifierSet))
             args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, partModifierSet);

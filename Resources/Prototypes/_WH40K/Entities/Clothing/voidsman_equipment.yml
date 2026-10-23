@@ -111,11 +111,10 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 150
     modifiers:
       coefficients:
-        Blunt: 0.92
-        Slash: 0.90
+        Blunt: 0.95
+        Slash: 0.94
         Piercing: 0.95
         Heat: 0.88
   - type: FlashImmunity
@@ -136,11 +135,10 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 150
     modifiers:
       coefficients:
-        Blunt: 0.92
-        Slash: 0.90
+        Blunt: 0.95
+        Slash: 0.94
         Piercing: 0.95
         Heat: 0.88
   - type: FlashImmunity
@@ -161,11 +159,10 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 150
     modifiers:
       coefficients:
-        Blunt: 0.92
-        Slash: 0.90
+        Blunt: 0.95
+        Slash: 0.94
         Piercing: 0.95
         Heat: 0.88
   - type: FlashImmunity
@@ -186,11 +183,10 @@
     highPressureMultiplier: 0.40
     lowPressureMultiplier: 1000
   - type: Armor
-    armorRating: 150
     modifiers:
       coefficients:
-        Blunt: 0.92
-        Slash: 0.90
+        Blunt: 0.95
+        Slash: 0.94
         Piercing: 0.95
         Heat: 0.88
   - type: FlashImmunity

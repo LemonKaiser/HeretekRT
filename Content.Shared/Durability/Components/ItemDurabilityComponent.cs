@@ -1,4 +1,3 @@
-using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Stacks;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -47,13 +46,6 @@ public sealed partial class ItemDurabilityComponent : Component
     /// </summary>
     [DataField]
     public bool ProtectsWearer;
-
-    /// <summary>
-    /// Body parts covered by this item's protection. The default keeps the component useful until a prototype
-    /// specifies a narrower coverage mask.
-    /// </summary>
-    [DataField]
-    public TargetBodyPart ProtectedBodyParts = TargetBodyPart.All;
 
     /// <summary>
     /// Durability spent for each projectile actually fired by this item.

@@ -1,5 +1,4 @@
 using Content.Shared._Goobstation.Flashbang;
-using Content.Shared._Mono.ArmorPlate;
 using Content.Shared._White.Overlays;
 using Content.Shared.Armor;
 using Content.Shared.Atmos;
@@ -56,8 +55,7 @@ public partial class InventorySystem
         SubscribeLocalEvent<InventoryComponent, CoefficientQueryEvent>(RelayInventoryEvent);
 
         // by-ref events
-        SubscribeLocalEvent<InventoryComponent, BeforeDamageChangedEvent>(RefRelayInventoryEvent,
-            before: [typeof(SharedArmorPlateSystem)]);
+        SubscribeLocalEvent<InventoryComponent, BeforeDamageChangedEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshFrictionModifiersEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, RefreshWeightlessModifiersEvent>(RefRelayInventoryEvent); // Mono
         SubscribeLocalEvent<InventoryComponent, GetExplosionResistanceEvent>(RefRelayInventoryEvent);

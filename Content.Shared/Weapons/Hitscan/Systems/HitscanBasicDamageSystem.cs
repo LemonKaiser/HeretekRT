@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.ItemRarity;
 using Content.Shared.Damage;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared.Weapons.Hitscan.Components;
@@ -43,11 +44,15 @@ public sealed partial class HitscanBasicDamageSystem : EntitySystem
 
         foreach (var hitEntity in args.HitEntities) // Mono edit
         {
+            var modify = new HitscanDamageModifyEvent(hitEntity, new DamageSpecifier(dmg),
+                ItemRarityStatMath.CombineArmorPenetration(ent.Comp.ArmorPenetration, weaponArmorPenetration));
+            RaiseLocalEvent(ent, ref modify);
+
             var damageDealt = _damage.TryChangeDamage(hitEntity,
-                dmg,
+                modify.Damage,
                 origin: args.Gun,
                 tool: args.Gun,
-                armorPenetration: ent.Comp.ArmorPenetration + weaponArmorPenetration,
+                armorPenetration: modify.ArmorPenetration,
                 ignoreResistances: ent.Comp.IgnoreResistances,
                 impactCoordinates: impactCoordinates); // Mono - AP
 

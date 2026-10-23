@@ -20,12 +20,11 @@
       outerClothing:
       - state: equipped-OUTERCLOTHING
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.9
+        Blunt: 0.45
+        Slash: 0.4
+        Piercing: 0.45
         Heat: 0.85
   - type: ItemDurability
     maxDurability: 800
@@ -78,12 +77,11 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_mk4a.rsi
     stripDelay: 34
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.9
+        Blunt: 0.45
+        Slash: 0.4
+        Piercing: 0.45
         Heat: 0.85
   - type: Reflect
     reflectProb: 0.1
@@ -152,12 +150,11 @@
     sprite: _WH40K/Clothing/OuterClothing/Armor/astartes_chaos.rsi
     stripDelay: 34
   - type: Armor
-    armorRating: 600
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.9
+        Blunt: 0.45
+        Slash: 0.4
+        Piercing: 0.45
         Heat: 0.85
   - type: Reflect
     reflectProb: 0.1

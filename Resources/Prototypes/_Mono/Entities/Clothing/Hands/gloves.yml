@@ -10,7 +10,6 @@
     sprite: _Mono/Clothing/Hands/Gloves/mopp.rsi
   - type: Insulated
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Poison: 0.9

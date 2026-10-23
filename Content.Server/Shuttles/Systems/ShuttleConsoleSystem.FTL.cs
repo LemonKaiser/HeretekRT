@@ -260,7 +260,8 @@ public sealed partial class ShuttleConsoleSystem
         List<ShuttleExclusionObject>? exclusions = null;
         GetExclusions(ref exclusions);
 
-        if (!_shuttle.FTLFree(shuttleUid.Value, targetCoordinates, targetAngle, exclusions))
+        if (!_shuttle.FTLFree(shuttleUid.Value, targetCoordinates, targetAngle, exclusions,
+                checkRange: sectorJumpTarget == null))
         {
             return;
         }

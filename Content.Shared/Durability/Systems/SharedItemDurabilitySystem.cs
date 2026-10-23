@@ -35,14 +35,4 @@ public abstract partial class SharedItemDurabilitySystem : EntitySystem
         return !component.Broken && component.CurrentDurability > 0f;
     }
 
-    public static bool CoversBodyPart(ItemDurabilityComponent component, Content.Shared._Shitmed.Targeting.TargetBodyPart? targetPart)
-    {
-        if (!component.ProtectsWearer || component.ProtectedBodyParts == 0)
-            return false;
-
-        if (!targetPart.HasValue || targetPart.Value == Content.Shared._Shitmed.Targeting.TargetBodyPart.All)
-            return true;
-
-        return (component.ProtectedBodyParts & targetPart.Value) != 0;
-    }
 }

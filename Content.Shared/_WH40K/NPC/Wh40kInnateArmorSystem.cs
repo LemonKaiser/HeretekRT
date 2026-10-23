@@ -18,6 +18,7 @@ public sealed class Wh40kInnateArmorSystem : EntitySystem
             TryComp<ItemToggleComponent>(args.Tool, out var toggle) && toggle.Activated)
             return;
 
-        args.ConsiderArmorRatingCandidate(ent.Owner, ent.Comp.ArmorRating, int.MaxValue - 1);
+        args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage,
+            DamageSpecifier.PenetrateArmor(ent.Comp.Modifiers, args.ArmorPenetration));
     }
 }

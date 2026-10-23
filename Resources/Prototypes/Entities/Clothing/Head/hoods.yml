@@ -170,7 +170,6 @@
   - type: Clothing
     sprite: Clothing/Head/Hoods/rad.rsi
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Heat: 0.95

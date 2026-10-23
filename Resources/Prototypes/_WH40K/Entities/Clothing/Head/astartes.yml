@@ -29,17 +29,15 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.888
         Slash: 0.85
-        Piercing: 0.925
+        Piercing: 0.9
         Heat: 0.85
   - type: ItemDurability
     maxDurability: 400
     protectsWearer: true
-    protectedBodyParts: Head
     repairMaterial: Steel
     requiredWorkbenchTier: 3
   - type: ExplosionResistance
@@ -104,12 +102,11 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.888
         Slash: 0.85
-        Piercing: 0.925
+        Piercing: 0.9
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8
@@ -171,12 +168,11 @@
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
   - type: Armor
-    armorRating: 400
     modifiers:
       coefficients:
         Blunt: 0.888
         Slash: 0.85
-        Piercing: 0.925
+        Piercing: 0.9
         Heat: 0.85
   - type: ExplosionResistance
     damageCoefficient: 0.8

@@ -19,12 +19,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.05
   - type: Armor
-    armorRating: 950
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.85
+        Blunt: 0.05
+        Slash: 0.05
+        Piercing: 0.05
         Heat: 0.05
         Cold: 0.05
         Radiation: 0.05
@@ -72,12 +71,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.65
   - type: Armor
-    armorRating: 300
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.875
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
         Heat: 0.5
         Radiation: 0.2
         Caustic: 0.3

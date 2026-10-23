@@ -11,9 +11,8 @@
     shape:
     - 0,0,2,1
   - type: Armor
-    armorRating: 0
     modifiers:
-      coefficients: # Made to have no protection - Mono
+      coefficients:
         Blunt: 1
         Slash: 1
         Piercing: 1
@@ -272,9 +271,8 @@
       - state: equipped-unshaded
         shader: unshaded
   - type: Armor
-    armorRating: 100
     modifiers:
-      coefficients: # CL suit, seems fine to have something - Mono
+      coefficients:
         Blunt: 0.9
         Slash: 0.9
         Piercing: 0.9
@@ -340,9 +338,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetCaptain
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Cap suit, seems fine to have something - Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -367,9 +364,8 @@
     - state: icon-unshaded
       shader: unshaded
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Engie suit gets something - Mono
+      coefficients:
         Blunt: 0.95
         Radiation: 0.75
 
@@ -469,9 +465,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetAtmosTech
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Engie suit gets something - Mono
+      coefficients:
         Blunt: 0.95
         Radiation: 0.75
 
@@ -590,9 +585,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetSalvage
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Salv suit, seems fine to have something - Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1307,9 +1301,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetMercenary
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1372,9 +1365,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetPrivateSec
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1438,9 +1430,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetNfsd
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1509,9 +1500,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetLvhi
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1586,9 +1576,8 @@
     clothingPrototypes:
       head:  ClothingHeadEVAHelmetArcadia
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95
@@ -1611,9 +1600,8 @@
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Suits/fsb_voidsuit.rsi
   - type: Armor
-    armorRating: 50
     modifiers:
-      coefficients: # Mono
+      coefficients:
         Blunt: 0.95
         Slash: 0.95
         Piercing: 0.95

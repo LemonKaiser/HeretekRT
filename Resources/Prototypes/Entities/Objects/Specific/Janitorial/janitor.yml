@@ -124,7 +124,6 @@
     sprite: Objects/Specific/Janitorial/wet_floor_sign.rsi
     size: Normal
   - type: Armor
-    armorRating: 12.5
     modifiers:
       coefficients:
         Blunt: 0.95

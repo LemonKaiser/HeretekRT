@@ -44,6 +44,10 @@ public sealed partial class LightCycleComponent : Component
     [DataField, AutoNetworkedField]
     public bool InitialOffset = true;
 
+    /// <summary>Whether an empty, paused map also stops its day/night clock.</summary>
+    [DataField, AutoNetworkedField]
+    public bool PauseWithMap = true;
+
     /// <summary>
     /// Trench of the oscillation.
     /// </summary>

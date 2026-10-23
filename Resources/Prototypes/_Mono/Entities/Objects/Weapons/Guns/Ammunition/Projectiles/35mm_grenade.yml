@@ -20,7 +20,7 @@
       types:
         Structural: 100
         Piercing: 45
-    armorPenetration: 20
+    armorPenetration: 0.1
 
 - type: entity
   id: Bullet35mmGrenadeStinger

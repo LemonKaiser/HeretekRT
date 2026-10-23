@@ -36,11 +36,4 @@ public sealed partial class ArmorPlateHolderComponent : Component
     [AutoNetworkedField]
     public float SprintSpeedModifier = 1.0f;
 
-    /// <summary>
-    /// Stamina damage multiplier from the currently active plate.
-    /// </summary>
-    [DataField]
-    public Dictionary<string, float> ActiveStaminaMultipliers = new();
-
 }
-

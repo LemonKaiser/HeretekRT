@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.ItemRarity;
 using System.Linq;
 using System.Numerics;
 using Content.Server._Mono.FireControl;
@@ -284,7 +285,8 @@ public sealed partial class GunSystem : SharedGunSystem
 
         projectileComp.Damage *= gun.DamageModifier;
         if (TryComp<ItemRarityStatsComponent>(gunUid, out var rarityStats) && rarityStats.Applied)
-            projectileComp.ArmorPenetration += rarityStats.EffectiveWeaponArmorPenetration;
+            projectileComp.ArmorPenetration = ItemRarityStatMath.CombineArmorPenetration(
+                projectileComp.ArmorPenetration, rarityStats.EffectiveWeaponArmorPenetration);
 
         ShootProjectile(uid,
             mapDirection,

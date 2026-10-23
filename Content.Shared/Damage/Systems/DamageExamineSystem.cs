@@ -50,7 +50,7 @@ public sealed partial class DamageExamineSystem : EntitySystem
     }
 
     /// <summary>
-    /// Adds the flat armor penetration value used by the weapon or ammunition.
+    /// Adds the Monolith armor penetration parameter used by the weapon or ammunition.
     /// </summary>
     public void AddArmorPenetrationExamine(FormattedMessage message, float armorPenetration)
     {
@@ -60,7 +60,7 @@ public sealed partial class DamageExamineSystem : EntitySystem
         if (!float.IsFinite(armorPenetration))
             armorPenetration = 0f;
 
-        var rounded = MathF.Round(armorPenetration, 1);
+        var rounded = MathF.Round(armorPenetration * 100f, 1);
         var formatted = rounded.ToString("0.#", CultureInfo.InvariantCulture);
         if (rounded > 0f)
         {

@@ -3,6 +3,7 @@ using System.Numerics;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Audio;
 using Content.Shared.Damage;
+using Content.Shared.Durability.Systems;
 using Content.Shared.Database;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
@@ -41,6 +42,7 @@ public sealed partial class ReflectSystem : EntitySystem
     [Dependency] private SharedHandsSystem _handsSystem = default!;
     [Dependency] private InventorySystem _inventorySystem = default!;
     [Dependency] private DamageableSystem _damageable = default!; // WD EDIT
+    [Dependency] private SharedItemDurabilitySystem _durability = default!;
 
     public override void Initialize()
     {
@@ -81,6 +83,7 @@ public sealed partial class ReflectSystem : EntitySystem
 
                 var ent = hand.HeldEntity.Value;
                 if (TryComp<ReflectComponent>(ent, out var reflectComp) &&
+                    _durability.IsUsable(ent) &&
                     _toggle.IsActivated((ent, null)) &&
                     (reflectComp.Reflects & args.Reflective) != 0x0)
                 {
@@ -93,6 +96,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_inventorySystem.TryGetSlotEntity(uid, "outerClothing", out var outerEntity) &&
             outerEntity != null &&
             TryComp<ReflectComponent>(outerEntity.Value, out var outerReflectComp) &&
+            _durability.IsUsable(outerEntity.Value) &&
             _toggle.IsActivated((outerEntity.Value, null)) &&
             (outerReflectComp.Reflects & args.Reflective) != 0x0)
         {
@@ -103,6 +107,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_inventorySystem.TryGetSlotEntity(uid, "vest", out var vestEntity) &&
             vestEntity != null &&
             TryComp<ReflectComponent>(vestEntity.Value, out var vestReflectComp) &&
+            _durability.IsUsable(vestEntity.Value) &&
             _toggle.IsActivated((vestEntity.Value, null)) &&
             (vestReflectComp.Reflects & args.Reflective) != 0x0)
         {
@@ -144,6 +149,7 @@ public sealed partial class ReflectSystem : EntitySystem
 
                 var ent = hand.HeldEntity.Value;
                 if (TryComp<ReflectComponent>(ent, out var reflectComp) &&
+                    _durability.IsUsable(ent) &&
                     _toggle.IsActivated((ent, null)) &&
                     (reflectComp.Reflects & reflective.Reflective) != 0x0)
                 {
@@ -156,6 +162,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_inventorySystem.TryGetSlotEntity(uid, "outerClothing", out var outerEntity) &&
             outerEntity != null &&
             TryComp<ReflectComponent>(outerEntity.Value, out var outerReflectComp) &&
+            _durability.IsUsable(outerEntity.Value) &&
             _toggle.IsActivated((outerEntity.Value, null)) &&
             (outerReflectComp.Reflects & reflective.Reflective) != 0x0)
         {
@@ -166,6 +173,7 @@ public sealed partial class ReflectSystem : EntitySystem
         if (_inventorySystem.TryGetSlotEntity(uid, "vest", out var vestEntity) &&
             vestEntity != null &&
             TryComp<ReflectComponent>(vestEntity.Value, out var vestReflectComp) &&
+            _durability.IsUsable(vestEntity.Value) &&
             _toggle.IsActivated((vestEntity.Value, null)) &&
             (vestReflectComp.Reflects & reflective.Reflective) != 0x0)
         {
@@ -197,6 +205,7 @@ public sealed partial class ReflectSystem : EntitySystem
     private bool TryReflectProjectile(EntityUid user, EntityUid reflector, EntityUid projectile, ProjectileComponent? projectileComp = null, ReflectComponent? reflect = null)
     {
         if (!Resolve(reflector, ref reflect, false) ||
+            !_durability.IsUsable(reflector) ||
             !_toggle.IsActivated((reflector, null)) ||
             !TryComp<ReflectiveComponent>(projectile, out var reflective) ||
             (reflect.Reflects & reflective.Reflective) == 0x0 ||
@@ -275,6 +284,7 @@ public sealed partial class ReflectSystem : EntitySystem
         [NotNullWhen(true)] out Vector2? newDirection)
     {
         if (!TryComp<ReflectComponent>(reflector, out var reflect) ||
+            !_durability.IsUsable(reflector) ||
             !_toggle.IsActivated((reflector, null)) ||
             !_random.Prob(reflect.ReflectProb))
         {

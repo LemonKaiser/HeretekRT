@@ -19,6 +19,7 @@ using Content.Shared.Camera;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Database;
+using Content.Shared.Durability.Components;
 using Content.Shared.Explosion;
 using Content.Shared.Explosion.Components;
 using Content.Shared.Explosion.EntitySystems;
@@ -172,6 +173,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
     private void RelayedResistance(EntityUid uid, ExplosionResistanceComponent component,
         InventoryRelayedEvent<GetExplosionResistanceEvent> args)
     {
+        if (TryComp<ItemDurabilityComponent>(uid, out var durability) && durability.Broken)
+            return;
+
         if (component.Worn)
             OnGetResistance(uid, component, ref args.Args);
     }

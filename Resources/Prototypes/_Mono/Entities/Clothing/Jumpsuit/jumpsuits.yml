@@ -91,7 +91,6 @@
     equipDelay: 0.3
     unequipDelay: 0.3
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Poison: 0.3
@@ -119,13 +118,12 @@
     equipDelay: 0.3
     unequipDelay: 0.3
   - type: Armor
-    armorRating: 0
     modifiers:
       coefficients:
         Poison: 0.6
         Radiation: 0.8
         Caustic: 0.6
-        Heat: .85
+        Heat: 0.85
   - type: StaminaDamageResistance
     coefficient: 0.85 # its pretty thick, i think it'd do something
   - type: ClothingSpeedModifier

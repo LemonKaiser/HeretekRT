@@ -7,4 +7,4 @@ item-rarity-omnissiah-shrine = Shrine of the Omnissiah
 
 item-rarity-name = { $name } ({ $rarity })
 item-rarity-tooltip = { $name } ({ $rarity })
-item-rarity-bonus-examine = Rarity bonus: { $bonus }%.
+item-rarity-bonus-examine = Rarity bonus to damage and durability: { $bonus }%. Armor protection and AP have separate limits.

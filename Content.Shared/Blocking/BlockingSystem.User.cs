@@ -1,9 +1,12 @@
 using Content.Shared._Mono.Blocking;
 using Content.Shared.Damage;
+using Content.Shared.Durability.Events;
+using Content.Shared.Durability.Systems;
 using Content.Shared.Item.ItemToggle.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Content.Shared.Blocking.Components;
+using Content.Shared.Inventory;
 
 namespace Content.Shared.Blocking;
 
@@ -11,11 +14,13 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
 {
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedItemDurabilitySystem _durability = default!;
 
     private void InitializeUser()
     {
-        SubscribeLocalEvent<BlockingUserComponent, DamageModifyEvent>(OnUserDamageModified);
-        SubscribeLocalEvent<BlockingComponent, DamageModifyEvent>(OnDamageModified);
+        SubscribeLocalEvent<BlockingUserComponent, DamageModifyEvent>(OnUserDamageModified, before: [typeof(InventorySystem)]);
+        SubscribeLocalEvent<BlockingComponent, DamageModifyEvent>(OnDamageModified, before: [typeof(InventorySystem)]);
+        SubscribeLocalEvent<BlockingComponent, DurabilityDepletedEvent>(OnDurabilityDepleted);
 
         SubscribeLocalEvent<BlockingUserComponent, EntParentChangedMessage>(OnParentChanged);
         SubscribeLocalEvent<BlockingUserComponent, ContainerGettingInsertedAttemptEvent>(OnInsertAttempt);
@@ -43,6 +48,20 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
 
     private void OnUserDamageModified(EntityUid uid, BlockingUserComponent component, DamageModifyEvent args)
     {
+        ApplyBlocking(uid, component, args, damageShield: true);
+    }
+
+    public void ApplyPartBlocking(EntityUid body, DamageModifyEvent args)
+    {
+        if (TryComp<BlockingUserComponent>(body, out var blocking))
+            ApplyBlocking(body, blocking, args, damageShield: false);
+    }
+
+    private void ApplyBlocking(EntityUid uid, BlockingUserComponent component, DamageModifyEvent args, bool damageShield)
+    {
+        if (component.BlockingItem is not { } item || !_durability.IsUsable(item))
+            return;
+
         if (TryComp<BlockingComponent>(component.BlockingItem, out var blocking)) // Mono
         {
             if (args.Damage.GetTotal() <= 0)
@@ -57,9 +76,11 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
 
             var blockFraction = blocking.IsBlocking ? blocking.ActiveBlockFraction : blocking.PassiveBlockFraction;
             blockFraction = Math.Clamp(blockFraction, 0, 1);
-            _damageable.TryChangeDamage(component.BlockingItem,
-                blockFraction * args.OriginalDamage,
-                armorPenetration: args.ArmorPenetration); // Goob edit
+            // Part damage is resolved before the owning body. Only the body's hit spends shield durability.
+            if (damageShield)
+                _damageable.TryChangeDamage(component.BlockingItem,
+                    blockFraction * args.OriginalDamage,
+                    armorPenetration: args.ArmorPenetration); // Goob edit
 
             var modify = new DamageModifierSet();
             foreach (var key in dmgComp.Damage.DamageDict.Keys)
@@ -69,7 +90,7 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
 
             args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modify);
 
-            if (blocking.IsBlocking && !args.Damage.Equals(args.OriginalDamage))
+            if (damageShield && blocking.IsBlocking && !args.Damage.Equals(args.OriginalDamage))
             {
                 _audio.PlayPvs(blocking.BlockSound, uid);
             }
@@ -85,6 +106,12 @@ public sealed partial class BlockingSystem : SharedBlockingSystem // Mono
         }
 
         args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, modifier);
+    }
+
+    private void OnDurabilityDepleted(EntityUid uid, BlockingComponent component, ref DurabilityDepletedEvent args)
+    {
+        if (component.IsBlocking && component.User is { } user)
+            StopBlocking(uid, component, user);
     }
 
     private void OnEntityTerminating(EntityUid uid, BlockingUserComponent component, ref EntityTerminatingEvent args)

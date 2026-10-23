@@ -8,7 +8,7 @@
     damage:
       types:
         Piercing: 22
-    armorPenetration: 30
+    armorPenetration: 0.15
 
 - type: entity
   id: Bullet635x40mmCaselessPractice

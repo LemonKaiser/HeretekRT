@@ -9,6 +9,7 @@ namespace Content.Server._WH40K.SectorMap.Components;
 /// surface map.
 /// </summary>
 [RegisterComponent, Access(typeof(KoronusPlanetarySystem), typeof(KoronusSectorResidencySystem),
+    typeof(KoronusSurfaceRefreshSystem), typeof(Content.Server.Parallax.BiomeSystem),
     typeof(Content.Server._WH40K.DeployableFieldBase.DeployableFieldBaseSystem),
     typeof(Content.Server._WH40K.Activities.KoronusActivityMaterializationSystem),
     typeof(Content.Server._WH40K.Activities.KoronusActivitySetPieceExecutorSystem))]
@@ -54,4 +55,13 @@ public sealed partial class KoronusPlanetSurfaceMapComponent : Component
     /// </summary>
     [ViewVariables]
     public TimeSpan? EmptySince;
+
+    /// <summary>Global round time, deliberately unaffected by an empty surface being paused.</summary>
+    [ViewVariables]
+    public TimeSpan NextTerrainRefresh;
+
+    public bool TerrainRefreshWarningSent;
+
+    /// <summary>Biome markers are not tracked by the ordinary biome entity cache.</summary>
+    public readonly Dictionary<EntityUid, (Vector2i Tile, string Layer)> GeneratedMarkers = new();
 }

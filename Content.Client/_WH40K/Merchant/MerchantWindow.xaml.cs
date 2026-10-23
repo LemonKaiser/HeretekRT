@@ -6,6 +6,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using System.Numerics;
@@ -18,12 +19,16 @@ public sealed partial class MerchantWindow : DefaultWindow
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ILocalizationManager _localization = default!;
 
     private readonly List<MerchantOfferControl> _offerControls = new();
     private TimeSpan _refreshAt;
     private int _balance;
     private bool _pending;
     private bool _hasAppraisal;
+    private int? _displayedBalance;
+    private int _displayedSeconds = -1;
+    private string? _displayCulture;
 
     public event Action<string>? OnBuy;
     public event Action? OnRequestRefresh;
@@ -49,7 +54,7 @@ public sealed partial class MerchantWindow : DefaultWindow
 
         _balance = state.Balance;
         _refreshAt = _timing.CurTime + TimeSpan.FromSeconds(state.RefreshInSeconds);
-        RebuildOffers(state.Offers);
+        UpdateOffers(state.Offers);
         AppraisalRow.Visible = state.Buyback;
         SetPending(_pending);
         UpdateHeader();
@@ -80,54 +85,85 @@ public sealed partial class MerchantWindow : DefaultWindow
         UpdateHeader();
     }
 
-    private void RebuildOffers(IReadOnlyList<MerchantOfferState> offers)
+    private void UpdateOffers(IReadOnlyList<MerchantOfferState> offers)
     {
-        foreach (var control in _offerControls)
-            control.Dispose();
+        FooterLabel.Text = offers.Count == 0
+            ? Loc.GetString("wh40k-merchant-empty")
+            : Loc.GetString("wh40k-merchant-footer");
 
+        // Stock and balance updates keep the description controls and their scroll position.
+        var culture = _localization.DefaultCulture?.Name;
+        var rebuild = _displayCulture != culture || _offerControls.Count != offers.Count;
+        if (_displayCulture != culture)
+        {
+            _displayedBalance = null;
+            _displayedSeconds = -1;
+            _displayCulture = culture;
+        }
+        if (!rebuild)
+        {
+            for (var i = 0; i < offers.Count; i++)
+            {
+                if (_offerControls[i].TryUpdateOffer(offers[i]))
+                    continue;
+                rebuild = true;
+                break;
+            }
+        }
+        if (!rebuild)
+            return;
+
+        OffersContainer.DisposeAllChildren();
         _offerControls.Clear();
-        OffersContainer.Children.Clear();
 
         var sprites = _entityManager.EntitySysManager.GetEntitySystem<SpriteSystem>();
         foreach (var offer in offers)
         {
             Texture? icon = null;
-            if (_prototypes.TryIndex<EntityPrototype>(offer.Product, out _))
+            if (_prototypes.TryIndex<EntityPrototype>(offer.Product, out var product))
                 icon = sprites.GetPrototypeIcon(new EntProtoId(offer.Product)).Default;
 
-            var control = new MerchantOfferControl(offer, icon, _prototypes.Index(new EntProtoId(offer.Product)).Name);
+            var control = new MerchantOfferControl(offer, icon,
+                ResolveText(offer.DisplayName, product?.Name ?? offer.Product),
+                ResolveText(offer.Description, product?.Description ?? string.Empty));
             control.OnBuy += productId => OnBuy?.Invoke(productId);
-            control.UpdateAffordability(_balance, _pending);
             _offerControls.Add(control);
             OffersContainer.AddChild(control);
         }
-
-        FooterLabel.Text = offers.Count == 0
-            ? Loc.GetString("wh40k-merchant-empty")
-            : Loc.GetString("wh40k-merchant-footer");
     }
 
     private void UpdateHeader()
     {
-        BalanceLabel.Text = Loc.GetString("wh40k-merchant-balance", ("amount", _balance));
+        if (_displayedBalance != _balance)
+        {
+            _displayedBalance = _balance;
+            BalanceLabel.Text = Loc.GetString("wh40k-merchant-balance", ("amount", _balance));
+        }
         var seconds = Math.Max(0, (int)Math.Ceiling((_refreshAt - _timing.CurTime).TotalSeconds));
-        RefreshLabel.Text = Loc.GetString("wh40k-merchant-refresh", ("seconds", seconds));
+        if (_displayedSeconds != seconds)
+        {
+            _displayedSeconds = seconds;
+            RefreshLabel.Text = Loc.GetString("wh40k-merchant-refresh", ("seconds", seconds));
+        }
+    }
+
+    private string ResolveText(string? overrideId, string fallback)
+    {
+        return !string.IsNullOrWhiteSpace(overrideId) && _localization.TryGetString(overrideId, out var text) ? text : fallback;
     }
 }
 
 internal sealed class MerchantOfferControl : PanelContainer
 {
-    private readonly MerchantOfferState _offer;
+    private MerchantOfferState _offer;
     private readonly Button _buyButton;
     private readonly Label _stockLabel;
-    private readonly int _price;
 
     public event Action<string>? OnBuy;
 
-    public MerchantOfferControl(MerchantOfferState offer, Texture? icon, string productName)
+    public MerchantOfferControl(MerchantOfferState offer, Texture? icon, string nameText, string descriptionText)
     {
         _offer = offer;
-        _price = offer.Price;
         Margin = new Thickness(0, 0, 0, 6);
         PanelOverride = new StyleBoxFlat
         {
@@ -195,9 +231,9 @@ internal sealed class MerchantOfferControl : PanelContainer
         };
         contentCol.AddChild(itemHeaderRow);
 
-        var nameText = string.IsNullOrWhiteSpace(offer.DisplayName) ? productName : ResolveName(offer);
         var name = new Label
         {
+            Name = "OfferName",
             Text = nameText,
             ToolTip = nameText,
             FontColorOverride = new Color(227, 207, 165),
@@ -209,6 +245,7 @@ internal sealed class MerchantOfferControl : PanelContainer
 
         _stockLabel = new Label
         {
+            Name = "OfferStock",
             FontColorOverride = new Color(141, 188, 151),
             VerticalAlignment = Control.VAlignment.Center,
             Margin = new Thickness(8, 0, 12, 0)
@@ -217,6 +254,7 @@ internal sealed class MerchantOfferControl : PanelContainer
 
         _buyButton = new Button
         {
+            Name = "BuyButton",
             MinWidth = 120,
             MinHeight = 30,
             VerticalAlignment = Control.VAlignment.Center
@@ -225,35 +263,35 @@ internal sealed class MerchantOfferControl : PanelContainer
         itemHeaderRow.AddChild(_buyButton);
 
         // Вторая строка: Описание товара на всю ширину под заголовком
-        var description = new RichTextLabel
+        var descriptionScroll = new ScrollContainer
         {
+            Name = "DescriptionScroll",
             HorizontalExpand = true,
-            Margin = new Thickness(0, 2, 4, 0)
+            HScrollEnabled = false,
+            ReturnMeasure = true,
+            ReserveScrollbarSpace = true,
+            MaxHeight = 80,
+            Margin = new Thickness(0, 2, 4, 0),
+            Visible = !string.IsNullOrWhiteSpace(descriptionText),
         };
-        description.SetMessage(ResolveDescription(offer), new Color(165, 174, 184));
-        contentCol.AddChild(description);
+        var description = new RichTextLabel { Name = "OfferDescription", VerticalAlignment = VAlignment.Top };
+        description.SetMessage(descriptionText, new Color(165, 174, 184));
+        descriptionScroll.AddChild(description);
+        contentCol.AddChild(descriptionScroll);
+    }
+
+    public bool TryUpdateOffer(MerchantOfferState offer)
+    {
+        if (_offer.Product != offer.Product || _offer.DisplayName != offer.DisplayName || _offer.Description != offer.Description)
+            return false;
+        _offer = offer;
+        return true;
     }
 
     public void UpdateAffordability(int balance, bool pending = false)
     {
         _stockLabel.Text = Loc.GetString("wh40k-merchant-stock", ("remaining", _offer.Remaining), ("maximum", _offer.MaxStock));
-        _buyButton.Text = Loc.GetString("wh40k-merchant-buy", ("price", _price));
-        _buyButton.Disabled = pending || _offer.Remaining <= 0 || balance < _price;
-    }
-
-    private static string ResolveName(MerchantOfferState offer)
-    {
-        if (!string.IsNullOrWhiteSpace(offer.DisplayName))
-            return Loc.GetString(offer.DisplayName);
-
-        return offer.Product;
-    }
-
-    private static string ResolveDescription(MerchantOfferState offer)
-    {
-        if (!string.IsNullOrWhiteSpace(offer.Description))
-            return Loc.GetString(offer.Description);
-
-        return Loc.GetString("wh40k-merchant-generic-description");
+        _buyButton.Text = Loc.GetString("wh40k-merchant-buy", ("price", _offer.Price));
+        _buyButton.Disabled = pending || _offer.Remaining <= 0 || balance < _offer.Price;
     }
 }

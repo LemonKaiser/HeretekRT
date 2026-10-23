@@ -64,7 +64,6 @@
   - type: StaminaDamageResistance
     coefficient: 0.9
   - type: Armor
-    armorRating: 150
     modifiers:
       coefficients:
         Blunt: 0.85
@@ -102,12 +101,11 @@
   - type: StaminaDamageResistance
     coefficient: 0.6
   - type: Armor
-    armorRating: 550
     modifiers:
       coefficients:
-        Blunt: 0.864
-        Slash: 0.864
-        Piercing: 0.85
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.45
         Heat: 0.5
         Radiation: 0.7
         Caustic: 0.5
@@ -152,12 +150,11 @@
   - type: StaminaDamageResistance
     coefficient: 0.7
   - type: Armor
-    armorRating: 700
     modifiers:
       coefficients:
-        Blunt: 0.882
-        Slash: 0.85
-        Piercing: 0.871
+        Blunt: 0.45
+        Slash: 0.3
+        Piercing: 0.4
         Heat: 0.65
         Radiation: 0.6
         Caustic: 0.35
@@ -199,7 +196,6 @@
   - type: ExplosionResistance
     damageCoefficient: 1
   - type: Armor
-    armorRating: 100
     modifiers:
       coefficients:
         Blunt: 0.9
@@ -239,16 +235,15 @@
   - type: ExplosionResistance
     damageCoefficient: 0.25 # Mono
   - type: Armor
-    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
-        Piercing: 0.888
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.85
         Heat: 0.7
-        Shock: 0.4 # Mono
-        Caustic: 0.4 # Mono
-        Radiation: 0.1 # Mono
+        Shock: 0.4
+        Caustic: 0.4
+        Radiation: 0.1
   - type: StaminaDamageResistance
     coefficient: 0.7 # Mono
 
@@ -279,12 +274,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.6
   - type: Armor
-    armorRating: 200
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.888
-        Piercing: 0.888
+        Blunt: 0.8
+        Slash: 0.85
+        Piercing: 0.85
         Heat: 0.2
         Radiation: 0.3
   - type: StaminaDamageResistance
@@ -319,12 +313,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.1
   - type: Armor
-    armorRating: 650
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.931
-        Piercing: 0.942
+        Blunt: 0.35
+        Slash: 0.7
+        Piercing: 0.75
         Heat: 0.3
         Shock: 0.8
         Caustic: 0.5
@@ -359,12 +352,11 @@
   - type: ExplosionResistance
     damageCoefficient: 0.5
   - type: Armor
-    armorRating: 500
     modifiers:
       coefficients:
-        Blunt: 0.895
-        Slash: 0.895
-        Piercing: 0.85
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.5
         Heat: 0.5
         Radiation: 0.4
   - type: StaminaDamageResistance

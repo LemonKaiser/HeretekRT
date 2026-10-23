@@ -17,7 +17,7 @@
   parent: [BaseItem, ArmorPlateRepairableBase]
   id: ArmorPlateBlunt_Slash
   name: trauma armor plate
-  description: A slashproof plasteel plate backed with crumpling plastic foam-cells. Reduces blunt and slash damage, but useless against heat and piercing.
+  description: A replaceable wear buffer for compatible armor. Takes blunt and slash wear instead of the armor, without adding damage resistance.
   components:
   - type: Sprite
     sprite: _Mono/Clothing/ArmorPlate/armor_plates.rsi
@@ -29,8 +29,6 @@
     maxDurability: 150
     walkSpeedModifier: 0.90
     sprintSpeedModifier: 0.90
-    staminaDamageMultipliers:
-      Absorbed: 0.5
     damageToPlate:
       Blunt: 1
       Slash: 1
@@ -57,7 +55,7 @@
   parent: [BaseItem, ArmorPlateRepairableBase]
   id: ArmorPlatePierce
   name: ballistic armor plate
-  description: A robust slab of homogenous high-grain plastitanium. Stops piercing damage dead in its tracks, but spoils under heat.
+  description: A replaceable wear buffer for compatible armor. Takes piercing wear instead of the armor, without adding damage resistance.
   components:
   - type: Sprite
     sprite: _Mono/Clothing/ArmorPlate/armor_plates.rsi
@@ -69,8 +67,6 @@
     maxDurability: 150
     walkSpeedModifier: 0.90
     sprintSpeedModifier: 0.90
-    staminaDamageMultipliers:
-      Absorbed: 0.5
     damageToPlate:
       Piercing: 1
       Heat: 1.5
@@ -93,7 +89,7 @@
   parent: [BaseItem, ArmorPlateRepairableBase]
   id: ArmorPlateHeat
   name: diffusion armor plate
-  description: A plate comprising a sandwich of iridite shielding and copper heat diffusers. Absorbs weapons energy-band emissions, but fails under kinetic impact.
+  description: A replaceable wear buffer for compatible armor. Takes thermal wear and part of radiation and electrical wear, without adding damage resistance.
   components:
   - type: Sprite
     sprite: _Mono/Clothing/ArmorPlate/armor_plates.rsi
@@ -105,8 +101,6 @@
     maxDurability: 150
     walkSpeedModifier: 0.90
     sprintSpeedModifier: 0.90
-    staminaDamageMultipliers:
-      Absorbed: 0.5
     damageToPlate:
       Piercing: 1.5
       Heat: 1
@@ -132,7 +126,7 @@
   parent: [BaseItem, ArmorPlateRepairableBase]
   id: ArmorPlateSpeed
   name: speed armor plate
-  description: An experimental brass-bluespace alloy plate exhibiting novel kinesthetic effects. Amplifies speed, but also oncoming kinetic and thermal impacts.
+  description: A light replacement plate that increases movement speed and takes a quarter of physical and thermal armor wear.
   components:
   - type: Sprite
     sprite: _Mono/Clothing/ArmorPlate/armor_plates.rsi
@@ -144,18 +138,16 @@
     maxDurability: 250
     walkSpeedModifier: 1.1
     sprintSpeedModifier: 1.1
-    staminaDamageMultipliers:
-      Raw: 0.5
     damageToPlate:
       Heat: 1
       Blunt: 1
       Slash: 1
       Piercing: 1
     absorptionRatios:
-      Heat: -0.1
-      Blunt: -0.1
-      Slash: -0.1
-      Piercing: -0.1
+      Heat: 0.25
+      Blunt: 0.25
+      Slash: 0.25
+      Piercing: 0.25
   - type: Damageable
     damageContainer: Inorganic
   - type: Destructible

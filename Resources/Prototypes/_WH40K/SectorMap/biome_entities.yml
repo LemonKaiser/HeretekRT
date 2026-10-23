@@ -1,0 +1,123 @@
+- type: entity
+  parent: FloraRockSolid
+  id: KoronusDesertBoulder
+  name: weathered sandstone boulder
+  description: A wind-worn boulder stained by iron-rich desert dust.
+  components:
+  - type: Sprite
+    color: "#D6A17A"
+
+- type: entity
+  parent: KoronusDesertBoulder
+  id: KoronusDesertBoulderAngled
+  components:
+  - type: Sprite
+    rotation: 25
+
+- type: entity
+  parent: KoronusDesertBoulder
+  id: KoronusDesertBoulderTilted
+  components:
+  - type: Sprite
+    rotation: -25
+
+- type: entity
+  parent: KoronusDesertBoulder
+  id: KoronusDesertBoulderMirrored
+  components:
+  - type: Sprite
+    scale: -1, 1
+
+- type: entity
+  parent: RMCGrassDesert
+  id: KoronusDesertDryGrass
+  name: sun-scorched grass
+  description: A few brittle blades bleached and darkened by the desert sun.
+  components:
+  - type: Sprite
+    color: "#A89C85"
+    layers:
+    - state: lightgrass_1
+      map: [random]
+  - type: RandomSprite
+    available:
+    - random:
+        lightgrass_1: ""
+        lightgrass_2: ""
+        lightgrass_4: ""
+        lightgrass_5: ""
+
+- type: entity
+  parent: RMCBasePlant
+  id: KoronusDesertCactus
+  name: tall desert cactus
+  description: A tall, ribbed cactus adapted to the dry desert.
+  components:
+  - type: Sprite
+    sprite: _Nuclear14/Structures/Misc/floradesert.rsi
+    state: cactus
+    offset: 0, 0.45
+    color: "#CCC6A7"
+
+- type: entity
+  parent: RMCBasePlant
+  id: KoronusDesertBarrelCactus
+  name: barrel cactus
+  description: A low cluster of round, spiny desert cacti.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/Lavaland/Objects/Decoration/Flora/Plants/fruiting_cactus.rsi
+    color: "#C4BDA3"
+    layers:
+    - state: cactus1
+      map: [random]
+  - type: RandomSprite
+    available:
+    - random:
+        cactus1: ""
+        cactus2: ""
+        cactus3: ""
+        cactus4: ""
+
+- type: entity
+  parent: RMCFloraTreePalm01
+  id: KoronusOasisPalm
+  name: oasis palm
+  description: A desert palm growing beside a rare pocket of water.
+  components:
+  - type: Sprite
+    color: "#C6B99C"
+
+- type: entity
+  parent: KoronusOasisPalm
+  id: KoronusOasisPalmAlt
+  components:
+  - type: Sprite
+    state: palm2
+
+- type: entity
+  parent: FloorWaterEntity
+  id: KoronusSwampWater
+  name: swamp water
+  description: Shallow water darkened by mud and wetland vegetation.
+  components:
+  - type: Sprite
+    color: "#9BAB6C"
+
+- type: entity
+  parent: MobIronCrab
+  id: KoronusCaveIronCrab
+  name: iron cave crab
+  description: A slow, territorial crab with an iron-rich stone shell.
+  components:
+  - type: KoronusSurfaceWildlife
+    surface: TrinnitosRockSurface
+
+- type: entity
+  parent: MobQuartzCrab
+  id: KoronusCaveQuartzCrab
+  name: quartz cave crab
+  description: A cave-dwelling crab protected by sharp quartz crystals.
+  components:
+  - type: KoronusSurfaceWildlife
+    surface: TrinnitosRockSurface

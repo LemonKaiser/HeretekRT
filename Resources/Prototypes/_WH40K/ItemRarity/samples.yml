@@ -25,7 +25,7 @@
   - type: ItemRarityRandom
     maxTier: 6
     baseWeaponDamageMultiplier: 1
-    baseWeaponArmorPenetration: 5
+    baseWeaponArmorPenetration: 0.025
     randomizeOnDirectSpawn: true
   - type: BasicEntityAmmoProvider
     proto: ItemRarityTestProjectile
@@ -39,7 +39,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Projectile
-    armorPenetration: 2
+    armorPenetration: 0.01
     damage:
       types:
         Piercing: 10
@@ -156,5 +156,3 @@
     rarity: Archeotech
     bonusPercent: 150
     isRolled: true
-  - type: Armor
-    armorRating: 31.25

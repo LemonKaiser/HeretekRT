@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.ItemRarity;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Administration.Logs;
@@ -53,7 +54,6 @@ using Content.Shared.Weapons.Ranged.Systems;
 using Content.Shared.Weapons.Ranged;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Hitscan.Events;
-using Content.Shared.Weapons.Hitscan.Systems;
 using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._White.BackStab;
@@ -156,8 +156,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         SubscribeLocalEvent<Wh40kClassEquipmentRelayComponent, AmmoShotEvent>(OnAmmoShot);
         SubscribeLocalEvent<Wh40kClassThrownEffectComponent, ThrowDoHitEvent>(OnThrownEffectHit);
         SubscribeLocalEvent<Wh40kClassShotModifierComponent, ProjectileHitEvent>(OnShotModifierProjectileHit);
-        SubscribeLocalEvent<Wh40kClassShotModifierComponent, HitscanRaycastFiredEvent>(OnShotModifierHitscanRaycast,
-            before: [typeof(HitscanBasicDamageSystem)]);
+        SubscribeLocalEvent<Wh40kClassShotModifierComponent, HitscanDamageModifyEvent>(OnShotModifierHitscanDamageModify);
         SubscribeLocalEvent<Wh40kClassShotModifierComponent, HitscanDamageDealtEvent>(OnShotModifierHitscanDamage);
         SubscribeLocalEvent<GunComponent, ItemSlotInsertAttemptEvent>(OnGunReloadSlotInsert);
         SubscribeLocalEvent<GunComponent, InteractUsingEvent>(OnGunReloadInteractUsing);
@@ -1770,7 +1769,8 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         modifier.HitConfirmation = pending.HitConfirmation;
         modifier.ArmorPenetrationMultiplier = pending.ArmorPenetrationMultiplier;
         if (TryComp<ProjectileComponent>(uid, out var projectile) && modifier.ArmorPenetrationMultiplier > 1f)
-            projectile.ArmorPenetration *= modifier.ArmorPenetrationMultiplier;
+            projectile.ArmorPenetration = ItemRarityStatMath.BoostArmorPenetration(
+                projectile.ArmorPenetration, modifier.ArmorPenetrationMultiplier);
     }
 
     private void OnShotModifierProjectileHit(Entity<Wh40kClassShotModifierComponent> ent, ref ProjectileHitEvent args)
@@ -1785,21 +1785,15 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         PlayHitConfirmation(ent.Comp);
     }
 
-    private void OnShotModifierHitscanRaycast(Entity<Wh40kClassShotModifierComponent> ent, ref HitscanRaycastFiredEvent args)
+    private void OnShotModifierHitscanDamageModify(Entity<Wh40kClassShotModifierComponent> ent, ref HitscanDamageModifyEvent args)
     {
-        if (args.Canceled || args.HitEntities.Count == 0 || !TryComp<HitscanBasicDamageComponent>(ent, out var damage))
-            return;
-
-        // Hitscan damage is shared by all hit targets. Retain the previous single-hit behavior
-        // when a multi-raycast weapon is used.
-        var target = args.HitEntities.First();
-
-        if (ent.Comp.LowHealthDamageBonus > 0f && IsBelowHealthThreshold(target, 0.7f))
-            damage.Damage *= 1f + ent.Comp.LowHealthDamageBonus;
-        if (HasPriorityTarget(ent.Comp, target))
-            damage.Damage *= 1f + ent.Comp.PriorityTargetDamageBonus;
+        if (ent.Comp.LowHealthDamageBonus > 0f && IsBelowHealthThreshold(args.Target, 0.7f))
+            args.Damage *= 1f + ent.Comp.LowHealthDamageBonus;
+        if (HasPriorityTarget(ent.Comp, args.Target))
+            args.Damage *= 1f + ent.Comp.PriorityTargetDamageBonus;
         if (ent.Comp.ArmorPenetrationMultiplier > 1f)
-            damage.ArmorPenetration *= ent.Comp.ArmorPenetrationMultiplier;
+            args.ArmorPenetration = ItemRarityStatMath.BoostArmorPenetration(
+                args.ArmorPenetration, ent.Comp.ArmorPenetrationMultiplier);
     }
 
     private void OnShotModifierHitscanDamage(Entity<Wh40kClassShotModifierComponent> ent, ref HitscanDamageDealtEvent args)

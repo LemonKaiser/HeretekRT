@@ -1,4 +1,4 @@
-using Content.Shared._Shitmed.Targeting;
+using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Robust.Shared.Serialization;
 
@@ -41,9 +41,9 @@ public readonly record struct DurabilityDepletedEvent(DurabilityReason Reason, E
 public readonly record struct RandomLootSpawnedEvent;
 
 /// <summary>
-/// Raised once after the armor pipeline selects the best matching protective item for incoming damage.
+/// Raised once per protective item with the damage prevented by that item's modifiers.
 /// </summary>
-public readonly record struct ArmorProtectionAppliedEvent(TargetBodyPart? TargetPart, float AbsorbedDamage);
+public readonly record struct ArmorProtectionAppliedEvent(DamageSpecifier AbsorbedDamage);
 
 /// <summary>
 /// Raised by a repair station after its repair cycle ends.
