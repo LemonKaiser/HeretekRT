@@ -83,6 +83,7 @@ public enum PersistentInventoryMutationStatus
     InvalidTransition = 4,
     StagingConflict = 5,
     CandidateNotFound = 6,
+    QuotaExceeded = 7,
 }
 
 public readonly record struct PersistentInventoryAccountId(Guid Value)

@@ -29,6 +29,7 @@ public sealed partial class PlayerPanel : FancyWindow
     public event Action? OnDelete;
     public event Action? OnRejuvenate;
     public event Action? OnScreenCheck;
+    public event Action<NetUserId?>? OnPersistentInventory;
     public event Action<NetUserId?>? OnOpenJobWhitelists; // DeltaV
 
     public NetUserId? TargetPlayer;
@@ -58,6 +59,7 @@ public sealed partial class PlayerPanel : FancyWindow
             DeleteButton.OnPressed += _ => OnDelete?.Invoke();
             RejuvenateButton.OnPressed += _ => OnRejuvenate?.Invoke();
             ScreenCheckButton.OnPressed += _ => OnScreenCheck?.Invoke();
+            PersistentInventoryButton.OnPressed += _ => OnPersistentInventory?.Invoke(TargetPlayer);
 
             JobWhitelistsButton.OnPressed += _ => OnOpenJobWhitelists?.Invoke(TargetPlayer); // DeltaV: Job whitelists
     }
@@ -187,5 +189,6 @@ public sealed partial class PlayerPanel : FancyWindow
         JobWhitelistsButton.Disabled = !_adminManager.HasFlag(AdminFlags.Whitelist); // DeltaV
         CameraButton.Disabled = !_adminManager.CanCommand("camera");
         ScreenCheckButton.Disabled = !_adminManager.CanCommand("screencheck") || !canScreenCheck;
+        PersistentInventoryButton.Disabled = !_adminManager.CanCommand("persistentinv_panel");
     }
 }

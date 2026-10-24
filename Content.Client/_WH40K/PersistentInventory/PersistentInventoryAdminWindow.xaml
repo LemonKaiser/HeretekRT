@@ -1,0 +1,61 @@
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:admin="clr-namespace:Content.Client.Administration.UI.CustomControls"
+                Title="{Loc persistentinv-admin-title}" MinSize="960 640" SetSize="1120 780">
+    <BoxContainer Orientation="Horizontal" Margin="6" SeparationOverride="8">
+        <BoxContainer Orientation="Vertical" SetWidth="230" SeparationOverride="4">
+            <Label Text="{Loc persistentinv-admin-players}" StyleClasses="LabelHeading" />
+            <admin:PlayerListControl Name="Players" VerticalExpand="True" />
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                <LineEdit Name="Target" HorizontalExpand="True" PlaceHolder="{Loc persistentinv-admin-target}" />
+                <Button Name="Load" Text="{Loc persistentinv-admin-load}" />
+                <Button Name="Refresh" Text="{Loc persistentinv-admin-refresh}" />
+            </BoxContainer>
+            <Label Name="Identity" Text="{Loc persistentinv-admin-select-player}" ClipText="True" />
+            <TabContainer Name="Tabs" VerticalExpand="True">
+                <TextEdit Name="Overview" Editable="False" HorizontalExpand="True" VerticalExpand="True" />
+                <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                    <OptionButton Name="Snapshots" HorizontalExpand="True" />
+                    <TextEdit Name="SnapshotInfo" Editable="False" SetHeight="155" />
+                    <LineEdit Name="ItemSearch" PlaceHolder="{Loc persistentinv-admin-item-search}" />
+                    <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="6">
+                        <ItemList Name="Items" SetWidth="285" VerticalExpand="True" />
+                        <TextEdit Name="ItemDetails" Editable="False" HorizontalExpand="True" VerticalExpand="True" />
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                    <Label Text="{Loc persistentinv-admin-history-limit}" />
+                    <LineEdit Name="HistorySearch" PlaceHolder="{Loc persistentinv-admin-history-search}" />
+                    <TextEdit Name="History" Editable="False" VerticalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                    <RichTextLabel Text="{Loc persistentinv-admin-actions-hint}" />
+                    <LineEdit Name="Reason" PlaceHolder="{Loc persistentinv-admin-reason}" />
+                    <CheckBox Name="Force" Text="{Loc persistentinv-admin-force}" />
+                    <GridContainer Columns="2" HorizontalExpand="True">
+                        <ui:ConfirmButton Name="Save" Text="{Loc persistentinv-admin-save}" />
+                        <ui:ConfirmButton Name="Invalidate" Text="{Loc persistentinv-admin-invalidate}" />
+                        <ui:ConfirmButton Name="Quarantine" Text="{Loc persistentinv-admin-quarantine}" />
+                        <ui:ConfirmButton Name="Rollback" Text="{Loc persistentinv-admin-rollback}" />
+                        <ui:ConfirmButton Name="Recover" Text="{Loc persistentinv-admin-recover}" />
+                    </GridContainer>
+                    <RichTextLabel Text="{Loc persistentinv-admin-save-hint}" />
+                    <RichTextLabel Text="{Loc persistentinv-admin-invalidate-hint}" />
+                    <RichTextLabel Text="{Loc persistentinv-admin-quarantine-hint}" />
+                    <RichTextLabel Text="{Loc persistentinv-admin-rollback-hint}" />
+                    <Control VerticalExpand="True" />
+                </BoxContainer>
+            </TabContainer>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                <Button Name="Validate" Text="{Loc persistentinv-admin-validate}" />
+                <Button Name="ReloadCache" Text="{Loc persistentinv-admin-reload-cache}" />
+                <Button Name="OpenLogs" Text="{Loc persistentinv-admin-open-logs}" />
+                <Control HorizontalExpand="True" />
+                <Label Name="Busy" Text="{Loc persistentinv-admin-busy}" Visible="False" />
+            </BoxContainer>
+            <TextEdit Name="Result" Editable="False" SetHeight="64" />
+        </BoxContainer>
+    </BoxContainer>
+</ui:FancyWindow>

@@ -78,10 +78,14 @@ public sealed class PersistentInventoryShutdownSystem : EntitySystem
         // Quest mutations have their own durable boundary and must drain even when inventory saving is disabled.
         var quests = EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSessionSystem>();
         try { await quests.DrainAsync(false); }
-        catch
+        catch (Exception error)
         {
-            if (source == PersistentInventorySaveSource.RoundRestart) await quests.ResumeAfterAbortedDrainAsync();
-            throw;
+            if (source != PersistentInventorySaveSource.RoundRestart)
+                throw;
+
+            await quests.ResumeAfterAbortedDrainAsync();
+            Log.Warning($"Round restart retained the world because pending operations could not drain: {error}");
+            return new PersistentInventoryShutdownResult(0, 0, 1, error is TimeoutException, 0, false);
         }
         if (!_configuration.GetCVar(CCVars.Wh40kPersistentInventoryEnabled))
             return new PersistentInventoryShutdownResult(0, 0, 0, false, 0, false);

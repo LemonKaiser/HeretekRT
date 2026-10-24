@@ -22,7 +22,7 @@
   - type: UserInterface
     interfaces:
       enum.FactionStorageUiKey.Key:
-        type: FactionStorageBoundUserInterface
+        type: Content.Client._WH40K.FactionStorage.FactionDepotBui
 
 - type: entity
   parent: WH40KBaseFactionStorage

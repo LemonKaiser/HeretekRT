@@ -65,6 +65,9 @@ namespace Content.Server.Database
         public DbSet<Wh40kPersistentInventory> Wh40kPersistentInventories { get; set; } = null!;
         public DbSet<Wh40kPersistentInventoryRevision> Wh40kPersistentInventoryRevisions { get; set; } = null!;
         public DbSet<Wh40kPersistentInventoryAudit> Wh40kPersistentInventoryAudits { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryStorage> Wh40kPersistentInventoryStorage { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryBlob> Wh40kPersistentInventoryBlobs { get; set; } = null!;
+        public DbSet<Wh40kPersistentInventoryReceipt> Wh40kPersistentInventoryReceipts { get; set; } = null!;
         public DbSet<Wh40kPersistentInventoryServerEpoch> Wh40kPersistentInventoryServerEpochs { get; set; } = null!;
         public DbSet<WH40KMute> WH40KMute { get; set; } = null!;
         public DbSet<WH40KUnmute> WH40KUnmute { get; set; } = null!;
@@ -559,6 +562,16 @@ namespace Content.Server.Database
                 .WithMany()
                 .HasForeignKey(revision => revision.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Wh40kPersistentInventoryStorage>()
+                .HasOne<Wh40kPersistentInventory>().WithMany()
+                .HasForeignKey(row => row.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Wh40kPersistentInventoryBlob>()
+                .HasOne<Wh40kPersistentInventory>().WithMany()
+                .HasForeignKey(row => row.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Wh40kPersistentInventoryReceipt>()
+                .HasOne<Wh40kPersistentInventory>().WithMany()
+                .HasForeignKey(row => row.UserId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Wh40kPersistentInventoryRevision>()
                 .ToTable(table =>
@@ -1979,6 +1992,10 @@ namespace Content.Server.Database
 
         [Required]
         public byte[] Payload { get; set; } = default!;
+
+        public Guid? BlobId { get; set; }
+
+        public bool IsVerified { get; set; }
 
         [Required, MaxLength(32)]
         public byte[] PayloadSha256 { get; set; } = default!;

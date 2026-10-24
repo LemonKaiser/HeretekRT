@@ -2386,12 +2386,14 @@ namespace Content.Server.Database
                     candidate.SnapshotId == snapshotId.Value,
                     cancel);
 
-            return revision == null
-                ? null
-                : new PersistentInventoryStoredRevision(
-                    new PersistentInventoryAccountId(revision.UserId),
-                    ToPersistentInventoryRevisionMetadata(revision),
-                    revision.Payload);
+            if (revision == null)
+                return null;
+            var payload = revision.BlobId is { } blobId
+                ? await db.DbContext.Wh40kPersistentInventoryBlobs.Where(blob => blob.UserId == revision.UserId && blob.Id == blobId)
+                    .Select(blob => blob.Payload).SingleOrDefaultAsync(cancel)
+                : revision.Payload;
+            return payload == null ? null : new PersistentInventoryStoredRevision(
+                new PersistentInventoryAccountId(revision.UserId), ToPersistentInventoryRevisionMetadata(revision), payload);
         }
 
         public async Task<IReadOnlyList<PersistentInventoryAuditRecord>> GetPersistentInventoryAuditAsync(
@@ -2600,6 +2602,10 @@ namespace Content.Server.Database
                 .SingleOrDefaultAsync(candidate => candidate.UserId == userId.UserId, cancel);
             var oldState = PersistentInventorySnapshotState.None;
 
+            if (request.Payload.Length > PersistentInventoryStoragePolicy.SnapshotBytes)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.QuotaExceeded,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
+
             if (account == null)
             {
                 if (request.ExpectedRevision != PersistentInventoryRevision.None)
@@ -2665,6 +2671,10 @@ namespace Content.Server.Database
 
             var timestamp = DateTime.UtcNow;
             var revision = checked(account.Revision + 1);
+            var blob = await StoreInventoryBlobAsync(db.DbContext, userId.UserId, request.Payload, request.PayloadSha256, cancel);
+            if (blob == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.QuotaExceeded,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
             var candidate = new Wh40kPersistentInventoryRevision
             {
                 SnapshotId = request.SnapshotId.Value,
@@ -2673,7 +2683,8 @@ namespace Content.Server.Database
                 PolicyId = request.PolicyId,
                 CapturedRoleId = request.CapturedRoleId,
                 CapturedProfileName = request.CapturedProfileName,
-                Payload = request.Payload,
+                Payload = Array.Empty<byte>(),
+                BlobId = blob.Id,
                 PayloadSha256 = request.PayloadSha256,
                 ItemCount = request.ItemCount,
                 EntityCount = request.EntityCount,
@@ -2711,6 +2722,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -2833,6 +2845,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -2947,6 +2960,7 @@ namespace Content.Server.Database
             var timestamp = DateTime.UtcNow;
             var revisionNumber = checked(account.Revision + 1);
             account.LastKnownGoodSnapshotId = account.CurrentSnapshotId;
+            candidate.IsVerified = true;
             account.CurrentSnapshotId = request.SnapshotId.Value;
             account.StagingSnapshotId = null;
             account.State = (int) PersistentInventorySnapshotState.Active;
@@ -2984,6 +2998,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -3087,6 +3102,10 @@ namespace Content.Server.Database
 
             var timestamp = DateTime.UtcNow;
             var revisionNumber = checked(account.Revision + 1);
+            var repairedBlob = await StoreInventoryBlobAsync(db.DbContext, userId.UserId, request.Payload, request.PayloadSha256, cancel, source.CompressedBytes);
+            if (repairedBlob == null)
+                return CreatePersistentInventoryFailure(PersistentInventoryMutationStatus.QuotaExceeded,
+                    await LoadPersistentInventoryHeaderAsync(db.DbContext, userId.UserId, cancel));
             var repaired = new Wh40kPersistentInventoryRevision
             {
                 SnapshotId = request.RepairedSnapshotId.Value,
@@ -3095,7 +3114,9 @@ namespace Content.Server.Database
                 PolicyId = request.PolicyId,
                 CapturedRoleId = source.CapturedRoleId,
                 CapturedProfileName = source.CapturedProfileName,
-                Payload = request.Payload,
+                Payload = Array.Empty<byte>(),
+                BlobId = repairedBlob.Id,
+                IsVerified = true,
                 PayloadSha256 = request.PayloadSha256,
                 ItemCount = request.ItemCount,
                 EntityCount = request.EntityCount,
@@ -3133,6 +3154,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -3336,6 +3358,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -3432,16 +3455,7 @@ namespace Content.Server.Database
             var selectableState = oldState is not PersistentInventorySnapshotState.Bound
                                       and not PersistentInventorySnapshotState.Staging &&
                                   oldVerifiedState != PersistentInventorySnapshotState.Bound;
-            var isVerifiedRollbackTarget =
-                request.Mode != PersistentInventoryRevisionSelectionMode.Rollback ||
-                await db.DbContext.Wh40kPersistentInventoryAudits
-                    .AsNoTracking()
-                    .AnyAsync(audit =>
-                        audit.UserId == userId.UserId &&
-                        audit.SnapshotId == target &&
-                        (audit.Action == (int) PersistentInventoryAuditAction.Promoted ||
-                         audit.Action == (int) PersistentInventoryAuditAction.Repaired),
-                        cancel);
+            var isVerifiedRollbackTarget = request.Mode != PersistentInventoryRevisionSelectionMode.Rollback || selected.IsVerified;
             var latestLostSnapshotId =
                 request.Mode == PersistentInventoryRevisionSelectionMode.RecoverLost
                     ? await FindLatestPersistentInventoryLostSnapshotIdAsync(
@@ -3532,6 +3546,7 @@ namespace Content.Server.Database
             try
             {
                 await db.DbContext.SaveChangesAsync(cancel);
+                await MaintainInventoryStorageAsync(db.DbContext, account, DateTime.UtcNow, cancel);
                 await transaction.CommitAsync(cancel);
             }
             catch (DbUpdateConcurrencyException exception)
@@ -3639,31 +3654,11 @@ namespace Content.Server.Database
             Guid userId,
             CancellationToken cancel)
         {
-            var lostAudits = db.Wh40kPersistentInventoryAudits
-                .AsNoTracking()
-                .Where(audit =>
-                    audit.UserId == userId &&
-                    audit.Action == (int) PersistentInventoryAuditAction.Lost &&
-                    audit.OldState == (int) PersistentInventorySnapshotState.Bound &&
-                    audit.NewState == (int) PersistentInventorySnapshotState.LostByDisconnect &&
-                    audit.SnapshotId != null);
-
-            return await (
-                    from audit in lostAudits
-                    join revision in db.Wh40kPersistentInventoryRevisions.AsNoTracking()
-                        on new
-                        {
-                            audit.UserId,
-                            SnapshotId = audit.SnapshotId!.Value,
-                        }
-                        equals new
-                        {
-                            revision.UserId,
-                            revision.SnapshotId,
-                        }
-                    orderby audit.Id descending
-                    select audit.SnapshotId)
-                .FirstOrDefaultAsync(cancel);
+            var now = DateTime.UtcNow;
+            return await db.Wh40kPersistentInventoryStorage.AsNoTracking()
+                .Where(row => row.UserId == userId && row.LostExpiresAt > now &&
+                    db.Wh40kPersistentInventoryRevisions.Any(revision => revision.UserId == userId && revision.SnapshotId == row.LostSnapshotId))
+                .Select(row => row.LostSnapshotId).SingleOrDefaultAsync(cancel);
         }
 
         private async Task<PersistentInventoryMutationResult> ResolvePersistentInventoryWriteFailureAsync(
@@ -3699,7 +3694,7 @@ namespace Content.Server.Database
 
         private async Task<PersistentInventoryMutationResult> ToDuplicatePersistentInventoryResultAsync(
             ServerDbContext db,
-            Wh40kPersistentInventoryAudit duplicate,
+            Wh40kPersistentInventoryReceipt duplicate,
             CancellationToken cancel)
         {
             var header = await LoadPersistentInventoryHeaderAsync(db, duplicate.UserId, cancel);
@@ -3713,14 +3708,14 @@ namespace Content.Server.Database
                     : new PersistentInventorySnapshotId(duplicate.SnapshotId.Value));
         }
 
-        private static async Task<Wh40kPersistentInventoryAudit?> FindPersistentInventoryDuplicateAsync(
+        private static async Task<Wh40kPersistentInventoryReceipt?> FindPersistentInventoryDuplicateAsync(
             ServerDbContext db,
             Guid userId,
             PersistentInventoryOperationId operationId,
             PersistentInventoryAuditAction action,
             CancellationToken cancel)
         {
-            return await db.Wh40kPersistentInventoryAudits
+            return await db.Wh40kPersistentInventoryReceipts
                 .AsNoTracking()
                 .SingleOrDefaultAsync(entry =>
                     entry.UserId == userId &&
@@ -3743,6 +3738,15 @@ namespace Content.Server.Database
             Wh40kPersistentInventoryRevision? metadata,
             DateTime timestamp)
         {
+            db.Wh40kPersistentInventoryReceipts.Add(new Wh40kPersistentInventoryReceipt
+            {
+                UserId = account.UserId,
+                OperationId = operationId.Value,
+                Action = (int) action,
+                Revision = account.Revision,
+                NewState = (int) newState,
+                SnapshotId = snapshotId?.Value,
+            });
             db.Wh40kPersistentInventoryAudits.Add(new Wh40kPersistentInventoryAudit
             {
                 UserId = account.UserId,

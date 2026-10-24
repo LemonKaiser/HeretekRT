@@ -176,9 +176,10 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
                     break;
 
                 var repairedSnapshotId = PersistentInventorySnapshotId.New();
-                var packed = PersistentInventoryPayloadCodec.Pack(
+                var packed = PersistentInventoryPayloadCodec.PackAccountSnapshot(
                     preparation.Payload,
-                    _serializer.GetConfiguredLimits());
+                    _serializer.GetConfiguredLimits(),
+                    Math.Max(PersistentInventoryStoragePolicy.SnapshotBytes, reservation.StoredRevision.Metadata.CompressedBytes));
                 PersistentInventoryMutationResult repair;
                 try
                 {

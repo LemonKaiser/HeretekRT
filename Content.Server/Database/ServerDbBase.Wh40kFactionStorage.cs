@@ -23,7 +23,9 @@ public abstract partial class ServerDbBase
 
     public async Task<bool> WriteWh40kFactionStorageSlotAsync(Wh40kFactionStorageSlot slot, Guid expectedRevision)
     {
-        if (slot.Faction.Length is < 1 or > 128 || slot.Slot is < 0 or >= FactionStorageComponent.Capacity ||
+        ArgumentNullException.ThrowIfNull(slot);
+        if (string.IsNullOrWhiteSpace(slot.Faction) || slot.Faction.Length > 128 ||
+            slot.Slot is < 0 or >= FactionStorageComponent.Capacity ||
             slot.Revision == Guid.Empty || slot.Revision == expectedRevision ||
             slot.Payload is { Length: 0 or > 1048576 } ||
             (slot.Payload != null && (slot.Sha256 is not { Length: 32 } || slot.Prototype is not { Length: > 0 and <= 128 } || slot.Count <= 0)) ||

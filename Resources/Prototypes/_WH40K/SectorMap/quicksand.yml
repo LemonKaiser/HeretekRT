@@ -14,9 +14,12 @@
   - type: Transform
     anchored: true
   - type: Clickable
+  - type: Tag
+    tags:
+    - HideContextMenu
   - type: SyncSprite
   - type: Sprite
-    drawdepth: FloorTiles
+    drawdepth: LowFloors
     texture: _RMC14/Tiles/planet/sand.png
     color: "#EBE7DC"
   - type: Physics

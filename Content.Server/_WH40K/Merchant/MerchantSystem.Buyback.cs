@@ -84,6 +84,7 @@ public sealed partial class MerchantSystem
     private void GuardWeapon(EntityUid uid, ActorComponent comp, AttackAttemptEvent ev)
     {
         if (ev.Weapon is {} weapon && (HasComp<Wh40kQuestReservationComponent>(weapon.Owner) ||
+            HasComp<PersistentInventoryOperationComponent>(weapon.Owner) ||
             TryComp(weapon.Owner, out MerchantItemTokenComponent? title) && !title.Verified)) ev.Cancel();
     }
 

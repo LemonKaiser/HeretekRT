@@ -188,6 +188,9 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         _adapters.Add(new DamageItemStateAdapter(EntityManager, _damageable));
         _adapters.Add(new BasicAmmoItemStateAdapter(EntityManager, _guns));
         _adapters.Add(new BallisticAmmoItemStateAdapter(EntityManager, _guns));
+        _adapters.Add(new CartridgeItemStateAdapter(EntityManager, _guns));
+        _adapters.Add(new RevolverItemStateAdapter(EntityManager, _guns));
+        _adapters.Add(new GasTankItemStateAdapter(EntityManager));
         _adapters.Add(new GunItemStateAdapter(EntityManager, _guns));
         _adapters.Add(new OpenableItemStateAdapter(EntityManager, _openable));
         _adapters.Add(new PaperItemStateAdapter(EntityManager, _paper));
@@ -232,6 +235,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
     {
         var activeLimits = limits ?? GetConfiguredLimits();
         var migration = _migrations.MigrateWithReport(originalPayload);
+        PersistentInventoryPayloadCodec.Validate(migration.Payload, activeLimits);
         var unavailablePrototypeIds = migration.Payload.Entities
             .Select(entity => entity.PrototypeId)
             .Where(prototypeId => !_prototypes.TryIndex<EntityPrototype>(prototypeId, out _))
@@ -247,9 +251,12 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             .Order(StringComparer.Ordinal)
             .ToArray();
 
-        PersistentInventoryPayloadCodec.Validate(cleanup.Payload, activeLimits);
+        var resourceActions = new List<string>();
+        var upgraded = UpgradeLegacyResources(cleanup.Payload, resourceActions);
+        actions = actions.Concat(resourceActions).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+        PersistentInventoryPayloadCodec.Validate(upgraded, activeLimits);
         return new PersistentInventoryRestorePreparation(
-            cleanup.Payload,
+            upgraded,
             actions,
             unavailablePrototypeIds);
     }
@@ -375,8 +382,10 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         try
         {
             var migration = _migrations.MigrateWithReport(originalPayload);
-            payload = migration.Payload;
-            migrationActions = migration.Actions;
+            PersistentInventoryPayloadCodec.Validate(migration.Payload, activeLimits);
+            var resourceActions = new List<string>();
+            payload = UpgradeLegacyResources(migration.Payload, resourceActions);
+            migrationActions = migration.Actions.Concat(resourceActions).ToArray();
             PersistentInventoryPayloadCodec.Validate(payload, activeLimits);
         }
         catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException)
@@ -413,15 +422,18 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
 
             foreach (var entityState in payload.Entities.OrderBy(entity => entity.EntityId))
             {
-                    var uid = spawned[entityState.EntityId];
-                    foreach (var componentState in entityState.Components
-                             .OrderBy(component =>
-                                 _adaptersById.GetValueOrDefault(component.ComponentId)?.RestorePriority ??
-                                 int.MinValue)
-                             .ThenBy(component => component.ComponentId, StringComparer.Ordinal))
+                var uid = spawned[entityState.EntityId];
+                foreach (var componentState in entityState.Components
+                         .OrderBy(component =>
+                             _adaptersById.GetValueOrDefault(component.ComponentId)?.RestorePriority ??
+                             int.MinValue)
+                         .ThenBy(component => component.ComponentId, StringComparer.Ordinal))
                 {
                     if (!_adaptersById.TryGetValue(componentState.ComponentId, out var adapter))
                         return CleanupAndFail(spawned, $"Unknown state adapter {componentState.ComponentId}.");
+
+                    if (adapter.RestoreAfterChildren)
+                        continue;
 
                     if (!adapter.TryRestore(uid, componentState, out var error))
                         return CleanupAndFail(spawned, error ?? $"Cannot restore {componentState.ComponentId}.");
@@ -467,6 +479,17 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                     return CleanupAndFail(
                         spawned,
                         error ?? $"Cannot restore children of entity {entityState.EntityId}.");
+                }
+            }
+
+            foreach (var entityState in payload.Entities)
+            {
+                foreach (var componentState in entityState.Components)
+                {
+                    var adapter = _adaptersById[componentState.ComponentId];
+                    if (adapter.RestoreAfterChildren &&
+                        !adapter.TryRestore(spawned[entityState.EntityId], componentState, out var error))
+                        return CleanupAndFail(spawned, error ?? $"Cannot restore {componentState.ComponentId}.");
                 }
             }
 

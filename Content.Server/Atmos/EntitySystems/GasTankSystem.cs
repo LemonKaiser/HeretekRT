@@ -1,6 +1,7 @@
 using Content.Server.Cargo.Systems;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server._WH40K.SectorMap.Systems;
+using Content.Server._WH40K.PersistentInventory;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Examine;
@@ -81,6 +82,8 @@ namespace Content.Server.Atmos.EntitySystems
             var query = EntityQueryEnumerator<GasTankComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
+                if (HasComp<PersistentInventoryOperationComponent>(uid))
+                    continue;
                 var gasTank = (uid, comp);
                 if (comp.IsValveOpen && _safety.HasRule(uid, KoronusSafetyRule.AtmosphericRelease))
                 {
@@ -134,6 +137,8 @@ namespace Content.Server.Atmos.EntitySystems
 
         public GasMixture? RemoveAir(Entity<GasTankComponent> gasTank, float amount)
         {
+            if (HasComp<PersistentInventoryOperationComponent>(gasTank))
+                return null;
             var gas = gasTank.Comp.Air?.Remove(amount);
             CheckStatus(gasTank);
             return gas;
@@ -165,6 +170,8 @@ namespace Content.Server.Atmos.EntitySystems
 
         public void CheckStatus(Entity<GasTankComponent> ent)
         {
+            if (HasComp<PersistentInventoryOperationComponent>(ent))
+                return;
             var (owner, component) = ent;
             if (component.Air == null)
                 return;

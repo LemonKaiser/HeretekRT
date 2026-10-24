@@ -13,6 +13,7 @@ using Content.Server.Mind;
 using Content.Server._NF.CryoSleep;
 using Content.Server._WH40K.PersistentInventory.Serialization;
 using Content.Shared.ActionBlocker;
+using Content.Shared._WH40K.PersistentInventory;
 using Content.Shared.CCVar;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Database;
@@ -31,6 +32,7 @@ using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Speech;
 using Content.Shared.Storage;
 using Content.Shared.Throwing;
+using Content.Shared.Weapons.Ranged.Systems;
 using Prometheus;
 using Robust.Server.Player;
 using Robust.Shared.Asynchronous;
@@ -143,9 +145,13 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
         SubscribeLocalEvent<PersistentInventoryOperationComponent, DropAttemptEvent>(Cancel);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, ThrowAttemptEvent>(Cancel);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, UseAttemptEvent>(Cancel);
+        SubscribeLocalEvent<PersistentInventoryOperationComponent, GettingUsedAttemptEvent>(Cancel);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, AttackAttemptEvent>(Cancel);
+        SubscribeLocalEvent<PersistentInventoryOperationComponent, AttemptShootEvent>(CancelShooting);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, ChangeDirectionAttemptEvent>(Cancel);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, InteractionAttemptEvent>(CancelInteraction);
+        SubscribeLocalEvent<PersistentInventoryOperationComponent, GettingInteractedWithAttemptEvent>(CancelGettingInteractedWith);
+        SubscribeLocalEvent<PersistentInventoryOperationComponent, StackChangeAttemptEvent>(CancelStackChange);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, PullAttemptEvent>(CancelPull);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, SpeakAttemptEvent>(CancelSpeak);
         SubscribeLocalEvent<PersistentInventoryOperationComponent, EmoteAttemptEvent>(CancelEmote);
@@ -294,7 +300,12 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
             }
 
             capture = preparation.Capture!;
-            var packed = PersistentInventoryPayloadCodec.Pack(capture.Payload!, _serializer.GetConfiguredLimits());
+            PackedPersistentInventoryPayload packed;
+            try { packed = PersistentInventoryPayloadCodec.PackAccountSnapshot(capture.Payload!, _serializer.GetConfiguredLimits()); }
+            catch (InvalidDataException)
+            {
+                return Result(PersistentInventorySaveStatus.PolicyRejected, Loc.GetString("persistentinv-storage-snapshot-too-large"), request, snapshotId, operationId);
+            }
             PersistentInventoryMetrics.PhaseDuration
                 .WithLabels("save", "serialize_validate")
                 .Observe(phaseStopwatch.Elapsed.TotalSeconds);
@@ -383,6 +394,8 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
                 .Inc();
             if (!stage.IsSuccess || stage.Header == null)
             {
+                if (stage.Status == PersistentInventoryMutationStatus.QuotaExceeded)
+                    return Result(PersistentInventorySaveStatus.PolicyRejected, Loc.GetString("persistentinv-storage-quota-exceeded"), request, snapshotId, operationId);
                 return Result(
                     PersistentInventorySaveStatus.DatabaseFailure,
                     $"БД отклонила staging: {stage.Status}.",
@@ -582,6 +595,7 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
         }
 
         if (HasComp<PersistentInventoryOperationComponent>(request.Body) ||
+            EntityManager.System<Content.Server._WH40K.FactionStorage.FactionStorageSystem>().IsBusy(request.UserId) ||
             EntityManager.System<Content.Server._WH40K.Quests.Wh40kQuestSubmissionSystem>().IsBusy(request.UserId) ||
             EntityManager.System<Content.Server._WH40K.Merchant.MerchantSystem>().IsSelling(request.UserId))
         {
@@ -865,7 +879,7 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
             }
         }
 
-        var packed = PersistentInventoryPayloadCodec.Pack(capture.Payload!, _serializer.GetConfiguredLimits());
+        var packed = PersistentInventoryPayloadCodec.PackAccountSnapshot(capture.Payload!, _serializer.GetConfiguredLimits());
         if (!packed.Sha256.AsSpan().SequenceEqual(expectedPacked.Sha256) ||
             !packed.Data.AsSpan().SequenceEqual(expectedPacked.Data))
         {
@@ -1222,6 +1236,27 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
     private void CancelInteraction(
         Entity<PersistentInventoryOperationComponent> entity,
         ref InteractionAttemptEvent args)
+    {
+        args.Cancelled = true;
+    }
+
+    private void CancelShooting(
+        Entity<PersistentInventoryOperationComponent> entity,
+        ref AttemptShootEvent args)
+    {
+        args.Cancelled = true;
+    }
+
+    private void CancelGettingInteractedWith(
+        Entity<PersistentInventoryOperationComponent> entity,
+        ref GettingInteractedWithAttemptEvent args)
+    {
+        args.Cancelled = true;
+    }
+
+    private void CancelStackChange(
+        Entity<PersistentInventoryOperationComponent> entity,
+        ref StackChangeAttemptEvent args)
     {
         args.Cancelled = true;
     }

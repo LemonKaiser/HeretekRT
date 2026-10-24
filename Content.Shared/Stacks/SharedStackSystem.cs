@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Shared._WH40K.ItemRarity.Components;
+using Content.Shared._WH40K.PersistentInventory;
 using Content.Shared.Durability.Components;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
@@ -138,6 +139,7 @@ namespace Content.Shared.Stacks
 
         private bool CanTransferQuestUnits(EntityUid donor, EntityUid recipient)
         {
+            if (!CanChangeStack(donor) || !CanChangeStack(recipient)) return false;
             if (_stationProperty.IsProperty(donor) || _stationProperty.IsProperty(recipient)) return false;
             if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(donor) ||
                 HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(recipient) ||
@@ -270,6 +272,7 @@ namespace Content.Shared.Stacks
         /// </summary>
         public bool Use(EntityUid uid, int amount, StackComponent? stack = null)
         {
+            if (!CanChangeStack(uid)) return false;
             if (TryComp<Content.Shared._WH40K.SectorMap.Components.KoronusStationPropertyComponent>(uid, out var property) &&
                 !_stationProperty.CanUse(uid, property)) return false;
             if (HasComp<Content.Shared._WH40K.Npcs.Wh40kNpcGearComponent>(uid) ||
@@ -291,6 +294,13 @@ namespace Content.Shared.Stacks
             }
 
             return true;
+        }
+
+        private bool CanChangeStack(EntityUid uid)
+        {
+            var attempt = new StackChangeAttemptEvent();
+            RaiseLocalEvent(uid, ref attempt);
+            return !attempt.Cancelled;
         }
 
         /// <summary>

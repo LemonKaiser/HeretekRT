@@ -57,6 +57,8 @@ public interface IItemStateAdapter
 
     int RestorePriority => 0;
 
+    bool RestoreAfterChildren => false;
+
     bool Handles(IComponent component);
 
     bool TryCapture(

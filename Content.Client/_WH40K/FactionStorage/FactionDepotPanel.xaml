@@ -1,0 +1,34 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc 'wh40k-faction-storage-title'}" MinSize="720 480" SetSize="780 720">
+    <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="10">
+        <PanelContainer Name="HeaderPanel">
+            <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                <BoxContainer Orientation="Horizontal">
+                    <Label Text="{Loc 'wh40k-faction-storage-shared'}" StyleClasses="LabelSubText" FontColorOverride="#b59a68" HorizontalExpand="True" />
+                    <Label Name="ConnectionLabel" StyleClasses="LabelSubText" MinWidth="140" MaxWidth="140" Align="Right" ClipText="True" />
+                </BoxContainer>
+                <Label Name="FactionLabel" StyleClasses="LabelHeading" FontColorOverride="#e3cfa5" />
+                <BoxContainer Orientation="Horizontal">
+                    <Label Name="CapacityLabel" HorizontalExpand="True" />
+                    <Label Name="FreeLabel" FontColorOverride="#8faaa2" />
+                </BoxContainer>
+                <ProgressBar Name="CapacityBar" MinValue="0" MaxValue="100" MinHeight="5" MaxHeight="5" />
+            </BoxContainer>
+        </PanelContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+            <LineEdit Name="SearchInput" PlaceHolder="{Loc 'wh40k-faction-storage-search'}" HorizontalExpand="True" />
+            <CheckBox Name="OccupiedOnly" Text="{Loc 'wh40k-faction-storage-occupied-only'}" />
+            <Button Name="RefreshButton" Text="{Loc 'wh40k-faction-storage-refresh'}" />
+        </BoxContainer>
+        <ScrollContainer Name="SlotsScroll" VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <GridContainer Name="Slots" Columns="10" HSeparationOverride="4" VSeparationOverride="4" HorizontalAlignment="Center" />
+                <Label Name="NoMatchesLabel" Text="{Loc 'wh40k-faction-storage-no-matches'}" Visible="False" HorizontalAlignment="Center" Margin="0 32" FontColorOverride="#8f9aa5" />
+            </BoxContainer>
+        </ScrollContainer>
+        <BoxContainer Orientation="Horizontal">
+            <Label Text="{Loc 'wh40k-faction-storage-click-hint'}" StyleClasses="LabelSubText" FontColorOverride="#b59a68" HorizontalExpand="True" />
+            <Label Name="ShownLabel" StyleClasses="LabelSubText" FontColorOverride="#8f9aa5" />
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

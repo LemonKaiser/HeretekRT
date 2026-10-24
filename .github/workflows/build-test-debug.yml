@@ -158,6 +158,10 @@ jobs:
           $wh40kRoot = Join-Path $testsRoot "_WH40K"
           $batches = @()
 
+          if (-not (Test-Path -LiteralPath $wh40kRoot -PathType Container)) {
+            return $batches
+          }
+
           Get-ChildItem $wh40kRoot -Recurse -File -Filter "*.cs" |
             Sort-Object FullName |
             ForEach-Object {

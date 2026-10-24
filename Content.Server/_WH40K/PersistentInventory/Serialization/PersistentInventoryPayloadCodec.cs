@@ -62,6 +62,17 @@ public static class PersistentInventoryPayloadCodec
             payload.Roots.Count);
     }
 
+    public static PackedPersistentInventoryPayload PackAccountSnapshot(PersistentInventoryPayload payload, PersistentInventoryLimits limits,
+        int maximumBytes = Content.Server.Database.PersistentInventoryStoragePolicy.SnapshotBytes)
+    {
+        // Capture time belongs to revision metadata; excluding it lets unchanged inventories
+        // share a blob without weakening the full-payload integrity hash.
+        return Pack(payload with { CapturedAtUnixMilliseconds = 0 }, limits with
+        {
+            MaxCompressedBytes = Math.Min(limits.MaxCompressedBytes, maximumBytes),
+        });
+    }
+
     public static PersistentInventoryPayload Unpack(
         ReadOnlySpan<byte> packed,
         ReadOnlySpan<byte> expectedSha256,
