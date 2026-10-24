@@ -1,9 +1,13 @@
 import copy
 from collections import Counter
+from contextlib import redirect_stdout
+from io import StringIO
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 import ci_tests
@@ -20,19 +24,49 @@ def plan_for(cases):
             "catalog": [{"assembly": group["assembly"], **item} for item in cases]}
 
 
+def make_runtime(root):
+    for name in (*ci_tests.ASSEMBLIES, "Content.Client", "Content.Server"):
+        dll = root / "bin" / name / f"{name}.dll"
+        dll.parent.mkdir(parents=True)
+        dll.touch()
+    for name in ("Resources/Prototypes", "RobustToolbox/Resources"):
+        (root / name).mkdir(parents=True)
+
+
 class CiTests(unittest.TestCase):
+    def test_memory_includes_grandchildren_and_ignores_other_processes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            proc = Path(directory)
+            for pid, parent, rss in ((10, 1, 100), (20, 10, 500), (30, 20, 700), (40, 1, 9000)):
+                path = proc / str(pid)
+                path.mkdir()
+                (path / "status").write_text(f"PPid:\t{parent}\nVmRSS:\t{rss} kB\n")
+            (proc / "meminfo").write_text("MemTotal: 4096 kB\nMemAvailable: 1024 kB\n")
+            self.assertEqual(ci_tests.sample_memory(10, proc), {"rss": 1300 * 1024, "available": 1024**2, "total": 4 * 1024**2})
+
     def test_incomplete_runtime_fails_before_starting_nunit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             with self.assertRaisesRegex(ValueError, "bin/Content.Client/Content.Client.dll"):
                 ci_tests.verify_runtime(root)
-            for name in (*ci_tests.ASSEMBLIES, "Content.Client", "Content.Server"):
-                dll = root / "bin" / name / f"{name}.dll"
-                dll.parent.mkdir(parents=True)
-                dll.touch()
-            for name in ("Resources/Prototypes", "RobustToolbox/Resources"):
-                (root / name).mkdir(parents=True)
+            make_runtime(root)
             ci_tests.verify_runtime(root)
+
+    def test_stale_assembly_records_failure_without_starting_testhost(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            make_runtime(root)
+            plan = plan_for([case()])
+            plan["groups"][0]["sha256"] = "wrong-assembly"
+            ci_tests.write_json(root / "plan.json", plan)
+            args = SimpleNamespace(plan=root / "plan.json", group="integration-1", output=root / "results")
+            with patch.object(ci_tests, "ROOT", root), patch.object(ci_tests.subprocess, "Popen") as start:
+                with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "does not match"):
+                    ci_tests.run_group(args)
+                start.assert_not_called()
+            status = ci_tests.read_json(root / "results/integration-1/execution.json")
+            self.assertEqual(status["exit_code"], -1)
+            self.assertIn("does not match", status["error"])
 
     def test_inherited_explicit_and_ignored_states(self):
         root = ET.fromstring('<test-suite runstate="Explicit"><test-case classname="A" '
@@ -44,6 +78,14 @@ class CiTests(unittest.TestCase):
     def test_discovery_rejects_unnamed_case(self):
         with self.assertRaises(ValueError):
             list(ci_tests.discovered_cases(ET.fromstring('<test-case name="Test"/>')))
+
+    def test_invalid_source_without_cases_cannot_disappear_from_plan(self):
+        root = ET.fromstring('<test-suite><test-suite type="ParameterizedMethod" fullname="Broken.Source" '
+                             'runstate="NotRunnable"><properties><property name="_SKIPREASON" '
+                             'value="No arguments"/></properties></test-suite>'
+                             '<test-case classname="Good" fullname="Good.Test"/></test-suite>')
+        with self.assertRaisesRegex(ValueError, "Broken.Source: No arguments"):
+            list(ci_tests.discovered_cases(root))
 
     def test_nested_namespaces_and_parameterized_classes_have_one_owner(self):
         cases = [case("Root.Test", "Root"), case("Root.Child.Test(1)", "Root.Child"),
@@ -83,12 +125,13 @@ class CiTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             ci_tests.validate_plan(plan)
 
-    def inspect(self, cases, results, *, exit_code=0, suite_failure=False):
+    def inspect(self, cases, results, *, exit_code=0, suite_failure=False, trx=True, seed=42):
         group = plan_for(cases)["groups"][0]
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
-            (output / "execution.json").write_text(json.dumps({"group": group["id"], "exit_code": exit_code}))
-            (output / "results.trx").write_text("<TestRun/>")
+            (output / "execution.json").write_text(json.dumps({"group": group["id"], "exit_code": exit_code, "seed": 42}))
+            if trx:
+                (output / "results.trx").write_text("<TestRun/>")
             root = ET.Element("test-run")
             suite = ET.SubElement(root, "test-suite", fullname="Fixture")
             if suite_failure:
@@ -97,7 +140,18 @@ class CiTests(unittest.TestCase):
                 ET.SubElement(suite, "test-case", classname=item["class"], fullname=item["name"],
                               result=outcome, duration="1")
             ET.ElementTree(root).write(output / "Content.IntegrationTests.xml")
-            return ci_tests.inspect_group(group, output)[0]
+            return ci_tests.inspect_group(group, output, seed=seed)[0]
+
+    def test_missing_trx_cannot_pass_with_valid_nunit_xml(self):
+        self.assertTrue(any("Missing TRX" in problem for problem in
+                            self.inspect([case()], [(case(), "Passed")], trx=False)))
+
+    def test_results_with_another_seed_are_rejected(self):
+        self.assertTrue(any("seed" in problem for problem in
+                            self.inspect([case()], [(case(), "Passed")], seed=43)))
+
+    def test_unknown_test_outcome_is_rejected(self):
+        self.assertTrue(self.inspect([case()], [(case(), "Unknown")]))
 
     def test_duplicate_display_names_preserve_multiplicity(self):
         cases = [case(), case()]

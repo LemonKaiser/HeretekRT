@@ -45,10 +45,34 @@ def verify_runtime(root):
         raise ValueError("Incomplete test runtime/checkout: " + ", ".join(missing))
 
 
+def sample_memory(pid, proc=Path("/proc")):
+    records = {}
+    for path in proc.glob("[0-9]*/status"):
+        try:
+            fields = dict(line.split(":", 1) for line in path.read_text().splitlines() if ":" in line)
+            records[int(path.parent.name)] = (int(fields["PPid"]), int(fields.get("VmRSS", "0").split()[0]) * 1024)
+        except (OSError, ValueError, KeyError):
+            continue  # A process can exit while /proc is being read.
+    children = {pid}
+    while True:
+        found = {child for child, (parent, _) in records.items() if parent in children} - children
+        if not found:
+            break
+        children.update(found)
+    memory = dict(line.split(":", 1) for line in (proc / "meminfo").read_text().splitlines() if ":" in line)
+    return {"rss": sum(records[child][1] for child in children if child in records),
+            "available": int(memory["MemAvailable"].split()[0]) * 1024,
+            "total": int(memory["MemTotal"].split()[0]) * 1024}
+
+
 def discovered_cases(root, inherited="Runnable"):
     state = root.get("runstate", inherited)
     if inherited in ("Explicit", "Ignored", "NotRunnable"):
         state = inherited
+    if state == "NotRunnable":
+        reason = root.find("./properties/property[@name='_SKIPREASON']")
+        message = reason.get("value", "Invalid test") if reason is not None else "Invalid test"
+        raise ValueError(f"NUnit discovery error in {root.get('fullname', root.tag)}: {message}")
     if root.tag == "test-case":
         if not root.get("classname") or not root.get("fullname"):
             raise ValueError("NUnit discovery returned a case without class/fullname")
@@ -81,7 +105,15 @@ def prepare(args):
     output.mkdir(parents=True, exist_ok=True)
     (output / "plan.json").unlink(missing_ok=True)
     seed = args.seed if args.seed is not None else secrets.randbelow(2**31 - 1)
-    timings = read_json(args.timings) if args.timings and args.timings.exists() else {}
+    timings = {}
+    if args.timings and args.timings.exists():
+        try:
+            timings = {name: float(value) for name, value in read_json(args.timings).items()}
+            if any(not math.isfinite(value) or value < 0 for value in timings.values()):
+                raise ValueError("Invalid duration")
+        except (OSError, ValueError, TypeError, AttributeError) as error:
+            print(f"Ignoring unusable duration cache: {error}", flush=True)
+            timings = {}
     plan = {"seed": seed, "groups": [], "excluded": [], "catalog": []}
     for assembly in ASSEMBLIES:
         dll = ROOT / "bin" / assembly / f"{assembly}.dll"
@@ -174,33 +206,49 @@ def run_group(args):
         verify_runtime(ROOT)
         if assembly_hash(dll) != group.get("sha256"):
             raise ValueError("Test assembly does not match the discovery plan; rebuild and prepare again")
+        write_json(output / "execution.json", status)
         with (output / "console.log").open("w", encoding="utf-8") as log:
             with subprocess.Popen(command, cwd=ROOT, env=environment, stdout=log, stderr=subprocess.STDOUT) as process:
+                next_message = 60
                 while True:
                     try:
-                        status["exit_code"] = process.wait(timeout=60)
+                        status["exit_code"] = process.wait(timeout=5 if sys.platform == "linux" else 60)
                         break
                     except subprocess.TimeoutExpired:
-                        print(f"{group['id']}: running for {time.monotonic() - started:.0f}s", flush=True)
+                        status["seconds"] = time.monotonic() - started
+                        if sys.platform == "linux":
+                            try:
+                                sample = sample_memory(process.pid)
+                                status["peak_sampled_tree_rss_bytes"] = max(status.get("peak_sampled_tree_rss_bytes", 0), sample["rss"])
+                                status["min_available_memory_bytes"] = min(status.get("min_available_memory_bytes", sample["total"]), sample["available"])
+                                status["total_memory_bytes"] = sample["total"]
+                            except (OSError, ValueError, KeyError) as error:
+                                status["memory_sampling_error"] = str(error)
+                        if status["seconds"] >= next_message:
+                            memory = ""
+                            if "peak_sampled_tree_rss_bytes" in status:
+                                memory = (f"; peak sampled RSS {status['peak_sampled_tree_rss_bytes'] / 1024**2:.0f} MiB"
+                                          f"; min available {status['min_available_memory_bytes'] / 1024**2:.0f} MiB")
+                            print(f"{group['id']}: running for {status['seconds']:.0f}s{memory}", flush=True)
+                            write_json(output / "execution.json", status)
+                            next_message += 60
     except (OSError, ValueError) as error:
         status["error"] = str(error)
         raise
     finally:
         status["seconds"] = time.monotonic() - started
         status["finished_utc"] = datetime.now(timezone.utc).isoformat()
-        if sys.platform == "linux":
-            import resource
-            usage = resource.getrusage(resource.RUSAGE_CHILDREN)
-            status["peak_child_rss_bytes"] = usage.ru_maxrss * 1024
-            status["cpu_seconds"] = usage.ru_utime + usage.ru_stime
         write_json(output / "execution.json", status)
     print(f"{group['id']}: exit {status['exit_code']}, {status['seconds']:.1f}s", flush=True)
-    if status["exit_code"]:
+    problems, *_ = inspect_group(group, output, seed=plan["seed"])
+    for problem in problems[:5]:
+        print(f"CI error: {problem}", file=sys.stderr)
+    if status["exit_code"] and not (output / f"{group['assembly']}.xml").exists():
         print((output / "console.log").read_text(encoding="utf-8", errors="replace")[-12000:])
-    return 0 if status["exit_code"] == 0 else 1
+    return int(bool(problems))
 
 
-def inspect_group(group, output):
+def inspect_group(group, output, seed=None):
     problems = []
     status_path = output / "execution.json"
     status = read_json(status_path) if status_path.exists() else {}
@@ -208,11 +256,13 @@ def inspect_group(group, output):
         problems.append(f"Test process failed or did not finish (exit {status.get('exit_code', 'missing')})")
     if status.get("error"):
         problems.append(status["error"])
+    if seed is not None and status.get("seed") != seed:
+        problems.append("Execution seed does not match the discovery plan")
     if not (output / "results.trx").is_file():
         problems.append("Missing TRX report")
     xml_path = output / f"{group['assembly']}.xml"
     if not xml_path.exists():
-        return problems + ["Missing NUnit XML report"], status, Counter(), {}
+        return problems + ["Missing NUnit XML report"], status, Counter(), {}, False
     root = ET.parse(xml_path).getroot()
     actual = Counter()
     outcomes = Counter()
@@ -227,7 +277,7 @@ def inspect_group(group, output):
     # OneTimeSetUp/OneTimeTearDown failures belong to suites, not necessarily a case.
     for suite in root.iter("test-suite"):
         failure = suite.find("failure")
-        if failure is not None:
+        if failure is not None and suite.get("site") != "Child":
             problems.append(f"{suite.get('fullname')}: {failure.findtext('message', '')[:1500]}")
     expected = Counter((case["class"], case["name"]) for case in group["cases"])
     for label, difference in (("Missing", expected - actual), ("Unexpected/duplicate", actual - expected)):
@@ -240,39 +290,46 @@ def inspect_group(group, output):
         problems.append(f"Unexpected NUnit outcomes: {dict(outcomes)}")
     if not outcomes["Passed"] and not outcomes["Failed"] and any(case["state"] == "Runnable" for case in group["cases"]):
         problems.append("No runnable cases executed")
-    return problems, status, outcomes, dict(timings)
+    covered = (actual == expected and status.get("group") == group["id"] and status.get("exit_code") in (0, 1)
+               and (seed is None or status.get("seed") == seed) and (output / "results.trx").is_file())
+    return problems, status, outcomes, dict(timings), covered
 
 
 def report(args):
     plan = read_json(args.plan)
     validate_plan(plan)
-    lines = ["## Build & Test Debug", "", "| Group | Passed | Failed | Skipped | Time | Peak child RSS | Status |",
+    lines = ["## Build & Test Debug", "", "| Group | Passed | Failed | Skipped | Time | Peak sampled RSS | Status |",
              "| --- | ---: | ---: | ---: | ---: | ---: | --- |"]
     failed = False
+    all_covered = True
+    args.timings.unlink(missing_ok=True)
     timings = {}
     details = []
     for group in plan["groups"]:
         try:
-            problems, status, outcomes, group_timings = inspect_group(group, args.results / group["id"])
+            problems, status, outcomes, group_timings, covered = inspect_group(group, args.results / group["id"], seed=plan["seed"])
         except (OSError, ValueError, ET.ParseError) as error:
-            problems, status, outcomes, group_timings = [f"Invalid report: {error}"], {}, Counter(), {}
+            problems, status, outcomes, group_timings, covered = [f"Invalid report: {error}"], {}, Counter(), {}, False
         timings.update(group_timings)
         failed |= bool(problems)
-        memory = f"{status['peak_child_rss_bytes'] / 1024**2:.0f} MiB" if "peak_child_rss_bytes" in status else "n/a"
+        all_covered &= covered
+        memory = f"{status['peak_sampled_tree_rss_bytes'] / 1024**2:.0f} MiB" if "peak_sampled_tree_rss_bytes" in status else "n/a"
         lines.append(f"| {group['id']} | {outcomes['Passed']} | {outcomes['Failed']} | {outcomes['Skipped']} | "
                      f"{status.get('seconds', 0):.1f}s | {memory} | {'FAIL' if problems else 'OK'} |")
         if problems:
             details.extend(["", f"### {group['id']}", "", "```text", *problems[:10], "```"])
     lines.extend(["", f"NUnit seed: `{plan['seed']}`. Explicit cases excluded: {len(plan['excluded'])}.",
                   "Full logs, TRX, runsettings and crash/hang diagnostics are in the test artifacts.",
-                  "To reproduce: build DebugOpt, then run the same plan/group with ci_tests.py run."])
+                  "Exact replay requires the test-runtime and test-plan artifacts on the same OS. "
+                  "After a local rebuild, run ci_tests.py prepare with the seed above before ci_tests.py run."])
     lines.extend(details)
     summary = "\n".join(lines) + "\n"
     print(summary)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
             stream.write(summary)
-    write_json(args.timings, timings)
+    if all_covered:
+        write_json(args.timings, timings)
     return int(failed)
 
 
