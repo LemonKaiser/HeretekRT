@@ -332,7 +332,7 @@
     capacity: 100
     whitelist:
       tags:
-      - CartridgeBolter
+      - CartridgeBolter75
   - type: StaticPrice
     price: 180
 
