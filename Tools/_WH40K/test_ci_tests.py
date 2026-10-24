@@ -21,6 +21,19 @@ def plan_for(cases):
 
 
 class CiTests(unittest.TestCase):
+    def test_incomplete_runtime_fails_before_starting_nunit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaisesRegex(ValueError, "bin/Content.Client/Content.Client.dll"):
+                ci_tests.verify_runtime(root)
+            for name in (*ci_tests.ASSEMBLIES, "Content.Client", "Content.Server"):
+                dll = root / "bin" / name / f"{name}.dll"
+                dll.parent.mkdir(parents=True)
+                dll.touch()
+            for name in ("Resources/Prototypes", "RobustToolbox/Resources"):
+                (root / name).mkdir(parents=True)
+            ci_tests.verify_runtime(root)
+
     def test_inherited_explicit_and_ignored_states(self):
         root = ET.fromstring('<test-suite runstate="Explicit"><test-case classname="A" '
                              'fullname="A.Test" runstate="Runnable"/></test-suite>')
@@ -75,6 +88,7 @@ class CiTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
             (output / "execution.json").write_text(json.dumps({"group": group["id"], "exit_code": exit_code}))
+            (output / "results.trx").write_text("<TestRun/>")
             root = ET.Element("test-run")
             suite = ET.SubElement(root, "test-suite", fullname="Fixture")
             if suite_failure:
