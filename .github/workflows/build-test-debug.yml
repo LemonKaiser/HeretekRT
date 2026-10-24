@@ -64,7 +64,7 @@ jobs:
           SHARDS: ${{ inputs.integration-shards || '2' }}
         run: python3 Tools/_WH40K/ci_tests.py prepare --shards "$SHARDS" --seed 424242 --output test_results/plan --timings test_results/timings.json
       - name: Archive test runtime
-        run: tar -czf test-runtime.tar.gz bin/Content.Tests bin/Content.IntegrationTests
+        run: tar -czf test-runtime.tar.gz bin/Content.Tests bin/Content.IntegrationTests bin/Content.Client bin/Content.Server
       - name: Upload test runtime
         uses: actions/upload-artifact@v4
         with:
@@ -125,6 +125,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4.2.2
+        if: needs.build.result == 'success'
       - uses: actions/download-artifact@v4
         if: needs.build.result == 'success'
         with:

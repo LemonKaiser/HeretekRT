@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
 import os
@@ -27,6 +28,21 @@ def write_json(path, value):
 
 def read_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def assembly_hash(path):
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def verify_runtime(root):
+    files = [root / "bin" / name / f"{name}.dll"
+             for name in (*ASSEMBLIES, "Content.Client", "Content.Server")]
+    directories = [root / "Resources" / "Prototypes", root / "RobustToolbox" / "Resources"]
+    missing = [path.relative_to(root).as_posix() for path in files if not path.is_file()]
+    missing.extend(path.relative_to(root).as_posix() for path in directories if not path.is_dir())
+    if missing:
+        raise ValueError("Incomplete test runtime/checkout: " + ", ".join(missing))
 
 
 def discovered_cases(root, inherited="Runnable"):
@@ -63,6 +79,7 @@ def split_classes(cases, count, timings):
 def prepare(args):
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    (output / "plan.json").unlink(missing_ok=True)
     seed = args.seed if args.seed is not None else secrets.randbelow(2**31 - 1)
     timings = read_json(args.timings) if args.timings and args.timings.exists() else {}
     plan = {"seed": seed, "groups": [], "excluded": [], "catalog": []}
@@ -84,7 +101,7 @@ def prepare(args):
         buckets = split_classes(cases, 1 if assembly == "Content.Tests" else args.shards, timings)
         for index, classes in enumerate(buckets, 1):
             group_id = "unit" if assembly == "Content.Tests" else f"integration-{index}"
-            plan["groups"].append({"id": group_id, "assembly": assembly, "classes": classes,
+            plan["groups"].append({"id": group_id, "assembly": assembly, "sha256": assembly_hash(dll), "classes": classes,
                                    "cases": [case for case in cases if case["class"] in classes]})
         print(f"{assembly}: {len(cases)} cases, {len(buckets)} group(s)", flush=True)
     validate_plan(plan)
@@ -128,6 +145,7 @@ def run_group(args):
     plan = read_json(args.plan)
     validate_plan(plan)
     group = next(group for group in plan["groups"] if group["id"] == args.group)
+    dll = ROOT / "bin" / group["assembly"] / f"{group['assembly']}.dll"
     output = (args.output / group["id"]).resolve()
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):
@@ -142,7 +160,6 @@ def run_group(args):
         ET.SubElement(nunit, key).text = str(value)
     settings_path = output / "tests.runsettings"
     ET.ElementTree(settings).write(settings_path, encoding="utf-8", xml_declaration=True)
-    dll = ROOT / "bin" / group["assembly"] / f"{group['assembly']}.dll"
     command = ["dotnet", "test", str(dll), "--settings", str(settings_path),
                "--results-directory", str(output), "--logger", "trx;LogFileName=results.trx",
                "--blame-crash-dump-type", "mini", "--blame-hang-timeout", "15m",
@@ -154,11 +171,28 @@ def run_group(args):
     status = {"group": group["id"], "seed": plan["seed"], "exit_code": -1,
               "started_utc": datetime.now(timezone.utc).isoformat(), "command": command}
     try:
+        verify_runtime(ROOT)
+        if assembly_hash(dll) != group.get("sha256"):
+            raise ValueError("Test assembly does not match the discovery plan; rebuild and prepare again")
         with (output / "console.log").open("w", encoding="utf-8") as log:
-            status["exit_code"] = subprocess.run(command, cwd=ROOT, env=environment,
-                                                  stdout=log, stderr=subprocess.STDOUT).returncode
+            with subprocess.Popen(command, cwd=ROOT, env=environment, stdout=log, stderr=subprocess.STDOUT) as process:
+                while True:
+                    try:
+                        status["exit_code"] = process.wait(timeout=60)
+                        break
+                    except subprocess.TimeoutExpired:
+                        print(f"{group['id']}: running for {time.monotonic() - started:.0f}s", flush=True)
+    except (OSError, ValueError) as error:
+        status["error"] = str(error)
+        raise
     finally:
         status["seconds"] = time.monotonic() - started
+        status["finished_utc"] = datetime.now(timezone.utc).isoformat()
+        if sys.platform == "linux":
+            import resource
+            usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+            status["peak_child_rss_bytes"] = usage.ru_maxrss * 1024
+            status["cpu_seconds"] = usage.ru_utime + usage.ru_stime
         write_json(output / "execution.json", status)
     print(f"{group['id']}: exit {status['exit_code']}, {status['seconds']:.1f}s", flush=True)
     if status["exit_code"]:
@@ -172,6 +206,10 @@ def inspect_group(group, output):
     status = read_json(status_path) if status_path.exists() else {}
     if status.get("group") != group["id"] or status.get("exit_code") != 0:
         problems.append(f"Test process failed or did not finish (exit {status.get('exit_code', 'missing')})")
+    if status.get("error"):
+        problems.append(status["error"])
+    if not (output / "results.trx").is_file():
+        problems.append("Missing TRX report")
     xml_path = output / f"{group['assembly']}.xml"
     if not xml_path.exists():
         return problems + ["Missing NUnit XML report"], status, Counter(), {}
@@ -198,6 +236,8 @@ def inspect_group(group, output):
             problems.append(f"{label}: {sum(difference.values())} cases. {sample}")
     if outcomes["Failed"] or outcomes["Inconclusive"]:
         problems.append(f"Failed: {outcomes['Failed']}; inconclusive: {outcomes['Inconclusive']}")
+    if outcomes.keys() - {"Passed", "Skipped", "Failed", "Inconclusive"}:
+        problems.append(f"Unexpected NUnit outcomes: {dict(outcomes)}")
     if not outcomes["Passed"] and not outcomes["Failed"] and any(case["state"] == "Runnable" for case in group["cases"]):
         problems.append("No runnable cases executed")
     return problems, status, outcomes, dict(timings)
@@ -206,8 +246,8 @@ def inspect_group(group, output):
 def report(args):
     plan = read_json(args.plan)
     validate_plan(plan)
-    lines = ["## Build & Test Debug", "", "| Group | Passed | Failed | Skipped | Time | Status |",
-             "| --- | ---: | ---: | ---: | ---: | --- |"]
+    lines = ["## Build & Test Debug", "", "| Group | Passed | Failed | Skipped | Time | Peak child RSS | Status |",
+             "| --- | ---: | ---: | ---: | ---: | ---: | --- |"]
     failed = False
     timings = {}
     details = []
@@ -218,8 +258,9 @@ def report(args):
             problems, status, outcomes, group_timings = [f"Invalid report: {error}"], {}, Counter(), {}
         timings.update(group_timings)
         failed |= bool(problems)
+        memory = f"{status['peak_child_rss_bytes'] / 1024**2:.0f} MiB" if "peak_child_rss_bytes" in status else "n/a"
         lines.append(f"| {group['id']} | {outcomes['Passed']} | {outcomes['Failed']} | {outcomes['Skipped']} | "
-                     f"{status.get('seconds', 0):.1f}s | {'FAIL' if problems else 'OK'} |")
+                     f"{status.get('seconds', 0):.1f}s | {memory} | {'FAIL' if problems else 'OK'} |")
         if problems:
             details.extend(["", f"### {group['id']}", "", "```text", *problems[:10], "```"])
     lines.extend(["", f"NUnit seed: `{plan['seed']}`. Explicit cases excluded: {len(plan['excluded'])}.",
