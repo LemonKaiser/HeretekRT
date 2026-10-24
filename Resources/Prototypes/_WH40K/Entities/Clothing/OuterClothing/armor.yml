@@ -88,6 +88,8 @@
         Slash: 0.8
         Piercing: 0.85
         Heat: 1.15
+  - type: StaticPrice
+    price: 40
   - type: ItemDurability
     maxDurability: 240
     protectsWearer: true
