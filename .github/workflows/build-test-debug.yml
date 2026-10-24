@@ -16,17 +16,24 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: '1'
   DOTNET_NOLOGO: '1'
+  DOTNET_CLI_UI_LANGUAGE: en
 
 jobs:
   build:
+    name: Prepare build
+    continue-on-error: true
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     outputs:
-      matrix: ${{ steps.plan.outputs.matrix }}
+      ready: ${{ steps.record.outputs.ready == 'true' && steps.build-report.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4.2.2
         with:
@@ -34,19 +41,31 @@ jobs:
       - uses: actions/setup-dotnet@v4.1.0
         with:
           dotnet-version: 10.0.x
-      - name: Verify test planning and coverage checks
-        run: python3 -m unittest discover -s Tools/_WH40K -p test_ci_tests.py -v
+      - name: Verify CI scripts
+        id: verify
+        continue-on-error: true
+        run: |
+          mkdir -p test_results/build
+          python3 -m unittest discover -s Tools/_WH40K -p test_ci_tests.py -v 2>&1 | tee test_results/build/ci-tests.log
       - name: Cache NuGet packages
+        if: steps.verify.outcome == 'success'
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', '**/*.csproj', '**/*.props', '**/*.targets', '**/NuGet.Config') }}
           restore-keys: ${{ runner.os }}-nuget-
       - name: Restore dependencies
-        run: dotnet restore
+        id: restore
+        if: steps.verify.outcome == 'success'
+        continue-on-error: true
+        run: dotnet restore 2>&1 | tee test_results/build/restore.log
       - name: Build DebugOpt
-        run: dotnet build --configuration DebugOpt --no-restore /p:WarningsAsErrors=nullable /m
+        id: compile
+        if: steps.restore.outcome == 'success'
+        continue-on-error: true
+        run: dotnet build --configuration DebugOpt --no-restore /p:WarningsAsErrors=nullable /m 2>&1 | tee test_results/build/build.log
       - name: Restore test durations
+        if: steps.compile.outcome == 'success'
         uses: actions/cache/restore@v4
         with:
           path: test_results/timings.json
@@ -54,33 +73,59 @@ jobs:
           restore-keys: ${{ runner.os }}-test-durations-v1-
       - name: Discover tests and prepare groups
         id: plan
-        run: python3 Tools/_WH40K/ci_tests.py prepare --output test_results/plan --timings test_results/timings.json
+        if: steps.compile.outcome == 'success'
+        continue-on-error: true
+        run: python3 Tools/_WH40K/ci_tests.py prepare --output test_results/plan --timings test_results/timings.json 2>&1 | tee test_results/build/plan.log
       - name: Archive test runtime
-        run: tar -czf test-runtime.tar.gz bin/Content.Tests bin/Content.IntegrationTests bin/Content.Client bin/Content.Server
-      - name: Upload test runtime
+        id: archive
+        if: steps.plan.outcome == 'success'
+        continue-on-error: true
+        run: tar -czf test-runtime.tar.gz bin/Content.Tests bin/Content.IntegrationTests bin/Content.Client bin/Content.Server 2>&1 | tee test_results/build/archive.log
+      - name: Transfer test runtime
+        id: runtime
+        if: steps.archive.outcome == 'success'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: test-runtime
           path: test-runtime.tar.gz
           compression-level: 0
           retention-days: 1
-      - name: Upload discovery plan
+      - name: Record preparation result
+        id: record
         if: always()
+        env:
+          VERIFY_RESULT: ${{ steps.verify.outcome }}
+          RESTORE_RESULT: ${{ steps.restore.outcome }}
+          COMPILE_RESULT: ${{ steps.compile.outcome }}
+          PLAN_RESULT: ${{ steps.plan.outcome }}
+          ARCHIVE_RESULT: ${{ steps.archive.outcome }}
+          RUNTIME_RESULT: ${{ steps.runtime.outcome }}
+        run: python3 Tools/_WH40K/ci_tests.py record-build --output test_results/build
+      - name: Transfer preparation reports
+        id: build-report
+        if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: test-plan
-          path: test_results/plan
-          retention-days: 7
+          name: ci-build
+          path: |
+            test_results/build
+            test_results/plan
+          retention-days: 1
 
   tests:
-    name: Tests (${{ matrix.group }})
+    name: Collect results (${{ matrix.group }})
+    continue-on-error: true
     needs: build
+    if: needs.build.outputs.ready == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 115
     strategy:
       fail-fast: false
       max-parallel: 3
-      matrix: ${{ fromJSON(needs.build.outputs.matrix) }}
+      matrix:
+        group: [unit, integration-1, integration-2]
     steps:
       - uses: actions/checkout@v4.2.2
         with:
@@ -89,77 +134,110 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: test-runtime
       - name: Extract test runtime
         run: tar -xzf test-runtime.tar.gz
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
-          name: test-plan
-          path: test_results/plan
-      - name: Run tests
+          name: ci-build
+          path: test_results
+      - name: Execute tests and collect their outcome
+        # Assertion failures are data for the single final verdict.
+        continue-on-error: true
         env:
           TEST_GROUP: ${{ matrix.group }}
         run: python3 Tools/_WH40K/ci_tests.py run --plan test_results/plan/plan.json --group "$TEST_GROUP" --output test_results/runs
-      - name: Upload test reports and diagnostics
+      - name: Transfer results
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.group }}
+          name: ci-results-${{ matrix.group }}
           path: test_results/runs
-          retention-days: 7
+          retention-days: 1
 
   ci-success:
     name: Build & Test Debug
     if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
     needs: [build, tests]
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: write
     steps:
       - uses: actions/checkout@v4.2.2
-        if: needs.build.result == 'success'
-      - uses: actions/download-artifact@v4
-        if: needs.build.result == 'success'
         with:
-          name: test-plan
-          path: test_results/plan
-      - uses: actions/download-artifact@v4
-        if: needs.build.result == 'success'
+          persist-credentials: false
+      - name: Collect preparation reports
         continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
-          pattern: test-results-*
+          name: ci-build
+          path: test_results
+      - name: Collect execution reports
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ci-results-*
           merge-multiple: true
           path: test_results/runs
-      - name: Verify all expected tests and write summary
-        if: needs.build.result == 'success'
-        run: python3 Tools/_WH40K/ci_tests.py report --plan test_results/plan/plan.json --results test_results/runs --timings test_results/timings.json
-      - name: Save test durations from the default branch
+      - name: Prepare the complete test report
+        continue-on-error: true
+        env:
+          CI_BUILD_RESULT: ${{ needs.build.result }}
+          CI_TEST_RESULT: ${{ needs.tests.result }}
+          CI_BUILD_READY: ${{ needs.build.outputs.ready }}
+        run: |
+          mkdir -p test_results
+          python3 Tools/_WH40K/ci_tests.py report --plan test_results/plan/plan.json --build-status test_results/build/execution.json --results test_results/runs --timings test_results/timings.json --output test_results --defer-verdict 2>&1 | tee test_results/report-generator.log
+      - name: Save complete test durations
         if: always() && hashFiles('test_results/timings.json') != '' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: actions/cache/save@v4
         with:
           path: test_results/timings.json
           key: ${{ runner.os }}-test-durations-v1-${{ github.run_id }}
-      - name: Require successful build and all test jobs
+      - name: Save the single report archive
+        id: final-artifact
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test_results
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove intermediate artifacts
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v9
+        env:
+          REPORT_SAVED: ${{ steps.final-artifact.outcome }}
+        with:
+          script: |
+            const names = new Set(['test-runtime']);
+            if (process.env.REPORT_SAVED === 'success') {
+              for (const name of ['ci-build', 'ci-results-unit', 'ci-results-integration-1', 'ci-results-integration-2']) names.add(name);
+            }
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              ...context.repo, run_id: context.runId, per_page: 100
+            });
+            for (const artifact of artifacts) {
+              if (!names.has(artifact.name)) continue;
+              try {
+                await github.rest.actions.deleteArtifact({...context.repo, artifact_id: artifact.id});
+                core.info(`Removed ${artifact.name}`);
+              } catch (error) {
+                if (error.status === 404) continue;
+                core.warning(`Cannot remove ${artifact.name}; its one-day retention remains active: ${error.message}`);
+                if (error.status === 403) break;
+              }
+            }
+      - name: Итог проверки — здесь полный текст ошибки
         if: always()
         env:
-          BUILD_RESULT: ${{ needs.build.result }}
-          TEST_RESULT: ${{ needs.tests.result }}
-        run: |
-          if [[ "$BUILD_RESULT" != success || "$TEST_RESULT" != success ]]; then
-            echo "::error::Build: $BUILD_RESULT; tests: $TEST_RESULT. See the failed job and test summary."
-            exit 1
-          fi
-
-  shipyard-success:
-    # Shipyard is included in the integration catalog on every run. Preserve the
-    # existing check name for repositories that require it in branch protection.
-    name: Build & Run Shipyard Tests
-    if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
-    needs: ci-success
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    steps:
-      - name: Require the complete integration suite
-        env:
-          RESULT: ${{ needs.ci-success.result }}
-        run: test "$RESULT" = success
+          CI_REPORT_SAVED: ${{ steps.final-artifact.outcome }}
+        run: python3 Tools/_WH40K/ci_tests.py verdict --output test_results

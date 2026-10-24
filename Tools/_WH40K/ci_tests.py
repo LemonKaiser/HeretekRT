@@ -147,10 +147,17 @@ def prepare(args):
         print(f"{assembly}: {len(cases)} cases, {len(buckets)} group(s)", flush=True)
     validate_plan(plan)
     write_json(output / "plan.json", plan)
-    matrix = {"include": [{"group": group["id"]} for group in plan["groups"]]}
+
+
+def record_build(args):
+    stages = {stage: os.environ.get(variable, "missing") for stage, variable in {
+        "CI self-checks": "VERIFY_RESULT", "Restore": "RESTORE_RESULT", "Compile": "COMPILE_RESULT",
+        "Discovery": "PLAN_RESULT", "Archive": "ARCHIVE_RESULT", "Upload runtime": "RUNTIME_RESULT"}.items()}
+    ready = all(result == "success" for result in stages.values())
+    write_json(args.output / "execution.json", {"ready": ready, "stages": stages})
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
-            stream.write(f"matrix={json.dumps(matrix)}\n")
+            stream.write(f"ready={str(ready).lower()}\n")
 
 
 def validate_plan(plan):
@@ -210,7 +217,8 @@ def run_group(args):
     print(shlex.join(command), flush=True)
     started = time.monotonic()
     status = {"group": group["id"], "seed": plan["seed"], "exit_code": -1,
-              "started_utc": datetime.now(timezone.utc).isoformat(), "command": command}
+              "started_utc": datetime.now(timezone.utc).isoformat(), "command": command,
+              "gc_heap_hard_limit_percent": environment.get("DOTNET_GCHeapHardLimitPercent")}
     try:
         verify_runtime(ROOT)
         if assembly_hash(dll) != group.get("sha256"):
@@ -257,6 +265,10 @@ def run_group(args):
     return int(bool(problems))
 
 
+def failure_text(node):
+    return "\n".join(part for part in (node.findtext("message", ""), node.findtext("stack-trace", "")) if part)
+
+
 def inspect_group(group, output, seed=None):
     problems = []
     status_path = output / "execution.json"
@@ -271,7 +283,11 @@ def inspect_group(group, output, seed=None):
         problems.append("Missing TRX report")
     xml_path = output / f"{group['assembly']}.xml"
     if not xml_path.exists():
-        return problems + ["Missing NUnit XML report"], status, Counter(), {}, False
+        problems.append("Missing NUnit XML report")
+        console = output / "console.log"
+        if console.exists():
+            problems.append("Последние сообщения исполнителя:\n" + console.read_text(encoding="utf-8", errors="replace")[-32000:])
+        return problems, status, Counter(), {}, False
     root = ET.parse(xml_path).getroot()
     actual = Counter()
     outcomes = Counter()
@@ -282,12 +298,12 @@ def inspect_group(group, output, seed=None):
         timings[case.get("classname")] += float(case.get("duration", "0"))
         failure = case.find("failure")
         if failure is not None:
-            problems.append(f"{case.get('fullname')}: {failure.findtext('message', '')[:1500]}")
+            problems.append(f"{case.get('fullname')}:\n{failure_text(failure)}")
     # OneTimeSetUp/OneTimeTearDown failures belong to suites, not necessarily a case.
     for suite in root.iter("test-suite"):
         failure = suite.find("failure")
         if failure is not None and suite.get("site") != "Child":
-            problems.append(f"{suite.get('fullname')}: {failure.findtext('message', '')[:1500]}")
+            problems.append(f"{suite.get('fullname')}:\n{failure_text(failure)}")
     expected = Counter((case["class"], case["name"]) for case in group["cases"])
     for label, difference in (("Missing", expected - actual), ("Unexpected/duplicate", actual - expected)):
         if difference:
@@ -304,43 +320,120 @@ def inspect_group(group, output, seed=None):
     return problems, status, outcomes, dict(timings), covered
 
 
+def build_problems(path):
+    try:
+        status = read_json(path)
+    except (OSError, ValueError) as error:
+        return [f"Нет корректного отчёта подготовки сборки: {error}"]
+    if status.get("ready") is True:
+        return []
+    stages = status.get("stages", {})
+    problems = ["Подготовка сборки не завершена: " + ", ".join(f"{name}={result}" for name, result in stages.items())]
+    for stage, name in {"CI self-checks": "ci-tests.log", "Restore": "restore.log", "Compile": "build.log",
+                        "Discovery": "plan.log", "Archive": "archive.log"}.items():
+        if stages.get(stage) != "failure":
+            continue
+        log = path.parent / name
+        if log.exists():
+            lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
+            errors = list(dict.fromkeys(line for line in lines if re.search(r"\berror\b|FAILED|Traceback", line, re.IGNORECASE)))
+            problems.append(f"{name}:\n" + "\n".join(errors or lines[-40:]))
+    return problems
+
+
+def markdown_block(text):
+    fence = "`" * max(3, max((len(match) + 1 for match in re.findall(r"`+", text)), default=0))
+    return f"{fence}text\n{text}\n{fence}"
+
+
 def report(args):
-    plan = read_json(args.plan)
-    validate_plan(plan)
-    lines = ["## Build & Test Debug", "", "| Group | Passed | Failed | Skipped | Time | Peak sampled RSS | Min available RAM | Status |",
-             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |"]
-    failed = False
-    all_covered = True
+    output = args.output.resolve()
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "result.json").unlink(missing_ok=True)
     args.timings.unlink(missing_ok=True)
-    timings = {}
-    details = []
-    for group in plan["groups"]:
+    failures = build_problems(args.build_status) if args.build_status is not None else []
+    if os.environ.get("CI_BUILD_READY", "true") != "true":
+        failures.append("Сборка не передана исполнителям; тесты не запускались.")
+    build_ok = not failures
+    for key in ("CI_BUILD_RESULT", "CI_TEST_RESULT"):
+        value = os.environ.get(key)
+        if value is not None and value != "success" and (key != "CI_TEST_RESULT" or build_ok):
+            failures.append(f"Задание GitHub не завершилось успешно: {key}={value}")
+    try:
+        plan = read_json(args.plan)
+        validate_plan(plan)
+    except (OSError, ValueError, KeyError) as error:
+        if build_ok:
+            failures.append(f"Нет корректного плана тестов: {error}")
+        plan = {"seed": "unknown", "groups": [], "excluded": [], "catalog": []}
+    all_covered = build_ok and bool(plan["groups"])
+    timings, rows = {}, []
+    for group in plan["groups"] if build_ok else []:
         try:
             problems, status, outcomes, group_timings, covered = inspect_group(group, args.results / group["id"], seed=plan["seed"])
         except (OSError, ValueError, ET.ParseError) as error:
             problems, status, outcomes, group_timings, covered = [f"Invalid report: {error}"], {}, Counter(), {}, False
         timings.update(group_timings)
-        failed |= bool(problems)
         all_covered &= covered
-        memory = f"{status['peak_sampled_tree_rss_bytes'] / 1024**2:.0f} MiB" if "peak_sampled_tree_rss_bytes" in status else "n/a"
-        available = f"{status['min_available_memory_bytes'] / 1024**2:.0f} MiB" if "min_available_memory_bytes" in status else "n/a"
-        lines.append(f"| {group['id']} | {outcomes['Passed']} | {outcomes['Failed']} | {outcomes['Skipped']} | "
-                     f"{status.get('seconds', 0):.1f}s | {memory} | {available} | {'FAIL' if problems else 'OK'} |")
         if problems:
-            details.extend(["", f"### {group['id']}", "", "```text", *problems[:10], "```"])
-    lines.extend(["", f"NUnit seed: `{plan['seed']}`. Explicit cases excluded: {len(plan['excluded'])}.",
-                  "Full logs, TRX, runsettings and crash/hang diagnostics are in the test artifacts.",
-                  "Exact replay requires the test-runtime and test-plan artifacts on the same OS. "
-                  "After a local rebuild, run ci_tests.py prepare with the seed above before ci_tests.py run."])
-    lines.extend(details)
-    summary = "\n".join(lines) + "\n"
-    print(summary)
+            failures.append(f"[{group['id']}]\n" + "\n\n".join(problems))
+        rows.append({"group": group["id"], "passed": outcomes["Passed"], "failed": outcomes["Failed"],
+                     "skipped": outcomes["Skipped"], "seconds": status.get("seconds", 0), "ok": not problems,
+                     "rss": status.get("peak_sampled_tree_rss_bytes"), "available": status.get("min_available_memory_bytes")})
+    failed = bool(failures) or not all_covered
+    result = {"status": "failed" if failed else "passed", "all_covered": all_covered,
+              "commit": os.environ.get("GITHUB_SHA", "local"), "run_id": os.environ.get("GITHUB_RUN_ID", "local"),
+              "seed": plan["seed"], "expected": len(plan["catalog"]), "groups": rows}
+    run_url = ""
+    if os.environ.get("GITHUB_REPOSITORY") and os.environ.get("GITHUB_RUN_ID"):
+        run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+    mib = lambda value: f"{value / 1024**2:.0f} MiB" if value is not None else "n/a"
+    resources = [f"{row['group']}: {row['seconds']:.1f}s; peak RAM {mib(row['rss'])}; min available {mib(row['available'])}" for row in rows]
+    text = "\n".join([f"Build & Test Debug: {'FAILED' if failed else 'PASSED'}", f"Commit: {result['commit']}",
+                      f"Run: {run_url or 'local'}", f"NUnit seed: {plan['seed']}",
+                      f"Expected cases: {result['expected']}; Explicit excluded: {len(plan['excluded'])}", *resources, "",
+                      "\n\n".join(failures) if failed else "Все ожидаемые тесты учтены. Ошибок нет."]) + "\n"
+    (output / "errors.txt").write_text(text, encoding="utf-8")
+    summary = [f"## Build & Test Debug — {'ОШИБКА' if failed else 'ПРОЙДЕНО'}", "",
+               "**Для разбора ошибки скопируй блок ниже целиком.**" if failed else "Все ожидаемые тесты учтены; падений нет.", "",
+               "| Группа | Успешно | Ошибок | Пропущено | Время | Пик RAM | Мин. свободно | Итог |",
+               "| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |"]
+    for row in rows:
+        summary.append(f"| {row['group']} | {row['passed']} | {row['failed']} | {row['skipped']} | {row['seconds']:.1f}s | "
+                       f"{mib(row['rss'])} | {mib(row['available'])} | {'OK' if row['ok'] else 'FAIL'} |")
+    display = text[:64000]
+    if len(text) > len(display):
+        display += "\n… Полный текст находится в errors.txt внутри архива test-results."
+    summary.extend(["", markdown_block(display), "",
+                    "Архив **test-results** содержит errors.txt, полный итог, логи, TRX, NUnit XML и план тестов.",
+                    f"Для локального повтора: собери DebugOpt и выполни ci_tests.py prepare --seed {plan['seed']}, затем ci_tests.py run."])
+    rendered = "\n".join(summary) + "\n"
+    (output / "summary.md").write_text(rendered, encoding="utf-8")
+    write_json(output / "result.json", result)
+    print(rendered)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
-            stream.write(summary)
+            stream.write(rendered)
     if all_covered:
         write_json(args.timings, timings)
-    return int(failed)
+    return 0 if args.defer_verdict else int(failed)
+
+
+def verdict(args):
+    try:
+        result = read_json(args.output / "result.json")
+    except (OSError, ValueError) as error:
+        print(f"Итоговый отчёт не сформирован: {error}", file=sys.stderr)
+        return 1
+    for field, variable in (("commit", "GITHUB_SHA"), ("run_id", "GITHUB_RUN_ID")):
+        if os.environ.get(variable) and result.get(field) != os.environ[variable]:
+            print("Итоговый отчёт относится к другому запуску.", file=sys.stderr)
+            return 1
+    print((args.output / "errors.txt").read_text(encoding="utf-8"))
+    if os.environ.get("CI_REPORT_SAVED", "success") != "success":
+        print("Не удалось сохранить итоговый архив test-results. Проверь шаг загрузки отчёта.", file=sys.stderr)
+        return 1
+    return int(result.get("status") != "passed" or result.get("all_covered") is not True)
 
 
 def main():
@@ -351,6 +444,9 @@ def main():
     prepare_parser.add_argument("--output", type=Path, required=True)
     prepare_parser.add_argument("--timings", type=Path)
     prepare_parser.set_defaults(handler=prepare)
+    build_parser = commands.add_parser("record-build")
+    build_parser.add_argument("--output", type=Path, required=True)
+    build_parser.set_defaults(handler=record_build)
     run_parser = commands.add_parser("run")
     run_parser.add_argument("--plan", type=Path, required=True)
     run_parser.add_argument("--group", required=True)
@@ -360,7 +456,13 @@ def main():
     report_parser.add_argument("--plan", type=Path, required=True)
     report_parser.add_argument("--results", type=Path, required=True)
     report_parser.add_argument("--timings", type=Path, required=True)
+    report_parser.add_argument("--build-status", type=Path)
+    report_parser.add_argument("--output", type=Path, default=Path("test_results"))
+    report_parser.add_argument("--defer-verdict", action="store_true")
     report_parser.set_defaults(handler=report)
+    verdict_parser = commands.add_parser("verdict")
+    verdict_parser.add_argument("--output", type=Path, required=True)
+    verdict_parser.set_defaults(handler=verdict)
     args = parser.parse_args()
     try:
         return args.handler(args) or 0

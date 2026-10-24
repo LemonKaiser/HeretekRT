@@ -1,8 +1,9 @@
 import copy
 from collections import Counter
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 import json
+import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -34,6 +35,119 @@ def make_runtime(root):
 
 
 class CiTests(unittest.TestCase):
+    def test_build_ready_requires_every_preparation_stage(self):
+        values = {name: "success" for name in ("VERIFY_RESULT", "RESTORE_RESULT", "COMPILE_RESULT", "PLAN_RESULT", "ARCHIVE_RESULT", "RUNTIME_RESULT")}
+        for missing in (None, "PLAN_RESULT", "RUNTIME_RESULT"):
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as directory:
+                env = dict(values)
+                if missing:
+                    env.pop(missing)
+                with patch.dict(os.environ, env, clear=True):
+                    ci_tests.record_build(SimpleNamespace(output=Path(directory)))
+                self.assertEqual(ci_tests.read_json(Path(directory) / "execution.json")["ready"], missing is None)
+
+    def test_crash_without_xml_keeps_executor_error_in_copyable_report(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+            root = Path(directory)
+            args = self.report_fixture(root, missing=True)
+            (root / "runs/integration-1/console.log").write_text("System.OutOfMemoryException: simulated crash\n", encoding="utf-8")
+            with redirect_stdout(StringIO()):
+                ci_tests.report(args)
+            self.assertIn("OutOfMemoryException", (root / "final/errors.txt").read_text(encoding="utf-8"))
+
+    def report_fixture(self, root, *, failed=False, missing=False, build_failed=False, defer=True):
+        plan = plan_for([case()])
+        ci_tests.write_json(root / "plan.json", plan)
+        ci_tests.write_json(root / "build/execution.json", {"ready": not build_failed,
+                            "stages": {"Compile": "failure" if build_failed else "success"}})
+        if build_failed:
+            (root / "build/build.log").write_text("example.cs(1): error CS0000: compiler failure\n", encoding="utf-8")
+        group = root / "runs/integration-1"
+        group.mkdir(parents=True)
+        ci_tests.write_json(group / "execution.json", {"group": "integration-1", "seed": 42,
+                            "exit_code": 1 if failed else 0})
+        (group / "results.trx").write_text("<TestRun/>")
+        xml = ET.Element("test-run")
+        node = ET.SubElement(xml, "test-case", classname="Example", fullname="Example.Test",
+                             result="Failed" if failed else "Passed", duration="1")
+        if failed:
+            failure = ET.SubElement(node, "failure")
+            ET.SubElement(failure, "message").text = "full error " + "x" * 1800
+            ET.SubElement(failure, "stack-trace").text = "at Example.Test() in example.cs:line 99"
+        if not missing:
+            ET.ElementTree(xml).write(group / "Content.IntegrationTests.xml")
+        return SimpleNamespace(plan=root / "plan.json", build_status=root / "build/execution.json",
+                               results=root / "runs", timings=root / "timings.json", output=root / "final",
+                               defer_verdict=defer)
+
+    def test_deferred_failure_is_reported_by_only_the_final_verdict(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+            root = Path(directory)
+            args = self.report_fixture(root, failed=True)
+            with redirect_stdout(StringIO()):
+                self.assertEqual(ci_tests.report(args), 0)
+                self.assertEqual(ci_tests.verdict(args), 1)
+            text = (root / "final/errors.txt").read_text(encoding="utf-8")
+            self.assertIn("x" * 1800, text)
+            self.assertIn("example.cs:line 99", text)
+            self.assertTrue((root / "timings.json").is_file())
+
+    def test_successful_final_verdict_requires_all_reports(self):
+        for missing in (False, True):
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+                root = Path(directory)
+                args = self.report_fixture(root, missing=missing)
+                with redirect_stdout(StringIO()):
+                    self.assertEqual(ci_tests.report(args), 0)
+                    self.assertEqual(ci_tests.verdict(args), int(missing))
+                self.assertEqual((root / "timings.json").exists(), not missing)
+
+    def test_compiler_failure_survives_green_preparation_job(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {"CI_BUILD_RESULT": "success", "CI_BUILD_READY": "false", "CI_TEST_RESULT": "skipped"}, clear=True):
+            root = Path(directory)
+            args = self.report_fixture(root, build_failed=True)
+            with redirect_stdout(StringIO()):
+                ci_tests.report(args)
+                self.assertEqual(ci_tests.verdict(args), 1)
+            self.assertIn("error CS0000", (root / "final/errors.txt").read_text(encoding="utf-8"))
+            self.assertFalse((root / "timings.json").exists())
+
+    def test_missing_plan_and_build_record_cannot_pass(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+            root = Path(directory)
+            args = SimpleNamespace(plan=root / "absent.json", build_status=root / "absent-build.json",
+                                   results=root / "runs", timings=root / "timings.json", output=root / "final", defer_verdict=True)
+            with redirect_stdout(StringIO()):
+                self.assertEqual(ci_tests.report(args), 0)
+                self.assertEqual(ci_tests.verdict(args), 1)
+
+    def test_missing_final_archive_cannot_make_check_green(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+            args = self.report_fixture(Path(directory))
+            with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
+                ci_tests.report(args)
+                with patch.dict(os.environ, {"CI_REPORT_SAVED": "failure"}):
+                    self.assertEqual(ci_tests.verdict(args), 1)
+
+    def test_stale_final_report_cannot_make_check_green(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {}, clear=True):
+            args = self.report_fixture(Path(directory))
+            with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
+                ci_tests.report(args)
+                with patch.dict(os.environ, {"GITHUB_RUN_ID": "another-run"}):
+                    self.assertEqual(ci_tests.verdict(args), 1)
+
+    def test_upstream_job_failure_is_not_masked_by_complete_xml(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {"CI_TEST_RESULT": "failure"}, clear=True):
+            args = self.report_fixture(Path(directory))
+            with redirect_stdout(StringIO()):
+                ci_tests.report(args)
+                self.assertEqual(ci_tests.verdict(args), 1)
+
+    def test_backticks_in_failure_cannot_break_copy_block(self):
+        text = "an error with ``` and ```` fences"
+        self.assertTrue(ci_tests.markdown_block(text).startswith("`````text\n"))
+
     def test_invalid_cache_falls_back_without_losing_new_classes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
