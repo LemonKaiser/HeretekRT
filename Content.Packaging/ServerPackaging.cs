@@ -76,39 +76,53 @@ public static class ServerPackaging
             await ClientPackaging.PackageClient(skipBuild, configuration, logger);
         }
 
-        // Good variable naming right here.
-        foreach (var platform in Platforms)
-        {
-            if (!platforms.Contains(platform.Rid))
-                continue;
+        var selectedPlatforms = Platforms
+            .Where(platform => platforms.Contains(platform.Rid))
+            .ToList();
 
+        if (!skipBuild)
+        {
+            // Content.Server is compiled for TargetOs, while the runtime identifier
+            // only changes the Robust.Server publish. Linux x64 and arm64 therefore
+            // share one content build.
+            foreach (var targetOs in selectedPlatforms.Select(platform => platform.TargetOs).Distinct())
+            {
+                await BuildContentServer(targetOs, configuration, logger);
+            }
+        }
+
+        foreach (var platform in selectedPlatforms)
+        {
             await BuildPlatform(platform, skipBuild, hybridAcz, configuration, logger);
         }
     }
 
+    private static async Task BuildContentServer(string targetOs, string configuration, IPackageLogger logger)
+    {
+        logger.Info($"Building project for {targetOs}...");
+
+        await ProcessHelpers.RunCheck(new ProcessStartInfo
+        {
+            FileName = "dotnet",
+            ArgumentList =
+            {
+                "build",
+                Path.Combine("Content.Server", "Content.Server.csproj"),
+                "-c", configuration,
+                "--nologo",
+                "/v:m",
+                $"/p:TargetOs={targetOs}",
+                "/t:Rebuild",
+                "/p:FullRelease=true",
+                "/m"
+            }
+        });
+    }
+
     private static async Task BuildPlatform(PlatformReg platform, bool skipBuild, bool hybridAcz, string configuration, IPackageLogger logger)
     {
-        logger.Info($"Building project for {platform.TargetOs}...");
-
         if (!skipBuild)
         {
-            await ProcessHelpers.RunCheck(new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                ArgumentList =
-                {
-                    "build",
-                    Path.Combine("Content.Server", "Content.Server.csproj"),
-                    "-c", configuration,
-                    "--nologo",
-                    "/v:m",
-                    $"/p:TargetOs={platform.TargetOs}",
-                    "/t:Rebuild",
-                    "/p:FullRelease=true",
-                    "/m"
-                }
-            });
-
             await PublishClientServer(platform.Rid, platform.TargetOs, configuration);
         }
 
