@@ -9,10 +9,10 @@
   description: A protected Footfall counter for logging recovered expedition property.
   components:
   - type: Sprite
-    sprite: Objects/Tools/fulton.rsi
+    sprite: Structures/Machines/computers.rsi
     drawdepth: SmallObjects
     noRot: true
-    state: extraction_point
+    state: computer
   - type: InteractionOutline
   - type: Physics
     bodyType: Static
@@ -63,11 +63,6 @@
   name: Medicae rescue intake
   description: A protected Medicae transfer cradle for recovered expedition patients.
   components:
-  - type: Sprite
-    sprite: Objects/Tools/fulton.rsi
-    drawdepth: SmallObjects
-    noRot: true
-    state: extraction_point
   - type: ContainerContainer
     containers:
       patient: !type:ContainerSlot

@@ -39,6 +39,20 @@ ent-KoronusExpeditionOreCore = expedition assay core
     .desc = A labelled sample from an uncharted asteroid. Extract it and deliver it to the Miners' Guild on Footfall.
 ent-KoronusExpeditionSurvivor = stranded expedition survivor
     .desc = A living survivor in a sealed evacuation harness. Carry them off the site and deliver them to the Medicae intake on Footfall.
+
+ent-KoronusFootfallAivoriusArchive = Aivorius archive intake
+    .desc = A Footfall terminal that accepts approved Aivorius records and flight logs.
+ent-KoronusFootfallFoulstoneSurveyIntake = Foulstone survey intake
+    .desc = A Footfall terminal for approved survey cases and assay samples from Foulstone.
+ent-KoronusFootfallCargoOfficio = Cargo Officio intake
+    .desc = A Footfall terminal for approved cargo manifests and sealed merchant records.
+ent-KoronusFootfallMinersGuild = Miners' Guild assay intake
+    .desc = A Footfall terminal for approved mine cores and mineral assay samples.
+ent-KoronusFootfallMedicaeIntake = Medicae rescue intake
+    .desc = A protected Footfall terminal for approved expedition survivors.
+ent-KoronusFootfallAstropathicRelay = Astropathic relay archive intake
+    .desc = A Footfall terminal for approved relay ciphers, rescue-pod recordings and archive samples.
+
 ent-MobKoronusExpeditionRaider = void scavenger
     .desc = A hardened scavenger protecting a claim in the void.
 ent-MobKoronusExpeditionEcho = voidbound warp echo

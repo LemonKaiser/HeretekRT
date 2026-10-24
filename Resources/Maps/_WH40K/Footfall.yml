@@ -119516,42 +119516,42 @@ entities:
   - uid: 19000
     components:
     - type: Transform
-      pos: 82.5,-15.5
+      pos: 73,-24.5
       parent: 2
 - proto: KoronusFootfallAstropathicRelay
   entities:
   - uid: 19001
     components:
     - type: Transform
-      pos: 79.5,-18.5
+      pos: 75,-24.5
       parent: 2
 - proto: KoronusFootfallCargoOfficio
   entities:
   - uid: 19002
     components:
     - type: Transform
-      pos: 78.5,-16.5
+      pos: 77,-24.5
       parent: 2
 - proto: KoronusFootfallFoulstoneSurveyIntake
   entities:
   - uid: 19003
     components:
     - type: Transform
-      pos: 80.5,-16.5
+      pos: 79,-24.5
       parent: 2
 - proto: KoronusFootfallMedicaeIntake
   entities:
   - uid: 19004
     components:
     - type: Transform
-      pos: 74.5,-18.5
+      pos: 81,-24.5
       parent: 2
 - proto: KoronusFootfallMinersGuild
   entities:
   - uid: 19005
     components:
     - type: Transform
-      pos: 75.5,-17.5
+      pos: 83,-24.5
       parent: 2
 - proto: Lamp
   entities:
