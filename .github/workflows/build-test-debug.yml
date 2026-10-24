@@ -236,7 +236,7 @@ jobs:
                 if (error.status === 403) break;
               }
             }
-      - name: Итог проверки — здесь полный текст ошибки
+      - name: Final test verdict
         if: always()
         env:
           CI_REPORT_SAVED: ${{ steps.final-artifact.outcome }}

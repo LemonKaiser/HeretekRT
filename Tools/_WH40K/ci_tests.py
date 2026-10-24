@@ -324,11 +324,11 @@ def build_problems(path):
     try:
         status = read_json(path)
     except (OSError, ValueError) as error:
-        return [f"Нет корректного отчёта подготовки сборки: {error}"]
+        return [f"Final build report is invalid: {error}"]
     if status.get("ready") is True:
         return []
     stages = status.get("stages", {})
-    problems = ["Подготовка сборки не завершена: " + ", ".join(f"{name}={result}" for name, result in stages.items())]
+    problems = ["Build preparation did not complete: " + ", ".join(f"{name}={result}" for name, result in stages.items())]
     for stage, name in {"CI self-checks": "ci-tests.log", "Restore": "restore.log", "Compile": "build.log",
                         "Discovery": "plan.log", "Archive": "archive.log"}.items():
         if stages.get(stage) != "failure":
@@ -353,18 +353,18 @@ def report(args):
     args.timings.unlink(missing_ok=True)
     failures = build_problems(args.build_status) if args.build_status is not None else []
     if os.environ.get("CI_BUILD_READY", "true") != "true":
-        failures.append("Сборка не передана исполнителям; тесты не запускались.")
+        failures.append("Build was not delivered to test runners; tests did not start.")
     build_ok = not failures
     for key in ("CI_BUILD_RESULT", "CI_TEST_RESULT"):
         value = os.environ.get(key)
         if value is not None and value != "success" and (key != "CI_TEST_RESULT" or build_ok):
-            failures.append(f"Задание GitHub не завершилось успешно: {key}={value}")
+            failures.append(f"GitHub job did not complete successfully: {key}={value}")
     try:
         plan = read_json(args.plan)
         validate_plan(plan)
     except (OSError, ValueError, KeyError) as error:
         if build_ok:
-            failures.append(f"Нет корректного плана тестов: {error}")
+            failures.append(f"No valid test plan: {error}")
         plan = {"seed": "unknown", "groups": [], "excluded": [], "catalog": []}
     all_covered = build_ok and bool(plan["groups"])
     timings, rows = {}, []
@@ -392,21 +392,19 @@ def report(args):
     text = "\n".join([f"Build & Test Debug: {'FAILED' if failed else 'PASSED'}", f"Commit: {result['commit']}",
                       f"Run: {run_url or 'local'}", f"NUnit seed: {plan['seed']}",
                       f"Expected cases: {result['expected']}; Explicit excluded: {len(plan['excluded'])}", *resources, "",
-                      "\n\n".join(failures) if failed else "Все ожидаемые тесты учтены. Ошибок нет."]) + "\n"
+                      "\n\n".join(failures) if failed else "All expected tests accounted for. No failures."]) + "\n"
     (output / "errors.txt").write_text(text, encoding="utf-8")
-    summary = [f"## Build & Test Debug — {'ОШИБКА' if failed else 'ПРОЙДЕНО'}", "",
-               "**Для разбора ошибки скопируй блок ниже целиком.**" if failed else "Все ожидаемые тесты учтены; падений нет.", "",
-               "| Группа | Успешно | Ошибок | Пропущено | Время | Пик RAM | Мин. свободно | Итог |",
+    summary = [f"## Build & Test Debug - {'FAILED' if failed else 'PASSED'}", "",
+               "**Copy the failure block below.**" if failed else "All expected tests accounted for.", "",
+               "| Group | Passed | Failed | Skipped | Time | Peak RAM | Min. available | Status |",
                "| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |"]
     for row in rows:
         summary.append(f"| {row['group']} | {row['passed']} | {row['failed']} | {row['skipped']} | {row['seconds']:.1f}s | "
                        f"{mib(row['rss'])} | {mib(row['available'])} | {'OK' if row['ok'] else 'FAIL'} |")
     display = text[:64000]
     if len(text) > len(display):
-        display += "\n… Полный текст находится в errors.txt внутри архива test-results."
-    summary.extend(["", markdown_block(display), "",
-                    "Архив **test-results** содержит errors.txt, полный итог, логи, TRX, NUnit XML и план тестов.",
-                    f"Для локального повтора: собери DebugOpt и выполни ci_tests.py prepare --seed {plan['seed']}, затем ci_tests.py run."])
+        display += "\n... Full details are in errors.txt."
+    summary.extend(["", markdown_block(display)])
     rendered = "\n".join(summary) + "\n"
     (output / "summary.md").write_text(rendered, encoding="utf-8")
     write_json(output / "result.json", result)
@@ -423,15 +421,15 @@ def verdict(args):
     try:
         result = read_json(args.output / "result.json")
     except (OSError, ValueError) as error:
-        print(f"Итоговый отчёт не сформирован: {error}", file=sys.stderr)
+        print(f"Final report was not generated: {error}", file=sys.stderr)
         return 1
     for field, variable in (("commit", "GITHUB_SHA"), ("run_id", "GITHUB_RUN_ID")):
         if os.environ.get(variable) and result.get(field) != os.environ[variable]:
-            print("Итоговый отчёт относится к другому запуску.", file=sys.stderr)
+            print("Final report belongs to a different workflow run.", file=sys.stderr)
             return 1
     print((args.output / "errors.txt").read_text(encoding="utf-8"))
     if os.environ.get("CI_REPORT_SAVED", "success") != "success":
-        print("Не удалось сохранить итоговый архив test-results. Проверь шаг загрузки отчёта.", file=sys.stderr)
+        print("The test-results artifact was not saved. Check the upload step.", file=sys.stderr)
         return 1
     return int(result.get("status") != "passed" or result.get("all_covered") is not True)
 
@@ -467,7 +465,7 @@ def main():
     try:
         return args.handler(args) or 0
     except (OSError, ValueError, StopIteration, ET.ParseError, subprocess.CalledProcessError) as error:
-        print(f"CI error: {error}", file=sys.stderr)
+        print(f"Final report was not generated: {error}", file=sys.stderr)
         return 1
 
 
