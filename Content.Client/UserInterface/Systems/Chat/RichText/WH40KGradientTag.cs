@@ -172,6 +172,7 @@ internal sealed partial class WH40KGradientNameControl : Control
     private readonly int _auraRadius;
     private readonly int _auraAlphaPercent;
     private float _availableWidthPixels;
+    private float _lastParentWidth;
 
     public WH40KGradientNameControl(
         string text,
@@ -208,10 +209,20 @@ internal sealed partial class WH40KGradientNameControl : Control
     {
         // The actual, transparent text is measured by RichTextEntry and provides normal word wrapping.
         // This control is an overlay and must not participate in that layout as one huge inline glyph.
-        // Rich text is initially measured with an unbounded width by speech bubbles. Do not retain that
-        // value: DrawWrapped must use the final width of the parent label instead.
-        if (float.IsFinite(availableSize.X) && availableSize.X > 0f)
+        // RichTextEntry measures controls again while drawing, using the width occupied by the entry.
+        // Keep the larger layout width from the initial measurement so the overlay follows the source text.
+        var parentWidth = Parent?.PixelSizeBox.Width ?? 0f;
+        if (parentWidth > 0f)
+        {
+            if (_lastParentWidth > 0f && !MathHelper.CloseToPercent(parentWidth, _lastParentWidth, 0.001f))
+                _availableWidthPixels = 0f;
+
+            _lastParentWidth = parentWidth;
+        }
+
+        if (float.IsFinite(availableSize.X) && availableSize.X > _availableWidthPixels)
             _availableWidthPixels = availableSize.X;
+
         return Vector2.Zero;
     }
 
@@ -250,16 +261,12 @@ internal sealed partial class WH40KGradientNameControl : Control
 
     private void DrawWrapped(Font font, Action<Rune, int, Vector2> drawRune)
     {
-        // RichTextEntry arranges an inline control at the exact source-text position. Starting at the
-        // parent's left edge discarded that position, while the previously cached measure width could be
-        // infinite. Together those two conditions made decorated LOOC lines overlap and ignore wrapping.
-        var lineLeft = SizeBox.Left;
+        // RichTextEntry arranges an inline control at the exact source-text position. New lines begin at the
+        // parent content's left edge and use the same width as the transparent source text.
+        var lineLeft = Parent?.PixelSizeBox.Left ?? SizeBox.Left;
         var lineWidth = _availableWidthPixels;
-        if (Parent is { } parent && float.IsFinite(parent.PixelSizeBox.Width) && parent.PixelSizeBox.Width > 0f)
-        {
-            lineLeft = parent.PixelSizeBox.Left;
-            lineWidth = parent.PixelSizeBox.Width;
-        }
+        if (!float.IsFinite(lineWidth) || lineWidth <= 0f)
+            lineWidth = Parent?.PixelSizeBox.Width ?? 0f;
 
         var lineRight = lineLeft + Math.Max(1f, lineWidth);
         var baseline = SizeBox.TopLeft + new Vector2(0f, font.GetAscent(UIScale));
