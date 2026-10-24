@@ -196,3 +196,162 @@
   - type: StaticPrice
     price: 180
 
+- type: entity
+  id: WH40KAmmoBox10mmLong_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge10mmLong
+    capacity: 100
+    whitelist:
+      tags:
+      - Cartridge10mmLong
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBox10mm_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge10mm
+    capacity: 100
+    whitelist:
+      tags:
+      - Cartridge10mm
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBox11mm_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge11mm
+    capacity: 100
+    whitelist:
+      tags:
+      - Cartridge11mm
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBox762x39mmFMJ_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge762x39mmFMJ
+    capacity: 100
+    whitelist:
+      tags:
+      - Cartridge762x39mmFMJ
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBox825mmLong_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: Cartridge825mmLong
+    capacity: 100
+    whitelist:
+      tags:
+      - Cartridge825mmLong
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxLondoronMk2_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeLondoronMk2
+    capacity: 100
+    whitelist:
+      tags:
+      - CartridgeLondoronMk2
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxBolter_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: CartridgeBolter
+    capacity: 100
+    whitelist:
+      tags:
+      - CartridgeBolter
+  - type: StaticPrice
+    price: 180
+
+- type: entity
+  id: WH40KAmmoBoxShellShotgun_100
+  parent: BaseAmmoProvider
+  suffix: WH40K
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/autogun_ammo_box.rsi
+    state: icon
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    proto: ShellShotgun
+    capacity: 100
+    whitelist:
+      tags:
+      - ShellShotgun
+  - type: StaticPrice
+    price: 180
