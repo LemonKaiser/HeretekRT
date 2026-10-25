@@ -338,39 +338,120 @@
     title: wh40k-service-dorianbale-title
     greeting: wh40k-service-dorianbale-intro
     refreshInterval: 900
-    displayCount: 7
+    displayCount: 18
     offers:
-    - product: ClothingHeadHelmetFlak
-      price: 120
-      minStock: 8
-      maxStock: 8
-    - product: ClothingOuterArmorFlakVest
-      price: 320
-      minStock: 5
-      maxStock: 5
-    - product: WH40KImperialCombatShield
-      price: 650
-      minStock: 4
-      maxStock: 4
-    - product: ClothingHandsGlovesCombatVoidsman
-      price: 90
-      minStock: 8
-      maxStock: 8
     - product: CatachanKnife
-      price: 220
+      price: 300
       minStock: 5
+      maxStock: 10
+    - product: CatachanMachete
+      price: 600
+      minStock: 1
+      maxStock: 3
+    - product: Chainsword
+      price: 8000
+      minStock: 3
       maxStock: 5
-      requiredAccess: WH40KFootfallImperialPermit
+    - product: WHPowerMaceImperial
+      price: 25000
+      minStock: 1
+      maxStock: 1
+    - product: WeaponStubPistol
+      price: 1500
+      minStock: 18
+      maxStock: 25
+    - product: WeaponHeavyStubPistolAquila
+      price: 3500
+      minStock: 3
+      maxStock: 6
+    - product: WeaponStubSMG
+      price: 4500
+      minStock: 8
+      maxStock: 19
+    - product: WeaponStubSMG2
+      price: 7600
+      minStock: 3
+      maxStock: 7
+    - product: WeaponStubShotgun
+      price: 9000
+      minStock: 2
+      maxStock: 7
+    - product: WeaponStubRifle
+      price: 12000
+      minStock: 1
+      maxStock: 8
+    - product: WeaponAutogunKalashnikov
+      price: 18000
+      minStock: 1
+      maxStock: 3
     - product: WeaponLaserPistol
-      price: 350
-      minStock: 4
-      maxStock: 4
-      requiredAccess: WH40KFootfallImperialPermit
+      price: 10000
+      minStock: 5
+      maxStock: 25
     - product: WeaponLaserLasgun
-      price: 450
-      minStock: 4
-      maxStock: 4
-      requiredAccess: WH40KFootfallImperialPermit
+      price: 15000
+      minStock: 5
+      maxStock: 15
+    - product: WeaponLaserLasgunTriplex
+      price: 20000
+      minStock: 3
+      maxStock: 5
+    - product: WeaponStubRevolver
+      price: 30000
+      minStock: 1
+      maxStock: 1
+    - product: MagazineStubPistol
+      price: 250
+      minStock: 15
+      maxStock: 30
+    - product: MagazineHevStubPistol
+      price: 400
+      minStock: 15
+      maxStock: 30
+    - product: MagazineStubSMG
+      price: 400
+      minStock: 15
+      maxStock: 30
+    - product: MagazineStubRifle
+      price: 500
+      minStock: 15
+      maxStock: 30
+    - product: Magazine762x39mmFMJ
+      price: 500
+      minStock: 15
+      maxStock: 30
+    - product: MagazineHeavyStubPistol
+      price: 500
+      minStock: 15
+      maxStock: 30
+    - product: LasgunPowerCell
+      price: 3000
+      minStock: 10
+      maxStock: 15
+    - product: WH40KAmmoBoxShellShotgun_100
+      price: 3000
+      minStock: 15
+      maxStock: 30
+    - product: WH40KAmmoBoxHeavyStubPistol
+      price: 2500
+      minStock: 15
+      maxStock: 30
+    - product: WH40KAmmoBox10mm
+      price: 1500
+      minStock: 15
+      maxStock: 30
+    - product: WH40KAmmoBox10mmLong
+      price: 3000
+      minStock: 15
+      maxStock: 30
+    - product: WH40KAmmoBox825mmLong_100
+      price: 3000
+      minStock: 15
+      maxStock: 30
+    - product: WH40KAmmoBox762x39mmFMJ_100
+      price: 4000
+      minStock: 5
+      maxStock: 15
 
 - type: entity
   id: MarkerWH40KFootfallDorianBale
