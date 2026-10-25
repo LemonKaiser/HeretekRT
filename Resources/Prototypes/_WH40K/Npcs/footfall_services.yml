@@ -122,6 +122,14 @@
       price: 500
       minStock: 8
       maxStock: 10
+    - product: Pickaxe
+      price: 2500
+      minStock: 5
+      maxStock: 10
+    - product: WHSapperShovel
+      price: 1500
+      minStock: 7
+      maxStock: 12
 
 - type: entity
   id: MarkerWH40KFootfallKappaSpanner
@@ -194,38 +202,42 @@
     displayCount: 8
     lookAtRange: 1
     offers:
-    - product: FoodBurgerPlain
-      price: 40
-      minStock: 4
-      maxStock: 6
-    - product: FoodBurgerCheese
-      price: 45
-      minStock: 4
-      maxStock: 6
-    - product: FoodMealFries
-      price: 25
+    - product: FoodTinNutriPaste
+      price: 100
+      minStock: 15
+      maxStock: 20
+    - product: FoodTinGroxMeat
+      price: 200
+      minStock: 5
+      maxStock: 7
+    - product: FoodTinNutriPasteMeat
+      price: 250
       minStock: 4
       maxStock: 6
     - product: FoodMealEggsbenedict
       price: 50
       minStock: 4
       maxStock: 6
-    - product: FoodMealPotatoLoaded
-      price: 40
+    - product: FoodTinGroxPorridge
+      price: 400
       minStock: 4
       maxStock: 6
-    - product: FoodSoupTomato
-      price: 35
+    - product: DrinkGuardsmanFlask
+      price: 400
+      minStock: 20
+      maxStock: 40
+    - product: FoodBoxImperialMRESmall
+      price: 300
       minStock: 4
       maxStock: 6
-    - product: FoodPizzaMargheritaSlice
-      price: 30
-      minStock: 4
-      maxStock: 6
-    - product: FoodDonutPlain
-      price: 20
-      minStock: 4
-      maxStock: 6
+    - product: FoodBoxImperialMRE
+      price: 500
+      minStock: 7
+      maxStock: 12
+    - product: WHSoup
+      price: 5000
+      minStock: 1
+      maxStock: 1
 
 - type: entity
   id: MarkerWH40KFootfallBrannaKest
@@ -264,41 +276,281 @@
   - type: Merchant
     title: wh40k-service-marasevrin-title
     greeting: wh40k-service-marasevrin-intro
-    refreshInterval: 900
-    displayCount: 8
+    refreshInterval: 300
+    displayCount: 48
     offers:
     - product: ClothingUniformJumpsuitImperialCitizen
-      price: 35
+      price: 100
       minStock: 8
       maxStock: 8
+    - product: ClothingHeadHatImperialCitizen
+      price: 100
+      minStock: 6
+      maxStock: 10
+    - product: ClothingOuterWorkSuitImperialCitizen
+      price: 100
+      minStock: 4
+      maxStock: 8
     - product: ClothingUniformJumpsuitImperialCitizenVest
-      price: 45
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingUniformJumpsuitImperialCitizen
+      price: 100
       minStock: 8
       maxStock: 8
     - product: ClothingOuterCoatImperialCitizen
-      price: 65
-      minStock: 6
+      price: 100
+      minStock: 3
       maxStock: 6
-    - product: ClothingHeadHatImperialCitizen
-      price: 25
-      minStock: 8
-      maxStock: 8
-    - product: ClothingNeckCloakRainImp
-      price: 180
+    - product: ClothingOuterCloakWanderer
+      price: 100
+      minStock: 3
+      maxStock: 6
+    - product: ClothingShoesBootsWanderer
+      price: 100
       minStock: 5
+      maxStock: 9
+    - product: ClothingUniformJumpsuitWanderer
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: WH40KClothingUniformJumpsuitMercenary
+      price: 100
+      minStock: 4
+      maxStock: 7
+    - product: WH40KClothingBeltMercenaryBandolier
+      price: 400
+      minStock: 4
+      maxStock: 7
+    - product: WH40KClothingBeltMercenaryBandolierOrnate
+      price: 400
+      minStock: 2
+      maxStock: 4
+    - product: WH40KClothingNeckCloakMercenary
+      price: 400
+      minStock: 2
       maxStock: 5
+    - product: ClothingUniformJumpsuitGuardsman
+      price: 400
+      minStock: 6
+      maxStock: 10
+    - product: ClothingUniformJumpsuitSmug
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingOuterArmorsmugCoat
+      price: 1400
+      minStock: 2
+      maxStock: 5
+    - product: ClothingOuterArmorFlaksmug
+      price: 1600
+      minStock: 2
+      maxStock: 4
+    - product: ClothingHandsGlovesKrieg
+      price: 500
+      minStock: 5
+      maxStock: 9
+    - product: ClothingBeltKriegWebbing
+      price: 400
+      minStock: 4
+      maxStock: 7
+    - product: ClothingOuterArmorKriegCoat
+      price: 2500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingMaskGasKrieg
+      price: 800
+      minStock: 3
+      maxStock: 6
+    - product: ClothingUniformJumpsuitKrieg
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingHeadHelmetKrieg
+      price: 500
+      minStock: 3
+      maxStock: 5
+    - product: ClothingUniformJumpsuitValhallan
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingOuterArmorValhallanCoat
+      price: 2500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingHeadHatValhallanUshanka
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingHeadHelmetValhallan
+      price: 500
+      minStock: 3
+      maxStock: 5
+    - product: ClothingHeadHatValhallanCap
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingShoesBootsValhallan
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingUniformJumpsuitCatachanPants
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingUniformJumpsuitCatachan1
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingUniformJumpsuitCatachan3
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingUniformJumpsuitCatachan2
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingOuterArmorCatachanVest
+      price: 100
+      minStock: 2
+      maxStock: 5
+    - product: ClothingOuterArmorCatachanMedium
+      price: 2500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingOuterArmorCatachanLight
+      price: 2000
+      minStock: 3
+      maxStock: 6
+    - product: ClothingHeadHatCatachanCap
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingHeadHatCatachanBeret
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingHeadHatCatachanBandana
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingHeadHatCatachanHeadband
+      price: 100
+      minStock: 5
+      maxStock: 10
+    - product: guardbelt
+      price: 400
+      minStock: 5
+      maxStock: 9
+    - product: ClothingMaskGasGuardsman
+      price: 300
+      minStock: 4
+      maxStock: 8
+    - product: ClothingOuterArmorFlakVest
+      price: 1500
+      minStock: 3
+      maxStock: 6
+    - product: ClothingHeadVet
+      price: 100
+      minStock: 3
+      maxStock: 6
+    - product: ClothingBackpackGuard
+      price: 500
+      minStock: 4
+      maxStock: 8
+    - product: ClothingOuterArmorFlakVestLight
+      price: 1500
+      minStock: 3
+      maxStock: 6
+    - product: ClothingHeadHelmetFlak
+      price: 500
+      minStock: 3
+      maxStock: 6
+    - product: ClothingShoesAnkleBoots
+      price: 100
+      minStock: 6
+      maxStock: 10
+    - product: ClothingHeadHelmetFlakResp
+      price: 100
+      minStock: 2
+      maxStock: 5
+    - product: ClothingHeadHelmetFlakAdvVst
+      price: 500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingUniformJumpsuitGuardsmanVst
+      price: 100
+      minStock: 5
+      maxStock: 9
+    - product: ClothingHandsGlovesVst
+      price: 150
+      minStock: 5
+      maxStock: 9
+    - product: ClothingMaskGasVst
+      price: 200
+      minStock: 4
+      maxStock: 8
+    - product: ClothingShoesBootsVst
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingOuterArmorFlakVestVst
+      price: 2500
+      minStock: 2
+      maxStock: 5
+    - product: ClothingOuterArmorFlakVestLightCyan
+      price: 1500
+      minStock: 3
+      maxStock: 5
+    - product: ClothingOuterArmorFlakVestCyan
+      price: 2500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingShoesAnkleBootsCyan
+      price: 100
+      minStock: 4
+      maxStock: 8
+    - product: ClothingHeadHelmetFlakCyan
+      price: 500
+      minStock: 3
+      maxStock: 6
+    - product: ClothingHeadHelmetFlakAdvCyan
+      price: 500
+      minStock: 2
+      maxStock: 4
+    - product: ClothingHeadHelmetSavlar
+      price: 500
+      minStock: 3
+      maxStock: 5
+    - product: ClothingOuterArmorSavlarVest
+      price: 2500
+      minStock: 2
+      maxStock: 5
+    - product: ClothingOuterArmorSavlar
+      price: 1500
+      minStock: 2
+      maxStock: 4
     - product: ClothingOuterRobeImperialPilgrim
-      price: 140
-      minStock: 5
-      maxStock: 5
-    - product: ClothingShoesImperialPilgrim
-      price: 50
-      minStock: 8
+      price: 100
+      minStock: 4
       maxStock: 8
-    - product: ClothingBeltStorageWaistbag
-      price: 70
+    - product: ClothingShoesImperialPilgrim
+      price: 100
       minStock: 6
+      maxStock: 10
+    - product: ClothingShoesBootsChaplain
+      price: 100
+      minStock: 4
+      maxStock: 7
+    - product: ClothingBeltChaplain
+      price: 100
+      minStock: 3
       maxStock: 6
+    - product: ClothingOuterChaplainRobe
+      price: 100
+      minStock: 2
+      maxStock: 5
 
 - type: entity
   id: MarkerWH40KFootfallMaraSevrin
@@ -337,7 +589,7 @@
   - type: Merchant
     title: wh40k-service-dorianbale-title
     greeting: wh40k-service-dorianbale-intro
-    refreshInterval: 900
+    refreshInterval: 300
     displayCount: 18
     offers:
     - product: CatachanKnife
@@ -452,6 +704,14 @@
       price: 4000
       minStock: 5
       maxStock: 15
+    - product: WeaponLaserLasgunKrieg
+      price: 20000
+      minStock: 3
+      maxStock: 7
+    - product: LasgunPowerCellLucius
+      price: 3500
+      minStock: 3
+      maxStock: 5
 
 - type: entity
   id: MarkerWH40KFootfallDorianBale

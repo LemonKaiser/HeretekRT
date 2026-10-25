@@ -616,38 +616,42 @@
     displayCount: 8
     lookAtRange: 1
     offers:
-    - product: FoodBurgerPlain
-      price: 40
-      minStock: 4
-      maxStock: 6
-    - product: FoodBurgerCheese
-      price: 45
-      minStock: 4
-      maxStock: 6
-    - product: FoodMealFries
-      price: 25
+    - product: FoodTinNutriPaste
+      price: 100
+      minStock: 15
+      maxStock: 20
+    - product: FoodTinGroxMeat
+      price: 200
+      minStock: 5
+      maxStock: 7
+    - product: FoodTinNutriPasteMeat
+      price: 250
       minStock: 4
       maxStock: 6
     - product: FoodMealEggsbenedict
       price: 50
       minStock: 4
       maxStock: 6
-    - product: FoodMealPotatoLoaded
-      price: 40
+    - product: FoodTinGroxPorridge
+      price: 400
       minStock: 4
       maxStock: 6
-    - product: FoodSoupTomato
-      price: 35
+    - product: DrinkGuardsmanFlask
+      price: 400
+      minStock: 20
+      maxStock: 40
+    - product: FoodBoxImperialMRESmall
+      price: 300
       minStock: 4
       maxStock: 6
-    - product: FoodPizzaMargheritaSlice
-      price: 30
-      minStock: 4
-      maxStock: 6
-    - product: FoodDonutPlain
-      price: 20
-      minStock: 4
-      maxStock: 6
+    - product: FoodBoxImperialMRE
+      price: 500
+      minStock: 7
+      maxStock: 12
+    - product: WHSoup
+      price: 5000
+      minStock: 1
+      maxStock: 1
 
 - type: entity
   id: MarkerWH40KFootfallBastianRook
