@@ -12,10 +12,10 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.85
-        Slash: 0.85
+        Blunt: 0.9
+        Slash: 0.9
         Piercing: 0.9
-        Heat: 1.05
+        Heat: 0.9
   - type: ItemDurability
     maxDurability: 200
     protectsWearer: true
@@ -52,10 +52,10 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.9
-        Slash: 0.9
+        Blunt: 0.95
+        Slash: 0.95
         Piercing: 0.95
-        Heat: 1.1
+        Heat: 0.95
   - type: ItemDurability
     maxDurability: 160
     protectsWearer: true
