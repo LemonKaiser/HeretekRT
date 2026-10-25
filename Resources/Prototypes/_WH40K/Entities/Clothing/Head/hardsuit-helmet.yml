@@ -4,6 +4,7 @@
 - type: entity
   parent: ClothingHeadEVAHelmetBase
   id: ClothingHeadHelmetHardsuitVoidsmanStandard
+  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -19,9 +20,9 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.95
-        Slash: 0.95
-        Piercing: 0.97
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
         Heat: 0.9
   - type: ItemDurability
     maxDurability: 240
@@ -35,6 +36,7 @@
 - type: entity
   parent: [WH40KDurableHeavyHelmet, ClothingHeadSuitWithLightBase, ClothingHeadEVAHelmetBase]
   id: ClothingHeadHelmetHardsuitVoidsmanOfficer
+  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -54,8 +56,8 @@
       coefficients:
         Blunt: 0.9
         Slash: 0.9
-        Piercing: 0.95
-        Heat: 0.85
+        Piercing: 0.9
+        Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.7
 
@@ -63,6 +65,7 @@
 - type: entity
   parent: [WH40KDurableHeavyHelmet, ClothingHeadSuitWithLightBase, ClothingHeadEVAHelmetBase]
   id: ClothingHeadHelmetHardsuitVoidsmanSergeant
+  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
@@ -80,10 +83,10 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.92
+        Blunt: 0.9
         Slash: 0.9
-        Piercing: 0.95
-        Heat: 0.88
+        Piercing: 0.9
+        Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.7
   - type: FlashImmunity # Counterpoint: the HoS can't see
@@ -92,6 +95,7 @@
 - type: entity
   parent: ClothingHeadHelmetHardsuitVoidsmanSergeant
   id: ClothingHeadHelmetHardsuitVoidsmanGrenadier
+  categories: [ HideSpawnMenu ]
   suffix: WH40K, войдсмены
   components:
   - type: BreathMask
