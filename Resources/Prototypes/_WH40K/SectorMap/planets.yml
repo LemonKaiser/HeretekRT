@@ -552,7 +552,7 @@
   id: FootfallDeadWorld
   system: Footfall
   bodyType: Planet
-  displayName: Мертвый мир
+  displayName: Furibundus Secundus
   description: A lifeless volcanic world scorched by Furibundus.
   climate: koronus-planetary-climate-volcanic
   orbitRadius: 4200
