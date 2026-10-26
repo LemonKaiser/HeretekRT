@@ -104,8 +104,8 @@
       maxStock: 1
     - product: ClothingOuterHardsuitSalvage
       price: 10000
-      minStock: 3
-      maxStock: 5
+      minStock: 5
+      maxStock: 10
     - product: WeaponGrapplingGun
       price: 3500
       minStock: 7
@@ -551,6 +551,14 @@
       price: 100
       minStock: 2
       maxStock: 5
+    - product: ClothingOuterHardsuitArmoredVoidsuit
+      price: 5000
+      minStock: 6
+      maxStock: 8
+    - product: ClothingHeadHelmetArmoredVoidsuit
+      price: 1500
+      minStock: 6
+      maxStock: 8
 
 - type: entity
   id: MarkerWH40KFootfallMaraSevrin
