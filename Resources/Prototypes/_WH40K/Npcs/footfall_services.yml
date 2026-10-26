@@ -37,26 +37,38 @@
     displayCount: 5
     buyback: FootfallOdranValuation
     offers:
-    - product: WH40KHartyRelic
-      price: 200
-      minStock: 5
+    - product: FlippoEngravedLighter
+      price: 5000
+      minStock: 1
+      maxStock: 2
+    - product: ClothingHeadHatCowboyBountyHunter
+      price: 2300
+      minStock: 2
       maxStock: 5
-    - product: WH40KFootfallOldVoyageChart
-      price: 230
-      minStock: 4
-      maxStock: 4
-    - product: WH40KFootfallOldDockSeal
-      price: 160
+    - product: ClothingHeadHatPirates
+      price: 1600
       minStock: 5
-      maxStock: 5
-    - product: WH40KFlowerBouquet
-      price: 140
-      minStock: 5
-      maxStock: 5
+      maxStock: 6
+    - product: DrinkAmasecGlass
+      price: 400
+      minStock: 25
+      maxStock: 50
     - product: StandardDogTag
-      price: 95
-      minStock: 5
-      maxStock: 5
+      price: 950
+      minStock: 10
+      maxStock: 25
+    - product: ClothingNeckBling
+      price: 8000
+      minStock: 1
+      maxStock: 3
+    - product: ClothingNeckImperialInquisitionSeal
+      price: 500
+      minStock: 1
+      maxStock: 25
+    - product: ClothingNeckImperialAquilaMedal
+      price: 4500
+      minStock: 1
+      maxStock: 19
 
 - type: entity
   id: MarkerWH40KFootfallOdranPell
