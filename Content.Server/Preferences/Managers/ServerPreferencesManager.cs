@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Database;
+using Content.Server._Mono.Company;
 using Content.Server._WH40K.CharacterCreation;
 using Content.Server._WH40K.PersistentInventory;
 using Content.Server._WH40K.Progression;
@@ -40,6 +41,7 @@ namespace Content.Server.Preferences.Managers
         [Dependency] private PersistentInventoryManager _persistentInventory = default!;
         [Dependency] private Wh40kProgressManager _wh40kRpgProgress = default!;
         [Dependency] private Wh40kPartyManager _wh40kParties = default!;
+        [Dependency] private CompanyManager _factions = default!;
 
         // Cache player prefs on the server so we don't need as much async hell related to them.
         private readonly Dictionary<NetUserId, PlayerPrefData> _cachedPlayerPrefs =
@@ -363,22 +365,36 @@ namespace Content.Server.Preferences.Managers
             => _entityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
                 .RunPlayerOperationAsync(userId, () => SetProfileCoreAsync(userId, slot, profile, authoritative));
 
+        public Task SetFactionBankProfileAsync(NetUserId userId, int slot, HumanoidCharacterProfile profile, FactionBankMutation mutation)
+            => _entityManager.System<Content.Server._WH40K.Administration.Wh40kPlayerResetSystem>()
+                .RunPlayerOperationAsync(userId, () => SetProfileCoreAsync(userId, slot, profile, true, mutation));
+
         private async Task SetProfileCoreAsync(NetUserId userId, int slot, ICharacterProfile profile,
-            bool authoritative = true) // Mono
+            bool authoritative = true, FactionBankMutation? factionBank = null) // Mono
         {
             if (!_cachedPlayerPrefs.TryGetValue(userId, out var prefsData) || !prefsData.PrefsLoaded)
             {
                 _sawmill.Error($"Tried to modify user {userId} preferences before they loaded.");
+                if (factionBank != null)
+                    throw new InvalidOperationException("Faction bank recipient preferences are not loaded.");
                 return;
             }
 
             if (slot < 0 || slot >= MaxCharacterSlots)
+            {
+                if (factionBank != null)
+                    throw new InvalidOperationException("Invalid faction bank recipient slot.");
                 return;
+            }
 
             var curPrefs = prefsData.Prefs!;
             var session = _playerManager.GetSessionById(userId);
 
             profile.EnsureValid(session, _dependencies);
+            if (profile is HumanoidCharacterProfile factionProfile)
+            {
+                profile = factionProfile.WithCompany(_factions.GetCharacterFaction(userId, factionProfile.Company));
+            }
             // Mono
             if (!authoritative && profile is HumanoidCharacterProfile humanoid)
             {
@@ -410,7 +426,13 @@ namespace Content.Server.Preferences.Managers
 
             prefsData.Prefs = new PlayerPreferences(profiles, slot, curPrefs.AdminOOCColor);
 
-            if (ShouldStorePrefs(session.Channel.AuthType))
+            if (factionBank != null)
+            {
+                if (!ShouldStorePrefs(session.Channel.AuthType))
+                    throw new InvalidOperationException("Faction banking requires a persistent account.");
+                await _db.SaveFactionBankProfileAsync(userId, profile, slot, factionBank);
+            }
+            else if (ShouldStorePrefs(session.Channel.AuthType))
                 await _db.SaveCharacterSlotAsync(userId, profile, slot);
         }
 
@@ -481,6 +503,7 @@ namespace Content.Server.Preferences.Managers
         // Should only be called via UserDbDataManager.
         public async Task LoadData(ICommonSession session, CancellationToken cancel)
         {
+            await _factions.Ready;
             if (!ShouldStorePrefs(session.Channel.AuthType))
             {
                 // Don't store data for guests.
@@ -508,6 +531,17 @@ namespace Content.Server.Preferences.Managers
                 async Task LoadPrefs()
                 {
                     var prefs = await GetOrCreatePreferencesAsync(session.UserId, cancel);
+                    var delivery = await _db.DeliverFactionBankPayoutsAsync(session.UserId);
+                    if (delivery != null && prefs.Characters.TryGetValue(delivery.Slot, out var deliveredProfile) &&
+                        deliveredProfile is HumanoidCharacterProfile humanoid)
+                    {
+                        var profiles = new Dictionary<int, ICharacterProfile>(prefs.Characters)
+                        {
+                            [delivery.Slot] = humanoid.WithBankBalance(delivery.Balance),
+                        };
+                        prefs = new PlayerPreferences(profiles, prefs.SelectedCharacterIndex, prefs.AdminOOCColor);
+                        _entityManager.System<Content.Server._NF.Bank.BankSystem>().NotifyFactionPayoutDelivery(delivery.Entries);
+                    }
                     prefsData.Prefs = prefs;
                     var onboarding = await _wh40kOnboarding.LoadForExistingPreferencesAsync(session.UserId, cancel);
                     var account = await _wh40kRpg.LoadForExistingPreferencesAsync(session.UserId, onboarding, cancel);
@@ -687,7 +721,10 @@ namespace Content.Server.Preferences.Managers
 
             return new PlayerPreferences(prefs.Characters.Select(p =>
             {
-                return new KeyValuePair<int, ICharacterProfile>(p.Key, p.Value.Validated(session, collection));
+                var profile = p.Value.Validated(session, collection);
+                if (profile is HumanoidCharacterProfile humanoid)
+                    profile = humanoid.WithCompany(_factions.GetCharacterFaction(session.UserId, humanoid.Company));
+                return new KeyValuePair<int, ICharacterProfile>(p.Key, profile);
             }), prefs.SelectedCharacterIndex, prefs.AdminOOCColor);
         }
 
@@ -697,7 +734,10 @@ namespace Content.Server.Preferences.Managers
             return usernames
                 .Select(p => (_cachedPlayerPrefs[p].Prefs, p))
                 .Where(p => p.Prefs != null)
-                .Select(p => new KeyValuePair<NetUserId, ICharacterProfile>(p.p, p.Prefs!.SelectedCharacter));
+                .Select(p => new KeyValuePair<NetUserId, ICharacterProfile>(p.p,
+                    p.Prefs!.SelectedCharacter is HumanoidCharacterProfile humanoid
+                        ? humanoid.WithCompany(_factions.GetCharacterFaction(p.p, humanoid.Company))
+                        : p.Prefs.SelectedCharacter));
         }
 
         internal static bool ShouldStorePrefs(LoginType loginType)

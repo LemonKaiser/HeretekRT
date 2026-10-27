@@ -1,0 +1,36 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+    Title="{Loc 'wh40k-faction-editor-title'}" MinSize="520 500" SetSize="700 690">
+    <BoxContainer Orientation="Vertical" Margin="20 16" SeparationOverride="12">
+        <Label Name="FactionName" FontColorOverride="#F0E9DC" ClipText="True"/>
+        <RichTextLabel Text="{Loc 'wh40k-faction-editor-scope'}" StyleClasses="Wh40kOnboardingBodyCompact"/>
+        <TabContainer Name="Tabs" VerticalExpand="True">
+            <ScrollContainer HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="0 14 10 8">
+                    <Label Text="{Loc 'wh40k-faction-editor-admission'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88"/>
+                    <RichTextLabel Text="{Loc 'wh40k-faction-editor-admission-hint'}" StyleClasses="Wh40kOnboardingBodySmall"/>
+                    <TextEdit Name="Admission" SetHeight="140"/>
+                    <Label Name="AdmissionCount" HorizontalAlignment="Right" StyleClasses="LabelSubText"/>
+                    <Label Text="{Loc 'wh40k-faction-editor-sections'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88" Margin="0 8 0 0"/>
+                    <RichTextLabel Text="{Loc 'wh40k-faction-editor-sections-hint'}" StyleClasses="Wh40kOnboardingBodySmall"/>
+                    <BoxContainer Name="Sections" Orientation="Vertical" SeparationOverride="12"/>
+                </BoxContainer>
+            </ScrollContainer>
+            <ScrollContainer HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="12" Margin="0 14 10 8">
+                    <RichTextLabel Text="{Loc 'wh40k-faction-editor-ranks-hint'}" StyleClasses="Wh40kOnboardingBodyCompact"/>
+                    <BoxContainer Name="Ranks" Orientation="Vertical" SeparationOverride="16"/>
+                    <factions:LobbyFactionButton Name="ResetRanksButton" Text="{Loc 'wh40k-faction-editor-reset-ranks'}" HorizontalAlignment="Left"/>
+                </BoxContainer>
+            </ScrollContainer>
+        </TabContainer>
+        <RichTextLabel Name="StatusLabel" Visible="False" StyleClasses="Wh40kOnboardingBodyCompact"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <factions:LobbyFactionButton Name="CancelButton" Text="{Loc 'wh40k-faction-editor-cancel'}"/>
+            <Control HorizontalExpand="True"/>
+            <factions:LobbyFactionButton Name="PreviewButton" Text="{Loc 'wh40k-faction-editor-preview'}"/>
+            <factions:LobbyFactionButton Name="SaveButton" Text="{Loc 'wh40k-faction-editor-save'}" Primary="True"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>

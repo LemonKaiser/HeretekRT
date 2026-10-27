@@ -1,0 +1,59 @@
+<factions:FactionDashboard xmlns="https://spacestation14.io"
+    xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="12">
+        <BoxContainer Name="HeaderRow" Orientation="Horizontal" SeparationOverride="18" Margin="0 0 0 4">
+            <Control Name="EmblemFrame" SetSize="160 160" VerticalAlignment="Center" RectClipContent="True">
+                <TextureRect Name="CurrentEmblem" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+            </Control>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" VerticalAlignment="Center">
+                <Label Name="HeadingLabel" FontColorOverride="#BBA57C" StyleClasses="LabelSubText"/>
+                <Label Name="CurrentName" ClipText="True" FontColorOverride="#F0E9DC"/>
+                <Label Name="CurrentRole" ClipText="True" FontColorOverride="#BBA57C"/>
+                <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+            </BoxContainer>
+        </BoxContainer>
+        <RichTextLabel Name="StatusLabel" Visible="False" HorizontalExpand="True"/>
+        <BoxContainer Name="DirectoryRoot" Orientation="Vertical" VerticalExpand="True">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <factions:LobbyFactionCatalog Name="Catalog" MaxWidth="760" HorizontalAlignment="Left"/>
+            </ScrollContainer>
+        </BoxContainer>
+        <TabContainer Name="ManagementTabs" VerticalExpand="True">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="12" Margin="0 14 12 0">
+                    <Label Text="{Loc 'wh40k-faction-membership-title'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88"/>
+                    <RichTextLabel Name="MembershipInfo" HorizontalExpand="True"/>
+                    <RichTextLabel Text="{Loc 'wh40k-faction-bank-member-info'}" HorizontalExpand="True" StyleClasses="Wh40kOnboardingBodyCompact"/>
+                    <RichTextLabel Name="LeaveHint" Text="{Loc 'wh40k-faction-leave-hint'}" HorizontalExpand="True" StyleClasses="Wh40kOnboardingBodyCompact"/>
+                    <Label Text="{Loc 'wh40k-faction-your-permissions'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88" Margin="0 4 0 0"/>
+                    <RichTextLabel Name="PermissionsHint" HorizontalExpand="True"/>
+                    <Label Text="{Loc 'wh40k-faction-about'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88" Margin="0 8 0 0"/>
+                    <RichTextLabel Name="FactionDescription" HorizontalExpand="True" LineHeightScale="1.15"/>
+                    <factions:LobbyFactionButton Name="EditProfileButton" Text="{Loc 'wh40k-faction-edit-profile'}" HorizontalAlignment="Left" Margin="0 8 0 0"/>
+                    <factions:FactionProfileSections Name="ProfileSections"/>
+                </BoxContainer>
+            </ScrollContainer>
+            <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="0 12 0 0">
+                <LineEdit Name="MemberSearch" PlaceHolder="{Loc 'wh40k-faction-search-members'}" MinHeight="34"/>
+                <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                    <BoxContainer Name="MemberList" Orientation="Vertical" SeparationOverride="6"/>
+                </ScrollContainer>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="0 12 0 0">
+                <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                    <BoxContainer Name="RequestList" Orientation="Vertical" SeparationOverride="6"/>
+                </ScrollContainer>
+            </BoxContainer>
+            <factions:FactionTreasuryPanel Name="Treasury"/>
+            <factions:FactionCommunicationsPanel Name="Communications"/>
+            <factions:FactionRelationsPanel Name="Relations"/>
+        </TabContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0 4 0 0">
+            <factions:LobbyFactionButton Name="RefreshButton" Text="{Loc 'wh40k-faction-refresh'}"/>
+            <Control HorizontalExpand="True"/>
+            <controls:ConfirmButton Name="LeaveButton" Text="{Loc 'wh40k-faction-leave'}"
+                ConfirmationText="{Loc 'wh40k-faction-leave-confirm'}" MinHeight="32" ResetTime="5"/>
+        </BoxContainer>
+    </BoxContainer>
+</factions:FactionDashboard>

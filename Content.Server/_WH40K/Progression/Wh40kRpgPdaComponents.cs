@@ -7,4 +7,7 @@ public sealed partial class Wh40kPlayerCartridgeComponent : Component;
 public sealed partial class Wh40kPartyCartridgeComponent : Component;
 
 [RegisterComponent]
+public sealed partial class Wh40kFactionCartridgeComponent : Component;
+
+[RegisterComponent]
 public sealed partial class Wh40kClassCartridgeComponent : Component;

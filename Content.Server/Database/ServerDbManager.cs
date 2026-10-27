@@ -559,7 +559,13 @@ namespace Content.Server.Database
         Task<IEnumerable<CompanyMemberRecord>> GetAllCompanyMembers(CancellationToken cancel = default);
         Task<CompanyMemberRecord?> GetCompanyMember(ProtoId<CompanyPrototype> company, Guid player, CancellationToken cancel = default);
         Task SetCompanyOwner(ProtoId<CompanyPrototype> company, Guid player, bool owner);
+        Task SetCompanyRole(ProtoId<CompanyPrototype> company, Guid player, FactionRole role);
         Task<bool> RemoveCompanyMember(Guid player, ProtoId<CompanyPrototype> company);
+        Task<bool> AddFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company);
+        Task<bool> RemoveFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company);
+        Task<FactionJoinRequestRecord?> GetFactionJoinRequest(ProtoId<CompanyPrototype> company, Guid player, CancellationToken cancel = default);
+        Task<IEnumerable<FactionJoinRequestRecord>> GetFactionJoinRequests(ProtoId<CompanyPrototype> company, CancellationToken cancel = default);
+        Task<IEnumerable<FactionJoinRequestRecord>> GetAllFactionJoinRequests(CancellationToken cancel = default);
 
         #endregion
 
@@ -757,13 +763,13 @@ namespace Content.Server.Database
         public Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot)
         {
             DbWriteOpsMetric.Inc();
-            return RunDbCommand(() => _db.SaveCharacterSlotAsync(userId, profile, slot));
+            return SerializeProfileWrite(() => RunDbCommand(() => _db.SaveCharacterSlotAsync(userId, profile, slot)));
         }
 
         public Task DeleteSlotAndSetSelectedIndex(NetUserId userId, int deleteSlot, int newSlot)
         {
             DbWriteOpsMetric.Inc();
-            return RunDbCommand(() => _db.DeleteSlotAndSetSelectedIndex(userId, deleteSlot, newSlot));
+            return SerializeProfileWrite(() => RunDbCommand(() => _db.DeleteSlotAndSetSelectedIndex(userId, deleteSlot, newSlot)));
         }
 
         public Task SaveAdminOOCColorAsync(NetUserId userId, Color color)
@@ -775,7 +781,7 @@ namespace Content.Server.Database
         public Task<PlayerPreferences?> GetPlayerPreferencesAsync(NetUserId userId, CancellationToken cancel)
         {
             DbReadOpsMetric.Inc();
-            return RunDbCommand(() => _db.GetPlayerPreferencesAsync(userId, cancel));
+            return SerializeProfileWrite(() => RunDbCommand(() => _db.GetPlayerPreferencesAsync(userId, cancel)));
         }
 
         public Task<Wh40kPlayerProgressSnapshot?> GetWh40kPlayerProgressAsync(NetUserId userId, CancellationToken cancel = default)
@@ -1861,10 +1867,46 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.SetCompanyOwner(company, player, owner));
         }
 
+        public Task SetCompanyRole(ProtoId<CompanyPrototype> company, Guid player, FactionRole role)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.SetCompanyRole(company, player, role));
+        }
+
         public Task<bool> RemoveCompanyMember(Guid player, ProtoId<CompanyPrototype> company)
         {
             DbWriteOpsMetric.Inc();
             return RunDbCommand(() => _db.RemoveCompanyMember(player, company));
+        }
+
+        public Task<bool> AddFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.AddFactionJoinRequest(player, company));
+        }
+
+        public Task<bool> RemoveFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.RemoveFactionJoinRequest(player, company));
+        }
+
+        public Task<FactionJoinRequestRecord?> GetFactionJoinRequest(ProtoId<CompanyPrototype> company, Guid player, CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetFactionJoinRequest(company, player, cancel));
+        }
+
+        public Task<IEnumerable<FactionJoinRequestRecord>> GetFactionJoinRequests(ProtoId<CompanyPrototype> company, CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetFactionJoinRequests(company, cancel));
+        }
+
+        public Task<IEnumerable<FactionJoinRequestRecord>> GetAllFactionJoinRequests(CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetAllFactionJoinRequests(cancel));
         }
         // Mono-End
 

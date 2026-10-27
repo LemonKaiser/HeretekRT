@@ -1,0 +1,17 @@
+<PanelContainer xmlns="https://spacestation14.io" HorizontalExpand="True" Margin="0 0 0 8">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+        <Control Name="EmblemFrame" SetSize="80 80" VerticalAlignment="Center" RectClipContent="True">
+            <TextureRect Name="Emblem" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+        </Control>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4">
+            <Label Name="FactionName" StyleClasses="LabelHeading" ClipText="True"/>
+            <RichTextLabel Name="Summary" HorizontalExpand="True"/>
+            <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+            <Label Name="Membership" StyleClasses="LabelSubText" ClipText="True" FontColorOverride="#9CA69F"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="0 4 0 0">
+                <Button Name="DetailsButton" Text="{Loc 'wh40k-faction-details'}" MinHeight="28"/>
+                <Button Name="ActionButton" MinHeight="28"/>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

@@ -44,6 +44,8 @@ using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
 using Content.Client._Mono.Company;
 using Content.Client._WH40K.CharacterDescription;
+using Content.Client._WH40K.Factions;
+using Content.Shared._WH40K.Progression;
 
 namespace Content.Client.Lobby.UI
 {
@@ -473,71 +475,19 @@ namespace Content.Client.Lobby.UI
 
             RefreshTraits();
 
-            #region Company
+            #region Faction
 
-            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-company-tab"));
+            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-faction-tab"));
+            FactionCatalog.Request += (action, faction) => _entManager.System<FactionLobbySystem>().Request(action, faction);
+            MemberDashboard.OnAction += (action, faction, user) => _entManager.System<FactionLobbySystem>().Request(action, faction, user);
+            MemberDashboard.ProfileSaveRequested += (faction, profile) => _entManager.System<FactionLobbySystem>()
+                .Request(Wh40kFactionUiAction.SaveProfile, faction, profile: profile);
+            MemberDashboard.PayoutRequested += (faction, recipient, payout) => _entManager.System<FactionLobbySystem>()
+                .Request(Wh40kFactionUiAction.Payout, faction, recipient, payout: payout);
+            MemberDashboard.SocialRequested += (action, faction, social) => _entManager.System<FactionLobbySystem>()
+                .Request(action, faction, social: social);
 
-            // Clear any existing items
-            CompanyButton.Clear();
-
-            // Add all companies from prototypes - use consistent sorting with UpdateCompanyControls
-            var companies = _prototypeManager.EnumeratePrototypes<CompanyPrototype>()
-                .Where(c => !c.Disabled && _companyManager.IsAllowed(c.ID))
-                .ToList();
-            companies.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-
-            // Make sure "None" is first in the list
-            var noneIndex = companies.FindIndex(c => c.ID == "None");
-            if (noneIndex != -1)
-            {
-                var none = companies[noneIndex];
-                companies.RemoveAt(noneIndex);
-                companies.Insert(0, none);
-            }
-
-            // Add to TSF company dropdown
-            for (var i = 0; i < companies.Count; i++)
-            {
-                CompanyButton.AddItem(GetCompanyDisplayName(companies[i]), i);
-                //Logger.Debug($"Added company to dropdown: {i} - {companies[i].ID} - {companies[i].Name}");
-            }
-
-            CompanyButton.OnItemSelected += args =>
-            {
-                CompanyButton.SelectId(args.Id);
-                if (args.Id >= 0 && args.Id < companies.Count)
-                {
-                    var companyId = companies[args.Id].ID;
-
-                    // Description of Company (pointed-to in prototype, defined in Locale)
-                    CompanyDescriptionLabel.SetMarkup(GetCompanyDescription(companies[args.Id]));
-
-                    // Display company image if available
-                    if (!string.IsNullOrEmpty(companies[args.Id].Image))
-                    {
-                        CompanyImage.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(companies[args.Id].Image!).Texture;
-                        CompanyImage.Visible = true;
-                    }
-                    else
-                    {
-                        CompanyImage.Visible = false;
-                    }
-
-                    // Get the current profile for comparison
-                    var oldCompany = Profile?.Company;
-                    // Update the profile with the new company
-                    Profile = Profile?.WithCompany(companyId);
-                    RefreshJobs();
-
-                    // Debug logging to verify selection
-                    //Logger.Debug($"Company changed from {oldCompany} to {companyId}");
-
-                    // Explicitly call SetDirty to update save button state
-                    SetDirty();
-                }
-            };
-
-            #endregion Company
+            #endregion Faction
 
             #region Markings
 
@@ -639,6 +589,8 @@ namespace Content.Client.Lobby.UI
         private void OnProfileEditorTabChanged(int tab)
         {
             UpdateProfilePreviewSidebar(tab);
+            if (tab == 3)
+                _entManager.System<FactionLobbySystem>().Request();
         }
 
         private void UpdateProfilePreviewSidebar(int tab)
@@ -1917,10 +1869,13 @@ namespace Content.Client.Lobby.UI
         {
             base.EnteredTree();
             ReloadPreview();
+            _entManager.System<FactionLobbySystem>().Updated += OnFactionStateUpdated;
+            _entManager.System<FactionLobbySystem>().Request();
         }
 
         protected override void ExitedTree()
         {
+            _entManager.System<FactionLobbySystem>().Updated -= OnFactionStateUpdated;
             base.ExitedTree();
             _entManager.DeleteEntity(PreviewDummy);
             PreviewDummy = EntityUid.Invalid;
@@ -2539,69 +2494,32 @@ namespace Content.Client.Lobby.UI
             ExportButton.Disabled = false;
         }
 
+        private Wh40kFactionUiOperationStatus _factionStatus;
+
         private void UpdateCompanyControls()
         {
-            if (Profile is null)
+            if (Profile == null)
                 return;
-
-            var companies = _prototypeManager.EnumeratePrototypes<CompanyPrototype>()
-                .Where(c => !c.Disabled && _companyManager.IsAllowed(c.ID))
-                .ToList();
-            companies.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-
-            // Make sure "None" is first in the list
-            var noneIndex = companies.FindIndex(c => c.ID == "None");
-            if (noneIndex != -1)
+            var factions = _entManager.System<FactionLobbySystem>();
+            if (factions.Snapshot != null && Profile.Company != (factions.Snapshot.FactionId ?? "None"))
             {
-                var none = companies[noneIndex];
-                companies.RemoveAt(noneIndex);
-                companies.Insert(0, none);
+                Profile = Profile.WithCompany(factions.Snapshot.FactionId ?? "None");
+                RefreshJobs();
+                SetDirty();
             }
+            FactionCatalog.Update(factions.Snapshot, factions.Pending);
+            var hasFaction = factions.Snapshot?.FactionId != null;
+            FactionDirectory.Visible = !hasFaction;
+            MemberDashboard.Visible = hasFaction;
+            MemberDashboard.UpdateSnapshot(factions.Snapshot, _factionStatus, factions.Pending);
+        }
 
-            //Logger.Debug($"Updating company controls." +
-                         //$"Current profile company: {Profile.Company}\n");
-
-            // Find the company in the list and select it
-            bool found = false;
-            for (var i = 0; i < companies.Count; i++)
-            {
-                if (companies[i].ID != Profile.Company)
-                    continue; // Short circuit.
-
-                //Logger.Debug($"Found company at index {i}: {companies[i].ID} - {companies[i].Name}");
-                CompanyButton.SelectId(i);
-
-                // Description of Company (pointed-to in prototype, defined in Locale)
-                CompanyDescriptionLabel.SetMarkup(GetCompanyDescription(companies[i]));
-
-                // Display company image if available
-                if (!string.IsNullOrEmpty(companies[i].Image))
-                {
-                    CompanyImage.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>(companies[i].Image!).Texture;
-                    CompanyImage.Visible = true;
-                }
-                else
-                {
-                    CompanyImage.Visible = false;
-                }
-
-                found = true;
-                break;
-            }
-
-            // If company wasn't found, default to "None" (index 0)
-            if (!found)
-            {
-                //Logger.Debug($"Company {Profile.Company} not found in list, defaulting to None");
-                CompanyButton.SelectId(0);
-                CompanyImage.Visible = false;
-
-                // Also reset the profile's company to None if the current one is disabled
-                if (_prototypeManager.TryIndex<CompanyPrototype>(Profile.Company, out var companyProto) && companyProto.Disabled)
-                {
-                    Profile = Profile.WithCompany("None");
-                }
-            }
+        private void OnFactionStateUpdated(Wh40kFactionUiOperationStatus status)
+        {
+            _factionStatus = status;
+            FactionNotice.Visible = status != Wh40kFactionUiOperationStatus.None;
+            FactionNotice.SetMessage(FactionUiPresentation.Status(status), FactionUiPresentation.Gold);
+            UpdateCompanyControls();
         }
 
         private string GetCompanyDisplayName(CompanyPrototype company)

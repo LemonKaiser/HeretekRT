@@ -71,8 +71,6 @@
     - EmergencyMedipen
     - FoodSnackImperialHardtack
     - DrinkWaterBottleFull
-    wallet:
-    - SpaceCash250
 
 - type: startingGear
   id: WH40KFleetCrewmanGear
@@ -91,8 +89,6 @@
     - EmergencyMedipen
     - FoodSnackImperialHardtack
     - DrinkWaterBottleFull
-    wallet:
-    - SpaceCash250
 
 - type: department
   id: WH40KKasballica

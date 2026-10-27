@@ -44,6 +44,12 @@ public sealed partial class CompanyPrototype : IPrototype
     [DataField]
     public bool Whitelisted { get; private set; } = false;
 
+    [DataField]
+    public bool JoinRequired { get; private set; }
+
+    [DataField]
+    public LocId? Summary { get; private set; }
+
     /// <summary>
     /// The image to display for this company in the UI.
     /// </summary>

@@ -46,12 +46,18 @@ namespace Content.Server.Labels
         /// <param name="metadata">metadata component for resolve</param>
         public override void Label(EntityUid uid, string? text, MetaDataComponent? metadata = null, LabelComponent? label = null)
         {
+            SetLabelText(uid, text == null ? null : FormattedMessage.EscapeText(text), label);
+        }
+
+        /// <summary>Applies label text that has already been escaped for display.</summary>
+        public void SetLabelText(EntityUid uid, string? text, LabelComponent? label = null)
+        {
             if (!Resolve(uid, ref label, false))
                 label = EnsureComp<LabelComponent>(uid);
             if (_tagSystem.HasTag(uid, PreventTag)) // DeltaV - Prevent labels on certain items
                 return; // DeltaV
 
-            label.CurrentLabel = text == null ? null : FormattedMessage.EscapeText(text);
+            label.CurrentLabel = text;
             NameMod.RefreshNameModifiers(uid);
 
             Dirty(uid, label);

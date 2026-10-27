@@ -49,7 +49,7 @@ can_operate_on_self = true
 expedition_rewards_enabled = true
 
 [nf14.respawn]
-time = 600
+time = 180
 
 [hub]
 advertise = 1

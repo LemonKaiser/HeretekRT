@@ -366,8 +366,7 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
     {
         if (!_prototypeManager.TryIndex(rarityId, out ItemRarityPrototype? rarityPrototype) ||
             !float.IsFinite(bonusPercent) ||
-            bonusPercent < 0f ||
-            TryComp<ItemRarityStatsComponent>(uid, out var existingStats) && existingStats.Applied)
+            bonusPercent < 0f)
         {
             return false;
         }
@@ -384,6 +383,11 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
             return false;
         }
 
+        // A fresh restore candidate may already have applied its prototype's initial roll.
+        // Remove those derived bonuses before applying the saved roll, rather than stacking them.
+        if (TryComp<ItemRarityStatsComponent>(uid, out var existingStats) && existingStats.Applied)
+            RestoreBaseStats(uid, existingStats);
+
         var rarity = EnsureComp<ItemRarityComponent>(uid);
         rarity.Rarity = rarityId;
         rarity.BonusPercent = bonusPercent;
@@ -394,6 +398,41 @@ public sealed class ItemRarityRandomizationSystem : EntitySystem
         TryComp<ItemRarityRandomComponent>(uid, out var profile);
         ApplyStats(uid, rarity, profile);
         return true;
+    }
+
+    private void RestoreBaseStats(EntityUid uid, ItemRarityStatsComponent stats)
+    {
+        if (stats.HasArmor && TryComp<ArmorComponent>(uid, out var armor))
+        {
+            armor.Modifiers = ItemRarityStatMath.CopyArmorModifiers(stats.BaseArmorModifiers);
+            Dirty(uid, armor);
+        }
+
+        if (stats.HasDurability && TryComp<ItemDurabilityComponent>(uid, out var durability))
+        {
+            var wearRatio = durability.MaxDurability > 0f
+                ? Math.Clamp(durability.CurrentDurability / durability.MaxDurability, 0f, 1f)
+                : 0f;
+            durability.MaxDurability = stats.BaseMaxDurability;
+            durability.CurrentDurability = DurabilityMath.Clamp(
+                DurabilityMath.Round(stats.BaseMaxDurability * wearRatio), stats.BaseMaxDurability);
+            Dirty(uid, durability);
+        }
+
+        if (stats.HasMeleeDamage && TryComp<MeleeWeaponComponent>(uid, out var melee))
+        {
+            melee.Damage = new DamageSpecifier(stats.BaseMeleeDamage);
+            melee.ArmorPenetration = stats.BaseWeaponArmorPenetration;
+            Dirty(uid, melee);
+        }
+
+        if (stats.HasWeapon && TryComp<GunComponent>(uid, out var gun))
+        {
+            gun.DamageModifier = stats.BaseWeaponDamageMultiplier;
+            Dirty(uid, gun);
+        }
+
+        RemComp<ItemRarityStatsComponent>(uid);
     }
 
     public static float GetRarityMultiplier(float bonusPercent)

@@ -1,6 +1,8 @@
 using Content.Shared.CartridgeLoader;
 using Content.Shared.Eui;
 using Content.Shared._WH40K.CharacterCreation;
+using Content.Shared._Mono.Company;
+using Content.Shared._WH40K.Factions;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._WH40K.Progression;
@@ -252,6 +254,214 @@ public sealed class Wh40kPartyUiMessage : CartridgeMessageEvent
         Ckey = ckey;
         TargetUserId = targetUserId;
         AllowInvites = allowInvites;
+    }
+}
+
+[Serializable, NetSerializable]
+public enum Wh40kFactionUiOperationStatus : byte
+{
+    None,
+    Success,
+    AccountUnavailable,
+    InvalidFaction,
+    AlreadyMember,
+    AlreadyRequested,
+    RequestNotFound,
+    NotAuthorized,
+    CannotManageLeader,
+    RequestSubmitted,
+    RequestCancelled,
+    RequestAccepted,
+    RequestRejected,
+    MemberRemoved,
+    OfficerPromoted,
+    OfficerDemoted,
+    LeftFaction,
+    Failed,
+    ProfileSaved,
+    InvalidProfile,
+    ProfileConflict,
+    InvalidPayout,
+    BankUnavailable,
+    InsufficientFactionFunds,
+    RecipientUnavailable,
+    RecipientBalanceLimit,
+    PayoutSent,
+    PayoutQueued,
+    InvalidSocialText,
+    SocialCooldown,
+    TransmissionUnavailable,
+    MessageSent,
+    DistressSent,
+    AnnouncementPublished,
+    AnnouncementRemoved,
+    InvalidRelation,
+    RelationConflict,
+    RelationSaved,
+    RelationCooldown,
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionOptionUiSnapshot
+{
+    public readonly string Id;
+    public readonly string Name;
+    public readonly string Description;
+    public readonly string Color;
+    public readonly FactionRole? Role;
+    public readonly bool HasRequest;
+    public readonly string? LeaderName;
+    public readonly int MemberCount;
+    public readonly int OfficerCount;
+    public readonly FactionProfile Profile;
+
+    public Wh40kFactionOptionUiSnapshot(string id, string name, string description, string color,
+        FactionRole? role = null, bool hasRequest = false, string? leaderName = null, int memberCount = 0, int officerCount = 0,
+        FactionProfile? profile = null)
+    {
+        Id = id;
+        Name = name;
+        Description = description;
+        Color = color;
+        Role = role;
+        HasRequest = hasRequest;
+        LeaderName = leaderName;
+        MemberCount = memberCount;
+        OfficerCount = officerCount;
+        Profile = profile ?? new FactionProfile();
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionMemberUiSnapshot
+{
+    public readonly Guid UserId;
+    public readonly string Ckey;
+    public readonly FactionRole Role;
+    public readonly bool IsSelf;
+    public readonly bool IsOnline;
+
+    public Wh40kFactionMemberUiSnapshot(Guid userId, string ckey, FactionRole role, bool isSelf, bool isOnline)
+    {
+        UserId = userId;
+        Ckey = ckey;
+        Role = role;
+        IsSelf = isSelf;
+        IsOnline = isOnline;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionRequestUiSnapshot
+{
+    public readonly Guid UserId;
+    public readonly string Ckey;
+
+    public Wh40kFactionRequestUiSnapshot(Guid userId, string ckey)
+    {
+        UserId = userId;
+        Ckey = ckey;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionUiSnapshot
+{
+    public readonly int RelationCooldownSeconds;
+    public readonly FactionSocialSnapshot? Social;
+    public readonly FactionRelation[] Relations;
+    public readonly FactionBankSnapshot? Treasury;
+    public readonly string? FactionId;
+    public readonly string? FactionName;
+    public readonly string? FactionDescription;
+    public readonly string? FactionColor;
+    public readonly FactionRole? ViewerRole;
+    public readonly List<Wh40kFactionOptionUiSnapshot> AvailableFactions;
+    public readonly List<Wh40kFactionMemberUiSnapshot> Members;
+    public readonly List<Wh40kFactionRequestUiSnapshot> Requests;
+    public readonly bool AccountAvailable;
+
+    public Wh40kFactionUiSnapshot(
+        string? factionId,
+        string? factionName,
+        string? factionDescription,
+        string? factionColor,
+        FactionRole? viewerRole,
+        List<Wh40kFactionOptionUiSnapshot> availableFactions,
+        List<Wh40kFactionMemberUiSnapshot> members,
+        List<Wh40kFactionRequestUiSnapshot> requests,
+        bool accountAvailable = true, FactionBankSnapshot? treasury = null,
+        FactionSocialSnapshot? social = null, FactionRelation[]? relations = null, int relationCooldownSeconds = 0)
+    {
+        FactionId = factionId;
+        FactionName = factionName;
+        FactionDescription = factionDescription;
+        FactionColor = factionColor;
+        ViewerRole = viewerRole;
+        AvailableFactions = availableFactions;
+        Members = members;
+        Requests = requests;
+        AccountAvailable = accountAvailable;
+        Treasury = treasury;
+        Social = social;
+        Relations = relations ?? [];
+        RelationCooldownSeconds = relationCooldownSeconds;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionSnapshotBuiMessage : BoundUserInterfaceMessage
+{
+    public readonly Wh40kFactionUiOperationStatus Status;
+    public readonly Wh40kFactionUiSnapshot? Snapshot;
+
+    public Wh40kFactionSnapshotBuiMessage(Wh40kFactionUiOperationStatus status, Wh40kFactionUiSnapshot? snapshot)
+    {
+        Status = status;
+        Snapshot = snapshot;
+    }
+}
+
+[Serializable, NetSerializable]
+public enum Wh40kFactionUiAction : byte
+{
+    Refresh,
+    RequestJoin,
+    AcceptRequest,
+    RejectRequest,
+    RemoveMember,
+    PromoteOfficer,
+    DemoteOfficer,
+    CancelRequest,
+    Leave,
+    SaveProfile,
+    Payout,
+    SendMessage,
+    SendDistress,
+    PublishAnnouncement,
+    RemoveAnnouncement,
+    SetRelation,
+}
+
+[Serializable, NetSerializable]
+public sealed class Wh40kFactionUiMessage : CartridgeMessageEvent
+{
+    public readonly FactionSocialRequest? Social;
+    public readonly Wh40kFactionUiAction Action;
+    public readonly string FactionId;
+    public readonly Guid TargetUserId;
+    public readonly FactionProfile? Profile;
+    public readonly FactionBankPayout? Payout;
+
+    public Wh40kFactionUiMessage(Wh40kFactionUiAction action, string factionId = "", Guid targetUserId = default,
+        FactionProfile? profile = null, FactionBankPayout? payout = null, FactionSocialRequest? social = null)
+    {
+        Action = action;
+        FactionId = factionId;
+        TargetUserId = targetUserId;
+        Profile = profile;
+        Payout = payout;
+        Social = social;
     }
 }
 

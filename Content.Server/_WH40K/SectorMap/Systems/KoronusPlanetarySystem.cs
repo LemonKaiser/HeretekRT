@@ -201,8 +201,15 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         if (!TryResolveLanding(shuttleGrid, celestialBodyId, landingSiteId, user, out var landing, out failure))
             return false;
 
+        // Validate the footprint before allocating an isolated dungeon surface.
+        if (!TryGetLandingOrigin(shuttleGrid, landing.Site, out _, out failure) ||
+            !TryResolveDungeonLanding(shuttleGrid, ref landing, out failure))
+            return false;
+
         var (rule, body, surface, site, surfaceMap, surfaceMapUid, surfaceRuntime) = landing;
         var reservationKey = GetReservationKey(body.ID, site.Id);
+        if (HasComp<Content.Server._WH40K.ChaosDungeon.ChaosDungeonInstanceComponent>(surfaceMapUid))
+            reservationKey = $"{body.ID}/{surfaceMap}/{site.Id}";
         if (rule.Comp.LandingReservations.TryGetValue(reservationKey, out var occupant) && occupant != shuttleGrid)
         {
             failure = KoronusPlanetaryTransferFailure.LandingSiteOccupied;
@@ -215,6 +222,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             failure = failure == KoronusPlanetaryTransferFailure.None
                 ? KoronusPlanetaryTransferFailure.LandingAreaBlocked
                 : failure;
+            EntityManager.System<Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem>()
+                .CancelPreparedLanding(shuttleGrid);
             return false;
         }
 
@@ -358,7 +367,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         string surfaceId,
         string systemId,
         MapId mapId,
-        EntityUid terrainGrid)
+        EntityUid terrainGrid,
+        bool persistent = true)
     {
         if (!_maps.TryGetMap(mapId, out var mapUid))
             return;
@@ -392,7 +402,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             }
         }
 
-        rule.Comp.SurfaceMaps[surfaceId] = mapId;
+        if (persistent)
+            rule.Comp.SurfaceMaps[surfaceId] = mapId;
         ConfigureSurfaceLighting(mapUid.Value, runtime);
         _surfaceBoundaries[mapId] = new SurfaceBoundary(mapUid.Value, runtime.PlayableBounds, terrainGrid);
         SeedSurfaceBoundaryTracking(mapId);
@@ -573,10 +584,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     {
         foreach (var candidate in GetLandingSites(runtime))
         {
-            var candidateId = idIsReservationKey
-                ? GetReservationKey(body.ID, candidate.Id)
-                : candidate.Id;
-            if (candidateId != id)
+            var candidateId = idIsReservationKey ? id[(id.LastIndexOf('/') + 1)..] : id;
+            if (candidate.Id != candidateId)
                 continue;
 
             site = candidate;
@@ -760,13 +769,14 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         }
     }
 
-    private void PrepareLandingClearance(EntityUid mapUid, KoronusPlanetSurfacePrototype surface)
+    private void PrepareLandingClearance(EntityUid mapUid, KoronusPlanetSurfacePrototype surface,
+        Box2? reservedBounds = null)
     {
         if (surface.LandingClearanceSize.X <= 0f || surface.LandingClearanceSize.Y <= 0f)
             return;
 
         var halfSize = surface.LandingClearanceSize / 2f;
-        var bounds = new Box2(-halfSize, halfSize);
+        var bounds = reservedBounds ?? new Box2(-halfSize, halfSize);
         var terrain = Comp<MapGridComponent>(mapUid);
         var biome = Comp<BiomeComponent>(mapUid);
         var tiles = new List<(Vector2i, Tile)>();
@@ -859,6 +869,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         CoverLandingPadUnderShuttle(shuttleGrid, terrainGrid, site, session);
         if (site.Console is { } console && TryComp<KoronusLandingPadConsoleComponent>(console, out var consoleComponent))
             _landingPads.UpdateUi((console, consoleComponent));
+
+        RaiseLocalEvent(new PlanetaryLandingCompletedEvent(shuttleGrid, Transform(shuttleGrid).MapID));
     }
 
     /// <summary>
@@ -1163,6 +1175,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         if (session != null)
             rule.Comp.LandingSessions.Remove(session.Id);
         rule.Comp.LandingReservations.Remove(reservationKey);
+        RaiseLocalEvent(new PlanetaryDepartureCompletedEvent(shuttleGrid));
     }
 
     private void BeginTransit(
@@ -1350,6 +1363,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         }
 
         CompleteTransit(shuttleGrid, transit);
+        RaiseLocalEvent(new PlanetaryTransferCancelledEvent(shuttleGrid));
     }
 
     private void CompleteTransit(EntityUid shuttleGrid, KoronusPlanetaryTransitComponent transit)
@@ -1859,12 +1873,14 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                 {
                     var key = GetReservationKey(body.ID, site.Id);
                     var occupied = rule.Comp.LandingReservations.TryGetValue(key, out var owner);
+                    var dungeon = EntityManager.System<Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem>();
+                    var isDungeon = body.ID == Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem.BodyId;
                     sites.Add(new KoronusLandingSiteState(
                         site.Id,
-                        site.DisplayName,
+                        isDungeon ? dungeon.GetPadName() : site.DisplayName,
                         site.Size,
-                        site.Enabled,
-                        occupied,
+                        site.Enabled && (!isDungeon || dungeon.CanStart(shuttleGrid)),
+                        isDungeon ? !dungeon.HasFreeSlot : occupied,
                         occupied && owner == shuttleGrid));
                 }
             }
@@ -2157,4 +2173,8 @@ public enum KoronusPlanetaryTransferFailure : byte
     AccessDenied,
     LandingCooldown,
     ShuttleFragmented,
+    DungeonFull,
+    DungeonRefreshing,
+    DungeonShipUsed,
+    DungeonPlayerUsed,
 }

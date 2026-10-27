@@ -40,13 +40,13 @@ public sealed partial class BankATMMenu : FancyWindow
         BankAmount = amount;
     }
 
-    public void SetDeposit(int amount)
+    public void SetDeposit(int amount, int netDeposit = -1, int factionTax = 0, string? factionName = null)
     {
         DepositButton.Disabled = amount <= 0;
         if (amount >= 0) // Valid
         {
             _bank.GetTaxedDepositAmount(amount, BankAmount, out var afterTax, out var taxedAway);
-            DepositLabel.Text = BankSystemExtensions.ToSpesoString(afterTax);
+            DepositLabel.Text = BankSystemExtensions.ToSpesoString(netDeposit >= 0 ? netDeposit : afterTax);
             DepositLabelUT.Text = _cfg.GetCVar(MonoCVars.DepositHighExp) == 0 ? Loc.GetString("bank-atm-menu-untaxed") : BankSystemExtensions.ToSpesoString(taxedAway);
         }
         else
@@ -54,6 +54,9 @@ public sealed partial class BankATMMenu : FancyWindow
             DepositLabel.Text = Loc.GetString("bank-atm-menu-cash-error");
             DepositLabelUT.Text = Loc.GetString("bank-atm-menu-cash-error");
         }
+        FactionTaxLabel.Visible = factionName != null;
+        FactionTaxLabel.SetMessage(Loc.GetString("wh40k-faction-bank-atm-tax", ("faction", factionName ?? ""),
+            ("amount", BankSystemExtensions.ToSpesoString(factionTax))));
     }
 
     public void SetEnabled(bool enabled)

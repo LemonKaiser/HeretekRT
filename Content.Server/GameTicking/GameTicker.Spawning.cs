@@ -185,6 +185,14 @@ namespace Content.Server.GameTicking
             if (DummyTicker)
                 return;
 
+            if (!_respawn.CanRespawn(player))
+            {
+                var seconds = Math.Ceiling((_respawn.GetRespawnTime(player.UserId)!.Value - _gameTiming.CurTime).TotalSeconds);
+                _chatManager.DispatchServerMessage(player,
+                    Loc.GetString("wh40k-respawn-cooldown", ("seconds", seconds)));
+                return;
+            }
+
             if (station == EntityUid.Invalid)
             {
                 var stations = GetSpawnableStations();
@@ -412,6 +420,7 @@ namespace Content.Server.GameTicking
             }
 
             // We raise this event directed to the mob, but also broadcast it so game rules can do something now.
+            _respawn.OnPlayerSpawned(player, mob);
             PlayersJoinedRoundNormally++;
             var aev = new PlayerSpawnCompleteEvent(mob,
                 player,

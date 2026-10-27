@@ -1,0 +1,18 @@
+<PanelContainer xmlns="https://spacestation14.io" xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+                HorizontalExpand="True" Margin="0 0 0 10">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="18">
+        <Control Name="EmblemFrame" SetSize="144 144" VerticalAlignment="Center" RectClipContent="True">
+            <TextureRect Name="Emblem" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+        </Control>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" VerticalAlignment="Center">
+            <Label Name="FactionName" ClipText="True" FontColorOverride="#F0E9DC"/>
+            <RichTextLabel Name="Summary" HorizontalExpand="True"/>
+            <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+            <Label Name="Membership" ClipText="True" FontColorOverride="#BBA57C"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0 3 0 0">
+                <factions:LobbyFactionButton Name="DetailsButton" Text="{Loc 'wh40k-faction-details'}" MinWidth="104"/>
+                <factions:LobbyFactionButton Name="ActionButton" Primary="True" MinWidth="104"/>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

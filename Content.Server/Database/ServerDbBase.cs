@@ -105,7 +105,8 @@ namespace Content.Server.Database
             await db.DbContext.SaveChangesAsync();
         }
 
-        public async Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot)
+        public async Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot,
+            FactionBankMutation? factionBank = null)
         {
             await using var db = await GetDb();
 
@@ -147,6 +148,8 @@ namespace Content.Server.Database
                 prefs.Profiles.Add(newProfile);
             }
 
+            if (factionBank != null)
+                await ApplyFactionBankMutation(db.DbContext, factionBank);
             await db.DbContext.SaveChangesAsync();
         }
 
@@ -5764,6 +5767,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             {
                 PlayerUserId = player,
                 CompanyId = company,
+                Role = (byte)FactionRole.Member,
             };
             db.DbContext.CompanyMembers.Add(member);
             await db.DbContext.SaveChangesAsync();
@@ -5790,7 +5794,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             return members.Select(m => new CompanyMemberRecord()
             {
                 Company = company,
-                Owner = m.Owner,
+                Role = m.Owner ? FactionRole.Leader : (FactionRole)m.Role,
                 PlayerUserId = m.PlayerUserId,
                 LastSeenUserName = m.Player.LastSeenUserName,
             });
@@ -5806,7 +5810,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             return members.Select(m => new CompanyMemberRecord()
             {
                 Company = m.CompanyId,
-                Owner = m.Owner,
+                Role = m.Owner ? FactionRole.Leader : (FactionRole)m.Role,
                 PlayerUserId = m.PlayerUserId,
                 LastSeenUserName = m.Player.LastSeenUserName,
             });
@@ -5828,7 +5832,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             {
                 Company = company,
                 LastSeenUserName = member.Player.LastSeenUserName,
-                Owner = member.Owner,
+                Role = member.Owner ? FactionRole.Leader : (FactionRole)member.Role,
                 PlayerUserId = member.PlayerUserId,
             };
         }
@@ -5839,7 +5843,20 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             await db.DbContext.CompanyMembers
                 .Where(w => w.CompanyId == company.Id)
                 .Where(w => w.PlayerUserId == player)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(m => m.Owner, owner));
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(m => m.Owner, owner)
+                    .SetProperty(m => m.Role, owner ? (byte)FactionRole.Leader : (byte)FactionRole.Member));
+        }
+
+        public async Task SetCompanyRole(ProtoId<CompanyPrototype> company, Guid player, FactionRole role)
+        {
+            await using var db = await GetDb();
+            await db.DbContext.CompanyMembers
+                .Where(w => w.CompanyId == company.Id)
+                .Where(w => w.PlayerUserId == player)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(m => m.Owner, role == FactionRole.Leader)
+                    .SetProperty(m => m.Role, (byte)role));
         }
 
         public async Task<bool> RemoveCompanyMember(Guid player, ProtoId<CompanyPrototype> company)
@@ -5856,6 +5873,76 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
             db.DbContext.CompanyMembers.Remove(entry);
             await db.DbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> AddFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company)
+        {
+            await using var db = await GetDb();
+            var exists = await db.DbContext.FactionJoinRequests
+                .AnyAsync(w => w.PlayerUserId == player && w.CompanyId == company.Id);
+            if (exists)
+                return false;
+
+            db.DbContext.FactionJoinRequests.Add(new FactionJoinRequest
+            {
+                PlayerUserId = player,
+                CompanyId = company,
+                CreatedAt = DateTime.UtcNow,
+            });
+            await db.DbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RemoveFactionJoinRequest(Guid player, ProtoId<CompanyPrototype> company)
+        {
+            await using var db = await GetDb();
+            var entry = await db.DbContext.FactionJoinRequests
+                .SingleOrDefaultAsync(w => w.PlayerUserId == player && w.CompanyId == company.Id);
+            if (entry == null)
+                return false;
+
+            db.DbContext.FactionJoinRequests.Remove(entry);
+            await db.DbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<FactionJoinRequestRecord?> GetFactionJoinRequest(ProtoId<CompanyPrototype> company, Guid player, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var request = await db.DbContext.FactionJoinRequests
+                .Where(w => w.CompanyId == company.Id && w.PlayerUserId == player)
+                .Include(w => w.Player)
+                .FirstOrDefaultAsync(cancel);
+            return request == null
+                ? null
+                : new FactionJoinRequestRecord(request.PlayerUserId, request.Player.LastSeenUserName, company, request.CreatedAt);
+        }
+
+        public async Task<IEnumerable<FactionJoinRequestRecord>> GetFactionJoinRequests(ProtoId<CompanyPrototype> company, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var requests = await db.DbContext.FactionJoinRequests
+                .Where(w => w.CompanyId == company.Id)
+                .Include(w => w.Player)
+                .ToListAsync(cancel);
+            return requests.Select(request => new FactionJoinRequestRecord(
+                request.PlayerUserId,
+                request.Player.LastSeenUserName,
+                company,
+                request.CreatedAt));
+        }
+
+        public async Task<IEnumerable<FactionJoinRequestRecord>> GetAllFactionJoinRequests(CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+            var requests = await db.DbContext.FactionJoinRequests
+                .Include(w => w.Player)
+                .ToListAsync(cancel);
+            return requests.Select(request => new FactionJoinRequestRecord(
+                request.PlayerUserId,
+                request.Player.LastSeenUserName,
+                request.CompanyId,
+                request.CreatedAt));
         }
 
         #endregion

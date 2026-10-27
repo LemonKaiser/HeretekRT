@@ -1,11 +1,13 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Content.Server._Mono.Company;
 using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.PersistentInventory;
 using Content.Server._WH40K.PersistentInventory.Serialization;
 using Content.Server._WH40K.Quests;
 using Content.Server.Database;
 using Content.Shared._Mono.Company;
+using Content.Shared._WH40K.Factions;
 using Content.Shared._WH40K.FactionStorage;
 using Content.Shared.ActionBlocker;
 using Content.Shared.GameTicking;
@@ -17,6 +19,7 @@ using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.FactionStorage;
@@ -24,6 +27,7 @@ namespace Content.Server._WH40K.FactionStorage;
 public sealed partial class FactionStorageSystem : EntitySystem
 {
     [Dependency] private IServerDbManager _db = default!;
+    [Dependency] private CompanyManager _factions = default!;
     [Dependency] private PersistentInventorySnapshotSerializer _serializer = default!;
     [Dependency] private Wh40kQuestSessionSystem _sessions = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -60,7 +64,16 @@ public sealed partial class FactionStorageSystem : EntitySystem
         SubscribeLocalEvent<FactionStorageComponent, FactionDepotRefresh>(OnRefresh);
         SubscribeLocalEvent<FactionStorageComponent, FactionDepotTransfer>(OnTransfer);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => _depots.Clear());
+        _factions.FactionChanged += OnFactionChanged;
     }
+
+    public override void Shutdown()
+    {
+        _factions.FactionChanged -= OnFactionChanged;
+        base.Shutdown();
+    }
+
+    private void OnFactionChanged(ProtoId<CompanyPrototype> faction, NetUserId user) => RecheckAccess(faction);
 
     public bool IsBusy(NetUserId user) => _busyUsers.Contains(user);
 
@@ -68,6 +81,7 @@ public sealed partial class FactionStorageSystem : EntitySystem
         => !TerminatingOrDeleted(terminal) && !TerminatingOrDeleted(user) && !_sessions.IsStopping &&
            TryComp(user, out CompanyComponent? company) && company.CompanyName == storage.Faction &&
            TryComp(user, out ActorComponent? actor) && actor.PlayerSession.AttachedEntity == user &&
+           FactionPermissions.CanAccessStorage(_factions.GetRole(actor.PlayerSession.UserId, storage.Faction)) &&
            _blocker.CanInteract(user, terminal) && _interaction.InRangeUnobstructed(user, terminal, popup: false);
 
     private bool CanMove(EntityUid terminal, FactionStorageComponent storage, EntityUid user, bool completing = false)
@@ -267,9 +281,18 @@ public sealed partial class FactionStorageSystem : EntitySystem
         if (_nextAccessCheck > _timing.CurTime)
             return;
         _nextAccessCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
+        RecheckAccess();
+    }
+
+    private void RecheckAccess(ProtoId<CompanyPrototype>? faction = null)
+    {
         var query = EntityQueryEnumerator<FactionStorageComponent>();
         while (query.MoveNext(out var uid, out var comp))
+        {
+            if (faction != null && comp.Faction != faction)
+                continue;
             foreach (var user in _ui.GetActors(uid, FactionStorageUiKey.Key).ToArray())
                 IsViewer(uid, comp, user);
+        }
     }
 }
