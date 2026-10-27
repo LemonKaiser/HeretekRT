@@ -1,0 +1,55 @@
+<ui:FancyWindow xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client.UserInterface.Controls"
+                xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+                Title="{Loc 'wh40k-faction-admin-title'}" MinSize="860 640" SetSize="1000 680">
+    <BoxContainer Orientation="Horizontal" Margin="12" SeparationOverride="12">
+        <BoxContainer Orientation="Vertical" SetWidth="220" SeparationOverride="8">
+            <Label Text="{Loc 'wh40k-faction-admin-factions'}" StyleClasses="LabelHeading"/>
+            <LineEdit Name="FactionSearch" PlaceHolder="{Loc 'wh40k-faction-admin-search-factions'}"/>
+            <ItemList Name="FactionList" VerticalExpand="True"/>
+            <Button Name="RefreshButton" Text="{Loc 'wh40k-faction-refresh'}" MinHeight="30"/>
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8">
+            <Label Name="FactionName" Text="{Loc 'wh40k-faction-admin-select-faction'}" StyleClasses="LabelHeadingBigger" ClipText="True"/>
+            <TextEdit Name="FactionInfo" Editable="False" SetHeight="108"/>
+            <RichTextLabel Name="Message" HorizontalExpand="True" Visible="False"/>
+            <TabContainer Name="Tabs" VerticalExpand="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="0 8 0 0">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                        <LineEdit Name="AddTarget" HorizontalExpand="True" PlaceHolder="{Loc 'wh40k-faction-admin-target'}"/>
+                        <Button Name="AddButton" Text="{Loc 'wh40k-faction-admin-add'}"/>
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="10" VerticalExpand="True">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
+                            <LineEdit Name="MemberSearch" PlaceHolder="{Loc 'wh40k-faction-admin-search-members'}"/>
+                            <ItemList Name="Members" VerticalExpand="True"/>
+                        </BoxContainer>
+                        <ScrollContainer SetWidth="250" HScrollEnabled="False" VerticalExpand="True">
+                            <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                                <TextEdit Name="MemberInfo" Editable="False" SetHeight="130"/>
+                                <RichTextLabel Name="LeaderWarning" Text="{Loc 'wh40k-faction-admin-leader-warning'}" Visible="False"/>
+                                <OptionButton Name="Rank"/>
+                                <ui:ConfirmButton Name="SetRankButton" Text="{Loc 'wh40k-faction-admin-set-rank'}"
+                                                  ConfirmationText="{Loc 'wh40k-faction-admin-confirm'}" MinHeight="30" ResetTime="5"/>
+                                <ui:ConfirmButton Name="AssignLeaderButton" Text="{Loc 'wh40k-faction-admin-assign-leader'}"
+                                                  ToolTip="{Loc 'wh40k-faction-admin-leader-transfer'}"
+                                                  ConfirmationText="{Loc 'wh40k-faction-admin-confirm-leader'}" MinHeight="30" ResetTime="5"/>
+                                <ui:ConfirmButton Name="RemoveButton" Text="{Loc 'wh40k-faction-remove'}"
+                                                  ConfirmationText="{Loc 'wh40k-faction-remove-confirm'}" MinHeight="30" ResetTime="5"/>
+                            </BoxContainer>
+                        </ScrollContainer>
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="0 8 0 0">
+                    <ItemList Name="Applications" VerticalExpand="True"/>
+                    <LineEdit Name="ApplicationId" Editable="False"/>
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                        <Button Name="AcceptButton" Text="{Loc 'wh40k-faction-accept'}" MinHeight="30"/>
+                        <Button Name="RejectButton" Text="{Loc 'wh40k-faction-reject'}" MinHeight="30"/>
+                    </BoxContainer>
+                </BoxContainer>
+                <factions:FactionRelationsPanel Name="Relations"/>
+            </TabContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:FancyWindow>

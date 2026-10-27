@@ -190,7 +190,7 @@ public sealed partial class Wh40kMedicalTreatmentSystem : EntitySystem
             if (paid && !healed)
                 await _sessions.OnSimulationThread(() =>
                 {
-                    if (!_bank.TryBankDeposit(body, quote.Price, tax: false)) Log.Error($"Medical refund failed for {user}, operation {operation}.");
+                    if (!_bank.TryBankCredit(body, quote.Price, factionTax: false)) Log.Error($"Medical refund failed for {user}, operation {operation}.");
                 });
             if (reserved && !healed)
             {

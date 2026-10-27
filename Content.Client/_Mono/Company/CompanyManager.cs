@@ -31,6 +31,9 @@ public sealed partial class CompanyManager
 
     public bool IsAllowed(ProtoId<CompanyPrototype> company)
     {
+        if (_proto.TryIndex(company, out var managed) && managed.JoinRequired)
+            return IsPlayerWhitelisted(company);
+
         if (!_config.GetCVar(MonoCVars.CompanyWhitelist))
             return true;
 

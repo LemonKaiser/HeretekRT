@@ -24,6 +24,9 @@ public sealed class BankATMMenuInterfaceState : BoundUserInterfaceState
     /// how much cash is inserted
     /// </summary>
     public int Deposit;
+    public int NetDeposit = -1;
+    public int FactionTax;
+    public string? FactionName;
 
     public BankATMMenuInterfaceState(int balance, long savings, bool enabled, int deposit)
     {

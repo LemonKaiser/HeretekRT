@@ -2,6 +2,8 @@
   id: KasballicaMission
   name: wh40k-company-kasballica-name
   description: wh40k-company-kasballica-description
+  summary: wh40k-faction-kasballica-summary
+  joinRequired: true
   color: "#A66B9E"
   image: /Textures/_WH40K/Companies/kasballica.svg.192dpi.png
 
@@ -9,5 +11,7 @@
   id: ChartistFleet
   name: wh40k-company-fleet-name
   description: wh40k-company-fleet-description
+  summary: wh40k-faction-fleet-summary
+  joinRequired: true
   color: "#4B8FC9"
   image: /Textures/_WH40K/Companies/chartist_fleet.svg.192dpi.png

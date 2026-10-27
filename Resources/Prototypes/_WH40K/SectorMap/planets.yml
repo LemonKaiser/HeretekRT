@@ -362,7 +362,7 @@
 
 - type: koronusPlanetSurface
   id: AivoriusBurningSurface
-  mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
+  mapPath: /Maps/_WH40K/Planets/aivorius_chaos_surface.yml
   planet: AivoriusBurningWorldSurface
   safetyProfile: KoronusPlanetSafeSurface
   authoredGridMargin: 50
@@ -371,7 +371,7 @@
   pauseWhenEmpty: true
   parallax: Blank
   orbitalLaunchDistance: 500
-  landingClearanceSize: 85, 85
+  landingClearanceSize: 45, 130
   transitStartupTime: 5
   landingTransitTime: 10
   launchTransitTime: 10

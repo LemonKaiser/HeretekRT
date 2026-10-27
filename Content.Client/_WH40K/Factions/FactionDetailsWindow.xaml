@@ -1,0 +1,36 @@
+<controls:FancyWindow xmlns="https://spacestation14.io" xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+             xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+             MinSize="360 420" SetSize="540 580"
+             Title="{Loc 'wh40k-faction-details-title'}">
+    <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="10">
+        <PanelContainer Name="HeaderPanel">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="14">
+                <TextureRect Name="Emblem" SetSize="112 112" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
+                    <RichTextLabel Name="FactionName" HorizontalExpand="True"/>
+                    <RichTextLabel Name="Summary" HorizontalExpand="True"/>
+                    <RichTextLabel Name="Membership" HorizontalExpand="True"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+        <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+        <TabContainer Name="ProfileTabs" VerticalExpand="True">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="10">
+                    <Label Text="{Loc 'wh40k-faction-about'}" StyleClasses="LabelHeading" FontColorOverride="#C4AC78"/>
+                    <RichTextLabel Name="Description" HorizontalExpand="True"/>
+                    <factions:FactionProfileSections Name="ProfileSections"/>
+                </BoxContainer>
+            </ScrollContainer>
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <factions:FactionRelationsSummary Name="PublicRelations"/>
+            </ScrollContainer>
+        </TabContainer>
+        <RichTextLabel Name="ActionHint" HorizontalExpand="True"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Button Name="DismissButton" Text="{Loc 'character-setup-gui-character-setup-close-button'}"/>
+            <Control HorizontalExpand="True"/>
+            <Button Name="ActionButton" MinHeight="32"/>
+        </BoxContainer>
+    </BoxContainer>
+</controls:FancyWindow>

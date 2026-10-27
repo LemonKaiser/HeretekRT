@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Content.Server._WH40K.SectorMap.Components;
 using Robust.Shared.ContentPack;
+using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Events;
+using Robust.Shared.Profiling;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Timing;
@@ -20,6 +22,8 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 public sealed partial class KoronusSectorRuleSystem
 {
     [Dependency] private IDependencyCollection _dependencies = default!;
+    [Dependency] private ProfManager _coldProfiler = default!;
+    [Dependency] private IConfigurationManager _coldConfiguration = default!;
 
     private static readonly TimeSpan ColdSerializationBudget = TimeSpan.FromMilliseconds(5);
     private ColdUnloadOperation? _coldUnload;
@@ -31,6 +35,21 @@ public sealed partial class KoronusSectorRuleSystem
         base.Update(frameTime);
         if (_coldUnload is not { } operation)
             return;
+
+        if (!_coldConfiguration.GetCVar(Wh40kSectorCVars.ColdUnloadEnabled))
+        {
+            CancelColdUnload();
+            return;
+        }
+
+        using var profile = _coldProfiler.Value(operation.Stage switch
+        {
+            ColdSnapshotStage.Prepare => "Koronus cold: prepare",
+            ColdSnapshotStage.Serialize => "Koronus cold: serialize",
+            ColdSnapshotStage.Write => "Koronus cold: write",
+            ColdSnapshotStage.Validate => "Koronus cold: validate",
+            _ => "Koronus cold: commit",
+        });
 
         if (!_maps.TryGetMap(operation.MapId, out var map) || map != operation.Map ||
             !_maps.IsPaused(operation.MapId) ||

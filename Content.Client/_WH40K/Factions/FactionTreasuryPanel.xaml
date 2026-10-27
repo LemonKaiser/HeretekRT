@@ -1,0 +1,47 @@
+<BoxContainer xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:factions="clr-namespace:Content.Client._WH40K.Factions" Orientation="Vertical" SeparationOverride="12">
+    <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+        <BoxContainer Orientation="Vertical" SeparationOverride="18" Margin="0 12 12 8">
+            <BoxContainer Name="BalanceRow" Orientation="Horizontal" SeparationOverride="20">
+                <BoxContainer Orientation="Vertical" SeparationOverride="4" MinWidth="190">
+                    <Label Text="{Loc 'wh40k-faction-bank-balance'}" FontColorOverride="#BBA57C" StyleClasses="LabelSubText"/>
+                    <Label Name="Balance" FontColorOverride="#F0E9DC"/>
+                </BoxContainer>
+                <RichTextLabel Text="{Loc 'wh40k-faction-bank-info'}" StyleClasses="Wh40kOnboardingBodyCompact" HorizontalExpand="True" VerticalAlignment="Center"/>
+            </BoxContainer>
+            <factions:FactionTreasuryColumns Name="Columns" SeparationOverride="24">
+                <BoxContainer Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True" SizeFlagsStretchRatio="1.5" VerticalAlignment="Top">
+                    <Label Text="{Loc 'wh40k-faction-bank-payout-title'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88"/>
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                        <Label Text="{Loc 'wh40k-faction-bank-recipient'}"/>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <OptionButton Name="Recipient" HorizontalExpand="True" MinHeight="34" RectClipContent="True" Filterable="True"/>
+                            <factions:LobbyFactionButton Name="SelfButton" Text="{Loc 'wh40k-faction-bank-self'}"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="PaymentFields" Orientation="Horizontal" SeparationOverride="10">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" MinWidth="130" SizeFlagsStretchRatio="0.7" HorizontalExpand="True">
+                            <Label Text="{Loc 'wh40k-faction-bank-amount'}"/>
+                            <LineEdit Name="Amount" PlaceHolder="{Loc 'wh40k-faction-bank-amount-placeholder'}" MinHeight="34"/>
+                        </BoxContainer>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True">
+                            <Label Text="{Loc 'wh40k-faction-bank-memo'}" ClipText="True" ToolTip="{Loc 'wh40k-faction-bank-memo'}"/>
+                            <LineEdit Name="Memo" PlaceHolder="{Loc 'wh40k-faction-bank-memo-placeholder'}" MinHeight="34"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <RichTextLabel Name="PayoutSummary" StyleClasses="Wh40kOnboardingBodyCompact"/>
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                        <controls:ConfirmButton Name="PayButton" Text="{Loc 'wh40k-faction-bank-pay'}"
+                            ConfirmationText="{Loc 'wh40k-faction-bank-pay-confirm'}" MinHeight="34" ResetTime="5"/>
+                        <factions:LobbyFactionButton Name="MaxButton" Text="{Loc 'wh40k-faction-bank-max'}"/>
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" SeparationOverride="12" HorizontalExpand="True" VerticalAlignment="Top">
+                    <Label Text="{Loc 'wh40k-faction-bank-history'}" StyleClasses="LabelHeading" FontColorOverride="#D5BC88"/>
+                    <BoxContainer Name="History" Orientation="Vertical" SeparationOverride="12"/>
+                </BoxContainer>
+            </factions:FactionTreasuryColumns>
+        </BoxContainer>
+    </ScrollContainer>
+</BoxContainer>

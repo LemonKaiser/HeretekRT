@@ -47,6 +47,14 @@ namespace Content.Server.Database
         public DbSet<BanTemplate> BanTemplate { get; set; } = null!;
         public DbSet<IPIntelCache> IPIntelCache { get; set; } = null!;
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
+        public DbSet<FactionJoinRequest> FactionJoinRequests { get; set; } = null!;
+        public DbSet<FactionProfileSettings> FactionProfiles { get; set; } = null!;
+        public DbSet<FactionBoard> FactionBoards { get; set; } = null!;
+        public DbSet<FactionRelationSettings> FactionRelations { get; set; } = null!;
+        public DbSet<FactionRelationCooldown> FactionRelationCooldowns { get; set; } = null!;
+        public DbSet<FactionBankAccount> FactionBankAccounts { get; set; } = null!;
+        public DbSet<FactionBankTaxCounter> FactionBankTaxCounters { get; set; } = null!;
+        public DbSet<FactionBankTransaction> FactionBankTransactions { get; set; } = null!;
         public DbSet<DialoguePersistentMemory> DialoguePersistentMemories { get; set; } = null!;
         public DbSet<GhostPermission> GhostPermissions { get; set; } = null!;
         public DbSet<Wh40kDecorationSelection> Wh40kDecorationSelections { get; set; } = null!;
@@ -423,6 +431,13 @@ namespace Content.Server.Database
             modelBuilder.Entity<CompanyMember>()
                 .HasOne(w => w.Player)
                 .WithMany(p => p.CompanyMembers)
+                .HasForeignKey(w => w.PlayerUserId)
+                .HasPrincipalKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FactionJoinRequest>()
+                .HasOne(w => w.Player)
+                .WithMany()
                 .HasForeignKey(w => w.PlayerUserId)
                 .HasPrincipalKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -1614,8 +1629,97 @@ namespace Content.Server.Database
         public Player Player { get; set; } = default!;
         public bool Owner { get; set; } = false;
 
+        /// <summary>
+        /// Faction hierarchy value. Owner is kept for compatibility with old records and commands.
+        /// </summary>
+        public byte Role { get; set; } = 0;
+
         [Required]
         public string CompanyId { get; set; } = default!;
+    }
+
+    [PrimaryKey(nameof(PlayerUserId), nameof(CompanyId))]
+    public class FactionJoinRequest
+    {
+        [Required, ForeignKey("Player")]
+        public Guid PlayerUserId { get; set; }
+        public Player Player { get; set; } = default!;
+
+        [Required]
+        public string CompanyId { get; set; } = default!;
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(CompanyId))]
+    public class FactionProfileSettings
+    {
+        public string CompanyId { get; set; } = default!;
+        public int Revision { get; set; }
+        public string Admission { get; set; } = "";
+        public string SectionsJson { get; set; } = "[]";
+        public string LeaderTitle { get; set; } = "";
+        public string OfficerTitle { get; set; } = "";
+        public string MemberTitle { get; set; } = "";
+    }
+
+    [PrimaryKey(nameof(CompanyId))]
+    public class FactionBoard
+    {
+        public string CompanyId { get; set; } = default!;
+        public string PostsJson { get; set; } = "[]";
+    }
+
+    [PrimaryKey(nameof(Source), nameof(Target))]
+    public class FactionRelationSettings
+    {
+        public string Source { get; set; } = default!;
+        public string Target { get; set; } = default!;
+        public int Score { get; set; }
+        public string Reason { get; set; } = "";
+        public int Revision { get; set; }
+        public string Author { get; set; } = "";
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(CompanyId))]
+    public class FactionRelationCooldown
+    {
+        public string CompanyId { get; set; } = default!;
+        public DateTime NextChangeAt { get; set; }
+    }
+
+    [PrimaryKey(nameof(CompanyId))]
+    public class FactionBankAccount
+    {
+        public string CompanyId { get; set; } = default!;
+        public long Balance { get; set; }
+    }
+
+    [PrimaryKey(nameof(CompanyId), nameof(UserId))]
+    public class FactionBankTaxCounter
+    {
+        public string CompanyId { get; set; } = default!;
+        public Guid UserId { get; set; }
+        public int Remainder { get; set; }
+    }
+
+    [PrimaryKey(nameof(Id))]
+    [Index(nameof(CompanyId), nameof(CreatedAt))]
+    [Index(nameof(Recipient), nameof(Pending))]
+    public class FactionBankTransaction
+    {
+        public Guid Id { get; set; }
+        public string CompanyId { get; set; } = default!;
+        public byte Kind { get; set; }
+        public Guid Actor { get; set; }
+        public Guid Recipient { get; set; }
+        public string Name { get; set; } = "";
+        public int Gross { get; set; }
+        public int Amount { get; set; }
+        public string Memo { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+        public bool Pending { get; set; }
     }
 
     [PrimaryKey(nameof(PlayerUserId), nameof(MemoryKey))]

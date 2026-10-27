@@ -1,0 +1,20 @@
+<progression:Wh40kFactionUiFragment xmlns="https://spacestation14.io"
+    xmlns:progression="clr-namespace:Content.Client._WH40K.Progression">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+        <PanelContainer Name="CurrentPanel">
+            <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+                    <TextureRect Name="CurrentEmblem" SetSize="76 76" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4">
+                        <Label Name="CurrentName" StyleClasses="LabelHeading" ClipText="True"/>
+                        <Label Name="CurrentRole" StyleClasses="LabelSubText" ClipText="True" FontColorOverride="#C4AC78"/>
+                    </BoxContainer>
+                </BoxContainer>
+                <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+                <Label Name="RequestCount" ClipText="True" FontColorOverride="#C4AC78"/>
+            </BoxContainer>
+        </PanelContainer>
+        <RichTextLabel Name="StatusLabel" Visible="False" HorizontalExpand="True"/>
+        <Button Name="OpenButton" MinHeight="34"/>
+    </BoxContainer>
+</progression:Wh40kFactionUiFragment>

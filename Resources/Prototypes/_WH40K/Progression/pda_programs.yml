@@ -17,6 +17,23 @@
 
 - type: entity
   parent: NFBasePDACartridge
+  id: Wh40kFactionCartridge
+  name: wh40k-faction-program-entity-name
+  description: wh40k-faction-program-entity-desc
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/cartridge.rsi
+    state: cart-nav
+  - type: UIFragment
+    ui: !type:Wh40kFactionUi
+  - type: Cartridge
+    programName: wh40k-faction-program-name
+    icon: /Textures/_WH40K/Interface/PDA/Applications/party.png
+    readonly: true
+  - type: Wh40kFactionCartridge
+
+- type: entity
+  parent: NFBasePDACartridge
   id: Wh40kPartyCartridge
   name: RPG party program
   description: A personal party management panel.

@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Administration.Managers;
 using Content.Shared._Mono.Company;
+using Content.Shared._WH40K.Factions;
 using Content.Shared.Administration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -31,7 +32,7 @@ public sealed partial class CompanyCommand : ToolshedCommand
         }
 
         if (ctx.Session == null
-            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Whitelist)
+            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Admin)
                 && !_company.IsOwner(ctx.Session, company)) // owner can add members
         {
             ctx.WriteLine(Loc.GetString("cmd-company-not-enough-permissions"));
@@ -54,7 +55,41 @@ public sealed partial class CompanyCommand : ToolshedCommand
             return;
         }
 
-        _company.AddMember(lookup.UserId, company);
+        await _company.Ready;
+        await _company.FactionOperations.WaitAsync();
+        var added = false;
+        try
+        {
+            var administrator = _admin.HasAdminFlag(ctx.Session, AdminFlags.Admin);
+            if (!administrator && !_company.IsOwner(ctx.Session, company))
+            {
+                ctx.WriteLine(Loc.GetString("cmd-company-not-enough-permissions"));
+                return;
+            }
+            if (companyPrototype.JoinRequired && _company.GetPlayerCompanies(lookup.UserId)
+                    .Any(id => id != company && _prototypes.Index(id).JoinRequired))
+            {
+                ctx.WriteLine(Loc.GetString("wh40k-faction-admin-other-membership"));
+                return;
+            }
+            if (companyPrototype.JoinRequired && !administrator)
+            {
+                added = await _company.AcceptJoinRequest(ctx.Session, company, lookup.UserId);
+                if (!added)
+                {
+                    ctx.WriteLine(Loc.GetString("wh40k-faction-join-request-required"));
+                    return;
+                }
+            }
+            else
+                added = await _company.AddMemberAsync(lookup.UserId, company);
+        }
+        finally
+        {
+            _company.FactionOperations.Release();
+        }
+        if (!added)
+            return;
         ctx.WriteLine(Loc.GetString("cmd-company-memberadd-added",
             ("player", username),
             ("companyId", company.Id),
@@ -134,7 +169,7 @@ public sealed partial class CompanyCommand : ToolshedCommand
 
         // only admins can set owner
         if (ctx.Session == null
-            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Whitelist))
+            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Admin))
         {
 
             ctx.WriteLine(Loc.GetString("cmd-company-not-enough-permissions"));
@@ -158,7 +193,25 @@ public sealed partial class CompanyCommand : ToolshedCommand
             return;
         }
 
-        _company.SetOwner(company, lookup.UserId, owner);
+        await _company.Ready;
+        await _company.FactionOperations.WaitAsync();
+        var changed = false;
+        try
+        {
+            if (!_admin.HasAdminFlag(ctx.Session, AdminFlags.Admin))
+                return;
+            changed = await _company.SetMemberRoleAsync(company, lookup.UserId, owner ? FactionRole.Leader : FactionRole.Member);
+        }
+        finally
+        {
+            _company.FactionOperations.Release();
+        }
+        if (!changed)
+        {
+            ctx.WriteLine(Loc.GetString("cmd-company-was-not-whitelisted", ("player", username),
+                ("companyId", company.Id), ("companyName", companyPrototype.Name)));
+            return;
+        }
         ctx.WriteLine(Loc.GetString("cmd-company-setowner-success", ("player", username), ("status", owner)));
     }
 
@@ -175,7 +228,7 @@ public sealed partial class CompanyCommand : ToolshedCommand
         }
 
         if (ctx.Session == null
-            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Whitelist)
+            || !_admin.HasAdminFlag(ctx.Session, AdminFlags.Admin)
                 && !_company.IsOwner(ctx.Session, company)) // owner can remove members
         {
 
@@ -199,7 +252,23 @@ public sealed partial class CompanyCommand : ToolshedCommand
             return;
         }
 
-        await _company.RemoveMember(lookup.UserId, company);
+        await _company.Ready;
+        await _company.FactionOperations.WaitAsync();
+        try
+        {
+            if (!_admin.HasAdminFlag(ctx.Session, AdminFlags.Admin) &&
+                !FactionPermissions.CanRemove(_company.GetRole(ctx.Session.UserId, company),
+                    _company.GetRole(lookup.UserId, company), ctx.Session.UserId == lookup.UserId))
+            {
+                ctx.WriteLine(Loc.GetString("cmd-company-not-enough-permissions"));
+                return;
+            }
+            await _company.RemoveMember(lookup.UserId, company);
+        }
+        finally
+        {
+            _company.FactionOperations.Release();
+        }
         ctx.WriteLine(Loc.GetString("cmd-company-memberremove-removed",
             ("player", username),
             ("companyId", company.Id),

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Server.Database;
 using Content.Shared.Preferences;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -27,5 +28,6 @@ namespace Content.Server.Preferences.Managers
         Task RefreshPreferencesAsync(ICommonSession session, CancellationToken cancel);
         Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile,
             bool authoritative = true); // Mono
+        Task SetFactionBankProfileAsync(NetUserId userId, int slot, HumanoidCharacterProfile profile, FactionBankMutation mutation);
     }
 }

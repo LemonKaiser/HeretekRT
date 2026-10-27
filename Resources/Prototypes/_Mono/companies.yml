@@ -215,7 +215,7 @@
   name: Viper Group
   description: viper-group-description
   color: "#B82121"
-  image: /Textures/_Mono/Companies/thevipergroup.png # Example
+  image: /Textures/_Mono/Companies/viper_group.rsi/thevipergroup.png
   disabled: true # Referenced by legacy jobs and ship vouchers.
   whitelisted: true
 

@@ -246,6 +246,15 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
     private bool HasResidentMind(string systemId, MapId mapId)
     {
+        // A departed dungeon ship can be empty while survivors are still collecting loot.
+        // Keep that grid's identity valid until their extraction window has closed.
+        var returnShips = AllEntityQuery<Content.Server._WH40K.ChaosDungeon.ChaosDungeonShipComponent, TransformComponent>();
+        while (returnShips.MoveNext(out _, out var ship, out var transform))
+        {
+            if (ship.ReturnPending && transform.MapID == mapId)
+                return true;
+        }
+
         // Deleting and restoring a map cannot preserve live mind references to its entities.
         // Disconnected bodies and entities visited by a mind may sleep, but must stay in memory.
         // Surface explorers also depend on orbital entity identities for their return ship and deed.

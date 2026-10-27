@@ -1,8 +1,8 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
             xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
             xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-            SetSize="300 350"
-            MinSize="300 350"
+            SetSize="330 410"
+            MinSize="330 410"
             Resizable="False">
     <BoxContainer Margin="10 2 10 2" Orientation="Vertical">
         <PanelContainer VerticalExpand="True" HorizontalExpand="True">
@@ -42,6 +42,7 @@
                 </BoxContainer>
                 <LineEdit Name="WithdrawEdit" MinSize="80 0"
                         PlaceHolder="{Loc 'bank-atm-menu-withdraw-amount'}" Margin="2 2"/>
+                <RichTextLabel Name="FactionTaxLabel" Visible="False" Margin="6 4"/>
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2">
                     <PanelContainer.PanelOverride>
                         <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#3d3d3d" BackgroundColor="#111111" />

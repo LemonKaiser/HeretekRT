@@ -4,6 +4,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -22,6 +23,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
 
     private TimeSpan _nextUpdate;
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromMilliseconds(250);
@@ -183,7 +185,8 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         if (!_maps.IsPaused(mapId))
             _maps.SetPaused(mapId, true);
 
-        if (!system.AllowColdUnload || system.ColdUnloadDelay <= 0f ||
+        if (!_configuration.GetCVar(Wh40kSectorCVars.ColdUnloadEnabled) ||
+            !system.AllowColdUnload || system.ColdUnloadDelay <= 0f ||
             _timing.CurTime - runtime.EmptySince.Value < TimeSpan.FromSeconds(system.ColdUnloadDelay) ||
             runtime.ColdUnloadRetryAt is { } retryAt && _timing.CurTime < retryAt)
         {

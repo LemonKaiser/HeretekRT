@@ -1,4 +1,5 @@
 using Content.Server.GameTicking.Events;
+using Content.Server._Mono.Company;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Events;
 using Content.Shared.Preferences;
@@ -12,6 +13,7 @@ public sealed partial class FactionJobSystem : EntitySystem
 {
     [Dependency] private IServerPreferencesManager _preferences = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private CompanyManager _factions = default!;
 
     public override void Initialize()
     {
@@ -23,9 +25,10 @@ public sealed partial class FactionJobSystem : EntitySystem
 
     private string? GetCompany(NetUserId player)
     {
-        return _preferences.TryGetCachedPreferences(player, out var preferences)
+        var company = _preferences.TryGetCachedPreferences(player, out var preferences)
             ? (preferences.SelectedCharacter as HumanoidCharacterProfile)?.Company
             : null;
+        return _factions.GetCharacterFaction(player, company);
     }
 
     private void OnIsJobAllowed(ref IsJobAllowedEvent ev)

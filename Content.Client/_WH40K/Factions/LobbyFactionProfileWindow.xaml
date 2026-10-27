@@ -1,0 +1,43 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+                      MinSize="440 500" SetSize="680 660"
+                      Title="{Loc 'wh40k-faction-details-title'}">
+    <BoxContainer Orientation="Vertical" Margin="22 18" SeparationOverride="12">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="22">
+            <Control Name="EmblemFrame" SetSize="176 176" VerticalAlignment="Center" RectClipContent="True">
+                <TextureRect Name="Emblem" CanShrink="True" Stretch="KeepAspectCentered" MouseFilter="Ignore"/>
+            </Control>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6" VerticalAlignment="Center">
+                <Label Text="{Loc 'wh40k-faction-profile-label'}" FontColorOverride="#BBA57C" StyleClasses="LabelSubText"/>
+                <Label Name="FactionName" ClipText="True" FontColorOverride="#F0E9DC"/>
+                <RichTextLabel Name="Summary" HorizontalExpand="True"/>
+            </BoxContainer>
+        </BoxContainer>
+        <PanelContainer Name="Divider" SetHeight="1"/>
+        <TabContainer Name="ProfileTabs" VerticalExpand="True">
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Orientation="Vertical" SeparationOverride="12" Margin="0 0 8 0">
+                    <RichTextLabel Name="Overview" HorizontalExpand="True"/>
+                    <RichTextLabel Name="Description" HorizontalExpand="True" LineHeightScale="1.25"/>
+                    <factions:FactionProfileSections Name="ProfileSections" Margin="0 4 0 0"/>
+                </BoxContainer>
+            </ScrollContainer>
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <factions:FactionRelationsSummary Name="PublicRelations"/>
+            </ScrollContainer>
+        </TabContainer>
+        <PanelContainer Name="ActionPanel">
+            <BoxContainer Name="ActionLayout" Orientation="Horizontal" SeparationOverride="16">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="4">
+                    <Label Name="Membership" ClipText="True" FontColorOverride="#D5BC88"/>
+                    <RichTextLabel Name="ActionHint" HorizontalExpand="True"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" SeparationOverride="8">
+                    <factions:LobbyFactionButton Name="DismissButton" Text="{Loc 'character-setup-gui-character-setup-close-button'}" MinWidth="110"/>
+                    <factions:LobbyFactionButton Name="ActionButton" Primary="True" MinWidth="110"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

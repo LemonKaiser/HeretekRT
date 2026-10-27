@@ -30,6 +30,7 @@ public sealed partial class BankSystem : SharedBankSystem
     {
         base.Initialize();
         _log = Logger.GetSawmill("bank");
+        FactionBankReady = LoadFactionBankAsync();
         InitializeATM();
         InitializeStationATM();
 
@@ -69,7 +70,7 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
-        return profile.BankBalance >= amount && prefs.IndexOfCharacter(profile) != -1;
+        return !_factionPayoutBusy.Contains(session.UserId) && profile.BankBalance >= amount && prefs.IndexOfCharacter(profile) != -1;
     }
 
     /// <summary>
@@ -86,7 +87,8 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
-        return prefs.IndexOfCharacter(profile) != -1;
+        var levy = session.Channel.AuthType.HasStaticUserId() ? GetFactionIncomeTax(session.UserId, amount, out _) : 0;
+        return !_factionPayoutBusy.Contains(session.UserId) && (long) profile.BankBalance + amount - levy <= int.MaxValue && prefs.IndexOfCharacter(profile) != -1;
     }
 
     /// <summary>
@@ -152,7 +154,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <param name="mobUid">The UID that the bank account is connected to, typically the player controlled mob</param>
     /// <param name="amount">The amount of spesos to remove from the bank account</param>
     /// <returns>true if the transaction was successful, false if it was not</returns>
-    public bool TryBankDeposit(EntityUid mobUid, int amount, bool tax = true)
+    public bool TryBankDeposit(EntityUid mobUid, int amount, bool tax = true, bool factionTax = true)
     {
         // Mono start
         if (!_cfg.GetCVar(MonoCVars.DepositEnabled))
@@ -198,11 +200,12 @@ public sealed partial class BankSystem : SharedBankSystem
             GetTaxedDepositAmount(amount, bank.Balance, out var afterTax, out var taxedAway);
             toSector = afterTax;
             toLongTerm = taxedAway;
-            _ = _coins.AddMonoCoinsAsync(session.UserId, taxedAway);
         }
 
-        if (TryBankDeposit(session, prefs, profile, toSector, out var newBalance))
+        if (TryBankDeposit(session, prefs, profile, toSector, out var newBalance, factionTax))
         {
+            if (toLongTerm > 0)
+                _ = _coins.AddMonoCoinsAsync(session.UserId, toLongTerm);
             bank.Balance = newBalance.Value;
             Dirty(mobUid, bank);
             _log.Info($"{mobUid} deposited {amount} (sector: {toSector}, savings: {toLongTerm})");
@@ -216,7 +219,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// Credits an active character's bank account without treating the transfer as a cash deposit.
     /// Scripted rewards must not depend on the ATM cash-deposit CVar or receive a deposit tax.
     /// </summary>
-    public bool TryBankCredit(EntityUid mobUid, int amount)
+    public bool TryBankCredit(EntityUid mobUid, int amount, bool factionTax = true)
     {
         if (amount <= 0)
         {
@@ -238,7 +241,7 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
-        if (!TryBankDeposit(session, prefs, profile, amount, out var newBalance))
+        if (!TryBankDeposit(session, prefs, profile, amount, out var newBalance, factionTax))
             return false;
 
         bank.Balance = newBalance.Value;
@@ -261,7 +264,7 @@ public sealed partial class BankSystem : SharedBankSystem
     public bool TryBankWithdraw(ICommonSession session, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount, [NotNullWhen(true)] out int? newBalance, bool spendLongTerm = false)
     {
         newBalance = null; // Default return
-        if (amount <= 0)
+        if (amount <= 0 || _factionPayoutBusy.Contains(session.UserId))
         {
             _log.Info($"TryBankWithdraw: {amount} is invalid. Admin remove money variation.");
             return false;
@@ -316,7 +319,8 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <param name="amount">The number of spesos to be deposited.</param>
     /// <param name="newBalance">The new value of the bank account.</param>
     /// <returns>true if the transaction was successful, false if it was not.  When successful, newBalance contains the character's new balance.</returns>
-    public bool TryBankDeposit(ICommonSession session, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount, [NotNullWhen(true)] out int? newBalance)
+    public bool TryBankDeposit(ICommonSession session, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount,
+        [NotNullWhen(true)] out int? newBalance, bool factionTax = true)
     {
         newBalance = null; // Default return
         if (amount <= 0)
@@ -325,16 +329,21 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
-        newBalance = profile.BankBalance + amount;
-
-        var newProfile = profile.WithBankBalance(newBalance.Value);
         var index = prefs.IndexOfCharacter(profile);
         if (index == -1)
         {
             _log.Info($"{session.UserId} tried to adjust the balance of {profile.Name}, but they were not in the user's character set.");
             return false;
         }
-        _prefsManager.SetProfile(session.UserId, index, newProfile);
+        if (!PrepareFactionIncome(session.UserId, session.Name, profile.BankBalance, amount,
+                factionTax && session.Channel.AuthType.HasStaticUserId(), out var net, out var mutation))
+            return false;
+        newBalance = profile.BankBalance + net;
+        var newProfile = profile.WithBankBalance(newBalance.Value);
+        if (mutation != null)
+            TrackFactionIncome(mutation, _prefsManager.SetFactionBankProfileAsync(session.UserId, index, newProfile, mutation));
+        else
+            _prefsManager.SetProfile(session.UserId, index, newProfile);
         // Update any active admin UI with new balance
         RaiseLocalEvent(new BalanceChangedEvent(session, newBalance.Value));
         return true;
@@ -351,7 +360,7 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <returns>true if the transaction was successful, false if it was not</returns>
     public async Task<bool> TryBankWithdrawOffline(NetUserId userId, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount)
     {
-        if (amount <= 0)
+        if (amount <= 0 || _factionPayoutBusy.Contains(userId))
         {
             _log.Info($"TryBankWithdrawOffline: {amount} is invalid");
             return false;
@@ -407,9 +416,6 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
-        int newBalance = profile.BankBalance + amount;
-
-        var newProfile = profile.WithBankBalance(newBalance);
         var index = prefs.IndexOfCharacter(profile);
         if (index == -1)
         {
@@ -417,16 +423,29 @@ public sealed partial class BankSystem : SharedBankSystem
             return false;
         }
 
+        if (!PrepareFactionIncome(userId, userId.ToString(), profile.BankBalance, amount, true, out var net, out var mutation))
+            return false;
+        var newProfile = profile.WithBankBalance(profile.BankBalance + net);
+        Task write;
         // Update preferences in cache if the player data exists
         if (_prefsManager.TryGetCachedPreferences(userId, out var cachedPrefs))
         {
-            _prefsManager.SetProfile(userId, index, newProfile);
+            if (mutation != null)
+                write = _prefsManager.SetFactionBankProfileAsync(userId, index, newProfile, mutation);
+            else
+                write = _prefsManager.SetProfile(userId, index, newProfile);
         }
         else
         {
             // If not in cache, save directly to database
-            await _db.SaveCharacterSlotAsync(userId, newProfile, index);
+            if (mutation != null)
+                write = _db.SaveFactionBankProfileAsync(userId, newProfile, index, mutation);
+            else
+                write = _db.SaveCharacterSlotAsync(userId, newProfile, index);
         }
+        if (mutation != null)
+            TrackFactionIncome(mutation, write);
+        await write;
 
         _log.Info($"Offline player {userId} deposited {amount}");
         return true;

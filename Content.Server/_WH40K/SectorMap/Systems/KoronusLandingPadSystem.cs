@@ -143,7 +143,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
                 string.IsNullOrWhiteSpace(primary.Component.PadId)
                     ? $"pad:{primary.Uid}"
                     : primary.Component.PadId,
-                SanitizeName(primary.Component.PadName),
+                GetDisplayName(primary.Component),
                 bounds.Center,
                 bounds.Size,
                 bounds,
@@ -316,7 +316,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
 
         _ui.SetUiState(entity.Owner, KoronusLandingPadUiKey.Key,
             new KoronusLandingPadBoundUserInterfaceState(
-                SanitizeName(entity.Comp.PadName),
+                GetDisplayName(entity.Comp),
                 entity.Comp.ParkingTime,
                 entity.Comp.PublicAccess,
                 entity.Comp.Enabled,
@@ -362,7 +362,9 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         var suffix = "/" + pad.Id;
         foreach (var (reservationKey, shuttle) in rule.LandingReservations)
         {
-            if (!reservationKey.EndsWith(suffix, StringComparison.Ordinal))
+            if (!reservationKey.EndsWith(suffix, StringComparison.Ordinal) ||
+                !TryComp<TransformComponent>(shuttle, out var transform) ||
+                transform.MapID != Transform(pad.Console).MapID)
                 continue;
 
             occupant = shuttle;
@@ -372,6 +374,13 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private string GetDisplayName(KoronusLandingPadConsoleComponent console)
+    {
+        return console.PadId == Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem.DungeonLandingSiteId
+            ? EntityManager.System<Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem>().GetPadName()
+            : SanitizeName(console.PadName);
     }
 
     private static string SanitizeName(string name)

@@ -604,6 +604,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("boolean")
                         .HasColumnName("owner");
 
+                    b.Property<byte>("Role")
+                        .HasColumnType("smallint")
+                        .HasColumnName("role");
+
                     b.HasKey("PlayerUserId", "CompanyId")
                         .HasName("PK_company_members");
 
@@ -691,6 +695,236 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasName("PK_dialogue_persistent_memory");
 
                     b.ToTable("dialogue_persistent_memory", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionBankAccount", b =>
+                {
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<long>("Balance")
+                        .HasColumnType("bigint")
+                        .HasColumnName("balance");
+
+                    b.HasKey("CompanyId")
+                        .HasName("PK_faction_bank_accounts");
+
+                    b.ToTable("faction_bank_accounts", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionBankTaxCounter", b =>
+                {
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Remainder")
+                        .HasColumnType("integer")
+                        .HasColumnName("remainder");
+
+                    b.HasKey("CompanyId", "UserId")
+                        .HasName("PK_faction_bank_tax_counters");
+
+                    b.ToTable("faction_bank_tax_counters", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionBankTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("faction_bank_transactions_id");
+
+                    b.Property<Guid>("Actor")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Gross")
+                        .HasColumnType("integer")
+                        .HasColumnName("gross");
+
+                    b.Property<byte>("Kind")
+                        .HasColumnType("smallint")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Memo")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("memo");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<bool>("Pending")
+                        .HasColumnType("boolean")
+                        .HasColumnName("pending");
+
+                    b.Property<Guid>("Recipient")
+                        .HasColumnType("uuid")
+                        .HasColumnName("recipient");
+
+                    b.HasKey("Id")
+                        .HasName("PK_faction_bank_transactions");
+
+                    b.HasIndex("CompanyId", "CreatedAt")
+                        .HasDatabaseName("IX_faction_bank_transactions_company_id_created_at");
+
+                    b.HasIndex("Recipient", "Pending")
+                        .HasDatabaseName("IX_faction_bank_transactions_recipient_pending");
+
+                    b.ToTable("faction_bank_transactions", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionBoard", b =>
+                {
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<string>("PostsJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("posts_json");
+
+                    b.HasKey("CompanyId")
+                        .HasName("PK_faction_boards");
+
+                    b.ToTable("faction_boards", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionJoinRequest", b =>
+                {
+                    b.Property<Guid>("PlayerUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("player_user_id");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.HasKey("PlayerUserId", "CompanyId")
+                        .HasName("PK_faction_join_requests");
+
+                    b.ToTable("faction_join_requests", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionProfileSettings", b =>
+                {
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<string>("Admission")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("admission");
+
+                    b.Property<string>("LeaderTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("leader_title");
+
+                    b.Property<string>("MemberTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("member_title");
+
+                    b.Property<string>("OfficerTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("officer_title");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("integer")
+                        .HasColumnName("revision");
+
+                    b.Property<string>("SectionsJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("sections_json");
+
+                    b.HasKey("CompanyId")
+                        .HasName("PK_faction_profiles");
+
+                    b.ToTable("faction_profiles", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionRelationCooldown", b =>
+                {
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("text")
+                        .HasColumnName("company_id");
+
+                    b.Property<DateTime>("NextChangeAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_change_at");
+
+                    b.HasKey("CompanyId")
+                        .HasName("PK_faction_relation_cooldowns");
+
+                    b.ToTable("faction_relation_cooldowns", (string)null);
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionRelationSettings", b =>
+                {
+                    b.Property<string>("Source")
+                        .HasColumnType("text")
+                        .HasColumnName("source");
+
+                    b.Property<string>("Target")
+                        .HasColumnType("text")
+                        .HasColumnName("target");
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("author");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("reason");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("integer")
+                        .HasColumnName("revision");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Source", "Target")
+                        .HasName("PK_faction_relations");
+
+                    b.ToTable("faction_relations", (string)null);
                 });
 
             modelBuilder.Entity("Content.Server.Database.GhostPermission", b =>
@@ -3663,6 +3897,19 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("HWId");
 
                     b.Navigation("Server");
+                });
+
+            modelBuilder.Entity("Content.Server.Database.FactionJoinRequest", b =>
+                {
+                    b.HasOne("Content.Server.Database.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerUserId")
+                        .HasPrincipalKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_faction_join_requests_player_player_user_id");
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("Content.Server.Database.Job", b =>
