@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared._NF.Interaction.Systems;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -72,10 +73,13 @@ public sealed partial class DroppableBorgModuleSystem : EntitySystem
             return;
 
         var container = _container.GetContainer(ent, ent.Comp.ContainerId);
-        var items = container.ContainedEntities;
-        for (int i = 0; i < ent.Comp.Items.Count; i++)
+        var items = container.ContainedEntities.ToArray();
+        for (int i = 0; i < items.Length; i++)
         {
-            var item = items[0]; // the contained items will gradually go to 0
+            var item = items[i];
+            if (TerminatingOrDeleted(item))
+                continue;
+
             var handId = HandId(ent, i);
             _hands.AddHand(chassis, handId, HandLocation.Middle, hands);
             var hand = hands.Hands[handId];
@@ -118,8 +122,10 @@ public sealed partial class DroppableBorgModuleSystem : EntitySystem
         for (int i = 0; i < ent.Comp.Items.Count; i++)
         {
             var handId = HandId(ent, i);
-            _hands.TryGetHand(chassis, handId, out var hand, hands);
-            if (hand?.HeldEntity is { } item)
+            if (!_hands.TryGetHand(chassis, handId, out var hand, hands))
+                continue;
+
+            if (hand.HeldEntity is { } item)
             {
                 _placeholder.SetEnabled(item, false);
                 _container.Insert(item, container, force: true);

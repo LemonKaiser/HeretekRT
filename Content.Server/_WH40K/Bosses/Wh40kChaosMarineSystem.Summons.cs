@@ -22,21 +22,29 @@ public sealed partial class Wh40kChaosMarineSystem
         "MobWH40KChaosShotgunner", "MobWH40KChaosGunner", "MobWH40KChaosBomber", "MobWH40KChaosRager",
     ];
 
+    private static int SummonCount(int wave) => wave switch
+    {
+        1 => 2,
+        2 => 3,
+        4 => 4,
+        _ => 0,
+    };
+
     private void PlaceSummons(EntityUid uid, Wh40kChaosMarineBrainComponent brain, Wh40kChaosMarineComponent state)
     {
         if (brain.SummonPlaced) return;
         brain.SummonPlaced = true;
         if (!state.Engaged) return;
-        var wave = brain.PendingWave / 2;
+        var wave = brain.PendingWave;
         if ((brain.WavesDone & wave) != 0) return;
         brain.SpawnedMinions.TryGetValue(wave, out var spawned);
         var center = Local(uid, uid);
         // Appears after the two-second preparation; disappears at five seconds into the summon.
         var circle = Effect(uid, state, center, MarineEffect.Summon, 2, 3);
-        for (var i = 0; i < brain.PendingWave; i++)
+        for (var i = 0; i < brain.PendingSummonCount; i++)
         {
             if ((spawned & (1 << i)) != 0 || brain.Summons.Any(s => s.Wave == wave && s.TypeIndex == i)) continue;
-            brain.Summons.Add(new MarineSpawn(circle, MinionTypes[i], Coordinates(state, center), Now + TimeSpan.FromSeconds(1.5), wave, i));
+            brain.Summons.Add(new MarineSpawn(circle, MinionTypes[i], Coordinates(state, center), Now + TimeSpan.FromSeconds(1.5), wave, i, brain.PendingSummonCount));
         }
         brain.NextSummonRetry = Now + TimeSpan.FromSeconds(2);
         Sound(uid, "/Audio/Effects/teleport_arrival.ogg", -4);
@@ -72,7 +80,8 @@ public sealed partial class Wh40kChaosMarineSystem
         var bit = (pending & 1) != 0 ? 1 : (pending & 2) != 0 ? 2 : 4;
         CancelAction(uid, brain, state);
         state.RecoverUntil = TimeSpan.Zero;
-        brain.PendingWave = bit * 2;
+        brain.PendingWave = bit;
+        brain.PendingSummonCount = SummonCount(bit);
         BeginAction(uid, brain, state, MarineAttack.Summon);
         RequestVoice(uid, brain, 70);
         return true;
@@ -127,7 +136,7 @@ public sealed partial class Wh40kChaosMarineSystem
             brain.SpawnedMinions.TryGetValue(summon.Wave, out var spawned);
             spawned |= 1 << summon.TypeIndex;
             brain.SpawnedMinions[summon.Wave] = spawned;
-            if (spawned == (1 << (summon.Wave * 2)) - 1) brain.WavesDone |= summon.Wave;
+            if (spawned == (1 << summon.Count) - 1) brain.WavesDone |= summon.Wave;
         }
     }
 

@@ -30,6 +30,7 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeLocalEvent<HandPlaceholderRemoveableComponent, EntGotRemovedFromContainerMessage>(OnEntityRemovedFromContainer);
+        SubscribeLocalEvent<HandPlaceholderComponent, EntGotRemovedFromContainerMessage>(OnPlaceholderRemovedFromContainer);
 
         SubscribeLocalEvent<HandPlaceholderComponent, BeforeRangedInteractEvent>(BeforeRangedInteract);
         SubscribeLocalEvent<HandPlaceholderComponent, ContainerGettingRemovedAttemptEvent>(OnRemoveAttempt);
@@ -93,9 +94,11 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
         ent.Comp.Enabled = false;
         RemCompDeferred<HandPlaceholderRemoveableComponent>(ent);
 
-        // stop tests failing
         if (TerminatingOrDeleted(placeholder))
+        {
+            RemoveEmptyHand(container);
             return;
+        }
 
         SetEnabled(placeholder, false);
         var succeeded = _container.Insert(placeholder, container, force: true);
@@ -106,6 +109,23 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
     private void OnEntityRemovedFromContainer(Entity<HandPlaceholderRemoveableComponent> ent, ref EntGotRemovedFromContainerMessage args)
     {
         SwapPlaceholder(ent, args.Container);
+    }
+
+    private void OnPlaceholderRemovedFromContainer(Entity<HandPlaceholderComponent> ent, ref EntGotRemovedFromContainerMessage args)
+    {
+        if (TerminatingOrDeleted(ent))
+            RemoveEmptyHand(args.Container);
+    }
+
+    private void RemoveEmptyHand(BaseContainer container)
+    {
+        var owner = container.Owner;
+        if (TerminatingOrDeleted(owner) || !TryComp<HandsComponent>(owner, out var hands))
+            return;
+
+        // A missing placeholder must not leave an unrestricted hand behind.
+        if (_hands.TryGetHand(owner, container.ID, out var hand, hands) && hand.IsEmpty)
+            _hands.RemoveHand(owner, hand.Name, hands);
     }
 
     private void BeforeRangedInteract(Entity<HandPlaceholderComponent> ent, ref BeforeRangedInteractEvent args)

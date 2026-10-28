@@ -427,7 +427,7 @@ public sealed partial class Wh40kChaosMarineSystem
                     Now - closeSince >= TimeSpan.FromSeconds(Wh40kChaosMarineCombat.PunchProximitySeconds) &&
                     Vector2.Distance(Local(uid, uid), Local(uid, target)) <= 2 && Visible(uid, target))
                 {
-                    ApplyHit(uid, brain, target, 25, 5);
+                    ApplyHit(uid, brain, target, spec.Damage, 5);
                     RequestVoice(uid, brain, 20);
                 }
                 brain.NextPunch = Now + TimeSpan.FromSeconds(5);

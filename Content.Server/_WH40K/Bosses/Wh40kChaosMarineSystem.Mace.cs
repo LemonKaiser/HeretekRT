@@ -206,7 +206,7 @@ public sealed partial class Wh40kChaosMarineSystem
             1.2f) return;
         brain.Hit.Add(target);
         var finisher = state.Attack == MarineAttack.M6 && strike == 2;
-        var damage = finisher ? 45 : Wh40kChaosMarineCombat.Spec(state.Attack).Damage;
+        var damage = finisher ? 41 : Wh40kChaosMarineCombat.Spec(state.Attack).Damage;
         ApplyHit(uid, brain, target, damage, finisher ? 2 : 0, tool: head);
         if (state.Attack == MarineAttack.M5) brain.MeleeNextAt = Now;
     }

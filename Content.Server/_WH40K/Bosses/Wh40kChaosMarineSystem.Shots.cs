@@ -196,7 +196,7 @@ public sealed partial class Wh40kChaosMarineSystem
     {
         const float slope = 8;
         var radius = barrage ? 1 : rocket ? 1.5f : seal ? 1 : 1.25f;
-        var max = barrage ? 5 : rocket ? 3.8f : 2.5f;
+        var max = barrage ? 5 : rocket ? 3.4f : 2.3f;
         _explosions.QueueExplosion(position, barrage ? "Wh40kMarineBarrageExplosion" : "Wh40kMarineExplosion",
             barrage ? max : _explosions.RadiusToIntensity(radius, slope, max), slope, max, source,
             tileBreakScale: 0, maxTileBreak: 0, canCreateVacuum: false);

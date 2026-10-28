@@ -7,7 +7,7 @@
   damagePerIntensity:
     types:
       Blunt: 10
-      Structural: 15
+      Structural: 14
   lightColor: "#ff8c42"
 
 - type: explosion
@@ -16,7 +16,7 @@
   fireColor: "#ffffff00"
   damagePerIntensity:
     types:
-      Blunt: 10
+      Blunt: 9
   lightColor: "#ff8c42"
 
 - type: entity
@@ -89,8 +89,8 @@
     range: 1.6
     damage:
       types:
-        Blunt: 30
-        Structural: 600
+        Blunt: 27
+        Structural: 540
   - type: Gun
     fireRate: 1
     recoil: 0
@@ -230,7 +230,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 50
+        Piercing: 45
   - type: Wh40kMarineShot
   - type: TimedDespawn
     lifetime: 3
