@@ -11,7 +11,7 @@
        !type:String
        pda
   - type: Sprite
-    sprite: _NF/Objects/Devices/pda.rsi # Frontier
+    sprite: _WH40K/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
       state: "pda"
@@ -24,7 +24,7 @@
       shader: "unshaded"
       visible: false
   - type: Icon
-    sprite: _NF/Objects/Devices/pda.rsi # Frontier
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda
   - type: Pda
     paiSlot:

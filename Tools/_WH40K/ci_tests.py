@@ -189,6 +189,34 @@ def class_filter(classes):
     return " or ".join(f"class == {quote(name)}" for name in classes)
 
 
+def test_environment(assembly):
+    environment = dict(os.environ, DOTNET_gcServer="1", DOTNET_CLI_UI_LANGUAGE="en")
+    limits = ("DOTNET_GCHeapHardLimit", "COMPlus_GCHeapHardLimit",
+              "DOTNET_GCHeapHardLimitPercent", "COMPlus_GCHeapHardLimitPercent")
+    for key in limits:
+        if key not in os.environ:
+            continue
+        if os.name == "nt":
+            environment.pop(key.upper(), None)
+        environment[key] = os.environ[key]
+    # GC environment numbers are hexadecimal: 0x46 = 70%. Leave room on the
+    # runner for native allocations, diagnostics and the OS; respect explicit limits.
+    if assembly == "Content.IntegrationTests" and not any(key in environment for key in limits):
+        environment["DOTNET_GCHeapHardLimitPercent"] = "46"
+    return environment
+
+
+def nunit_options(group, seed, output):
+    options = {"Where": class_filter(group["classes"]), "RandomSeed": seed,
+               "ConsoleOut": 0, "MapWarningTo": "Failed", "WorkDirectory": output,
+               "TestOutputXml": output, "UseNUnitIdforTestCaseId": "true", "ExplicitMode": "None"}
+    # Integration workers retain entire server/client pairs. The two CI shards
+    # already run in parallel on separate VMs; keep bulk spawn tests within one VM's RAM.
+    if group["assembly"] == "Content.IntegrationTests":
+        options["NumberOfTestWorkers"] = 1
+    return options
+
+
 def run_group(args):
     plan = read_json(args.plan)
     validate_plan(plan)
@@ -202,9 +230,8 @@ def run_group(args):
     config = ET.SubElement(settings, "RunConfiguration")
     ET.SubElement(config, "TreatNoTestsAsError").text = "true"
     nunit = ET.SubElement(settings, "NUnit")
-    for key, value in {"Where": class_filter(group["classes"]), "RandomSeed": plan["seed"],
-                       "ConsoleOut": 0, "MapWarningTo": "Failed", "WorkDirectory": output,
-                       "TestOutputXml": output, "UseNUnitIdforTestCaseId": "true", "ExplicitMode": "None"}.items():
+    options = nunit_options(group, plan["seed"], output)
+    for key, value in options.items():
         ET.SubElement(nunit, key).text = str(value)
     settings_path = output / "tests.runsettings"
     ET.ElementTree(settings).write(settings_path, encoding="utf-8", xml_declaration=True)
@@ -212,13 +239,15 @@ def run_group(args):
                "--results-directory", str(output), "--logger", "trx;LogFileName=results.trx",
                "--blame-crash-dump-type", "mini", "--blame-hang-timeout", "15m",
                "--blame-hang-dump-type", "mini"]
-    environment = dict(os.environ, DOTNET_gcServer="1", DOTNET_CLI_UI_LANGUAGE="en")
+    environment = test_environment(group["assembly"])
     print(f"{group['id']}: {len(group['cases'])} cases; seed {plan['seed']}", flush=True)
     print(shlex.join(command), flush=True)
     started = time.monotonic()
     status = {"group": group["id"], "seed": plan["seed"], "exit_code": -1,
+              "nunit_workers": options.get("NumberOfTestWorkers"),
               "started_utc": datetime.now(timezone.utc).isoformat(), "command": command,
-              "gc_heap_hard_limit_percent": environment.get("DOTNET_GCHeapHardLimitPercent")}
+              "gc_heap_hard_limit": environment.get("DOTNET_GCHeapHardLimit", environment.get("COMPlus_GCHeapHardLimit")),
+              "gc_heap_hard_limit_percent": environment.get("DOTNET_GCHeapHardLimitPercent", environment.get("COMPlus_GCHeapHardLimitPercent"))}
     try:
         verify_runtime(ROOT)
         if assembly_hash(dll) != group.get("sha256"):

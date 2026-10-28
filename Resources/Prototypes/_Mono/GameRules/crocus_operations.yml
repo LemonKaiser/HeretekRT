@@ -121,7 +121,7 @@
   components:
   - type: Objective
     icon:
-      sprite: _NF/Objects/Devices/pda.rsi
+      sprite: _WH40K/Objects/Devices/pda.rsi
       state: pda-security
   - type: StealCondition
     minCollectionSize: 15
@@ -132,7 +132,7 @@
   id: TSFPDAs
   name: steal-target-groups-federal-pdas
   sprite:
-    sprite: _NF/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda-security
 
 - type: dataset
@@ -209,7 +209,7 @@
   id: PDVPDAs
   name: steal-target-groups-federal-pdas
   sprite:
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda-rakhshan
 
 - type: entity
@@ -257,7 +257,7 @@
   components:
   - type: Objective
     icon:
-      sprite: _NF/Objects/Devices/pda.rsi
+      sprite: _WH40K/Objects/Devices/pda.rsi
       state: pda-security
   - type: StealCondition
     minCollectionSize: 15

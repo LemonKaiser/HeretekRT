@@ -58,5 +58,5 @@
   - type: PdaBorderColor
     borderColor: "#A32D26"
     accentVColor: "#DFDFDF"
-#  - type: Icon
-#    state: pda-guard
+  - type: Icon
+    state: pda-security

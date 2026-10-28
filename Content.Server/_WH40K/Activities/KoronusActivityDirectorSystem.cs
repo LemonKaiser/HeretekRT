@@ -10,12 +10,16 @@ using Content.Shared._WH40K.Activities.Prototypes;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Mind.Components;
+using Content.Shared.Buckle;
+using Content.Shared.Buckle.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Containers;
 
 namespace Content.Server._WH40K.Activities;
 
@@ -40,6 +44,8 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private DockingSystem _docking = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedBuckleSystem _buckle = default!;
     [Dependency] private KoronusActivitySalvageSystem _salvage = default!;
 
     private EntityUid? _activeDirector;
@@ -1055,7 +1061,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         return toDelete.Count;
     }
 
-    private void EvacuateAttachedPlayers(EntityUid grid)
+    internal void EvacuateAttachedPlayers(EntityUid grid)
     {
         if (!TryComp<TransformComponent>(grid, out var gridTransform))
             return;
@@ -1066,17 +1072,30 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
         var offset = TryComp<Robust.Shared.Map.Components.MapGridComponent>(grid, out var gridComponent)
             ? new Vector2(gridComponent.LocalAABB.Right + 12f, gridComponent.LocalAABB.Center.Y)
             : Vector2.UnitX * 30f;
-        var fallback = new MapCoordinates(gridPosition.Position + offset, gridPosition.MapId);
+        var fallback = new MapCoordinates(gridPosition.Position + _transform.GetWorldRotation(grid).RotateVec(offset), gridPosition.MapId);
+        var players = new HashSet<EntityUid>();
         foreach (var session in _players.Sessions)
         {
-            if (session.AttachedEntity is not { Valid: true } player ||
-                !TryComp<TransformComponent>(player, out var playerTransform) ||
-                playerTransform.GridUid != grid)
-            {
-                continue;
-            }
+            if (session.AttachedEntity is { Valid: true } player)
+                players.Add(player);
+        }
 
-            _transform.SetMapCoordinates(player, fallback);
+        // Disconnected players' bodies must survive the departure as well.
+        var minds = AllEntityQuery<MindContainerComponent, TransformComponent>();
+        while (minds.MoveNext(out var uid, out var mind, out var transform))
+            if (mind.HasMind && transform.GridUid == grid)
+                players.Add(uid);
+
+        foreach (var player in players)
+        {
+            if (!TryComp<TransformComponent>(player, out var transform) || transform.GridUid != grid)
+                continue;
+            if (TryComp<BuckleComponent>(player, out var buckle) && buckle.Buckled)
+                _buckle.Unbuckle((player, buckle), null);
+            if (_containers.TryGetContainingContainer(player, out var container))
+                _containers.Remove(player, container, force: true, destination: _transform.ToCoordinates(fallback));
+            else
+                _transform.SetMapCoordinates(player, fallback);
         }
     }
 

@@ -814,15 +814,17 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
     private bool IsInitialGridPositionClear(
         KoronusSystemPrototype system,
         Vector2 position,
-        float facilityRadius)
+        float facilityRadius,
+        bool includeRandomBodies = false)
     {
         foreach (var body in _prototypes.EnumeratePrototypes<KoronusCelestialBodyPrototype>())
         {
             // Random bodies are placed after the facility and will avoid it themselves.
-            if (body.System != system.ID || body.RandomizePositionAngle)
+            if (body.System != system.ID || body.RandomizePositionAngle && !includeRandomBodies)
                 continue;
 
-            var bodyPosition = GetCelestialBodyPosition(system, body, body.OrbitPhase);
+            var angle = includeRandomBodies ? GetCelestialBodyPositionAngle(system, body) : body.OrbitPhase;
+            var bodyPosition = GetCelestialBodyPosition(system, body, angle);
             var clearance = facilityRadius + GetBodyPlacementRadius(body) + ObjectPlacementPadding;
             if (Vector2.DistanceSquared(position, bodyPosition) <= clearance * clearance)
                 return false;

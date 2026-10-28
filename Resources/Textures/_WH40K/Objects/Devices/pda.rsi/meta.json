@@ -1,0 +1,375 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Provided by HeretekRT contributor. Equipped and insertion overlays: aPDA retexture by ZweiHawke @ zweihawke.net, added Hygiene Technician, modified interntech, added admin assistant and added the cargo assistant by Radezolid, added Psychiatrist, Therapist, and Social Worker versions by alterae <chell@alterae.online>, surgeon by Janet Blackquill <uhhadd@gmail.com> 2024. Security PDAs modified by TJohnson. Cryogenics Specialist PDA by willow_de_luna.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "equipped-BELT",
+      "directions": 4
+    },
+    {
+      "name": "equipped-IDCARD",
+      "directions": 4
+    },
+    {
+      "name": "id_overlay"
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    },
+    {
+      "name": "insert_overlay"
+    },
+    {
+      "name": "light_overlay"
+    },
+    {
+      "name": "off"
+    },
+    {
+      "name": "on"
+    },
+    {
+      "name": "pda"
+    },
+    {
+      "name": "pda-admin"
+    },
+    {
+      "name": "pda-admin-assistant"
+    },
+    {
+      "name": "pda-asvaran"
+    },
+    {
+      "name": "pda-atmos"
+    },
+    {
+      "name": "pda-baker"
+    },
+    {
+      "name": "pda-bartender"
+    },
+    {
+      "name": "pda-blueshield"
+    },
+    {
+      "name": "pda-boxer"
+    },
+    {
+      "name": "pda-brigmedic"
+    },
+    {
+      "name": "pda-butcher"
+    },
+    {
+      "name": "pda-captain"
+    },
+    {
+      "name": "pda-cargo"
+    },
+    {
+      "name": "pda-cargo-assistant"
+    },
+    {
+      "name": "pda-ce"
+    },
+    {
+      "name": "pda-centcom"
+    },
+    {
+      "name": "pda-chaplain"
+    },
+    {
+      "name": "pda-chemistry"
+    },
+    {
+      "name": "pda-chiefjustice"
+    },
+    {
+      "name": "pda-chrono"
+    },
+    {
+      "name": "pda-clear"
+    },
+    {
+      "name": "pda-clerk"
+    },
+    {
+      "name": "pda-clown"
+    },
+    {
+      "name": "pda-cluwne"
+    },
+    {
+      "name": "pda-cmo"
+    },
+    {
+      "name": "pda-cook"
+    },
+    {
+      "name": "pda-corpsman"
+    },
+    {
+      "name": "pda-cryospecialist"
+    },
+    {
+      "name": "pda-deathsquad"
+    },
+    {
+      "name": "pda-deckworker"
+    },
+    {
+      "name": "pda-denasvar"
+    },
+    {
+      "name": "pda-detective"
+    },
+    {
+      "name": "pda-electrician"
+    },
+    {
+      "name": "pda-engineer"
+    },
+    {
+      "name": "pda-ert"
+    },
+    {
+      "name": "pda-excavator"
+    },
+    {
+      "name": "pda-fool"
+    },
+    {
+      "name": "pda-freelancer"
+    },
+    {
+      "name": "pda-genetics"
+    },
+    {
+      "name": "pda-grand-vizier"
+    },
+    {
+      "name": "pda-heccd"
+    },
+    {
+      "name": "pda-hop"
+    },
+    {
+      "name": "pda-hos"
+    },
+    {
+      "name": "pda-hydro"
+    },
+    {
+      "name": "pda-hygienetechnician"
+    },
+    {
+      "name": "pda-interncadet"
+    },
+    {
+      "name": "pda-internmed"
+    },
+    {
+      "name": "pda-internsci"
+    },
+    {
+      "name": "pda-internservice"
+    },
+    {
+      "name": "pda-interntech"
+    },
+    {
+      "name": "pda-inventoryassociate"
+    },
+    {
+      "name": "pda-janitor"
+    },
+    {
+      "name": "pda-jester"
+    },
+    {
+      "name": "pda-labsci"
+    },
+    {
+      "name": "pda-lawyer"
+    },
+    {
+      "name": "pda-library"
+    },
+    {
+      "name": "pda-lifesupporttech"
+    },
+    {
+      "name": "pda-mailcarrier"
+    },
+    {
+      "name": "pda-mantis"
+    },
+    {
+      "name": "pda-martialartist"
+    },
+    {
+      "name": "pda-mechanic"
+    },
+    {
+      "name": "pda-medical"
+    },
+    {
+      "name": "pda-mercenary"
+    },
+    {
+      "name": "pda-mieyo"
+    },
+    {
+      "name": "pda-mime"
+    },
+    {
+      "name": "pda-miner"
+    },
+    {
+      "name": "pda-mixologist"
+    },
+    {
+      "name": "pda-musician"
+    },
+    {
+      "name": "pda-offduty"
+    },
+    {
+      "name": "pda-paramedic"
+    },
+    {
+      "name": "pda-phys"
+    },
+    {
+      "name": "pda-pirate"
+    },
+    {
+      "name": "pda-pizzaiolo"
+    },
+    {
+      "name": "pda-plasmatech"
+    },
+    {
+      "name": "pda-practicingnurse"
+    },
+    {
+      "name": "pda-prisonguard"
+    },
+    {
+      "name": "pda-prosecutor"
+    },
+    {
+      "name": "pda-prospector"
+    },
+    {
+      "name": "pda-psychiatrist"
+    },
+    {
+      "name": "pda-qm"
+    },
+    {
+      "name": "pda-rakhshan"
+    },
+    {
+      "name": "pda-rd"
+    },
+    {
+      "name": "pda-reporter"
+    },
+    {
+      "name": "pda-resident"
+    },
+    {
+      "name": "pda-roboticist"
+    },
+    {
+      "name": "pda-science"
+    },
+    {
+      "name": "pda-security"
+    },
+    {
+      "name": "pda-seniorengineer"
+    },
+    {
+      "name": "pda-seniorofficer"
+    },
+    {
+      "name": "pda-seniorphysician"
+    },
+    {
+      "name": "pda-seniorresearcher"
+    },
+    {
+      "name": "pda-socialworker"
+    },
+    {
+      "name": "pda-student"
+    },
+    {
+      "name": "pda-surgeon"
+    },
+    {
+      "name": "pda-syndi"
+    },
+    {
+      "name": "pda-syndi-agent"
+    },
+    {
+      "name": "pda-tarkhan"
+    },
+    {
+      "name": "pda-therapist"
+    },
+    {
+      "name": "pda-tourist"
+    },
+    {
+      "name": "pda-usspcommissar"
+    },
+    {
+      "name": "pda-ussprifleman"
+    },
+    {
+      "name": "pda-usspsergeant"
+    },
+    {
+      "name": "pda-viperhigh"
+    },
+    {
+      "name": "pda-viperlow"
+    },
+    {
+      "name": "pda-virology"
+    },
+    {
+      "name": "pda-visitor"
+    },
+    {
+      "name": "pda-warden"
+    },
+    {
+      "name": "pda-wh40k-fleet"
+    },
+    {
+      "name": "pda-wh40k-kasballica"
+    },
+    {
+      "name": "pda-xenobio"
+    },
+    {
+      "name": "pda-zookeeper"
+    }
+  ]
+}

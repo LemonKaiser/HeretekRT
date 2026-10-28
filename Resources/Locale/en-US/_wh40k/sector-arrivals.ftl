@@ -1,0 +1,9 @@
+koronus-arrival-sender = Sector announcement
+koronus-arrival-object-announcement = Attention! The Navis Nobilite report warp disturbances. A large unidentified object will soon arrive in the system. All vessels must exercise caution and prepare for combat.
+koronus-arrival-tau-announcement = Attention! Augurs detect approaching xenos aircraft controlled by Abominable Intelligence. All vessels must immediately assume combat readiness!
+koronus-arrival-command-description = Triggers an object or Tau drone group arrival, or displays event timers.
+koronus-arrival-command-help = Usage: koronus_arrival [system [object|tau [map_path|easy|medium|hard [lifetime_seconds]]]]. Example: koronus_arrival Aivorius tau easy 120. A trailing number without a selector also sets lifetime. Lifetime starts on arrival; default is 20?30 minutes. With no arguments, shows remaining seconds for each event type.
+koronus-arrival-command-failed = Arrival could not start: check sector mode, system, map/group, lifetime (1?7200 seconds), and whether this event type is already pending or active.
+koronus-arrival-command-started = { $system } / { $type }: announcement sent. Arrival in { $seconds } s; departure { $lifetime } s after arrival.
+koronus-arrival-command-status = { $system } / { $type }: next event in { $next } s; arrival in { $arrival } s; departure in { $departure } s. A dash means no active timer.
+koronus-arrival-command-grid = Grid { $grid }: map { $map }, coordinates { $position }.

@@ -1,0 +1,135 @@
+- type: vessel
+  id: EagleWh40k
+  parent: BaseVessel
+  name: Eagle-pattern Fighter
+  description: A compact fighter with paired energy weapons and an auxiliary power supply for escort duty and short sorties.
+  price: 35000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_WH40K/Shuttles/eagle.yml
+  guidebookPage: null
+  class:
+  - Fighter
+  - Escort
+  engine:
+  - APU
+
+- type: gameMap
+  id: EagleWh40k
+  mapName: 'Eagle-pattern Fighter'
+  mapPath: /SharedMaps/_WH40K/Shuttles/eagle.yml
+  minPlayers: 0
+  stations:
+    EagleWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Eagle IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: LightningWh40k
+  parent: BaseVessel
+  name: Lightning-pattern Fighter
+  description: A small combat craft carrying autocannons and missile launchers, with a dedicated gunnery station for coordinated attack runs.
+  price: 45000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_WH40K/Shuttles/lightning.yml
+  guidebookPage: null
+  class:
+  - Fighter
+  - Pursuit
+  engine:
+  - TEG
+
+- type: gameMap
+  id: LightningWh40k
+  mapName: 'Lightning-pattern Fighter'
+  mapPath: /SharedMaps/_WH40K/Shuttles/lightning.yml
+  minPlayers: 0
+  stations:
+    LightningWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Lightning IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: SharkWh40k
+  parent: BaseVessel
+  name: Shark-pattern Fighter
+  description: A small gunship armed with an assault cannon and quad autocannons. Its auxiliary generators support close escort and patrol work.
+  price: 40000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_WH40K/Shuttles/shark.yml
+  guidebookPage: null
+  class:
+  - Fighter
+  - Escort
+  engine:
+  - APU
+
+- type: gameMap
+  id: SharkWh40k
+  mapName: 'Shark-pattern Fighter'
+  mapPath: /SharedMaps/_WH40K/Shuttles/shark.yml
+  minPlayers: 0
+  stations:
+    SharkWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Shark IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+
+- type: vessel
+  id: ThunderboltWh40k
+  parent: BaseVessel
+  name: Thunderbolt-pattern Strike Craft
+  description: A small strike craft with paired munitions bays and an ammunition loader, built to deliver ordnance under fighter escort.
+  price: 50000
+  category: Small
+  group: Shipyard
+  shuttlePath: /SharedMaps/_WH40K/Shuttles/thunderbolt.yml
+  guidebookPage: null
+  class:
+  - Fighter
+  - Brawler
+  engine:
+  - APU
+
+- type: gameMap
+  id: ThunderboltWh40k
+  mapName: 'Thunderbolt-pattern Strike Craft'
+  mapPath: /SharedMaps/_WH40K/Shuttles/thunderbolt.yml
+  minPlayers: 0
+  stations:
+    ThunderboltWh40k:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Thunderbolt IMP{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]

@@ -1,0 +1,43 @@
+- type: koronusArrival
+  id: KoronusObjectArrivals
+  kind: Object
+  color: "#8E44AD"
+  # Add one grid path per line. One random map arrives per event.
+  maps:
+  - /Maps/_WH40K/Events/chache.yml
+  - /Maps/_WH40K/Events/chaosship.yml
+  - /Maps/_WH40K/Events/prefracture.yml
+  - /Maps/_WH40K/Events/vault.yml
+  - /Maps/_WH40K/Events/vaultmini.yml
+  announcement: koronus-arrival-object-announcement
+  sound: /Audio/_WH40K/Announcements/object.ogg
+
+- type: koronusArrival
+  id: KoronusTauDroneArrivals
+  kind: Tau
+  color: "#C6A692"
+  # One complete group arrives together. Existing drone maps retain their AI and weapons.
+  groups:
+  - id: easy
+    maps:
+    - /SharedMaps/_WH40K/Drones/drone_t0.yml
+    - /SharedMaps/_WH40K/Drones/drone_t0.yml
+    - /SharedMaps/_WH40K/Drones/drone_t1.yml
+  - id: medium
+    maps:
+    - /SharedMaps/_WH40K/Drones/drone_t1.yml
+    - /SharedMaps/_WH40K/Drones/drone_t1_1.yml
+    - /SharedMaps/_WH40K/Drones/drone_t1_1.yml
+    - /SharedMaps/_WH40K/Drones/drone_t2.yml
+  - id: hard
+    maps:
+    - /SharedMaps/_WH40K/Drones/drone_t3.yml
+    - /SharedMaps/_WH40K/Drones/drone_t4.yml
+    - /SharedMaps/_WH40K/Drones/drone_t5.yml
+  announcement: koronus-arrival-tau-announcement
+  sound: /Audio/_WH40K/Announcements/tau_ai.ogg
+  minInterval: 1800
+  maxInterval: 7200
+  minLifetime: 1200
+  maxLifetime: 1800
+  warningTime: 30

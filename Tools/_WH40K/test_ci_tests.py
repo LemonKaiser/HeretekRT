@@ -169,6 +169,40 @@ class CiTests(unittest.TestCase):
             (proc / "meminfo").write_text("MemTotal: 4096 kB\nMemAvailable: 1024 kB\n")
             self.assertEqual(ci_tests.sample_memory(10, proc), {"rss": 1300 * 1024, "available": 1024**2, "total": 4 * 1024**2})
 
+    def test_integration_gc_budget_reserves_memory_for_native_allocations(self):
+        with patch.dict(os.environ, {}, clear=True):
+            environment = ci_tests.test_environment("Content.IntegrationTests")
+        self.assertEqual(int(environment["DOTNET_GCHeapHardLimitPercent"], 16), 70)
+        self.assertEqual(environment["DOTNET_gcServer"], "1")
+
+    def test_explicit_gc_limits_are_preserved(self):
+        for key in ("DOTNET_GCHeapHardLimit", "COMPlus_GCHeapHardLimit",
+                    "DOTNET_GCHeapHardLimitPercent", "COMPlus_GCHeapHardLimitPercent"):
+            with self.subTest(variable=key), patch.dict(os.environ, {key: "40"}, clear=True):
+                environment = ci_tests.test_environment("Content.IntegrationTests")
+                self.assertEqual(environment[key], "40")
+                if key != "DOTNET_GCHeapHardLimitPercent":
+                    self.assertNotIn("DOTNET_GCHeapHardLimitPercent", environment)
+
+    def test_unit_tests_keep_their_default_memory_and_parallelism_settings(self):
+        group = plan_for([case()])["groups"][0]
+        group.update(id="unit", assembly="Content.Tests")
+        with patch.dict(os.environ, {}, clear=True):
+            environment = ci_tests.test_environment(group["assembly"])
+        self.assertNotIn("DOTNET_GCHeapHardLimitPercent", environment)
+        self.assertNotIn("NumberOfTestWorkers", ci_tests.nunit_options(group, 42, Path("results")))
+
+    def test_integration_shards_keep_all_classes_and_the_discovery_seed(self):
+        for group_id in ("integration-1", "integration-2"):
+            with self.subTest(group=group_id):
+                group = plan_for([case(), case("Nested.Test", "Example.Nested")])["groups"][0]
+                group["id"] = group_id
+                options = ci_tests.nunit_options(group, 1754854171, Path("results"))
+                self.assertEqual(options["NumberOfTestWorkers"], 1)
+                self.assertEqual(options["RandomSeed"], 1754854171)
+                self.assertEqual(options["Where"], ci_tests.class_filter(group["classes"]))
+                self.assertEqual(options["ExplicitMode"], "None")
+
     def test_incomplete_runtime_fails_before_starting_nunit(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -18,9 +18,9 @@
     appearanceDataInit:
       enum.PdaVisuals.PdaType:
         !type:String
-        pda-pirate
+        pda-wh40k-kasballica
   - type: Icon
-    state: pda-pirate
+    state: pda-wh40k-kasballica
   - type: PdaBorderColor
     borderColor: "#A66B9E"
 
@@ -44,8 +44,8 @@
     appearanceDataInit:
       enum.PdaVisuals.PdaType:
         !type:String
-        pda-interncadet
+        pda-wh40k-fleet
   - type: Icon
-    state: pda-interncadet
+    state: pda-wh40k-fleet
   - type: PdaBorderColor
     borderColor: "#4B8FC9"

@@ -65,6 +65,7 @@ namespace Content.Client.Lobby.UI
         private readonly LobbyUIController _controller;
         private readonly EntityWhitelistSystem _whitelist; // Frontier
         private readonly CompanyManager _companyManager; // Mono
+        private FactionLobbySystem? _factionLobbySystem;
         // Mono start
         private readonly MapLoaderSystem _mapLoader;
         private readonly BoxContainer _savedItemsTab = new()
@@ -1869,13 +1870,17 @@ namespace Content.Client.Lobby.UI
         {
             base.EnteredTree();
             ReloadPreview();
-            _entManager.System<FactionLobbySystem>().Updated += OnFactionStateUpdated;
-            _entManager.System<FactionLobbySystem>().Request();
+            _factionLobbySystem = _entManager.System<FactionLobbySystem>();
+            _factionLobbySystem.Updated += OnFactionStateUpdated;
+            _factionLobbySystem.Request();
         }
 
         protected override void ExitedTree()
         {
-            _entManager.System<FactionLobbySystem>().Updated -= OnFactionStateUpdated;
+            // Systems are already unregistered when a disconnect unloads the lobby screen.
+            if (_factionLobbySystem != null)
+                _factionLobbySystem.Updated -= OnFactionStateUpdated;
+            _factionLobbySystem = null;
             base.ExitedTree();
             _entManager.DeleteEntity(PreviewDummy);
             PreviewDummy = EntityUid.Invalid;

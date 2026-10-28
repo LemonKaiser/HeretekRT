@@ -16,7 +16,7 @@ public sealed partial class StoreSystem
     public void RefreshAllListings(StoreComponent component)
     {
         var previousState = component.FullListingsCatalog;
-        var newState = GetAllListings();
+        var newState = GetAllListings(component.Categories);
         // if we refresh list with existing cost modifiers - they will be removed,
         // need to restore them
         if (previousState.Count != 0)
@@ -43,11 +43,14 @@ public sealed partial class StoreSystem
     /// Gets all listings from a prototype.
     /// </summary>
     /// <returns>All the listings</returns>
-    public HashSet<ListingDataWithCostModifiers> GetAllListings()
+    public HashSet<ListingDataWithCostModifiers> GetAllListings(HashSet<ProtoId<StoreCategoryPrototype>>? categories = null)
     {
         var clones = new HashSet<ListingDataWithCostModifiers>();
         foreach (var prototype in _proto.EnumeratePrototypes<ListingPrototype>())
         {
+            // Filter before allocating mutable per-store copies of the global catalog.
+            if (categories != null && !ListingHasCategory(prototype, categories))
+                continue;
             clones.Add(new ListingDataWithCostModifiers(prototype));
         }
 
@@ -109,7 +112,7 @@ public sealed partial class StoreSystem
         EntityUid? storeEntity = null
     )
     {
-        listings ??= GetAllListings();
+        listings ??= GetAllListings(categories);
 
         foreach (var listing in listings)
         {

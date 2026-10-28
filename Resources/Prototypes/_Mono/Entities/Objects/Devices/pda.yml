@@ -17,7 +17,7 @@
     - BountyContractsCartridge
     - AstroNavCartridge
   - type: Sprite
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
       state: "pda"
@@ -30,7 +30,7 @@
       shader: "unshaded"
       visible: false
   - type: Icon
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda
 
 - type: entity
@@ -50,7 +50,8 @@
     showControl: true
     isEnabled: true
     attachedToSuit: true # Mono
-
+  - type: Icon
+    state: pda-ussprifleman
 
 - type: entity
   parent: BaseUSSPPDA
@@ -69,6 +70,8 @@
     showControl: true
     isEnabled: true
     attachedToSuit: true # Mono
+  - type: Icon
+    state: pda-usspsergeant
 
 - type: entity
   parent: BaseUSSPPDA
@@ -87,6 +90,9 @@
     showControl: true
     isEnabled: true
     attachedToSuit: true # Mono
+
+  - type: Icon
+    state: pda-usspcommissar
 
 #TSF
 
@@ -161,7 +167,7 @@
     - BountyContractsCartridge
     - AstroNavCartridge
   - type: Sprite
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
       state: "pda"
@@ -174,7 +180,7 @@
       shader: "unshaded"
       visible: false
   - type: Icon
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda
 
 - type: entity
@@ -199,6 +205,8 @@
   - type: StealTarget
     stealGroup:
     - PDVPDAs
+  - type: Icon
+    state: pda-rakhshan
 
 - type: entity
   parent: BasePDVPDA
@@ -231,6 +239,8 @@
     - AstroNavCartridge
   - type: PdaBorderColor
     borderColor: "#533980"
+  - type: Icon
+    state: pda-grand-vizier
 
 - type: entity
   parent: BasePDVPDA
@@ -259,6 +269,8 @@
     - AstroNavCartridge
   - type: PdaBorderColor
     borderColor: "#533980"
+  - type: Icon
+    state: pda-grand-vizier
 
 - type: entity
   parent: BasePDVPDA
@@ -287,6 +299,8 @@
     - AstroNavCartridge
   - type: PdaBorderColor
     borderColor: "#533980"
+  - type: Icon
+    state: pda-grand-vizier
 
 - type: entity
   parent: BasePDVPDA
@@ -319,7 +333,8 @@
     - AstroNavCartridge
   - type: PdaBorderColor
     borderColor: "#EEEEEE"
-
+  - type: Icon
+    state: pda-tarkhan
 
 - type: entity
   parent: BasePDVPDA
@@ -340,7 +355,8 @@
     attachedToSuit: true # Mono
   - type: PdaBorderColor
     borderColor: "#9c8245"
-
+  - type: Icon
+    state: pda-asvaran
 
 - type: entity
   parent: BasePDVPDA
@@ -361,6 +377,8 @@
     attachedToSuit: true # Mono
   - type: PdaBorderColor
     borderColor: "#9c8245"
+  - type: Icon
+    state: pda-rakhshan
 
 - type: entity
   parent: BasePDVPDA
@@ -379,6 +397,9 @@
     showControl: true
     isEnabled: true
     attachedToSuit: true # Mono
+
+  - type: Icon
+    state: pda-denasvar
 
 # Viper Group
 
@@ -400,7 +421,7 @@
     - BountyContractsCartridge
     - AstroNavCartridge
   - type: Sprite
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
       state: "pda"
@@ -413,7 +434,7 @@
       shader: "unshaded"
       visible: false
   - type: Icon
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda
 
 - type: entity
@@ -436,6 +457,8 @@
   - type: PdaBorderColor
     borderColor: "#6b0000"
     accentVColor: "#d9a200"
+  - type: Icon
+    state: pda-viperlow
 
 - type: entity
   parent: BaseVGPDA
@@ -457,6 +480,8 @@
   - type: PdaBorderColor
     borderColor: "#202020"
     accentVColor: "#6b0000"
+  - type: Icon
+    state: pda-viperhigh
 
 - type: entity
   parent: VGLieutenantPDA
@@ -482,7 +507,7 @@
     - BountyContractsCartridge
     - AstroNavCartridge
   - type: Sprite
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     layers:
     - map: [ "enum.PdaVisualLayers.Base" ]
       state: "pda-mieyo"
@@ -495,7 +520,7 @@
       shader: "unshaded"
       visible: false
   - type: Icon
-    sprite: _Mono/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda-mieyo
   - type: Appearance
     appearanceDataInit:

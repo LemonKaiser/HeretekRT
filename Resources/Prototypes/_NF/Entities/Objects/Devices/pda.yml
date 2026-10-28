@@ -390,7 +390,7 @@
         !type:String
         pda-cmo
   - type: Icon
-    sprite: _NF/Objects/Devices/pda.rsi
+    sprite: _WH40K/Objects/Devices/pda.rsi
     state: pda-cmo
   - type: CartridgeLoader
     preinstalled:

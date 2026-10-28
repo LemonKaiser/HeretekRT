@@ -2,7 +2,7 @@
   id: WH40KDropshipCarrierComputer
   parent: BaseCarrierComputer
   name: dropship hangar console
-  description: A shipboard shipyard console for purchasing Aquila, Raven and Arvus landing craft.
+  description: A shipboard shipyard console for purchasing landing craft and small combat ships.
   suffix: WH40K, Carrier
   components:
   - type: ShipyardListing
@@ -11,6 +11,10 @@
     - Aquila
     - RavenWh40k
     - Arvus
+    - EagleWh40k
+    - LightningWh40k
+    - SharkWh40k
+    - ThunderboltWh40k
   - type: Sprite
     sprite: _NF/Structures/Machines/computers.rsi
     layers:

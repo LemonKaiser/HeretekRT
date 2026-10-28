@@ -3,9 +3,9 @@ meta:
   category: Grid
   engineVersion: 278.0.2
   forkId: ebengrad
-  forkVersion: d3bb139f50f035920d37e3cc715aaed9aeecd4d5
-  time: 10/21/2026 12:47:44
-  entityCount: 1128
+  forkVersion: f30af204a77f6cac48cb469a887790f283a95352
+  time: 10/26/2026 08:06:24
+  entityCount: 1132
 maps: []
 grids:
 - 1
@@ -92,10 +92,10 @@ entities:
     - type: ThermalSignature
     - type: SpreaderGrid
       spreadQueues:
+        Puddle: []
         Kudzu: []
         MetalFoam: []
         Smoke: []
-        Puddle: []
     - type: Shuttle
       dampingModifier: 0.25
     - type: ImplicitRoof
@@ -2945,11 +2945,6 @@ entities:
     - type: Transform
       pos: 7.5,11.5
       parent: 1
-  - uid: 418
-    components:
-    - type: Transform
-      pos: 8.5,11.5
-      parent: 1
   - uid: 419
     components:
     - type: Transform
@@ -2959,11 +2954,6 @@ entities:
     components:
     - type: Transform
       pos: -6.5,16.5
-      parent: 1
-  - uid: 421
-    components:
-    - type: Transform
-      pos: -7.5,11.5
       parent: 1
   - uid: 422
     components:
@@ -3071,6 +3061,18 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
+- proto: CMCatwalkPrison
+  entities:
+  - uid: 418
+    components:
+    - type: Transform
+      pos: -7.5,11.5
+      parent: 1
+  - uid: 421
+    components:
+    - type: Transform
+      pos: 8.5,11.5
+      parent: 1
 - proto: CMChairComfyBlack
   entities:
   - uid: 435
@@ -3125,6 +3127,28 @@ entities:
     components:
     - type: Transform
       pos: -0.5,19.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+- proto: ComputerRadar
+  entities:
+  - uid: 1131
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 7.5,11.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
+  - uid: 1132
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -6.5,11.5
       parent: 1
     - type: ApcPowerReceiver
       powerLoad: 5
@@ -4720,6 +4744,18 @@ entities:
     components:
     - type: Transform
       pos: 0.5,38.5
+      parent: 1
+- proto: KoronusPlanetaryTeleporter
+  entities:
+  - uid: 1129
+    components:
+    - type: Transform
+      pos: 8.5,11.5
+      parent: 1
+  - uid: 1130
+    components:
+    - type: Transform
+      pos: -7.5,11.5
       parent: 1
 - proto: LargeAPC
   entities:
@@ -6992,12 +7028,12 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -1.5,8.5
       parent: 1
-  - uid: 1126
+  - uid: 1105
     components:
     - type: Transform
       pos: 2.5,24.5
       parent: 1
-  - uid: 1127
+  - uid: 1106
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
@@ -7049,25 +7085,25 @@ entities:
           - 96
 - proto: WeaponTurretBofors
   entities:
-  - uid: 1105
+  - uid: 1107
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: -1.5,35.5
       parent: 1
-  - uid: 1106
+  - uid: 1108
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 2.5,35.5
       parent: 1
-  - uid: 1107
+  - uid: 1109
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 2.5,31.5
       parent: 1
-  - uid: 1108
+  - uid: 1110
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
@@ -7094,104 +7130,104 @@ entities:
           - 745
 - proto: WH40KContraBanner
   entities:
-  - uid: 1109
+  - uid: 1111
     components:
     - type: Transform
       pos: -5.5,9.5
       parent: 1
-  - uid: 1110
+  - uid: 1112
     components:
     - type: Transform
       pos: -2.5,22.5
       parent: 1
-  - uid: 1111
+  - uid: 1113
     components:
     - type: Transform
       pos: 6.5,9.5
       parent: 1
-  - uid: 1112
+  - uid: 1114
     components:
     - type: Transform
       pos: 3.5,22.5
       parent: 1
 - proto: WH40KCrateImperiumAmmo
   entities:
-  - uid: 1113
+  - uid: 1115
     components:
     - type: Transform
       pos: 5.5,7.5
       parent: 1
 - proto: WH40KCrateImperiumExplosives
   entities:
-  - uid: 1114
+  - uid: 1116
     components:
     - type: Transform
       pos: 4.5,5.5
       parent: 1
 - proto: WH40KCrateNeutralOlive
   entities:
-  - uid: 1115
+  - uid: 1117
     components:
     - type: Transform
       pos: -4.5,5.5
       parent: 1
-  - uid: 1116
+  - uid: 1118
     components:
     - type: Transform
       pos: 5.5,5.5
       parent: 1
 - proto: WH40KCrateNeutralOrange
   entities:
-  - uid: 1117
+  - uid: 1119
     components:
     - type: Transform
       pos: -4.5,7.5
       parent: 1
-  - uid: 1118
+  - uid: 1120
     components:
     - type: Transform
       pos: 5.5,6.5
       parent: 1
 - proto: WH40KCrateNeutralRed
   entities:
-  - uid: 1119
+  - uid: 1121
     components:
     - type: Transform
       pos: -4.5,6.5
       parent: 1
 - proto: WH40KCWISAssaultCannon
   entities:
-  - uid: 1120
+  - uid: 1122
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: -7.5,8.5
       parent: 1
-  - uid: 1121
+  - uid: 1123
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 8.5,8.5
       parent: 1
-  - uid: 1122
+  - uid: 1124
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 4.5,43.5
       parent: 1
-  - uid: 1123
+  - uid: 1125
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: -3.5,39.5
       parent: 1
-  - uid: 1124
+  - uid: 1126
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 4.5,39.5
       parent: 1
-  - uid: 1125
+  - uid: 1127
     components:
     - type: Transform
       rot: -1.5707963267948966 rad

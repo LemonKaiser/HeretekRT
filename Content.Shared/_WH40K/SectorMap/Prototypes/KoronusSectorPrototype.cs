@@ -24,6 +24,9 @@ public sealed partial class KoronusSectorPrototype : IPrototype
     public ProtoId<KoronusSystemPrototype> StartSystem;
 
     [DataField]
+    public List<ProtoId<KoronusArrivalPrototype>> Arrivals = new();
+
+    [DataField]
     public float DefaultBoundaryRadius = 20000f;
 
     [DataField]

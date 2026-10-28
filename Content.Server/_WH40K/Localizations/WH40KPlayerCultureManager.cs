@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using RuntimeHelpers = System.Runtime.CompilerServices.RuntimeHelpers;
 using Content.Shared.GameTicking;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Localizations;
@@ -20,9 +19,9 @@ namespace Content.Server._WH40K.Localizations;
 public sealed class WH40KPlayerCultureManager : EntitySystem
 {
     private static readonly object RegistrationSync = new();
-    private static readonly Dictionary<INetManager, WH40KPlayerCultureManager> Instances =
-        new(ReferenceComparer.Instance);
-    private static readonly HashSet<INetManager> RegisteredManagers = new(ReferenceComparer.Instance);
+    // Keep registration across entity-system reloads without rooting discarded test servers.
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<INetManager, NetworkRegistration>
+        Registrations = new();
 
     [Dependency] private ILocalizationManager _localization = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
@@ -45,7 +44,7 @@ public sealed class WH40KPlayerCultureManager : EntitySystem
         base.Initialize();
         RegisterNetworkMessages(_netManager);
         lock (RegistrationSync)
-            Instances[_netManager] = this;
+            Registrations.GetValue(_netManager, static _ => new NetworkRegistration()).Instance = this;
         
         _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -54,9 +53,10 @@ public sealed class WH40KPlayerCultureManager : EntitySystem
     {
         lock (RegistrationSync)
         {
-            if (RegisteredManagers.Add(network))
+            if (!Registrations.TryGetValue(network, out _))
             {
                 network.RegisterNetMessage<MsgSetClientCulture>(message => Dispatch(network, message));
+                Registrations.Add(network, new NetworkRegistration());
             }
         }
     }
@@ -66,8 +66,8 @@ public sealed class WH40KPlayerCultureManager : EntitySystem
         _playerManager.PlayerStatusChanged -= OnPlayerStatusChanged;
         lock (RegistrationSync)
         {
-            if (Instances.TryGetValue(_netManager, out var instance) && ReferenceEquals(instance, this))
-                Instances.Remove(_netManager);
+            if (Registrations.TryGetValue(_netManager, out var registration) && ReferenceEquals(registration.Instance, this))
+                registration.Instance = null;
         }
         _cultures.Clear();
         base.Shutdown();
@@ -220,18 +220,17 @@ public sealed class WH40KPlayerCultureManager : EntitySystem
     {
         WH40KPlayerCultureManager? instance;
         lock (RegistrationSync)
-            Instances.TryGetValue(network, out instance);
+        {
+            Registrations.TryGetValue(network, out var registration);
+            instance = registration?.Instance;
+        }
 
         instance?.OnSetClientCulture(message);
     }
 
-    private sealed class ReferenceComparer : IEqualityComparer<INetManager>
+    private sealed class NetworkRegistration
     {
-        public static readonly ReferenceComparer Instance = new();
-
-        public bool Equals(INetManager? x, INetManager? y) => ReferenceEquals(x, y);
-
-        public int GetHashCode(INetManager obj) => RuntimeHelpers.GetHashCode(obj);
+        public WH40KPlayerCultureManager? Instance;
     }
 
     private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
