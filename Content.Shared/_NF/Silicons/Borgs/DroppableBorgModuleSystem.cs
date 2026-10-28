@@ -102,14 +102,13 @@ public sealed partial class DroppableBorgModuleSystem : EntitySystem
 
         if (TerminatingOrDeleted(ent))
         {
+            // The held item and its placeholder may already have been deleted during teardown.
             for (int i = 0; i < ent.Comp.Items.Count; i++)
             {
                 var handId = HandId(ent, i);
                 _hands.TryGetHand(chassis, handId, out var hand, hands);
                 if (hand?.HeldEntity is { } item)
                     QueueDel(item);
-                else if (!TerminatingOrDeleted(chassis)) // don't care if its empty if the server is shutting down
-                    Log.Error($"Borg {ToPrettyString(chassis)} terminated with empty hand {i} in {ToPrettyString(ent)}");
                 _hands.RemoveHand(chassis, handId, hands);
             }
             return;

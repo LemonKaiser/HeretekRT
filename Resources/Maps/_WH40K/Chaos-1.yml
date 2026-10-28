@@ -5,7 +5,7 @@ meta:
   forkId: ebengrad
   forkVersion: c71ae8c1bbf180d6d188ea7f19f13e234b0115f4
   time: 10/25/2026 08:44:18
-  entityCount: 4433
+  entityCount: 4439
 maps: []
 grids:
 - 1
@@ -5800,6 +5800,38 @@ entities:
     components:
     - type: Transform
       pos: 17.5,14.5
+      parent: 1
+- proto: AtmosDeviceFanDirectional
+  entities:
+  - uid: 4434
+    components:
+    - type: Transform
+      pos: 9.5,48.5
+      parent: 1
+  - uid: 4435
+    components:
+    - type: Transform
+      pos: 10.5,48.5
+      parent: 1
+  - uid: 4436
+    components:
+    - type: Transform
+      pos: 11.5,48.5
+      parent: 1
+  - uid: 4437
+    components:
+    - type: Transform
+      pos: 9.5,42.5
+      parent: 1
+  - uid: 4438
+    components:
+    - type: Transform
+      pos: 10.5,42.5
+      parent: 1
+  - uid: 4439
+    components:
+    - type: Transform
+      pos: 11.5,42.5
       parent: 1
 - proto: BarricadeWarhammer
   entities:

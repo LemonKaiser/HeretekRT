@@ -596,10 +596,13 @@
   mapName: koronus-footfall-dead-world-map-name
   mapLight: "#603C2C"
   lightCycleEnabled: false
-  # No gas moles: the entire surface is vacuum despite using the normal planet generator.
+  # Breathable air at one atmosphere; heat produces an orange alert for an unprotected human.
   atmosphere:
     volume: 2500
-    temperature: 2.7
+    temperature: 333.15
+    moles:
+    - 19.20445
+    - 72.24532
 
 - type: koronusCelestialBody
   id: FootfallAsteroid
