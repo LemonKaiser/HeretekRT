@@ -86,11 +86,11 @@ public sealed partial class KoronusPlanetarySystem
     }
 
     /// <summary>Finishes any atmospheric transfer and releases the normal parking locks.</summary>
-    public void ReturnDungeonShip(ChaosDungeonInstanceComponent instance)
+    public bool ReturnDungeonShip(ChaosDungeonInstanceComponent instance)
     {
         var ship = instance.SourceShip;
         if (TerminatingOrDeleted(ship) || !_maps.TryGetMap(instance.SourceMapId, out var source))
-            return;
+            return false;
 
         if (TryComp<Components.KoronusPlanetaryTransitComponent>(ship, out var transit))
         {
@@ -102,6 +102,7 @@ public sealed partial class KoronusPlanetarySystem
         MoveGrid(ship, source.Value, instance.SourcePosition, instance.SourceAngle);
         if (TryGetSectorRule(out var rule) && TryGetReservation(rule, ship, out var reservation))
             FinishDeparture(rule, ship, ChaosDungeonSystem.BodyId, reservation);
+        return Transform(ship).MapID != instance.MapId;
     }
 }
 

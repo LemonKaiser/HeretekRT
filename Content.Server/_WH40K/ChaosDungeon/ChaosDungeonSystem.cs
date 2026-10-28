@@ -17,6 +17,7 @@ using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Physics;
 using Content.Shared._WH40K.Bosses;
+using Content.Shared._WH40K.ChaosDungeon;
 using Content.Shared._Mono.Ships.Components;
 using Content.Shared._NF.Shipyard.Prototypes;
 using Robust.Server.GameObjects;
@@ -37,7 +38,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
 {
     public const string BodyId = "AivoriusBurningWorld";
     public const string DungeonLandingSiteId = "ChaosDungeonPad";
-    public static readonly TimeSpan InstanceDuration = TimeSpan.FromMinutes(30);
+    public static readonly TimeSpan InstanceDuration = TimeSpan.FromMinutes(40);
     public static readonly TimeSpan ExtractionDuration = TimeSpan.FromMinutes(5);
     public static readonly TimeSpan RefreshDuration = TimeSpan.FromHours(1);
 
@@ -69,18 +70,26 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
     public int StartedCount => _started;
     public int ActiveInstanceCount => _instances.Count;
     public TimeSpan? RefreshAt => _refreshAt;
-    public bool HasFreeSlot => _refreshAt == null && _started +
+    public bool HasFreeSlot => _started +
         _instances.Values.Count(i => i.Comp.State == ChaosDungeonInstanceState.Arriving) < 3;
 
     public bool CanStart(EntityUid ship) => HasFreeSlot && !_instances.ContainsKey(ship) &&
         (!TryComp<ChaosDungeonShipComponent>(ship, out var participant) || participant.UsedCycle != _cycle);
 
-    public string GetPadName() => Loc.GetString("chaos-dungeon-pad-name", ("count", _started));
+    public string GetPadName(bool includeRefresh = true)
+    {
+        var name = Loc.GetString("chaos-dungeon-pad-name", ("count", _started));
+        return includeRefresh && _refreshAt is { } refresh
+            ? Loc.GetString("chaos-dungeon-pad-refresh-name", ("name", name),
+                ("time", ChaosDungeonTiming.FormatCountdown(refresh - _timing.CurTime)))
+            : name;
+    }
 
     public override void Initialize()
     {
         base.Initialize();
         UpdatesAfter.Add(typeof(KoronusPlanetarySystem));
+        InitializeFog();
         SubscribeLocalEvent<PlanetaryLandingCompletedEvent>(OnLanded);
         SubscribeLocalEvent<PlanetaryDepartureCompletedEvent>(OnDeparted);
         SubscribeLocalEvent<PlanetaryTransferCancelledEvent>(ev => CancelPreparedLanding(ev.Ship));
@@ -93,8 +102,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         out KoronusPlanetaryTransferFailure failure)
     {
         map = default;
-        failure = _refreshAt != null ? KoronusPlanetaryTransferFailure.DungeonRefreshing
-            : !HasFreeSlot ? KoronusPlanetaryTransferFailure.DungeonFull
+        failure = !HasFreeSlot ? KoronusPlanetaryTransferFailure.DungeonFull
             : KoronusPlanetaryTransferFailure.DungeonShipUsed;
         if (!CanStart(ship))
             return false;
@@ -131,16 +139,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         instance.SourceAngle = _transform.GetWorldRotation(transform);
         foreach (var participant in eligible)
             instance.Participants.Add(participant.Key, participant.Value);
-        var bosses = AllEntityQuery<Wh40kBossComponent, TransformComponent>();
-        while (bosses.MoveNext(out var uid, out _, out var xform))
-        {
-            if (xform.MapID == instance.MapId)
-            {
-                instance.Boss = uid;
-                instance.DungeonGrid = xform.GridUid ?? EntityUid.Invalid;
-            }
-        }
-        if (instance.Boss == EntityUid.Invalid)
+        if (!PrepareArena((surface, instance)))
         {
             _maps.DeleteMap(instance.MapId);
             failure = KoronusPlanetaryTransferFailure.InvalidTarget;
@@ -186,13 +185,17 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
             }
             instance.Comp.Participants.Add(user, body);
         }
+        RefreshAttempts();
         instance.Comp.State = ChaosDungeonInstanceState.Active;
         instance.Comp.Slot = ++_started;
         instance.Comp.ExpiresAt = _timing.CurTime + InstanceDuration;
+        _refreshAt ??= _timing.CurTime + RefreshDuration;
         var ship = EnsureComp<ChaosDungeonShipComponent>(ev.Ship);
         ship.UsedCycle = _cycle;
         ship.ReturnPending = true;
         _usedPlayers.UnionWith(instance.Comp.Participants.Keys);
+        SetParticipantTimers(instance.Comp, instance.Comp.ExpiresAt);
+        Announce(instance.Comp, "chaos-dungeon-started", ("minutes", (int) InstanceDuration.TotalMinutes));
         _presentationDirty = true;
     }
 
@@ -209,8 +212,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         if (instance.Comp.State == ChaosDungeonInstanceState.Active)
         {
             instance.Comp.State = ChaosDungeonInstanceState.Escaped;
-            LoseStrandedPlayers(instance);
-            DeleteInstance(instance);
+            FinishInstance(instance, ChaosDungeonInstanceState.Escaped);
         }
         // After victory the remaining five-minute evacuation window stays open for stragglers.
     }
@@ -223,9 +225,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         {
             if (instance.Comp.Boss != ev.Target || instance.Comp.State != ChaosDungeonInstanceState.Active)
                 continue;
-            instance.Comp.State = ChaosDungeonInstanceState.Completed;
-            instance.Comp.ExtractionAt = _timing.CurTime + ExtractionDuration;
-            UpdateExtraction(instance);
+            CompleteArena(instance);
             break;
         }
     }
@@ -236,6 +236,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         if (_timing.CurTime < _nextUpdate)
             return;
         _nextUpdate = _timing.CurTime + TimeSpan.FromMilliseconds(250);
+        RefreshAttempts();
 
         foreach (var instance in _instances.Values.ToArray())
         {
@@ -256,7 +257,13 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
             }
             if (data.State == ChaosDungeonInstanceState.Completed)
             {
+                RemoveFog(data);
                 UpdateExtraction(instance);
+                continue;
+            }
+            if (data.State == ChaosDungeonInstanceState.Escaped)
+            {
+                FinishInstance(instance, ChaosDungeonInstanceState.Escaped);
                 continue;
             }
             if (data.State != ChaosDungeonInstanceState.Active)
@@ -267,23 +274,22 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
                 continue;
             if (_timing.CurTime >= data.ExpiresAt || !HasLivingParticipants(data))
             {
-                data.State = ChaosDungeonInstanceState.Failed;
-                LoseStrandedPlayers(instance);
-                _planetary.ReturnDungeonShip(data);
-                DeleteInstance(instance);
+                FinishInstance(instance, ChaosDungeonInstanceState.Failed);
+                continue;
+            }
+            if (data.BossSpawnAt is { } spawnAt && _timing.CurTime >= spawnAt)
+            {
+                data.BossSpawnAt = null;
+                if (!TerminatingOrDeleted(data.BossSpawnGate))
+                    SpawnArenaBoss(instance, data.BossSpawnGate);
+            }
+            if (!data.TimeoutWarningSent && data.ExpiresAt - _timing.CurTime <= ExtractionDuration)
+            {
+                data.TimeoutWarningSent = true;
+                Announce(data, "chaos-dungeon-timeout-warning", ("minutes", (int) ExtractionDuration.TotalMinutes));
             }
         }
 
-        if (_started == 3 && _instances.Count == 0 && _refreshAt == null)
-            _refreshAt = _timing.CurTime + RefreshDuration;
-        if (_refreshAt is { } deadline && _timing.CurTime >= deadline)
-        {
-            _started = 0;
-            _refreshAt = null;
-            _cycle = Guid.NewGuid().ToString("N");
-            _usedPlayers.Clear();
-            _presentationDirty = true;
-        }
         if (_presentationDirty)
         {
             _presentationDirty = false;
@@ -293,8 +299,44 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
 
     private bool HasLivingParticipants(ChaosDungeonInstanceComponent instance)
     {
+        // Critical and disconnected bodies are still alive. Only death (or deletion) removes a participant.
         return instance.Participants.Values.Any(body => !TerminatingOrDeleted(body) &&
-            Transform(body).MapID == instance.MapId && HasComp<MobStateComponent>(body) && !_mobState.IsDead(body));
+            HasComp<MobStateComponent>(body) && !_mobState.IsDead(body));
+    }
+
+    private void RefreshAttempts()
+    {
+        if (_refreshAt is not { } deadline || _timing.CurTime < deadline)
+            return;
+        _started = 0;
+        _refreshAt = null;
+        _cycle = Guid.NewGuid().ToString("N");
+        _usedPlayers.Clear();
+        _presentationDirty = true;
+    }
+
+    private void SetParticipantTimers(ChaosDungeonInstanceComponent instance, TimeSpan deadline, bool extraction = false)
+    {
+        foreach (var body in instance.Participants.Values)
+        {
+            if (TerminatingOrDeleted(body))
+                continue;
+            var timer = EnsureComp<ChaosDungeonTimerComponent>(body);
+            timer.ExpiresAt = deadline;
+            timer.Extraction = extraction;
+            Dirty(body, timer);
+        }
+    }
+
+    private void Announce(ChaosDungeonInstanceComponent instance, string key, params (string, object)[] arguments)
+    {
+        foreach (var user in instance.Participants.Keys)
+        {
+            if (!_players.TryGetSessionById(user, out var session))
+                continue;
+            var message = _culture.GetPlayerString(session, key, arguments);
+            _chat.ChatMessageToOne(ChatChannel.Server, message, message, EntityUid.Invalid, false, session.Channel);
+        }
     }
 
     private void UpdateExtraction(Entity<ChaosDungeonInstanceComponent> instance)
@@ -303,42 +345,52 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         var remaining = data.ExtractionAt - _timing.CurTime;
         if (remaining <= TimeSpan.Zero)
         {
-            Extract(instance);
+            FinishInstance(instance, ChaosDungeonInstanceState.Extracted);
             return;
         }
         var minute = (int) Math.Ceiling(remaining.TotalMinutes);
         if (minute == data.LastWarningMinute)
             return;
         data.LastWarningMinute = minute;
-        foreach (var user in data.Participants.Keys)
-        {
-            if (!_players.TryGetSessionById(user, out var session))
-                continue;
-            var message = _culture.GetPlayerString(session, "chaos-dungeon-extraction-warning", ("minutes", minute));
-            _chat.ChatMessageToOne(ChatChannel.Server, message, message, EntityUid.Invalid, false, session.Channel);
-        }
+        Announce(data, "chaos-dungeon-extraction-warning", ("minutes", minute));
     }
 
-    private void Extract(Entity<ChaosDungeonInstanceComponent> instance)
+    private void FinishInstance(Entity<ChaosDungeonInstanceComponent> instance, ChaosDungeonInstanceState result)
     {
         var data = instance.Comp;
         if (TerminatingOrDeleted(data.SourceShip) || !TryFindReturnTile(data.SourceShip, out var destination))
         {
-            // A damaged ship must never cause successful survivors to be deleted with their map.
+            // A damaged ship must never cause survivors to be deleted with their map.
             // Keep the instance alive until a return tile can be found.
             return;
         }
-        data.State = ChaosDungeonInstanceState.Extracted;
+        var previous = data.State;
+        data.State = result;
+        if ((Transform(data.SourceShip).MapID == data.MapId ||
+            TryComp<Content.Server._WH40K.SectorMap.Components.KoronusPlanetaryTransitComponent>(
+                data.SourceShip, out var transit) && transit.SourceMap == data.MapId) &&
+            !_planetary.ReturnDungeonShip(data))
+        {
+            data.State = previous;
+            return;
+        }
         foreach (var body in data.Participants.Values)
         {
             if (!TerminatingOrDeleted(body) && Transform(body).MapID == data.MapId && !_mobState.IsDead(body))
                 MovePlayer(body, destination);
         }
-        if (Transform(data.SourceShip).MapID == data.MapId ||
-            TryComp<Content.Server._WH40K.SectorMap.Components.KoronusPlanetaryTransitComponent>(
-                data.SourceShip, out var transit) && transit.SourceMap == data.MapId)
-            _planetary.ReturnDungeonShip(data);
-        LoseStrandedPlayers(instance);
+        // Include player bodies that arrived by another means, including disconnected players.
+        // No living player may be deleted along with the private surface.
+        var minds = AllEntityQuery<MindComponent>();
+        while (minds.MoveNext(out var mind))
+        {
+            if (mind.UserId != null && mind.OwnedEntity is { } body && !TerminatingOrDeleted(body) &&
+                Transform(body).MapID == data.MapId && !_mobState.IsDead(body))
+                MovePlayer(body, destination);
+        }
+        RemoveDeadParticipants(instance, removeShipCorpses: result != ChaosDungeonInstanceState.Extracted);
+        Announce(data, result == ChaosDungeonInstanceState.Extracted
+            ? "chaos-dungeon-extracted" : "chaos-dungeon-failed");
         DeleteInstance(instance);
     }
 
@@ -359,14 +411,15 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         return false;
     }
 
-    private void LoseStrandedPlayers(Entity<ChaosDungeonInstanceComponent> instance)
+    private void RemoveDeadParticipants(Entity<ChaosDungeonInstanceComponent> instance, bool removeShipCorpses)
     {
         foreach (var (user, body) in instance.Comp.Participants)
         {
             // Only this attempt's bodies and minds are affected, including disconnected players.
-            if (TerminatingOrDeleted(body) || Transform(body).MapID != instance.Comp.MapId)
+            if (TerminatingOrDeleted(body) || !_mobState.IsDead(body) ||
+                Transform(body).MapID != instance.Comp.MapId &&
+                (!removeShipCorpses || Transform(body).GridUid != instance.Comp.SourceShip))
                 continue;
-            _mobState.ChangeMobState(body, MobState.Dead);
             if (_minds.TryGetMind(user, out var mind, out var mindComp) && mindComp.OwnedEntity == body)
             {
                 if (_players.TryGetSessionById(user, out var session))
@@ -413,6 +466,12 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
 
     private void DeleteInstance(Entity<ChaosDungeonInstanceComponent> instance)
     {
+        RemoveFog(instance.Comp);
+        foreach (var body in instance.Comp.Participants.Values)
+        {
+            if (!TerminatingOrDeleted(body))
+                RemComp<ChaosDungeonTimerComponent>(body);
+        }
         _instances.Remove(instance.Comp.SourceShip);
         _presentationDirty = true;
         if (TryComp<ChaosDungeonShipComponent>(instance.Comp.SourceShip, out var ship))

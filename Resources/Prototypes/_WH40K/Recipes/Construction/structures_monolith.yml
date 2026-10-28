@@ -1,5 +1,7 @@
 - type: construction
   id: WH40KChaosBrickWall
+  name: construction-name-wh40k-chaos-brick-wall
+  description: construction-desc-wh40k-chaos-brick-wall
   graph: WH40KChaosBrickWall
   startNode: start
   targetNode: chaosWall
@@ -14,6 +16,8 @@
 
 - type: construction
   id: WH40KAirlockImperium
+  name: construction-name-wh40k-airlock-imperium
+  description: construction-desc-wh40k-airlock-imperium
   graph: WH40KAirlockImperium
   startNode: start
   targetNode: airlock
@@ -27,6 +31,8 @@
 
 - type: construction
   id: WH40KAirlockChaos
+  name: construction-name-wh40k-airlock-chaos
+  description: construction-desc-wh40k-airlock-chaos
   graph: WH40KAirlockChaos
   startNode: start
   targetNode: airlock
@@ -40,6 +46,8 @@
 
 - type: construction
   id: WH40KDirtReinforcedWindow
+  name: construction-name-wh40k-dirt-reinforced-window
+  description: construction-desc-wh40k-dirt-reinforced-window
   graph: WH40KDirtReinforcedWindow
   startNode: start
   targetNode: dirtReinforcedWindow
@@ -55,6 +63,8 @@
 
 - type: construction
   id: WH40KPlasticFlapsAirtightClear
+  name: construction-name-wh40k-plastic-flaps-airtight-clear
+  description: construction-desc-wh40k-plastic-flaps-airtight-clear
   graph: WH40KPlasticFlapsAirtight
   startNode: start
   targetNode: airtightClear
@@ -68,6 +78,8 @@
 
 - type: construction
   id: WH40KTargetHuman
+  name: construction-name-wh40k-target-human
+  description: construction-desc-wh40k-target-human
   graph: WH40KTargets
   startNode: start
   targetNode: targetHuman
@@ -81,6 +93,8 @@
 
 - type: construction
   id: WH40KTargetSyndicate
+  name: construction-name-wh40k-target-syndicate
+  description: construction-desc-wh40k-target-syndicate
   graph: WH40KTargets
   startNode: start
   targetNode: targetSyndicate
@@ -94,6 +108,8 @@
 
 - type: construction
   id: WH40KTargetClown
+  name: construction-name-wh40k-target-clown
+  description: construction-desc-wh40k-target-clown
   graph: WH40KTargets
   startNode: start
   targetNode: targetClown
@@ -107,6 +123,8 @@
 
 - type: construction
   id: WH40KTargetStrange
+  name: construction-name-wh40k-target-strange
+  description: construction-desc-wh40k-target-strange
   graph: WH40KTargets
   startNode: start
   targetNode: targetStrange
@@ -120,6 +138,8 @@
 
 - type: construction
   id: WH40KStairsSteel
+  name: construction-name-wh40k-stairs-steel
+  description: construction-desc-wh40k-stairs-steel
   graph: WH40KStairs
   startNode: start
   targetNode: stairsSteel
@@ -133,6 +153,8 @@
 
 - type: construction
   id: WH40KStairsSteelStage
+  name: construction-name-wh40k-stairs-steel-stage
+  description: construction-desc-wh40k-stairs-steel-stage
   graph: WH40KStairs
   startNode: start
   targetNode: stairsSteelStage
@@ -146,6 +168,8 @@
 
 - type: construction
   id: WH40KStairsWhite
+  name: construction-name-wh40k-stairs-white
+  description: construction-desc-wh40k-stairs-white
   graph: WH40KStairs
   startNode: start
   targetNode: stairsWhite
@@ -159,6 +183,8 @@
 
 - type: construction
   id: WH40KStairsWhiteStage
+  name: construction-name-wh40k-stairs-white-stage
+  description: construction-desc-wh40k-stairs-white-stage
   graph: WH40KStairs
   startNode: start
   targetNode: stairsWhiteStage
@@ -172,6 +198,8 @@
 
 - type: construction
   id: WH40KStairsDark
+  name: construction-name-wh40k-stairs-dark
+  description: construction-desc-wh40k-stairs-dark
   graph: WH40KStairs
   startNode: start
   targetNode: stairsDark
@@ -185,6 +213,8 @@
 
 - type: construction
   id: WH40KStairsDarkStage
+  name: construction-name-wh40k-stairs-dark-stage
+  description: construction-desc-wh40k-stairs-dark-stage
   graph: WH40KStairs
   startNode: start
   targetNode: stairsDarkStage
@@ -198,6 +228,8 @@
 
 - type: construction
   id: WH40KStairsWood
+  name: construction-name-wh40k-stairs-wood
+  description: construction-desc-wh40k-stairs-wood
   graph: WH40KStairs
   startNode: start
   targetNode: stairsWood
@@ -211,6 +243,8 @@
 
 - type: construction
   id: WH40KStairsWoodStage
+  name: construction-name-wh40k-stairs-wood-stage
+  description: construction-desc-wh40k-stairs-wood-stage
   graph: WH40KStairs
   startNode: start
   targetNode: stairsWoodStage
@@ -224,6 +258,8 @@
 
 - type: construction
   id: WH40KWoodenSupport
+  name: construction-name-wh40k-wooden-support
+  description: construction-desc-wh40k-wooden-support
   graph: WH40KWoodenSupports
   startNode: start
   targetNode: support
@@ -237,6 +273,8 @@
 
 - type: construction
   id: WH40KWoodenSupportBeam
+  name: construction-name-wh40k-wooden-support-beam
+  description: construction-desc-wh40k-wooden-support-beam
   graph: WH40KWoodenSupports
   startNode: start
   targetNode: supportBeam
@@ -250,6 +288,8 @@
 
 - type: construction
   id: WH40KWoodenSupportWall
+  name: construction-name-wh40k-wooden-support-wall
+  description: construction-desc-wh40k-wooden-support-wall
   graph: WH40KWoodenSupports
   startNode: start
   targetNode: supportWall
@@ -263,6 +303,8 @@
 
 - type: construction
   id: WH40KGenericTank
+  name: construction-name-wh40k-generic-tank
+  description: construction-desc-wh40k-generic-tank
   graph: WH40KGenericTank
   startNode: start
   targetNode: tank
@@ -276,6 +318,8 @@
 
 - type: construction
   id: WH40KFloodlight
+  name: construction-name-wh40k-floodlight
+  description: construction-desc-wh40k-floodlight
   graph: WH40KFloodlight
   startNode: start
   targetNode: floodlight
@@ -289,6 +333,8 @@
 
 - type: construction
   id: WH40KFloorDrain
+  name: construction-name-wh40k-floor-drain
+  description: construction-desc-wh40k-floor-drain
   graph: WH40KFloorDrain
   startNode: start
   targetNode: drain

@@ -1,0 +1,45 @@
+- type: entity
+  id: WH40KChaosDungeonFogGate
+  name: arena fog
+  description: A dense curtain of pale mist. Crossing it commits you to the battle until the arena is cleared.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: _WH40K/Effects/arena_fog.rsi
+    noRot: true
+    drawdepth: Overdoors
+    layers:
+    - state: fog
+      shader: unshaded
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      barrier:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.45,0.5,0.45"
+        hard: true
+        layer: [WallLayer]
+        mask: [FullTileMask]
+      entry:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,0.45,0.5,0.8"
+        hard: false
+        layer: [MidImpassable]
+        mask: [MobLayer]
+  - type: Occluder
+  - type: ChaosDungeonFogGate
+
+- type: entity
+  parent: MarkerBase
+  id: WH40KChaosDungeonBossSpawn
+  name: Chaos dungeon boss spawn
+  description: The boss appears here after the first player crosses the arena fog.
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: ChaosDungeonBossSpawn

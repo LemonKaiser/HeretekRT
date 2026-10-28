@@ -6,6 +6,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Detection;
 using Content.Shared._WH40K.SectorMap.BUI;
+using Content.Shared._WH40K.ChaosDungeon;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
@@ -52,6 +53,8 @@ public sealed partial class NavScreen : BoxContainer
     private KoronusPlanetaryInterfaceState _planetaryState = KoronusPlanetaryInterfaceState.Unavailable();
     private string? _selectedPlanetaryBody;
     private string? _selectedLandingSite;
+    private readonly Dictionary<Button, KoronusLandingSiteState> _landingCountdowns = new();
+    private int _lastCountdownSecond = -1;
     private Vector2? _planetaryPanelPosition;
     private FTLState _ftlState;
     private StartEndTime _ftlTime;
@@ -510,6 +513,7 @@ public sealed partial class NavScreen : BoxContainer
     private void UpdatePlanetaryPanel()
     {
         PlanetaryLandingSites.RemoveAllChildren();
+        _landingCountdowns.Clear();
         var body = _planetaryState.Bodies.FirstOrDefault(candidate => candidate.Id == _selectedPlanetaryBody);
         if (body == null)
         {
@@ -553,7 +557,7 @@ public sealed partial class NavScreen : BoxContainer
                         : Loc.GetString("koronus-planetary-nav-site-available");
             var button = new Button
             {
-                Text = Ellipsize(site.Name, PlanetaryLandingSiteCharacterLimit),
+                Text = Ellipsize(GetLandingSiteName(site), PlanetaryLandingSiteCharacterLimit),
                 ToolTip = Loc.GetString(
                     "koronus-planetary-details-port-entry",
                     ("name", site.Name),
@@ -580,6 +584,8 @@ public sealed partial class NavScreen : BoxContainer
                     : Color.FromHex("#6F7774");
             button.OnPressed += _ => SelectLandingSite(body.Id, site.Id);
             PlanetaryLandingSites.AddChild(button);
+            if (site.RefreshAt != null)
+                _landingCountdowns.Add(button, site);
         }
 
         var hasLandingSites = body.LandingSites.Count > 0;
@@ -612,6 +618,21 @@ public sealed partial class NavScreen : BoxContainer
         }
 
         PositionPlanetaryPanel();
+        var second = (int) _timing.CurTime.TotalSeconds;
+        if (_lastCountdownSecond != second)
+        {
+            _lastCountdownSecond = second;
+            foreach (var (button, site) in _landingCountdowns)
+                button.Text = Ellipsize(GetLandingSiteName(site), PlanetaryLandingSiteCharacterLimit);
+        }
+    }
+
+    private string GetLandingSiteName(KoronusLandingSiteState site)
+    {
+        return site.RefreshAt is { } deadline
+            ? Loc.GetString("chaos-dungeon-pad-refresh-name", ("name", site.Name),
+                ("time", ChaosDungeonTiming.FormatCountdown(deadline - _timing.CurTime)))
+            : site.Name;
     }
 
     private void PositionPlanetaryPanel()

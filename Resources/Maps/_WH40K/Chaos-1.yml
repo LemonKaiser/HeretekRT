@@ -21898,7 +21898,7 @@ entities:
     - type: Transform
       pos: 35.5,0.5
       parent: 1
-- proto: SpawnWH40KChaosMarineTestFull
+- proto: WH40KChaosDungeonBossSpawn
   entities:
   - uid: 4433
     components:
@@ -28701,6 +28701,13 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
+- proto: WH40KChaosDungeonFogGate
+  entities:
+  - uid: 4073
+    components:
+    - type: Transform
+      pos: 10.5,-6.5
+      parent: 1
 - proto: WH40KAirlockChaos
   entities:
   - uid: 4066
@@ -28741,11 +28748,6 @@ entities:
     components:
     - type: Transform
       pos: 20.5,3.5
-      parent: 1
-  - uid: 4073
-    components:
-    - type: Transform
-      pos: 10.5,-6.5
       parent: 1
   - uid: 4074
     components:

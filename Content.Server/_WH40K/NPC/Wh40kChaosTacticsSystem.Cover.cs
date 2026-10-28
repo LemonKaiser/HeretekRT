@@ -13,7 +13,7 @@ public sealed partial class Wh40kChaosTacticsSystem
     [Dependency] private SharedMapSystem _coverMaps = default!;
     [Dependency] private TurfSystem _coverTurf = default!;
 
-    private const CollisionGroup CoverMask = CollisionGroup.Impassable | CollisionGroup.InteractImpassable;
+    private const CollisionGroup CoverMask = CollisionGroup.Impassable | CollisionGroup.BulletImpassable | CollisionGroup.Opaque;
     private static readonly Vector2[] CoverOffsets =
     {
         new(-1, 0), new(0, -1), new(1, 0), new(0, 1),

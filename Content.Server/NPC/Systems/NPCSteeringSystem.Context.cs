@@ -113,7 +113,10 @@ public sealed partial class NPCSteeringSystem
         if (!steering.ForceMove && steering.ArriveOnLineOfSight)
         {
             // TODO: use vision range
-            inLos = _interaction.InRangeUnobstructed(uid, steering.Coordinates, 10f);
+            var mask = TryComp<NPCRangedCombatComponent>(uid, out var ranged) && ranged.BulletMask != CollisionGroup.None
+                ? ranged.BulletMask
+                : CollisionGroup.Impassable | CollisionGroup.InteractImpassable;
+            inLos = _interaction.InRangeUnobstructed(uid, steering.Coordinates, 10f, mask);
 
             if (inLos)
             {
@@ -189,6 +192,7 @@ public sealed partial class NPCSteeringSystem
         var direction = targetMap.Position - ourMap.Position;
         // Need to be pretty close if it's just a node to make sure LOS for door bashes or the likes.
         bool arrived;
+        List<EntityUid>? obstacles = null;
 
         if (targetCoordinates.Equals(steering.Coordinates))
         {
@@ -207,6 +211,22 @@ public sealed partial class NPCSteeringSystem
         else
         {
             arrived = direction.Length() <= SharedInteractionSystem.InteractionRange - 0.05f;
+            if (arrived && !directMove && steering.CurrentPath.TryPeek(out var obstacleNode) && !obstacleNode.Data.IsFreeSpace)
+            {
+                obstacles = new List<EntityUid>();
+                var (layer, mask) = SharedPhysicsSystem.GetHardCollision(_fixturesQuery.GetComponent(uid));
+                GetObstacleEntities(obstacleNode, mask, layer, obstacles);
+                // A thin fixture may lie on the far edge of a tile, away from its entity's origin.
+                // Reach the actual interaction target before braking at its path node.
+                arrived = obstacles.Count == 0;
+                foreach (var obstacle in obstacles)
+                {
+                    if (!_interaction.InRangeUnobstructed(uid, obstacle, SharedInteractionSystem.InteractionRange - 0.05f))
+                        continue;
+                    arrived = true;
+                    break;
+                }
+            }
         }
         // Are we in range
         if (arrived)
@@ -231,7 +251,7 @@ public sealed partial class NPCSteeringSystem
                         return true;
                     }
 
-                    status = TryHandleFlags(uid, steering, node);
+                    status = TryHandleFlags(uid, steering, node, obstacles);
                 }
                 // TODO: Need to handle re-pathing in case the target moves around.
                 switch (status)

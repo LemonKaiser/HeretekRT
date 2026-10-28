@@ -192,7 +192,7 @@ namespace Content.Client.Construction.UI
 
                 if (!string.IsNullOrEmpty(search))
                 {
-                    if (!recipe.Name.ToLowerInvariant().Contains(search.Trim().ToLowerInvariant()))
+                    if (!recipe.LocalizedName.ToLowerInvariant().Contains(search.Trim().ToLowerInvariant()))
                         continue;
                 }
 
@@ -214,7 +214,7 @@ namespace Content.Client.Construction.UI
                 recipes.Add(recipe);
             }
 
-            recipes.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.InvariantCulture));
+            recipes.Sort((a, b) => string.Compare(a.LocalizedName, b.LocalizedName, StringComparison.InvariantCulture));
 
             var recipesList = _constructionView.Recipes;
             recipesList.Clear();
@@ -233,8 +233,8 @@ namespace Content.Client.Construction.UI
                     {
                         TextureNormal = _spriteSystem.Frame0(recipe.Icon),
                         VerticalAlignment = Control.VAlignment.Center,
-                        Name = recipe.Name,
-                        ToolTip = recipe.Name,
+                        Name = recipe.ID,
+                        ToolTip = recipe.LocalizedName,
                         Scale = new Vector2(1.35f),
                         ToggleMode = true,
                     };
@@ -250,7 +250,7 @@ namespace Content.Client.Construction.UI
 
                         if (buttonToggledEventArgs.Pressed &&
                             _selected != null &&
-                            _recipeButtons.TryGetValue(_selected.Name, out var oldButton))
+                            _recipeButtons.TryGetValue(_selected.ID, out var oldButton))
                         {
                             oldButton.Pressed = false;
                             SelectGridButton(oldButton, false);
@@ -260,7 +260,7 @@ namespace Content.Client.Construction.UI
                     };
 
                     recipesGrid.AddChild(itemButtonPanelContainer);
-                    _recipeButtons[recipe.Name] = itemButton;
+                    _recipeButtons[recipe.ID] = itemButton;
                     var isCurrentButtonSelected = _selected == recipe;
                     itemButton.Pressed = isCurrentButtonSelected;
                     SelectGridButton(itemButton, isCurrentButtonSelected);
@@ -336,7 +336,7 @@ namespace Content.Client.Construction.UI
             _constructionView.ClearRecipeInfo();
 
             _constructionView.SetRecipeInfo(
-                prototype.Name, prototype.Description, _spriteSystem.Frame0(prototype.Icon),
+                prototype.LocalizedName, prototype.LocalizedDescription, _spriteSystem.Frame0(prototype.Icon),
                 prototype.Type != ConstructionType.Item,
                 !_favoritedRecipes.Contains(prototype));
 
@@ -374,10 +374,10 @@ namespace Content.Client.Construction.UI
             return new(itemList)
             {
                 Metadata = recipe,
-                Text = recipe.Name,
+                Text = recipe.LocalizedName,
                 Icon = _spriteSystem.Frame0(recipe.Icon),
                 TooltipEnabled = true,
-                TooltipText = recipe.Description,
+                TooltipText = recipe.LocalizedDescription,
             };
         }
 

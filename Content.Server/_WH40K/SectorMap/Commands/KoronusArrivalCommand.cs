@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Globalization;
+using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Administration;
 using Content.Shared.Administration;
+using Content.Shared.Localizations;
 using Robust.Shared.Console;
 using Robust.Shared.Timing;
 
@@ -21,6 +23,9 @@ public sealed partial class KoronusArrivalCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
+        using var scope = shell.Player is { } player
+            ? _systems.GetEntitySystem<WH40KPlayerCultureManager>().CreateScope(player)
+            : (LocalizationCultureScope?) null;
         var arrivals = _systems.GetEntitySystem<KoronusArrivalSystem>();
         if (args.Length == 0)
         {

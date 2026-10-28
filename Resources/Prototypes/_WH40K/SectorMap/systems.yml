@@ -63,17 +63,10 @@
   sector: KoronusExpanse
   displayName: Sotto's Tomb
   uiPosition: 0.496, 0.841
-  initialGridPath: /Maps/_Mono/POI/sevastopol.yml
-  # The original station remains in orbit; the Citadel is a separate Adeptus Administratum hub.
-  additionalGrids:
-  - mapPath: /Maps/_WH40K/Citadel.yml
-    displayName: Цитадель Адептус Администратум
-    spawnDistance: 3300
-    safetyProfile: KoronusStationSafeZone
-    safetyRadius: 100
-    protectGrid: true
+  initialGridPath: /Maps/_WH40K/Citadel.yml
+  initialGridDisplayName: Цитадель Адептус Администратум
   # The facility is kept away from the stellar centre and the planet's outer orbit.
-  initialGridSpawnDistance: 4800
+  initialGridSpawnDistance: 3300
   spaceMode: Planetary
   stellarCenter: 0, 4000
   # The Ice World's 6600 m orbit, its navigation marker and orbital launch point fit inside this boundary.

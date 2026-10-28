@@ -52,6 +52,20 @@
     state: bars
     allowedVerbs:
     - Rattle
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.6,0.5,-0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
+        density: 1000
 
 - type: entity
   parent: N14CellBars
@@ -69,7 +83,10 @@
         mask:
         - FullTileMask
         layer:
-        - WallLayer
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
         density: 1000
       fix2:
         shape:
@@ -78,7 +95,10 @@
         mask:
         - FullTileMask
         layer:
-        - WallLayer
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
         density: 1000
 
 - type: entity
@@ -97,7 +117,10 @@
         mask:
         - FullTileMask
         layer:
-        - WallLayer
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
         density: 1000
       fix2:
         shape:
@@ -106,7 +129,10 @@
         mask:
         - FullTileMask
         layer:
-        - WallLayer
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
         density: 1000
 
 

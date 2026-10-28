@@ -89,8 +89,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
             // Native aiming can track the target during the short exit; the shot guard still requires arrival.
             if (canShoot || tactics.CoverPeeking)
             {
-                var ranged = _entities.EnsureComponent<NPCRangedCombatComponent>(owner);
-                ranged.Target = target;
+                safety.PrepareRangedCombat(owner, target);
                 if (canShoot)
                     safety.CheckShooting(owner, target, tactics, visible, distance);
                 else
@@ -195,8 +194,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
             }
             else
             {
-                var ranged = _entities.EnsureComponent<NPCRangedCombatComponent>(owner);
-                ranged.Target = target;
+                var ranged = safety.PrepareRangedCombat(owner, target);
                 // Native ranged AI marks an empty battery as unspecified even when it recharges itself.
                 if (ranged.Status == CombatStatus.Unspecified)
                     ranged.Status = CombatStatus.Normal;

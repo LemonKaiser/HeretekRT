@@ -1877,11 +1877,12 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                     var isDungeon = body.ID == Content.Server._WH40K.ChaosDungeon.ChaosDungeonSystem.BodyId;
                     sites.Add(new KoronusLandingSiteState(
                         site.Id,
-                        isDungeon ? dungeon.GetPadName() : site.DisplayName,
+                        isDungeon ? dungeon.GetPadName(includeRefresh: false) : site.DisplayName,
                         site.Size,
                         site.Enabled && (!isDungeon || dungeon.CanStart(shuttleGrid)),
                         isDungeon ? !dungeon.HasFreeSlot : occupied,
-                        occupied && owner == shuttleGrid));
+                        occupied && owner == shuttleGrid,
+                        isDungeon ? dungeon.RefreshAt : null));
                 }
             }
 

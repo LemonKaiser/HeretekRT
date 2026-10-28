@@ -35,6 +35,7 @@ using Content.Shared.Construction.Components;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Flash;
+using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
@@ -657,6 +658,9 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
     private bool ShouldBlockPlayerTransport(EntityUid source, EntityUid target)
     {
+        if (TryComp<GhostComponent>(source, out var ghost) && ghost.CanGhostInteract)
+            return false;
+
         var location = TryComp<BeingCarriedComponent>(target, out var carried) ? carried.Carrier : target;
         return source != target && IsPlayerCharacter(target)
             && TryGetGrid(location, out var grid) && IsProtectedFacility(grid);

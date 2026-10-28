@@ -267,6 +267,9 @@ public sealed partial class KoronusArrivalSystem : EntitySystem
 
     private void Announce(string systemId, KoronusArrivalPrototype settings)
     {
+        if (!_sector.TryGetSystemPrototype(systemId, out var system))
+            return;
+
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { } player || !TryComp(player, out TransformComponent? transform))
@@ -275,9 +278,10 @@ public sealed partial class KoronusArrivalSystem : EntitySystem
             if (!IsInSystem(transform.MapID, systemId))
                 continue;
 
+            using var scope = _culture.CreateScope(session);
             _chat.DispatchFilteredAnnouncement(Filter.SinglePlayer(session),
-                _culture.GetPlayerString(session, settings.Announcement),
-                sender: _culture.GetPlayerString(session, "koronus-arrival-sender"),
+                Loc.GetString(settings.Announcement, ("system", system.DisplayName)),
+                sender: Loc.GetString("koronus-arrival-sender"),
                 announcementSound: settings.Sound, colorOverride: settings.Color);
         }
     }

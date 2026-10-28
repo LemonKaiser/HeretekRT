@@ -1,5 +1,7 @@
 - type: construction
   id: WH40KChaosBanner
+  name: construction-name-wh40k-chaos-banner
+  description: construction-desc-wh40k-chaos-banner
   graph: WH40KBanners
   startNode: start
   targetNode: chaosBanner
@@ -13,6 +15,8 @@
 
 - type: construction
   id: WH40KGvardiaBanner
+  name: construction-name-wh40k-gvardia-banner
+  description: construction-desc-wh40k-gvardia-banner
   graph: WH40KBanners
   startNode: start
   targetNode: gvardiaBanner
@@ -26,6 +30,8 @@
 
 - type: construction
   id: WH40KGvardiaBanner2
+  name: construction-name-wh40k-gvardia-banner-2
+  description: construction-desc-wh40k-gvardia-banner-2
   graph: WH40KBanners
   startNode: start
   targetNode: gvardiaBanner2
@@ -39,6 +45,8 @@
 
 - type: construction
   id: WH40KMechanicusBanner
+  name: construction-name-wh40k-mechanicus-banner
+  description: construction-desc-wh40k-mechanicus-banner
   graph: WH40KBanners
   startNode: start
   targetNode: mechanicusBanner
@@ -52,6 +60,8 @@
 
 - type: construction
   id: WH40KMedicalBanner
+  name: construction-name-wh40k-medical-banner
+  description: construction-desc-wh40k-medical-banner
   graph: WH40KBanners
   startNode: start
   targetNode: medicalBanner
@@ -65,6 +75,8 @@
 
 - type: construction
   id: WH40KTauBanner
+  name: construction-name-wh40k-tau-banner
+  description: construction-desc-wh40k-tau-banner
   graph: WH40KBanners
   startNode: start
   targetNode: tauBanner
@@ -78,6 +90,8 @@
 
 - type: construction
   id: WH40KImperialFleetBanner
+  name: construction-name-wh40k-imperial-fleet-banner
+  description: construction-desc-wh40k-imperial-fleet-banner
   graph: WH40KBanners
   startNode: start
   targetNode: imperialFleetBanner
@@ -91,6 +105,8 @@
 
 - type: construction
   id: WH40KContraBanner
+  name: construction-name-wh40k-contra-banner
+  description: construction-desc-wh40k-contra-banner
   graph: WH40KBanners
   startNode: start
   targetNode: contraBanner
@@ -104,6 +120,8 @@
 
 - type: construction
   id: WH40KCorsairBanner
+  name: construction-name-wh40k-corsair-banner
+  description: construction-desc-wh40k-corsair-banner
   graph: WH40KBanners
   startNode: start
   targetNode: corsairBanner
@@ -117,6 +135,8 @@
 
 - type: construction
   id: WH40KImperiumBanner
+  name: construction-name-wh40k-imperium-banner
+  description: construction-desc-wh40k-imperium-banner
   graph: WH40KBanners
   startNode: start
   targetNode: imperiumBanner
@@ -130,6 +150,8 @@
 
 - type: construction
   id: WH40KFalloutBarricades
+  name: construction-name-wh40k-iron-barricade
+  description: construction-desc-wh40k-iron-barricade
   graph: WH40KFalloutBarricades
   startNode: start
   targetNode: barricadeIron
@@ -143,6 +165,8 @@
 
 - type: construction
   id: WH40KFalloutBarricades4
+  name: construction-name-wh40k-wide-iron-barricade
+  description: construction-desc-wh40k-wide-iron-barricade
   graph: WH40KFalloutBarricades
   startNode: start
   targetNode: barricadeIronWide
@@ -156,6 +180,8 @@
 
 - type: construction
   id: WH40KFalloutBarricades6
+  name: construction-name-wh40k-boarded-barricade
+  description: construction-desc-wh40k-boarded-barricade
   graph: WH40KFalloutBarricades
   startNode: start
   targetNode: barricadeBoarded
@@ -169,6 +195,8 @@
 
 - type: construction
   id: WH40KFalloutBarricades7
+  name: construction-name-wh40k-bar-barricade
+  description: construction-desc-wh40k-bar-barricade
   graph: WH40KFalloutBarricades
   startNode: start
   targetNode: barricadeBars

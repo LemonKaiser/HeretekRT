@@ -118,40 +118,6 @@
   - !type:TileNotBlocked
 
 - type: construction
-  name: construction-name-wh40k-clockwork-altar
-  id: WH40KClockworkDecorativeAltarRecipe
-  graph: WH40KImportedDecorativeAltars
-  startNode: start
-  targetNode: clockworkAltar
-  category: construction-category-furniture
-  description: construction-desc-wh40k-decorative-altar
-  icon:
-    sprite: _WH40K/Imported/ShitChap/Structures/clockaltar.rsi
-    state: clock
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: false
-  conditions:
-  - !type:TileNotBlocked
-
-- type: construction
-  name: construction-name-wh40k-draconic-altar
-  id: WH40KDraconicDecorativeAltarRecipe
-  graph: WH40KImportedDecorativeAltars
-  startNode: start
-  targetNode: draconicAltar
-  category: construction-category-furniture
-  description: construction-desc-wh40k-decorative-altar
-  icon:
-    sprite: _WH40K/Imported/ShitChap/Structures/dragonaltar.rsi
-    state: dragonaltar
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: false
-  conditions:
-  - !type:TileNotBlocked
-
-- type: construction
   name: construction-name-wh40k-imperial-altar
   id: WH40KImperialDecorativeAltarRecipe
   graph: WH40KImportedDecorativeAltars

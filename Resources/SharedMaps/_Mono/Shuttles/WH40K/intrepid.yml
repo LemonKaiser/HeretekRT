@@ -194,6 +194,7 @@ entities:
         Kudzu: []
         MetalFoam: []
         Smoke: []
+    - type: OperationalDomainVessel
     - type: Shuttle
       dampingModifier: 0.25
     - type: ImplicitRoof

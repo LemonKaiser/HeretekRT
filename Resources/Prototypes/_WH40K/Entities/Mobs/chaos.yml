@@ -5,6 +5,7 @@
   suffix: WH40K, Chaos
   components:
   - type: Wh40kChaosCombatant
+  - type: ComplexInteraction
   - type: NpcFactionMember
     factions: [Heretics]
   - type: HTN

@@ -432,7 +432,7 @@ public sealed partial class PathfindingSystem
                 tilePolys.Clear();
 
                 var tile = _maps.GetTileRef(grid.Owner, grid.Comp, tilePos);
-                var flags = tile.Tile.IsEmpty ? PathfindingBreadcrumbFlag.Space : PathfindingBreadcrumbFlag.None;
+                var tileFlags = tile.Tile.IsEmpty ? PathfindingBreadcrumbFlag.Space : PathfindingBreadcrumbFlag.None;
                 // var isBorder = x < 0 || y < 0 || x == ChunkSize - 1 || y == ChunkSize - 1;
 
                 tileEntities.Clear();
@@ -449,8 +449,8 @@ public sealed partial class PathfindingSystem
 
                     var xform = _xformQuery.GetComponent(ent);
 
-                    if (xform.ParentUid != grid.Owner ||
-                        _maps.LocalToTile(grid.Owner, grid.Comp, xform.Coordinates) != tilePos)
+                    // Edge fixtures can occupy a different tile from their entity's origin.
+                    if (xform.ParentUid != grid.Owner)
                     {
                         continue;
                     }
@@ -470,6 +470,7 @@ public sealed partial class PathfindingSystem
                         var collisionMask = 0x0;
                         var collisionLayer = 0x0;
                         var damage = 0f;
+                        var flags = tileFlags;
                         var queriedCell = false;
 
                         foreach (var ent in tileEntities)

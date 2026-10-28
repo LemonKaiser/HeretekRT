@@ -30,4 +30,3 @@ ent-WH40KChaosBola = chaos shock bola
     .desc = A bola that exhausts and restrains its victim on impact.
 
 wh40k-chaos-grenade-warning = The bomber prepares to throw a grenade!
-wh40k-chaos-mauler-warning = The mauler winds up a heavy strike!

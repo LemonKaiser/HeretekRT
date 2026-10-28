@@ -190,7 +190,6 @@ public sealed partial class Wh40kChaosTacticsSystem
             comp.MeleeWarningTarget = target;
             comp.MeleeReadyAt = _timing.CurTime + comp.MeleeWindup;
             weapon.NextAttack = comp.MeleeReadyAt;
-            _popups.PopupEntity(Loc.GetString("wh40k-chaos-mauler-warning"), uid, PopupType.MediumCaution);
             args.Cancelled = true;
             return;
         }

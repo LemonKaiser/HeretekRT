@@ -129,14 +129,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     }
 
     /// <summary>
-    /// Adds a ship to the shipyard, calculates its price, and attempts to ftl-dock it to the given station
+    /// Adds a ship to the shipyard and delivers it to the local station or independent vessel.
     /// </summary>
-    /// <param name="stationUid">The ID of the station to dock the shuttle to</param>
+    /// <param name="owner">The station, vessel or console providing the delivery destination.</param>
     /// <param name="shuttlePath">The path to the shuttle file to load. Must be a grid file!</param>
     /// <param name="shuttleEntityUid">The EntityUid of the shuttle that was purchased</param>
-    public bool TryPurchaseShuttle(EntityUid stationUid, ResPath shuttlePath, [NotNullWhen(true)] out EntityUid? shuttleEntityUid)
+    public bool TryPurchaseShuttle(EntityUid owner, ResPath shuttlePath, [NotNullWhen(true)] out EntityUid? shuttleEntityUid)
     {
-        if (!TryComp<StationDataComponent>(stationUid, out var stationData)
+        if (!_operationalDomains.TryResolveOperationalDomain(owner, out var domain)
             || !TryAddShuttle(shuttlePath, out var shuttleGrid)
             || !TryComp<ShuttleComponent>(shuttleGrid, out var shuttleComponent))
         {
@@ -145,20 +145,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
 
         var price = _pricing.AppraiseGrid(shuttleGrid.Value, null);
-        var targetGrid = _station.GetLargestGrid((stationUid, stationData));
-
-        if (targetGrid == null) //how are we even here with no station grid
-        {
-            QueueDel(shuttleGrid);
-            shuttleEntityUid = null;
-            return false;
-        }
-
-        _sawmill.Info($"Shuttle {shuttlePath} was purchased at {ToPrettyString(stationUid)} for {price:f2}");
+        _sawmill.Info($"Shuttle {shuttlePath} was purchased at {ToPrettyString(domain.Owner)} for {price:f2}");
         var ev = new ShipBoughtEvent();
         RaiseLocalEvent(shuttleGrid.Value, ev);
         //can do TryFTLDock later instead if we need to keep the shipyard map paused
-        _shuttle.TryFTLDock(shuttleGrid.Value, shuttleComponent, targetGrid.Value);
+        _shuttle.TryFTLDock(shuttleGrid.Value, shuttleComponent, domain.PrimaryGrid);
         shuttleEntityUid = shuttleGrid;
         return true;
     }

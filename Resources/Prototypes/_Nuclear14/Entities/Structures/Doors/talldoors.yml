@@ -278,7 +278,10 @@
         mask:
         - FullTileMask
         layer:
-        - AirlockLayer
+        - HighImpassable
+        - MidImpassable
+        - LowImpassable
+        - InteractImpassable
         density: 1000
 
 

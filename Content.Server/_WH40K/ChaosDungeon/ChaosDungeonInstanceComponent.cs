@@ -29,10 +29,17 @@ public sealed partial class ChaosDungeonInstanceComponent : Component
     public EntityUid SourceShip = EntityUid.Invalid;
     public EntityUid DungeonGrid = EntityUid.Invalid;
     public EntityUid Boss = EntityUid.Invalid;
+    public EntityUid BossSpawn = EntityUid.Invalid;
+    public bool BossStarted;
+    public TimeSpan? BossSpawnAt;
+    public EntityUid BossSpawnGate = EntityUid.Invalid;
+    public readonly List<EntityUid> FogGates = new();
+    public readonly HashSet<EntityUid> ArenaMembers = new();
 
     public TimeSpan ExpiresAt;
     public TimeSpan ExtractionAt;
     public int LastWarningMinute = -1;
+    public bool TimeoutWarningSent;
 
     public readonly Dictionary<NetUserId, EntityUid> Participants = new();
 }
