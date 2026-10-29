@@ -16,6 +16,12 @@
     clothingVisuals:
       outerClothing:
       - state: equipped-OUTERCLOTHING
+  - - type: ToggleableClothing 
+      requiredSlot: outerclothing
+      blockUnequipWhenAttached: false
+      replaceCurrentClothing: true
+      clothingPrototypes:
+        head: ClothingHeadHoodImperialPilgrim
 
 - type: entity
   parent: WH40KClothingHeadToggleableHoodBase
