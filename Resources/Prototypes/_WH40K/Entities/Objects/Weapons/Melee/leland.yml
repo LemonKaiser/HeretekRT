@@ -1,0 +1,32 @@
+- type: entity
+  parent: Stunbaton
+  id: WH40KStunbatonLeland
+  name: modified stun baton
+  description: A hefty homemade baton made of three rods, conducting a lethal dose of electricity. Is it switched on?!
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/leland_baton.rsi
+    layers:
+    - state: icon
+      map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Blunt: 7
+        Shock: 20
+  - type: Item
+    sprite: _WH40K/Objects/Weapons/Melee/leland_baton.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Objects/Weapons/Melee/leland_baton.rsi
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
+          True: {state: icon}
+          False: {state: icon}

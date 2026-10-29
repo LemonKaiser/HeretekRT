@@ -45,6 +45,7 @@ namespace Content.IntegrationTests.Tests
                     .Where(p => !p.Components.ContainsKey("RoomFill")) // This comp can delete all entities, and spawn others
                     .Where(p => p.Categories.All(x => x.ID != SpawnerCategory)) // mono
                     .Select(p => p.ID)
+                    .OrderBy(id => id, StringComparer.Ordinal)
                     .ToArray();
             });
 
@@ -69,20 +70,25 @@ namespace Content.IntegrationTests.Tests
 
                 await server.WaitPost(() =>
                 {
-                    static IEnumerable<(EntityUid, TComp)> Query<TComp>(IEntityManager entityMan)
-                        where TComp : Component
+                    // Delete complete hierarchies before their children can trigger gameplay against
+                    // partially deleted bodies. Keep batching to bound physics and navigation memory.
+                    foreach (var mapId in mapSystem.GetAllMapIds().ToArray())
                     {
-                        var query = entityMan.AllEntityQueryEnumerator<TComp>();
-                        while (query.MoveNext(out var uid, out var meta))
-                        {
-                            yield return (uid, meta);
-                        }
+                        mapSystem.DeleteMap(mapId);
                     }
 
-                    var entityMetas = Query<MetaDataComponent>(entityMan).ToList();
-                    foreach (var (uid, meta) in entityMetas)
+                    // Some entities, such as minds, live in nullspace rather than on a map.
+                    var roots = new List<EntityUid>();
+                    var query = entityMan.AllEntityQueryEnumerator<TransformComponent>();
+                    while (query.MoveNext(out var uid, out var transform))
                     {
-                        if (!meta.EntityDeleted)
+                        if (!transform.ParentUid.IsValid())
+                            roots.Add(uid);
+                    }
+
+                    foreach (var uid in roots)
+                    {
+                        if (entityMan.EntityExists(uid))
                             entityMan.DeleteEntity(uid);
                     }
 

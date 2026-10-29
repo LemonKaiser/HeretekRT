@@ -1,0 +1,94 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: WH40KClothingHeadHatLeland
+  name: Crown of Justice
+  description: An old sheriff's hat with crooked brims.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/leland_hat.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/leland_hat.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: WH40KClothingHeadCapLeland
+  name: lawman's cap
+  description: A uniform cap with a cracked visor.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/leland_cap.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/leland_cap.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: WH40KClothingUniformJumpsuitLeland
+  name: worn patrol uniform
+  description: A worn service uniform steeped in the smell of sweat and ozone.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/leland.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/leland.rsi
+
+- type: entity
+  parent: ClothingOuterBase
+  id: WH40KClothingOuterJacketLeland
+  name: leather jacket
+  description: A thick jacket made of coarse fabric. Its shoulder seams are scorched and charred in places.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/leland_jacket.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/leland_jacket.rsi
+
+- type: entity
+  parent: ClothingOuterBase
+  id: WH40KClothingOuterCoatLeland
+  name: heavy leather coat
+  description: A long greatcoat made of thick woollen cloth. It reliably protects the body from damp and conceals the horrific scars of electrical burns.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/OuterClothing/Coats/leland_trenchcoat.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/OuterClothing/Coats/leland_trenchcoat.rsi
+
+- type: entity
+  parent: ClothingShoesBase
+  id: WH40KClothingShoesBootsLeland
+  name: kirza boots
+  description: Kirza does more than protect your feet from shit and mud.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Shoes/Boots/leland.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Shoes/Boots/leland.rsi
+
+- type: entity
+  parent: ClothingBackpack
+  id: WH40KClothingBackpackLeland
+  name: mobile power pack
+  description: A bulky, makeshift backpack power supply. Electrolyte bubbles inside while copper coils hum under immense voltage.
+  suffix: Leland
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Back/Backpacks/leland_power_pack.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Back/Backpacks/leland_power_pack.rsi
+    clothingVisuals:
+      back:
+      - state: equipped-BACKPACK
+      - state: animated
+        shader: unshaded

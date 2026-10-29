@@ -528,21 +528,22 @@ public sealed partial class BloodstreamSystem : EntitySystem
 
         var tempSol = new Solution();
 
-        if (_solutionContainerSystem.ResolveSolution(uid, component.BloodSolutionName, ref component.BloodSolution, out var bloodSolution))
+        // Gibbing can be triggered during teardown, after cached solution entities were deleted.
+        if (_solutionContainerSystem.TryGetSolution(uid, component.BloodSolutionName, out component.BloodSolution, out var bloodSolution))
         {
             tempSol.MaxVolume += bloodSolution.MaxVolume;
             tempSol.AddSolution(bloodSolution, _prototypeManager);
             _solutionContainerSystem.RemoveAllSolution(component.BloodSolution.Value);
         }
 
-        if (_solutionContainerSystem.ResolveSolution(uid, component.ChemicalSolutionName, ref component.ChemicalSolution, out var chemSolution))
+        if (_solutionContainerSystem.TryGetSolution(uid, component.ChemicalSolutionName, out component.ChemicalSolution, out var chemSolution))
         {
             tempSol.MaxVolume += chemSolution.MaxVolume;
             tempSol.AddSolution(chemSolution, _prototypeManager);
             _solutionContainerSystem.RemoveAllSolution(component.ChemicalSolution.Value);
         }
 
-        if (_solutionContainerSystem.ResolveSolution(uid, component.BloodTemporarySolutionName, ref component.TemporarySolution, out var tempSolution))
+        if (_solutionContainerSystem.TryGetSolution(uid, component.BloodTemporarySolutionName, out component.TemporarySolution, out var tempSolution))
         {
             tempSol.MaxVolume += tempSolution.MaxVolume;
             tempSol.AddSolution(tempSolution, _prototypeManager);
