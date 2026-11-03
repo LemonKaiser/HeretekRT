@@ -46,10 +46,11 @@ highp float granule(highp vec3 point) {
     return sqrt(nearest);
 }
 highp float diskAlpha(highp float radius) {
-#ifdef HAS_DFDX
-    highp float aa = max(fwidth(radius), 0.0015);
-#else
     highp float aa = 0.0015;
+#ifdef FRAGMENT_SHADER
+#ifdef HAS_DFDX
+    aa = max(fwidth(radius), 0.0015);
+#endif
 #endif
     return 1.0 - smoothstep(1.0 - aa, 1.0 + aa, radius);
 }
