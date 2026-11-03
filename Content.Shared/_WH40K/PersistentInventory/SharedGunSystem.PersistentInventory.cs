@@ -6,7 +6,7 @@ public abstract partial class SharedGunSystem
 {
     public void SetPersistentCartridgeSpent(EntityUid uid, CartridgeAmmoComponent cartridge, bool spent)
     {
-        // SetCartridgeSpent also starts a fresh despawn timer, which is not a restored cartridge state.
+        // Restore the serialized state without invoking firing or ejection effects.
         cartridge.Spent = spent;
         Appearance.SetData(uid, AmmoVisuals.Spent, spent);
         Dirty(uid, cartridge);

@@ -1,0 +1,2 @@
+wh40k-ship-cleanup-cryo = Ships docked at a station will be sold automatically after you enter cryosleep. Ships left elsewhere will be removed after one hour of absence; removal is postponed while passengers remain aboard.
+wh40k-ship-cleanup-sold = Your shuttle "{ $ship }" was automatically sold for { $amount } credits. Any proceeds go to the purchasing character's account under the usual sale and bank tax rules.

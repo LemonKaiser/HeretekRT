@@ -427,9 +427,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         var shuttleMap = Transform(shuttleGrid).MapID;
         if (_sector.TryGetSystemId(shuttleMap, out var systemId) &&
             _sector.TryGetSystemPrototype(systemId, out var orbitalSystem) &&
-            HasLandableBodies(orbitalSystem.ID))
+            HasCelestialBodies(orbitalSystem.ID))
         {
-            var canLand = CanTransfer(shuttleGrid, out _);
+            var canLand = HasCelestialBodies(orbitalSystem.ID, requireSurface: true) && CanTransfer(shuttleGrid, out _);
             return BuildInterfaceState(rule, orbitalSystem, shuttleGrid, canLand, false, null);
         }
 
@@ -759,13 +759,49 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
 
     private void MoveGrid(EntityUid shuttleGrid, EntityUid mapUid, Vector2 origin, Angle? angle = null)
     {
-        _transform.SetCoordinates(shuttleGrid, new EntityCoordinates(mapUid, origin));
-        _transform.SetWorldRotation(shuttleGrid, angle ?? Angle.Zero);
+        AttachShuttleOccupants(shuttleGrid);
+        _transform.SetCoordinates(shuttleGrid, Transform(shuttleGrid), new EntityCoordinates(mapUid, origin),
+            rotation: (angle ?? Angle.Zero) - _transform.GetWorldRotation(mapUid));
 
         if (TryComp<PhysicsComponent>(shuttleGrid, out var physics))
         {
             _physics.SetLinearVelocity(shuttleGrid, Vector2.Zero, body: physics);
             _physics.SetAngularVelocity(shuttleGrid, 0f, body: physics);
+        }
+    }
+
+    /// <summary>
+    /// A mob or loose item standing on the shuttle can still be parented to the map or to the
+    /// overlapping planetary ground. Repair those roots before moving the grid between maps;
+    /// grid children, including containers and their contents, already travel together.
+    /// </summary>
+    private void AttachShuttleOccupants(EntityUid shuttleGrid)
+    {
+        var grid = Comp<MapGridComponent>(shuttleGrid);
+        var shuttleTransform = Transform(shuttleGrid);
+        TryGetSurfaceRuntime(shuttleTransform.MapID, out _, out var surface);
+        var occupants = _lookup.GetEntitiesIntersecting(shuttleTransform.MapID,
+            _physics.GetWorldAABB(shuttleGrid), LookupFlags.Uncontained);
+
+        foreach (var occupant in occupants)
+        {
+            if (TerminatingOrDeleted(occupant) || HasComp<MapGridComponent>(occupant) ||
+                HasComp<MapComponent>(occupant) || !TryComp<TransformComponent>(occupant, out var transform) ||
+                transform.Anchored || transform.GridUid == shuttleGrid ||
+                transform.ParentUid != (transform.GridUid ?? transform.MapUid))
+                continue;
+
+            // Do not take occupants from another visiting shuttle that happens to overlap us.
+            if (transform.GridUid is { } parentGrid &&
+                (surface == null || parentGrid != surface.TerrainGrid && !surface.AuthoredBaseGrids.Contains(parentGrid)))
+                continue;
+
+            if (!_mapSystem.TryGetTileRef(shuttleGrid, grid, _transform.GetWorldPosition(transform), out var tile) ||
+                tile.Tile.IsEmpty)
+                continue;
+
+            _transform.SetParent(occupant, transform, shuttleGrid);
+            StopPhysics(occupant);
         }
     }
 
@@ -1189,6 +1225,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         float arrivalTime,
         string? launchBodyId = null)
     {
+        // Boarding roots must be repaired before startup stops a moving shuttle. Otherwise
+        // their old map velocity can carry them off its floor before the actual map transfer.
+        AttachShuttleOccupants(shuttleGrid);
         var sourceTransform = Transform(shuttleGrid);
         var transitMapUid = EnsureAtmosphericTransitMap();
         var transit = EnsureComp<KoronusPlanetaryTransitComponent>(shuttleGrid);
@@ -1422,8 +1461,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             ReleaseParkingSession(session, preservePreventPilot: true);
         }
 
-        TrackAtmosphericTransitMobs(shuttleGrid, transit);
         MoveGrid(shuttleGrid, transitMap.Value, transit.TransitOrigin);
+        TrackAtmosphericTransitMobs(shuttleGrid, transit);
         transit.EnteredTransitSpace = true;
         MaintainAtmosphericTransitMotion(shuttleGrid);
 
@@ -1831,11 +1870,11 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         return system.NavigationCenter + new Vector2(MathF.Cos(phase), MathF.Sin(phase)) * body.OrbitRadius;
     }
 
-    private bool HasLandableBodies(string systemId)
+    private bool HasCelestialBodies(string systemId, bool requireSurface = false)
     {
         foreach (var body in _prototypes.EnumeratePrototypes<KoronusCelestialBodyPrototype>())
         {
-            if (body.System == systemId && body.Surface != null)
+            if (body.System == systemId && (!requireSurface || body.Surface != null))
                 return true;
         }
 
@@ -1998,7 +2037,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     {
         if (!_sector.TryGetSystemId(transform.MapID, out var systemId) ||
             !_sector.TryGetSystemPrototype(systemId, out var system) ||
-            !HasLandableBodies(system.ID))
+            !HasCelestialBodies(system.ID, requireSurface: true))
         {
             return default;
         }

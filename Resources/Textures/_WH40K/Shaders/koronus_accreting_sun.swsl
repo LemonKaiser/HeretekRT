@@ -1,0 +1,89 @@
+light_mode unshaded;
+blend_mode normal;
+
+uniform sampler2D NoiseTexture;
+uniform highp vec4 StarColor;
+
+highp float hash31(highp vec3 point) {
+    point = fract(point * 0.1031);
+    point += dot(point, point.yzx + 33.33);
+    return fract((point.x + point.y) * point.z);
+}
+
+highp float stellarNoise3(highp vec3 point) {
+    highp vec3 cell = floor(point);
+    highp vec3 local = fract(point);
+    highp vec3 blend = local * local * (3.0 - 2.0 * local);
+    highp float lower = mix(
+        mix(hash31(cell), hash31(cell + vec3(1.0, 0.0, 0.0)), blend.x),
+        mix(hash31(cell + vec3(0.0, 1.0, 0.0)), hash31(cell + vec3(1.0, 1.0, 0.0)), blend.x), blend.y);
+    highp float upper = mix(
+        mix(hash31(cell + vec3(0.0, 0.0, 1.0)), hash31(cell + vec3(1.0, 0.0, 1.0)), blend.x),
+        mix(hash31(cell + vec3(0.0, 1.0, 1.0)), hash31(cell + vec3(1.0, 1.0, 1.0)), blend.x), blend.y);
+    return mix(lower, upper, blend.z);
+}
+
+highp float plasma(highp vec3 point) {
+    highp float value = 0.0;
+    highp float weight = 0.53;
+    for (highp int octave = 0; octave < 4; octave++) {
+        value += stellarNoise3(point) * weight;
+        point = point.yzx * 2.03 + vec3(7.1, 13.7, 3.9);
+        weight *= 0.48;
+    }
+    return value;
+}
+
+void fragment() {
+    highp vec2 position = (UV - vec2(0.5)) * 2.08;
+    highp float radiusSquared = dot(position, position);
+    highp float radius = sqrt(radiusSquared);
+    if (radius >= 1.02)
+        discard;
+
+    highp float depth = sqrt(max(1.0 - radiusSquared, 0.0));
+    highp float time = TIME;
+    highp float rotation = time * 0.013;
+    highp vec3 sphere = vec3(
+        position.x * cos(rotation) + depth * sin(rotation),
+        position.y,
+        depth * cos(rotation) - position.x * sin(rotation));
+    highp vec3 drift = vec3(time * 0.021, -time * 0.013, time * 0.009);
+    highp vec3 warp = vec3(
+        plasma(sphere * 3.6 + drift),
+        plasma(sphere.yzx * 3.6 - drift + 9.7),
+        plasma(sphere.zxy * 3.6 + drift + 17.3)) - 0.5;
+    highp vec3 surface = sphere * 6.0 + warp * 0.85;
+    highp float convection = plasma(surface + drift * 0.38);
+    highp float filaments = plasma(surface * 2.8 + warp * 2.0 - drift * 0.75);
+    highp float granules = stellarNoise3(surface * 11.0 + drift);
+    highp float fineGrain = stellarNoise3(surface * 24.0 - drift * 1.6);
+    highp float textureVariation = texture2D(NoiseTexture, sphere.xy * 0.27 + 0.5).r;
+    highp float heat = convection * 0.37 + filaments * 0.28 + granules * 0.24 + fineGrain * 0.11;
+    heat = smoothstep(0.23, 0.76, heat);
+    heat += (textureVariation - 0.5) * 0.025;
+
+    // Color uniforms arrive in linear RGB. Use the authored spectral colour directly, including
+    // neutral white stars; saturation is not a switch back to the orange solar palette.
+    highp vec3 tint = clamp(StarColor.rgb, vec3(0.0), vec3(1.0));
+    highp vec3 colour = tint * mix(0.25, 1.15, heat);
+    highp vec3 hottest = mix(tint, vec3(1.0), 0.24);
+    colour = mix(colour, hottest, smoothstep(0.69, 0.94, heat) * 0.66);
+    highp float whiteHot = 1.0 - smoothstep(0.03, 0.45, tint.r - tint.b);
+    highp vec3 whiteCore = mix(tint, vec3(1.0), 0.55) * (1.05 + heat * 0.35);
+    colour = mix(colour, whiteCore, whiteHot * 0.78);
+    colour *= mix(0.70, 0.86, whiteHot) + mix(0.30, 0.14, whiteHot) * pow(depth, 0.45);
+
+    highp float activeLanes = 1.0 - smoothstep(0.26, 0.36, convection);
+    colour *= 1.0 - activeLanes * mix(0.38, 0.12, whiteHot);
+    highp float chromosphere = exp(-abs(radius - 0.988) * 90.0);
+    colour += tint * chromosphere * 0.15;
+
+#ifdef HAS_DFDX
+    highp float antialias = max(fwidth(radius) * 1.35, 0.0015);
+#else
+    highp float antialias = 0.0015;
+#endif
+    highp float alpha = 1.0 - smoothstep(1.0 - antialias, 1.0 + antialias, radius);
+    COLOR = vec4(colour, alpha);
+}

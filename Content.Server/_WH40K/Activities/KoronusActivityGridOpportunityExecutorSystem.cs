@@ -99,7 +99,8 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         }
 
         if (!_contentAudit.TryValidateStaticActivityGrid(grid, out _) ||
-            !TryValidateGrid(grid, instance.SystemId, context.TargetMap, context.SpawnBand, profile.LeashRadius))
+            !TryValidateGrid(grid, instance.SystemId, context.TargetMap, context.SpawnBand, profile.LeashRadius,
+                requireSpawnClearance: true))
         {
             AbortMaterialization(instance.Id, spawned, KoronusActivityTerminalReason.SafetyViolation);
             return;
@@ -164,11 +165,15 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         _physics.SetBodyType(grid, BodyType.Static, body: physics);
         _physics.SetFixedRotation(grid, true, body: physics);
 
+        if (!_contentAudit.TrySanitizeLoadedSetPieceGrid(grid, out _))
+            return false;
+
         var activityGrid = EnsureComp<KoronusActivityGridOpportunityComponent>(grid);
         activityGrid.InstanceId = instance.Id;
         activityGrid.SystemId = context.SystemId;
         activityGrid.MapId = context.TargetMap;
         activityGrid.SpawnPosition = context.SpawnBand;
+        activityGrid.GridOrigin = _transform.ToMapCoordinates(Transform(grid).Coordinates).Position;
         activityGrid.LeashRadius = profile.LeashRadius;
 
         var floor = _tiles["FloorSteel"].TileId;
@@ -358,7 +363,8 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         string systemId,
         MapId mapId,
         Vector2 spawnPosition,
-        float leashRadius)
+        float leashRadius,
+        bool requireSpawnClearance = false)
     {
         if (!TryComp<TransformComponent>(grid, out var transform) ||
             transform.MapID != mapId ||
@@ -369,11 +375,13 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
             return false;
         }
 
-        var position = _transform.ToMapCoordinates(transform.Coordinates).Position;
-        return Vector2.DistanceSquared(position, spawnPosition) <= 1f &&
-               _safety.TryValidate(new KoronusActivityTarget(systemId, mapId, position, grid), out _) &&
-               IsProtectedBandClear(systemId, mapId, position) &&
-               !HasForeignGridWithin(grid, new MapCoordinates(position, mapId), leashRadius);
+        var origin = _transform.ToMapCoordinates(transform.Coordinates).Position;
+        var expectedOrigin = Comp<KoronusActivityGridOpportunityComponent>(grid).GridOrigin;
+        return Vector2.DistanceSquared(origin, expectedOrigin) <= 1f &&
+               _safety.TryValidate(new KoronusActivityTarget(systemId, mapId, spawnPosition, grid), out _) &&
+               IsProtectedBandClear(systemId, mapId, spawnPosition) &&
+               (!requireSpawnClearance ||
+                !HasForeignGridWithin(grid, new MapCoordinates(spawnPosition, mapId), leashRadius));
     }
 
     private bool TryValidateOwnedEntity(

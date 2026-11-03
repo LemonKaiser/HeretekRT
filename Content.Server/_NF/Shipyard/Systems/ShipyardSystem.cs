@@ -184,12 +184,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     /// <param name="stationUid">The ID of the station providing the selling console</param>
     /// <param name="shuttleUid">The grid ID of the shuttle to be appraised and sold</param>
     /// <param name="consoleUid">The ID of the console being used to sell the ship</param>
-    public ShipyardSaleResult TrySellShuttle(EntityUid stationUid, EntityUid shuttleUid, EntityUid consoleUid, out int bill)
+    public ShipyardSaleResult TrySellShuttle(EntityUid stationUid, EntityUid shuttleUid, EntityUid consoleUid,
+        out int bill, Func<int, bool>? approveSale = null)
     {
         ShipyardSaleResult result = new ShipyardSaleResult();
         bill = 0;
 
-        if (!TryComp<StationDataComponent>(stationUid, out var stationGrid)
+        if (EntityManager.IsQueuedForDeletion(shuttleUid)
+            || !TryComp<StationDataComponent>(stationUid, out var stationGrid)
             || !HasComp<ShuttleComponent>(shuttleUid)
             || !TryComp(shuttleUid, out TransformComponent? xform)
             || ShipyardMap == null)
@@ -220,19 +222,19 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
         _passengers.Evacuate(shuttleUid, passengerDestination);
 
-        //just yeet and delete for now. Might want to split it into another function later to send back to the shipyard map first to pause for something
-        //also superman 3 moment
-        if (_station.GetOwningStation(shuttleUid) is { Valid: true } shuttleStationUid)
+        CleanGrid(shuttleUid, consoleUid);
+
+        TryComp<ShipyardConsoleComponent>(consoleUid, out var terms);
+        bill = GetShipSaleValue(shuttleUid, terms);
+        if (approveSale != null && !approveSale(bill))
         {
+            result.Error = ShipyardSaleError.MessageOverwritten;
+            return result;
+        }
+
+        if (_station.GetOwningStation(shuttleUid) is { Valid: true } shuttleStationUid &&
+            shuttleStationUid != stationUid)
             _station.DeleteStation(shuttleStationUid);
-        }
-
-        if (TryComp<ShipyardConsoleComponent>(consoleUid, out var comp))
-        {
-            CleanGrid(shuttleUid, consoleUid);
-        }
-
-        bill = (int)_pricing.AppraiseGrid(shuttleUid, LacksPreserveOnSaleComp);
 
         QueueDel(shuttleUid);
         _sawmill.Info($"Sold shuttle {shuttleUid} for {bill}");

@@ -1,0 +1,9 @@
+- type: entity
+  parent: WH40KAirlockChaos
+  id: WH40KAirlockChaosDungeon
+  name: corrupted airlock
+  description: An ancient airlock kept running by an unseen power.
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false

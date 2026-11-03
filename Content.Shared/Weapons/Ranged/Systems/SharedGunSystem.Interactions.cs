@@ -3,6 +3,7 @@ using Content.Shared.Examine;
 using Content.Shared.Hands;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Components;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Shared.Weapons.Ranged.Systems;
@@ -19,6 +20,19 @@ public abstract partial class SharedGunSystem
             args.PushMarkup(Loc.GetString("gun-selected-mode-examine", ("color", ModeExamineColor),
                 ("mode", GetLocSelector(component.SelectedMode))));
 
+            if (TryComp<RevolverAmmoProviderComponent>(uid, out var revolver))
+            {
+                ExamineAmmoType(args, revolver.FillPrototype);
+                var live = GetRevolverUnspentCount(revolver);
+                args.PushText(Loc.GetString("gun-revolver-chambers-examine",
+                    ("live", live), ("spent", GetRevolverCount(revolver) - live)));
+            }
+
+            if (_slots.TryGetSlot(uid, MagazineSlot, out var magazine))
+                ExamineAmmoType(args, magazine.StartingItem, magazine: true);
+            if (_slots.TryGetSlot(uid, ChamberSlot, out var chamber))
+                ExamineAmmoType(args, chamber.StartingItem);
+
             if (component.DamageModifier != 1f)
                 args.PushMarkup(Loc.GetString("gun-damage-modifier-examine", ("color", FireRateExamineColor),
                     ("damage", $"{component.DamageModifier.ToString("#.##")}")));
@@ -26,6 +40,15 @@ public abstract partial class SharedGunSystem
             //args.PushMarkup(Loc.GetString("gun-fire-rate-examine", ("color", FireRateExamineColor), // Emberfall
             //    ("fireRate", $"{component.FireRateModified:0.0}"))); // Emberfall
         }
+    }
+
+    private void ExamineAmmoType(ExaminedEvent args, string? prototype, bool magazine = false)
+    {
+        if (prototype == null || !ProtoManager.TryIndex<EntityPrototype>(prototype, out var ammo))
+            return;
+
+        args.PushText(Loc.GetString(magazine ? "gun-magazine-type-examine" : "gun-ammo-type-examine",
+            ("ammo", ammo.Name)));
     }
 
     private string GetLocSelector(SelectiveFire mode)

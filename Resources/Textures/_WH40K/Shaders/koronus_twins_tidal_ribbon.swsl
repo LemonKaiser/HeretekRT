@@ -1,0 +1,7 @@
+light_mode unshaded;
+blend_mode normal;
+#include "/Textures/_WH40K/Shaders/koronus_twins_tidal_flow.swsl"
+
+void fragment() {
+    COLOR = tidalPair(vec4(1.00, 0.62, 0.96, 1.0), vec4(1.10, 0.88, -0.40, 2.32));
+}

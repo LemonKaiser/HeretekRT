@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Content.Shared._WH40K.Pinpointer;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
 using Robust.Shared.Network;
@@ -73,10 +74,12 @@ public abstract partial class SharedNavMapSystem : EntitySystem
             return false;
 
         var name = component.Text;
-        if (string.IsNullOrEmpty(name))
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(component.TextEnglish) &&
+            component.DefaultText == null)
             name = meta.EntityName;
 
-        beaconData = new NavMapBeacon(meta.NetEntity, component.Color, name, xform.LocalPosition);
+        beaconData = new NavMapBeacon(meta.NetEntity, component.Color, name ?? string.Empty, xform.LocalPosition,
+            component.TextEnglish, component.DefaultText);
 
         return true;
     }
@@ -244,7 +247,14 @@ public abstract partial class SharedNavMapSystem : EntitySystem
     }
 
     [Serializable, NetSerializable]
-    public record struct NavMapBeacon(NetEntity NetEnt, Color Color, string Text, Vector2 Position);
+    public record struct NavMapBeacon(NetEntity NetEnt, Color Color, string Text, Vector2 Position,
+        string? TextEnglish = null, LocId? DefaultText = null)
+    {
+        public string GetText()
+        {
+            return Wh40kNavMapBeaconText.GetText(Text, TextEnglish, DefaultText);
+        }
+    }
 
     [Serializable, NetSerializable]
     public record struct NavMapRegionProperties(NetEntity Owner, Enum UiKey, HashSet<Vector2i> Seeds)

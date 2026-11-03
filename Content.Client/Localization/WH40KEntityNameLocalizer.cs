@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Content.Shared.IdentityManagement;
+using Content.Shared.IdentityManagement.Components;
 using Content.Shared.Localizations;
 using Robust.Client.GameStates;
+using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Localization;
@@ -21,6 +23,7 @@ public sealed class WH40KEntityNameLocalizer : EntitySystem
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private MetaDataSystem _metadata = default!;
     [Dependency] private IClientGameStateManager _gameStateManager = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
 
     private readonly object _sync = new();
     private Dictionary<(string Culture, string Prototype), EntityLocData> _cache = new();
@@ -59,7 +62,7 @@ public sealed class WH40KEntityNameLocalizer : EntitySystem
 
         try
         {
-            if (metadata.EntityPrototype is not { } prototype)
+            if (!TryGetNamePrototype(entity, metadata, out var prototype))
                 return name;
 
             var currentCulture = ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name)
@@ -189,9 +192,6 @@ public sealed class WH40KEntityNameLocalizer : EntitySystem
 
     private void RefreshEntityMetadata(EntityUid entity, MetaDataComponent metadata)
     {
-        if (metadata.EntityPrototype == null)
-            return;
-
         var name = GetName(entity);
         if (!string.Equals(name, metadata.EntityName, StringComparison.Ordinal))
             _metadata.SetEntityName(entity, name, metadata, raiseEvents: false);
@@ -199,6 +199,29 @@ public sealed class WH40KEntityNameLocalizer : EntitySystem
         var description = GetDescription(entity);
         if (!string.Equals(description, metadata.EntityDescription, StringComparison.Ordinal))
             _metadata.SetEntityDescription(entity, description, metadata);
+    }
+
+    private bool TryGetNamePrototype(EntityUid entity, MetaDataComponent metadata, out EntityPrototype prototype)
+    {
+        if (metadata.EntityPrototype is { } ownPrototype)
+        {
+            prototype = ownPrototype;
+            return true;
+        }
+
+        // IdentitySystem copies the visible name into an entity without a prototype.
+        // Use its owner's translations, retaining the normal checks for custom names.
+        if (_containers.TryGetContainingContainer((entity, null, null), out var container) &&
+            TryComp<IdentityComponent>(container.Owner, out var identity) &&
+            identity.IdentityEntitySlot.ContainedEntity == entity &&
+            MetaData(container.Owner).EntityPrototype is { } ownerPrototype)
+        {
+            prototype = ownerPrototype;
+            return true;
+        }
+
+        prototype = default!;
+        return false;
     }
 
     private EntityLocData GetEntityData(string cultureName, string prototypeId)

@@ -1,5 +1,8 @@
-koronus-expedition-monolith-title = A shard that remembers
-koronus-expedition-monolith-summary = An impossible fragment has appeared in local space. Its chambers conceal a relic and hostile echoes. Recover the shielded casket and leave the fragment to secure archeotech supplies. Deliver the casket to Footfall's astropathic intake. Prepare for EVA and close combat.
+wh40k-expedition-dungeon-chaos = Chaos sanctuary
+wh40k-expedition-dungeon-necron = Necron tomb
+
+koronus-expedition-monolith-title = Expedition: Chaos sanctuary
+koronus-expedition-monolith-summary = An isolated Chaos sanctuary has been discovered. Its chambers conceal a relic and hostile warp echoes. Find the shielded casket and extract it for archeotech supplies. Deliver the casket to Footfall's astropathic intake. Bring EVA gear and prepare for close combat.
 koronus-expedition-weapons-cache-title = The arms broker's last inventory
 koronus-expedition-weapons-cache-summary = Chaos heretics have occupied an isolated weapons depot. Recover their sealed ledger before the trail goes cold. Extract it for engineering supplies, then deliver it to the cargo Officio on Footfall. Bring EVA gear, breaching tools and cover against the guards' lasguns.
 koronus-expedition-vault-title = The forgotten charter
@@ -22,8 +25,8 @@ koronus-expedition-scrap-survey-title = A memory in the scrap
 koronus-expedition-scrap-survey-summary = A drifting scrap field hides an intact cogitator core. Scavengers have claimed the site. Recover the core and extract it for engineering supplies; Footfall's archive accepts the record. Bring EVA equipment and expect resistance.
 koronus-expedition-infested-ship-title = A heartbeat in the hull
 koronus-expedition-infested-ship-summary = A silent vessel is infested with Tyranids. Board it, recover the quarantined sample and escape with it for xenology supplies. Footfall's astropathic intake accepts the specimen. Hormagaunts hunt through the corridors: bring EVA gear, close-range weapons and cover your extraction route.
-koronus-expedition-machine-salvage-title = The watch that never ended
-koronus-expedition-machine-salvage-summary = An ancient machine complex has awoken under Necron watch. Recover its cogitator core and extract it for archeotech supplies; deliver the record to Footfall's archive. Expect autonomous constructs with ranged weapons. Bring EVA gear, armour and breaching tools, and use the machinery as cover.
+koronus-expedition-machine-salvage-title = Expedition: Necron tomb
+koronus-expedition-machine-salvage-summary = Stasis chambers are awakening inside an ancient Necron tomb. Cross the crypts and power nodes, recover the data core and extract it for archeotech supplies. Deliver the record to Footfall's archive. Expect autonomous constructs with ranged weapons. Bring EVA gear, armour and breaching tools, and use the machinery as cover.
 
 ent-KoronusExpeditionDataCore = recovered voidship data core
     .desc = A sealed cogitator core. Extract it and deliver it to the archive intake on Footfall.

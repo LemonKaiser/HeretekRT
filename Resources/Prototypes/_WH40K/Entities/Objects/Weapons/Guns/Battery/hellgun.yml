@@ -9,6 +9,9 @@
     - Hellgun
   - type: ClothingSlotAmmoProvider
     targetSlot: BACK
+    providerWhitelist:
+      tags:
+      - HellBackpackEnergy
   - type: AmmoCounter
   - type: Gun
     fireRate: 7

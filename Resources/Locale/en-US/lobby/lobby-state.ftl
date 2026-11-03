@@ -207,12 +207,12 @@ heretek-origin-noble-focus-description = Orders, connections, and a sense of ran
 heretek-origin-noble-lore-note = Imperial nobility rules houses, estates, and whole worlds in Terra's name. From childhood, a noble learns authority, etiquette, and the price of a servant's loyalty.
 heretek-origin-noble-talents = You. Do Something., You. Protect Me., You. Go On., You. Kill It., You. You Are Next.
 
-heretek-origin-psyker-name = Sanctioned Psyker
-heretek-origin-psyker-description = A human trained and sanctioned by the Adeptus Astra Telepathica to use the powers of the Warp more safely in service to the Imperium.
-heretek-origin-psyker-feature-name = Psychic powers
-heretek-origin-psyker-focus-description = Psychic powers channel the Warp through discipline, training, and constant control over the danger of a psychic collapse.
-heretek-origin-psyker-lore-note = The Adeptus Astra Telepathica trains sanctioned psykers and admits them to service only after harsh trials. Even a useful psyker remains feared and closely watched.
-heretek-origin-psyker-talents = Still Mind, Subtle Manipulation, Second Sight, Obscured Threat, Psyker Minoris, Psyker Majoris, Psyker Terminus, Psyker Extremis.
+heretek-origin-psyker-name = Administratum Savant
+heretek-origin-psyker-description = An Imperial scholar and archivist trained to study ancient records, collate reports, and identify patterns in vast stores of data. Knowledge, observation, and rigorous analysis are their tools.
+heretek-origin-psyker-feature-name = Erudition
+heretek-origin-psyker-focus-description = Extensive knowledge, a trained memory, and careful examination of evidence help identify threats, assess a situation, and reach sound conclusions.
+heretek-origin-psyker-lore-note = The archives of the Adeptus Administratum employ learned adepts who dedicate their lives to preserving and studying Imperial knowledge. Savants decipher ancient texts, compile reports, and perform complex calculations to inform their patrons' decisions.
+heretek-origin-psyker-talents = Archival Memory, Report Analysis, Ancient Languages, Cryptography, Ballistic Calculations, Systematic Knowledge.
 
 heretek-origin-arbitrator-name = Arbitrator
 heretek-origin-arbitrator-description = An Adeptus Arbites officer and executor of the Lex Imperialis, the laws of the Imperium. This origin will later branch into one of three specializations.

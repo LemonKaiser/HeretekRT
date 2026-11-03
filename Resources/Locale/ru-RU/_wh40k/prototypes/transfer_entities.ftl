@@ -109,7 +109,8 @@ ent-Cartridge10mm = патрон (10 мм)
 
 ent-Cartridge10mmLong = патрон (10 мм удлинённый)
 
-ent-Cartridge11mm = патрон (11мм)
+ent-Cartridge11mm = патрон стаб-револьвера M748 (11 мм)
+    .desc = Револьверный патрон для M748 «Взломщик». Заряжается по одному или через спидлоадер M748; патроны пистолета M36 имеют другую гильзу.
 
 ent-Cartridge12mm = патрон (12 мм)
 
@@ -130,8 +131,8 @@ ent-CartridgeGalvanic = гальванический патрон
 ent-CartridgeHeavyBolter = патрон тяжёлого болтера
     .desc = Тяжёлый болт для станкового тяжёлого болтера.
 
-ent-CartridgeHeavyStubPistol = патрон тяжёлого стаб-пистолета (11 мм)
-    .desc = Тяжёлый пистолетный патрон с останавливающим действием на уровне револьвера.
+ent-CartridgeHeavyStubPistol = патрон тяжёлого стаб-пистолета M36 (11 мм)
+    .desc = Пистолетный патрон для магазинов M36 «Аквила» и «Кровавый пакт». Гильза отличается от револьверного патрона M748.
 
 ent-CartridgeLondoronMk2 = патрон Лондорона MK2
     .desc = Тяжёлый винтовочный патрон для винтовок семейства Лондорон MK2.
@@ -1518,7 +1519,7 @@ ent-MagazineCombatShotgunEmpty = { ent-MagazineCombatShotgun }
     .suffix = WH40K, Пустой
     .desc = { ent-MagazineCombatShotgun.desc }
 
-ent-MagazineHeavyStubPistol = магазин тяжёлого стаб-пистолета (11 мм)
+ent-MagazineHeavyStubPistol = магазин тяжёлого стаб-пистолета M36 (11 мм)
     .desc = Магазин на 8 патронов с тяжёлыми 11-мм боеприпасами для пистолетов семейства M36.
 
 ent-MagazineHevStubPistol = магазин "Шпателя"
@@ -1969,7 +1970,8 @@ ent-SpecialistHWSDogTag = { ent-StandardDogTag }
 
 ent-SpecialistSWSDogTag = { ent-StandardDogTag }
 
-ent-SpeedLoader11mm = спидлоадер (11мм)
+ent-SpeedLoader11mm = спидлоадер стаб-револьвера M748 (11 мм)
+    .desc = Ускоритель заряжания на шесть револьверных патронов M748 «Взломщик».
 
 ent-SpeedLoaderElectricArc = cпидлоадер электродугового пистолета
     .desc = Магазин для электродугового пистолета.
@@ -2126,8 +2128,8 @@ ent-WH40KAmmoBoxElectricArc = ящик патрон электродуговог
 
 ent-WH40KAmmoBoxGalvanic = ящик гальванических патрон
 
-ent-WH40KAmmoBoxHeavyStubPistol = коробка патронов для тяжёлого стаб-пистолета (11 мм)
-    .desc = Коробка тяжёлых 11-мм патронов для тяжёлых стаб-пистолетов M36.
+ent-WH40KAmmoBoxHeavyStubPistol = коробка патронов тяжёлого стаб-пистолета M36 (11 мм)
+    .desc = 40 пистолетных патронов для магазинов M36 «Аквила» и «Кровавый пакт». Для револьвера M748 нужна коробка револьверных патронов.
 
 ent-WH40KAmmoBoxLondoronMk2 = коробка патронов Лондорона MK2
     .desc = Коробка тяжёлых патронов для винтовок семейства Лондорон MK2.
@@ -2866,7 +2868,7 @@ ent-WH40KWeaponTurretHeretics = { ent-WH40KWeaponTurretBallisticBase }
 ent-WH40KWeaponTurretHereticsDmr = { ent-WH40KWeaponTurretDmrBase }
 
 ent-WH40KWeaponTurretHereticsLaser = лазерная полевая турель
-    .desc = Развёртываемая лазерная турель. Использует батареи лазгана и подходит для быстрого усиления линии фронта.
+    .desc = Лазерная турель со встроенной заряженной батареей на 25 выстрелов. Заряжается от электросети через кабельный приёмник.
 
 ent-WH40KWeaponTurretHereticsMini = { ent-WH40KWeaponTurretMiniBase }
 
@@ -2877,14 +2879,14 @@ ent-WH40KWeaponTurretImperium = { ent-WH40KWeaponTurretBallisticBase }
 ent-WH40KWeaponTurretImperiumDmr = { ent-WH40KWeaponTurretDmrBase }
 
 ent-WH40KWeaponTurretImperiumLaser = лазерная полевая турель
-    .desc = Развёртываемая лазерная турель. Использует батареи лазгана и подходит для быстрого усиления линии фронта.
+    .desc = Лазерная турель со встроенной заряженной батареей на 25 выстрелов. Заряжается от электросети через кабельный приёмник.
 
 ent-WH40KWeaponTurretImperiumMini = { ent-WH40KWeaponTurretMiniBase }
 
 ent-WH40KWeaponTurretImperiumShotgun = { ent-WH40KWeaponTurretShotgunBase }
 
-ent-WH40KWeaponTurretLaserBase = multilaser field sentry turret
-    .desc = A powered field turret armed with a multilaser package.
+ent-WH40KWeaponTurretLaserBase = лазерная полевая турель
+    .desc = Лазерная турель со встроенной заряженной батареей. Заряжается от электросети через кабельный приёмник.
 
 ent-WH40KWeaponTurretMiniBase = mini field sentry turret
     .desc = A compact automatic sentry with a lighter ballistic package.
@@ -3001,7 +3003,7 @@ ent-WeaponHeavyStubPistolBloodPact = тяжёлый стаб-пистолет M3
 ent-WeaponHellDiverCarabin = карабин хеллдайвера
 
 ent-WeaponHellgun = Пробивная лазвинтовка Mk. II
-    .desc = Тяжёлый, но при этом мощный разновидность лазвинтовки.
+    .desc = Тяжёлая пробивная лазвинтовка. Питается от энергетического ранца хеллгана, надетого на спину стрелка. Для стрельбы возьмите оружие обеими руками.
 
 ent-WeaponHereticLaserLasgun = Еретический М36 Кантраэль
     .desc = проклятое оружие еретических войск.
@@ -3181,7 +3183,7 @@ ent-WeaponStubPistol = Стабб пистолет
     .desc = Лёгкий автопистолет, производимый для частного использования во многих уголках сектора. Использует 10мм.
 
 ent-WeaponStubRevolver = Стаб-револьвер M748 "Взломщик"
-    .desc = Тяжёлый стаб-револьвер, получивший своё название из-за любви бандитов подулья к вскрытию замков выстрелами из него.
+    .desc = Тяжёлый шестизарядный стаб-револьвер, которым банды подулья вскрывают замки. Использует револьверные патроны M748 (11 мм), по одному или через спидлоадер M748.
 
 ent-WeaponStubRifle = автомат Агрипинаа Mk.III
     .desc = Тяжёлый автомат модели «Агрипинаа» является переработанной версией Mk. II, фактически ничем не отличается от Mk. II, за исключением более стабильной отдачи взамен на вес. Использует 8,25 "Лонг".
@@ -3399,8 +3401,8 @@ ent-WH40KAmmoBox10mmLong_100 = ящик длинных патрон 10мм
 ent-WH40KAmmoBox10mm_100 = ящик патрон 10мм
     .desc = Ящик с патронами 10мм. Содержит 100 штук.
 
-ent-WH40KAmmoBox11mm_100 = ящик патрон 11мм
-    .desc = Ящик с патронами 11мм. Содержит 100 штук.
+ent-WH40KAmmoBox11mm_100 = ящик патронов стаб-револьвера M748 (11 мм)
+    .desc = 100 револьверных патронов для M748 «Взломщик» и его спидлоадеров. Для пистолетов M36 нужна коробка пистолетных патронов.
 
 ent-WH40KAmmoBox762x39mmFMJ_100 = ящик патрон 7.62x39мм FMJ
     .desc = Ящик с патронами 7.62x39мм FMJ. Содержит 100 штук.

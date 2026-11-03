@@ -69,7 +69,9 @@ public sealed class KoronusSectorDossierWindow : FancyWindow
             return;
         _signature = signature;
 
-        _title.SetMessage(selected?.Name ?? Loc.GetString("koronus-sector-dossier-overview"), Color.FromHex("#E4CE98"));
+        _title.SetMessage(selected != null
+            ? KoronusLocalization.GetString(selected.Name)
+            : Loc.GetString("koronus-sector-dossier-overview"), Color.FromHex("#E4CE98"));
 
         var route = selected == null ? null : state.Routes.FirstOrDefault(candidate => candidate.Enabled &&
             ((candidate.From == state.CurrentSystem && candidate.To == selected.Id) ||
@@ -119,14 +121,17 @@ public sealed class KoronusSectorDossierWindow : FancyWindow
             var name = new RichTextLabel();
             name.SetMessage(Loc.GetString(activity.TitleLocId));
             entry.AddChild(name);
-            var systemName = state.Systems.FirstOrDefault(system => system.Id == activity.SystemId)?.Name ?? activity.SystemId;
+            var systemName = KoronusLocalization.GetString(
+                state.Systems.FirstOrDefault(system => system.Id == activity.SystemId)?.Name ?? activity.SystemId);
             var physical = KoronusActivityRuntimePolicy.IsPhysicalExecution(activity.Execution);
             var status = Loc.GetString(physical ? "koronus-sector-dossier-task" : "koronus-sector-dossier-intel",
                 ("system", systemName), ("minutes", Math.Max(0, (int) Math.Ceiling((activity.ExpiresAt - now).TotalMinutes))));
             if (activity.RouteFromSystem != null && activity.RouteToSystem != null)
                 status = Loc.GetString("koronus-sector-dossier-route-signal",
-                    ("origin", state.Systems.FirstOrDefault(system => system.Id == activity.RouteFromSystem)?.Name ?? activity.RouteFromSystem),
-                    ("destination", state.Systems.FirstOrDefault(system => system.Id == activity.RouteToSystem)?.Name ?? activity.RouteToSystem),
+                    ("origin", KoronusLocalization.GetString(
+                        state.Systems.FirstOrDefault(system => system.Id == activity.RouteFromSystem)?.Name ?? activity.RouteFromSystem)),
+                    ("destination", KoronusLocalization.GetString(
+                        state.Systems.FirstOrDefault(system => system.Id == activity.RouteToSystem)?.Name ?? activity.RouteToSystem)),
                     ("minutes", Math.Max(0, (int) Math.Ceiling((activity.ExpiresAt - now).TotalMinutes))));
             if (physical)
                 status += "\n" + Loc.GetString("koronus-sector-dossier-participants", ("count", activity.MinimumParticipants));

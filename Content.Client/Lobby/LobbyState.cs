@@ -1,3 +1,4 @@
+using Content.Client._Corvax.Respawn;
 using Content.Client._NF.LateJoin;
 using Content.Client._WH40K.Act1;
 using Content.Client._WH40K.CharacterCreation;
@@ -47,9 +48,11 @@ namespace Content.Client.Lobby
         private ClientGameTicker _gameTicker = default!;
         private ContentAudioSystem _contentAudioSystem = default!;
         private GhostPermissionStatusSystem _ghostPermissionStatus = default!;
+        private RespawnSystem _respawn = default!;
         private LobbyBackgroundController? _lobbyBackgroundController;
         private ChatUIController? _chatController;
         private bool? _lastRoundStarted;
+        private int? _lastRespawnCooldownSeconds;
         private bool? _lastObserveAvailable;
         private bool? _lastPersonalizationAvailable;
         private bool? _lastOnboardingRequired;
@@ -81,6 +84,7 @@ namespace Content.Client.Lobby
             _gameTicker = _entityManager.System<ClientGameTicker>();
             _contentAudioSystem = _entityManager.System<ContentAudioSystem>();
             _ghostPermissionStatus = _entityManager.System<GhostPermissionStatusSystem>();
+            _respawn = _entityManager.System<RespawnSystem>();
             _contentAudioSystem.LobbySoundtrackChanged += UpdateLobbySoundtrackInfo;
 
             _chatController.SetMainChat(true);
@@ -100,6 +104,7 @@ namespace Content.Client.Lobby
             UpdateLobbyUi();
             Lobby.BeginPresentation();
             OnWh40kProgressChanged();
+            _chatController.MessageAdded += OnLobbyChatMessage;
             _lobbyBackgroundController = new LobbyBackgroundController(
                 _cfg,
                 _protoMan,
@@ -126,6 +131,8 @@ namespace Content.Client.Lobby
 
         protected override void Shutdown()
         {
+            if (_chatController != null)
+                _chatController.MessageAdded -= OnLobbyChatMessage;
             _chatController?.SetMainChat(false);
             _gameTicker.InfoBlobUpdated -= UpdateLobbyUi;
             _gameTicker.LobbyStatusUpdated -= LobbyStatusUpdated;
@@ -150,6 +157,7 @@ namespace Content.Client.Lobby
             _lobbyBackgroundController = null;
             _chatController = null;
             _lastRoundStarted = null;
+            _lastRespawnCooldownSeconds = null;
             _lastObserveAvailable = null;
             _lastPersonalizationAvailable = null;
             _lastOnboardingRequired = null;
@@ -211,6 +219,9 @@ namespace Content.Client.Lobby
                 return;
             }
 
+            if (TryShowRespawnCooldown())
+                return;
+
             if (!HasWh40kCharacterProfile)
             {
                 ShowWh40kProfileRequiredMessage();
@@ -252,7 +263,7 @@ namespace Content.Client.Lobby
                 Lobby?.ReturnToLobbyFromOnboarding();
 
                 // A profile completed during a running round follows the same late-join route as an existing profile.
-                if (_gameTicker.IsGameStarted)
+                if (_gameTicker.IsGameStarted && !TryShowRespawnCooldown())
                 {
                     if (!TryJoinAct1())
                         OpenLateJoinPicker();
@@ -304,7 +315,46 @@ namespace Content.Client.Lobby
 
             UpdateObserveButton();
             UpdatePersonalizationButton();
+            UpdateJoinButtonText();
             UpdateLobbyClock();
+        }
+
+        private int GetRespawnCooldownSeconds()
+        {
+            if (!_gameTicker.IsGameStarted || _adminManager.IsAdmin() ||
+                _respawn.RespawnResetTime is not { } respawnAt)
+                return 0;
+
+            return (int) Math.Max(0, Math.Ceiling((respawnAt - _gameTiming.CurTime).TotalSeconds));
+        }
+
+        private void UpdateJoinButtonText()
+        {
+            if (!_gameTicker.IsGameStarted)
+            {
+                _lastRespawnCooldownSeconds = null;
+                return;
+            }
+
+            var seconds = GetRespawnCooldownSeconds();
+            if (_lastRespawnCooldownSeconds == seconds)
+                return;
+
+            _lastRespawnCooldownSeconds = seconds;
+            Lobby!.ReadyButton.Text = seconds > 0
+                ? Loc.GetString("wh40k-lobby-respawn-button-cooldown", ("seconds", seconds))
+                : Loc.GetString("lobby-state-ready-button-join-state");
+        }
+
+        private bool TryShowRespawnCooldown()
+        {
+            var seconds = GetRespawnCooldownSeconds();
+            if (seconds <= 0)
+                return false;
+
+            _pickerWindow?.Close();
+            ShowLobbyMessage(Loc.GetString("wh40k-respawn-cooldown", ("seconds", seconds)));
+            return true;
         }
 
         private void UpdateLobbyClock()
@@ -395,7 +445,6 @@ namespace Content.Client.Lobby
 
             if (_gameTicker.IsGameStarted)
             {
-                Lobby!.ReadyButton.Text = Loc.GetString("lobby-state-ready-button-join-state");
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Disabled = _gameTicker.DisallowedLateJoin;
                 Lobby!.ReadyButton.Pressed = false;
@@ -415,6 +464,7 @@ namespace Content.Client.Lobby
                 Lobby.UpdateReadyButtonVisual(ready, roundStarted: false);
             }
 
+            UpdateJoinButtonText();
             UpdateObserveButton();
 
             if (_gameTicker.ServerInfoBlob != null)
@@ -432,6 +482,12 @@ namespace Content.Client.Lobby
 
             _lastRoundStarted = roundStarted;
             Lobby!.SetChatExpanded(!roundStarted);
+        }
+
+        private void OnLobbyChatMessage(ChatMessage message)
+        {
+            // Setup keeps the panel hidden; the request is restored on returning to the lobby.
+            Lobby?.SetChatExpanded(true);
         }
 
         private bool CanObserve()
@@ -555,14 +611,14 @@ namespace Content.Client.Lobby
             Lobby?.ReadyButton.Pressed = false;
             Lobby?.UpdateReadyButtonVisual(ready: false, roundStarted: _gameTicker.IsGameStarted);
             Lobby?.HighlightCharacterCreation();
-            // A late-join attempt happens after the lobby chat is automatically
-            // collapsed.  Reveal it before sending the local server-style message.
-            Lobby?.SetChatExpanded(true);
+            ShowLobbyMessage(Loc.GetString("heretek-lobby-profile-required"));
+        }
 
+        private void ShowLobbyMessage(string message)
+        {
             if (_chatController == null)
                 return;
 
-            var message = Loc.GetString("heretek-lobby-profile-required");
             var wrappedMessage = Loc.GetString(
                 "chat-manager-server-wrap-message",
                 ("message", FormattedMessage.EscapeText(message)));

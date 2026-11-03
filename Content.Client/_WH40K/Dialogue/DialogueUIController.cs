@@ -3,6 +3,7 @@ using Content.Client._WH40K.Dialogue.UI;
 using Content.Client.Audio;
 using Content.Client._WH40K.Audio;
 using Content.Client.Gameplay;
+using Content.Client.Localization;
 using Content.Client.UserInterface.Screens;
 using Content.Client.UserInterface.Systems.Gameplay;
 using Robust.Client.Audio;
@@ -28,10 +29,12 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     [Dependency] private IEntityNetworkManager _net = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private ISharedPlayerManager _players = default!;
+    [Dependency] private IEntityManager _entities = default!;
     [UISystemDependency] private readonly AudioSystem? _audio = default!;
     [UISystemDependency] private readonly ContentAudioSystem? _contentAudio = default!;
     [UISystemDependency] private readonly Wh40kMusicOverrideSystem? _music = default!;
     [UISystemDependency] private readonly DialoguePreviewSystem? _preview = default!;
+    [UISystemDependency] private readonly WH40KEntityNameLocalizer _entityNames = default!;
 
     private DialogueOverlay? _overlay;
     private int? _sessionId;
@@ -653,6 +656,8 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private object ResolveLocalizationArgument(DialogueLocArgumentData argument)
     {
+        if (argument.Entity is { } netEntity && _entities.TryGetEntity(netEntity, out var entity) && entity is { } uid)
+            return _entityNames.GetName(uid, _players.LocalEntity);
         if (argument.Text != null)
             return argument.Text;
         if (argument.Number != null)

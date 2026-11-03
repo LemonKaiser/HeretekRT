@@ -1696,21 +1696,43 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             }
         }
 
-        var star = _planetaryState.Bodies.FirstOrDefault(body => body.BodyType == "Star");
-        var sunRadius = star?.NavVisualRadius * MinimapScale ?? 0f;
-        if (sunRadius > 0f)
+        var phaseTime = (float) IoCManager.Resolve<IGameTiming>().CurTime.TotalSeconds;
+        foreach (var star in _planetaryState.Bodies)
         {
-            var starColor = Color.White;
-            if (star != null && _prototypeManager.TryIndex<KoronusCelestialBodyPrototype>(star.Id, out var starPrototype))
-                starColor = starPrototype.StarColor;
+            if (star.BodyType != "Star")
+                continue;
 
-            _sunRenderer.Draw(handle, stellarPosition, sunRadius, starColor);
+            var sunRadius = star.NavVisualRadius * MinimapScale;
+            if (sunRadius <= 0f)
+                continue;
+
+            var starColor = Color.White;
+            if (_prototypeManager.TryIndex<KoronusCelestialBodyPrototype>(star.Id, out var starPrototype))
+            {
+                if (_sunRenderer.IsAccretionCompanion(starPrototype))
+                    continue;
+
+                starColor = starPrototype.StarColor;
+            }
+
+            var starPosition = Vector2.Transform(GetCelestialPosition(star, phaseTime), worldToView);
+            if (starPrototype?.AccretionTarget is { } targetId &&
+                _planetaryState.Bodies.FirstOrDefault(body => body.Id == targetId.Id && body.BodyType == "Star") is { } target &&
+                _prototypeManager.TryIndex(targetId, out var targetPrototype) &&
+                target.Id != star.Id && targetPrototype.System == starPrototype.System && target.NavVisualRadius > 0f)
+            {
+                var targetPosition = Vector2.Transform(GetCelestialPosition(target, phaseTime), worldToView);
+                _sunRenderer.DrawAccretion(handle, starPosition, sunRadius, starColor,
+                    targetPosition, target.NavVisualRadius * MinimapScale, targetPrototype.StarColor);
+                continue;
+            }
+            _sunRenderer.Draw(handle, starPosition, sunRadius, starColor,
+                starPrototype?.StarVisualStyle ?? KoronusStarVisualStyle.Magnetic);
         }
 
-        var phaseTime = (float) IoCManager.Resolve<IGameTiming>().CurTime.TotalSeconds;
         foreach (var body in _planetaryState.Bodies)
         {
-            if (body.OrbitRadius <= 0f)
+            if (body.BodyType == "Star" || body.OrbitRadius <= 0f)
                 continue;
 
             var position = GetCelestialPosition(body, phaseTime);
@@ -1744,7 +1766,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 viewPosition.Y >= -radius * 2f &&
                 viewPosition.Y <= PixelHeight + radius * 2f)
             {
-                var label = body.Name;
+                var label = KoronusLocalization.GetString(body.Name);
                 var labelSize = handle.GetDimensions(Font, label, 0.6f * UIScale);
                 handle.DrawString(
                     Font,

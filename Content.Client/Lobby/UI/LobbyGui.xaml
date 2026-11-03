@@ -96,8 +96,6 @@
                         </BoxContainer>
                     </PanelContainer>
 
-                    <BoxContainer Name="VoteContainer" Access="Public" Orientation="Vertical" HorizontalExpand="True"
-                                  Margin="0 8 0 0" SeparationOverride="4" />
                     <PanelContainer Name="BottomInfoPanel" Access="Public" HorizontalExpand="True" Margin="33 14 0 0">
                         <PanelContainer.PanelOverride>
                             <graphics:StyleBoxFlat BackgroundColor="#00000000" BorderColor="#00000000"
@@ -559,6 +557,11 @@
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>
+
+    <ScrollContainer Name="VoteOverlay" Access="Public" HScrollEnabled="False">
+        <BoxContainer Name="VoteContainer" Access="Public" Orientation="Vertical" HorizontalExpand="True"
+                      SeparationOverride="12" />
+    </ScrollContainer>
 
     <BoxContainer Name="UtilityBar" Access="Public" Orientation="Horizontal" SeparationOverride="8">
         <Button Name="AHelpButton" Access="Public" ToolTip="{Loc 'ui-options-function-open-a-help'}" SetSize="44 44" />

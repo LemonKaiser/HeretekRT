@@ -76682,6 +76682,7 @@ entities:
       parent: 2
     - type: NavMapBeacon
       text: Генератор щита
+      textEnglish: Shield generator
 - proto: DefaultStationBeaconChemistry
   entities:
   - uid: 12150
@@ -76753,6 +76754,7 @@ entities:
       parent: 2
     - type: NavMapBeacon
       text: Заброшенный цех
+      textEnglish: Abandoned workshop
 - proto: DefaultStationBeaconFrontierOfficeMercenary
   entities:
   - uid: 12161
@@ -76934,6 +76936,7 @@ entities:
     - type: NavMapBeacon
       color: '#B9B973FF'
       text: Наёмники
+      textEnglish: Mercenaries
 - proto: DefibrillatorCabinetFilled
   entities:
   - uid: 12187

@@ -4,6 +4,7 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Station.Systems;
 using Content.Server.Warps;
 using Content.Shared.Database;
+using Content.Shared._WH40K.Pinpointer;
 using Content.Shared.Examine;
 using Content.Shared.Localizations;
 using Content.Shared.Maps;
@@ -169,12 +170,6 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
 
     private void OnNavMapBeaconMapInit(EntityUid uid, NavMapBeaconComponent component, MapInitEvent args)
     {
-        if (component.DefaultText == null || component.Text != null)
-            return;
-
-        component.Text = Loc.GetString(component.DefaultText);
-        Dirty(uid, component);
-
         UpdateNavMapBeaconData(uid, component);
     }
 
@@ -190,6 +185,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
             return;
 
         if (beacon.Text == args.Text &&
+            beacon.TextEnglish == args.TextEnglish &&
             beacon.Color == args.Color &&
             beacon.Enabled == args.Enabled)
             return;
@@ -199,12 +195,14 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
 
         if (TryComp<WarpPointComponent>(ent, out var warpPoint))
         {
-            warpPoint.Location = args.Text;
+            warpPoint.Location = Wh40kNavMapBeaconText.GetText(args.Text, args.TextEnglish, beacon.DefaultText);
         }
 
         beacon.Text = args.Text;
+        beacon.TextEnglish = args.TextEnglish;
         beacon.Color = args.Color;
         beacon.Enabled = args.Enabled;
+        Dirty(ent, beacon);
 
         UpdateBeaconEnabledVisuals((ent, beacon));
         UpdateNavMapBeaconData(ent, beacon);
@@ -217,7 +215,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
 
         // We set this on mapinit just in case the text was edited via VV or something.
         if (TryComp<WarpPointComponent>(ent, out var warpPoint))
-            warpPoint.Location = navMap.Text;
+            warpPoint.Location = Wh40kNavMapBeaconText.GetText(navMap);
 
         UpdateBeaconEnabledVisuals((ent, navMap));
     }
@@ -230,7 +228,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
         args.PushMarkup(Loc.GetString("nav-beacon-examine-text",
             ("enabled", navMap.Enabled),
             ("color", navMap.Color.ToHexNoAlpha()),
-            ("label", navMap.Text ?? string.Empty)));
+            ("label", Wh40kNavMapBeaconText.GetText(navMap))));
     }
 
     #endregion
@@ -418,7 +416,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
             if (!navBeacon.Enabled)
                 continue;
 
-            if (navBeacon.Text == null)
+            if (string.IsNullOrWhiteSpace(Wh40kNavMapBeaconText.GetText(navBeacon)))
                 continue;
 
             if (coordinates.MapId != xform.MapID)
@@ -461,7 +459,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
             return Loc.GetString("nav-beacon-pos-no-beacons");
 
         if (onlyName)
-            return beacon.Value.Comp.Text!;
+            return Wh40kNavMapBeaconText.GetText(beacon.Value.Comp);
 
         var gridOffset = Angle.Zero;
         if (_mapManager.TryFindGridAt(pos.Value, out var grid, out _))
@@ -478,19 +476,18 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
         {
             return Loc.GetString("nav-beacon-pos-format",
                 ("color", beacon.Value.Comp.Color),
-                ("marker", beacon.Value.Comp.Text!));
+                ("marker", Wh40kNavMapBeaconText.GetText(beacon.Value.Comp)));
         }
 
         var modifier = length > FarDistance
             ? Loc.GetString("nav-beacon-pos-format-direction-mod-far")
             : string.Empty;
 
-        // we can null suppress the text being null because TryGetNearestVisibleStationBeacon always gives us a beacon with not-null text.
         return Loc.GetString("nav-beacon-pos-format-direction",
             ("modifier", modifier),
             ("direction", ContentLocalizationManager.FormatDirection(adjustedDir).ToLowerInvariant()),
             ("color", beacon.Value.Comp.Color),
-            ("marker", beacon.Value.Comp.Text!));
+            ("marker", Wh40kNavMapBeaconText.GetText(beacon.Value.Comp)));
     }
 
     #endregion

@@ -3,6 +3,7 @@ using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.Localizations;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared.GameTicking;
 using Robust.Server.GameObjects;
@@ -196,7 +197,8 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
             var systemName = _sector.TryGetSystemPrototype(boundary.Runtime.SystemId, out var system)
                 ? system.DisplayName
                 : boundary.Runtime.SystemId;
-            var message = _playerCulture.GetPlayerString(session, "koronus-boundary-warning", ("system", systemName));
+            var localizedSystemName = _playerCulture.WithCulture(session, () => KoronusLocalization.GetString(systemName));
+            var message = _playerCulture.GetPlayerString(session, "koronus-boundary-warning", ("system", localizedSystemName));
             _chat.DispatchFilteredAnnouncement(
                 Filter.SinglePlayer(session),
                 message,

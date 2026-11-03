@@ -105,16 +105,24 @@
 - type: koronusSystem
   id: SystemSpeculum
   sector: KoronusExpanse
-  displayName: System Speculum
+  displayName: koronus-system-speculum-name
   uiPosition: 0.506, 0.708
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3000
+  allowColdUnload: true
 
 - type: koronusSystem
   id: Omicron
   sector: KoronusExpanse
-  displayName: Omicron
+  displayName: koronus-system-omicron-name
   uiPosition: 0.507, 0.758
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3000
+  allowColdUnload: true
 
 - type: koronusSystem
   id: SmaragdusMundos
@@ -296,23 +304,36 @@
 - type: koronusSystem
   id: TelikosEpsilon
   sector: KoronusExpanse
-  displayName: Telikos Epsilon (Janus)
+  displayName: koronus-system-telikos-epsilon-name
   uiPosition: 0.550, 0.677
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3000
+  allowColdUnload: true
 
 - type: koronusSystem
   id: CradleOfKhepri
   sector: KoronusExpanse
-  displayName: Cradle of Khepri
+  displayName: koronus-system-cradle-of-khepri-name
   uiPosition: 0.584, 0.774
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3000
+  allowColdUnload: true
+  asteroidPool: KoronusMediumLargeMiningAsteroids
 
 - type: koronusSystem
   id: PalatinumStellios
   sector: KoronusExpanse
-  displayName: Palatinum Stellios
+  displayName: koronus-system-palatinum-stellios-name
   uiPosition: 0.604, 0.817
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3000
+  allowColdUnload: true
 
 - type: koronusSystem
   id: JagerensBelt
@@ -331,9 +352,13 @@
 - type: koronusSystem
   id: ForgottenTwins
   sector: KoronusExpanse
-  displayName: Forgotten Twins
+  displayName: koronus-system-forgotten-twins-name
   uiPosition: 0.638, 0.742
-  initialGridPath: /Maps/Test/empty.yml
+  spaceMode: Planetary
+  enabled: true
+  boundaryRadius: 24000
+  arrivalDistance: 3500
+  allowColdUnload: true
 
 - type: koronusSystem
   id: JanxIV

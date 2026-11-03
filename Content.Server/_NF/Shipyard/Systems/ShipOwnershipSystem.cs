@@ -27,6 +27,7 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
 
         // Initialize tracking for ships
         SubscribeLocalEvent<ShipOwnershipComponent, ComponentStartup>(OnShipOwnershipStartup);
+        InitializeAbandonment();
     }
 
     public override void Shutdown()
@@ -49,6 +50,10 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
         comp.OwnerUserId = owningPlayer.UserId;
         comp.IsOwnerOnline = true;
         comp.LastStatusChangeTime = _gameTiming.CurTime;
+        comp.InCryosleep = false;
+        comp.OwnerCharacterSlot = _preferences.TryGetCachedPreferences(owningPlayer.UserId, out var preferences)
+            ? preferences.SelectedCharacterIndex
+            : null;
 
         Dirty(gridUid, comp);
 
@@ -59,7 +64,8 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
     private void OnShipOwnershipStartup(EntityUid uid, ShipOwnershipComponent component, ComponentStartup args)
     {
         // If player is already online, mark them as such
-        if (_playerManager.TryGetSessionById(component.OwnerUserId, out var player))
+        if (!component.InCryosleep && _playerManager.TryGetSessionById(component.OwnerUserId, out var player) &&
+            player.Status is SessionStatus.Connected or SessionStatus.InGame)
         {
             component.IsOwnerOnline = true;
             component.LastStatusChangeTime = _gameTiming.CurTime;
@@ -85,6 +91,8 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
             {
                 case SessionStatus.Connected:
                 case SessionStatus.InGame:
+                    if (ownership.InCryosleep)
+                        continue;
                     // Player has connected, update ownership
                     ownership.IsOwnerOnline = true;
                     ownership.LastStatusChangeTime = _gameTiming.CurTime;
@@ -92,6 +100,8 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
                     break;
 
                 case SessionStatus.Disconnected:
+                    if (!ownership.IsOwnerOnline)
+                        continue;
                     // Player has disconnected, update ownership
                     ownership.IsOwnerOnline = false;
                     ownership.LastStatusChangeTime = _gameTiming.CurTime;

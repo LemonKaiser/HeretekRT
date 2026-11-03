@@ -1352,7 +1352,7 @@ public sealed partial class DialogueSystem : EntitySystem
 
         return new DialogueTextData(
             "heretek-dialogue-ui-raw-name",
-            [new DialogueLocArgumentData("name", MetaData(entity.Value).EntityName)]);
+            [new DialogueLocArgumentData("name", GetNetEntity(entity.Value), MetaData(entity.Value).EntityName)]);
     }
 
     private DialogueTextData BuildTextData(
@@ -1390,6 +1390,12 @@ public sealed partial class DialogueSystem : EntitySystem
                     result.Add(new DialogueLocArgumentData(argument.Id, balance));
                     break;
                 case DialogueLocArgumentType.ParticipantName:
+                    var participantEntity = ResolveParticipantEntity(dialogue, argument.Participant ?? string.Empty);
+                    if (participantEntity is { } entity && !Deleted(entity))
+                    {
+                        result.Add(new DialogueLocArgumentData(argument.Id, GetNetEntity(entity), MetaData(entity).EntityName));
+                        break;
+                    }
                     result.Add(new DialogueLocArgumentData(
                         argument.Id,
                         ResolveParticipantName(dialogue, argument.Participant)));

@@ -53,7 +53,7 @@ public partial class SharedGunSystem
 
     private void OnRevolverGetAmmoCount(EntityUid uid, RevolverAmmoProviderComponent component, ref GetAmmoCountEvent args)
     {
-        args.Count += GetRevolverCount(component);
+        args.Count += GetRevolverUnspentCount(component);
         args.Capacity += component.Capacity;
     }
 
@@ -70,6 +70,7 @@ public partial class SharedGunSystem
     private void OnRevolverAfterInteract(EntityUid uid, RevolverAmmoProviderComponent component, AfterInteractEvent args)
     {
         if (args.Handled ||
+            !args.CanReach ||
             !component.MayTransfer ||
             !Timing.IsFirstTimePredicted ||
             args.Target == null ||
@@ -107,7 +108,7 @@ public partial class SharedGunSystem
     // NOTE: closely resembles OnBallisticAmmoFillDoAfter except for bullet count check - redundancy could be removed.
     private void OnRevolverAmmoFillDoAfter(EntityUid uid, RevolverAmmoProviderComponent component, AmmoFillDoAfterEvent args)
     {
-        if (Deleted(args.Target))
+        if (args.Cancelled || args.Handled || Deleted(args.Target))
             return;
 
         BallisticAmmoProviderComponent? ballisticTarget;
@@ -145,10 +146,10 @@ public partial class SharedGunSystem
             return;
         }
 
-        void SimulateInsertAmmo(EntityUid ammo, EntityUid ammoProvider, EntityCoordinates coordinates)
+        bool SimulateInsertAmmo(EntityUid ammo, EntityUid ammoProvider, EntityCoordinates coordinates)
         {
-            var evInsert = new InteractUsingEvent(args.User, ammo, ammoProvider, coordinates);
-            RaiseLocalEvent(ammoProvider, evInsert);
+            return _interaction.InteractUsing(args.User, ammo, ammoProvider, coordinates,
+                checkCanInteract: false, checkCanUse: false);
         }
 
         List<(EntityUid? Entity, IShootable Shootable)> ammo = new();
@@ -178,9 +179,11 @@ public partial class SharedGunSystem
             }
             else
             {
-                // play sound to be cool
-                Audio.PlayPredicted(component.SoundInsert, uid, args.User);
-                SimulateInsertAmmo(ent.Value, args.Target.Value, Transform(args.Target.Value).Coordinates);
+                if (!SimulateInsertAmmo(ent.Value, args.Target.Value, Transform(args.Target.Value).Coordinates))
+                {
+                    SimulateInsertAmmo(ent.Value, uid, Transform(uid).Coordinates);
+                    validAmmoType = false;
+                }
             }
 
             if (IsClientSide(ent.Value))
@@ -267,6 +270,7 @@ public partial class SharedGunSystem
                 return false;
             }
 
+            var inserted = 0;
             // Rotate around until we've covered the whole cylinder or there are no more unspent bullets to transfer.
             for (var i = 0; i < component.Capacity && ev.Ammo.Count > 0; i++) // Frontier: speedloader partial reload fix
             {
@@ -287,12 +291,23 @@ public partial class SharedGunSystem
                     continue;
                 }
 
+                if (_whitelistSystem.IsWhitelistFailOrNull(component.Whitelist, ent.Value) ||
+                    !Containers.Insert(ent.Value, component.AmmoContainer))
+                {
+                    var restore = new InteractUsingEvent(user ?? revolverUid, ent.Value, uid, xform.Coordinates);
+                    RaiseLocalEvent(uid, restore);
+                    continue;
+                }
+
                 component.AmmoSlots[index] = ent.Value;
-                Containers.Insert(ent.Value, component.AmmoContainer);
-                SetChamber(index, component, uid);
+                SetChamber(index, component, ent.Value);
+                inserted++;
             }
 
             DebugTools.Assert(ammo.Count == 0);
+            if (inserted == 0)
+                return false;
+
             UpdateRevolverAppearance(revolverUid, component);
             UpdateAmmoCount(revolverUid);
             Dirty(revolverUid, component);
@@ -313,8 +328,10 @@ public partial class SharedGunSystem
                 continue;
             }
 
+            if (!Containers.Insert(uid, component.AmmoContainer))
+                return false;
+
             component.AmmoSlots[index] = uid;
-            Containers.Insert(uid, component.AmmoContainer);
             SetChamber(index, component, uid);
             Audio.PlayPredicted(component.SoundInsert, revolverUid, user);
             Popup(Loc.GetString("gun-revolver-insert"), revolverUid, user);
@@ -472,7 +489,7 @@ public partial class SharedGunSystem
         if (!TryComp<AppearanceComponent>(uid, out var appearance))
             return;
 
-        var count = GetRevolverCount(component);
+        var count = GetRevolverUnspentCount(component);
         Appearance.SetData(uid, AmmoVisuals.HasAmmo, count != 0, appearance);
         Appearance.SetData(uid, AmmoVisuals.AmmoCount, count, appearance);
         Appearance.SetData(uid, AmmoVisuals.AmmoMax, component.Capacity, appearance);
@@ -540,6 +557,7 @@ public partial class SharedGunSystem
                     {
                         component.AmmoSlots[index] = null;
                         component.Chambers[index] = null;
+                        QueueDel(ent.Value);
                     }
                 }
                 else
@@ -606,9 +624,8 @@ public partial class SharedGunSystem
     // Mono
     private void OnRevolverCheckProto(Entity<RevolverAmmoProviderComponent> ent, ref CheckShootPrototypeEvent args)
     {
-        var currentIndex = ent.Comp.CurrentIndex;
-
-        var index = (currentIndex - 1) % ent.Comp.Capacity;
+        // TakeAmmo fires the current chamber before advancing the cylinder.
+        var index = ent.Comp.CurrentIndex;
         var chamber = ent.Comp.Chambers[index];
         if (chamber == true)
         {
@@ -622,6 +639,9 @@ public partial class SharedGunSystem
                 args.ShootPrototype = proto;
                 return;
             }
+
+            if (TryComp<CartridgeAmmoComponent>(ammo, out var cartridge) && cartridge.Spent)
+                return;
 
             args.ShootPrototype = MetaData(ammo.Value).EntityPrototype;
         }

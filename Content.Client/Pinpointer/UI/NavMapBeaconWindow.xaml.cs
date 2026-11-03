@@ -11,10 +11,11 @@ namespace Content.Client.Pinpointer.UI;
 public sealed partial class NavMapBeaconWindow : FancyWindow
 {
     private string? _defaultLabel;
+    private string? _defaultLabelEnglish;
     private bool _defaultEnabled;
     private Color _defaultColor;
 
-    public event Action<string?, bool, Color>? OnApplyButtonPressed;
+    public event Action<string?, bool, Color, string?>? OnApplyButtonPressed;
 
     public NavMapBeaconWindow()
     {
@@ -24,6 +25,7 @@ public sealed partial class NavMapBeaconWindow : FancyWindow
 
         VisibleButton.OnPressed += args => UpdateVisibleButton(args.Button.Pressed);
         LabelLineEdit.OnTextChanged += OnTextChanged;
+        EnglishLabelLineEdit.OnTextChanged += OnTextChanged;
         ColorSelector.OnColorChanged += _ => TryEnableApplyButton();
 
         TryEnableApplyButton();
@@ -33,11 +35,13 @@ public sealed partial class NavMapBeaconWindow : FancyWindow
     public void SetEntity(EntityUid uid, NavMapBeaconComponent navMap)
     {
         _defaultLabel = navMap.Text;
+        _defaultLabelEnglish = navMap.TextEnglish;
         _defaultEnabled = navMap.Enabled;
         _defaultColor = navMap.Color;
 
         UpdateVisibleButton(navMap.Enabled);
         LabelLineEdit.Text = navMap.Text ?? string.Empty;
+        EnglishLabelLineEdit.Text = navMap.TextEnglish ?? string.Empty;
         ColorSelector.Color = navMap.Color;
     }
 
@@ -62,6 +66,7 @@ public sealed partial class NavMapBeaconWindow : FancyWindow
     private void TryEnableApplyButton()
     {
         ApplyButton.Disabled = LabelLineEdit.Text == (_defaultLabel ?? string.Empty) &&
+                               EnglishLabelLineEdit.Text == (_defaultLabelEnglish ?? string.Empty) &&
                                VisibleButton.Pressed == _defaultEnabled &&
                                ColorSelector.Color == _defaultColor;
     }
@@ -69,9 +74,10 @@ public sealed partial class NavMapBeaconWindow : FancyWindow
     private void OnApplyPressed(BaseButton.ButtonEventArgs obj)
     {
         _defaultLabel = LabelLineEdit.Text == string.Empty ? null : LabelLineEdit.Text;
+        _defaultLabelEnglish = EnglishLabelLineEdit.Text == string.Empty ? null : EnglishLabelLineEdit.Text;
         _defaultEnabled = VisibleButton.Pressed;
         _defaultColor = ColorSelector.Color;
-        OnApplyButtonPressed?.Invoke(_defaultLabel, _defaultEnabled, _defaultColor);
+        OnApplyButtonPressed?.Invoke(_defaultLabel, _defaultEnabled, _defaultColor, _defaultLabelEnglish);
         TryEnableApplyButton();
     }
 }

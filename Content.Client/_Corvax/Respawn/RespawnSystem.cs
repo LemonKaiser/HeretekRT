@@ -1,4 +1,5 @@
 using Content.Shared._Corvax.Respawn;
+using Content.Shared.GameTicking;
 
 namespace Content.Client._Corvax.Respawn;
 
@@ -11,6 +12,7 @@ public sealed class RespawnSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeNetworkEvent<RespawnResetEvent>(OnRespawnReset);
+        SubscribeNetworkEvent<RoundRestartCleanupEvent>(_ => OnRespawnReset(new RespawnResetEvent(null)));
     }
 
     private void OnRespawnReset(RespawnResetEvent e)

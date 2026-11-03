@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Content.Shared.Procedural;
 using Content.Shared.Procedural.PostGeneration;
 using Content.Shared.Storage;
-using Robust.Shared.Physics.Components;
 using Robust.Shared.Random;
 
 namespace Content.Server.Procedural.DungeonJob;
@@ -25,16 +24,24 @@ public sealed partial class DungeonJob
             if (reservedTiles.Contains(tile))
                 continue;
 
-            var blocked = _anchorable.TileFree((_gridUid, _grid), tile, DungeonSystem.CollisionLayer, DungeonSystem.CollisionMask);
-
-            if (blocked)
+            if (!_anchorable.TileFree((_gridUid, _grid), tile, DungeonSystem.CollisionLayer, DungeonSystem.CollisionMask))
                 continue;
+
+            if (gen.PreservePassages)
+            {
+                var nearEntrance = dungeon.Entrances.Contains(tile);
+                for (var i = 0; i < 4 && !nearEntrance; i++)
+                    nearEntrance = dungeon.Entrances.Contains(tile + ((Direction) (i * 2)).ToIntVec());
+
+                if (nearEntrance)
+                    continue;
+            }
 
             // If at least 2 adjacent tiles are blocked consider it a corner
             for (var i = 0; i < 4; i++)
             {
                 var dir = (Direction) (i * 2);
-                blocked = HasWall(tile + dir.ToIntVec());
+                var blocked = HasWall(tile + dir.ToIntVec());
 
                 if (!blocked)
                     continue;
@@ -45,6 +52,15 @@ public sealed partial class DungeonJob
                 if (!blocked)
                     continue;
 
+                if (gen.PreservePassages)
+                {
+                    var away = -dir.ToIntVec();
+                    var nextAway = -nextDir.ToIntVec();
+                    if (!IsFreeCorridorCorner(tile + away) || !IsFreeCorridorCorner(tile + nextAway) ||
+                        !IsFreeCorridorCorner(tile + away + nextAway))
+                        continue;
+                }
+
                 if (random.Prob(gen.Chance))
                 {
                     var coords = _maps.GridTileToLocal(_gridUid, _grid, tile);
@@ -54,6 +70,12 @@ public sealed partial class DungeonJob
 
                 break;
             }
+        }
+
+        bool IsFreeCorridorCorner(Vector2i tile)
+        {
+            return dungeon.CorridorTiles.Contains(tile) && !reservedTiles.Contains(tile) &&
+                   _anchorable.TileFree((_gridUid, _grid), tile, DungeonSystem.CollisionLayer, DungeonSystem.CollisionMask);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Linq;
 using System.Text;
 using Content.Shared._WH40K.Activities;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared.Shuttles.Systems;
 using Robust.Client.Graphics;
@@ -619,8 +620,8 @@ public sealed class KoronusSectorMapControl : Control
         var remaining = GetWarpTravelRemaining(travel);
         var text = Loc.GetString(
             "koronus-sector-map-warp-travelling",
-            ("origin", origin.Name),
-            ("destination", destination.Name),
+            ("origin", KoronusLocalization.GetString(origin.Name)),
+            ("destination", KoronusLocalization.GetString(destination.Name)),
             ("remaining", remaining));
         var scale = 0.68f * UIScale;
         var dimensions = handle.GetDimensions(_font, text, scale);
@@ -686,7 +687,8 @@ public sealed class KoronusSectorMapControl : Control
         var priorityComparison = GetLabelPriority(right).CompareTo(GetLabelPriority(left));
         return priorityComparison != 0
             ? priorityComparison
-            : string.Compare(left.Name, right.Name, StringComparison.Ordinal);
+            : string.Compare(KoronusLocalization.GetString(left.Name), KoronusLocalization.GetString(right.Name),
+                StringComparison.CurrentCulture);
     }
 
     private int GetLabelPriority(KoronusSectorNodeState node)
@@ -980,6 +982,7 @@ public sealed class KoronusSectorMapControl : Control
         var routeName = route?.RouteClass switch
         {
             "Dangerous" => Loc.GetString("koronus-sector-card-route-dangerous"),
+            "Unstable" => Loc.GetString("koronus-sector-card-route-unstable"),
             "Forbidden" => Loc.GetString("koronus-sector-card-route-forbidden"),
             _ => Loc.GetString("koronus-sector-card-route-stable"),
         };
@@ -1018,7 +1021,7 @@ public sealed class KoronusSectorMapControl : Control
         foreach (var node in _state.Systems)
         {
             _systemsById[node.Id] = node;
-            _systemLabelLines[node.Id] = SplitLabel(node.Name);
+            _systemLabelLines[node.Id] = SplitLabel(KoronusLocalization.GetString(node.Name));
             _orderedLabelNodes.Add(node);
         }
     }

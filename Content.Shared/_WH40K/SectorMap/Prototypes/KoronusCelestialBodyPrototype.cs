@@ -23,11 +23,25 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     public KoronusCelestialBodyType BodyType = KoronusCelestialBodyType.Planet;
 
     /// <summary>
-    /// Spectral tint for the procedural star renderer and its local light. White preserves the
-    /// original solar palette; non-stellar bodies ignore this field.
+    /// Spectral colour for the procedural star renderer and its local light.
+    /// Non-stellar bodies ignore this field.
     /// </summary>
     [DataField]
     public Color StarColor = Color.White;
+
+    /// <summary>
+    /// Surface and corona style shared by the world and NAV renderers.
+    /// Accreting stars retain their diffuse plasma appearance independently of the stream.
+    /// </summary>
+    [DataField]
+    public KoronusStarVisualStyle StarVisualStyle = KoronusStarVisualStyle.Magnetic;
+
+    /// <summary>
+    /// Companion star receiving a decorative stream of plasma from this star.
+    /// Both stars must belong to the same system.
+    /// </summary>
+    [DataField]
+    public ProtoId<KoronusCelestialBodyPrototype>? AccretionTarget;
 
     [DataField(required: true)]
     public string DisplayName = string.Empty;
@@ -112,8 +126,8 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     public float AtmosphereIntensity = 0.85f;
 
     /// <summary>
-    /// Authoritative visual radius in system-space metres. It is used by NAV and by stars in the
-    /// world renderer, so a star's apparent boundary remains consistent between both views.
+    /// Authoritative visual radius in system-space metres. NAV uses it directly; the decorative
+    /// world renderer projects stellar size and displacement by the same parallax factor.
     /// </summary>
     [DataField]
     public float NavVisualRadius = 12f;
@@ -121,15 +135,15 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     /// <summary>
     /// Decorative radius before parallax projection for non-stellar bodies. The client applies the
     /// same parallax scale to this radius and the body's displacement, keeping their geometry
-    /// consistent. Zero falls back to <see cref="NavVisualRadius"/>. Stars always use
-    /// <see cref="NavVisualRadius"/> so their world and NAV geometry cannot diverge.
+    /// consistent. Zero falls back to <see cref="NavVisualRadius"/>. Stars project
+    /// <see cref="NavVisualRadius"/> by the same factor as their displacement.
     /// </summary>
     [DataField]
     public float BackgroundVisualRadius;
 
     /// <summary>
-    /// Amount by which a non-stellar decorative body follows the camera: zero is world-anchored
-    /// and one is screen-anchored. Stars remain world-anchored so their distance agrees with NAV.
+    /// Amount by which a decorative body follows the camera: zero is world-anchored and one is
+    /// screen-anchored. Bodies in one system should share this value to preserve their separation.
     /// </summary>
     [DataField]
     public float BackgroundParallaxSlowness = 0.82f;
@@ -158,6 +172,12 @@ public sealed partial class KoronusCelestialBodyPrototype : IPrototype
     /// </summary>
     [DataField]
     public string? ExplorationRewardSource;
+}
+
+public enum KoronusStarVisualStyle : byte
+{
+    Magnetic,
+    Accreting,
 }
 
 public enum KoronusCelestialBodyType : byte

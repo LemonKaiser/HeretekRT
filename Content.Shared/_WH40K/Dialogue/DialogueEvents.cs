@@ -25,6 +25,14 @@ public sealed class DialogueLocArgumentData
     public string? Text { get; }
     public int? Number { get; }
     public string? Prototype { get; }
+    public NetEntity? Entity { get; }
+
+    public DialogueLocArgumentData(string id, NetEntity entity, string fallback)
+    {
+        Id = id;
+        Entity = entity;
+        Text = fallback;
+    }
 
     public DialogueLocArgumentData(string id, string text)
     {

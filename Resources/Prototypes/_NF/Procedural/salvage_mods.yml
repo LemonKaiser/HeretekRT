@@ -5,106 +5,72 @@
   biome: Shadow
 
 # Dungeons
-#  For now just simple 1-dungeon setups
+# WH40K expeditions use the two themes in _WH40K/Activities/expedition_dungeons.yml.
 - type: salvageDungeonMod
   id: NFCaveFactory
   desc: salvage-dungeon-mod-cave-factory
   proto: NFCaveFactory
-  biomes:
-    - Caves
-    - Grasslands
-    - Shadow
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFMedSci
   desc: salvage-dungeon-mod-med-sci
   proto: NFMedSci
-  biomes:
-    - Caves
-    - Grasslands
-    - Snow
-    - Shadow
-    - Desert
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFFactoryDorms
   desc: salvage-dungeon-mod-factory-dorms
   proto: NFFactoryDorms
-  biomes:
-    - Caves
-    - Grasslands
-    - Lava
-    - Shadow
-    - Desert
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFLavaMercenary
   desc: salvage-dungeon-mod-lava-mercenary
   proto: NFLavaMercenary
-  biomes:
-    - Lava
-    - Shadow
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFVirologyLab
   desc: salvage-dungeon-mod-virology-lab
   proto: NFVirologyLab
-  biomes:
-    - Caves
-    - Grasslands
-    - Lava
-    - Snow
-    - Shadow
-    - Desert
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFSalvageOutpost
   desc: salvage-dungeon-mod-salvage-outpost
   proto: NFSalvageOutpost
-  biomes:
-    - Caves
-    - Grasslands
-    - Lava
-    - Snow
-    - Shadow
-    - Desert
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFExperiment
   desc: salvage-dungeon-mod-experiment
   proto: NFExperiment
-  biomes:
-    #- LowDesert
-    - Grasslands
-    - Desert
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFLavaBrig
   desc: salvage-dungeon-mod-lava-brig
   proto: NFLavaBrig
-  biomes:
-    - Lava
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFMineshaft
   desc: salvage-dungeon-mod-mineshaft
   proto: NFMineshaft
-  biomes:
-    - Caves
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFSnowyLabs
   desc: salvage-dungeon-mod-snowy-labs
   proto: NFSnowyLabs
-  biomes:
-    - Snow
+  biomes: []
 
 - type: salvageDungeonMod
   id: NFHaunted
   desc: salvage-dungeon-mod-haunted
   proto: NFHaunted
-  biomes:
-    - Caves
+  biomes: []
 
 # Time mods -> at least 1 required
 # Standard time, no description, no need to show.

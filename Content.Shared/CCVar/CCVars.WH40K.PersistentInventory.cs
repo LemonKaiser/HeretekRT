@@ -77,15 +77,6 @@ public sealed partial class CCVars
             4,
             CVar.SERVERONLY | CVar.ARCHIVE);
 
-    /// <summary>
-    /// Delay after disconnect before deleting the bound body and marking the snapshot as lost.
-    /// </summary>
-    public static readonly CVarDef<int> Wh40kPersistentInventoryDisconnectDeleteDelaySeconds =
-        CVarDef.Create(
-            "wh40k.persistent_inventory.disconnect_delete_delay_seconds",
-            60 * 60,
-            CVar.SERVERONLY | CVar.ARCHIVE);
-
     public static readonly CVarDef<int> Wh40kPersistentInventoryDatabaseRetrySeconds =
         CVarDef.Create(
             "wh40k.persistent_inventory.database_retry_seconds",

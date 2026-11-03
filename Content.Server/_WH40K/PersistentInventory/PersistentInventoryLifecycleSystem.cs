@@ -7,19 +7,16 @@ using Content.Server.Administration.Logs;
 using Content.Server.Body.Components;
 using Content.Server.Database;
 using Content.Server.GameTicking.Events;
+using Content.Server._WH40K.Cleanup;
 using Content.Server._WH40K.PersistentInventory.Serialization;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Interaction.Events;
-using Content.Shared.Mind;
 using Prometheus;
-using Robust.Server.Player;
 using Robust.Shared.Asynchronous;
 using Robust.Shared.Configuration;
-using Robust.Shared.Enums;
 using Robust.Shared.Network;
-using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.PersistentInventory;
@@ -40,16 +37,14 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
 
     [Dependency] private readonly IConfigurationManager _configuration = default!;
     [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
+    [Dependency] private DisconnectedPlayerCleanupSystem _disconnectCleanup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly PersistentInventoryManager _manager = default!;
     [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
-    [Dependency] private SharedMindSystem _minds = default!;
 
     private readonly Dictionary<NetUserId, EntityUid> _boundBodies = new();
-    private readonly Dictionary<NetUserId, PendingDisconnect> _disconnects = new();
     private readonly Dictionary<NetUserId, Task<bool>> _lifeLossTasks = new();
     private readonly CancellationTokenSource _shutdown = new();
 
@@ -66,16 +61,13 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
         SubscribeLocalEvent<RoundStartingEvent>(OnRoundStarting);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, BeforeGibbedEvent>(OnBeforeGibbed);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, SuicideEvent>(OnSuicide);
-        SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, PlayerAttachedEvent>(OnBoundPlayerAttached);
-        SubscribeLocalEvent<PlayerDetachedEvent>(OnBoundPlayerDetached);
+        SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, DisconnectedPlayerCleanupEvent>(OnDisconnectCleanup);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, EntityTerminatingEvent>(OnBodyTerminating);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, ComponentShutdown>(OnBoundLifeShutdown);
-        _players.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
     public override void Shutdown()
     {
-        _players.PlayerStatusChanged -= OnPlayerStatusChanged;
         _shutdown.Cancel();
 
         _shutdown.Dispose();
@@ -92,23 +84,6 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
             _nextMetricsRefresh = now + TimeSpan.FromSeconds(
                 Math.Max(5, _configuration.GetCVar(CCVars.Wh40kPersistentInventoryMetricsRefreshSeconds)));
             _metricsRefresh = RefreshMetricsAsync();
-        }
-
-        foreach (var (userId, pending) in _disconnects.ToArray())
-        {
-            if (pending.Deadline > now)
-                continue;
-
-            _disconnects.Remove(userId);
-            StartLifeLoss(
-                pending.Body,
-                PersistentInventorySnapshotState.LostByDisconnect,
-                PersistentInventoryInvalidationReason.None,
-                PersistentInventoryLossReason.DisconnectTimeout,
-                "disconnect-timeout",
-                null,
-                "Disconnect timer expired; bound body will be deleted after durable loss.",
-                deleteBodyAfterCommit: true);
         }
     }
 
@@ -137,11 +112,7 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
         component.LifeLossStarted = false;
         component.SuppressBodyDeletion = false;
         _boundBodies[userId] = body;
-        if (!_players.TryGetSessionById(userId, out var session) ||
-            session.Status == SessionStatus.Disconnected)
-        {
-            ScheduleDisconnect(userId, body);
-        }
+        _disconnectCleanup.TrackDisconnect(userId);
     }
 
     public bool HasActiveBoundBody(NetUserId userId)
@@ -550,34 +521,23 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
             "Bound body was deleted outside controlled cleanup.");
     }
 
-    private void OnBoundPlayerAttached(
+    private void OnDisconnectCleanup(
         Entity<PersistentInventoryBoundLifeComponent> entity,
-        ref PlayerAttachedEvent args)
+        ref DisconnectedPlayerCleanupEvent args)
     {
-        if (args.Player.UserId != entity.Comp.UserId ||
-            entity.Comp.LifeLossStarted ||
-            _boundBodies.GetValueOrDefault(entity.Comp.UserId) != entity.Owner)
-        {
+        if (args.Handled || args.UserId != entity.Comp.UserId)
             return;
-        }
 
-        _disconnects.Remove(entity.Comp.UserId);
-    }
-
-    private void OnBoundPlayerDetached(PlayerDetachedEvent args)
-    {
-        var userId = args.Player.UserId;
-        if (args.Player.Status != SessionStatus.Disconnected ||
-            !_boundBodies.TryGetValue(userId, out var body) ||
-            body != args.Entity ||
-            !TryComp(body, out PersistentInventoryBoundLifeComponent? component) ||
-            component.UserId != userId ||
-            component.LifeLossStarted)
-        {
-            return;
-        }
-
-        ScheduleDisconnect(userId, body);
+        args.Handled = true;
+        StartLifeLoss(
+            entity.Owner,
+            PersistentInventorySnapshotState.LostByDisconnect,
+            PersistentInventoryInvalidationReason.None,
+            PersistentInventoryLossReason.DisconnectTimeout,
+            "disconnect-timeout",
+            null,
+            "Disconnect timer expired; bound body will be deleted after durable loss.",
+            deleteBodyAfterCommit: true);
     }
 
     private void OnBoundLifeShutdown(
@@ -586,40 +546,6 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
     {
         if (_boundBodies.GetValueOrDefault(entity.Comp.UserId) == entity.Owner)
             _boundBodies.Remove(entity.Comp.UserId);
-        _disconnects.Remove(entity.Comp.UserId);
-    }
-
-    private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs args)
-    {
-        var userId = args.Session.UserId;
-        if (!_boundBodies.TryGetValue(userId, out var body) ||
-            !TryComp(body, out PersistentInventoryBoundLifeComponent? component) ||
-            component.UserId != userId ||
-            component.LifeLossStarted)
-        {
-            return;
-        }
-
-        if (args.NewStatus == SessionStatus.Disconnected)
-        {
-            ScheduleDisconnect(userId, body);
-            return;
-        }
-
-        if (args.NewStatus is not (SessionStatus.Connected or SessionStatus.InGame))
-            return;
-        if (args.Session.AttachedEntity == body)
-            _disconnects.Remove(userId);
-    }
-
-    private void ScheduleDisconnect(NetUserId userId, EntityUid body)
-    {
-        var seconds = Math.Max(
-            0,
-            _configuration.GetCVar(CCVars.Wh40kPersistentInventoryDisconnectDeleteDelaySeconds));
-        _disconnects[userId] = new PendingDisconnect(
-            body,
-            _timing.CurTime + TimeSpan.FromSeconds(seconds));
     }
 
     private Task<bool>? StartLifeLoss(
@@ -643,7 +569,6 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
                 : null;
 
         component.LifeLossStarted = true;
-        _disconnects.Remove(component.UserId);
         var task = RunLifeLossWithRetryAsync(
             body,
             reservation,
@@ -803,7 +728,6 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
     {
         await RunOnMainThread(() =>
         {
-            _disconnects.Remove(userId);
             if (_boundBodies.GetValueOrDefault(userId) == body)
                 _boundBodies.Remove(userId);
             if (!TryComp(body, out PersistentInventoryBoundLifeComponent? component))
@@ -812,15 +736,7 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
             component.SuppressBodyDeletion = true;
             if (deleteBody && !TerminatingOrDeleted(body))
             {
-                // The durable life is already lost. End its mind before deleting the body so
-                // shutdown cannot leave an offline ghost that keeps the map resident.
-                if (_minds.TryGetMind(body, out var mindId, out var mind) && mind.UserId == userId)
-                {
-                    // WipeMind alone may retain a returnable ghost being visited.
-                    _minds.UnVisit(mindId, mind);
-                    _minds.WipeMind(mindId, mind);
-                }
-                QueueDel(body);
+                _disconnectCleanup.DeleteBody(body, userId);
             }
             else
                 RemCompDeferred<PersistentInventoryBoundLifeComponent>(body);
@@ -1083,8 +999,6 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
         value ??= "Unknown persistent inventory lifecycle error.";
         return value.Length <= 512 ? value : value[..512];
     }
-
-    private readonly record struct PendingDisconnect(EntityUid Body, TimeSpan Deadline);
 
     private readonly record struct RevisionValidation(bool Success, string? Error)
     {

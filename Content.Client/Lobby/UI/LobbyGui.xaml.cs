@@ -39,6 +39,7 @@ public sealed partial class LobbyGui : UIScreen
     private const float DesktopChatWidth = 520f;
     private const float CompactChatBreakpoint = 650f;
     private const float DesktopChatViewportInset = 28f;
+    private const float LobbyVotePanelWidth = 480f;
     private const float IntroDuration = 1.45f;
     private const float LogoGlowCycleDuration = 3.8f;
     private const float ReadyPulseCycleDuration = 2.3f;
@@ -254,6 +255,12 @@ public sealed partial class LobbyGui : UIScreen
         SetGrowHorizontal(UtilityBar, GrowDirection.Begin);
         SetMarginTop(UtilityBar, 20);
         SetMarginRight(UtilityBar, -20);
+        SetAnchorPreset(VoteOverlay, LayoutPreset.CenterTop);
+        SetGrowHorizontal(VoteOverlay, GrowDirection.Both);
+        VoteOverlay.SetWidth = LobbyVotePanelWidth;
+        SetMarginLeft(VoteOverlay, -LobbyVotePanelWidth / 2f);
+        SetMarginRight(VoteOverlay, LobbyVotePanelWidth / 2f);
+        SetMarginTop(VoteOverlay, 28);
 
         ConfigureVisuals();
         // A freshly constructed screen does not pass through LobbyState.SwitchState
@@ -2785,7 +2792,7 @@ public sealed partial class LobbyGui : UIScreen
     {
         var panelWidth = GetEffectiveChatWidth();
         _lastChatPanelWidth = panelWidth;
-        var panelVisible = _chatExpanded || _chatCurrentWidth > 0f;
+        var panelVisible = _chatPanelAvailable && (_chatExpanded || _chatCurrentWidth > 0f);
         RightSide.Visible = panelVisible;
         DrawerShadow.Visible = panelVisible;
         var showDrawerBlur = panelVisible && !_isAnimatedLobbyBackground;
@@ -2906,6 +2913,12 @@ public sealed partial class LobbyGui : UIScreen
         if (viewportWidth <= 1f)
             return;
 
+        var viewportHeight = PixelSize.Y / MathF.Max(UIScale, 0.01f);
+        var voteMaxHeight = Math.Max(160f, viewportHeight - 64f);
+        VoteOverlay.MaxHeight = voteMaxHeight;
+        var voteHeight = Math.Min(VoteContainer.DesiredSize.Y, voteMaxHeight);
+        VoteOverlay.SetHeight = voteHeight;
+
         if (MathF.Abs(viewportWidth - _lastResponsiveViewportWidth) >= 0.5f)
         {
             _lastResponsiveViewportWidth = viewportWidth;
@@ -2917,9 +2930,23 @@ public sealed partial class LobbyGui : UIScreen
 
             MainContainer.SetWidth = _responsiveDeckWidth;
             LeftSide.SetWidth = _responsiveDeckWidth;
+            var voteWidth = Math.Min(LobbyVotePanelWidth, Math.Max(0f, viewportWidth - 48f));
+            VoteOverlay.SetWidth = voteWidth;
+            SetMarginLeft(VoteOverlay, -voteWidth / 2f);
+            SetMarginRight(VoteOverlay, voteWidth / 2f);
             if (!_introActive)
                 SetMarginLeft(MainContainer, _responsiveLeftInset);
         }
+
+        var menuShift = 0f;
+        var voteLeft = (viewportWidth - VoteOverlay.SetWidth) / 2f;
+        if (voteHeight > 0f && _responsiveLeftInset + _responsiveDeckWidth + 24f > voteLeft)
+        {
+            var menuTop = (viewportHeight - MainContainer.DesiredSize.Y) / 2f;
+            menuShift = Math.Clamp(28f + voteHeight + 20f - menuTop, 0f, Math.Max(0f, menuTop - 16f));
+        }
+        SetMarginTop(MainContainer, menuShift);
+        SetMarginBottom(MainContainer, menuShift);
 
         if (OnboardingState.Visible)
         {
@@ -3103,8 +3130,8 @@ public sealed partial class LobbyGui : UIScreen
         if (!available)
         {
             // The lobby drawer can still be mid-animation when the onboarding state is entered.
-            // Clear its state before hiding it so a later layout pass cannot bring it back over the wizard.
-            _chatExpanded = false;
+            // Keep the requested open state, but stop the animation and hide the drawer during setup.
+            Chat.ChatInput.Input.ReleaseKeyboardFocus();
             _chatCurrentWidth = 0f;
             _lastChatPanelWidth = 0f;
             RightSide.Visible = false;
@@ -3114,11 +3141,12 @@ public sealed partial class LobbyGui : UIScreen
             return;
         }
 
-        UpdateChatPanelLayout();
+        SetChatExpanded(_chatExpanded);
     }
 
     public void SwitchState(LobbyGuiState state)
     {
+        VoteOverlay.Visible = state == LobbyGuiState.Default;
         DefaultState.Visible = false;
         CharacterSetupState.Visible = false;
         OnboardingState.Visible = false;

@@ -100,3 +100,23 @@
     NFAsteroidScrapDebrisExtraMassive: 1.5
     NFAsteroidScrapDebrisGigantic: 1.25
     NFAsteroidScrapDebrisExtraGigantic: 1
+
+- type: weightedRandomEntity
+  id: KoronusMediumLargeMiningAsteroids
+  weights:
+    NFAsteroidDebrisMedium: 20
+    NFAsteroidDebrisLarge: 10
+    NFAsteroidIceDebrisMedium: 20
+    NFAsteroidIceDebrisLarge: 10
+    NFAsteroidAndesiteDebrisMedium: 20
+    NFAsteroidAndesiteDebrisLarge: 10
+    NFAsteroidBasaltDebrisMedium: 20
+    NFAsteroidBasaltDebrisLarge: 10
+    NFAsteroidSandDebrisMedium: 20
+    NFAsteroidSandDebrisLarge: 10
+    NFAsteroidChromiteDebrisMedium: 20
+    NFAsteroidChromiteDebrisLarge: 10
+    NFAsteroidRockDebrisMedium: 20
+    NFAsteroidRockDebrisLarge: 10
+    NFAsteroidScrapDebrisMedium: 20
+    NFAsteroidScrapDebrisLarge: 10

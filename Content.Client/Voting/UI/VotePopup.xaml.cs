@@ -78,6 +78,9 @@ namespace Content.Client.Voting.UI
                 if (_vote.OurVote == i)
                     _voteButtons[i].Pressed = true;
             }
+
+            if (_lobbyStyle)
+                UpdateLobbyButtons();
         }
 
         private void AttemptFollowVoteEntity()

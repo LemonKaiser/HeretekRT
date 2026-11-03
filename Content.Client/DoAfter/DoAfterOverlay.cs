@@ -38,6 +38,10 @@ public sealed class DoAfterOverlay : Overlay
     private const float StartX = 2;
     private const float EndX = 22f;
 
+    private static readonly TimeSpan MaxAlphaTime = TimeSpan.FromSeconds(0.3f);
+    private static readonly TimeSpan FadeoutAlphaTime = TimeSpan.FromSeconds(0.2f);
+    private static readonly TimeSpan MaxYPosTime = TimeSpan.FromSeconds(0.5f);
+
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
 
     public DoAfterOverlay(IEntityManager entManager, IPrototypeManager protoManager, IGameTiming timing, IPlayerManager player)
@@ -112,7 +116,7 @@ public sealed class DoAfterOverlay : Overlay
             foreach (var doAfter in comp.DoAfters.Values)
             {
                 // Hide some DoAfters from other players for stealthy actions (ie: thieving gloves).
-                var alpha = 1f;
+                var maxAlpha = 1f;
                 if (doAfter.Args.Hidden || isInContainer)
                 {
                     var showTo = doAfter.Args.ShowTo ?? uid;
@@ -120,11 +124,18 @@ public sealed class DoAfterOverlay : Overlay
                         continue;
 
                     // Hints to the local player that this do-after is not visible to other players.
-                    alpha = 0.5f;
+                    maxAlpha = 0.5f;
                 }
 
+                var elapsed = time - doAfter.StartTime;
+                var alpha = MathHelper.Lerp(0f, maxAlpha, (float)Math.Clamp(elapsed / MaxAlphaTime, 0.0, 1.0));
+                if (elapsed >= doAfter.Args.Delay)
+                    alpha = MathHelper.Lerp(maxAlpha, 0f, (float)Math.Clamp((elapsed - doAfter.Args.Delay) / FadeoutAlphaTime, 0.0, 1.0));
+
                 // Clamp the height so oversized sprite layers do not push the indicator too far upward.
-                var yOffset = MathF.Min(_sprite.GetLocalBounds((uid, sprite)).Height / 2f, 0.5f) + 0.05f;
+                var yFinished = MathF.Min(_sprite.GetLocalBounds((uid, sprite)).Height / 2f, 0.5f) + 0.05f;
+                var yStart = yFinished / 6f;
+                var yOffset = MathHelper.Lerp(yStart, yFinished, Easings.OutSine((float)Math.Clamp(elapsed / MaxYPosTime, 0.0, 1.0)));
 
                 // Position above the entity (we've already applied the matrix transform to the entity itself)
                 // Offset by the texture size for every do_after we have.
@@ -149,7 +160,7 @@ public sealed class DoAfterOverlay : Overlay
 
                     if (doAfter.CancelledTime != null)
                     {
-                        var elapsed = doAfter.CancelledTime.Value - doAfter.StartTime;
+                        elapsed = doAfter.CancelledTime.Value - doAfter.StartTime;
                         elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
                         var cancelElapsed = (time - doAfter.CancelledTime.Value).TotalSeconds;
                         var flash = Math.Floor(cancelElapsed / FlashTime) % 2 == 0;
@@ -157,7 +168,6 @@ public sealed class DoAfterOverlay : Overlay
                     }
                     else
                     {
-                        var elapsed = time - doAfter.StartTime;
                         elapsedRatio = (float)Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
                         color = GetProgressColor(elapsedRatio, alpha);
                     }

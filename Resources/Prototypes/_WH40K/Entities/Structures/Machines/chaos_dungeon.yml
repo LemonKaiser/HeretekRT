@@ -1,0 +1,31 @@
+- type: entity
+  parent: WH40KPlaceholderConsoleChaos
+  id: WH40KChaosDungeonConsole
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false
+
+- type: entity
+  parent: PowerCellRecharger
+  id: WH40KChaosDungeonRecharger
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false
+
+- type: entity
+  parent: KitchenElectricGrill
+  id: WH40KChaosDungeonGrill
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false
+
+- type: entity
+  parent: KitchenMicrowave
+  id: WH40KChaosDungeonMicrowave
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false

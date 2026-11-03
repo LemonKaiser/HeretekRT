@@ -25,7 +25,7 @@ public sealed partial class StationMapBeaconControl : Control, IComparable<Stati
 
         _styleBox = new StyleBoxFlat { BackgroundColor = beacon.Color };
         ColorPanel.PanelOverride = _styleBox;
-        BeaconNameLabel.Text = beacon.Text;
+        BeaconNameLabel.Text = beacon.GetText();
 
         MainButton.OnPressed += args => OnPressed?.Invoke(BeaconPosition);
     }

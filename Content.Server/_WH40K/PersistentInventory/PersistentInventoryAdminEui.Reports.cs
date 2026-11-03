@@ -20,7 +20,8 @@ public sealed partial class PersistentInventoryAdminEui
         report.AppendLine($"Busy: {busy}; pending life loss: {_inventory.IsLifeLossPending(user)}");
         report.AppendLine($"Current server epoch: {_inventory.ServerEpoch}");
         report.AppendLine($"Save cooldown: {_configuration.GetCVar(CCVars.Wh40kPersistentInventorySaveCooldownSeconds)} s; " +
-                          $"disconnect timeout: {_configuration.GetCVar(CCVars.Wh40kPersistentInventoryDisconnectDeleteDelaySeconds)} s");
+                          $"disconnect cleanup: {_configuration.GetCVar(CCVars.Wh40kDisconnectedPlayerCleanupEnabled)}, " +
+                          $"timeout: {_configuration.GetCVar(CCVars.Wh40kDisconnectedPlayerCleanupDelaySeconds)} s");
         report.AppendLine($"Limits: {_entities.System<PersistentInventorySnapshotSerializer>().GetConfiguredLimits()}");
         if (_players.TryGetSessionById(user, out var session))
         {

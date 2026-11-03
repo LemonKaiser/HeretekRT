@@ -22,6 +22,10 @@ public sealed partial class KoronusActivitySetPieceComponent : Component
     [ViewVariables]
     public Vector2 SpawnPosition;
 
+    /// <summary>Original grid origin; removing hull tiles must not change its placement anchor.</summary>
+    [ViewVariables]
+    public Vector2 GridOrigin;
+
     [ViewVariables]
     public float LeashRadius;
 

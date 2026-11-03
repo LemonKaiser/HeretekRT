@@ -1,0 +1,61 @@
+light_mode unshaded;
+blend_mode normal;
+
+uniform highp vec4 StarColor;
+
+highp float hash21(highp vec2 point) {
+    highp vec3 value = fract(vec3(point.xyx) * 0.1031);
+    value += dot(value, value.yzx + 33.33);
+    return fract((value.x + value.y) * value.z);
+}
+
+highp float stellarNoise2(highp vec2 point) {
+    highp vec2 cell = floor(point);
+    highp vec2 local = fract(point);
+    highp vec2 blend = local * local * (3.0 - 2.0 * local);
+    return mix(
+        mix(hash21(cell), hash21(cell + vec2(1.0, 0.0)), blend.x),
+        mix(hash21(cell + vec2(0.0, 1.0)), hash21(cell + vec2(1.0, 1.0)), blend.x), blend.y);
+}
+
+highp float plasma(highp vec2 point) {
+    highp float value = 0.0;
+    highp float weight = 0.53;
+    for (highp int octave = 0; octave < 4; octave++) {
+        value += stellarNoise2(point) * weight;
+        point = vec2(point.y, -point.x) * 2.03 + vec2(9.2, 14.7);
+        weight *= 0.48;
+    }
+    return value;
+}
+
+void fragment() {
+    // Keep the shared 1.9-radius extent, but fill it with irregular plasma rather than wire loops.
+    highp vec2 position = (UV - vec2(0.5)) * 3.8;
+    highp float radius = length(position);
+    if (radius <= 0.91 || radius >= 1.9)
+        discard;
+
+    highp float time = TIME;
+    highp vec2 direction = position / max(radius, 0.001);
+    highp float height = max(radius - 1.0, 0.0);
+    highp vec2 drift = vec2(time * 0.038, -time * 0.027);
+    highp float angularField = plasma(direction * 4.2 + drift * 0.25);
+    highp float billows = plasma(position * 5.1 - direction * time * 0.065 + drift);
+    highp float wisps = plasma(position * 13.0 - direction * time * 0.13 - drift);
+    highp float reach = 0.30 + angularField * 0.70;
+    highp float cloudMask = 1.0 - smoothstep(reach * 0.44, reach, height + (billows - 0.5) * 0.25);
+    highp float cloud = cloudMask * (0.38 + billows * 0.62) * exp(-height * 2.0);
+    highp float filaments = smoothstep(0.37, 0.68, wisps) * cloudMask * exp(-height * 4.2);
+    highp float innerGlow = exp(-height * 8.0) * 0.34;
+    highp float outerGlow = exp(-height * 4.6) * 0.07;
+    highp float edgeFade = 1.0 - smoothstep(1.55, 1.9, radius);
+    highp float alpha = clamp((cloud * 0.94 + filaments * 0.27 + innerGlow + outerGlow) * edgeFade, 0.0, 0.94);
+    highp vec3 tint = clamp(StarColor.rgb, vec3(0.0), vec3(1.0));
+    highp float brightness = 0.28 + billows * 0.44 + exp(-height * 6.0) * 0.45;
+    highp vec3 colour = tint * brightness;
+    colour = mix(colour, mix(tint, vec3(1.0), 0.16), filaments * 0.22);
+    highp float whiteHot = 1.0 - smoothstep(0.03, 0.45, tint.r - tint.b);
+    colour *= mix(1.0, 1.45, whiteHot);
+    COLOR = vec4(colour, alpha);
+}

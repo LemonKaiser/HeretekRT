@@ -1,0 +1,70 @@
+light_mode unshaded;
+blend_mode normal;
+
+uniform highp vec2 QuadSize;
+uniform highp vec2 DonorPosition;
+uniform highp vec2 TargetPosition;
+uniform highp float DonorRadius;
+uniform highp float TargetRadius;
+uniform highp vec4 DonorColor;
+uniform highp vec4 TargetColor;
+uniform highp float FlipY;
+
+highp float hash21(highp vec2 point) {
+    highp vec3 value = fract(vec3(point.xyx) * 0.1031);
+    value += dot(value, value.yzx + 33.33);
+    return fract((value.x + value.y) * value.z);
+}
+
+highp float stellarNoise(highp vec2 point) {
+    highp vec2 cell = floor(point);
+    highp vec2 local = fract(point);
+    highp vec2 blend = local * local * (3.0 - 2.0 * local);
+    return mix(
+        mix(hash21(cell), hash21(cell + vec2(1.0, 0.0)), blend.x),
+        mix(hash21(cell + vec2(0.0, 1.0)), hash21(cell + vec2(1.0, 1.0)), blend.x), blend.y);
+}
+
+void fragment() {
+    highp vec2 position = vec2(UV.x, mix(UV.y, 1.0 - UV.y, FlipY)) * QuadSize;
+    highp vec2 axis = normalize(TargetPosition - DonorPosition);
+    highp vec2 normal = vec2(-axis.y, axis.x);
+    highp vec2 relative = position - DonorPosition;
+    highp float along = dot(relative, axis);
+    highp float across = dot(relative, normal);
+    highp float start = DonorRadius * 0.68;
+    highp float progress = clamp((along - start) / max(1.0 - start, 0.01), 0.0, 1.0);
+
+    // Material leaves the donor's limb, narrows towards the companion and accelerates inward.
+    highp float bend = sin(progress * 3.14159265) * 0.12 - (1.0 - progress) * DonorRadius * 0.20;
+    highp float turbulence = stellarNoise(vec2(progress * 15.0 - TIME * 1.1, across * 37.0 + TIME * 0.17));
+    highp float width = mix(DonorRadius * 0.15, TargetRadius * 0.17, progress);
+    highp float offset = across - bend + (turbulence - 0.5) * width * 0.65;
+    highp float core = exp(-offset * offset / max(width * width * 0.34, 0.00001));
+    highp float sheath = exp(-offset * offset / max(width * width * 3.8, 0.00001));
+    highp float streaks = stellarNoise(vec2(progress * 31.0 - TIME * 2.6, across * 106.0));
+    highp float gate = smoothstep(start - 0.08, start + 0.08, along) * (1.0 - smoothstep(0.99, 1.12, along));
+    highp float stream = (core * (0.60 + streaks * 0.40) + sheath * 0.28) * gate;
+
+    // A broad, turbulent accretion flow surrounds the receiver; spiral density waves are diffuse,
+    // rather than geometric prominence rings. Its middle is hidden by the star's photosphere.
+    highp vec2 targetRelative = position - TargetPosition;
+    highp vec2 diskPoint = vec2(dot(targetRelative, axis), dot(targetRelative, normal) / 0.67);
+    highp float diskRadius = length(diskPoint) / max(TargetRadius, 0.001);
+    highp float angle = atan(diskPoint.y, diskPoint.x);
+    highp float winding = angle * 2.0 + diskRadius * 5.8 - TIME * 0.85;
+    highp float diskNoise = stellarNoise(diskPoint / max(TargetRadius, 0.001) * 5.0 + vec2(TIME * 0.19, -TIME * 0.13));
+    highp float spiral = 0.5 + 0.5 * sin(winding + diskNoise * 2.3);
+    highp float diskBand = (diskRadius - 1.50) / 0.72;
+    highp float disk = exp(-diskBand * diskBand) * (0.35 + spiral * 0.65);
+    disk *= smoothstep(0.82, 1.12, diskRadius) * (1.0 - smoothstep(2.05, 2.8, diskRadius));
+
+    highp vec3 streamColour = mix(DonorColor.rgb, mix(TargetColor.rgb, vec3(1.0), 0.35), pow(progress, 0.65));
+    streamColour += vec3(0.16) * core * progress;
+    highp vec3 diskColour = mix(TargetColor.rgb, vec3(1.0), 0.42) * (0.75 + spiral * 0.55);
+    highp float opacity = clamp(stream * 0.95 + disk * 0.86, 0.0, 0.95);
+    if (opacity < 0.002)
+        discard;
+    highp vec3 colour = mix(streamColour, diskColour, disk / max(stream + disk, 0.001));
+    COLOR = vec4(colour, opacity);
+}

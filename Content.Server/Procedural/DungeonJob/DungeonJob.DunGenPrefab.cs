@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Content.Shared.Procedural;
@@ -45,6 +46,7 @@ public sealed partial class DungeonJob
         }
 
         var roomProtos = new Dictionary<Vector2i, List<DungeonRoomPrototype>>(_prototype.Count<DungeonRoomPrototype>());
+        var usedRooms = new HashSet<string>();
 
         foreach (var proto in _prototype.EnumeratePrototypes<DungeonRoomPrototype>())
         {
@@ -212,7 +214,22 @@ public sealed partial class DungeonJob
                     _sawmill.Debug($"Using rotated variant for room");
                 }
 
-                var room = roomProto[random.Next(roomProto.Count)];
+                var candidates = roomProto;
+                if (prefab.AvoidRepeatedRooms)
+                {
+                    var unused = roomProto.Where(room => !usedRooms.Contains(room.ID)).ToList();
+                    if (unused.Count > 0)
+                        candidates = unused;
+                    else
+                        usedRooms.ExceptWith(roomProto.Select(room => room.ID));
+                }
+
+                var room = candidates[random.Next(candidates.Count)];
+                if (prefab.AvoidRepeatedRooms)
+                {
+                    usedRooms.Add(room.ID);
+                    _sawmill.Debug($"Room {room.ID} on grid {_gridUid}.");
+                }
 
                 if (roomDimensions.X == roomDimensions.Y)
                 {

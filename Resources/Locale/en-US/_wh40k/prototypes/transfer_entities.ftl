@@ -115,7 +115,8 @@ ent-Cartridge10mm = cartridge (10 mm)
 
 ent-Cartridge10mmLong = cartridge (10 mm extended)
 
-ent-Cartridge11mm = cartridge (11 mm)
+ent-Cartridge11mm = M748 stub revolver cartridge (11 mm)
+    .desc = A revolver cartridge for the M748 Burglar. Load it individually or with an M748 speedloader; M36 pistol cartridges use a different case.
 
 ent-Cartridge12mm = cartridge (12 mm)
 
@@ -136,8 +137,8 @@ ent-CartridgeGalvanic = galvanic cartridge
 ent-CartridgeHeavyBolter = heavy bolter round
     .desc = A heavy bolt round for a crew-served heavy bolter.
 
-ent-CartridgeHeavyStubPistol = heavy stub pistol cartridge (11 mm)
-    .desc = A blunt, heavy pistol round built to deliver revolver-grade stopping power.
+ent-CartridgeHeavyStubPistol = M36 heavy stub pistol cartridge (11 mm)
+    .desc = A pistol cartridge for M36 Aquila and Blood Pact magazines. Its case differs from the M748 revolver cartridge.
 
 ent-CartridgeLondoronMk2 = Londoron MK2 cartridge
     .desc = A heavy rifle cartridge for the Londoron MK2 family.
@@ -1525,7 +1526,7 @@ ent-MagazineCombatShotgunEmpty = { ent-MagazineCombatShotgun }
     .suffix = WH40K, Empty
     .desc = { ent-MagazineCombatShotgun.desc }
 
-ent-MagazineHeavyStubPistol = heavy stub pistol magazine (11 mm)
+ent-MagazineHeavyStubPistol = M36 heavy stub pistol magazine (11 mm)
     .desc = An 8-round magazine loaded with heavy 11 mm rounds for the M36 family.
 
 ent-MagazineHevStubPistol = magazine "Spatula"
@@ -1974,7 +1975,8 @@ ent-SpecialistHWSDogTag = { ent-StandardDogTag }
 
 ent-SpecialistSWSDogTag = { ent-StandardDogTag }
 
-ent-SpeedLoader11mm = speedloader (11 mm)
+ent-SpeedLoader11mm = M748 stub revolver speedloader (11 mm)
+    .desc = A six-round speedloader for M748 Burglar revolver cartridges.
 
 ent-SpeedLoaderElectricArc = Electric Arc Speedloader
     .desc = Speedloader for the Electric Arc Pistol.
@@ -2123,6 +2125,9 @@ ent-WH40KAmmoBox10mm = autogun ammo box (10mm)
 
 ent-WH40KAmmoBox10mmLong = autogun ammo box (10mm long)
 
+ent-WH40KAmmoBox11mm_100 = M748 stub revolver ammunition box (11 mm)
+    .desc = 100 revolver cartridges for the M748 Burglar and its speedloaders. M36 pistols use a box of pistol cartridges.
+
 ent-WH40KAmmoBoxAutogun = autogun ammo box
     .desc = A compact box filled with 8.25mm cartridges for automatic stub weapons.
 
@@ -2131,8 +2136,8 @@ ent-WH40KAmmoBoxElectricArc = Electric Arc Ammo Box
 
 ent-WH40KAmmoBoxGalvanic = galvanic cartridge box
 
-ent-WH40KAmmoBoxHeavyStubPistol = heavy stub pistol ammunition box (11 mm)
-    .desc = A box of heavy 11 mm cartridges for M36 heavy stub pistols.
+ent-WH40KAmmoBoxHeavyStubPistol = M36 heavy stub pistol ammunition box (11 mm)
+    .desc = 40 pistol cartridges for M36 Aquila and Blood Pact magazines. The M748 revolver uses a box of revolver cartridges.
 
 ent-WH40KAmmoBoxLondoronMk2 = Londoron MK2 ammunition box
     .desc = A box of heavy rounds for Londoron MK2 pattern rifles.
@@ -2871,7 +2876,7 @@ ent-WH40KWeaponTurretHeretics = { ent-WH40KWeaponTurretBallisticBase }
 ent-WH40KWeaponTurretHereticsDmr = { ent-WH40KWeaponTurretDmrBase }
 
 ent-WH40KWeaponTurretHereticsLaser = laser field sentry turret [WH40K, Heretics]
-    .desc = A deployable laser sentry turret. Uses lasgun power cells and supports fast frontline redeployment.
+    .desc = A laser sentry with a charged built-in battery providing 25 shots. Recharges from the electrical grid through its cable receiver.
 
 ent-WH40KWeaponTurretHereticsMini = { ent-WH40KWeaponTurretMiniBase }
 
@@ -2882,14 +2887,14 @@ ent-WH40KWeaponTurretImperium = { ent-WH40KWeaponTurretBallisticBase }
 ent-WH40KWeaponTurretImperiumDmr = { ent-WH40KWeaponTurretDmrBase }
 
 ent-WH40KWeaponTurretImperiumLaser = laser field sentry turret [WH40K, Imperium]
-    .desc = A deployable laser sentry turret. Uses lasgun power cells and supports fast frontline redeployment.
+    .desc = A laser sentry with a charged built-in battery providing 25 shots. Recharges from the electrical grid through its cable receiver.
 
 ent-WH40KWeaponTurretImperiumMini = { ent-WH40KWeaponTurretMiniBase }
 
 ent-WH40KWeaponTurretImperiumShotgun = { ent-WH40KWeaponTurretShotgunBase }
 
 ent-WH40KWeaponTurretLaserBase = multilaser field sentry turret
-    .desc = A powered field turret armed with a multilaser package.
+    .desc = A laser sentry with a charged built-in battery. Recharges from the electrical grid through its cable receiver.
 
 ent-WH40KWeaponTurretMiniBase = mini field sentry turret
     .desc = A compact automatic sentry with a lighter ballistic package.
@@ -3007,7 +3012,7 @@ ent-WeaponHeavyStubPistolBloodPact = M36 "Blood Pact" heavy stub pistol
 ent-WeaponHellDiverCarabin = Helldiver Carabiner
 
 ent-WeaponHellgun = Mk. II Hellgun
-    .desc = A heavy but powerful variant of the lasrifle.
+    .desc = A heavy, high-powered lasrifle. Draws power from a hellgun energy backpack worn on the shooter's back. Wield with both hands to fire.
 
 ent-WeaponHereticLaserLasgun = Heretic M36 Cantrael
     .desc = The cursed weapon of the heretics Troops.
@@ -3186,7 +3191,7 @@ ent-WeaponStubPistol = Stub pistol
     .desc = Pistol of unknown model. Uses 10mm.
 
 ent-WeaponStubRevolver = M748 "Burglar" Stub Revolver
-    .desc = A heavy stub revolver, named for the underhive bandits' fondness for picking locks with it.
+    .desc = A heavy six-shot stub revolver favoured by underhive lockpickers. Uses M748 revolver cartridges (11 mm), loaded individually or with an M748 speedloader.
 
 ent-WeaponStubRifle = Agripinaa Mk.III assault rifle
     .desc = The Agripinaa model heavy assault rifle is a redesigned version of the Mk. II, is virtually no different from the Mk. II, except for more consistent recoil in exchange for weight. Uses 8.25 "Long".

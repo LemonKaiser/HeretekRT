@@ -5,6 +5,7 @@ using Content.Client.UserInterface;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Detection;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.ChaosDungeon;
 using Content.Shared.Shuttles.BUIStates;
@@ -522,8 +523,10 @@ public sealed partial class NavScreen : BoxContainer
             return;
         }
 
-        PlanetaryBodyName.Text = Ellipsize(body.Name, PlanetaryTitleCharacterLimit);
-        PlanetaryBodyName.ToolTip = body.Name;
+        var bodyName = KoronusLocalization.GetString(body.Name);
+        var description = KoronusLocalization.GetString(body.Description);
+        PlanetaryBodyName.Text = Ellipsize(bodyName, PlanetaryTitleCharacterLimit);
+        PlanetaryBodyName.ToolTip = string.IsNullOrWhiteSpace(description) ? bodyName : $"{bodyName}\n{description}";
         var climate = Loc.GetString(string.IsNullOrEmpty(body.Climate)
             ? "koronus-planetary-climate-unknown"
             : body.Climate);

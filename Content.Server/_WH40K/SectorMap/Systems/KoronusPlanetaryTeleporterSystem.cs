@@ -12,14 +12,18 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Buckle.Components;
 using Content.Shared.UserInterface;
 using Content.Shared.Particles;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -54,6 +58,8 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
 
@@ -103,9 +109,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         _lookup.GetEntitiesInRange(entity.Comp2.Coordinates, UseRadius, mobs, flags: LookupFlags.Uncontained);
         foreach (var mob in mobs.OrderBy(candidate => candidate.Owner.Id))
         {
-            if (!_mobState.IsAlive(mob.Owner, mob.Comp) ||
-                TryComp<KoronusTeleporterArrivalCooldownComponent>(mob.Owner, out var cooldown) &&
-                _timing.CurTime < cooldown.Until ||
+            if (!CanTeleportMob(mob.Owner) ||
                 !TryResolveTarget(entity.Owner, entity.Comp1, mob.Owner, out _))
             {
                 continue;
@@ -128,11 +132,20 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         out EntityUid target)
     {
         target = EntityUid.Invalid;
-        if (TerminatingOrDeleted(user) || !IsOperational(entity.Owner, entity.Comp2))
+        if (!CanTeleportMob(user) || !IsOperational(entity.Owner, entity.Comp2))
             return false;
 
         return _transform.InRange(Transform(user).Coordinates, entity.Comp2.Coordinates, UseRadius) &&
                TryResolveTarget(entity.Owner, entity.Comp1, user, out target);
+    }
+
+    private bool CanTeleportMob(EntityUid user)
+    {
+        return !TerminatingOrDeleted(user) && _mobState.IsAlive(user) &&
+               !_containers.IsEntityOrParentInContainer(user) &&
+               (!TryComp<BuckleComponent>(user, out var buckle) || !buckle.Buckled) &&
+               (!TryComp<KoronusTeleporterArrivalCooldownComponent>(user, out var cooldown) ||
+                _timing.CurTime >= cooldown.Until);
     }
 
     private void Complete(
@@ -157,6 +170,11 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         _audio.PlayPvs(_sendSound, entity.Owner);
         _audio.PlayPvs(_receiveSound, target);
         _transform.SetCoordinates(user, Transform(user), targetTransform.Coordinates);
+        if (TryComp<PhysicsComponent>(user, out var physics))
+        {
+            _physics.SetLinearVelocity(user, System.Numerics.Vector2.Zero, body: physics);
+            _physics.SetAngularVelocity(user, 0f, body: physics);
+        }
         var cooldown = EnsureComp<KoronusTeleporterArrivalCooldownComponent>(user);
         cooldown.Until = _timing.CurTime + ArrivalCooldown;
         _adminLog.Add(LogType.Teleport,
@@ -190,7 +208,8 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
 
         if (TryGetSurfaceRuntime(Transform(source).MapID, out var surfaceRuntime))
         {
-            var candidates = GetShuttleTeleporters(surfaceRuntime.SystemId, component.SelectedTarget, user);
+            var candidates = GetShuttleTeleporters(surfaceRuntime.SystemId, component.SelectedTarget, user)
+                .Where(candidate => IsArrivalClear(candidate, user)).ToList();
             if (candidates.Count == 0)
                 return false;
 
@@ -208,7 +227,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
                 continue;
 
             target = candidate.Teleporter;
-            return candidate.Available;
+            return candidate.Available && IsArrivalClear(target, user);
         }
 
         return false;
@@ -231,9 +250,16 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
 
     private bool IsOperational(EntityUid uid, TransformComponent? transform = null)
     {
-        return Resolve(uid, ref transform, false) && transform.Anchored &&
+        return !TerminatingOrDeleted(uid) && Resolve(uid, ref transform, false) && transform.Anchored &&
                (!TryComp<ApcPowerReceiverComponent>(uid, out var receiver) ||
                 !receiver.PowerDisabled && (!receiver.NeedsPower || _power.IsPowered(uid, receiver)));
+    }
+
+    private bool IsArrivalClear(EntityUid target, EntityUid user)
+    {
+        var occupants = new HashSet<Entity<MobStateComponent>>();
+        _lookup.GetEntitiesInRange(Transform(target).Coordinates, UseRadius, occupants, flags: LookupFlags.Uncontained);
+        return occupants.All(occupant => occupant.Owner == user);
     }
 
     private void OnUiOpened(

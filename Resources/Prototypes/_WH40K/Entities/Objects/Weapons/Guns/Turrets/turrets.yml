@@ -67,7 +67,7 @@
     fireCost: 120
   - type: Battery
     maxCharge: 3000
-    startingCharge: 0
+    startingCharge: 3000
   - type: ApcPowerReceiverBattery
     idleLoad: 5
     batteryRechargeRate: 240

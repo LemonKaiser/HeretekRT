@@ -1,5 +1,5 @@
-# Planets may have decorative parallax radii. Stars always use their NAV radius and world-space
-# centre, so their size and distance remain identical in both views.
+# All celestial bodies share the parallax projection. Stellar radii are halved for the shader
+# corona; NAV uses the authored radii, and world scenery scales both radii and positions together.
 
 - type: koronusCelestialBody
   id: TrinnitosStar
@@ -7,8 +7,8 @@
   bodyType: Star
   displayName: Trinnitos
   description: The star at the centre of the Trinnitos system.
-  navVisualRadius: 1600
-  starColor: "#FF5E4A"
+  navVisualRadius: 800
+  starColor: "#FFB45A"
 
 - type: koronusCelestialBody
   id: Foulstone
@@ -266,8 +266,8 @@
   bodyType: Star
   displayName: Sotto's Tomb
   description: Звезда в центре системы Sotto's Tomb.
-  navVisualRadius: 800
-  starColor: "#7FC4FF"
+  navVisualRadius: 400
+  starColor: "#FF963F"
 
 - type: koronusCelestialBody
   id: SottosTombIceWorld
@@ -335,8 +335,8 @@
   bodyType: Star
   displayName: Aivorius
   description: Звезда в центре системы Aivorius.
-  navVisualRadius: 1600
-  starColor: "#FF5E4A"
+  navVisualRadius: 800
+  starColor: "#FF963F"
 
 - type: koronusCelestialBody
   id: AivoriusBurningWorld
@@ -545,8 +545,8 @@
   bodyType: Star
   displayName: Фурибундус
   description: The immense and violently active star at the centre of the Furibundus system.
-  navVisualRadius: 1200
-  starColor: "#FFFFFF"
+  navVisualRadius: 600
+  starColor: "#FFD07C"
 
 - type: koronusCelestialBody
   id: FootfallDeadWorld

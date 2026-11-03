@@ -54,8 +54,10 @@ public abstract partial class SharedGunSystem
         if (GetBallisticShots(component) >= component.Capacity)
             return;
 
+        if (!Containers.Insert(args.Used, component.Container))
+            return;
+
         component.Entities.Add(args.Used);
-        Containers.Insert(args.Used, component.Container);
         // Not predicted so
         Audio.PlayPredicted(component.SoundInsert, uid, args.User);
         args.Handled = true;
@@ -66,6 +68,7 @@ public abstract partial class SharedGunSystem
     private void OnBallisticAfterInteract(EntityUid uid, BallisticAmmoProviderComponent component, AfterInteractEvent args)
     {
         if (args.Handled ||
+            !args.CanReach ||
             !component.MayTransfer ||
             !Timing.IsFirstTimePredicted ||
             args.Target == null ||
@@ -106,7 +109,7 @@ public abstract partial class SharedGunSystem
 
     private void OnBallisticAmmoFillDoAfter(EntityUid uid, BallisticAmmoProviderComponent component, AmmoFillDoAfterEvent args)
     {
-        if (Deleted(args.Target) || args.Cancelled) // Frontier: deferred component & whitelist check
+        if (Deleted(args.Target) || args.Cancelled || args.Handled) // Frontier: deferred component & whitelist check
             return;
 
         // Frontier: Better revolver reloading
@@ -146,10 +149,10 @@ public abstract partial class SharedGunSystem
             return;
         }
 
-        void SimulateInsertAmmo(EntityUid ammo, EntityUid ammoProvider, EntityCoordinates coordinates)
+        bool SimulateInsertAmmo(EntityUid ammo, EntityUid ammoProvider, EntityCoordinates coordinates)
         {
             // We call SharedInteractionSystem to raise contact events. Checks are already done by this point.
-            _interaction.InteractUsing(args.User, ammo, ammoProvider, coordinates, checkCanInteract: false, checkCanUse: false);
+            return _interaction.InteractUsing(args.User, ammo, ammoProvider, coordinates, checkCanInteract: false, checkCanUse: false);
         }
 
         List<(EntityUid? Entity, IShootable Shootable)> ammo = new();
@@ -163,7 +166,7 @@ public abstract partial class SharedGunSystem
             if (ent == null)
                 continue;
 
-            if (ballisticTarget is not null && _whitelistSystem.IsWhitelistFailOrNull(ballisticTarget?.Whitelist, ent.Value) && !component.IgnoreWhitelist || // Frontier: better revolver reloading. Mono edit
+            if (ballisticTarget is not null && _whitelistSystem.IsWhitelistFailOrNull(ballisticTarget.Whitelist, ent.Value) && !ballisticTarget.IgnoreWhitelist ||
                 revolverTarget is not null && _whitelistSystem.IsWhitelistFailOrNull(revolverTarget?.Whitelist, ent.Value)) // Frontier: better revolver reloading
             {
                 Popup(
@@ -179,9 +182,11 @@ public abstract partial class SharedGunSystem
             }
             else
             {
-                // play sound to be cool
-                Audio.PlayPredicted(component.SoundInsert, uid, args.User);
-                SimulateInsertAmmo(ent.Value, args.Target.Value, Transform(args.Target.Value).Coordinates);
+                if (!SimulateInsertAmmo(ent.Value, args.Target.Value, Transform(args.Target.Value).Coordinates))
+                {
+                    SimulateInsertAmmo(ent.Value, uid, Transform(uid).Coordinates);
+                    validAmmoType = false;
+                }
             }
 
             if (IsClientSide(ent.Value))
@@ -221,6 +226,8 @@ public abstract partial class SharedGunSystem
     {
         if (!args.IsInDetailsRange)
             return;
+
+        ExamineAmmoType(args, component.Proto);
 
         // Mono
         if (component.InfiniteUnspawned)

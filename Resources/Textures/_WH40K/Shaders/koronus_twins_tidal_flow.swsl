@@ -1,0 +1,197 @@
+uniform highp vec2 QuadSize;
+uniform highp vec2 DonorPosition;
+uniform highp vec2 TargetPosition;
+uniform highp float DonorRadius;
+uniform highp float TargetRadius;
+uniform highp vec4 DonorColor;
+uniform highp vec4 TargetColor;
+uniform highp float FlipY;
+
+highp float tidalHash(highp vec2 p) {
+    highp vec3 h = fract(vec3(p.xyx) * 0.11369);
+    h += dot(h, h.yzx + 19.19);
+    return fract((h.x + h.y) * h.z);
+}
+
+highp float tidalNoise(highp vec2 p) {
+    highp vec2 i = floor(p);
+    highp vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(tidalHash(i), tidalHash(i + vec2(1.0, 0.0)), f.x),
+        mix(tidalHash(i + vec2(0.0, 1.0)), tidalHash(i + vec2(1.0)), f.x), f.y);
+}
+
+highp float tidalCloud(highp vec2 p) {
+    highp float value = 0.0;
+    highp float weight = 0.56;
+    for (highp int i = 0; i < 4; i++) {
+        value += tidalNoise(p) * weight;
+        p = mat2(1.85, -0.82, 0.82, 1.85) * p + vec2(13.2, 4.8);
+        weight *= 0.47;
+    }
+    return value;
+}
+
+highp vec2 tidalRotate(highp vec2 p, highp float a) {
+    highp float c = cos(a);
+    highp float s = sin(a);
+    return vec2(c * p.x - s * p.y, s * p.x + c * p.y);
+}
+
+highp vec2 tidalSegment(highp vec2 p, highp vec2 a, highp vec2 b) {
+    highp vec2 v = b - a;
+    highp float s = clamp(dot(p - a, v) / max(dot(v, v), 0.000001), 0.0, 1.0);
+    return vec2(length(p - a - v * s), s);
+}
+
+highp vec2 tidalBezier(highp float s, highp vec2 a, highp vec2 b, highp vec2 c, highp vec2 d) {
+    highp float v = 1.0 - s;
+    return a * v * v * v + b * 3.0 * v * v * s + c * 3.0 * v * s * s + d * s * s * s;
+}
+
+highp vec2 tidalRibbon(highp vec2 p, highp vec2 a, highp vec2 b, highp vec2 c, highp vec2 d) {
+    highp float closest = 1000.0;
+    highp float progress = 0.0;
+    highp vec2 previous = a;
+    for (highp int i = 0; i < 12; i++) {
+        highp float s = float(i + 1) / 12.0;
+        highp vec2 next = tidalBezier(s, a, b, c, d);
+        highp vec2 hit = tidalSegment(p, previous, next);
+        if (hit.x < closest) {
+            closest = hit.x;
+            progress = (float(i) + hit.y) / 12.0;
+        }
+        previous = next;
+    }
+    return vec2(closest, progress);
+}
+
+highp vec2 tidalSpiral(highp vec2 p, highp vec2 centre, highp float radius,
+    highp float startAngle, highp float endAngle, highp float startRadius, highp float endRadius) {
+    highp float closest = 1000.0;
+    highp float progress = 0.0;
+    highp vec2 previous = centre + vec2(cos(startAngle), sin(startAngle)) * radius * startRadius;
+    for (highp int i = 0; i < 14; i++) {
+        highp float s = float(i + 1) / 14.0;
+        highp float angle = mix(startAngle, endAngle, s);
+        highp float reach = mix(startRadius, endRadius, s) * radius;
+        highp vec2 next = centre + vec2(cos(angle), sin(angle)) * reach;
+        highp vec2 hit = tidalSegment(p, previous, next);
+        if (hit.x < closest) {
+            closest = hit.x;
+            progress = (float(i) + hit.y) / 14.0;
+        }
+        previous = next;
+    }
+    return vec2(closest, progress);
+}
+
+highp vec4 tidalPair(highp vec4 cloudProfile, highp vec4 flowProfile) {
+    highp vec2 absolute = vec2(UV.x, mix(UV.y, 1.0 - UV.y, FlipY)) * QuadSize;
+    highp vec2 separation = TargetPosition - DonorPosition;
+    highp float distance = max(length(separation), 0.001);
+    highp vec2 axis = separation / distance;
+    highp vec2 relative = (absolute - DonorPosition) / distance;
+    highp vec2 p = vec2(dot(relative, axis), dot(relative, vec2(-axis.y, axis.x)));
+    highp float dr = max(DonorRadius / distance, 0.01);
+    highp float tr = max(TargetRadius / distance, 0.008);
+    highp vec2 q = p / dr;
+    highp vec2 r = (p - vec2(1.0, 0.0)) / tr;
+    highp float qr = length(q);
+    highp float rr = length(r);
+    if (qr > 3.1 && rr > 3.3 && (p.x < 0.1 || p.x > 1.1 || abs(p.y) > 0.35))
+        return vec4(0.0);
+
+    highp float clock = TIME * 0.15;
+    highp vec2 cloudQ = vec2(q.x, q.y / cloudProfile.z);
+    highp float cloudRadius = length(cloudQ);
+    highp vec2 wound = tidalRotate(cloudQ, 2.4 / (cloudRadius + 0.7) - clock);
+    highp vec2 warp = vec2(tidalCloud(wound * 1.6 + clock * 0.15),
+        tidalCloud(wound * 1.6 + 9.3 - clock * 0.12)) - 0.48;
+    highp float eddies = tidalCloud(wound * 2.8 + warp * 3.0);
+    highp float wisps = tidalCloud(wound * 6.5 + eddies * 2.0 - clock * 0.3);
+    if (cloudProfile.y < 0.3) {
+        highp float billows = tidalCloud(cloudQ * 2.6 + warp * 2.2 + vec2(clock * 0.3, -clock * 0.15));
+        eddies = mix(eddies, billows, 0.72);
+        wisps = mix(wisps, tidalCloud(cloudQ * 5.0 + billows * 2.1 - clock * 0.2), 0.70);
+    }
+    highp float phase = atan(cloudQ.y, cloudQ.x + 0.00001) * 2.0 + cloudRadius * 3.3 - clock + eddies * 2.6;
+    highp float arms = 0.5 + 0.5 * sin(phase);
+    highp float warmMist = exp(-pow((cloudRadius - 1.38) / 0.72, 2.0));
+    warmMist *= (0.33 + eddies * 0.95) * mix(1.0, 0.40 + arms * 0.90, cloudProfile.y);
+    warmMist *= smoothstep(0.67, 0.94, qr) * (1.0 - smoothstep(2.00, 2.82, cloudRadius + warp.x * 0.25));
+    warmMist *= cloudProfile.x;
+
+    highp vec2 whiteOval = vec2(r.x, r.y / 0.90);
+    highp float whiteRadius = length(whiteOval);
+    highp vec2 whiteWound = tidalRotate(whiteOval, -2.3 / (whiteRadius + 0.6) + clock * 1.55);
+    highp float whiteEddies = tidalCloud(whiteWound * 2.6 + clock * 0.12);
+    highp float whiteWisps = tidalCloud(whiteWound * 6.5 + whiteEddies * 2.0);
+    highp float whiteMist = exp(-pow((whiteRadius - 1.44) / 0.85, 2.0));
+    whiteMist *= (0.30 + whiteEddies * 1.0) * (0.60 + whiteWisps * 0.70);
+    whiteMist *= smoothstep(0.40, 0.72, rr) * (1.0 - smoothstep(2.3, 3.15, whiteRadius));
+
+    // A continuous arm leaves the outer warm spiral and joins the outer cool spiral tangentially.
+    highp float exitAngle = flowProfile.z;
+    highp float entryAngle = flowProfile.w;
+    highp vec2 release = vec2(cos(exitAngle), sin(exitAngle)) * dr * 2.05;
+    highp vec2 capture = vec2(1.0, 0.0) + vec2(cos(entryAngle), sin(entryAngle)) * tr * 2.35;
+    highp vec2 releaseTangent = normalize(vec2(cos(exitAngle), sin(exitAngle)) * 0.95 +
+        vec2(-sin(exitAngle), cos(exitAngle)) * (2.05 * 3.6));
+    highp vec2 captureTangent = normalize(vec2(cos(entryAngle), sin(entryAngle)) * -1.23 +
+        vec2(sin(entryAngle), -cos(entryAngle)) * (2.35 * 4.8));
+    highp vec2 bridge = tidalRibbon(p, release, release + releaseTangent * 0.20,
+        capture - captureTangent * 0.14, capture);
+    highp vec2 warmArm = tidalSpiral(p, vec2(0.0), dr, exitAngle - 3.6, exitAngle, 1.10, 2.05);
+    highp vec2 whiteArm = tidalSpiral(p, vec2(1.0, 0.0), tr, entryAngle, entryAngle - 4.8, 2.35, 1.12);
+
+    highp float width = mix(dr * 0.11, tr * 0.36, bridge.y) * flowProfile.y;
+    highp float flowing = tidalCloud(vec2((1.0 + bridge.y) * 12.0 - TIME * 0.48, bridge.x / max(width, 0.001)));
+    highp float ribbon = exp(-pow(bridge.x / max(width, 0.001), 2.0));
+    highp float haze = exp(-pow(bridge.x / max(width * 2.7, 0.001), 2.0));
+    highp float feed = (ribbon * (0.45 + flowing * 0.80) + haze * 0.10) * flowProfile.x;
+    highp float warmFlow = tidalCloud(vec2(warmArm.y * 12.0 - TIME * 0.48, warmArm.x / max(dr * 0.12 * flowProfile.y, 0.001)));
+    highp float warmRibbon = exp(-pow(warmArm.x / max(dr * 0.12 * flowProfile.y, 0.001), 2.0));
+    warmRibbon *= (0.48 + warmFlow * 0.90) * flowProfile.x;
+    highp float whiteFlow = tidalCloud(vec2((2.0 + whiteArm.y) * 12.0 - TIME * 0.48, whiteArm.x / max(tr * 0.36 * flowProfile.y, 0.001)));
+    highp float whiteRibbon = exp(-pow(whiteArm.x / max(tr * 0.36 * flowProfile.y, 0.001), 2.0));
+    whiteRibbon *= (0.48 + whiteFlow * 0.90) * flowProfile.x;
+    highp float protectCores = smoothstep(0.94, 1.20, qr) * smoothstep(0.74, 1.0, rr);
+    feed *= protectCores;
+    warmRibbon *= smoothstep(0.94, 1.16, qr);
+    whiteRibbon *= smoothstep(0.74, 0.98, rr);
+
+    highp vec3 gold = DonorColor.rgb;
+    highp vec3 ivory = mix(TargetColor.rgb, vec3(1.0), 0.42);
+    highp vec3 paleGold = mix(gold, vec3(1.0, 0.82, 0.37), 0.33);
+    highp vec3 bridgeColour = mix(paleGold, ivory, smoothstep(0.02, 0.98, bridge.y));
+    highp float density = warmMist * 1.45 + whiteMist * 1.80 + warmRibbon * 0.95 + whiteRibbon * 1.10 + feed * 1.25;
+    highp vec3 emission = gold * warmMist * (0.60 + wisps * 0.62) * 1.45;
+    emission += ivory * whiteMist * (0.51 + whiteWisps * 0.74) * 1.8;
+    emission += paleGold * warmRibbon * 0.95 + ivory * whiteRibbon * 1.12 + bridgeColour * feed * 1.28;
+    highp vec3 colour = emission / max(density, 0.0001);
+    highp float opacity = (1.0 - exp(-density * 1.42)) * smoothstep(0.0, 0.08, density);
+
+    // Both photospheres are time-independent. Only the surrounding gas and ribbons use TIME.
+    highp float fixedLimb = qr + (tidalNoise(q * 21.0) - 0.5) * 0.016;
+    highp float warmMask = 1.0 - smoothstep(0.84, 0.91, fixedLimb);
+    if (warmMask > 0.0) {
+        highp float depth = sqrt(max(1.0 - pow(qr / 0.89, 2.0), 0.0));
+        highp float cells = tidalNoise(q * 49.0) * 0.30 + tidalCloud(q * 12.0) * 0.52;
+        highp float patches = tidalCloud(q * 6.0 + 17.0);
+        highp float heat = (0.62 + cells) * (0.80 + depth * 0.20);
+        heat *= 0.80 + patches * 0.35;
+        highp vec3 photosphere = mix(gold, vec3(1.0, 0.85, 0.40), 0.42) * heat * 1.23;
+        colour = mix(colour, photosphere, warmMask);
+        opacity = mix(opacity, 1.0, warmMask);
+    }
+    highp float whiteMask = 1.0 - smoothstep(0.53, 0.75, rr);
+    if (whiteMask > 0.0) {
+        highp float detail = tidalCloud(r * 12.0 + 4.2);
+        highp float depth = sqrt(max(1.0 - pow(rr / 0.65, 2.0), 0.0));
+        highp vec3 photosphere = mix(ivory, vec3(1.0), 0.5) * (1.04 + detail * 0.06 + depth * 0.10);
+        colour = mix(colour, photosphere, whiteMask);
+        opacity = mix(opacity, 1.0, whiteMask);
+    }
+    return vec4(colour, opacity);
+}

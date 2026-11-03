@@ -706,10 +706,6 @@ public abstract partial class SharedGunSystem : EntitySystem
         if (cartridge.DeleteOnSpawn) // Mono - No need to update appearance if cartridge is getting deleted anyways
             return;
 
-        if (cartridge.AutoTimedDespawn != 0)
-            EnsureComp<TimedDespawnComponent>(uid).Lifetime = cartridge.AutoTimedDespawn;
-        // End mono
-
         Appearance.SetData(uid, AmmoVisuals.Spent, spent);
     }
 
@@ -738,6 +734,11 @@ public abstract partial class SharedGunSystem : EntitySystem
             ejectAngle += 3.7f; // 212 degrees; casings should eject slightly to the right and behind of a gun
             ThrowingSystem.TryThrow(entity, ejectAngle.ToVec().Normalized() / 100, 5f);
         }
+        // A live round must not expire, and a chambered case is still referenced by its gun.
+        // Start cleanup only after a spent casing has actually been ejected.
+        if (TryComp<CartridgeAmmoComponent>(entity, out var ejected) && ejected.Spent && ejected.AutoTimedDespawn > 0)
+            EnsureComp<TimedDespawnComponent>(entity).Lifetime = ejected.AutoTimedDespawn;
+
         if (playSound && TryComp<CartridgeAmmoComponent>(entity, out var cartridge))
         {
             Audio.PlayPvs(cartridge.EjectSound, entity, AudioParams.Default.WithVariation(SharedContentAudioSystem.DefaultVariation).WithVolume(-1f));

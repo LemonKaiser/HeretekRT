@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Shuttles.Systems;
 using Content.Shared._Mono.Detection;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._NF.Shuttles.Components;
 using Content.Shared.Shuttles.BUIStates;
@@ -440,7 +441,7 @@ public sealed partial class MapScreen : BoxContainer
             {
                 continue;
             }
-            var mapName = mapMetadata.EntityName;
+            var mapName = KoronusLocalization.GetString(mapMetadata.EntityName);
 
             if (string.IsNullOrEmpty(mapName))
             {

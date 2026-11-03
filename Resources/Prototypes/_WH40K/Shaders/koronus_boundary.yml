@@ -14,6 +14,21 @@
   path: /Textures/_WH40K/Shaders/koronus_sun_corona.swsl
 
 - type: shader
+  id: KoronusAccretingSun
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_accreting_sun.swsl
+
+- type: shader
+  id: KoronusAccretingSunCorona
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_accreting_sun_corona.swsl
+
+- type: shader
+  id: KoronusStellarAccretion
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_stellar_accretion.swsl
+
+- type: shader
   id: KoronusCelestialTexture
   kind: source
   path: /Textures/_WH40K/Shaders/koronus_celestial_texture.swsl

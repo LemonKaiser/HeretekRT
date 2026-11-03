@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared.Random;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -123,6 +124,12 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     /// </summary>
     [DataField]
     public bool ActivityEligible;
+
+    /// <summary>
+    /// Native asteroid pool used for both the finite mining plan and its resource replenishment.
+    /// </summary>
+    [DataField]
+    public ProtoId<WeightedRandomEntityPrototype> AsteroidPool = "KoronusMiningAsteroids";
 
     [DataField]
     public float BoundaryRadius = 20000f;

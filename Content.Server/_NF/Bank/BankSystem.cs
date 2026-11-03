@@ -410,6 +410,21 @@ public sealed partial class BankSystem : SharedBankSystem
     /// <returns>true if the transaction was successful, false if it was not</returns>
     public async Task<bool> TryBankDepositOffline(NetUserId userId, PlayerPreferences prefs, HumanoidCharacterProfile profile, int amount)
     {
+        if (!TryBeginBankDepositOffline(userId, prefs, profile, amount, out var write))
+            return false;
+
+        await write;
+        _log.Info($"Offline player {userId} deposited {amount}");
+        return true;
+    }
+
+    /// <summary>
+    /// Validates and starts a character credit before a world-side sale is committed.
+    /// </summary>
+    public bool TryBeginBankDepositOffline(NetUserId userId, PlayerPreferences prefs,
+        HumanoidCharacterProfile profile, int amount, out Task write)
+    {
+        write = Task.CompletedTask;
         if (amount <= 0)
         {
             _log.Info($"TryBankDepositOffline: {amount} is invalid");
@@ -426,7 +441,6 @@ public sealed partial class BankSystem : SharedBankSystem
         if (!PrepareFactionIncome(userId, userId.ToString(), profile.BankBalance, amount, true, out var net, out var mutation))
             return false;
         var newProfile = profile.WithBankBalance(profile.BankBalance + net);
-        Task write;
         // Update preferences in cache if the player data exists
         if (_prefsManager.TryGetCachedPreferences(userId, out var cachedPrefs))
         {
@@ -445,9 +459,6 @@ public sealed partial class BankSystem : SharedBankSystem
         }
         if (mutation != null)
             TrackFactionIncome(mutation, write);
-        await write;
-
-        _log.Info($"Offline player {userId} deposited {amount}");
         return true;
     }
 

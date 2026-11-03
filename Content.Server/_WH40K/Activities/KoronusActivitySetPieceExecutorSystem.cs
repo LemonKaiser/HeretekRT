@@ -284,7 +284,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         EntityUid grid)
     {
         if (!TryComp<MapGridComponent>(grid, out var gridComponent) ||
-            !TryValidateSetPiece(grid, instance.SystemId, profile, context) ||
+            !TryValidateSetPiece(grid, instance.SystemId, profile, context, requireSpawnClearance: true) ||
             !TryFindObjectivePosition(grid, gridComponent, out var objectivePosition))
         {
             QueueDel(grid);
@@ -401,6 +401,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         setPiece.SystemId = context.SystemId;
         setPiece.MapId = context.MapId;
         setPiece.SpawnPosition = context.Center;
+        setPiece.GridOrigin = _transform.ToMapCoordinates(Transform(grid).Coordinates).Position;
         setPiece.LeashRadius = profile.LeashRadius;
         setPiece.AllowedSurfaceGrid = context.SurfaceTerrainGrid;
         return true;
@@ -737,7 +738,8 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         EntityUid grid,
         string systemId,
         in SetPieceProfile profile,
-        in SetPieceSpawnContext context)
+        in SetPieceSpawnContext context,
+        bool requireSpawnClearance = false)
     {
         if (!TryComp<TransformComponent>(grid, out var transform) ||
             transform.MapID != context.MapId ||
@@ -749,13 +751,14 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             return false;
         }
 
-        var expectedOrigin = context.Center - gridComponent.LocalAABB.Center;
+        var expectedOrigin = Comp<KoronusActivitySetPieceComponent>(grid).GridOrigin;
         var actualOrigin = _transform.ToMapCoordinates(transform.Coordinates).Position;
         return Vector2.DistanceSquared(actualOrigin, expectedOrigin) <= 1f &&
                _safety.TryValidate(new KoronusActivityTarget(systemId, context.MapId, context.Center, grid), out _) &&
                IsProtectedBandClear(systemId, context.MapId, context.Center) &&
-               !HasForeignGrid(new MapCoordinates(context.Center, context.MapId), profile.LeashRadius,
-                   context.SurfaceTerrainGrid, grid);
+               (!requireSpawnClearance ||
+                !HasForeignGrid(new MapCoordinates(context.Center, context.MapId), profile.LeashRadius,
+                    context.SurfaceTerrainGrid, grid));
     }
 
     private bool TryValidateOwnedEntity(

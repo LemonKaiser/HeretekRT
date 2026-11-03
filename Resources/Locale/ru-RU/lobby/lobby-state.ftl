@@ -209,12 +209,12 @@ heretek-origin-noble-focus-description = Приказы, связи и чувс�
 heretek-origin-noble-lore-note = Имперская знать управляет домами, поместьями и целыми мирами от имени Терры. С детства дворянина учат власти, этикету и цене верности слуг.
 heretek-origin-noble-talents = You. Do Something., You. Protect Me., You. Go On., You. Kill It., You. You Are Next.
 
-heretek-origin-psyker-name = Санкционированный псайкер
-heretek-origin-psyker-description = Человек, прошедший обучение и санкционирование Адептус Астра Телепатика, чтобы безопаснее использовать силы Варпа на службе Империуму.
-heretek-origin-psyker-feature-name = Пси-способности
-heretek-origin-psyker-focus-description = Пси-способности направляют силу Варпа через дисциплину, обучение и постоянный контроль над опасностью психического срыва.
-heretek-origin-psyker-lore-note = Санкционированных псайкеров обучает Адептус Астра Телепатика и допускает к службе лишь после суровой проверки. Даже признанный полезным псайкер остаётся объектом страха и надзора.
-heretek-origin-psyker-talents = Still Mind, Subtle Manipulation, Second Sight, Obscured Threat, Psyker Minoris, Psyker Majoris, Psyker Terminus, Psyker Extremis.
+heretek-origin-psyker-name = Савант Администратума
+heretek-origin-psyker-description = Имперский учёный и архивист, обученный исследовать древние записи, сопоставлять донесения и находить закономерности в массивах данных. Его инструменты — знания, наблюдательность и строгий анализ.
+heretek-origin-psyker-feature-name = Эрудиция
+heretek-origin-psyker-focus-description = Обширные познания, развитая память и внимательное изучение фактов помогают распознавать угрозы, оценивать обстановку и находить обоснованные решения.
+heretek-origin-psyker-lore-note = В архивах Адептус Администратум служат учёные адепты, посвятившие жизнь сохранению и изучению имперских знаний. Саванты расшифровывают древние тексты, составляют сводки и выполняют сложные расчёты, помогая своим покровителям принимать решения.
+heretek-origin-psyker-talents = Архивная память, Анализ донесений, Древние языки, Криптография, Баллистические расчёты, Систематизация знаний.
 
 heretek-origin-arbitrator-name = Арбитр
 heretek-origin-arbitrator-description = Служитель Адептус Арбитес и исполнитель Lex Imperialis — законов Империума. В будущем это происхождение раскроется через одну из трёх специализаций.

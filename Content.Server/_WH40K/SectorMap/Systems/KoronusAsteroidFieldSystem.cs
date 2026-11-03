@@ -7,7 +7,6 @@ using Content.Server.Shuttles.Components;
 using Content.Server.Worldgen.Components.Debris;
 using Content.Server.Worldgen.Components.GC;
 using Content.Shared.GameTicking;
-using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Tiles;
 using Content.Shared._WH40K.SectorMap.Prototypes;
@@ -49,8 +48,6 @@ public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
     // ExtraGigantic has a 28-tile radius. Include blob overdraw and tile/AABB corners.
     private const float AsteroidRadius = 44f;
     private const float BoundaryClearance = 1000f;
-
-    private static readonly ProtoId<WeightedRandomEntityPrototype> AsteroidPool = "KoronusMiningAsteroids";
 
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -123,7 +120,7 @@ public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
                     continue;
                 site.Position = position;
             }
-            site.Prototype = PickAsteroidPrototype();
+            site.Prototype = PickAsteroidPrototype(system);
         }
 
         for (var cluster = 0; cluster < field.Clusters.Count; cluster++)
@@ -142,7 +139,7 @@ public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
                 {
                     Position = position,
                     Cluster = cluster,
-                    Prototype = PickAsteroidPrototype(),
+                    Prototype = PickAsteroidPrototype(system),
                 });
             }
         }
@@ -154,7 +151,8 @@ public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
         }
     }
 
-    private string PickAsteroidPrototype() => _prototypes.Index(AsteroidPool).Pick(_random);
+    private string PickAsteroidPrototype(KoronusSystemPrototype system)
+        => _prototypes.Index(system.AsteroidPool).Pick(_random);
 
     private bool TryFindCluster(KoronusSystemPrototype system, MapId mapId,
         KoronusAsteroidFieldComponent field, bool inner, out Vector2 position)

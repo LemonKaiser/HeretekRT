@@ -247,7 +247,7 @@ public sealed partial class KoronusAsteroidFieldSystem
                 IsNear(position, observers, RetentionDistance))
                 continue;
             site.Position = position;
-            site.Prototype = PickAsteroidPrototype();
+            site.Prototype = PickAsteroidPrototype(system);
             site.Depleted = false;
             budget--;
         }

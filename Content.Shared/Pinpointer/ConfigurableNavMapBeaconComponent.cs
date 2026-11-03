@@ -17,12 +17,14 @@ public sealed partial class ConfigurableNavMapBeaconComponent : Component
 public sealed class NavMapBeaconConfigureBuiMessage : BoundUserInterfaceMessage
 {
     public string? Text;
+    public string? TextEnglish;
     public bool Enabled;
     public Color Color;
 
-    public NavMapBeaconConfigureBuiMessage(string? text, bool enabled, Color color)
+    public NavMapBeaconConfigureBuiMessage(string? text, bool enabled, Color color, string? textEnglish = null)
     {
         Text = text;
+        TextEnglish = textEnglish;
         Enabled = enabled;
         Color = color;
     }

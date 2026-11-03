@@ -17,10 +17,18 @@ public sealed partial class NavMapBeaconComponent : Component
     public string? Text;
 
     /// <summary>
-    /// A localization string that populates <see cref="Text"/> if it is null at mapinit.
+    /// Optional English label. Text remains the Russian label and fallback for older maps.
+    /// </summary>
+    [ViewVariables(VVAccess.ReadWrite), DataField]
+    [AutoNetworkedField]
+    public string? TextEnglish;
+
+    /// <summary>
+    /// A localization string displayed in the viewer's language when Text is empty.
     /// Used so that mappers can still override Text while mapping.
     /// </summary>
     [DataField]
+    [AutoNetworkedField]
     public LocId? DefaultText;
 
     [ViewVariables(VVAccess.ReadWrite), DataField]

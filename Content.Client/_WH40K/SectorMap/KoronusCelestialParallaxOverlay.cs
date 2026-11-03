@@ -83,7 +83,24 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
 
             if (body.BodyType == KoronusCelestialBodyType.Star)
             {
-                _sunRenderer.Draw(args.WorldHandle, sceneryPosition, sceneryRadius, body.StarColor);
+                if (_sunRenderer.IsAccretionCompanion(body))
+                    continue;
+
+                if (body.AccretionTarget is { } targetId &&
+                    _prototypes.TryIndex(targetId, out var target) &&
+                    target.ID != body.ID && target.BodyType == KoronusCelestialBodyType.Star &&
+                    target.System == body.System && target.NavVisualRadius > 0f)
+                {
+                    var targetAngle = visual.PositionAngleOverrides.TryGetValue(target.ID, out var targetOverride)
+                        ? targetOverride
+                        : target.OrbitPhase;
+                    var targetPosition = GetOrbitalPosition(system, target, time, targetAngle);
+                    targetPosition = GetSceneryPosition(targetPosition, eyePosition, GetSceneryParallaxSlowness(target));
+                    _sunRenderer.DrawAccretion(args.WorldHandle, sceneryPosition, sceneryRadius, body.StarColor,
+                        targetPosition, GetSceneryRadius(target), target.StarColor);
+                    continue;
+                }
+                _sunRenderer.Draw(args.WorldHandle, sceneryPosition, sceneryRadius, body.StarColor, body.StarVisualStyle);
                 continue;
             }
 
@@ -143,27 +160,20 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
     }
 
     /// <summary>
-    /// Stars are rendered at their actual system coordinates. Unlike decorative planetary bodies,
-    /// a star's size and distance in the world must match the shuttle NAV geometry exactly.
+    /// Stars and planets must use the same projection: scaling only the planets' displacement
+    /// brings their orbits inside an unscaled star, even though NAV shows a safe separation.
     /// </summary>
     internal static float GetSceneryParallaxSlowness(KoronusCelestialBodyPrototype body)
     {
-        return body.BodyType == KoronusCelestialBodyType.Star
-            ? 0f
-            : Math.Clamp(body.BackgroundParallaxSlowness, 0f, 1f);
+        return Math.Clamp(body.BackgroundParallaxSlowness, 0f, 1f);
     }
 
     internal static float GetSceneryRadius(KoronusCelestialBodyPrototype body)
     {
-        // The procedural sun renderer is shared with NAV, including its corona. Keeping this
-        // radius in system-space avoids a second, presentation-only stellar size.
-        if (body.BodyType == KoronusCelestialBodyType.Star)
-            return MathF.Max(0f, body.NavVisualRadius);
-
-        var authoredRadius = body.BackgroundVisualRadius > 0f
+        var authoredRadius = body.BodyType != KoronusCelestialBodyType.Star && body.BackgroundVisualRadius > 0f
             ? body.BackgroundVisualRadius
             : body.NavVisualRadius;
-        return authoredRadius * (1f - Math.Clamp(body.BackgroundParallaxSlowness, 0f, 1f));
+        return MathF.Max(0f, authoredRadius) * (1f - GetSceneryParallaxSlowness(body));
     }
 
     private Texture GetTexture(ResPath path)

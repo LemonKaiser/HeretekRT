@@ -1,0 +1,44 @@
+ent-WH40KNecronTombAirlock = Necron tomb gate
+    .desc = A self-powered threshold sealed by ancient Necron mechanisms.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombObelisk = Necron tomb obelisk
+    .desc = A precisely carved blackstone monument traced with cold green light.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombPillar = Necron tomb pillar
+    .desc = A tall angular support bearing a dynastic glyph.
+ent-WH40KNecronTombPillarAlt = Necron tomb pillar
+    .desc = A tall angular support marking a passage through the tomb.
+ent-WH40KNecronTombPylon = Necron control pylon
+    .desc = An inscrutable interface linked to the tomb's dormant systems.
+ent-WH40KNecronTombStasisCrypt = Necron stasis capsule
+    .desc = A sealed suspension capsule with an illuminated preservation chamber.
+ent-WH40KNecronTombMemoryBank = Necron memory bank
+    .desc = A sealed repository of dynastic records and awakening protocols.
+ent-WH40KNecronTombWallGlyph = Necron wall light conduit
+    .desc = An embedded energy conduit illuminating the wall's emerald inlays.
+    .suffix = WH40K, Dungeon
+
+ent-WH40KNecronTombStasisEmpty = open Necron stasis capsule
+    .desc = An empty suspension chamber awaiting its next occupant.
+ent-WH40KNecronTombCapacitor = Necron energy accumulator
+    .desc = A charged superconducting reservoir connected to the tomb's power system.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombInductionCoil = Necron induction collector
+    .desc = An induction coil that collects electrical discharges for the tomb's energy reserves.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombRepairDock = Canoptek service dock
+    .desc = A recessed maintenance and charging station for mechanical constructs.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombPhasePlatform = Necron phase platform
+    .desc = A dormant transfer pad surrounded by precisely aligned energy guides.
+ent-WH40KNecronTombConsole = Necron energy terminal
+    .desc = A monitoring interface for the tomb's power nodes.
+    .suffix = WH40K, Dungeon
+
+ent-WH40KNecronTombArchiveShelf = tomb archive shelf
+    .desc = Ancient bound records and plates bearing dynastic chronicles, arranged on a dark shelf.
+    .suffix = WH40K, Dungeon
+ent-WH40KNecronTombDynasticStatue = Necron dynastic statue
+    .desc = A motionless stone effigy of an ancient warrior. This monument stands apart from the tomb's supports.
+    .suffix = WH40K, Dungeon
+

@@ -13,6 +13,19 @@ public sealed partial class ShipyardPassengerSystem : EntitySystem
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
+    public bool IsPassenger(EntityUid entity)
+    {
+        return HasComp<MobStateComponent>(entity) || HasComp<ActorComponent>(entity) ||
+               TryComp<MindContainerComponent>(entity, out var mind) && mind.HasMind;
+    }
+
+    public bool HasPassengers(EntityUid shuttle)
+    {
+        var passengers = new List<EntityUid>();
+        FindPassengers(shuttle, passengers);
+        return passengers.Count > 0;
+    }
+
     public void Evacuate(EntityUid shuttle, EntityCoordinates? destination)
     {
         var passengers = new List<EntityUid>();
@@ -37,9 +50,7 @@ public sealed partial class ShipyardPassengerSystem : EntitySystem
         var children = Transform(parent).ChildEnumerator;
         while (children.MoveNext(out var child))
         {
-            if (HasComp<MobStateComponent>(child)
-                || HasComp<ActorComponent>(child)
-                || TryComp<MindContainerComponent>(child, out var mind) && mind.HasMind)
+            if (IsPassenger(child))
             {
                 passengers.Add(child);
                 continue;

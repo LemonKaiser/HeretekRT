@@ -1,0 +1,74 @@
+- type: Tag
+  id: WH40KNecronTomb
+
+- type: dungeonConfig
+  id: WH40KNecronTomb
+  data:
+    colors:
+      Decals: "#4E8B3D90"
+    entities:
+      Walls: WallNecron
+      CornerWalls: WallNecron
+    spawnGroups:
+      Entrance: WH40KNecronTombEntrance
+      CornerClutter: WH40KNecronTombCorners
+      WallMounts: WH40KNecronTombGlyphs
+    tiles:
+      FallbackTile: FloorDarkMono
+    whitelists:
+      Rooms:
+        tags:
+        - WH40KNecronTomb
+  layers:
+  - !type:PrefabDunGen
+    avoidRepeatedRooms: true
+    presets:
+    - Bucket
+    - Wow
+    - SpaceShip
+    - Tall
+  - !type:CorridorDunGen
+    width: 3
+  - !type:DungeonEntranceDunGen
+    count: 2
+  - !type:RoomEntranceDunGen
+  - !type:BoundaryWallDunGen
+  - !type:CorridorDecalSkirtingDunGen
+    cardinalDecals:
+      South: BrickTileSteelLineS
+      East: BrickTileSteelLineE
+      North: BrickTileSteelLineN
+      West: BrickTileSteelLineW
+    cornerDecals:
+      SouthEast: BrickTileSteelCornerSe
+      SouthWest: BrickTileSteelCornerSw
+      NorthEast: BrickTileSteelCornerNe
+      NorthWest: BrickTileSteelCornerNw
+    pocketDecals:
+      SouthWest: BrickTileSteelInnerSw
+      SouthEast: BrickTileSteelInnerSe
+      NorthWest: BrickTileSteelInnerNw
+      NorthEast: BrickTileSteelInnerNe
+  - !type:CornerClutterDunGen
+    chance: 0.65
+    preservePassages: true
+  - !type:WallMountDunGen
+    mountInside: true
+    minSpacing: 7
+    prob: 1
+
+- type: entitySpawnEntry
+  id: WH40KNecronTombEntrance
+  entries:
+  - id: WH40KNecronTombAirlock
+
+- type: entitySpawnEntry
+  id: WH40KNecronTombCorners
+  entries:
+  - id: WH40KNecronTombObelisk
+
+- type: entitySpawnEntry
+  id: WH40KNecronTombGlyphs
+  entries:
+  - id: WH40KNecronTombWallGlyph
+

@@ -1,0 +1,207 @@
+- type: dungeonRoom
+  id: WH40KChaos17x5Refectory
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,0
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos17x5Workshop
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 18,0
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos11x5Barracks
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,6
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos11x5Scriptorium
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 12,6
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x5Infirmary
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,12
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x5Cells
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 8,12
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos5x5Kitchen
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,18
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos5x5Stores
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 6,18
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos5x5Guard
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 12,18
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos3x5Washroom
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,24
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos3x5Electrical
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 4,24
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos13x3Armory
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,30
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos13x3Fuel
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 14,30
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos11x3Mortuary
+  size: 11,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,34
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos11x3Ventilation
+  size: 11,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 12,34
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x3Receiving
+  size: 7,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,38
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x3Registry
+  size: 7,3
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 8,38
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x7Sanctum
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,42
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x7Command
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 8,42
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x7Forge
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 16,42
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos17x5Assembly
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,50
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos11x5Briefing
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 18,50
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x5ColdStore
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 0,56
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos7x5AirHandling
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 8,56
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos5x5Vox
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 16,56
+  tags:
+  - WH40KChaosDungeon
+
+- type: dungeonRoom
+  id: WH40KChaos3x5Janitor
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/chaos.yml
+  offset: 22,56
+  tags:
+  - WH40KChaosDungeon

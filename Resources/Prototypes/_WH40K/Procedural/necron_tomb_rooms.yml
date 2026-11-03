@@ -1,0 +1,259 @@
+- type: dungeonRoom
+  id: WH40KNecronTomb17x5CohortCrypt
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,0
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb17x5Reanimation
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 18,0
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb17x5Procession
+  size: 17,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 36,0
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x5CanoptekFoundry
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,6
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x5GlyphArchive
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 12,6
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x5DynasticVault
+  size: 11,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 24,6
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5StasisAntechamber
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,12
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5TranslationRelay
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 8,12
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5PowerDistribution
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 16,12
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb5x5RepairBay
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,18
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb5x5MemoryVault
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 6,18
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb5x5ReserveCrypt
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 12,18
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb3x5RelayAlcove
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,24
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb3x5SentinelAlcove
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 4,24
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb3x5SealedCache
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 8,24
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3CryptGallery
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,30
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3CollectorGallery
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 14,30
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3ProcessionalGallery
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 28,30
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x3StasisReserve
+  size: 11,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,34
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x3CanoptekDock
+  size: 11,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 12,34
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb11x3ArchiveNiches
+  size: 11,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 24,34
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x3ControlVestibule
+  size: 7,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,38
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x3PowerCoupling
+  size: 7,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 8,38
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x3Reliquary
+  size: 7,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 16,38
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x7RoyalSepulchre
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,42
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x7TranslationChamber
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 8,42
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x7PowerCore
+  size: 7,7
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 16,42
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5CryoService
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5AccumulatorReserve
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 8,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb5x5InductionBank
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 16,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb5x5SpareParts
+  size: 5,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 22,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb3x5CryoControl
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 28,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb3x5PowerLink
+  size: 3,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 32,50
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3AccumulatorGallery
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,56
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3CryoTransit
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 14,56
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb13x3CanoptekLine
+  size: 13,3
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 28,56
+  tags:
+  - WH40KNecronTomb
+- type: dungeonRoom
+  id: WH40KNecronTomb7x5PhaseControl
+  size: 7,5
+  atlas: /Maps/_WH40K/Dungeon/necron_tomb.yml
+  offset: 0,60
+  tags:
+  - WH40KNecronTomb

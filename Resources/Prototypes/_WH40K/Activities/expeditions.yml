@@ -30,7 +30,7 @@
   titleLocId: koronus-expedition-weapons-cache-title
   summaryLocId: koronus-expedition-weapons-cache-summary
   preferredDayFocus: [ Raiders, Trade ]
-  weight: 3
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -53,7 +53,7 @@
   titleLocId: koronus-expedition-vault-title
   summaryLocId: koronus-expedition-vault-summary
   preferredDayFocus: [ Trade, Raiders ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 5400
@@ -76,7 +76,7 @@
   titleLocId: koronus-expedition-raider-boarding-title
   summaryLocId: koronus-expedition-raider-boarding-summary
   preferredDayFocus: [ Raiders, Trade ]
-  weight: 3
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 5400
@@ -99,7 +99,7 @@
   titleLocId: koronus-expedition-wreck-salvage-title
   summaryLocId: koronus-expedition-wreck-salvage-summary
   preferredDayFocus: [ Exploration, Trade ]
-  weight: 4
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -117,7 +117,7 @@
   titleLocId: koronus-expedition-wreck-rescue-title
   summaryLocId: koronus-expedition-wreck-rescue-summary
   preferredDayFocus: [ Rescue, Exploration ]
-  weight: 3
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -135,7 +135,7 @@
   titleLocId: koronus-expedition-basalt-survey-title
   summaryLocId: koronus-expedition-basalt-survey-summary
   preferredDayFocus: [ Exploration, Trade ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -153,7 +153,7 @@
   titleLocId: koronus-expedition-snow-rescue-title
   summaryLocId: koronus-expedition-snow-rescue-summary
   preferredDayFocus: [ Rescue, Warp ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -176,7 +176,7 @@
   titleLocId: koronus-expedition-cave-survey-title
   summaryLocId: koronus-expedition-cave-survey-summary
   preferredDayFocus: [ TyranidTrace, Exploration ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -199,7 +199,7 @@
   titleLocId: koronus-expedition-chromite-survey-title
   summaryLocId: koronus-expedition-chromite-survey-summary
   preferredDayFocus: [ Trade, Raiders ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -222,7 +222,7 @@
   titleLocId: koronus-expedition-scrap-survey-title
   summaryLocId: koronus-expedition-scrap-survey-summary
   preferredDayFocus: [ Exploration, Raiders ]
-  weight: 2
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 3600
@@ -245,7 +245,7 @@
   titleLocId: koronus-expedition-infested-ship-title
   summaryLocId: koronus-expedition-infested-ship-summary
   preferredDayFocus: [ TyranidTrace, Rescue ]
-  weight: 3
+  weight: 0
   minimumLifetime: 2700
   maximumLifetime: 4200
   cooldown: 5400

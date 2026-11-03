@@ -1,0 +1,278 @@
+- type: entity
+  id: WH40KNecronTombObelisk
+  parent: WH40KNecronDecorObelisk
+  suffix: WH40K, Dungeon
+  components:
+  - type: Sprite
+    offset: 0,0.5
+    drawdepth: Mobs
+  - type: Physics
+    canCollide: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.28,-0.4,0.28,0.4"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger: !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: PointLight
+    radius: 4.5
+    energy: 1.1
+    color: "#64DA45"
+
+- type: entity
+  id: WH40KNecronTombPillar
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: six
+    offset: 0,1
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_pillars.rsi
+    state: six
+  - type: PointLight
+    enabled: true
+    radius: 4.5
+    energy: 1.1
+
+- type: entity
+  id: WH40KNecronTombPillarAlt
+  parent: WH40KNecronTombPillar
+  components:
+  - type: Sprite
+    state: seven
+  - type: Icon
+    state: seven
+
+- type: entity
+  id: WH40KNecronTombPylon
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pylon.rsi
+    state: pylon
+    offset: 0,0.25
+  - type: Icon
+    sprite: _WH40K/Structures/Decorations/necron_pylon.rsi
+    state: pylon
+  - type: PointLight
+    radius: 2.5
+    energy: 0.6
+
+- type: entity
+  id: WH40KNecronTombStasisCrypt
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/cryogenics.rsi
+    state: pod-on
+    layers:
+    - state: pod-on
+      color: "#9AD28F"
+  - type: Icon
+    sprite: Structures/Machines/cryogenics.rsi
+    state: pod-on
+  - type: PointLight
+    radius: 2
+    energy: 0.4
+
+- type: entity
+  id: WH40KNecronTombMemoryBank
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/server.rsi
+    state: server
+    offset: 0,0
+    color: "#9FB69D"
+  - type: Icon
+    sprite: Structures/Machines/server.rsi
+    state: server
+  - type: PointLight
+    radius: 2
+    energy: 0.4
+
+- type: entity
+  id: WH40KNecronTombWallGlyph
+  parent: WH40KDecorPropBase
+  suffix: WH40K, Dungeon
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/necron_pylon.rsi
+    state: pylon
+    offset: 0,0.65
+    drawdepth: OverMobs
+    visible: false
+  - type: PointLight
+    offset: 0,0.495
+    radius: 4.5
+    energy: 1.2
+    color: "#64DA45"
+
+- type: entity
+  id: WH40KNecronTombStasisEmpty
+  parent: WH40KNecronTombStasisCrypt
+  components:
+  - type: Sprite
+    state: pod-off
+    layers:
+    - state: pod-off
+      color: "#9AD28F"
+  - type: Icon
+    state: pod-off
+  - type: PointLight
+    enabled: false
+
+- type: entity
+  id: WH40KNecronTombCapacitor
+  parent: SMESBasic
+  suffix: WH40K, Dungeon
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    drawdepth: Mobs
+    color: "#91B39A"
+  - type: Battery
+    maxCharge: 1000000
+    startingCharge: 750000
+  - type: PointLight
+    color: "#64DA45"
+
+- type: entity
+  id: WH40KNecronTombInductionCoil
+  parent: TeslaCoil
+  suffix: WH40K, Dungeon
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    drawdepth: Mobs
+    color: "#A4BAA2"
+  - type: GenericVisualizer
+    visuals:
+      enum.TeslaCoilVisuals.Enabled:
+        enabled:
+          True: { state: coil }
+          False: { state: coil }
+  - type: PointLight
+    radius: 2.5
+    energy: 0.7
+    color: "#64DA45"
+
+- type: entity
+  id: WH40KNecronTombRepairDock
+  parent: BorgChargerXenoborg
+  suffix: WH40K, Dungeon
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    drawdepth: Mobs
+    color: "#91B39A"
+  - type: ApcPowerReceiver
+    needsPower: false
+
+- type: entity
+  id: WH40KNecronTombPhasePlatform
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/artifact_analyzer.rsi
+    state: icon
+    layers:
+    - state: icon
+    - state: unshaded
+      shader: unshaded
+      color: "#64DA45"
+    offset: 0,0
+    drawdepth: HighFloorObjects
+  - type: Icon
+    sprite: Structures/Machines/artifact_analyzer.rsi
+    state: icon
+  - type: Physics
+    canCollide: false
+  - type: Fixtures
+    fixtures: {}
+
+- type: entity
+  id: WH40KNecronTombConsole
+  parent: ComputerPowerMonitoring
+  suffix: WH40K, Dungeon
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    drawdepth: Mobs
+    color: "#9DC59D"
+    noRot: true
+    snapCardinals: true
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: PointLight
+    color: "#A5D9A0"
+
+- type: entity
+  id: WH40KNecronTombArchiveShelf
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Sprite
+    sprite: Structures/Furniture/bookshelf.rsi
+    state: base
+    offset: 0,0
+    color: "#A7B5A0"
+    layers:
+    - state: base
+    - state: book-6
+  - type: Icon
+    sprite: Structures/Furniture/bookshelf.rsi
+    state: base
+  - type: PointLight
+    enabled: false
+
+- type: entity
+  id: WH40KNecronTombDynasticStatue
+  parent: WH40KNecronTombObelisk
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    sprite: _WH40K/Mobs/Necrons/deathmark.rsi
+    state: alive
+    layers:
+    - sprite: Structures/Furniture/Tables/reinforcedblack.rsi
+      state: full
+      scale: 0.9,0.45
+      offset: 0,-0.35
+    - state: alive
+      scale: 1.5,1.5
+      offset: 0,0.35
+    color: "#788773"
+    offset: 0,0.25
+    noRot: true
+    snapCardinals: true
+  - type: Icon
+    sprite: _WH40K/Mobs/Necrons/deathmark.rsi
+    state: alive
+  - type: PointLight
+    enabled: false
+

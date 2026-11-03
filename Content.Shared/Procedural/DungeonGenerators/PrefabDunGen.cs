@@ -17,4 +17,10 @@ public sealed partial class PrefabDunGen : IDunGenLayer
     /// </summary>
     [DataField(required: true)]
     public List<ProtoId<DungeonPresetPrototype>> Presets = new();
+
+    /// <summary>
+    /// Use every matching room variant before repeating one within this prefab.
+    /// </summary>
+    [DataField]
+    public bool AvoidRepeatedRooms;
 }

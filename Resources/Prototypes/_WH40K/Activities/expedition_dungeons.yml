@@ -1,49 +1,9 @@
-- type: dungeonConfig
-  id: KoronusExpeditionBasalt
-  layers:
-  - !type:PrototypeDunGen
-    proto: NFVGRoidBlobBasalt
-  - !type:PrototypeDunGen
-    proto: NFVGRoidSmallPathsBasalt
-  - !type:ExteriorDunGen
-    proto: NFLavaMercenary
+- type: salvageDungeonMod
+  id: WH40KChaosDungeon
+  desc: wh40k-expedition-dungeon-chaos
+  proto: WH40KChaosDungeon
 
-- type: dungeonConfig
-  id: KoronusExpeditionSnow
-  layers:
-  - !type:PrototypeDunGen
-    proto: NFVGRoidBlobSnow
-  - !type:PrototypeDunGen
-    proto: NFVGRoidSmallPathsSnow
-  - !type:ExteriorDunGen
-    proto: NFSnowyLabs
-
-- type: dungeonConfig
-  id: KoronusExpeditionCave
-  layers:
-  - !type:PrototypeDunGen
-    proto: NFVGRoidBlobCave
-  - !type:PrototypeDunGen
-    proto: NFVGRoidSmallPathsCave
-  - !type:ExteriorDunGen
-    proto: NFSalvageOutpost
-
-- type: dungeonConfig
-  id: KoronusExpeditionChromite
-  layers:
-  - !type:PrototypeDunGen
-    proto: NFVGRoidBlobChromite
-  - !type:PrototypeDunGen
-    proto: NFVGRoidSmallPathsChromite
-  - !type:ExteriorDunGen
-    proto: NFVirologyLab
-
-- type: dungeonConfig
-  id: KoronusExpeditionScrap
-  layers:
-  - !type:PrototypeDunGen
-    proto: NFVGRoidBlobScrap
-  - !type:PrototypeDunGen
-    proto: NFVGRoidSmallPathsScrap
-  - !type:ExteriorDunGen
-    proto: NFSalvageOutpost
+- type: salvageDungeonMod
+  id: WH40KNecronTomb
+  desc: wh40k-expedition-dungeon-necron
+  proto: WH40KNecronTomb

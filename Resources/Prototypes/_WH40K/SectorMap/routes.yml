@@ -21,57 +21,63 @@
   from: Footfall
   to: Trinnitos
   travelTimeMultiplier: 2.70
-  routeClass: Dangerous
+  routeClass: Stable
 
 - type: koronusRoute
   id: AivoriusToSottosTomb
   sector: KoronusExpanse
   from: Aivorius
   to: SottosTomb
-  routeClass: Dangerous
+  routeClass: Stable
 
 - type: koronusRoute
   id: AivoriusToTrinnitos
   sector: KoronusExpanse
   from: Aivorius
   to: Trinnitos
-  routeClass: Unstable
+  routeClass: Stable
 
 - type: koronusRoute
   id: AivoriusToCradleOfKhepri
   sector: KoronusExpanse
   from: Aivorius
   to: CradleOfKhepri
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: CradleOfKhepriToPalatinumStellios
   sector: KoronusExpanse
   from: CradleOfKhepri
   to: PalatinumStellios
+  routeClass: Unstable
 
 - type: koronusRoute
   id: CradleOfKhepriToForgottenTwins
   sector: KoronusExpanse
   from: CradleOfKhepri
   to: ForgottenTwins
+  routeClass: Unstable
 
 - type: koronusRoute
   id: TrinnitosToSystemSpeculum
   sector: KoronusExpanse
   from: Trinnitos
   to: SystemSpeculum
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: TrinnitosToOmicron
   sector: KoronusExpanse
   from: Trinnitos
   to: Omicron
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: TrinnitosToTelikosEpsilon
   sector: KoronusExpanse
   from: Trinnitos
   to: TelikosEpsilon
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: TrinnitosToPulvisPlatinum
@@ -84,6 +90,7 @@
   sector: KoronusExpanse
   from: SystemSpeculum
   to: Omicron
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: SystemSpeculumToFrozenPrince
@@ -96,6 +103,7 @@
   sector: KoronusExpanse
   from: Omicron
   to: TelikosEpsilon
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: SmaragdusMundosToFrozenPrince

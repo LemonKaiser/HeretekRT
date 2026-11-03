@@ -1,0 +1,8 @@
+- type: entity
+  id: WH40KNecronTombAirlock
+  parent: AirlockNecron
+  suffix: WH40K, Dungeon
+  components:
+  - type: ApcPowerReceiver
+    needsPower: false
+

@@ -4,6 +4,7 @@ using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Shuttles.Systems;
+using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.GameTicking;
 using Content.Shared.Shuttles.Components;
@@ -280,7 +281,7 @@ public sealed partial class KoronusArrivalSystem : EntitySystem
 
             using var scope = _culture.CreateScope(session);
             _chat.DispatchFilteredAnnouncement(Filter.SinglePlayer(session),
-                Loc.GetString(settings.Announcement, ("system", system.DisplayName)),
+                Loc.GetString(settings.Announcement, ("system", KoronusLocalization.GetString(system.DisplayName))),
                 sender: Loc.GetString("koronus-arrival-sender"),
                 announcementSound: settings.Sound, colorOverride: settings.Color);
         }
