@@ -74,41 +74,6 @@
 # Vinyls
 
 - type: entity
-  name: "vinyl disk: space jazz"
-  id: VinylDiskAI
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: ai-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/SpaceJazz.ogg
-
-- type: entity
-  name: "vinyl disk: airport lounge"
-  description: A vinyl disk containing HELLISH music.
-  id: VinylDiskDevil
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: devil-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/AirportLounge.ogg
-
-- type: entity
-  name: "vinyl disk: boogie party"
-  description: A vinyl disk containing music, smells like tomatoes.
-  id: VinylDiskPizza
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: pizza-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/BoogieParty.ogg
-
-- type: entity
   name: "vinyl disk: corncob"
   description: A vinyl disk containing music, has a matt gloss finish.
   id: VinylDiskGlossy
@@ -119,17 +84,6 @@
   - type: Vinyl
     song:
       path: /Audio/_Goobstation/RadioStation/music/Corncob.ogg
-
-- type: entity
-  name: "vinyl disk: night in Venice"
-  id: VinylDiskRed
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: red-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/NightInVenice.ogg
 
 - type: entity
   name: "vinyl disk: distant star"
@@ -194,17 +148,6 @@
       path: /Audio/_Goobstation/RadioStation/music/goonstation/beaches.ogg
 
 - type: entity
-  name: "vinyl disk: vibing over venus"
-  id: VinylDiskBlue
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: blue-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/VibingOverVenus.ogg
-
-- type: entity
   name: "vinyl disk: deadly roulette"
   id: VinylDiskYellow
   parent: BaseVinylDisk
@@ -214,17 +157,6 @@
   - type: Vinyl
     song:
       path: /Audio/_Goobstation/RadioStation/music/DeadlyRoulette.ogg
-
-- type: entity
-  name: "vinyl disk: late night radio"
-  id: VinylDiskGreen
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: green-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/LateNightRadio.ogg
 
 - type: entity
   name: "vinyl disk: adventure 3"
@@ -328,17 +260,6 @@
       path: /Audio/_Goobstation/RadioStation/music/BurnTheWorldWaltz.ogg
 
 - type: entity
-  name: "vinyl disk: feral angel waltz"
-  id: VinylDiskFeralAngel
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: darkblue-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/FeralAngelWaltz.ogg
-
-- type: entity
   name: "vinyl disk: Also sprach Zarathustra"
   id: VinylDiskAlsoSprach
   parent: BaseVinylDisk
@@ -392,17 +313,6 @@
   - type: Vinyl
     song:
       path: /Audio/_Goobstation/RadioStation/music/PMMUSIC/The-Flower-Duet-PM-Music.ogg
-
-- type: entity
-  name: "vinyl disk: Winter Vivaldi"
-  id: VinylDiskWinterVivaldi
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: white-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/PMMUSIC/Winter-Vivaldi-PM-Music.ogg
 
 - type: entity
   name: "vinyl disk: Bach Cello"
@@ -491,17 +401,6 @@
   - type: Vinyl
     song:
       path: /Audio/_Goobstation/RadioStation/music/TraitorousIntent.ogg
-
-- type: entity
-  name: "vinyl disk: Violet"
-  id: VinylDiskViolet
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: purple-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Goobstation/RadioStation/music/violet.ogg
 
 - type: entity
   name: "vinyl disk: lay egg is true"

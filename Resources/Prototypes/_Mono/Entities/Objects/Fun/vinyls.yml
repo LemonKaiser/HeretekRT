@@ -98,17 +98,6 @@
       path: /Audio/_Mono/RadioStation/music/nulb/ballsfish.ogg
 
 - type: entity
-  name: "vinyl disk: Chronograph"
-  id: VinylDiskNulbChronograph
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: glossy-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Mono/RadioStation/music/nulb/chronograph.ogg
-
-- type: entity
   name: "vinyl disk: Cruelty Engines"
   id: VinylDiskNulbCrueltyEngines
   parent: BaseVinylDisk
@@ -129,17 +118,6 @@
   - type: Vinyl
     song:
       path: /Audio/_Mono/RadioStation/music/nulb/duetime.ogg
-
-- type: entity
-  name: "vinyl disk: Interloc"
-  id: VinylDiskNulbInterloc
-  parent: BaseVinylDisk
-  components:
-  - type: Sprite
-    state: purple-vinyl-disk
-  - type: Vinyl
-    song:
-      path: /Audio/_Mono/RadioStation/music/nulb/interloc.ogg
 
 - type: entity
   name: "vinyl disk: RE-Recalled"
