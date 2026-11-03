@@ -48,6 +48,7 @@ using Content.Server._WH40K.PersistentInventory;
 using Content.Server._WH40K.OperationalDomain;
 using Content.Shared.CCVar;
 using Robust.Shared.Asynchronous;
+using Content.Server._Mono.CryoSleep.Components;
 
 namespace Content.Server._NF.CryoSleep;
 
@@ -565,56 +566,13 @@ public sealed partial class CryoSleepSystem : SharedCryoSleepSystem
                 ("y", Math.Round(mapPos.Position.Y)));
         }
 
-        // Check if character is a pirate, and if so, use Freelancer radio instead of Common
-        bool isPirate = false;
-        if (jobTitle != null)
-        {
-            // Check if job is one of the pirate jobs
-            isPirate = jobTitle.Equals(Loc.GetString("job-name-pirate"), StringComparison.OrdinalIgnoreCase) ||
-                       jobTitle.Equals(Loc.GetString("job-name-pirate-captain"), StringComparison.OrdinalIgnoreCase) ||
-                       jobTitle.Equals(Loc.GetString("job-name-pirate-first-mate"), StringComparison.OrdinalIgnoreCase);
-        }
+        // Mono: I rewrote what might be the most disgusting code I think I've ever seen in any SS14 fork ever. Why was this hardcoded and why in such a weird way?
 
-        // Check if character is TSF, and if so, use TSF radio instead of Common
-        bool isTSF = false;
-        if (jobTitle != null)
-        {
-            isTSF = jobTitle.Equals(Loc.GetString("job-name-bailiff"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-brigmedic"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-cadet-nf"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-deputy"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-nf-detective"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-sheriff"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-stc"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-sr"), StringComparison.OrdinalIgnoreCase) ||
-                    jobTitle.Equals(Loc.GetString("job-name-pal"), StringComparison.OrdinalIgnoreCase);
-        }
 
-        // Send radio message on appropriate channel
-        if (isPirate)
-        {
-            // Use Freelancer channel for pirates
-            if (_prototypeManager.TryIndex<RadioChannelPrototype>("Freelance", out var freelanceChannel))
-            {
-                _radioSystem.SendRadioMessage(cryopod, message, freelanceChannel, cryopod);
-            }
-        }
-        else if (isTSF)
-        {
-            // Use TSF channel for TSF - Mono
-            if (_prototypeManager.TryIndex<RadioChannelPrototype>("Nfsd", out var nfsdChannel))
-            {
-                _radioSystem.SendRadioMessage(cryopod, message, nfsdChannel, cryopod);
-            }
-        }
-        else
-        {
-            // Use Common channel for everyone else
-            if (_prototypeManager.TryIndex<RadioChannelPrototype>(SharedChatSystem.CommonChannel, out var commonChannel))
-            {
-                _radioSystem.SendRadioMessage(cryopod, message, commonChannel, cryopod);
-            }
-        }
+        // Mono code:
+        EnsureComp<RadioOnCryosleepComponent>(bodyId, out var radioComp); // default to broadband if it's unspecified
+        _radioSystem.SendRadioMessage(cryopod, message, radioComp.RadioChannel, cryopod);
+        // Mono end
 
         // Start a timer. When it ends, the body needs to be deleted.
         Timer.Spawn(TimeSpan.FromSeconds(_configurationManager.GetCVar(NFCCVars.CryoExpirationTime)), () =>

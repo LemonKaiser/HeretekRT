@@ -1,4 +1,5 @@
 using Robust.Shared.GameStates;
+using Content.Shared._NF.Cloning;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Shared._Forge.Barks;
@@ -7,7 +8,7 @@ namespace Content.Shared._Forge.Barks;
 ///     Enables bark playback for an entity when it speaks.
 /// </summary>
 [RegisterComponent, NetworkedComponent]
-public sealed partial class SpeechSynthesisComponent : Component
+public sealed partial class SpeechSynthesisComponent : Component, ITransferredByCloning
 {
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<BarkPrototype>))]

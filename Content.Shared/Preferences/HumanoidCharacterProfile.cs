@@ -36,7 +36,7 @@ namespace Content.Shared.Preferences
 
         public const int MaxNameLength = 32;
         public const int MaxLoadoutNameLength = 32;
-        public const int MaxDescLength = 512;
+        public const int MaxDescLength = 2048; // Mono 512<2048
 
         public const int DefaultBalance = 0;
 
@@ -829,15 +829,7 @@ namespace Content.Shared.Preferences
                 name = GetName(Species, gender);
             }
 
-            string flavortext;
-            if (FlavorText.Length > MaxDescLength)
-            {
-                flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText)[..MaxDescLength];
-            }
-            else
-            {
-                flavortext = FormattedMessage.RemoveMarkupOrThrow(FlavorText);
-            }
+            var flavortext = SanitizeAndTruncate(FlavorText, MaxDescLength);
 
             var oocFlavorText = SanitizeMarkupAndTruncate(OocFlavorText, configManager.GetCVar(CCVars.OocFlavorTextLength));
             var characterFlavorText = SanitizeMarkupAndTruncate(CharacterFlavorText, configManager.GetCVar(CCVars.CharacterDescriptionLength));

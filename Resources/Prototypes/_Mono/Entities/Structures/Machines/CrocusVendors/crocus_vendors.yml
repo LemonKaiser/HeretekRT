@@ -1,0 +1,357 @@
+- type: entity
+  parent: ColMarTechBase
+  id: ColMarTechEquipmentTSF
+  name: TSF automated infantry equipment rack
+  description: An automated rack hooked up to a colossal storage of standard-issue equipment.
+  suffix: Crocus
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/armoryPF.rsi
+    layers:
+    - state: off
+    - state: normal-unshaded
+      shader: unshaded
+  - type: CMAutomatedVendor
+    pointsType: CrocusPoints
+    sections:
+    - name: crocus-vendor-section-longarm
+      choices: { Longarm: 1 }
+      entries:
+      - id: WeaponRifleLecter
+        name: crocus-vendor-entry-weaponriflelecter
+        recommended: true
+        points: 1
+      - id: WeaponSubMachineGunDrozd
+        name: crocus-vendor-entry-weaponsubmachinegundrozd
+        recommended: true
+      - id: WeaponLMGGrizzly
+        name: crocus-vendor-entry-weaponlmggrizzly
+        points: 2
+      - id: WeaponShotgunKammerer
+        name: crocus-vendor-entry-weaponshotgunkammerer
+      - id: WeaponShotgunEnforcer
+        name: crocus-vendor-entry-weaponshotgunenforcer
+        points: 1
+    - name: crocus-vendor-section-longarm-ammo
+      choices: { LongarmAmmo: 8 }
+      entries:
+      - id: Magazine68x52mmCaseless
+        name: crocus-vendor-entry-magazine68x52mmcaseless
+      - id: AmmoBox68x52mmCaseless
+        name: crocus-vendor-entry-ammobox68x52mmcaseless
+      - id: Magazine45_ACPSubMachineGunFMJ
+        name: crocus-vendor-entry-magazine45-acpsubmachinegunfmj
+      - id: AmmoBox45_ACPFMJ
+        name: crocus-vendor-entry-ammobox45-acpfmj
+      - id: AmmoBox12_gaugeBuckshot
+        name: crocus-vendor-entry-ammobox12-gaugebuckshot
+      - id: AmmoBox12_gaugeSlug
+        name: crocus-vendor-entry-ammobox12-gaugeslug
+      - id: AmmoBox12_gaugeFlare
+        name: crocus-vendor-entry-ammobox12-gaugeflare
+      - id: 40mmGrenadeFragmentation
+        name: crocus-vendor-entry-40mmgrenadefragmentation
+        recommended: true
+      - id: 40mmGrenadeThermobaric
+        name: crocus-vendor-entry-40mmgrenadethermobaric
+        recommended: true
+      - id: 40mmGrenadeBaton
+        name: crocus-vendor-entry-40mmgrenadebaton
+      - id: 40mmGrenadeFlash
+        name: crocus-vendor-entry-40mmgrenadeflash
+    - name: crocus-vendor-section-sidearm
+      choices: { Sidearm: 1 }
+      entries:
+      - id: WeaponPistolMk58
+        name: crocus-vendor-entry-weaponpistolmk58
+      - id: WeaponRevolverInspector
+        name: crocus-vendor-entry-weaponrevolverinspector
+    - name: crocus-vendor-section-sidearm-ammo
+      choices: { SidearmAmmo: 4 }
+      entries:
+      # NO AMMO BOX FOR THE SIDEARM!! It gets it from primary ammo anyways.
+      - id: Magazine45_ACPPistolFMJ
+        name: crocus-vendor-entry-magazine45-acppistolfmj
+      - id: SpeedLoader357_magnumFMJ
+        name: crocus-vendor-entry-speedloader357-magnumfmj
+      - id: AmmoBox357_magnumFMJ
+        name: crocus-vendor-entry-ammobox357-magnumfmj
+    - name: crocus-vendor-section-attachments
+      choices: { Attachments: 1 }
+      entries:
+      - id: GunAttachmentSuppressorMulticalRifle
+        name: crocus-vendor-entry-gunattachmentsuppressormulticalrifle
+        points: 1
+      - id: GunAttachmentSuppressorMulticalPistol
+        name: crocus-vendor-entry-gunattachmentsuppressormulticalpistol
+      - id: GunAttachmentGripErebusLAM
+        name: crocus-vendor-entry-gunattachmentgriperebuslam
+      - id: GunAttachmentGripPistolLAM
+        name: crocus-vendor-entry-gunattachmentgrippistollam
+      - id: GunAttachmentGripErebusLight
+        name: crocus-vendor-entry-gunattachmentgriperebuslight
+      - id: GunAttachmentQLG20
+        name: crocus-vendor-entry-gunattachmentqlg20
+        points: 1
+    - name: crocus-vendor-section-utilities
+      choices: { Utilities: 3 }
+      entries:
+      - id: CMVendorBundleNightvision
+        name: crocus-vendor-entry-cmvendorbundlenightvision
+        points: 1
+        recommended: true
+      - id: ExGrenade
+        name: crocus-vendor-entry-exgrenade
+        recommended: true
+        points: 1
+      - id: GrenadeFlashBang
+        name: crocus-vendor-entry-grenadeflashbang
+        recommended: true
+      - id: SmokeGrenade
+        name: crocus-vendor-entry-smokegrenade
+        recommended: true
+      - id: BreachingCharge
+        name: crocus-vendor-entry-breachingcharge
+      - id: Floodlight
+        name: crocus-vendor-entry-floodlight
+      - id: PinpointerSyndicateCrocusBeacon
+        name: crocus-vendor-entry-pinpointersyndicatecrocusbeacon
+      - id: RemoteSignallerAdvanced
+        name: crocus-vendor-entry-remotesignalleradvanced
+      - id: DefibrillatorCompact
+        name: crocus-vendor-entry-defibrillatorcompact
+        points: 1
+      - id: HandheldHealthAnalyzer
+        name: crocus-vendor-entry-handheldhealthanalyzer
+      - id: CMVendorBundleSurgery
+        name: crocus-vendor-entry-cmvendorbundlesurgery
+        points: 1
+      - id: SecBreachingHammer
+        name: crocus-vendor-entry-secbreachinghammer
+        points: 1
+      - id: WeaponShotgunHelepolis
+        name: crocus-vendor-entry-weaponshotgunhelepolis
+        points: 1
+      - id: WeaponLauncherMyoko
+        name: crocus-vendor-entry-weaponlaunchermyoko
+        points: 2
+    - name: crocus-vendor-section-eyewear
+      choices: { Eyewear: 1 }
+      entries:
+      - id: ClothingEyesHudMedSec
+        name: crocus-vendor-entry-clothingeyeshudmedsec
+        recommended: true
+        points: 1
+      - id: ClothingEyesHudSecurity
+        name: crocus-vendor-entry-clothingeyeshudsecurity
+        recommended: true
+      - id: ClothingEyesHudMedical
+        name: crocus-vendor-entry-clothingeyeshudmedical
+      - id: ClothingEyesHudDiagnostic
+        name: crocus-vendor-entry-clothingeyeshuddiagnostic
+      - id: ClothingEyesBallisticGogglesRedCrocus
+        name: crocus-vendor-entry-clothingeyesballisticgogglesredcrocus
+    - name: crocus-vendor-section-medical-supplies
+      choices: { Meds: 4 }
+      entries:
+      - id: Tourniquet
+        name: crocus-vendor-entry-tourniquet
+        recommended: true
+      - id: Gauze
+        name: crocus-vendor-entry-gauze
+        recommended: true
+        points: 1
+      - id: Brutepack
+        name: crocus-vendor-entry-brutepack
+      - id: Bloodpack
+        name: crocus-vendor-entry-bloodpack
+      - id: Ointment
+        name: crocus-vendor-entry-ointment
+    - name: crocus-vendor-section-species-specific
+      choices: { SpeciesSpecific: 2 }
+      entries:
+      - id: ExtendedEmergencyNitrogenTankFilled
+        name: crocus-vendor-entry-extendedemergencynitrogentankfilled
+      - id: PowerCellMedium
+        name: crocus-vendor-entry-powercellmedium
+
+- type: entity
+  parent: ColMarTechBase
+  id: ColMarTechEquipmentPDV
+  name: PDV automated infantry equipment rack
+  description: An automated rack hooked up to a colossal storage of standard-issue equipment.
+  suffix: Crocus
+  components:
+  - type: Sprite
+    sprite: _Crescent/Structures/armoryPF.rsi
+    layers:
+    - state: off
+    - state: normal-unshaded
+      shader: unshaded
+  - type: CMAutomatedVendor
+    pointsType: CrocusPoints
+    sections:
+    - name: crocus-vendor-section-longarm
+      choices: { Longarm: 1 }
+      entries:
+      - id: WeaponRifleVympel
+        name: crocus-vendor-entry-weaponriflevympel
+        recommended: true
+        points: 1
+      - id: WeaponSubMachineGunC20r
+        name: crocus-vendor-entry-weaponsubmachinegunc20r
+        recommended: true
+      - id: WeaponSubMachineGunMla73
+        name: crocus-vendor-entry-weaponsubmachinegunmla73
+        points: 2
+      - id: WeaponLMGPKMS
+        name: crocus-vendor-entry-weaponlmgpkms
+        points: 2
+      - id: WeaponShotgunKammerer
+        name: crocus-vendor-entry-weaponshotgunkammerer
+    - name: crocus-vendor-section-longarm-ammo
+      choices: { LongarmAmmo: 8 }
+      entries:
+      - id: Magazine556x45mmFMJ
+        name: crocus-vendor-entry-magazine556x45mmfmj
+      - id: AmmoBox556x45mmFMJ
+        name: crocus-vendor-entry-ammobox556x45mmfmj
+      - id: Magazine9x19mmSubMachineGunFMJ
+        name: crocus-vendor-entry-magazine9x19mmsubmachinegunfmj
+      - id: AmmoBox9x19mmFMJ
+        name: crocus-vendor-entry-ammobox9x19mmfmj
+      - id: Magazine635x40mmCaseless
+        name: crocus-vendor-entry-magazine635x40mmcaseless
+      - id: AmmoBox635x40mmCaseless
+        name: crocus-vendor-entry-ammobox635x40mmcaseless
+      - id: AmmoBox12_gaugeBuckshot
+        name: crocus-vendor-entry-ammobox12-gaugebuckshot
+      - id: AmmoBox12_gaugeSlug
+        name: crocus-vendor-entry-ammobox12-gaugeslug
+      - id: AmmoBox12_gaugeFlare
+        name: crocus-vendor-entry-ammobox12-gaugeflare
+      - id: 40mmGrenadeFragmentation
+        name: crocus-vendor-entry-40mmgrenadefragmentation
+        recommended: true
+      - id: 40mmGrenadeThermobaric
+        name: crocus-vendor-entry-40mmgrenadethermobaric
+        recommended: true
+      - id: 40mmGrenadeBaton
+        name: crocus-vendor-entry-40mmgrenadebaton
+      - id: 40mmGrenadeFlash
+        name: crocus-vendor-entry-40mmgrenadeflash
+    - name: crocus-vendor-section-sidearm
+      choices: { Sidearm: 1 }
+      entries:
+      - id: WeaponPistolViper
+        name: crocus-vendor-entry-weaponpistolviper
+      - id: WeaponRevolverPython
+        name: crocus-vendor-entry-weaponrevolverpython
+    - name: crocus-vendor-section-sidearm-ammo
+      choices: { SidearmAmmo: 4 }
+      entries:
+      # NO AMMO BOX FOR THE SIDEARM!! It gets it from primary ammo anyways.
+      - id: Magazine9x19mmPistolFMJ
+        name: crocus-vendor-entry-magazine9x19mmpistolfmj
+      - id: SpeedLoader357_magnumFMJ
+        name: crocus-vendor-entry-speedloader357-magnumfmj
+      - id: AmmoBox357_magnumFMJ
+        name: crocus-vendor-entry-ammobox357-magnumfmj
+    - name: crocus-vendor-section-attachments
+      choices: { Attachments: 1 }
+      entries:
+      - id: GunAttachmentSuppressorMulticalRifle
+        name: crocus-vendor-entry-gunattachmentsuppressormulticalrifle
+        points: 1
+      - id: GunAttachmentSuppressorMulticalPistol
+        name: crocus-vendor-entry-gunattachmentsuppressormulticalpistol
+      - id: GunAttachmentGripErebusLAM
+        name: crocus-vendor-entry-gunattachmentgriperebuslam
+      - id: GunAttachmentGripPistolLAM
+        name: crocus-vendor-entry-gunattachmentgrippistollam
+      - id: GunAttachmentGripErebusLight
+        name: crocus-vendor-entry-gunattachmentgriperebuslight
+      - id: GunAttachmentRKR40
+        name: crocus-vendor-entry-gunattachmentrkr40
+        points: 1
+    - name: crocus-vendor-section-utilities
+      choices: { Utilities: 3 }
+      entries:
+      - id: CMVendorBundleNightvision
+        name: crocus-vendor-entry-cmvendorbundlenightvision
+        points: 1
+        recommended: true
+      - id: ExGrenade
+        name: crocus-vendor-entry-exgrenade
+        recommended: true
+        points: 1
+      - id: GrenadeFlashBang
+        name: crocus-vendor-entry-grenadeflashbang
+        recommended: true
+      - id: SmokeGrenade
+        name: crocus-vendor-entry-smokegrenade
+        recommended: true
+      - id: BreachingCharge
+        name: crocus-vendor-entry-breachingcharge
+      - id: Floodlight
+        name: crocus-vendor-entry-floodlight
+      - id: PinpointerSyndicateCrocusBeacon
+        name: crocus-vendor-entry-pinpointersyndicatecrocusbeacon
+      - id: RemoteSignallerAdvanced
+        name: crocus-vendor-entry-remotesignalleradvanced
+      - id: DefibrillatorCompact
+        name: crocus-vendor-entry-defibrillatorcompact
+        points: 1
+      - id: HandheldHealthAnalyzer
+        name: crocus-vendor-entry-handheldhealthanalyzer
+      - id: CMVendorBundleSurgery
+        name: crocus-vendor-entry-cmvendorbundlesurgery
+        points: 1
+      - id: SecBreachingHammer
+        name: crocus-vendor-entry-secbreachinghammer
+        points: 1
+      - id: WeaponShotgunHelepolis
+        name: crocus-vendor-entry-weaponshotgunhelepolis
+        points: 1
+      - id: WeaponLauncherMyoko
+        name: crocus-vendor-entry-weaponlaunchermyoko
+        points: 2
+    - name: crocus-vendor-section-eyewear
+      choices: { Eyewear: 1 }
+      entries:
+      - id: ClothingEyesHudMedSec
+        name: crocus-vendor-entry-clothingeyeshudmedsec
+        recommended: true
+        points: 1
+      - id: ClothingEyesHudSecurity
+        name: crocus-vendor-entry-clothingeyeshudsecurity
+        recommended: true
+      - id: ClothingEyesHudMedical
+        name: crocus-vendor-entry-clothingeyeshudmedical
+      - id: ClothingEyesHudDiagnostic
+        name: crocus-vendor-entry-clothingeyeshuddiagnostic
+      - id: ClothingEyesBallisticGogglesRedCrocus
+        name: crocus-vendor-entry-clothingeyesballisticgogglesredcrocus
+    - name: crocus-vendor-section-medical-supplies
+      choices: { Meds: 4 }
+      entries:
+      - id: Tourniquet
+        name: crocus-vendor-entry-tourniquet
+        recommended: true
+      - id: Gauze
+        name: crocus-vendor-entry-gauze
+        recommended: true
+        points: 1
+      - id: Brutepack
+        name: crocus-vendor-entry-brutepack
+      - id: Bloodpack
+        name: crocus-vendor-entry-bloodpack
+      - id: Ointment
+        name: crocus-vendor-entry-ointment
+    - name: crocus-vendor-section-species-specific
+      choices: { SpeciesSpecific: 2 }
+      entries:
+      - id: ExtendedEmergencyNitrogenTankFilled
+        name: crocus-vendor-entry-extendedemergencynitrogentankfilled
+      - id: PowerCellMedium
+        name: crocus-vendor-entry-powercellmedium

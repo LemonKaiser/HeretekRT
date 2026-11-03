@@ -1,0 +1,9 @@
+- type: entity
+  id: ClothingOuterHardsuitMercenaryWarlord
+  parent: ClothingOuterHardsuitWarlord
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: ClothingHelmetHardsuitMercenaryWarlord
+  parent: ClothingHelmetHardsuitWarlord
+  categories: [ HideSpawnMenu ]

@@ -60,7 +60,6 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     [Dependency] private SpeedModifierContactsSystem _speedModContacts = default!;
     [Dependency] private TileFrictionController _tile = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
-    [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
 
@@ -335,7 +334,6 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         base.Update(frameTime);
         foreach (var ent in _deletionQueue)
         {
-            UpdateFlammability(ent, null);
             Del(ent);
         }
 
@@ -356,7 +354,6 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         }
 
         _deletionQueue.Remove(entity);
-        UpdateFlammability((entity.Owner, entity.Comp), args.Solution);
         UpdateSlip((entity, entity.Comp), args.Solution);
         UpdateSlow(entity, args.Solution);
         UpdateEvaporation(entity, args.Solution);
@@ -364,8 +361,8 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     }
 
     /// <summary>
-    /// Removes every reagent from a floor puddle. The normal solution update path then clears
-    /// flammability and queues the now-empty puddle for deletion.
+    /// Removes every reagent from a floor puddle. The normal solution update path then queues
+    /// the now-empty puddle for deletion.
     /// </summary>
     public bool ClearPuddle(Entity<PuddleComponent> puddle)
     {
@@ -400,18 +397,6 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
 
         _appearance.SetData(uid, PuddleVisuals.CurrentVolume, volume.Float(), appearance);
         _appearance.SetData(uid, PuddleVisuals.SolutionColor, color, appearance);
-    }
-    private void UpdateFlammability(Entity<PuddleComponent?> entity, Solution? solution)
-    {
-        if (solution is null)
-        {
-            _atmos.SetPuddleFlammabilityAtTile(entity.Owner, 0);
-            return;
-        }
-
-        var flammability = solution.GetSolutionFlammability(_prototypeManager);
-        _atmos.SetPuddleFlammabilityAtTile(entity.Owner, flammability);
-
     }
 
     private void UpdateSlip(Entity<PuddleComponent> entity, Solution solution)

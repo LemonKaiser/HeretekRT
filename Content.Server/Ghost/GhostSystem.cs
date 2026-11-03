@@ -43,6 +43,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Server.Preferences.Managers;
+using Content.Server._Mono.Cloning; // Mono
 
 namespace Content.Server.Ghost
 {
@@ -76,6 +77,7 @@ namespace Content.Server.Ghost
         [Dependency] private IServerPreferencesManager _preferencesManager = default!;
         [Dependency] private GhostSpriteStateSystem _ghostState = default!;
         [Dependency] private GhostPermissionSystem _ghostPermissions = default!;
+        [Dependency] private GeneticDatabaseSystem _geneticDatabase = default!; // Mono
 
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -746,6 +748,9 @@ namespace Content.Server.Ghost
 
             if (ghost == null)
                 return false;
+
+            if (canReturnGlobal && !canReturn && playerEntity != null) // Mono. ghosting while alive ends the character for the round.
+                _geneticDatabase.MarkUncloneable(mindId);
 
             return true;
         }

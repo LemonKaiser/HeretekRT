@@ -37,3 +37,8 @@
   license: "CC-BY-NC-SA-3.0"
   copyright: "Hertek"
   source: "https://github.com/tgstation/tgstation"
+
+- files: ["SnowballParallaxBG.png", "SnowballParallaxStars.png", "SnowballParallaxSun.png"]
+  license: "CC-BY-3.0"
+  copyright: "By ketufaispikinut"
+  source: "https://github.com/ketufaispikinut"

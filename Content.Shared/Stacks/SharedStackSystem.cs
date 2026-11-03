@@ -1,4 +1,6 @@
 using System.Numerics;
+using Content.Shared._Mono.Fuel;
+using Content.Shared.Materials;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._WH40K.PersistentInventory;
 using Content.Shared.Durability.Components;
@@ -119,6 +121,8 @@ namespace Content.Shared.Stacks
         {
             transferred = 0;
             if (!CanTransferQuestUnits(donor, recipient)) return false;
+            if (IsPartiallyConsumedFuel(donor) || IsPartiallyConsumedFuel(recipient))
+                return false;
             if (donor == recipient)
                 return false;
 
@@ -135,6 +139,14 @@ namespace Content.Shared.Stacks
             SetCount(donor, donorStack.Count - transferred, donorStack);
             SetCount(recipient, recipientStack.Count + transferred, recipientStack);
             return transferred > 0;
+        }
+
+        private bool IsPartiallyConsumedFuel(EntityUid uid)
+        {
+            return TryComp<MaterialFuelComponent>(uid, out var fuel) &&
+                   fuel.Material is { } material &&
+                   TryComp<PhysicalCompositionComponent>(uid, out var composition) &&
+                   composition.MaterialComposition[material] != fuel.BaseMaterialComposition;
         }
 
         private bool CanTransferQuestUnits(EntityUid donor, EntityUid recipient)
@@ -432,6 +444,8 @@ namespace Content.Shared.Stacks
         public bool TryAdd(EntityUid insertEnt, EntityUid targetEnt, int count, StackComponent? insertStack = null, StackComponent? targetStack = null)
         {
             if (!CanTransferQuestUnits(insertEnt, targetEnt)) return false;
+            if (IsPartiallyConsumedFuel(insertEnt) || IsPartiallyConsumedFuel(targetEnt))
+                return false;
             if (!Resolve(insertEnt, ref insertStack) || !Resolve(targetEnt, ref targetStack))
                 return false;
 

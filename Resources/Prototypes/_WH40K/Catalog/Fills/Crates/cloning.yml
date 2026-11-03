@@ -14,6 +14,10 @@
         - !type:EntSelector
           id: CloningConsoleComputerCircuitboard
         - !type:EntSelector
+          id: BodyScannerComputerCircuitboard
+        - !type:EntSelector
+          id: GeneticDatabaseServerFlatpack
+        - !type:EntSelector
           id: BiomassReclaimerMachineCircuitboard
         - !type:EntSelector
           id: MicroManipulatorStockPart

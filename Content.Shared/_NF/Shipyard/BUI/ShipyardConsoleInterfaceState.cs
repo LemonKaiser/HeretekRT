@@ -6,6 +6,7 @@ namespace Content.Shared._NF.Shipyard.BUI;
 public sealed class ShipyardConsoleInterfaceState : BoundUserInterfaceState
 {
     public int Balance;
+    public int CashBalance = 0; // Mono
     public readonly bool AccessGranted;
     public readonly string? ShipDeedTitle;
     public int ShipSellValue;
@@ -20,6 +21,7 @@ public sealed class ShipyardConsoleInterfaceState : BoundUserInterfaceState
 
     public ShipyardConsoleInterfaceState(
         int balance,
+        int cashBalance,
         bool accessGranted,
         string? shipDeedTitle,
         int shipSellValue,
@@ -32,6 +34,7 @@ public sealed class ShipyardConsoleInterfaceState : BoundUserInterfaceState
         Dictionary<string, int> vesselPrices)
     {
         Balance = balance;
+        CashBalance = cashBalance;
         AccessGranted = accessGranted;
         ShipDeedTitle = shipDeedTitle;
         ShipSellValue = shipSellValue;

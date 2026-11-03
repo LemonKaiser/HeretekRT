@@ -1,9 +1,10 @@
 using Content.Shared.Preferences;
+using Content.Shared._NF.Cloning;
 
 namespace Content.Shared.DetailExaminable;
 
 [RegisterComponent]
-public sealed partial class DetailExaminableComponent : Component
+public sealed partial class DetailExaminableComponent : Component, ITransferredByCloning
 {
     [DataField]
     public string Content = string.Empty;

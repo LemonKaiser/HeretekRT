@@ -46,3 +46,14 @@
   - VGCommander
   primary: false
   editorHidden: true
+
+- type: department
+  id: Underground
+  name: department-Underground
+  description: department-Underground-description
+  color: "#803434"
+  weight: 100
+  roles:
+  - Godfather
+  - Fugitive
+  editorHidden: true

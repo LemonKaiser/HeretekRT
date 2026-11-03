@@ -61,8 +61,8 @@ public sealed class FlammableParticleSystem : EntitySystem
         if (TryComp<FireVisualsComponent>(ent, out var visuals) && !visuals.Particles)
             onFire = false;
 
-        if (!_appearance.TryGetData(ent, FireVisuals.FireStacks, out float stacks))
-            stacks = 0f;
+        if (!_appearance.TryGetData(ent, FireVisuals.FireStacks, out int stacks))
+            stacks = 0;
 
         _active.TryGetValue(ent, out var state);
 
@@ -80,7 +80,7 @@ public sealed class FlammableParticleSystem : EntitySystem
             }
 
             var maximumStacks = MathF.Max(ent.Comp.MaximumFireStacks, 1f);
-            var intensity = Math.Clamp(stacks / maximumStacks * 2f, 1f, 2f);
+            var intensity = Math.Clamp(stacks * ent.Comp.FirestackVisualDivisor / maximumStacks * 2f, 1f, 2f);
             state.Intensity = intensity;
             EnsureEmitters(ent.Owner, state);
 

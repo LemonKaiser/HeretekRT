@@ -73,7 +73,7 @@ public sealed partial class NPCCombatSystem
             _combat.SetInCombatMode(uid, false, combat);
         }
         // Goobstation
-        if (_gun.TryGetGun(uid, out var gunUid, out _) && TryComp(gunUid, out LaserPointerComponent? laser) &&
+        if (_gun.TryGetGun(uid, out var gunUid) && TryComp(gunUid, out LaserPointerComponent? laser) &&
             TryComp(gunUid, out WieldableComponent? wieldable) && TryComp(gunUid, out TransformComponent? xform))
             _pointer.AddOrRemoveLine(GetNetEntity(gunUid), laser, wieldable, xform, null, null);
     }
@@ -86,7 +86,7 @@ public sealed partial class NPCCombatSystem
         {
             var xform = Transform(uid); // Mono
 
-            if (!_gun.TryGetGun(uid, out var gunUid, out var gun))
+            if (!_gun.TryGetGun(uid, out var gunUid))
             {
                 comp.Status = CombatStatus.NoWeapon;
                 comp.ShootAccumulator = 0f;
@@ -197,7 +197,7 @@ public sealed partial class NPCCombatSystem
                                    _physics.GetMapLinearVelocity(gunUid);
             var targetSpot = HasComp<HitscanBatteryAmmoProviderComponent>(gunUid)
                 ? targetPos
-                : GetInterceptPosition(worldPos, targetPos, relativeVelocity, gun.ProjectileSpeedModified);
+                : GetInterceptPosition(worldPos, targetPos, relativeVelocity, gunUid.Comp.ProjectileSpeedModified);
             // If we have a max rotation speed then do that.
             var goalRotation = (targetSpot - worldPos).ToWorldAngle();
             var rotationSpeed = comp.RotationSpeed;
@@ -213,7 +213,8 @@ public sealed partial class NPCCombatSystem
             // TODO: Cycling
             // Max rotation speed
             // TODO: Check if we can face
-            if (!Enabled || !_gun.CanShoot(gun))
+
+            if (!Enabled || !_gun.CanShoot(gunUid.Comp))
             {
                 UpdatePointerLine(gunUid, targetPos, worldPos, comp.Target); // Goobstation
                 continue;
@@ -234,13 +235,13 @@ public sealed partial class NPCCombatSystem
 
             UpdatePointerLine(gunUid, targetPos, worldPos, comp.Target); // Goobstation
 
-            if (gun.NextFire > _timing.CurTime)
+            if (gunUid.Comp.NextFire > _timing.CurTime)
             {
                 continue;
             }
 
-            _gun.SetTarget(gun, comp.Target); // Frontier - This ensures that the bullet won't fly over the target if it's downed
-            _gun.AttemptShoot(uid, gunUid, gun, targetCordinates);
+            _gun.SetTarget(gunUid.Comp, comp.Target); // Frontier - This ensures that the bullet won't fly over the target if it's downed
+            _gun.AttemptShoot(uid, gunUid, gunUid.Comp, targetCordinates);
         }
     }
 

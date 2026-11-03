@@ -1,0 +1,5 @@
+- type: guideEntry
+  id: Gamemodes
+  name: guide-entry-gamemodes
+  text: "/ServerInfo/_Mono/Guidebook/Gamemodes.xml"
+  priority: 2

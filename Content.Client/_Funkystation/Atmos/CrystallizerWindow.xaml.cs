@@ -160,7 +160,7 @@ namespace Content.Client._Funkystation.Atmos
             {
                 var button = new Button
                 {
-                    Text = recipe.Name,
+                    Text = Loc.TryGetString($"crystallizer-recipe-{recipe.ID.ToLowerInvariant()}", out var recipeName) ? recipeName : recipe.Name,
                     HorizontalExpand = true
                 };
 

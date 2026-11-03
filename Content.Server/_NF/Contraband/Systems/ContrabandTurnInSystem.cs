@@ -14,6 +14,9 @@ using Content.Shared.Coordinates;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Prototypes;
+using Content.Server._Mono.Cloning;
+using Content.Server._Mono.PDV.Components;
+using Content.Shared.Mind;
 
 namespace Content.Server._NF.Contraband.Systems;
 
@@ -27,6 +30,8 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
     [Dependency] private StackSystem _stack = default!;
     [Dependency] private OperationalDomainSystem _operationalDomains = default!;
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private GeneticDatabaseSystem _geneticDatabase = default!; // Mono
 
     private EntityQuery<MobStateComponent> _mobQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -122,6 +127,10 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
 
         foreach (var ent in toSell)
         {
+            if (HasComp<HereticComponent>(ent) && _mind.TryGetMind(ent, out var mind, out _))
+            {
+                _geneticDatabase.MarkUncloneable(mind);
+            }
             Del(ent);
         }
     }
@@ -149,6 +158,8 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
 
                 //if (_blacklistQuery.HasComponent(ent)) // Mono: allow blacklisted items to be exchanged again
                 //    continue;
+                if (HasComp<HereticComponent>(ent) && !_mind.TryGetMind(ent, out _, out _))
+                    continue;
 
                 if (TryComp<ContrabandComponent>(ent, out var comp))
                 {

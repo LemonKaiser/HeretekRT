@@ -64,7 +64,7 @@
   name: department-Command
   description: department-NFCommand-description # Frontier
   color: "#334E6D"
-  roles:
+# roles: # Mono
   # - Captain # Frontier
   # - ChiefEngineer # Frontier
   # - ChiefMedicalOfficer # Frontier
@@ -81,13 +81,13 @@
   # - ERTSecurity # Frontier
   # - ERTEngineer # Frontier
   # - DeathSquad # Frontier
-  - StationRepresentative # Frontier
-  - Sheriff  # Frontier
-  - StationTrafficController # Frontier
-  - DirectorOfCare # Mono
+  # - StationRepresentative # Frontier
+  # - Sheriff  # Frontier
+  # - StationTrafficController # Frontier
+  # - DirectorOfCare # Mono
   primary: false
+  editorHidden: true # Mono
   weight: 100
-  editorHidden: true
 
 - type: department
   id: Engineering
@@ -104,10 +104,10 @@
   description: department-Medical-description
   color: "#52B4E9"
   weight: 0
-  roles: # Mono
-  - DirectorOfCare # Mono
-  - MdMedic # Mono
-  editorHidden: true
+# roles: # Mono
+# - DirectorOfCare # Mono
+# - MdMedic # Mono
+  editorHidden: true # Mono
 
 - type: department
   id: Security

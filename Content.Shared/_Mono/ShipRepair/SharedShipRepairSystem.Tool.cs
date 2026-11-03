@@ -70,6 +70,9 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
         var alreadyExists = false;
         var notEnoughCharges = false;
         var mostCharges = 0;
+        var totalCost = 0;
+        var totalDelay = 0f;
+        List<int> repairIds = [];
         // try entity repair if we haven't done tile repair
         if (ent.Comp.EnableEntityRepair)
         {
@@ -128,11 +131,20 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                             continue;
                         }
 
-                        if (repairEv.TargetGridIndices == gridIndices && repairEv.RepairId == id)
+                        if (repairEv.RepairId is not { } repairList)
+                            continue;
+
+                        foreach (var repairId in repairList)
                         {
-                            hasIdentical = true;
-                            break;
+                            if (repairEv.TargetGridIndices == gridIndices && repairId == id)
+                            {
+                                hasIdentical = true;
+                                break;
+                            }
                         }
+
+                        if (hasIdentical)
+                            break;
                     }
                     foreach (var remove in _toRemoveIds)
                         ent.Comp.DoAfters.Remove(remove);
@@ -141,25 +153,33 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                         continue;
                 }
 
-                var enough = !_charges.HasInsufficientCharges(ent, cost);
+                var enough = !_charges.HasInsufficientCharges(ent, totalCost + cost);
                 notEnoughCharges |= !enough;
                 if (needsRepair && enough)
                 {
-                    StartRepair(ent, args.User, targetGrid, gridIndices, delay, cost, id);
-                    return;
+                    totalCost += cost;
+                    totalDelay += delay;
+                    repairIds.Add(id);
+                    continue;
                 }
 
-                if (cost > mostCharges)
-                    mostCharges = cost;
+                if (totalCost + cost > mostCharges)
+                    mostCharges = totalCost + cost;
             }
         }
         if (notEnoughCharges)
             _popup.PopupClient(Loc.GetString("ship-repair-tool-insufficient-ammo", ("cost", mostCharges)), ent, args.User);
         else if (alreadyExists && _net.IsServer && ent.Comp.CheckPreExistingEntities) // else we show it once or twice depending on whether it's in PVS
             _popup.PopupEntity(Loc.GetString("ship-repair-tool-entity-exists"), ent, args.User, PopupType.SmallCaution);
+
+        if (repairIds.Count != 0)
+        {
+            totalDelay /= (float)Math.Pow(repairIds.Count, ent.Comp.MultiRepairPower);
+            StartRepair(ent, args.User, targetGrid, gridIndices, totalDelay, totalCost, repairIds);
+        }
     }
 
-    private void StartRepair(Entity<ShipRepairToolComponent> tool, EntityUid user, Entity<MapGridComponent> grid, Vector2i tileIndices, float delay, int cost, int? repairId = null)
+    private void StartRepair(Entity<ShipRepairToolComponent> tool, EntityUid user, Entity<MapGridComponent> grid, Vector2i tileIndices, float delay, int cost, List<int>? repairId = null)
     {
         var ev = new ShipRepairDoAfterEvent
         {
@@ -213,30 +233,42 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
 
         if (args.RepairId != null)
         {
-            if (_net.IsClient || !chunk.Entities.TryGetValue(args.RepairId.Value, out var spec))
+            if (_net.IsClient || args.RepairId.Count == 0)
                 return;
 
-            // this is technically copypaste code but it's different each time
-            var origUid = spec.OriginalEntity == null ? (EntityUid?)null : GetEntity(spec.OriginalEntity.Value);
-            if (origUid != null && !TerminatingOrDeleted(origUid.Value) && ent.Comp.CheckPreExistingEntities)
+            // Validate the entire batch before restoring anything or a later
+            // failure would leave earlier objects restored without spending charges.
+            foreach (var id in args.RepairId)
             {
-                var ev = new ShipRepairReinstateQueryEvent(true);
-                RaiseLocalEvent(origUid.Value, ref ev);
-                // abort if we can't repair now
-                if (!ev.Handled || !ev.Repairable)
+                if (!chunk.Entities.TryGetValue(id, out var spec))
                     return;
+
+                // this is technically copypaste code but it's different each time
+                var origUid = spec.OriginalEntity == null ? (EntityUid?)null : GetEntity(spec.OriginalEntity.Value);
+                if (origUid != null && !TerminatingOrDeleted(origUid.Value) && ent.Comp.CheckPreExistingEntities)
+                {
+                    var ev = new ShipRepairReinstateQueryEvent(true);
+                    RaiseLocalEvent(origUid.Value, ref ev);
+                    // abort if we can't repair now
+                    if (!ev.Handled || !ev.Repairable)
+                        return;
+                }
             }
 
-            var protoId = repairData.EntityPalette[spec.ProtoIndex];
-            var coords = new EntityCoordinates(targetGrid, spec.LocalPosition);
+            foreach (var id in args.RepairId)
+            {
+                var spec = chunk.Entities[id];
+                var protoId = repairData.EntityPalette[spec.ProtoIndex];
+                var coords = new EntityCoordinates(targetGrid, spec.LocalPosition);
 
-            var spawned = Spawn(protoId, coords);
-            _transform.SetLocalRotation(spawned, spec.Rotation);
+                var spawned = Spawn(protoId, coords);
+                _transform.SetLocalRotation(spawned, spec.Rotation);
 
-            spec.OriginalEntity = GetNetEntity(spawned);
+                spec.OriginalEntity = GetNetEntity(spawned);
 
-            var dirtMsg = new RepairEntityMessage(GetNetEntity(targetGrid), args.TargetGridIndices, args.RepairId.Value, spec);
-            RaiseNetworkEvent(dirtMsg);
+                var dirtMsg = new RepairEntityMessage(GetNetEntity(targetGrid), args.TargetGridIndices, id, spec);
+                RaiseNetworkEvent(dirtMsg);
+            }
         }
         else
         {

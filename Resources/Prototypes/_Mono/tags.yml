@@ -75,6 +75,15 @@
   id: MonoGripErebusRailmount
 
 - type: Tag
+  id: MonoGrip40mmUBGL
+
+- type: Tag
+  id: MonoGrip40mmUBGLTSF
+
+- type: Tag
+  id: MonoGrip40mmUBGLVympel
+
+- type: Tag
   id: MonoGripPistolMount
 
 - type: Tag
@@ -819,3 +828,69 @@
 
 - type: Tag
   id: Unstashable
+
+- type: Tag
+  id: DressExquisite
+
+- type: Tag
+  id: DressFancy
+
+- type: Tag
+  id: DressFlowy
+
+- type: Tag
+  id: DressFormal
+
+- type: Tag
+  id: DressFrilly
+
+- type: Tag
+  id: DressProfessional
+
+- type: Tag
+  id: DressSleek
+
+- type: Tag
+  id: DressStylish
+
+- type: Tag
+  id: DressSuave
+
+- type: Tag
+  id: SuitExquisite
+
+- type: Tag
+  id: SuitFancy
+
+- type: Tag
+  id: SuitFlowy
+
+- type: Tag
+  id: SuitFormal
+
+- type: Tag
+  id: SuitStylish
+
+- type: Tag
+  id: SuitSuave
+
+- type: Tag
+  id: TurtleneckSkirtFancy
+
+- type: Tag
+  id: TurtleneckSkirtPlain
+
+- type: Tag
+  id: TurtleneckSkirtStylish
+
+- type: Tag
+  id: TurtleneckSkirtClassical
+
+- type: Tag
+  id: TurtleneckSuitFancy
+
+- type: Tag
+  id: TurtleneckSuitStylish
+
+- type: Tag
+  id: TurtleneckSuitClassical

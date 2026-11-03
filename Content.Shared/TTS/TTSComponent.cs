@@ -1,4 +1,5 @@
 using Robust.Shared.GameStates;
+using Content.Shared._NF.Cloning;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
 namespace Content.Shared.TTS;
@@ -7,7 +8,7 @@ namespace Content.Shared.TTS;
 /// Enables text-to-speech playback for an entity's speech.
 /// </summary>
 [RegisterComponent, NetworkedComponent]
-public sealed partial class TTSComponent : Component
+public sealed partial class TTSComponent : Component, ITransferredByCloning
 {
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<TTSVoicePrototype>))]

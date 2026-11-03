@@ -4,6 +4,7 @@ using Content.Client.IoC;
 using Content.Client.Parallax.Managers;
 using Content.IntegrationTests.Tests.Destructible;
 using Content.IntegrationTests.Tests.DeviceNetwork;
+using Content.IntegrationTests.Tests._WH40K;
 using Content.Server.GameTicking;
 using Content.Shared.CCVar;
 using Content.Shared.Players;
@@ -121,6 +122,9 @@ public sealed partial class TestPair : RobustIntegrationTest.TestPair
             var entSysMan = IoCManager.Resolve<IEntitySystemManager>();
             entSysMan.LoadExtraSystemType<DeviceNetworkTestSystem>();
             entSysMan.LoadExtraSystemType<TestDestructibleListenerSystem>();
+            entSysMan.LoadExtraSystemType<LanguagePrefixTestSystem>();
+            entSysMan.LoadExtraSystemType<ProjectileCompatibilityTestSystem>();
+            entSysMan.LoadExtraSystemType<CargoSaleTestSystem>();
         };
         return opts;
     }
