@@ -38,6 +38,8 @@ public sealed partial class ShipyardSystem
     public bool TryAutomaticSale(EntityUid shuttle, Func<int, bool> credit, out int proceeds)
     {
         proceeds = 0;
+        if (EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().IsTransferring(shuttle))
+            return false;
         if (TerminatingOrDeleted(shuttle) || !TryComp<ShuttleDeedComponent>(shuttle, out var deed) ||
             !TryGetStationBerth(shuttle, out var station, out var dock))
             return false;
@@ -85,6 +87,7 @@ public sealed partial class ShipyardSystem
     public bool TryDeleteAbandonedShuttle(EntityUid shuttle)
     {
         if (TerminatingOrDeleted(shuttle) || EntityManager.IsQueuedForDeletion(shuttle) ||
+            EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().IsTransferring(shuttle) ||
             !HasComp<ShipOwnershipComponent>(shuttle) || !HasComp<ShuttleComponent>(shuttle) ||
             _passengers.HasPassengers(shuttle))
             return false;

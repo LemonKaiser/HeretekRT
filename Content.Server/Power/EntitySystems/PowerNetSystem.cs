@@ -345,6 +345,8 @@ namespace Content.Server.Power.EntitySystems
             var enumerator = AllEntityQuery<ApcPowerReceiverComponent>();
             while (enumerator.MoveNext(out var uid, out var apcReceiver))
             {
+                if (MetaData(uid).EntityPaused)
+                    continue;
                 var powered = IsPoweredCalculate(apcReceiver);
 
                 MetaDataComponent? metadata = null;

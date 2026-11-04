@@ -54,7 +54,8 @@ public sealed partial class KoronusSectorRuleSystem
         if (!_maps.TryGetMap(operation.MapId, out var map) || map != operation.Map ||
             !_maps.IsPaused(operation.MapId) ||
             Timing.CurTime - _metaData.GetPauseTime(operation.Map) != operation.PausedAt ||
-            HasResidentMind(operation.SystemId, operation.MapId) || HasUnsavableMob(operation.MapId))
+            HasResidentMind(operation.SystemId, operation.MapId) || HasUnsavableMob(operation.MapId) ||
+            EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().HasActiveTransfer(operation.MapId))
         {
             Log.Debug($"Cancelled cold snapshot for {operation.SystemId}: the map is no longer eligible.");
             CancelColdUnload();

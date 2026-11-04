@@ -1,0 +1,35 @@
+- type: entity
+  id: WH40KShuttleStorageConsole
+  parent: BaseComputer
+  name: personal shuttle hangar console
+  description: Stores one docked shuttle with its equipment and cargo. Everyone must leave the shuttle before storage.
+  components:
+  - type: ShuttleStorage
+  - type: Computer
+    board: WH40KShuttleStorageCircuitboard
+  - type: ActivatableUI
+    key: enum.ShuttleStorageUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ShuttleStorageUiKey.Key:
+        type: ShuttleStorageBoundUserInterface
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard_nfsd
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+
+- type: entity
+  id: WH40KShuttleStorageCircuitboard
+  parent: BaseComputerCircuitboard
+  name: personal shuttle hangar computer board
+  description: A computer board for a personal shuttle hangar console.
+  components:
+  - type: ComputerBoard
+    prototype: WH40KShuttleStorageConsole

@@ -123,7 +123,8 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
         var isCyborg = TryComp<BorgChassisComponent>(args.User, out _);
 
         // Show unlock/lock verb only for users with ID cards or vouchers
-        var hasIdOrVoucher = idCards.Count > 0 || vouchers.Count > 0;
+        var hasIdOrVoucher = idCards.Count > 0 || vouchers.Count > 0 ||
+            Transform(uid).GridUid is { } storedGrid && HasStoredShuttleOwnerAccess(storedGrid, args.User);
 
         // Get the effective lock state for use throughout this method
         var effectiveLocked = GetEffectiveLockState(uid, component);
@@ -246,6 +247,12 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
     private void TryToggleLock(EntityUid uid, EntityUid user, ShuttleConsoleLockComponent component)
     {
         var effectiveLocked = GetEffectiveLockState(uid, component);
+        if (Transform(uid).GridUid is { } storedGrid && HasStoredShuttleOwnerAccess(storedGrid, user))
+        {
+            SetGridLockState(storedGrid, !effectiveLocked);
+            Popup.PopupEntity(Loc.GetString(effectiveLocked ? "shuttle-console-unlocked" : "shuttle-console-locked"), uid, user);
+            return;
+        }
 
         // If locked, try to unlock
         if (effectiveLocked)
@@ -576,6 +583,8 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
     /// </summary>
     public bool HasShipAccess(EntityUid gridUid, EntityUid user, bool includeGuestAccess = true)
     {
+        if (HasStoredShuttleOwnerAccess(gridUid, user))
+            return true;
         if (!TryComp<ShuttleDeedComponent>(gridUid, out var shipDeed))
             return false;
 

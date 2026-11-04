@@ -32,6 +32,11 @@ public abstract partial class ServerDbBase
                 throw new InvalidOperationException("The player's persistent inventory is still busy.");
 
             var key = QuestOwnerKey(owner);
+            if (await db.Wh40kShuttleSlots.AnyAsync(slot => slot.Owner == userId.UserId &&
+                    (slot.State == Wh40kShuttleState.Storing || slot.State == Wh40kShuttleState.Loading ||
+                     slot.State == Wh40kShuttleState.RecoveryRequired), cancel))
+                throw new InvalidOperationException("Resolve the player's pending shuttle transfer before reset.");
+            await db.Wh40kShuttleSlots.Where(slot => slot.Owner == userId.UserId).ExecuteDeleteAsync(cancel);
             var quests = db.Wh40kQuestInstances.Where(quest => quest.OwnerKey == key).Select(quest => quest.Id);
             await db.Wh40kQuestInboxes.Where(row => quests.Contains(row.QuestId)).ExecuteDeleteAsync(cancel);
             await db.Wh40kQuestReceipts.Where(row => quests.Contains(row.QuestId)).ExecuteDeleteAsync(cancel);

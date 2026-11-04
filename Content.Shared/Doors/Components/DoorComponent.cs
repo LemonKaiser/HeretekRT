@@ -1,18 +1,16 @@
 using Content.Shared.Damage;
 using Content.Shared.Doors.Systems;
 using Content.Shared.Tools;
-using JetBrains.Annotations;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Timing;
 using DrawDepthTag = Robust.Shared.GameObjects.DrawDepth;
 
 namespace Content.Shared.Doors.Components;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), AutoGenerateComponentPause]
 public sealed partial class DoorComponent : Component
 {
     /// <summary>
@@ -66,7 +64,8 @@ public sealed partial class DoorComponent : Component
     /// <summary>
     ///     When the door is active, this is the time when the state will next update.
     /// </summary>
-    [AutoNetworkedField, ViewVariables]
+    [DataField("secondsUntilStateChange", customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [AutoNetworkedField, AutoPausedField, ViewVariables]
     public TimeSpan? NextStateChange;
 
     /// <summary>
@@ -225,35 +224,6 @@ public sealed partial class DoorComponent : Component
     public object EmaggingAnimation = default!;
 
     #endregion Graphics
-
-    #region Serialization
-    /// <summary>
-    ///     Time until next state change. Because apparently <see cref="IGameTiming.CurTime"/> might not get saved/restored.
-    /// </summary>
-    [DataField]
-    private float? SecondsUntilStateChange
-    {
-        [UsedImplicitly]
-        get
-        {
-            if (NextStateChange == null)
-            {
-                return null;
-            }
-
-            var curTime = IoCManager.Resolve<IGameTiming>().CurTime;
-            return (float)(NextStateChange.Value - curTime).TotalSeconds;
-        }
-        set
-        {
-            if (value == null || value.Value > 0)
-                return;
-
-            NextStateChange = IoCManager.Resolve<IGameTiming>().CurTime + TimeSpan.FromSeconds(value.Value);
-
-        }
-    }
-    #endregion
 
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool CanPry = true;

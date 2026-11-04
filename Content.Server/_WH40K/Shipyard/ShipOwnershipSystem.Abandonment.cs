@@ -112,6 +112,7 @@ public sealed partial class ShipOwnershipSystem
     public bool TryCleanupAbandonedShip(Entity<ShipOwnershipComponent> ship)
     {
         if (TerminatingOrDeleted(ship) || !TryComp<ShipOwnershipComponent>(ship, out var current) ||
+            EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().IsTransferring(ship) ||
             !ReferenceEquals(current, ship.Comp) || ship.Comp.IsOwnerOnline || ship.Comp.OwnerUserId == default ||
             !HasComp<ShuttleComponent>(ship) || _automaticSales.Contains(ship))
             return false;

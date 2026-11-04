@@ -191,6 +191,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         bill = 0;
 
         if (EntityManager.IsQueuedForDeletion(shuttleUid)
+            || EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().IsTransferring(shuttleUid)
             || !TryComp<StationDataComponent>(stationUid, out var stationGrid)
             || !HasComp<ShuttleComponent>(shuttleUid)
             || !TryComp(shuttleUid, out TransformComponent? xform)

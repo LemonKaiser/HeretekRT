@@ -3499,6 +3499,86 @@ namespace Content.Server.Database.Migrations.Sqlite
                         });
                 });
 
+            modelBuilder.Entity("Content.Server.Database.Wh40kShuttleSlot", b =>
+                {
+                    b.Property<Guid>("Owner")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("owner");
+
+                    b.Property<bool>("Authorized")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("authorized");
+
+                    b.Property<int>("Bytes")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("bytes");
+
+                    b.Property<int>("Entities")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("entities");
+
+                    b.Property<Guid>("Epoch")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("epoch");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("height");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(4096)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("Operation")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("operation");
+
+                    b.Property<byte[]>("Payload")
+                        .HasColumnType("BLOB")
+                        .HasColumnName("payload");
+
+                    b.Property<int>("Result")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("result");
+
+                    b.Property<long>("Revision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("revision");
+
+                    b.Property<DateTime?>("SavedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("saved_at");
+
+                    b.Property<int>("Schema")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("schema");
+
+                    b.Property<byte[]>("Sha256")
+                        .HasColumnType("BLOB")
+                        .HasColumnName("sha256");
+
+                    b.Property<Guid>("Ship")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("ship");
+
+                    b.Property<byte>("State")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("state");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("width");
+
+                    b.HasKey("Owner")
+                        .HasName("PK_wh40k_shuttle_slot");
+
+                    b.ToTable("wh40k_shuttle_slot", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.Whitelist", b =>
                 {
                     b.Property<Guid>("UserId")
