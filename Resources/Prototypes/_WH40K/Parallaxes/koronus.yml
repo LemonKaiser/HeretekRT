@@ -1,0 +1,58 @@
+- type: parallax
+  id: WH40KKoronusVeil
+  layers:
+  - texture:
+      !type:ImageParallaxTextureSource
+      path: "/Textures/_WH40K/Parallaxes/Koronus/void.png"
+    slowness: 0.9993
+    scale: "1.75, 1.75"
+  - texture:
+      !type:GeneratedParallaxTextureSource
+      id: "hq_wizard_stars_dim"
+      configPath: "/Prototypes/Parallaxes/parallax_config_stars_dim.toml"
+    slowness: 0.997
+  - texture:
+      !type:ImageParallaxTextureSource
+      path: "/Textures/_WH40K/Parallaxes/Koronus/nebula.png"
+    slowness: 0.9945
+    scale: "1.6, 1.6"
+    scrolling: "0.003, 0.001"
+  - texture:
+      !type:GeneratedParallaxTextureSource
+      id: "hq_wizard_stars"
+      configPath: "/Prototypes/Parallaxes/parallax_config_stars.toml"
+    slowness: 0.991
+  - texture:
+      !type:ImageParallaxTextureSource
+      path: "/Textures/_WH40K/Parallaxes/Koronus/dust.png"
+    slowness: 0.9845
+    scale: "0.95, 0.95"
+    scrolling: "-0.006, 0.002"
+  - texture:
+      !type:GeneratedParallaxTextureSource
+      id: "hq_wizard_stars_dim_faster"
+      configPath: "/Prototypes/Parallaxes/parallax_config_stars_dim-2.toml"
+    slowness: 0.981
+  - texture:
+      !type:GeneratedParallaxTextureSource
+      id: "hq_wizard_stars_faster"
+      configPath: "/Prototypes/Parallaxes/parallax_config_stars-2.toml"
+    slowness: 0.974
+  layersLQ:
+  - texture:
+      !type:ImageParallaxTextureSource
+      path: "/Textures/_WH40K/Parallaxes/Koronus/void.png"
+    slowness: 0.9993
+    scale: "1.75, 1.75"
+  - texture:
+      !type:ImageParallaxTextureSource
+      path: "/Textures/_WH40K/Parallaxes/Koronus/nebula.png"
+    slowness: 0.9945
+    scale: "1.6, 1.6"
+    scrolling: "0.003, 0.001"
+  - texture:
+      !type:GeneratedParallaxTextureSource
+      id: "hq_wizard_stars"
+      configPath: "/Prototypes/Parallaxes/parallax_config_stars.toml"
+    slowness: 0.991
+  layersLQUseHQ: false

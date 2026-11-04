@@ -31,7 +31,7 @@ public sealed class VinylPlayerSystem : EntitySystem
         SubscribeLocalEvent<VinylPlayerComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<VinylPlayerComponent, EntParentChangedMessage>(OnSourceMoved);
         SubscribeLocalEvent<StationRadioReceiverComponent, EntParentChangedMessage>(OnReceiverMoved);
-        SubscribeLocalEvent<MapGridComponent, EntParentChangedMessage>(OnGridMoved);
+        SubscribeLocalEvent<EntParentChangedMessage>(OnGridMoved);
     }
 
     private void OnPowerChanged(EntityUid uid, VinylPlayerComponent comp, PowerChangedEvent args)
@@ -137,9 +137,9 @@ public sealed class VinylPlayerSystem : EntitySystem
             RaiseLocalEvent(ent, new StationRadioMediaStoppedEvent());
     }
 
-    private void OnGridMoved(Entity<MapGridComponent> ent, ref EntParentChangedMessage args)
+    private void OnGridMoved(ref EntParentChangedMessage args)
     {
-        if (_net.IsClient || args.OldMapId == args.Transform.MapUid)
+        if (_net.IsClient || !HasComp<MapGridComponent>(args.Entity) || args.OldMapId == args.Transform.MapUid)
             return;
 
         var query = EntityQueryEnumerator<StationRadioReceiverComponent>();

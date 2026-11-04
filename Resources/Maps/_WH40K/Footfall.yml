@@ -82,7 +82,7 @@ entities:
     - type: Broadphase
     - type: OccluderTree
     - type: Parallax
-      parallax: FrontierStation
+      parallax: WH40KKoronusVeil
   - uid: 2
     components:
     - type: MetaData
