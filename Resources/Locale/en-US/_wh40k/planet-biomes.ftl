@@ -1,3 +1,5 @@
+tiles-basalt-floor-planetmap = { tiles-basalt-floor }
+
 ent-KoronusDesertBoulder = weathered sandstone boulder
     .desc = A wind-worn boulder stained by iron-rich desert dust.
 ent-KoronusDesertBoulderAngled = { ent-KoronusDesertBoulder }

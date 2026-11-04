@@ -97,6 +97,7 @@
     zeroVisible: false
   - type: Appearance
   - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/SpeedLoaders/11mm_speed_loader_inhands.rsi
     inhandVisuals:
       left:
       - state: inhand-left-mag

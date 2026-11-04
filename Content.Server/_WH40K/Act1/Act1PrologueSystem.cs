@@ -1010,7 +1010,6 @@ public sealed class Act1PrologueSystem : EntitySystem
             Back: "ClothingBackpackSatchelWanderer"),
         new("ClothingUniformJumpsuitImperialCitizen",
             Shoes: "ClothingShoesImperialPilgrim",
-            Head: "ClothingHeadHoodImperialPilgrim",
             Neck: "ClothingNeckImperialAquilaMedal",
             OuterClothing: "ClothingOuterRobeImperialPilgrim",
             Gloves: "ClothingHandsGlovesCombatVoidsman",

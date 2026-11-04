@@ -108,3 +108,6 @@ construction-desc-wh40k-boarded-barricade = A protective barricade made from woo
 
 construction-name-wh40k-bar-barricade = bar barricade
 construction-desc-wh40k-bar-barricade = A barred barricade made from metal rods.
+
+construction-graph-component-door-electronics-circuit-board = door electronics circuit board
+construction-graph-tag-power-cell = power cell

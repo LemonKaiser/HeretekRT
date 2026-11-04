@@ -134,7 +134,6 @@
     id: WH40KFootfallEcclesiarchyIDCard
     jumpsuit: WH40KClothingUniformJumpsuitChaplain
     outerClothing: ClothingOuterRobeImperialPilgrim
-    head: ClothingHeadHoodImperialPilgrim
     shoes: ClothingShoesBootsChaplain
     gloves: ClothingHandsGlovesColorBlack
     belt: ClothingBeltChaplain

@@ -1,0 +1,15 @@
+- type: entity
+  abstract: true
+  parent: [ClothingNeckBase, MonoEnergyShieldClothing]
+  id: WH40KClothingNeckPersonalShieldBase
+  components:
+  - type: PersonalShield
+    shield:
+      requiredSlot: NECK
+  - type: ItemActionGrant
+    activeIfWorn: true
+  - type: ExtendDescription
+    descriptionList:
+    - description: wh40k-neck-shield-description
+      color: "#4f94ad"
+      requireDetailRange: true

@@ -7,5 +7,8 @@ chat-radio-vox-imperium = вокс Империума
 chat-radio-vox-heretics = вокс Еретиков
 ent-EncryptionKeyVoxImperium = имперский вокс ключ шифрования
 ent-EncryptionKeyVoxHeretics = еретический вокс ключ шифрования
-heretek-death-transition-title = YOU ARE DEAD
+heretek-death-transition-title = ВЫ МЕРТВЫ
 heretek-death-surrender-hint = Ваше тело ещё можно вернуть к жизни. Если вы отказываетесь ждать помощи, нажмите R, чтобы сдаться и покинуть этот мир.
+
+humanoid-profile-editor-link-tooltip = Открыть ссылку: { $url }
+ban-panel-expiry-error = Некорректный срок действия.

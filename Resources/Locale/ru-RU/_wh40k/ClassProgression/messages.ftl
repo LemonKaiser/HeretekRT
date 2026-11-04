@@ -16,6 +16,7 @@ wh40k-class-ui-unavailable = Данные класса недоступны.
 wh40k-class-ui-pda-points = Свободные очки навыков: {$points}
 wh40k-class-ui-pda-summary = Уровень {$level} · открыто {$purchased} из {$total}
 wh40k-class-ui-pda-specialization = {$name} · {$purchased}/20
+wh40k-class-ui-specializations = СПЕЦИАЛИЗАЦИИ
 wh40k-class-ui-recent = НЕДАВНО ОТКРЫТЫЕ
 wh40k-class-ui-recent-empty = Навыки ещё не открыты.
 wh40k-class-ui-search-placeholder = Поиск навыка по названию или описанию…

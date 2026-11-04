@@ -24,11 +24,11 @@ ent-WeaponTurretLaserPDVCrocus = лазерная турель АДФ
 
 ent-GunAttachmentQLG20 = подствольный гранатомёт TCA QLG-20 (крепление ТСФ)
     .desc = Подствольный гранатомёт для длинноствольного оружия ТСФ. Лёгкое средство огневой поддержки и решения вспомогательных задач.
-    .suffix = Grip, TSF mount
+    .suffix = Рукоятка, крепление ТСФ
 
 ent-GunAttachmentRKR40 = подствольный гранатомёт PD-VI RKR/40 (крепление «Вымпел»)
     .desc = Специальный подствольный гранатомёт для M-32 «Вымпел» и другого оружия с таким же уникальным спусковым механизмом. Такого другого оружия не существует.
-    .suffix = Grip, Vympel mount
+    .suffix = Рукоятка, крепление «Вымпел»
 
 ent-CMVendorBundleNightvision = комплект ночного видения
     .desc = Прибор ночного видения для шлема и крепление для него.
@@ -58,7 +58,7 @@ ent-CMVendorBundleRiflemanApparelNoFurry = убейте меня, пожалуй
 
 ent-ColMarTechEquipment = автоматизированная стойка снаряжения морпеха ColMarTech
     .desc = Автоматизированная стойка, соединённая с огромным хранилищем штатного снаряжения стрелков морской пехоты.
-    .suffix = DEBUG, DO NOT MAP
+    .suffix = Отладка, не размещать на картах
 
 ent-ClothingOuterArmorBPVestMediumPDV = { ent-ClothingOuterArmorBPVestLightPDV }
     .desc = { ent-ClothingOuterArmorBPVestLightPDV.desc }

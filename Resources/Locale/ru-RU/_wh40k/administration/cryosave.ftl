@@ -1,4 +1,4 @@
-cmd-cryosave-desc = Принудительно сохраняет живого игрока через persistent inventory.
+cmd-cryosave-desc = Принудительно сохраняет живого игрока через систему межраундового инвентаря.
 cmd-cryosave-help = Использование: { $command } <игрок|UserId> [причина]
 cmd-cryosave-hint-target = <игрок|UserId>
 cmd-cryosave-hint-reason = <причина>

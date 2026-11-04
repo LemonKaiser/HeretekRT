@@ -18,66 +18,66 @@ ent-AdMechComputerModular = терминал
 ent-AirlockNecron = шлюз некронов
     .desc = Странно выглядащая дверь, от которой веет чем-то за гранью человеческого понимания. Вам не хочется трогать это.
 
-ent-AppearanceAstartes = astartes appearance
+ent-AppearanceAstartes = внешность астартес
 
-ent-AppearanceOrk = ork appearance
+ent-AppearanceOrk = внешность орка
 
-ent-AppearanceTau = tau appearance
+ent-AppearanceTau = внешность тау
 
 ent-AstartesImperiumDogTag = { ent-StandardDogTag }
 
-ent-AutolatheMachineCircuitboardHeretics = autolathe machine board
-    .desc = A machine printed circuit board for an autolathe.
+ent-AutolatheMachineCircuitboardHeretics = автолат еретиков (машинная плата)
+    .desc = Печатная плата автолата.
 
-ent-AutolatheMachineCircuitboardImperium = autolathe machine board
-    .desc = A machine printed circuit board for an autolathe.
+ent-AutolatheMachineCircuitboardImperium = имперский автолат (машинная плата)
+    .desc = Печатная плата автолата.
 
 ent-AxeChaos = хаоситский топор
     .desc = Одноручный топорик хаоситов, чуток ржавый и побитый жизнью, но удар его все так же болезнен.
 
-ent-BaseMagazineCombatShotgun = ammo drum (.50 shells)
+ent-BaseMagazineCombatShotgun = барабанный магазин (.50)
 
-ent-BaseMagazineOgrynHeavyStubber = ogryn heavy stubber box
+ent-BaseMagazineOgrynHeavyStubber = коробчатый магазин огринского тяжёлого стаббера
 
-ent-BaseMagazineOgrynRipper = ripper gun magazine
+ent-BaseMagazineOgrynRipper = магазин потрошителя
 
-ent-BaseMagazineOgrynTwinHeavyStubber = twin heavy stubber box
+ent-BaseMagazineOgrynTwinHeavyStubber = коробчатый магазин спаренного тяжёлого стаббера
 
-ent-BaseMobAstartes = Urist McAstartes
+ent-BaseMobAstartes = Урист МакАстартес
 
-ent-BaseMobOrk = Urist Ork
+ent-BaseMobOrk = Урист Орк
 
-ent-BaseMobTau = Urist T'au
+ent-BaseMobTau = Урист Т'ау
 
 ent-BaseMobWH40KNecron = { ent-MobSiliconBase }
 
-ent-BaseMobWH40KSlaaneshDaemon = slaanesh daemon
-    .desc = A daemonette-shaped horror clawing its way into realspace through excess and pain.
+ent-BaseMobWH40KSlaaneshDaemon = демон Слаанеш
+    .desc = Ужас в обличье демонетки, прорывающийся в реальный мир через излишества и боль.
 
 ent-BaseMobWH40KKhorneDaemon = демон Кхорна
     .desc = Обезумевший от крови младший демон Бога Крови, вытащенный в реальность за черепами во имя его.
 
-ent-BaseMobWH40KWarpDaemon = warp daemon
-    .desc = A hostile thing pulled out of the immaterium by a failed ritual.
+ent-BaseMobWH40KWarpDaemon = варп-демон
+    .desc = Враждебная тварь, вырванная из Имматериума неудачным ритуалом.
 
-ent-BaseSpeedLoaderElectricArc = speed loader (ElectricArc)
+ent-BaseSpeedLoaderElectricArc = спидлоадер (дуговой)
 
-ent-BaseSpeedLoaderPhosphor = speed loader (Phosphor)
+ent-BaseSpeedLoaderPhosphor = спидлоадер (фосфорный)
 
-ent-BaseWeaponSniperLondoronMk2 = Magazine
+ent-BaseWeaponSniperLondoronMk2 = снайперская винтовка «Лондорон» Mk. II
 
 ent-BaseWeaponTauPulseLong = { ent-WeaponLaserWH40KEnergy }
 
-ent-BasicHitscanElectricArc = basic arc ray
+ent-BasicHitscanElectricArc = дуговой разряд
 
 ent-Bugle = вокс-горн
     .desc = наверное он сможет привлечь внимание...
 
-ent-Bullet10mm = bullet (10mm)
+ent-Bullet10mm = пуля (10 мм)
 
-ent-Bullet11mm = bullet (11mm)
+ent-Bullet11mm = пуля (11 мм)
 
-ent-Bullet12mm = bullet (12mm)
+ent-Bullet12mm = пуля (12 мм)
 
 ent-Bullet825mmLong = { ent-BaseBullet }
 
@@ -99,7 +99,7 @@ ent-BulletLondoronMk2Possessed = { ent-BaseBullet }
 
 ent-BulletPhosphor = { ent-BaseBullet }
 
-ent-BulletRadCarabin = bullet uranium
+ent-BulletRadCarabin = урановая пуля
 
 ent-BulletSentine = пуля часового
 
@@ -511,8 +511,8 @@ ent-ClothingHeadHelmetOrk = шляпа бойза
 ent-ClothingHeadHelmetPsyker = шлем псайкера
     .desc = Шлем, защищающий голову псайкера не только от физических, но и ментальных угроз.
 
-ent-ClothingHeadHelmetRager = Мёбиан-6 Рейджер шлем
-    Шлем полка Мёбиан-6 гвардейцев предателей. Этот экземпляр отмечен следами боев и грубо отремонтирован.
+ent-ClothingHeadHelmetRager = шлем рейджера Мёбианского 6-го полка
+    .desc = Шлем гвардейцев-предателей Мёбианского 6-го полка. Этот экземпляр отмечен следами боёв и грубого ремонта.
 
 ent-ClothingHeadHelmetSavlar = савларский шлем
     .desc = Потасканный шлем савларцев, собранный с утилитарной жёсткостью и привычкой выживать в дряни.
@@ -1448,11 +1448,11 @@ ent-HSpecialistHWSDogTag = { ent-StandardDogTag }
 
 ent-HSpecialistSWSDogTag = { ent-StandardDogTag }
 
-ent-HeadAstartes = astartes head
+ent-HeadAstartes = голова астартес
 
-ent-HeadOrk = ork head
+ent-HeadOrk = голова орка
 
-ent-HeadTau = tau head
+ent-HeadTau = голова тау
 
 ent-ImpPointLathe = очиститель данных
     .desc = Убирает ошибки и лишние данные в чипах.
@@ -1468,45 +1468,45 @@ ent-LaserLasCannon = { ent-BasicHitscan }
 
 ent-LaserMultilas = { ent-BasicHitscan }
 
-ent-LeftArmAstartes = left astartes arm
+ent-LeftArmAstartes = левая рука астартес
 
-ent-LeftArmOrk = left ork arm
+ent-LeftArmOrk = левая рука орка
 
-ent-LeftArmTau = left tau arm
+ent-LeftArmTau = левая рука тау
 
-ent-LeftFootAstartes = left astartes foot
+ent-LeftFootAstartes = левая стопа астартес
 
-ent-LeftFootOrk = left ork foot
+ent-LeftFootOrk = левая стопа орка
 
-ent-LeftFootTau = left tau foot
+ent-LeftFootTau = левая стопа тау
 
-ent-LeftHandAstartes = left astartes hand
+ent-LeftHandAstartes = левая кисть астартес
 
-ent-LeftHandOrk = left ork hand
+ent-LeftHandOrk = левая кисть орка
 
-ent-LeftHandTau = left tau hand
+ent-LeftHandTau = левая кисть тау
 
-ent-LeftLegAstartes = left astartes leg
+ent-LeftLegAstartes = левая нога астартес
 
-ent-LeftLegOrk = left ork leg
+ent-LeftLegOrk = левая нога орка
 
-ent-LeftLegTau = left tau leg
+ent-LeftLegTau = левая нога тау
 
 ent-LexmechanicDogTag = { ent-StandardDogTag }
 
 ent-LieutenantDogTag = { ent-StandardDogTag }
 
-ent-LockerWH40KChaos = chaos locker
-    .desc = A corrupted steel locker scarred with rust, spikes, and heretical marks.
+ent-LockerWH40KChaos = шкаф Хаоса
+    .desc = Осквернённый стальной шкаф, покрытый ржавчиной, шипами и еретическими символами.
 
-ent-LockerWH40KChaosArmory = chaos armory locker
-    .desc = A brutal armory locker plated in dark iron and profane crimson panels.
+ent-LockerWH40KChaosArmory = оружейный шкаф Хаоса
+    .desc = Массивный оружейный шкаф с обшивкой из тёмного железа и нечестивых багровых панелей.
 
-ent-LockerWH40KImperium = imperium locker
-    .desc = A reinforced locker trimmed in brass and machine-cult iconography.
+ent-LockerWH40KImperium = имперский шкаф
+    .desc = Укреплённый шкаф с латунной отделкой и символами Культа Механикус.
 
-ent-LockerWH40KImperiumArmory = imperium armory locker
-    .desc = A grim armory locker marked with purity seals and regiment colors.
+ent-LockerWH40KImperiumArmory = имперский оружейный шкаф
+    .desc = Суровый оружейный шкаф, отмеченный печатями чистоты и полковыми цветами.
 
 ent-MagazineBolter = магазин болтера (.75 болт)
 
@@ -1530,8 +1530,8 @@ ent-MagazineLondoronMk2 = магазин Лондорона MK2
 ent-MagazineOgrynChaosHeavyStubber = короб тяжёлого стаббера предателя
     .desc = Коробчатый магазин для тяжёлого стаббера предателя-огрина.
 
-ent-MagazineOgrynChaosRipper = магазин ripper gun предателя
-    .desc = Грубый магазин для ripper gun, которым пользуются предатели-огрины.
+ent-MagazineOgrynChaosRipper = магазин потрошителя предателя
+    .desc = Грубый магазин для потрошителей, которыми пользуются огрины-предатели.
 
 ent-MagazineOgrynChaosTwinHeavyStubber = короб спаренного тяжёлого стаббера предателя
     .desc = Увеличенный короб для осквернённой спарки тяжёлых стабберов.
@@ -1539,13 +1539,13 @@ ent-MagazineOgrynChaosTwinHeavyStubber = короб спаренного тяж�
 ent-MagazineOgrynLoyalHeavyStubber = короб тяжёлого стаббера огрина
     .desc = Коробчатый магазин с боеприпасами для огринского тяжёлого стаббера.
 
-ent-MagazineOgrynLoyalRipper = магазин ripper gun
-    .desc = Крупный коробчатый магазин для ripper gun огрина.
+ent-MagazineOgrynLoyalRipper = магазин потрошителя
+    .desc = Крупный коробчатый магазин для огринского потрошителя.
 
 ent-MagazineOgrynLoyalTwinHeavyStubber = короб спаренного тяжёлого стаббера
     .desc = Увеличенный короб с боеприпасами для спаренного тяжёлого стаббера огрина.
 
-ent-MagazineRadCarabin = оцинковонный магазин
+ent-MagazineRadCarabin = оцинкованный магазин
     .desc = Цинк магазина лишь частично уменьшает радиацию боеприпасов внутри.
 
 ent-MagazineScreamerPistol = { ent-BaseItem }
@@ -1633,7 +1633,7 @@ ent-MedicDogTag = { ent-StandardDogTag }
 ent-MeltaGrenade = мельта заряд
     .desc = Короткодействующая противотанковая граната, создающая мощный расплавляющий взрыв, способный уничтожать тяжело бронированные цели.
 
-ent-MobAstartes = Urist McAstartes
+ent-MobAstartes = Урист МакАстартес
 
 ent-MobAstartesDummy = { ent-BaseSpeciesDummy }
 
@@ -1641,13 +1641,14 @@ ent-MobGenestealer = генокрад
     .desc = Перед вами находится одно из наиболее смертоносных существ роя тиранидов - генокрады, чьи острые когти и безумные рефлексы стали причиной гибели множества людей.
 
 ent-MobGretchin = гретчин
+    .desc = Небольшой зеленокожий родственник орков.
 
 ent-MobHormagaunt = Хормагаунт
     .desc = Кажется, он уже почувствовал запах твоей крови...
 
-ent-MobHumanWH40KHereticReinforcement = heretic reinforcement guardsman
+ent-MobHumanWH40KHereticReinforcement = гвардеец подкрепления еретиков
 
-ent-MobHumanWH40KImperiumReinforcement = imperium reinforcement guardsman
+ent-MobHumanWH40KImperiumReinforcement = гвардеец имперского подкрепления
 
 ent-MobOrk = Урист МакГриб
 
@@ -1662,7 +1663,7 @@ ent-MobQueenChrysalisImperium = королева Кризалис
 ent-MobRavener = Равенер
     .desc = Змееподобное чудище, использующее свои передние лезвиеподобные конечности для разрывания врагов, стен и грунта.
 
-ent-MobTau = Urist T'au
+ent-MobTau = Урист Т'ау
 
 ent-MobTauDummy = { ent-BaseSpeciesDummy }
 
@@ -1690,26 +1691,26 @@ ent-MobWH40KSlaaneshDemonette = демонетка Слаанеш
 ent-MobWH40KSlaaneshRapturousDemonette = экстатическая демонетка Слаанеш
     .desc = Охотница Слаанеш, движущаяся с невозможной скоростью и хлещущей, почти изящной точностью.
 
-ent-MobWH40KWarpDoppelganger = warp doppelganger
-    .desc = A hostile reflection torn free from the veil.
+ent-MobWH40KWarpDoppelganger = варп-двойник
+    .desc = Враждебное отражение, вырвавшееся из-за завесы.
 
-ent-MobWH40KWarpRunner = warp runner
-    .desc = A quick, half-formed daemon that hunts by speed and numbers.
+ent-MobWH40KWarpRunner = варп-гончая
+    .desc = Быстрый, не до конца сформировавшийся демон, берущий жертву скоростью и численным превосходством.
 
-ent-MobWH40KWarpRunnerAlpha = greater warp runner
-    .desc = A stretched daemon-beast built for pursuit.
+ent-MobWH40KWarpRunnerAlpha = высшая варп-гончая
+    .desc = Вытянутый демон-зверь, созданный для погони.
 
-ent-MobWH40KWarpSpitter = warp spitter
-    .desc = A twitching daemon that leaks corrosive warp ichor.
+ent-MobWH40KWarpSpitter = варп-плевун
+    .desc = Дёргающийся демон, сочащийся едким варп-ихором.
 
-ent-MobWH40KWarpSpitterAlpha = bloated warp spitter
-    .desc = A swollen daemon whose claws drip with unstable bile.
+ent-MobWH40KWarpSpitterAlpha = раздутый варп-плевун
+    .desc = Разбухший демон, с когтей которого капает нестабильная желчь.
 
-ent-MobWH40KWarpTank = warp brute
-    .desc = A dense daemon mass that crushes whatever it can reach.
+ent-MobWH40KWarpTank = варп-громила
+    .desc = Плотная демоническая масса, сокрушающая всё, до чего может дотянуться.
 
-ent-MobWH40KWarpTankAlpha = towering warp brute
-    .desc = A slow, towering daemon with enough mass to break a line.
+ent-MobWH40KWarpTankAlpha = исполинский варп-громила
+    .desc = Медлительный демон-исполин, способный своей массой прорвать боевой строй.
 
 ent-MobZoanthrope = зоантроп
     .desc = Крайне опасная тварь, использующая свои пси-силы для уничтожения врагов.
@@ -1741,9 +1742,9 @@ ent-NuclearBombEXUnanchored = { ent-NuclearBombEX }
     .suffix = WH40K, Не закреплено
     .desc = { ent-NuclearBombEX.desc }
 
-ent-OreProcessorMachineCircuitboardHeretics = ore processor machine board
+ent-OreProcessorMachineCircuitboardHeretics = переработчик руды еретиков (машинная плата)
 
-ent-OreProcessorMachineCircuitboardImperium = ore processor machine board
+ent-OreProcessorMachineCircuitboardImperium = имперский переработчик руды (машинная плата)
 
 ent-OrganAstartes = { ent-BaseItem }
 
@@ -1844,11 +1845,11 @@ ent-OrganTauTorso = { ent-OrganTauExternal }
 ent-OrkGrenade = крутая граната
     .desc = Большие взрывы для большого Ваагха!
 
-ent-PartAstartes = astartes body part
+ent-PartAstartes = часть тела астартес
 
-ent-PartOrk = ork body part
+ent-PartOrk = часть тела орка
 
-ent-PartTau = tau body part
+ent-PartTau = часть тела тау
 
 ent-PlushieAcic = Acic
     .desc = описание маппера. Ёбаный шарик с синим кружком.
@@ -1880,7 +1881,7 @@ ent-PlushieKaiser = Плюшевый Кайзер
 ent-PlushieLitiy = Litiy
     .desc = описание маппера
 
-ent-PlushieNecron = Nekron
+ent-PlushieNecron = Некрон
     .desc = Голова одного из спрайтеров.
             Кажется, вы вообще не видели спрайтов, которые он рисовал.
 
@@ -1911,11 +1912,11 @@ ent-Plushielondorondondon = LONDORONDONDON
 ent-PromethiumBullet = Горящий Прометий
     .desc = Если вы его видите, то вероятнее всего вы уже пахните как шашлык medium rare прожарки
 
-ent-ProtolatheMachineCircuitboardHeretics = protolathe machine board
-    .desc = A machine printed circuit board for a protolathe.
+ent-ProtolatheMachineCircuitboardHeretics = протолат еретиков (машинная плата)
+    .desc = Печатная плата протолата.
 
-ent-ProtolatheMachineCircuitboardImperium = protolathe machine board
-    .desc = A machine printed circuit board for a protolathe.
+ent-ProtolatheMachineCircuitboardImperium = имперский протолат (машинная плата)
+    .desc = Печатная плата протолата.
 
 ent-PsykerDogTag = { ent-StandardDogTag }
 
@@ -1930,29 +1931,29 @@ ent-RedLaserLong = длинный красный лазер
 
 ent-RedMeltaLaser = мельта-луч
 
-ent-RightArmAstartes = right astartes arm
+ent-RightArmAstartes = правая рука астартес
 
-ent-RightArmOrk = right ork arm
+ent-RightArmOrk = правая рука орка
 
-ent-RightArmTau = right tau arm
+ent-RightArmTau = правая рука тау
 
-ent-RightFootAstartes = right astartes foot
+ent-RightFootAstartes = правая стопа астартес
 
-ent-RightFootOrk = right ork foot
+ent-RightFootOrk = правая стопа орка
 
-ent-RightFootTau = right tau foot
+ent-RightFootTau = правая стопа тау
 
-ent-RightHandAstartes = right astartes hand
+ent-RightHandAstartes = правая кисть астартес
 
-ent-RightHandOrk = right ork hand
+ent-RightHandOrk = правая кисть орка
 
-ent-RightHandTau = right tau hand
+ent-RightHandTau = правая кисть тау
 
-ent-RightLegAstartes = right astartes leg
+ent-RightLegAstartes = правая нога астартес
 
-ent-RightLegOrk = right ork leg
+ent-RightLegOrk = правая нога орка
 
-ent-RightLegTau = right tau leg
+ent-RightLegTau = правая нога тау
 
 ent-Rosarius = розарий
     .desc = Священный знак веры со встроенным силовым полем, отталкивающим снаряды. Его благословенное сияние напоминает владельцу, что Император наблюдает.
@@ -1962,9 +1963,9 @@ ent-SergeantDogTag = { ent-StandardDogTag }
 ent-ShuttleComputerModular = терминал управления
     .desc = Терминал, используемый для управления кораблём и поддержания связи.
 
-ent-SpawnPointWH40KReinforcementHeretics = heretics reinforcement spawn
+ent-SpawnPointWH40KReinforcementHeretics = точка появления подкрепления еретиков
 
-ent-SpawnPointWH40KReinforcementImperium = imperium reinforcement spawn
+ent-SpawnPointWH40KReinforcementImperium = точка появления имперского подкрепления
 
 ent-SpecialistHWSDogTag = { ent-StandardDogTag }
 
@@ -2018,25 +2019,25 @@ ent-StructureAltar = алтарь хаоса
 
 ent-StructureLogisticsConsoleHereticsCmd = командный терминал Еретиков
 
-ent-StructureLogisticsConsoleHereticsMissionBoard = heretic mission board terminal
-    .desc = A decorative shell of the heretic mission board terminal.
+ent-StructureLogisticsConsoleHereticsMissionBoard = терминал миссий еретиков
+    .desc = Декоративный корпус терминала миссий еретиков.
 
-ent-StructureLogisticsConsoleHereticsReinforcement = heretic reinforcement terminal
-    .desc = A decorative shell of the heretic reinforcement terminal.
+ent-StructureLogisticsConsoleHereticsReinforcement = терминал подкрепления еретиков
+    .desc = Декоративный корпус терминала подкрепления еретиков.
 
-ent-StructureLogisticsConsoleHereticsUpgradeTree = heretic upgrade tree terminal
-    .desc = A decorative shell of the heretic upgrade tree terminal.
+ent-StructureLogisticsConsoleHereticsUpgradeTree = терминал улучшений еретиков
+    .desc = Декоративный корпус терминала улучшений еретиков.
 
 ent-StructureLogisticsConsoleImperiumCmd = командный терминал Империума
 
-ent-StructureLogisticsConsoleImperiumMissionBoard = imperium mission board terminal
-    .desc = A decorative shell of the imperial mission board terminal.
+ent-StructureLogisticsConsoleImperiumMissionBoard = имперский терминал миссий
+    .desc = Декоративный корпус имперского терминала миссий.
 
-ent-StructureLogisticsConsoleImperiumReinforcement = imperium reinforcement terminal
-    .desc = A decorative shell of the imperial reinforcement terminal.
+ent-StructureLogisticsConsoleImperiumReinforcement = имперский терминал подкрепления
+    .desc = Декоративный корпус имперского терминала подкрепления.
 
-ent-StructureLogisticsConsoleImperiumUpgradeTree = imperium upgrade tree terminal
-    .desc = A decorative shell of the imperial upgrade tree terminal.
+ent-StructureLogisticsConsoleImperiumUpgradeTree = имперский терминал улучшений
+    .desc = Декоративный корпус имперского терминала улучшений.
 
 ent-TauAirCasteDogTag = { ent-StandardDogTag }
 
@@ -2067,11 +2068,11 @@ ent-TauWaterCasteDogTag = { ent-StandardDogTag }
 
 ent-TitheSupplierDogTag = { ent-StandardDogTag }
 
-ent-TorsoAstartes = astartes torso
+ent-TorsoAstartes = торс астартес
 
-ent-TorsoOrk = ork torso
+ent-TorsoOrk = торс орка
 
-ent-TorsoTau = tau torso
+ent-TorsoTau = торс тау
 
 ent-TrenchKnifeChaos = хаоситский окопный нож
     .desc = Старый и ржавый нож, который слуги хаоса используют в бою. Он туп и ржав, но вам стоит опосатся его и его владельца.
@@ -2172,9 +2173,9 @@ ent-WH40KArtifactTriangle4 = треугольный артефакт x4
 ent-WH40KAstartesPowerSword = силовой меч Астартес
     .desc = Силовой клинок под трансчеловеческую руку. Включенное поле вгрызается в цель, будто запертая буря.
 
-ent-WH40KAstartesToxicSpitGun = astartes toxic spit gland
+ent-WH40KAstartesToxicSpitGun = железа ядовитого плевка астартес
 
-ent-WH40KAstartesToxicSpitProjectile = toxic spit
+ent-WH40KAstartesToxicSpitProjectile = ядовитый плевок
 
 ent-WH40KAutocannon = станковая автопушка
     .desc = Экипажный автопушка. Разверните, займите позицию позади и подавляйте направление.
@@ -2186,10 +2187,10 @@ ent-WH40KAutogunAmmoCrate = ящик автопатронов
     .desc = Армейский ящик снабжения. Внутри лежат коробки с патронами 8,25 мм для автоматов.
 
 ent-WH40KAutolatheHeretics = автолат Еретиков
-    .desc = { ent-WH40KAutolathe.desc }
+    .desc = { ent-Autolathe.desc }
 
 ent-WH40KAutolatheImperium = автолат Империума
-    .desc = { ent-WH40KAutolathe.desc }
+    .desc = { ent-Autolathe.desc }
 
 ent-WH40KBasaltPlatformEdge = край базальтовой платформы
     .desc = Тяжёлая базальтовая кромка, отмечающая край приподнятой платформы.
@@ -2210,14 +2211,14 @@ ent-WH40KBasePointLathe = { ent-WH40KBaseLatheMachine }
 
 ent-WH40KBaseResearchAndDevelopmentComputer = { ent-BaseStructure }
 
-ent-WH40KBaseTacticalMapConsole = tactical map console
+ent-WH40KBaseTacticalMapConsole = консоль тактической карты
 
 ent-WH40KBaseTacticalMapConsolePowered = { ent-WH40KBaseTacticalMapConsole }
 
-ent-WH40KBaseTacticalMapDevice = tactical map device
-    .desc = A preserved tactical-map shell without the old battlefield UI logic.
+ent-WH40KBaseTacticalMapDevice = устройство тактической карты
+    .desc = Сохранившийся корпус устройства тактической карты без действующего интерфейса.
 
-ent-WH40KBaseTacticalMapTablet = tactical map tablet
+ent-WH40KBaseTacticalMapTablet = планшет тактической карты
 
 ent-WH40KBulletOskvernitelSiegeShell = { ent-BulletSentine }
 
@@ -2267,83 +2268,83 @@ ent-WH40KComputerResearchAndDevelopmentImperium = консоль R&D Импер�
 ent-WH40KConveyorManipulator = конвейерный манипулятор
     .desc = Переносит предметы с левого тайла на правый и умеет умно подавать материалы в перерабатывающие машины.
 
-ent-WH40KDecorBarrelBlue = blue barrel
-    .desc = A decorative blue barrel.
+ent-WH40KDecorBarrelBlue = синяя бочка
+    .desc = Декоративная синяя бочка.
 
-ent-WH40KDecorBarrelBlueBroken = broken blue barrel
-    .desc = A broken decorative blue barrel.
+ent-WH40KDecorBarrelBlueBroken = сломанная синяя бочка
+    .desc = Сломанная декоративная синяя бочка.
 
-ent-WH40KDecorBarrelRed = red barrel
-    .desc = A decorative red barrel.
+ent-WH40KDecorBarrelRed = красная бочка
+    .desc = Декоративная красная бочка.
 
-ent-WH40KDecorBarrelRedBroken = broken red barrel
-    .desc = A broken decorative red barrel.
+ent-WH40KDecorBarrelRedBroken = сломанная красная бочка
+    .desc = Сломанная декоративная красная бочка.
 
-ent-WH40KDecorBarrelSteel = steel barrel
-    .desc = A decorative steel barrel.
+ent-WH40KDecorBarrelSteel = стальная бочка
+    .desc = Декоративная стальная бочка.
 
-ent-WH40KDecorBarrelSteelBroken = broken steel barrel
-    .desc = A broken decorative steel barrel.
+ent-WH40KDecorBarrelSteelBroken = сломанная стальная бочка
+    .desc = Сломанная декоративная стальная бочка.
 
-ent-WH40KDecorBoxOpenedWood = opened wooden box
-    .desc = An opened decorative wooden box.
+ent-WH40KDecorBoxOpenedWood = открытый деревянный ящик
+    .desc = Открытый декоративный деревянный ящик.
 
-ent-WH40KDecorBoxOpenedWoodBroken = broken opened wooden box
-    .desc = A broken opened decorative wooden box.
+ent-WH40KDecorBoxOpenedWoodBroken = сломанный открытый деревянный ящик
+    .desc = Сломанный открытый декоративный деревянный ящик.
 
-ent-WH40KDecorBoxWood = wooden box
-    .desc = A decorative wooden box.
+ent-WH40KDecorBoxWood = деревянный ящик
+    .desc = Декоративный деревянный ящик.
 
-ent-WH40KDecorBoxWoodBroken = broken wooden box
-    .desc = A broken decorative wooden box.
+ent-WH40KDecorBoxWoodBroken = сломанный деревянный ящик
+    .desc = Сломанный декоративный деревянный ящик.
 
-ent-WH40KDecorBricksHorizontal = brick pile
-    .desc = A decorative pile of bricks.
+ent-WH40KDecorBricksHorizontal = куча кирпичей
+    .desc = Декоративная куча кирпичей.
 
-ent-WH40KDecorBricksVertical = brick stack
-    .desc = A decorative stack of bricks.
+ent-WH40KDecorBricksVertical = стопка кирпичей
+    .desc = Декоративная стопка кирпичей.
 
-ent-WH40KDecorCrateWood = wooden crate
-    .desc = A decorative wooden crate.
+ent-WH40KDecorCrateWood = деревянный ящик
+    .desc = Декоративный деревянный ящик.
 
-ent-WH40KDecorCrateWoodBroken = broken wooden crate
-    .desc = A broken decorative wooden crate.
+ent-WH40KDecorCrateWoodBroken = сломанный деревянный ящик
+    .desc = Сломанный декоративный деревянный ящик.
 
-ent-WH40KDecorCrateWoodCross = cross-braced wooden crate
-    .desc = A decorative cross-braced wooden crate.
+ent-WH40KDecorCrateWoodCross = деревянный ящик с крестовыми распорками
+    .desc = Декоративный деревянный ящик с крестовыми распорками.
 
-ent-WH40KDecorCrateWoodCrossBroken = broken cross-braced wooden crate
-    .desc = A broken decorative cross-braced wooden crate.
+ent-WH40KDecorCrateWoodCrossBroken = сломанный деревянный ящик с крестовыми распорками
+    .desc = Сломанный декоративный деревянный ящик с крестовыми распорками.
 
-ent-WH40KDecorFurnaceA = decorative furnace A
-    .desc = A visual-only furnace prop.
+ent-WH40KDecorFurnaceA = декоративная печь A
+    .desc = Декоративная печь.
 
-ent-WH40KDecorFurnaceB = decorative furnace B
-    .desc = A visual-only furnace prop.
+ent-WH40KDecorFurnaceB = декоративная печь B
+    .desc = Декоративная печь.
 
-ent-WH40KDecorFurnaceC = decorative furnace C
-    .desc = A visual-only furnace prop.
+ent-WH40KDecorFurnaceC = декоративная печь C
+    .desc = Декоративная печь.
 
-ent-WH40KDecorFurnaceD = decorative furnace D
-    .desc = A visual-only furnace prop.
+ent-WH40KDecorFurnaceD = декоративная печь D
+    .desc = Декоративная печь.
 
-ent-WH40KDecorPallet = wooden pallet
-    .desc = A decorative wooden pallet.
+ent-WH40KDecorPallet = деревянный поддон
+    .desc = Декоративный деревянный поддон.
 
 ent-WH40KDecorPropBase = { ent-BaseStructure }
 
-ent-WH40KDecorTire = tire pile
-    .desc = A decorative tire pile.
+ent-WH40KDecorTire = куча покрышек
+    .desc = Декоративная куча покрышек.
 
-ent-WH40KDecorTireTall = stacked tires
-    .desc = A decorative stack of tires.
+ent-WH40KDecorTireTall = стопка покрышек
+    .desc = Декоративная стопка покрышек.
 
-ent-WH40KDecorTumba = bedside cabinet
-    .desc = A decorative bedside cabinet.
+ent-WH40KDecorTumba = тумбочка
+    .desc = Декоративная тумбочка.
 
 ent-WH40KDecorativeConsoleBase = { ent-BaseStructure }
 
-ent-WH40KDefibrillator = power-cell-slot-component-slot-name-default
+ent-WH40KDefibrillator = дефибриллятор
 
 ent-WH40KDeployableBarricadeBars = ящик с баррикадой-решеткой
     .desc = Секция металлической решетки для быстрого развертывания.
@@ -2369,8 +2370,8 @@ ent-WH40KDeployableBarricadeHedgehog2A = ящик с противотанков�
 ent-WH40KDeployableBarricadeHedgehogA = ящик с противотанковым ежом A
     .desc = Тяжелая противотанковая преграда в транспортном исполнении.
 
-ent-WH40KDeployableBarricadeKitBase = deployable barricade kit
-    .desc = Crated field barricade kit. Deploys one barricade on a nearby tile.
+ent-WH40KDeployableBarricadeKitBase = комплект для установки баррикады
+    .desc = Упакованный комплект полевой баррикады. Разворачивает одну баррикаду на соседнем тайле.
 
 ent-WH40KDeployableBarricadeSandbags = ящик с мешками для баррикады
     .desc = Полевой комплект мешков с песком для быстрой установки.
@@ -2378,8 +2379,8 @@ ent-WH40KDeployableBarricadeSandbags = ящик с мешками для бар�
 ent-WH40KDeployableBarricadeWarhammer = ящик с имперской баррикадой
     .desc = Базовая баррикада Империума в транспортном ящике.
 
-ent-WH40KDeployableMineKit = deployable mine kit
-    .desc = Packed explosive mine for rapid field placement.
+ent-WH40KDeployableMineKit = комплект для установки мины
+    .desc = Упакованная взрывная мина для быстрой установки в полевых условиях.
 
 ent-WH40KDoubleAirlockCargoLocked = { ent-DoubleAirlock }
 
@@ -2405,9 +2406,9 @@ ent-WH40KHeavyBolter = станковый тяжелый болтер
 ent-WH40KHeavyBolterChs = станковый тяжелый болтер
     .desc = Экипажный тяжелый болтер. Разверните, займите позицию позади и подавляйте направление.
 
-ent-WH40KHeavyBolterPlacementPreview = WH-40 K Heavy Bolter Placement Preview
+ent-WH40KHeavyBolterPlacementPreview = предварительное размещение тяжёлого болтера
 
-ent-WH40KHeavyLightning = lightning
+ent-WH40KHeavyLightning = мощная молния
 
 ent-WH40KImperialColumn = имперская колонна
     .desc = Тяжёлая готическая колонна для имперских залов и плацев.
@@ -2477,7 +2478,7 @@ ent-WH40KLascannon = станковая лазпушка
 ent-WH40KLascannonChs = станковая лазпушка
     .desc = Экипажный лазпушка. Разверните, займите позицию позади и подавляйте направление.
 
-ent-WH40KLightning = lightning
+ent-WH40KLightning = молния
 
 ent-WH40KMagazineAstartesBoltPistol = магазин болт-пистолета Астартес
     .desc = Компактный магазин с тяжелыми болт-патронами.
@@ -2491,10 +2492,10 @@ ent-WH40KMagazineHeavyBolter = короб тяжелого болтера
 ent-WH40KMegaphone = командный мегафон
     .desc = Полевой громкоговоритель для приказов на ближней дистанции.
 
-ent-WH40KMiningDrillVoidpiercer = Voidpiercer Drill
-    .desc = A custom assault-pattern reskin of a mining drill. It chews through rock fast and sounds like it will eat a bunker next.
+ent-WH40KMiningDrillVoidpiercer = бур «Пронзатель пустоты»
+    .desc = Штурмовая модификация шахтёрского бура. Быстро прогрызает породу и грохочет так, будто следующим собирается сожрать бункер.
 
-ent-WH40KMissionPinpointerBanner = знамённый mission pinpointer
+ent-WH40KMissionPinpointerBanner = пинпоинтер знамённых задач
     .desc = Отслеживает активные задачи удержания знамени для текущей команды.
 
 ent-WH40KMissionPinpointerBannerHeretics = еретический баннерный пинпоинтер
@@ -2506,7 +2507,7 @@ ent-WH40KMissionPinpointerBannerImperium = имперский баннерный
 ent-WH40KMissionPinpointerBase = миссионный пинпоинтер
     .desc = Калиброванный трекер активных фронтовых задач.
 
-ent-WH40KMissionPinpointerCargo = грузовой mission pinpointer
+ent-WH40KMissionPinpointerCargo = пинпоинтер грузовых задач
     .desc = Отслеживает активные задачи доставки груза для текущей команды.
 
 ent-WH40KMissionPinpointerCargoHeretics = еретический грузовой пинпоинтер
@@ -2515,7 +2516,7 @@ ent-WH40KMissionPinpointerCargoHeretics = еретический грузово�
 ent-WH40KMissionPinpointerCargoImperium = имперский грузовой пинпоинтер
     .desc = Отслеживает активные грузовые миссии для штаба Империума.
 
-ent-WH40KMissionPinpointerKit = набор mission pinpointer
+ent-WH40KMissionPinpointerKit = набор пинпоинтеров задач
     .desc = Командный набор с релейным, грузовым и знаменным pinpointer для текущей команды.
 
 ent-WH40KMissionPinpointerKitHeretics = еретический набор миссионных пинпоинтеров
@@ -2524,7 +2525,7 @@ ent-WH40KMissionPinpointerKitHeretics = еретический набор мис
 ent-WH40KMissionPinpointerKitImperium = имперский набор миссионных пинпоинтеров
     .desc = Штабной набор с пинпоинтерами реле, груза и баннера.
 
-ent-WH40KMissionPinpointerRelay = релейный mission pinpointer
+ent-WH40KMissionPinpointerRelay = пинпоинтер релейных задач
     .desc = Отслеживает активные задачи контроля реле для текущей команды.
 
 ent-WH40KMissionPinpointerRelayHeretics = еретический пинпоинтер реле
@@ -2556,20 +2557,20 @@ ent-WH40KObjectiveImperium = Командный узел Империума
 ent-WH40KOreExtractor = добытчик руды
     .desc = Питаемый от сети бур, добывающий 1 руду каждые 4 секунды и выдающий её на передний тайл.
 
-ent-WH40KOreExtractorBase = ore extractor
-    .desc = A legacy WH40K extractor shell preserved as decorative machinery.
+ent-WH40KOreExtractorBase = рудный экстрактор
+    .desc = Корпус рудного экстрактора, сохранённый в качестве декоративного оборудования.
 
 ent-WH40KOreExtractorHeretics = { ent-WH40KOreExtractorBase }
 
 ent-WH40KOreExtractorImperium = { ent-WH40KOreExtractorBase }
 
 ent-WH40KOreProcessorHeretics = переработчик руды Еретиков
-    .desc = { ent-WH40KOreProcessor.desc }
+    .desc = { ent-OreProcessor.desc }
 
 ent-WH40KOreProcessorImperium = переработчик руды Империума
-    .desc = { ent-WH40KOreProcessor.desc }
+    .desc = { ent-OreProcessor.desc }
 
-ent-WH40KPelletClusterIncendiary = pellet (ball, incendiary)
+ent-WH40KPelletClusterIncendiary = пуля (зажигательная)
 
 ent-WH40KPlaceholderConsoleChaos = полевая консоль Хаоса
     .desc = Каркас консоли WH40K, подготовленный под будущую функциональность.
@@ -2587,8 +2588,8 @@ ent-WH40KPlasticFlapsAirtightClear = герметичные прозрачные
 
 ent-WH40KPowerCell = энергоблок Механикуса
 
-ent-WH40KPowerCellDefibrillator = sealed defibrillator cell
-    .desc = A sealed internal cell calibrated for a fixed number of defibrillator shocks.
+ent-WH40KPowerCellDefibrillator = герметичная энергоячейка дефибриллятора
+    .desc = Герметичная внутренняя энергоячейка, рассчитанная на фиксированное число разрядов дефибриллятора.
 
 ent-WH40KProjectileChaosNurgleAcidSpit = { ent-BulletAcid }
 
@@ -2616,23 +2617,23 @@ ent-WH40KProjectilePsykerBiomanticBolt = биомантический заряд
 ent-WH40KProjectilePsykerFireball = варп-огненный шар
     .desc = Сфокусированная сфера варп-пламени, готовая взорваться при контакте.
 
-ent-WH40KProjectilePsykerMindBolt = mind bolt
-    .desc = A focused shard of warp force.
+ent-WH40KProjectilePsykerMindBolt = пси-разряд
+    .desc = Сосредоточенный осколок варп-силы.
 
-ent-WH40KProjectilePsykerTelekineticBolt = telekinetic bolt
-    .desc = A compressed impact wave.
+ent-WH40KProjectilePsykerTelekineticBolt = телекинетический разряд
+    .desc = Сжатая ударная волна.
 
 ent-WH40KProjectilePsykerWarpfireBolt = варп-огненный заряд
     .desc = Копьё разумом-образованного пламени, вырванного из Имматериума.
 
-ent-WH40KPropHuntMorphProjector = morph projector
-    .desc = A preserved projector shell from the old prop-hunt kit.
+ent-WH40KPropHuntMorphProjector = морф-проектор
+    .desc = Сохранившийся корпус проектора из старого набора для охоты на предметы.
 
 ent-WH40KProtolatheHeretics = протолат Еретиков
-    .desc = { ent-WH40KProtolathe.desc }
+    .desc = { ent-Protolathe.desc }
 
 ent-WH40KProtolatheImperium = протолат Империума
-    .desc = { ent-WH40KProtolathe.desc }
+    .desc = { ent-Protolathe.desc }
 
 ent-WH40KRedHeavyLaserAstartesPistol = { ent-BasicHitscan }
 
@@ -2642,45 +2643,45 @@ ent-WH40KRedMediumLaserLasgunLucius = { ent-RedMediumLaser }
 
 ent-WH40KRedMediumLaserVoss = { ent-RedMediumLaser }
 
-ent-WH40KReinforcementPreviewHereticsAstartes = reinforcement preview heretics astartes
+ent-WH40KReinforcementPreviewHereticsAstartes = предпросмотр подкрепления: астартес еретиков
 
-ent-WH40KReinforcementPreviewHereticsBandSupplier = reinforcement preview heretics band supplier
+ent-WH40KReinforcementPreviewHereticsBandSupplier = предпросмотр подкрепления: снабженец варбанды
 
-ent-WH40KReinforcementPreviewHereticsGuardsman = reinforcement preview heretics guardsman
+ent-WH40KReinforcementPreviewHereticsGuardsman = предпросмотр подкрепления: гвардеец еретиков
 
-ent-WH40KReinforcementPreviewHereticsHellishForeman = reinforcement preview heretics hellish foreman
+ent-WH40KReinforcementPreviewHereticsHellishForeman = предпросмотр подкрепления: адский старшина
 
-ent-WH40KReinforcementPreviewHereticsLexmechanic = reinforcement preview heretics lexmechanic
+ent-WH40KReinforcementPreviewHereticsLexmechanic = предпросмотр подкрепления: лексмеханик еретиков
 
-ent-WH40KReinforcementPreviewHereticsLieutenant = reinforcement preview heretics lieutenant
+ent-WH40KReinforcementPreviewHereticsLieutenant = предпросмотр подкрепления: лейтенант еретиков
 
-ent-WH40KReinforcementPreviewHereticsSergeant = reinforcement preview heretics sergeant
+ent-WH40KReinforcementPreviewHereticsSergeant = предпросмотр подкрепления: сержант еретиков
 
-ent-WH40KReinforcementPreviewImperiumAstartes = reinforcement preview imperium astartes
+ent-WH40KReinforcementPreviewImperiumAstartes = предпросмотр подкрепления: имперский астартес
 
-ent-WH40KReinforcementPreviewImperiumChaplain = reinforcement preview imperium chaplain
+ent-WH40KReinforcementPreviewImperiumChaplain = предпросмотр подкрепления: имперский капеллан
 
-ent-WH40KReinforcementPreviewImperiumCommissar = reinforcement preview imperium commissar
+ent-WH40KReinforcementPreviewImperiumCommissar = предпросмотр подкрепления: имперский комиссар
 
-ent-WH40KReinforcementPreviewImperiumGuardsman = reinforcement preview imperium guardsman
+ent-WH40KReinforcementPreviewImperiumGuardsman = предпросмотр подкрепления: имперский гвардеец
 
-ent-WH40KReinforcementPreviewImperiumKasrkin = reinforcement preview imperium kasrkin
+ent-WH40KReinforcementPreviewImperiumKasrkin = предпросмотр подкрепления: касркин
 
-ent-WH40KReinforcementPreviewImperiumLexmechanic = reinforcement preview imperium lexmechanic
+ent-WH40KReinforcementPreviewImperiumLexmechanic = предпросмотр подкрепления: имперский лексмеханик
 
-ent-WH40KReinforcementPreviewImperiumLieutenant = reinforcement preview imperium lieutenant
+ent-WH40KReinforcementPreviewImperiumLieutenant = предпросмотр подкрепления: имперский лейтенант
 
-ent-WH40KReinforcementPreviewImperiumMedic = reinforcement preview imperium medic
+ent-WH40KReinforcementPreviewImperiumMedic = предпросмотр подкрепления: имперский медик
 
-ent-WH40KReinforcementPreviewImperiumMunitorumOfficer = reinforcement preview imperium munitorum officer
+ent-WH40KReinforcementPreviewImperiumMunitorumOfficer = предпросмотр подкрепления: офицер Муниторума
 
-ent-WH40KReinforcementPreviewImperiumPsyker = reinforcement preview imperium psyker
+ent-WH40KReinforcementPreviewImperiumPsyker = предпросмотр подкрепления: имперский псайкер
 
-ent-WH40KReinforcementPreviewImperiumSergeant = reinforcement preview imperium sergeant
+ent-WH40KReinforcementPreviewImperiumSergeant = предпросмотр подкрепления: имперский сержант
 
-ent-WH40KReinforcementPreviewImperiumTitheSupplier = reinforcement preview imperium tithe supplier
+ent-WH40KReinforcementPreviewImperiumTitheSupplier = предпросмотр подкрепления: снабженец десятины
 
-ent-WH40KReinforcementPreviewImperiumVoxScout = reinforcement preview imperium vox scout
+ent-WH40KReinforcementPreviewImperiumVoxScout = предпросмотр подкрепления: имперский вокс-разведчик
 
 ent-WH40KResearchAndDevelopmentServer = сервер R&D
     .desc = Хранит и обслуживает данные исследований.
@@ -2719,8 +2720,8 @@ ent-WH40KServoSkullMeltaMob = сервочереп с мельта-зарядо�
 ent-WH40KServoSkullMob = сервочереп
     .desc = Союзный сервочереп, ожидающий приказа.
 
-ent-WH40KServoSkullMobBase = servo skull
-    .desc = A preserved floating servo skull shell for later reuse.
+ent-WH40KServoSkullMobBase = сервочереп
+    .desc = Сохранившийся корпус парящего сервочерепа.
 
 ent-WH40KServoSkullMobSlaanesh = Сервочереп Слаанеш
     .desc = Вы серьёзно потратили человека и антигравитационный двигатель для "эстетичного" фонарика? Вы идиот?
@@ -2744,8 +2745,8 @@ ent-WH40KSignalFlareHeretics = сигнальный фаер Еретиков
 ent-WH40KSignalFlareImperium = сигнальный фаер Империума
     .desc = Тактический сигнальный фаер, откалиброванный под каналы командования Империума.
 
-ent-WH40KSquadConsoleController = squad console controller
-    .desc = A preserved controller shell from the old squad command console.
+ent-WH40KSquadConsoleController = контроллер консоли отряда
+    .desc = Сохранившийся корпус контроллера командной консоли отряда.
 
 ent-WH40KStairsDark = тёмная лестница
 
@@ -2789,36 +2790,36 @@ ent-WH40KStrategicPointDecorBase = { ent-BaseStructure }
 ent-WH40KStrategicPointInfluenceT1 = точка влияния
     .desc = Закреплённая точка влияния. Даёт команде влияние и опыт.
 
-ent-WH40KStrategicPointInfluenceT1PreviewHeretics = heretic influence standard
-    .desc = A visual-only strategic influence structure.
+ent-WH40KStrategicPointInfluenceT1PreviewHeretics = знамя влияния еретиков
+    .desc = Декоративное сооружение стратегического влияния.
 
 ent-WH40KStrategicPointResearchT1 = исследовательская точка
     .desc = Закреплённая исследовательская точка. Даёт команде исследования и опыт.
 
-ent-WH40KStrategicPointResearchT1PreviewHeretics = heretic research shrine
-    .desc = A visual-only strategic research structure.
+ent-WH40KStrategicPointResearchT1PreviewHeretics = исследовательское святилище еретиков
+    .desc = Декоративное сооружение для стратегических исследований.
 
 ent-WH40KStrategicPointResourceT1 = ресурсная точка
     .desc = Закреплённая ресурсная точка. Даёт команде трон-гельты и опыт.
 
-ent-WH40KStrategicPointResourceT1PreviewHeretics = heretic resource outpost
-    .desc = A visual-only strategic resource structure.
+ent-WH40KStrategicPointResourceT1PreviewHeretics = ресурсный аванпост еретиков
+    .desc = Декоративный стратегический ресурсный объект.
 
-ent-WH40KSupplyDropAmmoCrate = frontline ammo crate
-    .desc = A rapid airdrop container packed with lasgun power cells.
+ent-WH40KSupplyDropAmmoCrate = фронтовой ящик боеприпасов
+    .desc = Десантируемый контейнер, набитый энергоячейками для лазганов.
 
-ent-WH40KTacticalFultonBase = tactical fulton
-    .desc = A preserved extraction-pack shell without the old battlefield logic.
+ent-WH40KTacticalFultonBase = тактический «Фултон»
+    .desc = Корпус эвакуационного комплекта без действующего механизма извлечения.
 
 ent-WH40KTacticalFultonField = тактический Fulton
     .desc = Полевой эвакуационный комплект для быстрого подъёма грузов и задачевых объектов.
 
-ent-WH40KTacticalFultonHeretics = tactical fulton (Heretics)
+ent-WH40KTacticalFultonHeretics = тактический «Фултон» еретиков
 
-ent-WH40KTacticalFultonImperium = tactical fulton (Imperium)
+ent-WH40KTacticalFultonImperium = имперский тактический «Фултон»
 
-ent-WH40KTacticalMapScannerEye = tactical map scanner eye
-    .desc = A preserved hidden helper shell from the old tactical map system.
+ent-WH40KTacticalMapScannerEye = сканер тактической карты
+    .desc = Вспомогательное устройство тактической карты.
 
 ent-WH40KTacticalWhistle = тактический свисток
     .desc = Компактный командный свисток для перегруппировки и координации отрядов.
@@ -2850,18 +2851,18 @@ ent-WH40KTauPulseSniperBeam = { ent-Pulse }
 
 ent-WH40KTauRailgunBeam = { ent-Pulse }
 
-ent-WH40KVselechinTank = vselechin reservoir
-    .desc = A fortified frontline reservoir filled with battlefield stabilizers.
+ent-WH40KVselechinTank = резервуар вселечина
+    .desc = Укреплённый фронтовой резервуар с препаратами для стабилизации раненых.
 
 ent-WH40KWallReinforcedDiagonalDark = { ent-WallReinforcedDiagonal }
 
 ent-WH40KWeaponPsykerForceStaffBase = { ent-WeaponStaffBase }
 
-ent-WH40KWeaponTurretBallisticBase = bolter field sentry turret
-    .desc = A field turret built around a bolter-pattern weapon package.
+ent-WH40KWeaponTurretBallisticBase = полевая болтерная турель
+    .desc = Полевая турель на основе болтерного вооружения.
 
-ent-WH40KWeaponTurretDmrBase = marksman field sentry turret
-    .desc = A precision sentry variant tuned for long-range anti-materiel fire.
+ent-WH40KWeaponTurretDmrBase = полевая стрелковая турель
+    .desc = Высокоточная турель для дальнего огня по защищённым целям.
 
 ent-WH40KWeaponTurretHeretics = { ent-WH40KWeaponTurretBallisticBase }
 
@@ -2888,11 +2889,11 @@ ent-WH40KWeaponTurretImperiumShotgun = { ent-WH40KWeaponTurretShotgunBase }
 ent-WH40KWeaponTurretLaserBase = лазерная полевая турель
     .desc = Лазерная турель со встроенной заряженной батареей. Заряжается от электросети через кабельный приёмник.
 
-ent-WH40KWeaponTurretMiniBase = mini field sentry turret
-    .desc = A compact automatic sentry with a lighter ballistic package.
+ent-WH40KWeaponTurretMiniBase = малая полевая турель
+    .desc = Компактная автоматическая турель с облегчённым стрелковым вооружением.
 
-ent-WH40KWeaponTurretShotgunBase = shotgun field sentry turret
-    .desc = A close-range sentry variant with a wide buckshot spread.
+ent-WH40KWeaponTurretShotgunBase = полевая дробовая турель
+    .desc = Турель ближнего боя с широким разбросом картечи.
 
 ent-WH40KWoodenSupport = деревянная подпорка
 
@@ -2941,8 +2942,8 @@ ent-WHPowerMaceImperial = силовая булава
 ent-WHPowerSaberImperial = Силовая Сабля
     .desc = Высококачественная, благородная офицерская силовая сабля, выполненная из дорогих материалов. Её энергетическое поле позволяет лезвию прорезать плоть, кости и большинство защитных доспехов.
 
-ent-WHSapperShovel = sapper shovel
-    .desc = A sharpened entrenching shovel meant for trench work, breaching earthworks, and brutal close-quarters fighting.
+ent-WHSapperShovel = сапёрная лопата
+    .desc = Заточенная сапёрная лопата для рытья траншей, разрушения земляных укреплений и жестокого ближнего боя.
 
 ent-WHSoup = Гвардейский суп
     .desc = Чан наполненный... А лучше и не знать.
@@ -2954,25 +2955,25 @@ ent-WallMetal = металлическая стена
 
 ent-WallMetalChaosBrick = кирпичная стена Хаоса
 
-ent-WallMetalChaosSteel = chaos reinforced steel wall
+ent-WallMetalChaosSteel = укреплённая стальная стена Хаоса
 
 ent-WallMetalDiagonal = металлическая стена
 
-ent-WallMetalImperiumArmory = imperium armory wall
+ent-WallMetalImperiumArmory = стена имперского оружейного склада
 
-ent-WallMetalImperiumCommand = imperium command wall
+ent-WallMetalImperiumCommand = стена имперского командного центра
 
-ent-WallMetalImperiumCommon = imperium wall
+ent-WallMetalImperiumCommon = имперская стена
 
-ent-WallMetalImperiumMedical = imperium medicae wall
+ent-WallMetalImperiumMedical = стена имперского медпункта
 
-ent-WallMetalImperiumMess = imperium mess wall
+ent-WallMetalImperiumMess = стена имперской столовой
 
-ent-WallMetalImperiumSupply = imperium supply wall
+ent-WallMetalImperiumSupply = стена имперского склада снабжения
 
 ent-WallNecron = стена некронов
 
-ent-WallSolidChaosSteel = chaos steel wall
+ent-WallSolidChaosSteel = стальная стена Хаоса
 
 ent-WeaponBlastmaster = бластмастер
     .desc = Тяжёлое двуручное звуковое оружие нойз-маринов. Бьёт низкими басовыми импульсами и сокрушительными звуковыми крещендо, способными лопать глаза, рвать органы и швырять жертв ударной волной.
@@ -2995,7 +2996,7 @@ ent-WeaponCombatShotgun = боевой дробовик Аккатран Мk. XI
 ent-WeaponHeavyStubPistolAquila = тяжёлый стаб-пистолет M36 "Аквила"
     .desc = Крупнокалиберный магазинный стаб-пистолет, который бьёт как револьвер, но даёт больше выстрелов в рукояти.
 
-ent-WeaponHeavyStubPistolBase = Magazine
+ent-WeaponHeavyStubPistolBase = тяжёлый стаб-пистолет
 
 ent-WeaponHeavyStubPistolBloodPact = тяжёлый стаб-пистолет M36 "Кровавый пакт"
     .desc = Красно-чёрная еретическая версия M36, созданная для жестоких ближних казней.
@@ -3075,8 +3076,8 @@ ent-WeaponMeleeSerpChaos = серп Слаанеш
 ent-WeaponOgrynChaosHeavyStubber = тяжёлый стаббер предателя-огрина
     .desc = Грубый тяжёлый стаббер в руках предателя-огрина. Неотёсан, неудобен и зато отлично подходит для бессмысленно плотного подавляющего огня.
 
-ent-WeaponOgrynChaosRipperGun = ripper gun предателя-огрина
-    .desc = Осквернённая ripper gun, которой пользуются предатели-огрины и выродки варбанды. Грубая, громкая и предельно жестокая на короткой дистанции.
+ent-WeaponOgrynChaosRipperGun = потрошитель огрина-предателя
+    .desc = Осквернённый потрошитель, которым пользуются огрины-предатели и выродки варбанды. Грубый, громкий и предельно жестокий на короткой дистанции.
 
 ent-WeaponOgrynChaosTwinHeavyStubber = спаренный тяжёлый стаббер предателя-огрина
     .desc = Осквернённая спарка тяжёлых стабберов для предателя-огрина. Сумасшедшая отдача и безумный темп стрельбы делают её идеальным оружием для хаотичной бойни.
@@ -3090,7 +3091,7 @@ ent-WeaponOgrynCombatKnife = боевой нож огрина
 ent-WeaponOgrynLoyalHeavyStubber = тяжёлый стаббер огрина
     .desc = Тяжёлый стаббер, переделанный под габариты и хватку огрина. Простое и надёжное оружие, заливающее цель плотным потоком крупнокалиберных пуль.
 
-ent-WeaponOgrynLoyalRipperGun = ripper gun огрина
+ent-WeaponOgrynLoyalRipperGun = огринский потрошитель
     .desc = Чудовищно тяжёлое огнестрельное оружие, рассчитанное на силу и хватку огрина. По сути это огромный штурмовой дробовик, ценимый за сокрушительную отдачу и убийственную работу в ближнем бою.
 
 ent-WeaponOgrynLoyalTwinHeavyStubber = спаренный тяжёлый стаббер огрина
@@ -3278,7 +3279,6 @@ ent-ClothingHeadHelmetAstartesAquilaRaptors = шлем «Аквила» орде
 
 ent-ClothingHeadHoodImperialPilgrim = капюшон имперского паломника
     .desc = Скромный капюшон, защищающий лицо паломника от пыли и лишнего внимания.
-    .desc = Крепкие башмаки для следующей тысячи шагов к далёкой святыне.
 
 ent-ClothingOuterArmorAstartesAquilaRaptors = силовая броня «Аквила» ордена Рапторов
     .desc = Камуфлированная силовая броня Mk.VII «Аквила» лояльного ордена Рапторов. Её приглушённые цвета созданы для терпеливого охотника, а не для парадного плаца.
@@ -3289,12 +3289,16 @@ ent-ClothingOuterCoatImperialFleetOfficer = китель офицера Импе
     .desc = Парадный китель Имперского Военного Флота. Сложите его в руках, чтобы носить как накидку на шее и освободить слот брони.
 
 ent-ClothingOuterRobeImperialPilgrim = одеяние имперского паломника
-    .desc = Простая мантия, истёртая дорожной пылью, ступенями святынь и долгими молитвами Богу-Императору.
+    .desc = Простая мантия, истёртая дорожной пылью, ступенями святынь и долгими молитвами Богу-Императору. Вшитый капюшон можно надеть или откинуть.
 
 ent-ClothingOuterWorkSuitImperialCitizen = рабочий комбинезон гражданина улья
     .desc = Скромное пальто, защищающее лишь от сквозняка в коридорах улья.
 
 ent-ClothingShoesImperialPilgrim = башмаки имперского паломника
+    .desc = Крепкие башмаки для следующей тысячи шагов к далёкой святыне.
+
+ent-ActionWH40KTogglePilgrimHood = Переключить капюшон
+    .desc = Надеть капюшон робы паломника или убрать его обратно.
 
 ent-ClothingUniformJumpsuitImperialCitizen = одежда гражданина улья
     .desc = Неброская рубаха с жилетом. Не защитит от опасностей Империума, но выглядит опрятнее рабочего комбинезона.
@@ -3327,9 +3331,10 @@ ent-WH40KBarrelTrash3 = бочка с ломом
     .desc = Помятая бочка, набитая мусором. Это только декор, но он всё ещё годится как укрытие.
 
 ent-WH40KClothingEyesGogglesKoronusMercenary = тактические очки Вольной роты Коронуса
+    .desc = Прочные очки, защищающие глаза владельца от пыли и боевых вспышек.
 
 ent-WH40KClothingHandsGlovesKoronusMercenary = перчатки Вольной роты Коронуса
-    .desc = Прочные очки, защищающие глаза владельца от пыли и боевых вспышек.
+    .desc = Прочные перчатки с усиленными ладонями для работы с оружием, кабелями и грузами.
 
 ent-WH40KClothingHandsGlovesKoronusMercenaryMedic = перчатки медика Вольной роты Коронуса
     .desc = Перчатки полевого медика с гибкими пальцами для срочных операций.
@@ -3395,26 +3400,26 @@ ent-WH40KClothingUniformJumpsuitKoronusMercenary = полевая форма В�
 ent-WH40KClothingUniformJumpsuitKoronusMercenaryPilot = лётная форма Вольной роты Коронуса
     .desc = Усиленный лётный костюм для пилотов, которым приходится покидать кабину под огнём.
 
-ent-WH40KAmmoBox10mmLong_100 = ящик длинных патрон 10мм
-    .desc = Ящик с длинными патронами 10мм. Содержит 100 штук.
+ent-WH40KAmmoBox10mmLong_100 = ящик длинных патронов (10 мм)
+    .desc = Ящик со 100 длинными патронами калибра 10 мм.
 
-ent-WH40KAmmoBox10mm_100 = ящик патрон 10мм
-    .desc = Ящик с патронами 10мм. Содержит 100 штук.
+ent-WH40KAmmoBox10mm_100 = ящик патронов (10 мм)
+    .desc = Ящик со 100 патронами калибра 10 мм.
 
 ent-WH40KAmmoBox11mm_100 = ящик патронов стаб-револьвера M748 (11 мм)
     .desc = 100 револьверных патронов для M748 «Взломщик» и его спидлоадеров. Для пистолетов M36 нужна коробка пистолетных патронов.
 
-ent-WH40KAmmoBox762x39mmFMJ_100 = ящик патрон 7.62x39мм FMJ
-    .desc = Ящик с патронами 7.62x39мм FMJ. Содержит 100 штук.
+ent-WH40KAmmoBox762x39mmFMJ_100 = ящик патронов (7,62×39 мм FMJ)
+    .desc = Ящик со 100 патронами калибра 7,62×39 мм с цельнометаллической оболочкой.
 
-ent-WH40KAmmoBox825mmLong_100 = ящик длинных патрон 8.25мм
-    .desc = Ящик с длинными патронами 8.25мм. Содержит 100 штук.
+ent-WH40KAmmoBox825mmLong_100 = ящик длинных патронов (8,25 мм)
+    .desc = Ящик со 100 длинными патронами калибра 8,25 мм.
 
-ent-WH40KAmmoBoxLondoronMk2_100 = ящик патрон Лондорон Mk2
-    .desc = Ящик с патронами Лондорон Mk2. Содержит 100 штук.
+ent-WH40KAmmoBoxLondoronMk2_100 = ящик патронов «Лондорон» Mk. II
+    .desc = Ящик со 100 патронами для «Лондорона» Mk. II.
 
-ent-WH40KAmmoBoxBolter_100 = ящик болтерных патрон
-    .desc = Ящик с болтерными патронами. Содержит 100 штук.
+ent-WH40KAmmoBoxBolter_100 = ящик болтерных патронов
+    .desc = Ящик со 100 болтерными патронами.
 
-ent-WH40KAmmoBoxShellShotgun_100 = ящик ружейных патрон (.50 дробь)
-    .desc = Ящик с ружейными патронами (.50 дробь). Содержит 100 штук.
+ent-WH40KAmmoBoxShellShotgun_100 = ящик ружейных патронов (.50, картечь)
+    .desc = Ящик со 100 ружейными патронами калибра .50 с картечью.

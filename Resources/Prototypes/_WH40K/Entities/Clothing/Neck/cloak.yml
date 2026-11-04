@@ -1,5 +1,5 @@
 - type: entity
-  parent: Gorjet
+  parent: ClothingNeckBase
   id: Colonelcloak
   suffix: WH40K, Гвардия
   components:
@@ -52,7 +52,7 @@
     clothingPrototype: ClothingHeadHoodRainChs
 
 - type: entity
-  parent: ClothingNeckBase
+  parent: WH40KClothingNeckPersonalShieldBase
   id: ClothingNeckInqusition
   suffix: WH40K, Священник
   components:

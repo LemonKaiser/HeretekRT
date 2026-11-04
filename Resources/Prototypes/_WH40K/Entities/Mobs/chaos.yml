@@ -105,7 +105,7 @@
     useKey: false
     selectedMode: SemiAuto
     availableModes: [SemiAuto]
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+    soundGunshot: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
   - type: HitscanBatteryAmmoProvider
     proto: WH40KRedMediumLaserLasgun
     fireCost: 100

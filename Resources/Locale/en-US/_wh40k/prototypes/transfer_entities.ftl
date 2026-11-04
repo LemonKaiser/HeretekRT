@@ -70,7 +70,7 @@ ent-BaseSpeedLoaderElectricArc = speed loader (ElectricArc)
 
 ent-BaseSpeedLoaderPhosphor = speed loader (Phosphor)
 
-ent-BaseWeaponSniperLondoronMk2 = Magazine
+ent-BaseWeaponSniperLondoronMk2 = Londoron Mk. II sniper rifle
 
 ent-BaseWeaponTauPulseLong = { ent-WeaponLaserWH40KEnergy }
 
@@ -1552,7 +1552,8 @@ ent-MagazineOgrynLoyalRipper = ripper gun magazine
 ent-MagazineOgrynLoyalTwinHeavyStubber = twin heavy stubber box
     .desc = An enlarged ammunition box for an Ogryn twin heavy stubber.
 
-ent-MagazineRadCarabin = galvanizing shop
+ent-MagazineRadCarabin = galvanized magazine
+    .desc = The magazine's zinc coating only partially reduces radiation from the ammunition inside.
 
 ent-MagazineScreamerPistol = { ent-BaseItem }
 
@@ -1646,8 +1647,8 @@ ent-MobAstartesDummy = { ent-BaseSpeciesDummy }
 ent-MobGenestealer = genestealer
     .desc = Before you lies one of the deadliest creatures of the Tyranid swarm - the Genestealers, whose sharp claws and insane reflexes have caused the death of many people.
 
-ent-MobGretchin = ghost-role-information-monkey-name
-    .desc = ghost-role-information-monkey-description
+ent-MobGretchin = gretchin
+    .desc = A small greenskin related to the Orks.
 
 ent-MobHormagaunt = Hormagaunt
     .desc = I think he can already smell your blood...
@@ -2194,10 +2195,10 @@ ent-WH40KAutogunAmmoCrate = autogun ammo crate
     .desc = A frontline supply crate containing ammo boxes loaded with 8.25mm autogun cartridges.
 
 ent-WH40KAutolatheHeretics = Heretics autolathe
-    .desc = { ent-WH40KAutolathe.desc }
+    .desc = { ent-Autolathe.desc }
 
 ent-WH40KAutolatheImperium = Imperium autolathe
-    .desc = { ent-WH40KAutolathe.desc }
+    .desc = { ent-Autolathe.desc }
 
 ent-WH40KBasaltPlatformEdge = basalt platform edge
     .desc = A heavy basalt lip marking the edge of an elevated platform.
@@ -2239,8 +2240,8 @@ ent-WH40KCartridgeAstartesBoltPistol = Astartes bolt pistol cartridge
 ent-WH40KChaosKhorneStealerBlade = Khorne stealer blade
     .desc = A living geno-blade woven from the fury and hunger of Khorne.
 
-ent-WH40KChaosKhorneStealerBladeEx = клинок экзальтации
-    .desc = Экзальтированный геноклинок, безумно жаждущий плоти и ответного огня.
+ent-WH40KChaosKhorneStealerBladeEx = blade of exaltation
+    .desc = An exalted genoblade with an insatiable hunger for flesh and return fire.
 
 ent-WH40KChaosWallGirder = { ent-Girder }
 
@@ -2351,7 +2352,7 @@ ent-WH40KDecorTumba = bedside cabinet
 
 ent-WH40KDecorativeConsoleBase = { ent-BaseStructure }
 
-ent-WH40KDefibrillator = power-cell-slot-component-slot-name-default
+ent-WH40KDefibrillator = defibrillator
 
 ent-WH40KDeployableBarricadeBars = bars barricade kit
     .desc = Metal bars barricade segment packed for rapid deployment.
@@ -2572,10 +2573,10 @@ ent-WH40KOreExtractorHeretics = { ent-WH40KOreExtractorBase }
 ent-WH40KOreExtractorImperium = { ent-WH40KOreExtractorBase }
 
 ent-WH40KOreProcessorHeretics = Heretics ore processor
-    .desc = { ent-WH40KOreProcessor.desc }
+    .desc = { ent-OreProcessor.desc }
 
 ent-WH40KOreProcessorImperium = Imperium ore processor
-    .desc = { ent-WH40KOreProcessor.desc }
+    .desc = { ent-OreProcessor.desc }
 
 ent-WH40KPelletClusterIncendiary = pellet (ball, incendiary)
 
@@ -2637,10 +2638,10 @@ ent-WH40KPropHuntMorphProjector = morph projector
     .desc = A preserved projector shell from the old prop-hunt kit.
 
 ent-WH40KProtolatheHeretics = Heretics protolathe
-    .desc = { ent-WH40KProtolathe.desc }
+    .desc = { ent-Protolathe.desc }
 
 ent-WH40KProtolatheImperium = Imperium protolathe
-    .desc = { ent-WH40KProtolathe.desc }
+    .desc = { ent-Protolathe.desc }
 
 ent-WH40KRedHeavyLaserAstartesPistol = { ent-BasicHitscan }
 
@@ -2944,6 +2945,7 @@ ent-WHPowerFist = Power Fist
     .desc = A brutal powered gauntlet built for close assault. The locking grip keeps it on the wielder's hand even when they hit the deck.
 
 ent-WHPowerMaceImperial = power mace
+    .desc = Its electrical discharge punches through enemy armour.
 
 ent-WHPowerSaberImperial = Power Saber
     .desc = High-quality, noble officer's power saber, made of expensive materials. Her energy field allows the blade to cut through flesh, bone, and most protective armor.
@@ -3004,7 +3006,7 @@ ent-WeaponCombatShotgun = Accatran Mk combat shotgun. XI
 ent-WeaponHeavyStubPistolAquila = M36 "Aquila" heavy stub pistol
     .desc = A large-caliber magazine-fed stub pistol that hits as hard as a revolver while keeping extra rounds in the grip.
 
-ent-WeaponHeavyStubPistolBase = Magazine
+ent-WeaponHeavyStubPistolBase = heavy stub pistol
 
 ent-WeaponHeavyStubPistolBloodPact = M36 "Blood Pact" heavy stub pistol
     .desc = A blood-red renegade variant of the M36, built for brutal close-range execution.
@@ -3053,6 +3055,7 @@ ent-WeaponLaserMeltagun = melta rifle
     .desc = A weapon that uses thermonuclear fusion reactions to destroy an enemy. Extremely deadly.
 
 ent-WeaponLaserPistol = laspistol
+    .desc = A pistol that fires a powerful laser beam.
 
 ent-WeaponLaserPistolCommissar = Laspistol "Will of the Emperor"
     .desc = A special laspistol of the Regimental Commissar, who has seen quite a few enemy faces and the backs of allied heads.
@@ -3286,7 +3289,6 @@ ent-ClothingHeadHelmetAstartesAquilaRaptors = Raptors Chapter Aquila helmet
 
 ent-ClothingHeadHoodImperialPilgrim = Imperial pilgrim's hood
     .desc = A modest hood that keeps dust and unwelcome attention away from a pilgrim's face.
-    .desc = Hard-wearing shoes made for the next thousand steps towards a distant shrine.
 
 ent-ClothingOuterArmorAstartesAquilaRaptors = Raptors Chapter Aquila power armor
     .desc = Camouflaged Mk.VII Aquila-pattern power armor worn by the loyal Raptors Chapter. Its muted colors favour the patient hunter over the parade ground.
@@ -3297,12 +3299,16 @@ ent-ClothingOuterCoatImperialFleetOfficer = Imperial Navy officer's greatcoat
     .desc = A formal greatcoat of the Imperial Navy. Fold it in hand to wear it as a mantle around the neck, leaving the armour slot free.
 
 ent-ClothingOuterRobeImperialPilgrim = Imperial pilgrim's robe
-    .desc = A plain robe worn thin by dust roads, shrine stairs and long prayers to the God-Emperor.
+    .desc = A plain robe worn thin by dust roads, shrine stairs and long prayers to the God-Emperor. Its sewn-in hood can be raised or lowered.
 
 ent-ClothingOuterWorkSuitImperialCitizen = hive citizen's work coveralls
     .desc = A modest coat that protects only against drafts in the hive's corridors.
 
 ent-ClothingShoesImperialPilgrim = Imperial pilgrim's shoes
+    .desc = Hard-wearing shoes made for the next thousand steps towards a distant shrine.
+
+ent-ActionWH40KTogglePilgrimHood = Toggle hood
+    .desc = Raise the pilgrim robe's hood or tuck it away.
 
 ent-ClothingUniformJumpsuitImperialCitizen = hive citizen's clothes
     .desc = An unassuming shirt and vest. It will not protect against the dangers of the Imperium, but it is tidier than workwear.
@@ -3335,9 +3341,10 @@ ent-WH40KBarrelTrash3 = scrap barrel
     .desc = A battered barrel stuffed with refuse. It is only scenery, but still useful cover.
 
 ent-WH40KClothingEyesGogglesKoronusMercenary = Koronus Free Company tactical goggles
+    .desc = Rugged goggles that protect the wearer's eyes from grit and battlefield flashes.
 
 ent-WH40KClothingHandsGlovesKoronusMercenary = Koronus Free Company gloves
-    .desc = Rugged goggles that protect the wearer's eyes from grit and battlefield flashes.
+    .desc = Durable gloves with reinforced palms for handling weapons, cables and rough cargo.
 
 ent-WH40KClothingHandsGlovesKoronusMercenaryMedic = Koronus Free Company medic gloves
     .desc = Field medic gloves with flexible fingertips for emergency surgery.

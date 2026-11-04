@@ -9,7 +9,7 @@ screen-check-request-active-admin = У вас уже есть активный �
 screen-check-request-active-target = У игрока '{ $player }' уже есть активный запрос screencheck.
 screen-check-request-limit-reached = Слишком много активных запросов screencheck. Попробуйте позже.
 
-screen-check-window-title = Screencheck: { $player }
+screen-check-window-title = Проверка экрана: { $player }
 screen-check-status-pending = Ожидание скриншота от клиента игрока...
 screen-check-status-success = Скриншот получен.
 screen-check-status-timeout = Клиент игрока не ответил вовремя.

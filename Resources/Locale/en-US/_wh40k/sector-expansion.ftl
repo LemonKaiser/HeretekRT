@@ -30,6 +30,7 @@ koronus-body-telikos-star-description = The yellow dwarf that illuminates Janus 
 
 koronus-body-janus-name = Janus
 koronus-body-janus-description = A fertile agri-world in Telikos Epsilon, marked by forests, seas and extensive cultivated lands.
+koronus-janus-surface-map-name = Surface of Janus
 
 koronus-body-telikos-snow-name = Snow World
 koronus-body-telikos-snow-description = A cold, snow-covered world orbiting the yellow star of Telikos Epsilon.
@@ -73,8 +74,9 @@ koronus-body-twins-dead-description = A lifeless outer world covered in dark roc
 koronus-body-omicron-star-name = Omicron
 koronus-body-omicron-star-description = The orange dwarf at the centre of Omicron.
 
-koronus-body-omicron-rocky-name = Rocky World
+koronus-body-omicron-rocky-name = Omicron Minoris
 koronus-body-omicron-rocky-description = The second planet of Omicron, a rocky world known for its mineral deposits.
+koronus-omicron-minoris-surface-map-name = Surface of Omicron Minoris
 
 koronus-body-omicron-desert-name = Desert World
 koronus-body-omicron-desert-description = The innermost planet of Omicron, a dry, lifeless world with the remains of an abandoned Imperial city.

@@ -16,6 +16,7 @@ wh40k-class-ui-unavailable = Class data is unavailable.
 wh40k-class-ui-pda-points = Available skill points: {$points}
 wh40k-class-ui-pda-summary = Level {$level} · {$purchased} of {$total} unlocked
 wh40k-class-ui-pda-specialization = {$name} · {$purchased}/20
+wh40k-class-ui-specializations = SPECIALIZATIONS
 wh40k-class-ui-recent = RECENTLY UNLOCKED
 wh40k-class-ui-recent-empty = No skills have been unlocked yet.
 wh40k-class-ui-search-placeholder = Search skills by name or description…

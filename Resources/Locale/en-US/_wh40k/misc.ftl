@@ -9,3 +9,6 @@ ent-EncryptionKeyVoxImperium = imperium vox encryption key
 ent-EncryptionKeyVoxHeretics = heretics vox encryption key
 heretek-death-transition-title = YOU ARE DEAD
 heretek-death-surrender-hint = Your body can still be revived. If you choose not to wait for help, press R to surrender and leave this world.
+
+humanoid-profile-editor-link-tooltip = Open link: { $url }
+ban-panel-expiry-error = Invalid duration.

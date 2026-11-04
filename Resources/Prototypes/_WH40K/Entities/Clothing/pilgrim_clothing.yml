@@ -16,10 +16,20 @@
     clothingVisuals:
       outerClothing:
       - state: equipped-OUTERCLOTHING
+  - type: ToggleableClothing
+    action: ActionWH40KTogglePilgrimHood
+    verbText: ent-ActionWH40KTogglePilgrimHood
+    requiredSlot: outerclothing
+    clothingPrototypes:
+      head: ClothingHeadHoodImperialPilgrim
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:Container {}
 
 - type: entity
   parent: WH40KClothingHeadToggleableHoodBase
   id: ClothingHeadHoodImperialPilgrim
+  categories: [ HideSpawnMenu ]
   suffix: WH40K, паломник
   components:
   - type: Sprite
@@ -48,3 +58,7 @@
     clothingVisuals:
       shoes:
       - state: equipped-FEET
+
+- type: entity
+  parent: ActionToggleSuitPiece
+  id: ActionWH40KTogglePilgrimHood

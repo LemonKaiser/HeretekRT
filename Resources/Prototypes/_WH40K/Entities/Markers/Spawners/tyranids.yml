@@ -1,0 +1,88 @@
+- type: entity
+  abstract: true
+  parent: MarkerBase
+  id: BaseSpawnWH40KTyranid
+  suffix: WH40K, Tyranids, Mapping
+  components:
+  - type: RandomSpawner
+    chance: 1
+    offset: 0
+
+- type: entity
+  parent: BaseSpawnWH40KTyranid
+  id: SpawnWH40KTyranidHormagaunt
+  name: hormagaunt spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/hormagaunt.rsi
+      state: hormagaunt
+      scale: 0.5, 0.5
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobHormagaunt
+
+- type: entity
+  parent: BaseSpawnWH40KTyranid
+  id: SpawnWH40KTyranidGenestealer
+  name: genestealer spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/genestealer.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobGenestealer
+
+- type: entity
+  parent: BaseSpawnWH40KTyranid
+  id: SpawnWH40KTyranidRavener
+  name: ravener spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/ravener.rsi
+      state: base
+      scale: 0.5, 0.5
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobRavener
+
+- type: entity
+  parent: BaseSpawnWH40KTyranid
+  id: SpawnWH40KTyranidZoanthrope
+  name: zoanthrope spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/zoanthrope.rsi
+      state: base
+      scale: 0.65, 0.65
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobZoanthrope
+
+- type: entity
+  parent: BaseSpawnWH40KTyranid
+  id: SpawnWH40KTyranidRandom
+  name: random tyranid spawner
+  components:
+  - type: Sprite
+    layers:
+    - state: pink
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobHormagaunt
+    - MobGenestealer
+    - MobRavener
+    - MobZoanthrope

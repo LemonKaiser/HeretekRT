@@ -56,7 +56,7 @@ public sealed class MaterialFuelCompatibilityTest
             var material = fuel.Material!.Value.Id;
             var full = fuel.BaseMaterialComposition;
             var composition = entities.GetComponent<PhysicalCompositionComponent>(wood);
-            composition.MaterialComposition[material] = full / 2;
+            server.System<MaterialFuelSystem>().SetRemainingMaterial((wood, fuel), full / 2);
             server.System<StackSystem>().SetCount(wood, 3);
 
             var receiver = entities.SpawnEntity("TestFuelLimitedStorage", map.GridCoords);
@@ -93,7 +93,7 @@ public sealed class MaterialFuelCompatibilityTest
             var material = fuel.Material!.Value.Id;
             var full = fuel.BaseMaterialComposition;
             var composition = entities.GetComponent<PhysicalCompositionComponent>(wood);
-            composition.MaterialComposition[material] = full / 2;
+            server.System<MaterialFuelSystem>().SetRemainingMaterial((wood, fuel), full / 2);
             stacks.SetCount(wood, 3);
             var split = stacks.Split(wood, 1, map.GridCoords);
             Assert.That(split, Is.Not.Null);

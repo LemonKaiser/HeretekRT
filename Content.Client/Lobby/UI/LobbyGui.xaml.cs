@@ -162,6 +162,9 @@ public sealed partial class LobbyGui : UIScreen
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
 
+        // The static WebP bypasses themed TexturePath resolution, which appends .png.
+        OnboardingBackdropTexture.Texture = _resourceCache.GetResource<TextureResource>("/Textures/_WH40K/LobbyScreens/wps4.webp");
+
         _logoFont = new VectorFont(
             _resourceCache.GetResource<FontResource>("/Fonts/_WH40K/MetalMania/MetalMania-Regular.ttf"), 58);
         _menuFont = new VectorFont(

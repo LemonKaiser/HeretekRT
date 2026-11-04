@@ -30,6 +30,7 @@ koronus-body-telikos-star-description = Жёлтый карлик, освеща�
 
 koronus-body-janus-name = Янус
 koronus-body-janus-description = Плодородный агромир Теликоса Эпсилон с лесами, морями и обширными сельскохозяйственными угодьями.
+koronus-janus-surface-map-name = Поверхность Януса
 
 koronus-body-telikos-snow-name = Заснеженный мир
 koronus-body-telikos-snow-description = Холодный заснеженный мир на орбите жёлтой звезды Теликоса Эпсилон.
@@ -73,8 +74,9 @@ koronus-body-twins-dead-description = Безжизненный внешний м
 koronus-body-omicron-star-name = Омикрон
 koronus-body-omicron-star-description = Оранжевый карлик в центре Омикрона.
 
-koronus-body-omicron-rocky-name = Скалистый мир
+koronus-body-omicron-rocky-name = Omicron Minoris
 koronus-body-omicron-rocky-description = Вторая планета Омикрона — скалистый мир, известный залежами полезных ископаемых.
+koronus-omicron-minoris-surface-map-name = Поверхность Omicron Minoris
 
 koronus-body-omicron-desert-name = Мир-пустыня
 koronus-body-omicron-desert-description = Ближайшая к звезде планета Омикрона — сухой безжизненный мир с руинами заброшенного имперского города.

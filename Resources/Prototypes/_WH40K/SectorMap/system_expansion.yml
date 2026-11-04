@@ -81,6 +81,38 @@
   atmosphereIntensity: 0.8
   axialTilt: 13
   surfaceRotationSpeed: 0.5
+  surface: JanusSurface
+
+- type: koronusPlanetSurface
+  id: JanusSurface
+  mapPath: /Maps/_WH40K/Planets/janus_surface.yml
+  planet: JanusAgriWorld
+  safetyProfile: KoronusPlanetSafeSurface
+  authoredGridMargin: 50
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: JanusAgriWorld
+  biome: Grasslands
+  mapName: koronus-janus-surface-map-name
+  mapLight: "#A8C79A"
+  dayDuration: 1800
+  nightDuration: 600
+  atmosphere:
+    volume: 2500
+    temperature: 293.15
+    moles:
+    - 21.824779
+    - 82.10312
 
 - type: koronusCelestialBody
   id: TelikosEpsilonSnowWorld
@@ -310,6 +342,38 @@
   atmosphereColor: "#A69A85"
   atmosphereIntensity: 0.1
   axialTilt: 5
+  surface: OmicronMinorisSurface
+
+- type: koronusPlanetSurface
+  id: OmicronMinorisSurface
+  mapPath: /Maps/_WH40K/Planets/omicron_minoris_surface.yml
+  planet: OmicronMinorisWorld
+  safetyProfile: KoronusPlanetSafeSurface
+  authoredGridMargin: 50
+  sceneryBuffer: 25
+  preloadOnRoundStart: true
+  pauseWhenEmpty: true
+  parallax: Blank
+  orbitalLaunchDistance: 500
+  landingClearanceSize: 85, 85
+  transitStartupTime: 5
+  landingTransitTime: 10
+  launchTransitTime: 10
+  transitArrivalTime: 5
+
+- type: planet
+  id: OmicronMinorisWorld
+  biome: LowDesert
+  mapName: koronus-omicron-minoris-surface-map-name
+  mapLight: "#D8B059"
+  dayDuration: 1800
+  nightDuration: 600
+  atmosphere:
+    volume: 2500
+    temperature: 293.15
+    moles:
+    - 21.824779
+    - 82.10312
 
 - type: koronusCelestialBody
   id: OmicronDesertWorld

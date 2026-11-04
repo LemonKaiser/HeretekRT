@@ -13,7 +13,10 @@
   - type: Clothing
     sprite: _WH40K/Clothing/Head/Hardsuits/voidsman.rsi
   - type: PointLight
+    enabled: false
     color: "#ffeead"
+  - type: Appearance
+  - type: UnpoweredFlashlight
   - type: PressureProtection
     highPressureMultiplier: 0.50
     lowPressureMultiplier: 1000

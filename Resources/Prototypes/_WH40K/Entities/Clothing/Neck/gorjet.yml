@@ -1,5 +1,5 @@
 - type: entity
-  parent: ClothingNeckBase
+  parent: WH40KClothingNeckPersonalShieldBase
   id: Gorjet
   suffix: WH40K, Гвардия
   components:
@@ -21,7 +21,7 @@
     sprite: _WH40K/Clothing/Neck/Cloaks/rosarius.rsi
 
 - type: entity
-  parent: Gorjet
+  parent: ClothingNeckBase
   id: NecklaceChaosCultistReflectWeak
   name: ожерелье культиста
   description: Зловещее ожерелье, украшенное символами Хаоса. Оно вспыхивает энергией варпа и разворачивает слабый защитный щит.
@@ -34,7 +34,7 @@
     sprite: _WH40K/Clothing/Neck/Cloaks/necklace_chaos.rsi
 
 - type: entity
-  parent: Gorjet
+  parent: ClothingNeckBase
   id: ClothingNeckCloakVst
   suffix: WH40K, Востроянцы
   components:

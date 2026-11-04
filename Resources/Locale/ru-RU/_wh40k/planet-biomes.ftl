@@ -1,3 +1,5 @@
+tiles-basalt-floor-planetmap = { tiles-basalt-floor }
+
 ent-KoronusDesertBoulder = выветренный песчаниковый валун
     .desc = Обточенный ветром валун, покрытый богатой железом пустынной пылью.
 ent-KoronusDesertBoulderAngled = { ent-KoronusDesertBoulder }

@@ -45,7 +45,7 @@ persistentinv-admin-cache-reloaded = Кэш аккаунта перечитан 
 persistentinv-admin-payload-ok = Размер, структура и SHA256 проверены. Ниже указаны миграции; полное восстановление проверяется отдельно.
 persistentinv-admin-details-truncated = Достигнут предел отображения. Сохранённый снимок не изменён.
 persistentinv-storage-snapshot-too-large = Инвентарь превышает лимит сохранения 128 КиБ. Вещи остаются у вас. Уменьшите содержимое и попробуйте снова.
-persistentinv-storage-quota-exceeded = Квота вашего persistent inventory заполнена. Вещи остаются у вас. Обратитесь к администратору.
+persistentinv-storage-quota-exceeded = Хранилище вашего межраундового инвентаря заполнено. Вещи остаются у вас. Обратитесь к администратору.
 persistentinv-storage-usage = Оценка объёма аккаунта: { $bytes } / { $limit } байт (без накладных расходов БД).
     Предметы: { $payload } байт; снимков: { $snapshots }; уникальных наборов данных: { $blobs }.
     История: { $events } событий / { $history } байт; подтверждений операций: { $receipts }.
