@@ -122,7 +122,7 @@
          Its controls receive real content only in the following implementation steps. -->
     <Control Name="OnboardingState" Access="Public" Visible="False" HorizontalExpand="True" VerticalExpand="True">
         <TextureRect Name="OnboardingBackdropTexture" Access="Public" Stretch="KeepAspectCovered" MouseFilter="Ignore"
-                     TexturePath="/Textures/_WH40K/LobbyScreens/wps4.png" />
+                     TexturePath="/Textures/_WH40K/LobbyScreens/wps4.webp" />
         <lobbyUi:OnboardingBackdropShade Name="OnboardingBackdropShade" Access="Public" MouseFilter="Ignore" />
         <ScrollContainer Name="OnboardingViewport" Access="Public" HScrollEnabled="False"
                          HorizontalAlignment="Left" VerticalAlignment="Top">

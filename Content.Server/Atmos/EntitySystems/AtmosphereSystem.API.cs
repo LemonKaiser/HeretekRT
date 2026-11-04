@@ -299,6 +299,16 @@ public partial class AtmosphereSystem
         return true;
     }
 
+    public void SetPuddleFlammabilityAtTile(EntityUid puddle, int flammability)
+    {
+        if (!TryComp<TransformComponent>(puddle, out var xform) ||
+            !TryComp<GridAtmosphereComponent>(xform.GridUid, out var grid))
+            return;
+        var position = _transformSystem.GetGridTilePositionOrDefault((puddle, xform));
+        if (grid.Tiles.TryGetValue(position, out var tile))
+            tile.PuddleSolutionFlammability = flammability;
+    }
+
     public bool RemoveAtmosDevice(Entity<GridAtmosphereComponent?> grid, Entity<AtmosDeviceComponent> device)
     {
         DebugTools.Assert(device.Comp.JoinedGrid == grid);

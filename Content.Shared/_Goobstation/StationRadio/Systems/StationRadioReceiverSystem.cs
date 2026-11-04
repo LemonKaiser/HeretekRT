@@ -22,36 +22,40 @@ public sealed class StationRadioReceiverSystem : EntitySystem
 
     private void OnPowerChanged(EntityUid uid, StationRadioReceiverComponent comp, PowerChangedEvent args)
     {
-        if(comp.SoundEntity != null && args.Powered)
-            _audio.SetGain(comp.SoundEntity, comp.Active ? comp.DefaultParams.Volume : 0f);
-        else if(comp.SoundEntity != null)
-            _audio.SetGain(comp.SoundEntity, 0);
+        UpdateVolume(uid, comp);
     }
 
     private void OnRadioToggle(EntityUid uid, StationRadioReceiverComponent comp, ActivateInWorldEvent args)
     {
         comp.Active = !comp.Active;
-        if (comp.SoundEntity != null && _power.IsPowered(uid))
-            _audio.SetGain(comp.SoundEntity, comp.Active ? comp.DefaultParams.Volume : 0f);
+        Dirty(uid, comp);
+        UpdateVolume(uid, comp);
     }
 
     private void OnMediaPlayed(EntityUid uid, StationRadioReceiverComponent comp, StationRadioMediaPlayedEvent args)
     {
+        comp.SoundEntity = _audio.Stop(comp.SoundEntity);
         var audio = _audio.PlayPredicted(args.MediaPlayed, uid, uid, comp.DefaultParams);
-        if (audio != null && _power.IsPowered(uid) && comp.Active)
-            comp.SoundEntity = audio.Value.Entity;
-        else if (audio != null && !_power.IsPowered(uid) || !comp.Active && audio != null)
-        {
-            comp.SoundEntity = audio.Value.Entity;
-            _audio.SetGain(comp.SoundEntity, 0);
-        }
+        comp.SoundEntity = audio?.Entity;
+        UpdateVolume(uid, comp);
+        Dirty(uid, comp);
     }
 
     private void OnMediaStopped(EntityUid uid, StationRadioReceiverComponent comp, StationRadioMediaStoppedEvent args)
     {
+        comp.SoundEntity = _audio.Stop(comp.SoundEntity);
+        comp.BroadcastSource = null;
+        Dirty(uid, comp);
+    }
+
+    private void UpdateVolume(EntityUid uid, StationRadioReceiverComponent comp)
+    {
         if (comp.SoundEntity == null)
             return;
 
-        comp.SoundEntity = _audio.Stop(comp.SoundEntity);
+        if (comp.Active && _power.IsPowered(uid))
+            _audio.SetVolume(comp.SoundEntity, comp.DefaultParams.Volume);
+        else
+            _audio.SetGain(comp.SoundEntity, 0f);
     }
 }

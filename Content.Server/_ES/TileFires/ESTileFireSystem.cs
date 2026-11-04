@@ -8,6 +8,7 @@ using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Maps;
 using Content.Shared.Random.Helpers;
+using Content.Shared.Spreader;
 using JetBrains.Annotations;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -29,6 +30,7 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly KoronusSafetyPolicySystem _koronusSafety = default!;
+    [Dependency] private readonly IPrototypeManager _prototypes = default!;
 
     private static EntProtoId _stage1Fire = "ESTileFire";
 
@@ -84,6 +86,17 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
             return;
 
         var tile = MapSys.GetTileRef((grid, mapGrid), xform.Coordinates);
+        foreach (var other in MapSys.GetAnchoredEntities(grid, mapGrid, tile.GridIndices))
+        {
+            if (other == ent.Owner || TerminatingOrDeleted(other) ||
+                !IsTileFire(other) || !TryComp<FlammableComponent>(other, out var fire) || !fire.OnFire)
+                continue;
+            if (TryComp<FlammableComponent>(ent, out var incoming))
+                _flammable.SetFireStacks(other, Math.Max(fire.FireStacks, incoming.FireStacks), fire, ignite: true);
+            _flammable.Extinguish(ent);
+            QueueDel(ent);
+            return;
+        }
         _atmos.TryAddBurntDecalsToTile(grid, tile.GridIndices, _random.Next(1, 3));
 
         ent.Comp.SmolderTime = _timing.CurTime + _random.Next(ent.Comp.MinSmolderTime, ent.Comp.MaxSmolderTime);
@@ -163,6 +176,30 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
 
     #region API
 
+    private bool IsTileFire(EntityUid uid)
+    {
+        // Smoldering removes ESTileFireComponent, but the burning entity still occupies its tile.
+        return HasComp<ESTileFireComponent>(uid) ||
+               TryComp<EdgeSpreaderComponent>(uid, out var spreader) && spreader.Id == "ESTileFire";
+    }
+
+    public bool TryGetTileFire(EntityUid grid, Vector2i tile, out Entity<FlammableComponent> fire)
+    {
+        fire = default;
+        if (!TryComp<MapGridComponent>(grid, out var mapGrid))
+            return false;
+        foreach (var uid in MapSys.GetAnchoredEntities(grid, mapGrid, tile))
+        {
+            if (!TerminatingOrDeleted(uid) && IsTileFire(uid) &&
+                TryComp<FlammableComponent>(uid, out var flammable) && flammable.OnFire)
+            {
+                fire = (uid, flammable);
+                return true;
+            }
+        }
+        return false;
+    }
+
     [PublicAPI]
     public override bool TryDoTileFire(EntityCoordinates coords, EntityUid? originatingUser = null, int stage = 1)
     {
@@ -181,6 +218,13 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
 
         // ESTileFire vs ESTileFireStage2/3/4
         EntProtoId proto = stage == 1 ? _stage1Fire : $"{_stage1Fire}Stage{stage}";
+
+        if (TryGetTileFire(grid, tile, out var existing))
+        {
+            var incoming = (FlammableComponent) _prototypes.Index(proto).Components["Flammable"].Component;
+            _flammable.SetFireStacks(existing, Math.Max(existing.Comp.FireStacks, incoming.FireStacks), existing.Comp, ignite: true);
+            return true;
+        }
 
         SpawnAtPosition(proto, coords);
 

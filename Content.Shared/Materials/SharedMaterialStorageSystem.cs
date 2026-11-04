@@ -470,8 +470,8 @@ public abstract partial class SharedMaterialStorageSystem : EntitySystem
         if (!empty)
         {
             _sharedStackSystem.Use(toInsert, multiplier);
-            if (fuel?.Material is { } fuelMaterial)
-                composition.MaterialComposition[fuelMaterial] = fuel.BaseMaterialComposition;
+            if (fuel != null)
+                _materialFuelSystem.SetRemainingMaterial((toInsert, fuel), fuel.BaseMaterialComposition);
         }
 
         var ev = new MaterialEntityInsertedEvent(material);

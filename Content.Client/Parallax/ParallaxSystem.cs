@@ -15,7 +15,7 @@ public sealed partial class ParallaxSystem : SharedParallaxSystem
     [Dependency] private IParallaxManager _parallax = default!;
 
     [ValidatePrototypeId<ParallaxPrototype>]
-    private const string Fallback = "SnowballStation"; // Mono
+    private const string Fallback = "Default";
 
     public const int ParallaxZIndex = 0;
 

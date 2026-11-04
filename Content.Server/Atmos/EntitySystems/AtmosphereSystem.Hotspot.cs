@@ -8,6 +8,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
+using Content.Server._ES.TileFires;
 
 namespace Content.Server.Atmos.EntitySystems
 {
@@ -15,6 +16,7 @@ namespace Content.Server.Atmos.EntitySystems
     {
         [Dependency] private DecalSystem _decalSystem = default!;
         [Dependency] private IRobustRandom _random = default!;
+        [Dependency] private ESTileFireSystem _tileFires = default!;
 
         private const int HotspotSoundCooldownCycles = 200;
 
@@ -165,6 +167,12 @@ namespace Content.Server.Atmos.EntitySystems
 
             var plasma = tile.Air.GetMoles(Gas.Plasma);
             var tritium = tile.Air.GetMoles(Gas.Tritium);
+
+            if (tile.PuddleSolutionFlammability > 0 && oxygen >= 2f &&
+                exposedTemperature > 573.15f - 50f * tile.PuddleSolutionFlammability)
+            {
+                _tileFires.TryDoTileFire(new EntityCoordinates(gridAtmosphere.Owner, tile.GridIndices + new System.Numerics.Vector2(0.5f)), sparkSourceUid);
+            }
 
             // If a hotspot already exists on this tile, just strengthen it and return early.
             if (tile.Hotspot.Valid)

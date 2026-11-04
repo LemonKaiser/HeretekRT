@@ -4,10 +4,12 @@ using Content.Shared.Destructible;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Power;
 using Content.Shared.Power.EntitySystems;
+using Content.Shared.Station;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Network;
+using Robust.Shared.Map.Components;
 
 namespace Content.Goobstation.Shared.StationRadio.Systems;
 
@@ -17,7 +19,7 @@ public sealed class VinylPlayerSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPowerReceiverSystem _power = default!;
-    [Dependency] private readonly SharedDeviceLinkSystem _deviceLinkSystem = default!;
+    [Dependency] private readonly SharedStationSystem _stations = default!;
 
     public override void Initialize()
     {
@@ -26,33 +28,31 @@ public sealed class VinylPlayerSystem : EntitySystem
         SubscribeLocalEvent<VinylPlayerComponent, EntRemovedFromContainerMessage>(OnVinylRemove);
         SubscribeLocalEvent<VinylPlayerComponent, DestructionEventArgs>(OnDestruction);
         SubscribeLocalEvent<VinylPlayerComponent, PowerChangedEvent>(OnPowerChanged);
+        SubscribeLocalEvent<VinylPlayerComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<VinylPlayerComponent, EntParentChangedMessage>(OnSourceMoved);
+        SubscribeLocalEvent<StationRadioReceiverComponent, EntParentChangedMessage>(OnReceiverMoved);
+        SubscribeLocalEvent<MapGridComponent, EntParentChangedMessage>(OnGridMoved);
     }
 
     private void OnPowerChanged(EntityUid uid, VinylPlayerComponent comp, PowerChangedEvent args)
     {
-        if (comp.SoundEntity != null && !args.Powered)
-            comp.SoundEntity = _audio.Stop(comp.SoundEntity);
-
-        if (!CheckForRadioRig(uid))
+        if (_net.IsClient || args.Powered)
             return;
+        comp.SoundEntity = _audio.Stop(comp.SoundEntity);
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out _))
-        {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
-        }
+        StopBroadcast(uid);
     }
 
     private void OnDestruction(EntityUid uid, VinylPlayerComponent comp, DestructionEventArgs args)
     {
-        if (!CheckForRadioRig(uid))
-            return;
+        if (!_net.IsClient)
+            StopBroadcast(uid);
+    }
 
-        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out var _))
-        {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
-        }
+    private void OnShutdown(Entity<VinylPlayerComponent> ent, ref ComponentShutdown args)
+    {
+        if (!_net.IsClient)
+            StopBroadcast(ent);
     }
 
     private void OnVinylInserted(EntityUid uid, VinylPlayerComponent comp, EntInsertedIntoContainerMessage args)
@@ -74,13 +74,18 @@ public sealed class VinylPlayerSystem : EntitySystem
         var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
         while (query.MoveNext(out var receiver, out var receiverComponent))
         {
-            if (!receiverComponent.SoundEntity.HasValue)
-                RaiseLocalEvent(receiver, new StationRadioMediaPlayedEvent(vinylcomp.Song));
+            if (receiverComponent.SoundEntity.HasValue || !CanReceiveBroadcast(uid, receiver))
+                continue;
+
+            receiverComponent.BroadcastSource = uid;
+            RaiseLocalEvent(receiver, new StationRadioMediaPlayedEvent(vinylcomp.Song));
         }
     }
 
     private void OnVinylRemove(EntityUid uid, VinylPlayerComponent comp, EntRemovedFromContainerMessage args)
     {
+        if (_net.IsClient || !HasComp<VinylComponent>(args.Entity))
+            return;
         if (comp.SoundEntity != null)
             comp.SoundEntity = _audio.Stop(comp.SoundEntity);
 
@@ -88,13 +93,60 @@ public sealed class VinylPlayerSystem : EntitySystem
         var ev = new VinylRemovedEvent(args.Entity);
         RaiseLocalEvent(uid, ref ev);
 
-        if (!CheckForRadioRig(uid))
+        StopBroadcast(uid);
+    }
+
+    private void StopBroadcast(EntityUid source)
+    {
+        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
+        while (query.MoveNext(out var receiver, out var component))
+        {
+            if (component.BroadcastSource == source)
+                RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
+        }
+    }
+
+    private bool CanReceiveBroadcast(EntityUid sourceUid, EntityUid receiverUid)
+    {
+        var source = Transform(sourceUid);
+        var receiver = Transform(receiverUid);
+        if (source.GridUid != null && source.GridUid == receiver.GridUid)
+            return true;
+
+        return source.MapUid == receiver.MapUid &&
+               _stations.GetOwningStation(sourceUid, source) is { } station &&
+               station == _stations.GetOwningStation(receiverUid, receiver);
+    }
+
+    private void OnSourceMoved(Entity<VinylPlayerComponent> ent, ref EntParentChangedMessage args)
+    {
+        if (_net.IsClient)
             return;
 
         var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
-        while (query.MoveNext(out var receiver, out var _))
+        while (query.MoveNext(out var uid, out var receiver))
         {
-            RaiseLocalEvent(receiver, new StationRadioMediaStoppedEvent());
+            if (receiver.BroadcastSource == ent.Owner && !CanReceiveBroadcast(ent, uid))
+                RaiseLocalEvent(uid, new StationRadioMediaStoppedEvent());
+        }
+    }
+
+    private void OnReceiverMoved(Entity<StationRadioReceiverComponent> ent, ref EntParentChangedMessage args)
+    {
+        if (!_net.IsClient && ent.Comp.BroadcastSource is { } source && !CanReceiveBroadcast(source, ent))
+            RaiseLocalEvent(ent, new StationRadioMediaStoppedEvent());
+    }
+
+    private void OnGridMoved(Entity<MapGridComponent> ent, ref EntParentChangedMessage args)
+    {
+        if (_net.IsClient || args.OldMapId == args.Transform.MapUid)
+            return;
+
+        var query = EntityQueryEnumerator<StationRadioReceiverComponent>();
+        while (query.MoveNext(out var uid, out var receiver))
+        {
+            if (receiver.BroadcastSource is { } source && !CanReceiveBroadcast(source, uid))
+                RaiseLocalEvent(uid, new StationRadioMediaStoppedEvent());
         }
     }
 

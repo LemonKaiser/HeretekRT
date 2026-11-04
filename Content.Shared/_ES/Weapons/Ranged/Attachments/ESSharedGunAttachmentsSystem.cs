@@ -253,12 +253,14 @@ public abstract partial class ESSharedGunAttachmentsSystem : EntitySystem
         if (_timing.ApplyingState)
             return;
         var target = args.Gun.Owner;
-        EntityManager.AddComponents(target, component.Components);
+        EntityManager.AddComponents(target, component.Components, removeExisting: false);
     }
 
     private void OnCompAttachmentUnequip(EntityUid uid, ESGunComponentAttachmentComponent component, EntGotRemovedFromContainerMessage args)
     {
         var target = args.Container.Owner;
+        if (_timing.ApplyingState || TerminatingOrDeleted(target))
+            return;
         EntityManager.RemoveComponents(target, component.Components);
     }
 
@@ -275,6 +277,8 @@ public abstract partial class ESSharedGunAttachmentsSystem : EntitySystem
 
     private void OnSlotLockAttachmentUnequip(EntityUid uid, ESGunUnlockItemSlotAttachmentComponent component, EntGotRemovedFromContainerMessage args)
     {
+        if (TerminatingOrDeleted(args.Container.Owner))
+            return;
         if (!HasComp<ItemSlotsComponent>(args.Container.Owner) || !HasComp<ESAttachableGunComponent>(args.Container.Owner))
             return;
         foreach (var slot in component.Slots)
@@ -297,6 +301,8 @@ public abstract partial class ESSharedGunAttachmentsSystem : EntitySystem
 
     private void OnTempSlotAttachmentUnequip(EntityUid uid, ESGunTemporaryItemSlotAttachmentComponent component, EntGotRemovedFromContainerMessage args)
     {
+        if (TerminatingOrDeleted(args.Container.Owner))
+            return;
         if (!HasComp<ItemSlotsComponent>(args.Container.Owner) || !HasComp<ESAttachableGunComponent>(args.Container.Owner))
             return;
         if (_slots.TryGetSlot(args.Container.Owner, component.SlotName, out _))

@@ -13,6 +13,8 @@ using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Interaction.Events;
+using Content.Server.Cloning.Components;
+using Robust.Shared.Player;
 using Prometheus;
 using Robust.Shared.Asynchronous;
 using Robust.Shared.Configuration;
@@ -64,6 +66,24 @@ public sealed class PersistentInventoryLifecycleSystem : EntitySystem
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, DisconnectedPlayerCleanupEvent>(OnDisconnectCleanup);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, EntityTerminatingEvent>(OnBodyTerminating);
         SubscribeLocalEvent<PersistentInventoryBoundLifeComponent, ComponentShutdown>(OnBoundLifeShutdown);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnCloneAccepted);
+    }
+
+    private void OnCloneAccepted(PlayerAttachedEvent args)
+    {
+        var user = args.Player.UserId;
+        if (!TryComp<BeingClonedComponent>(args.Entity, out var cloned) || cloned.Mind?.UserId != user ||
+            !_boundBodies.TryGetValue(user, out var oldBody) || oldBody == args.Entity ||
+            !TryComp<PersistentInventoryBoundLifeComponent>(oldBody, out var bound) ||
+            bound.LifeLossStarted || bound.SuppressBodyDeletion || _manager.IsLifeLossPending(user))
+            return;
+
+        var snapshot = bound.SnapshotId;
+        var life = bound.LifeId;
+        // Only an accepted clone continues the life; deleting the old corpse must not end it.
+        bound.SuppressBodyDeletion = true;
+        RemComp<PersistentInventoryBoundLifeComponent>(oldBody);
+        BindBody(args.Entity, user, snapshot, life);
     }
 
     public override void Shutdown()

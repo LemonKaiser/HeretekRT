@@ -1,6 +1,5 @@
 using System.Numerics;
 using Content.Shared._Mono.Fuel;
-using Content.Shared.Materials;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._WH40K.PersistentInventory;
 using Content.Shared.Durability.Components;
@@ -144,9 +143,7 @@ namespace Content.Shared.Stacks
         private bool IsPartiallyConsumedFuel(EntityUid uid)
         {
             return TryComp<MaterialFuelComponent>(uid, out var fuel) &&
-                   fuel.Material is { } material &&
-                   TryComp<PhysicalCompositionComponent>(uid, out var composition) &&
-                   composition.MaterialComposition[material] != fuel.BaseMaterialComposition;
+                   fuel.RemainingMaterial is { } remaining && remaining != fuel.BaseMaterialComposition;
         }
 
         private bool CanTransferQuestUnits(EntityUid donor, EntityUid recipient)

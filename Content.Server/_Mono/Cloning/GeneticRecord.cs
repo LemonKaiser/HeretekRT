@@ -1,6 +1,7 @@
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
 using Robust.Shared.Prototypes;
+using Content.Shared.Zombies;
 
 namespace Content.Server._Mono.Cloning;
 
@@ -30,4 +31,6 @@ public sealed class GeneticRecord
     public TimeSpan ScannedAt;
 
     public bool Uncloneable;
+
+    public ZombieComponent? ZombieAppearance;
 }

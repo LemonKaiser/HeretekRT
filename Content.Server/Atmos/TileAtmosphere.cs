@@ -65,6 +65,8 @@ namespace Content.Server.Atmos
         [ViewVariables]
         public Hotspot Hotspot;
 
+        public int PuddleSolutionFlammability;
+
         [ViewVariables]
         public AtmosDirection PressureDirection;
 

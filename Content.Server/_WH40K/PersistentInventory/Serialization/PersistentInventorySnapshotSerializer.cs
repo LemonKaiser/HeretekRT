@@ -29,6 +29,7 @@ using Content.Shared.Paper;
 using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
 using Content.Shared._WH40K.PersistentInventory;
+using Content.Shared._Mono.Fuel;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -145,6 +146,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
     [Dependency] private readonly GunSystem _guns = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private readonly StackSystem _stacks = default!;
+    [Dependency] private readonly MaterialFuelSystem _fuel = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly PressurizedSolutionSystem _pressurized = default!;
     [Dependency] private readonly DeviceNetworkSystem _deviceNetwork = default!;
@@ -192,6 +194,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         _adapters.Add(new RevolverItemStateAdapter(EntityManager, _guns));
         _adapters.Add(new GasTankItemStateAdapter(EntityManager));
         _adapters.Add(new GunItemStateAdapter(EntityManager, _guns));
+        _adapters.Add(new MaterialFuelItemStateAdapter(EntityManager, _fuel));
         _adapters.Add(new OpenableItemStateAdapter(EntityManager, _openable));
         _adapters.Add(new PaperItemStateAdapter(EntityManager, _paper));
         _adapters.Add(new FiberItemStateAdapter(EntityManager));
@@ -440,29 +443,25 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                 }
             }
 
-            // Older snapshots can predate durability on a prototype. Capture the new default after
-            // restoring rarity, so canonical verification includes its correctly scaled initial state.
+            // Capture defaults missing from older snapshots after restoring rarity and other modifiers.
             var upgradedEntities = new List<PersistentInventoryEntityState>(payload.Entities.Count);
-            foreach (var entityState in payload.Entities)
+            foreach (var savedState in payload.Entities)
             {
-                if (entityState.Components.Any(component => component.ComponentId == "ItemDurability") ||
-                    !TryComp<ItemDurabilityComponent>(spawned[entityState.EntityId], out var durability))
+                var entityState = savedState;
+                foreach (var component in EntityManager.GetComponents(spawned[entityState.EntityId]))
                 {
-                    upgradedEntities.Add(entityState);
-                    continue;
-                }
+                    if (!_adaptersByType.TryGetValue(component.GetType(), out var adapter) ||
+                        !adapter.CaptureDefaultOnRestore ||
+                        entityState.Components.Any(saved => saved.ComponentId == adapter.ComponentId))
+                        continue;
 
-                if (!_adaptersById["ItemDurability"].TryCapture(
-                        spawned[entityState.EntityId], durability, out var initialState, out var error))
-                {
-                    return CleanupAndFail(spawned, error ?? "Cannot initialize legacy item durability.");
-                }
+                    if (!adapter.TryCapture(spawned[entityState.EntityId], component, out var initialState, out var error))
+                        return CleanupAndFail(spawned, error ?? $"Cannot initialize legacy {adapter.ComponentId}.");
 
-                upgradedEntities.Add(entityState with
-                {
-                    Components = entityState.Components.Append(initialState).ToArray(),
-                });
-                migrationActions = migrationActions.Append($"durability-added:{entityState.EntityId}").ToArray();
+                    entityState = entityState with { Components = entityState.Components.Append(initialState).ToArray() };
+                    migrationActions = migrationActions.Append($"{adapter.ComponentId}-added:{entityState.EntityId}").ToArray();
+                }
+                upgradedEntities.Add(entityState);
             }
 
             payload = payload with { Entities = upgradedEntities };

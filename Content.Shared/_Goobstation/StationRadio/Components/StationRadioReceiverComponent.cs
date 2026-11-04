@@ -12,6 +12,9 @@ public sealed partial class StationRadioReceiverComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? SoundEntity;
 
+    [DataField]
+    public EntityUid? BroadcastSource;
+
     /// <summary>
     /// Is the radio turned on
     /// </summary>

@@ -32,6 +32,9 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Timing;
 using Content.Server._Mono.Traits;
+using Content.Server.Zombies;
+using Content.Shared.Zombies;
+using Content.Shared.NameModifier.Components;
 
 namespace Content.Server._Mono.Cloning;
 
@@ -60,6 +63,7 @@ public sealed partial class GeneticCloningSystem : EntitySystem
     [Dependency] private GrammarSystem _grammar = default!;
     [Dependency] private GeneticDatabaseSystem _database = default!;
     [Dependency] private LanguageSystem _language = default!;
+    [Dependency] private ZombieSystem _zombies = default!;
 
     /// <summary>
     /// body check for ui
@@ -114,6 +118,13 @@ public sealed partial class GeneticCloningSystem : EntitySystem
             HasBankAccount = HasComp<BankAccountComponent>(body),
             ScannedAt = _timing.CurTime, //not sure if this is needed anymore
         };
+
+        if (TryComp<ZombieComponent>(body, out var zombie))
+        {
+            record.ZombieAppearance = _serialization.CreateCopy(zombie, notNullableOverride: true);
+            if (TryComp<NameModifierComponent>(body, out var name))
+                record.Name = name.BaseName;
+        }
 
         foreach (var comp in AllComps(body))
         {
@@ -203,6 +214,8 @@ public sealed partial class GeneticCloningSystem : EntitySystem
             EnsureComp<BankAccountComponent>(mob);
 
         _metaSystem.SetEntityName(mob, record.Name);
+        if (record.ZombieAppearance != null)
+            _zombies.UnZombify(mob, mob, record.ZombieAppearance);
 
         string? preferredLanguage = null;
         foreach (var comp in record.TransferredComponents)

@@ -11,7 +11,7 @@ public sealed partial class ParallaxComponent : Component
 {
     // I wish I could use a typeserializer here but parallax is extremely client-dependent.
     [DataField, AutoNetworkedField]
-    public string Parallax = "SnowballStation"; // Mono
+    public string Parallax = "Default";
 
     [UsedImplicitly, ViewVariables(VVAccess.ReadWrite)]
     // ReSharper disable once InconsistentNaming

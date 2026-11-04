@@ -1,4 +1,5 @@
 using Content.Server.Atmos.EntitySystems;
+using Content.Server._ES.TileFires;
 using Content.Shared.Chemistry.Reaction;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
@@ -25,7 +26,8 @@ namespace Content.Server.Chemistry.TileReactions
             var atmosphereSystem = entityManager.System<AtmosphereSystem>();
 
             var environment = atmosphereSystem.GetTileMixture(tile.GridUid, null, tile.GridIndices, true);
-            if (environment == null || !atmosphereSystem.IsHotspotActive(tile.GridUid, tile.GridIndices))
+            if (environment == null || (!atmosphereSystem.IsHotspotActive(tile.GridUid, tile.GridIndices) &&
+                !entityManager.System<ESTileFireSystem>().TryGetTileFire(tile.GridUid, tile.GridIndices, out _)))
                 return FixedPoint2.Zero;
 
             environment.Temperature *= MathF.Max(_temperatureMultiplier * reactVolume.Float(), 1f);

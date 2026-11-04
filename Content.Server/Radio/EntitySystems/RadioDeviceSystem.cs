@@ -245,7 +245,7 @@ public sealed partial class RadioDeviceSystem : SharedRadioDeviceSystem
         var message = args.OriginalChatMsg.Message;
         _chat.TrySendInGameICMessage(uid,
             message,
-            component.SpeakNormally ? InGameICChatType.Speak : InGameICChatType.Whisper, // Goobstation - radio host
+            component.SpeakNormally ? InGameICChatType.Speak : component.OutputChatType,
             ChatTransmitRange.GhostRangeLimit,
             nameOverride: name,
             checkRadioPrefix: component.SpeakNormally,

@@ -17,6 +17,8 @@ using Content.Server.PowerCell;
 using Content.Server.Stack;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Mono.Company;
+using Content.Shared._Mono.Fuel;
+using Content.Shared._FinalHorizon.Guns.AlternateGun;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._WH40K.ItemRarity.Prototypes;
 using Content.Shared.Access;
@@ -58,6 +60,8 @@ public interface IItemStateAdapter
     int RestorePriority => 0;
 
     bool RestoreAfterChildren => false;
+
+    bool CaptureDefaultOnRestore => false;
 
     bool Handles(IComponent component);
 
@@ -285,6 +289,7 @@ public sealed class PersistentInventoryDerivedStateSanitizer : IPersistentInvent
         "ActiveTimerTrigger",
         "ActiveUserInterface",
         "ActiveWeaponMeleeCharge",
+        "AlternateGun",
         "Appearance",
         "ArtifactExamineTrigger",
         "ArtifactInteractionTrigger",
@@ -709,12 +714,44 @@ public sealed class BatteryItemStateAdapter : IItemStateAdapter
     }
 }
 
+public sealed class MaterialFuelItemStateAdapter(IEntityManager entities, MaterialFuelSystem fuelSystem) : IItemStateAdapter
+{
+    public string ComponentId => "MaterialFuel";
+    public bool CaptureDefaultOnRestore => true;
+    public bool Handles(IComponent component) => component is MaterialFuelComponent;
+
+    public bool TryCapture(EntityUid uid, IComponent component, out PersistentInventoryComponentState state, out string? error)
+    {
+        var fuel = (MaterialFuelComponent) component;
+        state = StackItemStateAdapter.State(ComponentId,
+            ("remaining", (fuel.RemainingMaterial ?? fuel.BaseMaterialComposition).ToString(CultureInfo.InvariantCulture)));
+        error = null;
+        return true;
+    }
+
+    public bool TryRestore(EntityUid uid, PersistentInventoryComponentState state, out string? error)
+    {
+        if (!StackItemStateAdapter.TrySingleInt(state, "remaining", out var remaining) ||
+            !entities.TryGetComponent(uid, out MaterialFuelComponent? fuel) ||
+            remaining <= 0 || remaining > fuel.BaseMaterialComposition)
+        {
+            error = "Saved fuel amount is outside prototype limits.";
+            return false;
+        }
+
+        fuelSystem.SetRemainingMaterial((uid, fuel), remaining);
+        error = null;
+        return true;
+    }
+}
+
 public sealed class ItemDurabilityStateAdapter : IItemStateAdapter
 {
     private readonly IEntityManager _entities;
     private readonly ItemDurabilitySystem _durability;
 
     public string ComponentId => "ItemDurability";
+    public bool CaptureDefaultOnRestore => true;
 
     public ItemDurabilityStateAdapter(IEntityManager entities, ItemDurabilitySystem durability)
     {
@@ -1538,6 +1575,7 @@ public sealed class GunItemStateAdapter : IItemStateAdapter
     private readonly GunSystem _guns;
 
     public string ComponentId => "Gun";
+    public bool RestoreAfterChildren => true;
 
     public GunItemStateAdapter(IEntityManager entities, GunSystem guns)
     {
@@ -1557,9 +1595,13 @@ public sealed class GunItemStateAdapter : IItemStateAdapter
         out string? error)
     {
         var gun = (GunComponent) component;
-        state = StackItemStateAdapter.State(
-            ComponentId,
-            ("selectedMode", ((byte) gun.SelectedMode).ToString(CultureInfo.InvariantCulture)));
+        var fields = new Dictionary<string, string>
+        {
+            ["selectedMode"] = ((byte) gun.SelectedMode).ToString(CultureInfo.InvariantCulture),
+        };
+        if (_entities.TryGetComponent(uid, out AlternateGunComponent? alternate) && alternate.Enabled)
+            fields.Add("alternateEnabled", "1");
+        state = new PersistentInventoryComponentState(ComponentId, fields);
         error = null;
         return true;
     }
@@ -1569,13 +1611,27 @@ public sealed class GunItemStateAdapter : IItemStateAdapter
         PersistentInventoryComponentState state,
         out string? error)
     {
-        if (!StackItemStateAdapter.TrySingleInt(state, "selectedMode", out var rawMode) ||
-            rawMode is < byte.MinValue or > byte.MaxValue ||
+        if (!state.Fields.TryGetValue("selectedMode", out var modeText) ||
+            !byte.TryParse(modeText, NumberStyles.None, CultureInfo.InvariantCulture, out var rawMode) ||
             !_entities.TryGetComponent(uid, out GunComponent? gun) ||
             !_guns.TrySetPersistentInventoryFireMode(uid, gun, (SelectiveFire) rawMode))
         {
             error = "Gun fire mode is invalid for the restored prototype.";
             return false;
+        }
+
+        var enabled = state.Fields.TryGetValue("alternateEnabled", out var alternateText);
+        _entities.TryGetComponent(uid, out AlternateGunComponent? alternate);
+        if (state.Fields.Count != (enabled ? 2 : 1) || enabled && (alternateText != "1" || alternate == null))
+        {
+            error = "Saved alternate gun mode requires its installed attachment.";
+            return false;
+        }
+
+        if (alternate != null)
+        {
+            alternate.Enabled = enabled;
+            _entities.Dirty(uid, alternate);
         }
 
         error = null;

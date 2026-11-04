@@ -62,6 +62,7 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private AtmosphereSystem _atmos = default!;
 
     [ValidatePrototypeId<ReagentPrototype>]
     private const string Blood = "Blood";
@@ -334,6 +335,7 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         base.Update(frameTime);
         foreach (var ent in _deletionQueue)
         {
+            _atmos.SetPuddleFlammabilityAtTile(ent, 0);
             Del(ent);
         }
 
@@ -354,6 +356,7 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
         }
 
         _deletionQueue.Remove(entity);
+        _atmos.SetPuddleFlammabilityAtTile(entity, args.Solution.GetSolutionFlammability(_prototypeManager));
         UpdateSlip((entity, entity.Comp), args.Solution);
         UpdateSlow(entity, args.Solution);
         UpdateEvaporation(entity, args.Solution);

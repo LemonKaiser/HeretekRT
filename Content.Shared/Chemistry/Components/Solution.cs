@@ -1011,6 +1011,15 @@ namespace Content.Shared.Chemistry.Components
             return mixColor;
         }
 
+        public int GetSolutionFlammability(IPrototypeManager? protoMan = null)
+        {
+            IoCManager.Resolve(ref protoMan);
+            float flammability = 0;
+            foreach (var (reagent, quantity) in Contents)
+                flammability += protoMan.Index<ReagentPrototype>(reagent.Prototype).Flammability * (float) quantity;
+            return (int) MathF.Floor(flammability);
+        }
+
         #region Enumeration
 
         public IEnumerator<ReagentQuantity> GetEnumerator()
