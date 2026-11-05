@@ -12,7 +12,7 @@
   - type: UserInterface
     interfaces:
       enum.ShuttleStorageUiKey.Key:
-        type: ShuttleStorageBoundUserInterface
+        type: ShuttleHangarBoundUserInterface
   - type: Sprite
     sprite: _NF/Structures/Machines/computers.rsi
     layers:

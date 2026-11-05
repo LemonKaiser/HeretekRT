@@ -42,10 +42,11 @@ public partial class ShipShieldsSystem
 
     private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
     {
+        var position = _transformSystem.GetMapCoordinates(args.Deflected);
         // The projectile has reached the shield boundary and will be consumed below, so this is the
         // authoritative deflection point rather than a speculative collision response.
         _particles.Spawn(
-            _transformSystem.GetMapCoordinates(args.Deflected),
+            position,
             "HrtShieldHit",
             parameters: new ParticleSpawnParameters(Intensity: 0.8f),
             rateLimitSource: uid,
@@ -65,6 +66,7 @@ public partial class ShipShieldsSystem
         component.Damage += (float)args.Projectile.Damage.GetTotal();
         args.Projectile.ProjectileSpent = true;
 
+        _bastion.ShowImpact(uid, component, position);
         QueueDel(args.Deflected);
     }
 

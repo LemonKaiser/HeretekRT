@@ -1,54 +1,136 @@
-<controls:FancyWindow
-    xmlns="https://spacestation14.io"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    xmlns:co="clr-namespace:Content.Client.UserInterface.Controls"
-    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-    SetSize="360 400"
-    MinSize="360 320"> <!-- Frontier: added SetSize, MinSize, remove MinHeight="210" -->
-    <BoxContainer Orientation="Vertical">
-        <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="6 6 6 6">
-            <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#191919"/>
-            </PanelContainer.PanelOverride>
-        <BoxContainer Name="MainContainer" Orientation="Vertical">
-        <!-- Frontier: balance -->
-        <PanelContainer VerticalExpand="False" HorizontalExpand="True">
-            <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="6" BorderColor="#212121" BackgroundColor="#111111" />
-            </PanelContainer.PanelOverride>
-        <GridContainer Margin ="0 2 0 4" Columns="2" HorizontalExpand="True">
-            <BoxContainer Margin="4 0 2 0" Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Left">
-                <Label Text="{Loc 'bank-atm-menu-balance-label'}"
-                    StyleClasses="LabelKeyText" />
-                <Label Name="BalanceLabel"
-                    Text="{Loc 'bank-atm-menu-no-bank'}" />
-            </BoxContainer>
-            <BoxContainer Margin="2 0 4 0" Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Right" Name="CashSlotControls">
-                <Label Text="{Loc 'vending-machine-menu-cash-slot-label'}"
-                    StyleClasses="LabelKeyText" />
-                <Label Name="CashSlotLabel"
-                    Text="$0" />
-            </BoxContainer>
-        </GridContainer>
-        </PanelContainer>
-        <!-- End Frontier: balance -->
-        <controls:StripeBack MinSize="48 48">
-        <LineEdit Name="SearchBar" PlaceHolder="{Loc 'vending-machine-component-search-filter'}" HorizontalExpand="True"  Margin ="4 4"/>
-        </controls:StripeBack>
-        <co:SearchListContainer Name="VendingContents" VerticalExpand="True" Margin="4 4"/>
-         <!-- Footer -->
-        <BoxContainer Orientation="Vertical">
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      MinSize="700 660" SetSize="740 700">
+
+    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" MinWidth="460">
+
+
+            <PanelContainer Margin="6 4" HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1c1c1c" BorderColor="#383838" BorderThickness="1" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="8 4">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                        <Label Text="{Loc 'wh40k-vending-bank'}" StyleClasses="LabelSubText" />
+                        <Label Name="BalanceLabel" HorizontalExpand="True" HorizontalAlignment="Right" />
+                    </BoxContainer>
+                    <BoxContainer Name="CashSlotControls" Orientation="Horizontal" SeparationOverride="6">
+                        <Label Text="{Loc 'wh40k-vending-cash'}" StyleClasses="LabelSubText" />
+                        <Label Name="CashSlotLabel" HorizontalExpand="True" HorizontalAlignment="Right" />
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <LineEdit Name="SearchBar" Margin="8 2 8 6" PlaceHolder="{Loc 'vending-machine-component-search-filter'}" />
+
+            <PanelContainer Name="GlassBackground" VerticalExpand="True" HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#131313" />
+                </PanelContainer.PanelOverride>
+
+                <ScrollContainer Name="GridScroll" VerticalExpand="True" HorizontalExpand="True" Margin="8" HScrollEnabled="False">
+                    <GridContainer Name="ItemGrid" Columns="5" HSeparationOverride="4" VSeparationOverride="4" HorizontalAlignment="Center" />
+                </ScrollContainer>
+            </PanelContainer>
+
+            <Control MinHeight="8" />
+            <Control MinHeight="28" Margin="12 0 12 0" HorizontalExpand="True">
+                <PanelContainer Name="DispenseChute" HorizontalExpand="True" VerticalExpand="True">
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#202020" BorderColor="#101010" BorderThickness="2" />
+                    </PanelContainer.PanelOverride>
+                    <Label Text="{Loc 'wh40k-vending-dispense'}" FontColorOverride="#777777" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </PanelContainer>
+            </Control>
+            <Control MinHeight="8" />
+
             <PanelContainer StyleClasses="LowDivider" />
-            <BoxContainer Orientation="Horizontal" Margin="10 2 5 0" VerticalAlignment="Bottom">
+
+            <BoxContainer Orientation="Horizontal" Margin="8 4 8 4" MinHeight="24" VerticalAlignment="Center">
                 <Label Text="{Loc 'vending-machine-flavor-left'}" StyleClasses="WindowFooterText" />
                 <Label Text="{Loc 'vending-machine-flavor-right'}" StyleClasses="WindowFooterText"
-                        HorizontalAlignment="Right" HorizontalExpand="True"  Margin="0 0 5 0" />
+                       HorizontalAlignment="Right" HorizontalExpand="True" Margin="0 0 5 0" />
                 <TextureRect StyleClasses="NTLogoDark" Stretch="KeepAspectCentered"
-                        VerticalAlignment="Center" HorizontalAlignment="Right" SetSize="19 19"/>
+                             VerticalAlignment="Center" HorizontalAlignment="Right" SetSize="19 19"/>
             </BoxContainer>
         </BoxContainer>
+
+        <PanelContainer MinWidth="2" StyleClasses="LowDivider" />
+
+        <BoxContainer Orientation="Vertical" MinWidth="222" VerticalExpand="True">
+
+            <Control MinHeight="72" HorizontalExpand="True" Margin="8 12 8 8">
+
+                <BoxContainer Orientation="Vertical" HorizontalAlignment="Left" SeparationOverride="6" VerticalAlignment="Center">
+                    <TextureRect Name="RedLed" TexturePath="/Textures/Interface/NavMap/beveled_circle.png" SetSize="8 8" Stretch="KeepAspectCentered" />
+                    <TextureRect Name="GreenLed" TexturePath="/Textures/Interface/NavMap/beveled_circle.png" SetSize="8 8" Stretch="KeepAspectCentered" />
+                </BoxContainer>
+
+                <controls:StripeBack MinWidth="184" MaxWidth="184" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <PanelContainer Name="ScreenBackground" Margin="2">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BackgroundColor="#111711" BorderColor="#3d493c" BorderThickness="2" />
+                        </PanelContainer.PanelOverride>
+
+                        <BoxContainer Orientation="Vertical" Margin="8 6" HorizontalAlignment="Center">
+                            <Label Text="{Loc 'wh40k-vending-target'}" StyleClasses="LabelSubText" FontColorOverride="#7e9276" HorizontalAlignment="Center"/>
+                            <BoxContainer Name="CodeDisplay" Orientation="Horizontal" HorizontalAlignment="Center" MinHeight="30" Margin="0 2 0 0">
+                                <Label Text="[" StyleClasses="LabelBig" FontColorOverride="#b0c59f" />
+                                <Control MinSize="24 30">
+                                    <Label Name="RowCodeLabel" HorizontalAlignment="Center" VerticalAlignment="Center" StyleClasses="LabelBig" FontColorOverride="#b0c59f" />
+                                    <Label Name="RowPlaceholder" Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" StyleClasses="LabelSubText" FontColorOverride="#b0c59f" />
+                                </Control>
+                                <Control MinSize="24 30">
+                                    <Label Name="NumberCodeLabel" HorizontalAlignment="Center" VerticalAlignment="Center" StyleClasses="LabelBig" FontColorOverride="#b0c59f" />
+                                    <Label Name="NumberPlaceholder" Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" StyleClasses="LabelSubText" FontColorOverride="#b0c59f" />
+                                </Control>
+                                <Label Text="]" StyleClasses="LabelBig" FontColorOverride="#b0c59f" />
+                            </BoxContainer>
+                            <Label Name="BufferLabel" Visible="False" HorizontalAlignment="Center" MinHeight="30" MaxWidth="160" ClipText="True" Margin="0 2 0 0" StyleClasses="LabelBig" FontColorOverride="#b0c59f" />
+                        </BoxContainer>
+                    </PanelContainer>
+                </controls:StripeBack>
+
+            </Control>
+
+            <Control MinHeight="64" MaxHeight="64" HorizontalExpand="True" Margin="8 0 8 4">
+                <Label Name="InstructionLabel" Text="{Loc 'wh40k-vending-instructions'}" MinWidth="196" MaxWidth="196" Align="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <BoxContainer Name="SelectionDetails" Visible="False" Orientation="Vertical" SeparationOverride="4" MinWidth="196" MaxWidth="196" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Label Name="SelectedPriceLabel" HorizontalAlignment="Center" />
+                    <Label Name="SelectionLabel" MinWidth="196" MaxWidth="196" Align="Center" ClipText="True" HorizontalAlignment="Center" />
+                </BoxContainer>
+            </Control>
+            <Control VerticalExpand="True" />
+
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="12 0 12 12">
+                <Label Text="{Loc 'wh40k-vending-row'}" StyleClasses="LabelSubText" FontColorOverride="#929292" HorizontalAlignment="Center" />
+                <PanelContainer>
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#131313" BorderColor="#343434" BorderThickness="1" ContentMarginLeftOverride="8" ContentMarginRightOverride="8" ContentMarginTopOverride="8" ContentMarginBottomOverride="8" />
+                    </PanelContainer.PanelOverride>
+                    <ScrollContainer Name="LetterScroll" MinHeight="48" MaxHeight="102" HScrollEnabled="False">
+                        <GridContainer Name="LetterGrid" Columns="3" HSeparationOverride="6" VSeparationOverride="6" HorizontalAlignment="Center" />
+                    </ScrollContainer>
+                </PanelContainer>
+            </BoxContainer>
+
+            <PanelContainer StyleClasses="LowDivider" />
+
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="12 12 12 12">
+                <Label Text="{Loc 'wh40k-vending-column'}" StyleClasses="LabelSubText" FontColorOverride="#929292" HorizontalAlignment="Center" />
+                <PanelContainer>
+                    <PanelContainer.PanelOverride>
+                        <gfx:StyleBoxFlat BackgroundColor="#131313" BorderColor="#343434" BorderThickness="1" ContentMarginLeftOverride="8" ContentMarginRightOverride="8" ContentMarginTopOverride="8" ContentMarginBottomOverride="8" />
+                    </PanelContainer.PanelOverride>
+                    <GridContainer Name="NumpadGrid" Columns="3" MinHeight="210" HSeparationOverride="6" VSeparationOverride="6" HorizontalAlignment="Center" />
+                </PanelContainer>
+            </BoxContainer>
+
+            <Control VerticalExpand="True" />
+
         </BoxContainer>
-        </PanelContainer>
     </BoxContainer>
 </controls:FancyWindow>

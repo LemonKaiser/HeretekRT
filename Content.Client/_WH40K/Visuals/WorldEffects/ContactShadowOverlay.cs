@@ -73,17 +73,14 @@ public sealed partial class ContactShadowOverlay : Overlay
 
         foreach (var uid in _candidates)
         {
-            if (!_entities.TryGetComponent<SpriteComponent>(uid, out var sprite) ||
+            if (!_entities.HasComponent<MobStateComponent>(uid) ||
+                !_entities.TryGetComponent<SpriteComponent>(uid, out var sprite) ||
                 !sprite.Visible || sprite.ContainerOccluded || sprite.Color.A <= 0.01f ||
                 !_entities.TryGetComponent<TransformComponent>(uid, out var xform) ||
                 xform.MapID != args.MapId ||
                 (xform.ParentUid != xform.GridUid && xform.ParentUid != xform.MapUid) ||
                 _entities.GetComponent<MetaDataComponent>(uid).VisibilityMask != 1 ||
                 _entities.TryGetComponent<StealthComponent>(uid, out var stealth) && stealth.Enabled)
-                continue;
-
-            var isMob = _entities.HasComponent<MobStateComponent>(uid);
-            if (!isMob)
                 continue;
 
             if (_entities.TryGetComponent<BuckleComponent>(uid, out var buckle) && buckle.Buckled)
@@ -94,8 +91,7 @@ public sealed partial class ContactShadowOverlay : Overlay
 
             var lying = _entities.TryGetComponent<StandingStateComponent>(uid, out var standing) &&
                         standing.CurrentState is StandingState.Lying or StandingState.GettingUp;
-            var position = _transform.GetWorldPosition(xform);
-            var worldRotation = _transform.GetWorldRotation(xform);
+            var (position, worldRotation) = _transform.GetWorldPositionRotation(xform);
             var spritePosition = position + (sprite.NoRotation
                 ? (-eye.Rotation).RotateVec(sprite.Offset)
                 : worldRotation.RotateVec(sprite.Offset));

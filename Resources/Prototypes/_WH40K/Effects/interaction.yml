@@ -1,0 +1,25 @@
+- type: entity
+  id: WH40KInteractionParticleUse
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 1.1
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    sprite: _WH40K/Effects/interaction.rsi
+    state: hand
+    drawdepth: Effects
+  - type: EffectVisuals
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  parent: WH40KInteractionParticleUse
+  id: WH40KInteractionParticlePull
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: pulling
+    loop: false

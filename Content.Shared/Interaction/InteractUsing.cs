@@ -10,6 +10,8 @@ namespace Content.Shared.Interaction
     [PublicAPI]
     public sealed class InteractUsingEvent : HandledEntityEventArgs
     {
+        public bool InteractionParticle = true;
+
         /// <summary>
         ///     Entity that triggered the interaction.
         /// </summary>

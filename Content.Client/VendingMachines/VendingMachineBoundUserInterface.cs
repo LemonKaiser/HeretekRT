@@ -1,128 +1,101 @@
+using Content.Client._Mono.Economy;
+using Content.Client.Power.Components;
 using Content.Client.UserInterface.Controls;
 using Content.Client.VendingMachines.UI;
+using Content.Shared._Mono.Economy.Component;
+using Content.Shared._Mono.Traits.Physical;
+using Content.Shared._NF.Bank.Components;
+using Content.Shared._WH40K.VendingMachines;
+using Content.Shared.Access.Systems;
 using Content.Shared.VendingMachines;
+using Robust.Client.Player;
 using Robust.Client.UserInterface;
-using Robust.Shared.Input;
-using System.Linq;
-using Content.Client._Mono.Economy;
-using Content.Shared._Mono.Economy.Component; // Mono
-using Robust.Client.GameObjects;
-using Content.Shared._NF.Bank.Components; // Frontier
-using Content.Shared.Containers.ItemSlots; // Frontier
-using Content.Shared.Stacks; // Frontier
 
-namespace Content.Client.VendingMachines
+namespace Content.Client.VendingMachines;
+
+public sealed class VendingMachineBoundUserInterface : BoundUserInterface
 {
-    public sealed class VendingMachineBoundUserInterface : BoundUserInterface
+    [Dependency] private CreditReceiverSystem _credit = default!;
+    [Dependency] private IPlayerManager _players = default!;
+
+    private VendingMachineMenu? _menu;
+    private List<VendingMachineInventoryEntry> _inventory = new();
+
+    public VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey) { }
+
+    protected override void Open()
     {
-        [Dependency] private CreditReceiverSystem _credit = default!; // Mono
+        base.Open();
+        _menu = this.CreateWindowCenteredLeft<VendingMachineMenu>();
+        _menu.Title = EntMan.TryGetComponent(Owner, out MetaDataComponent? meta)
+            ? meta.EntityName : Loc.GetString("vending-machine-nf-fallback-title");
+        _menu.VendingMachineOwner = Owner;
+        _menu.OnCodeEntered += OnCodeEntered;
+        _menu.OnAudioPlayed += OnAudioPlayed;
+        Update();
+    }
 
-        [ViewVariables]
-        private VendingMachineMenu? _menu;
+    public override void Update()
+    {
+        if (_menu == null || !EntMan.TryGetComponent<VendingMachineComponent>(Owner, out var vending))
+            return;
 
-        [ViewVariables]
-        private List<VendingMachineInventoryEntry> _cachedInventory = new();
-
-        // Frontier: market price modifier & balance
-        private UserInterfaceSystem _uiSystem = default!;
-        private ItemSlotsSystem _itemSlots = default!;
-
-        [ViewVariables]
-        private float _mod = 1f;
-        [ViewVariables]
-        private int _balance = 0;
-        [ViewVariables]
-        private int _cashSlotBalance = 0;
-        // End Frontier
-        [ViewVariables]
-        private bool _requiresCash; // mono
-
-        public VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+        var system = EntMan.System<VendingMachineSystem>();
+        _inventory = system.GetAllInventory(Owner);
+        var player = _players.LocalSession?.AttachedEntity;
+        _menu.User = player;
+        var balance = 0;
+        var hasAccount = false;
+        if (player is { } user && !EntMan.HasComponent<IronmanComponent>(user) &&
+            EntMan.TryGetComponent<BankAccountComponent>(user, out var bank))
         {
+            balance = bank.Balance;
+            hasAccount = true;
         }
 
-        protected override void Open()
+        int? cash = null;
+        if (EntMan.HasComponent<CreditReceiverComponent>(Owner))
         {
-            base.Open();
+            _credit.TryGetCash(Owner, out _, out var amount);
+            cash = amount;
+        }
+        var modifier = EntMan.TryGetComponent<MarketModifierComponent>(Owner, out var market) ? market.Mod : 1f;
+        var enabled = !vending.Broken &&
+                      (!EntMan.TryGetComponent<ApcPowerReceiverComponent>(Owner, out var receiver) || receiver.Powered);
+        _menu.Populate(_inventory, modifier, balance, cash, vending.RequiresCash, enabled, hasAccount);
+    }
 
-            // Frontier: state, market modifier, balance status
-            _uiSystem = EntMan.System<UserInterfaceSystem>();
-            _itemSlots = EntMan.System<ItemSlotsSystem>();
+    private bool OnCodeEntered(int index)
+    {
+        if (index < 0 || index >= _inventory.Count || _players.LocalSession?.AttachedEntity is not { } user ||
+            !EntMan.System<AccessReaderSystem>().IsAllowed(user, Owner))
+            return false;
 
-            if (EntMan.TryGetComponent<MarketModifierComponent>(Owner, out var market))
-                _mod = market.Mod;
-            // End Frontier
+        var item = _inventory[index];
+        SendMessage(new VendingMachineEjectMessage(item.Type, item.ID));
+        return true;
+    }
 
-            _menu = this.CreateWindowCenteredLeft<VendingMachineMenu>();
-            // Frontier: no exceptions
-            if (EntMan.TryGetComponent(Owner, out MetaDataComponent? meta))
-                _menu.Title = meta.EntityName;
-            else
-                _menu.Title = Loc.GetString("vending-machine-nf-fallback-title");
-            // End Frontier: no exceptions
-            _menu.OnItemSelected += OnItemSelected;
+    private void OnAudioPlayed(VendingMachineKeypadSound sound, float pitch) =>
+        SendMessage(new VendingMachineKeypadAudioMessage(sound, pitch));
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is VendingMachineVendResultMessage result)
+        {
+            _menu?.CompleteVend(result.Type, result.Id, result.Success);
             Update();
         }
+    }
 
-        public override void Update()
-        {
-            var system = EntMan.System<VendingMachineSystem>();
-            _cachedInventory = system.GetAllInventory(Owner);
-
-            // Frontier: state, market modifier, balance status
-            var uiUsers = _uiSystem.GetActors(Owner, UiKey);
-            foreach (var uiUser in uiUsers)
-            {
-                if (EntMan.TryGetComponent<BankAccountComponent>(uiUser, out var bank))
-                    _balance = bank.Balance;
-            }
-            if (EntMan.TryGetComponent<VendingMachineComponent>(Owner, out var vendingMachine) // Mono start - Separation of Cash from VendingMachineComp
-                && EntMan.TryGetComponent<CreditReceiverComponent>(Owner, out var creditReceiver))
-            {
-                _credit.TryGetCash(Owner, out _, out var cash);
-                _cashSlotBalance = cash;
-                _requiresCash = vendingMachine.RequiresCash; // Mono end - Separation of Cash from VendingMachineComp
-            }
-            else
-            {
-                _cashSlotBalance = 0;
-            }
-            // End Frontier
-
-            _menu?.Populate(_cachedInventory, _mod, _balance, _cashSlotBalance, _requiresCash); // Frontier: add _balance, mono: add _cashSlotBalance and _requiresCash (for ironman characters)
-        }
-
-        private void OnItemSelected(GUIBoundKeyEventArgs args, ListData data)
-        {
-            if (args.Function != EngineKeyFunctions.UIClick)
-                return;
-
-            if (data is not VendorItemsListData { ItemIndex: var itemIndex })
-                return;
-
-            if (_cachedInventory.Count == 0)
-                return;
-
-            var selectedItem = _cachedInventory.ElementAtOrDefault(itemIndex);
-
-            if (selectedItem == null)
-                return;
-
-            SendMessage(new VendingMachineEjectMessage(selectedItem.Type, selectedItem.ID));
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            if (!disposing)
-                return;
-
-            if (_menu == null)
-                return;
-
-            _menu.OnItemSelected -= OnItemSelected;
-            _menu.OnClose -= Close;
-            _menu.Dispose();
-        }
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (!disposing || _menu == null)
+            return;
+        _menu.OnCodeEntered -= OnCodeEntered;
+        _menu.OnAudioPlayed -= OnAudioPlayed;
+        _menu.Dispose();
     }
 }

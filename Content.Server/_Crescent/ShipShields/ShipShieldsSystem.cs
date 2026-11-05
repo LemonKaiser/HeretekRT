@@ -14,6 +14,7 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using System.Numerics;
 using Content.Server._Crescent.ShipShields.Components;
+using Content.Server._WH40K.ShipShields;
 
 
 namespace Content.Server._Crescent.ShipShields;
@@ -30,6 +31,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     [Dependency] private FixtureSystem _fixtureSystem = default!;
     [Dependency] private PhysicsSystem _physicsSystem = default!;
     [Dependency] private PvsOverrideSystem _pvsSys = default!;
+    [Dependency] private BastionShieldSystem _bastion = default!;
 
     private EntityQuery<ProjectileComponent> _projectileQuery;
     private EntityQuery<ShipWeaponProjectileComponent> _shipWeaponProjectileQuery;
@@ -100,6 +102,9 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 if (!HasComp<ShipShieldDisabledGridComponent>(Transform(uid).GridUid))
                     _audio.PlayGlobal(emitter.PowerDownSound, filter, true, emitter.PowerUpSound.Params);
             }
+
+            if (emitter.Shield is { } activeShield)
+                _bastion.UpdateVisuals(activeShield, parent.Value, uid);
         }
     }
     public override void Initialize()
@@ -221,6 +226,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         _physicsSystem.WakeBody(shield, body: shieldPhysics);
         _physicsSystem.SetSleepingAllowed(shield, shieldPhysics, false);
 
+        _bastion.UpdateVisuals(shield, entity, source);
         _pvsSys.AddGlobalOverride(shield);
 
         var shieldedComp = EnsureComp<ShipShieldedComponent>(entity);

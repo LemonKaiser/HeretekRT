@@ -23,6 +23,8 @@ public sealed class UserOpenActivatableUIAttemptEvent : CancellableEntityEventAr
 
 public sealed class AfterActivatableUIOpenEvent : EntityEventArgs
 {
+    public bool InteractionParticle;
+
     public EntityUid User { get; }
     public readonly EntityUid Actor;
 

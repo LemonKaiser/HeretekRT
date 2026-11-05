@@ -76,6 +76,7 @@ namespace Content.Shared.Stacks
                 return;
 
             args.Handled = true;
+            args.InteractionParticle = false;
 
             // interaction is done, the rest is just generating a pop-up
 

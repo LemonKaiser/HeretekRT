@@ -1,0 +1,155 @@
+light_mode unshaded;
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float FieldTime;
+uniform highp float Segments;
+uniform highp float Load;
+uniform highp vec4 ShieldColor;
+uniform highp vec4 Impact0;
+uniform highp vec4 Impact1;
+uniform highp vec4 Impact2;
+uniform highp vec4 Impact3;
+
+const highp float TAU = 6.28318530718;
+const highp float PI = 3.14159265359;
+const highp float FillOpacity = 0.02;
+
+highp float hashNoise(highp vec3 point)
+{
+    point = fract(point * 0.3183099 + vec3(0.17, 0.31, 0.73));
+    point *= 17.0;
+    return fract(point.x * point.y * point.z * (point.x + point.y + point.z));
+}
+
+highp float fieldNoise(highp vec3 point)
+{
+    highp vec3 cell = floor(point);
+    highp vec3 fraction = fract(point);
+    fraction = fraction * fraction * (3.0 - 2.0 * fraction);
+    return mix(
+        mix(mix(hashNoise(cell), hashNoise(cell + vec3(1.0, 0.0, 0.0)), fraction.x),
+            mix(hashNoise(cell + vec3(0.0, 1.0, 0.0)), hashNoise(cell + vec3(1.0, 1.0, 0.0)), fraction.x), fraction.y),
+        mix(mix(hashNoise(cell + vec3(0.0, 0.0, 1.0)), hashNoise(cell + vec3(1.0, 0.0, 1.0)), fraction.x),
+            mix(hashNoise(cell + vec3(0.0, 1.0, 1.0)), hashNoise(cell + vec3(1.0, 1.0, 1.0)), fraction.x), fraction.y),
+        fraction.z);
+}
+
+highp float fieldFbm(highp vec3 point)
+{
+    return 0.56 * fieldNoise(point) + 0.28 * fieldNoise(point * 2.03 + 4.1) +
+        0.14 * fieldNoise(point * 4.07 - 3.7);
+}
+
+highp float impactDent(highp float angle, highp vec4 impact)
+{
+    if (impact.w <= 0.0)
+        return 0.0;
+
+    highp float hitAngle = atan(impact.y, impact.x);
+    highp float age = max(impact.z, 0.0);
+    highp float pulse = (1.0 - exp(-age * 85.0)) * exp(-age * 5.5) * impact.w;
+    return exp(-(1.0 - cos(angle - hitAngle)) * 45.0) * pulse * 0.095;
+}
+
+highp vec4 impactWave(highp vec2 point, highp vec3 normal, highp vec4 impact,
+    highp float cloud, highp vec3 flow)
+{
+    if (impact.w <= 0.0)
+        return vec4(0.0);
+
+    highp vec2 hitPoint = normalize(impact.xy + vec2(0.00001)) * 0.982;
+    highp vec3 hitNormal = normalize(vec3(hitPoint, 0.15));
+    highp float distance = acos(clamp(dot(normal, hitNormal), -0.999, 0.999));
+    highp float age = max(impact.z, 0.0);
+    highp float alive = exp(-age * 1.65) * impact.w;
+    highp float offset = fieldNoise(vec3(point * 13.0 + flow.xy, flow.z)) * 0.055;
+    highp float travel = age * 1.35;
+    highp float shockDistance = (distance + offset - travel) / 0.13;
+    highp float shock = exp(-shockDistance * shockDistance);
+    highp float wave = sin((distance - travel) * 39.0 + cloud * 4.0);
+    highp float envelopeDistance = (distance - travel * 0.8) / 0.34;
+    highp float envelope = exp(-envelopeDistance * envelopeDistance);
+    highp float hot = exp(-distance * distance / (0.016 + age * 0.17)) * exp(-age * 2.5);
+    return vec4((hot * 2.6 + shock * 1.2 + envelope * 0.22) * alive,
+        hot * alive, shock * alive, (shock * wave * 0.023 + hot * 0.036) * alive);
+}
+
+void fragment()
+{
+    highp vec2 point = UV;
+    highp float angle = atan(point.y + 0.0000001, point.x + 0.0000001);
+    highp float halfSegment = PI / max(Segments, 3.0);
+    highp float facetAngle = mod(angle, halfSegment * 2.0) - halfSegment;
+    highp float radius = length(point) * cos(facetAngle) / cos(halfSegment);
+    if (radius > 1.0)
+        discard;
+
+    radius += impactDent(angle, Impact0) + impactDent(angle, Impact1) +
+        impactDent(angle, Impact2) + impactDent(angle, Impact3);
+    if (radius > 1.0)
+        discard;
+
+    highp float edgeDistance = radius - 1.0;
+    highp float pixelWidth = max(fwidth(radius), 0.0001);
+    highp float inside = 1.0 - smoothstep(-pixelWidth, 0.0, edgeDistance);
+    highp float shell = exp(-abs(edgeDistance) / max(0.006, pixelWidth * 0.65));
+    highp float depth = sqrt(max(0.001, 1.0 - min(radius * radius, 0.999)));
+    highp vec3 normal = normalize(vec3(point, depth * 0.9));
+    highp float clock = FieldTime * TAU / 6.4;
+    highp vec3 flow = vec3(cos(clock), sin(clock), sin(clock + 1.7)) * 0.45;
+    highp vec3 material = vec3(point * 2.6, depth * 2.1);
+    highp float cloud = 0.0;
+    if (Impact0.w + Impact1.w + Impact2.w + Impact3.w > 0.0)
+        cloud = fieldFbm(material + flow);
+    highp float fresnel = pow(clamp(radius, 0.0, 1.0), 5.0);
+
+    highp vec4 wave0 = impactWave(point, normal, Impact0, cloud, flow);
+    highp vec4 wave1 = impactWave(point, normal, Impact1, cloud, flow);
+    highp vec4 wave2 = impactWave(point, normal, Impact2, cloud, flow);
+    highp vec4 wave3 = impactWave(point, normal, Impact3, cloud, flow);
+    highp vec4 waves = wave0 + wave1 + wave2 + wave3;
+    highp float energy = waves.x;
+    highp vec2 displacement =
+        normalize(point - normalize(Impact0.xy + vec2(0.00001)) * 0.982 + vec2(0.0001)) * wave0.w +
+        normalize(point - normalize(Impact1.xy + vec2(0.00001)) * 0.982 + vec2(0.0001)) * wave1.w +
+        normalize(point - normalize(Impact2.xy + vec2(0.00001)) * 0.982 + vec2(0.0001)) * wave2.w +
+        normalize(point - normalize(Impact3.xy + vec2(0.00001)) * 0.982 + vec2(0.0001)) * wave3.w;
+
+    highp vec2 crystal = point * vec2(14.0, 10.0) / (0.5 + depth * 0.6);
+    highp float facets = min(abs(sin(crystal.x + crystal.y * 0.57735)),
+        min(abs(sin(crystal.y * 1.1547)), abs(sin(crystal.x - crystal.y * 0.57735))));
+    highp float lattice = (1.0 - smoothstep(0.018, 0.018 + max(fwidth(facets), 0.0001) * 1.25, facets)) *
+        (0.035 + fresnel * 0.13 + energy * 0.52);
+    highp vec3 tint = ShieldColor.rgb;
+    highp vec3 highlight = mix(tint, vec3(1.0), 0.25);
+    highp float rimPattern = 0.55 + 0.45 * pow(0.5 + 0.5 * sin(angle * 35.0), 3.0);
+    highp float details = lattice * 2.8 + shell * (0.65 + rimPattern * 0.5) * (1.0 + Load * 0.35) +
+        energy * 0.22 + waves.z * 0.18 + waves.y * 0.15;
+    highp float detailAlpha = clamp(details, 0.0, 1.0) * inside;
+    highp float fillAlpha = FillOpacity * inside;
+    highp float coverage = fillAlpha * (1.0 - detailAlpha) + detailAlpha;
+    highp vec3 detailTint = mix(tint, highlight, clamp(shell * 0.5 + energy * 0.2 + waves.z * 0.2, 0.0, 1.0));
+    highp vec3 surface = (tint * fillAlpha * (1.0 - detailAlpha) + detailTint * detailAlpha) / max(coverage, 0.0001);
+    coverage *= clamp(ShieldColor.a, 0.0, 1.0);
+
+    // Only impacts refract the background. Idle fill is a uniform 2% tint.
+    highp vec2 screenUv = FRAGCOORD.xy * SCREEN_PIXEL_SIZE;
+    highp vec2 offset = displacement * inside;
+    highp float determinant = dFdx(point.x) * dFdy(point.y) - dFdy(point.x) * dFdx(point.y);
+    highp vec2 screenOffset = vec2(0.0);
+    if (abs(determinant) > 0.00000001)
+    {
+        screenOffset = vec2(dFdy(point.y) * offset.x - dFdy(point.x) * offset.y,
+            -dFdx(point.y) * offset.x + dFdx(point.x) * offset.y) / determinant * SCREEN_PIXEL_SIZE;
+    }
+    highp float refractionAlpha = clamp(length(offset) * 12.0, 0.0, 0.6) * ShieldColor.a;
+    highp vec3 result = surface;
+    if (refractionAlpha > 0.0001)
+    {
+        highp vec3 refracted = zTextureSpec(SCREEN_TEXTURE, clamp(screenUv + screenOffset, vec2(0.0), vec2(1.0))).rgb;
+        highp float combined = coverage + refractionAlpha * (1.0 - coverage);
+        result = (surface * coverage + refracted * refractionAlpha * (1.0 - coverage)) / max(combined, 0.0001);
+        coverage = combined;
+    }
+    COLOR = vec4(result, coverage);
+}

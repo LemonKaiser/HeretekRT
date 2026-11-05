@@ -24,6 +24,7 @@ using Content.Shared.GameTicking.Components;
 using Content.Shared.Maps;
 using Content.Shared.Mind;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Parallax;
 using Content.Shared.Tiles;
 using Robust.Server.GameObjects;
 using Robust.Shared.ContentPack;
@@ -837,6 +838,10 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
     {
         var runtime = EnsureComp<KoronusSystemMapComponent>(mapUid);
         runtime.SystemId = system.ID;
+
+        var parallax = EnsureComp<ParallaxComponent>(mapUid);
+        parallax.Parallax = system.Parallax;
+        Dirty(mapUid, parallax);
 
         // Reapply presentation settings after loading a cold snapshot as well as on first load.
         // Existing snapshots may still contain the old visible facility boundary.

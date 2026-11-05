@@ -8,6 +8,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Utility;
 using Robust.Shared.Enums;
+using Robust.Shared.Graphics;
 using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
@@ -52,8 +53,10 @@ public sealed partial class LightSourceGlowOverlay : Overlay
     private readonly Dictionary<EntityUid, CachedHazeMesh> _hazeCache = new();
     private readonly Dictionary<EntityUid, CachedRadialHazeMesh> _radialHazeCache = new();
     private readonly List<EntityUid> _staleHazeCache = new();
-    private readonly DrawVertexUV2DColor[] _hazeVertices = new DrawVertexUV2DColor[HazeRayCount * 2];
-    private readonly DrawVertexUV2DColor[] _radialHazeVertices = new DrawVertexUV2DColor[RadialHazeRayCount + 2];
+    private readonly DrawVertexUV2DColor[] _hazeVertices = new DrawVertexUV2DColor[MaxVisibleSources * HazeRayCount * 2];
+    private readonly DrawVertexUV2DColor[] _radialHazeVertices = new DrawVertexUV2DColor[MaxVisibleSources * (RadialHazeRayCount + 2)];
+    private static readonly ushort[] HazeIndices = CreateHazeIndices(HazeRayCount * 2, false);
+    private static readonly ushort[] RadialHazeIndices = CreateHazeIndices(RadialHazeRayCount + 2, true);
     private TimeSpan _nextCacheSweep;
 
     /// <summary>
@@ -80,14 +83,17 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        return Enabled && args.MapId != MapId.Nullspace && args.Viewport.Eye != null;
+        if (!Enabled || args.MapId == MapId.Nullspace || args.Viewport.Eye is not { } eye)
+            return false;
+
+        CollectSources(args, eye);
+        SweepHazeCache();
+        // BeforeDraw runs before the renderer copies SCREEN_TEXTURE for bloom.
+        return _sources.Count > 0;
     }
 
-    protected override void Draw(in OverlayDrawArgs args)
+    private void CollectSources(in OverlayDrawArgs args, IEye eye)
     {
-        if (args.Viewport.Eye is not { } eye)
-            return;
-
         _candidates.Clear();
         _sources.Clear();
         var queryBounds = args.WorldAABB.Enlarged(1f);
@@ -257,7 +263,10 @@ public sealed partial class LightSourceGlowOverlay : Overlay
                 return distance != 0 ? distance : a.Entity.CompareTo(b.Entity);
             });
         }
+    }
 
+    protected override void Draw(in OverlayDrawArgs args)
+    {
         var handle = args.WorldHandle;
         handle.SetTransform(Matrix3x2.Identity);
         DrawRadialHaze(handle, args.MapId);
@@ -267,8 +276,6 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
         handle.SetTransform(Matrix3x2.Identity);
         handle.UseShader(null);
-
-        SweepHazeCache();
     }
 
     private void DrawSourceBloom(DrawingHandleWorld handle)
@@ -294,7 +301,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     private void DrawDirectionalHaze(DrawingHandleWorld handle, MapId mapId)
     {
-        handle.UseShader(_hazeShader);
+        var sourceCount = 0;
 
         for (var sourceIndex = 0; sourceIndex < Math.Min(MaxVisibleSources, _sources.Count); sourceIndex++)
         {
@@ -304,22 +311,30 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
             var mesh = GetHazeMesh(mapId, source);
             var color = Color.FromSrgb(source.HazeColor);
+            var vertexOffset = sourceCount * HazeRayCount * 2;
             for (var rayIndex = 0; rayIndex < HazeRayCount; rayIndex++)
             {
                 var u = rayIndex / (HazeRayCount - 1f);
-                _hazeVertices[rayIndex * 2] = new DrawVertexUV2DColor(mesh.Vertices[rayIndex * 2], new Vector2(0.5f), color)
+                _hazeVertices[vertexOffset + rayIndex * 2] = new DrawVertexUV2DColor(mesh.Vertices[rayIndex * 2], new Vector2(0.5f), color)
                 {
                     UV2 = new Vector2(u, 0f),
                 };
-                _hazeVertices[rayIndex * 2 + 1] = new DrawVertexUV2DColor(mesh.Vertices[rayIndex * 2 + 1], new Vector2(0.5f), color)
+                _hazeVertices[vertexOffset + rayIndex * 2 + 1] = new DrawVertexUV2DColor(mesh.Vertices[rayIndex * 2 + 1], new Vector2(0.5f), color)
                 {
                     UV2 = new Vector2(u, 1f),
                 };
             }
 
-            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, Texture.White, _hazeVertices);
+            sourceCount++;
         }
 
+        if (sourceCount == 0)
+            return;
+
+        handle.UseShader(_hazeShader);
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, Texture.White,
+            HazeIndices.AsSpan(0, sourceCount * (HazeRayCount * 2 - 2) * 3),
+            _hazeVertices.AsSpan(0, sourceCount * HazeRayCount * 2));
         handle.UseShader(null);
     }
 
@@ -340,7 +355,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
     private void DrawRadialHaze(DrawingHandleWorld handle, MapId mapId)
     {
-        handle.UseShader(_radialHazeShader);
+        var sourceCount = 0;
 
         for (var sourceIndex = 0; sourceIndex < Math.Min(MaxVisibleSources, _sources.Count); sourceIndex++)
         {
@@ -352,36 +367,56 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             var color = Color.FromSrgb(source.HazeColor);
             var isMounted = source.HazeShape == HazeShape.RadialMounted;
             var shaderMode = new Vector2(isMounted ? 1f : 0f, 0f);
-            _radialHazeVertices[0] = new DrawVertexUV2DColor(mesh.Vertices[0], shaderMode, color)
+            var vertexOffset = sourceCount * (RadialHazeRayCount + 2);
+            _radialHazeVertices[vertexOffset] = new DrawVertexUV2DColor(mesh.Vertices[0], shaderMode, color)
             {
                 UV2 = new Vector2(0.5f),
             };
 
             for (var rayIndex = 0; rayIndex <= RadialHazeRayCount; rayIndex++)
             {
-                var radialUv = GetRadialDirection(source.MountDirection, rayIndex, RadialHazeRayCount);
-                var shaderDirection = radialUv;
-                if (isMounted)
-                {
-                    var perpendicular = new Vector2(-source.MountDirection.Y, source.MountDirection.X);
-                    shaderDirection = new Vector2(
-                        Vector2.Dot(radialUv, perpendicular),
-                        Vector2.Dot(radialUv, source.MountDirection));
-                }
-
-                _radialHazeVertices[rayIndex + 1] = new DrawVertexUV2DColor(
+                _radialHazeVertices[vertexOffset + rayIndex + 1] = new DrawVertexUV2DColor(
                     mesh.Vertices[rayIndex + 1],
                     shaderMode,
                     color)
                 {
-                    UV2 = new Vector2(0.5f) + shaderDirection * 0.5f,
+                    UV2 = mesh.Uvs[rayIndex],
                 };
             }
 
-            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, Texture.White, _radialHazeVertices);
+            sourceCount++;
         }
 
+        if (sourceCount == 0)
+            return;
+
+        handle.UseShader(_radialHazeShader);
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, Texture.White,
+            RadialHazeIndices.AsSpan(0, sourceCount * RadialHazeRayCount * 3),
+            _radialHazeVertices.AsSpan(0, sourceCount * (RadialHazeRayCount + 2)));
         handle.UseShader(null);
+    }
+
+    private static ushort[] CreateHazeIndices(int verticesPerSource, bool fan)
+    {
+        var trianglesPerSource = verticesPerSource - 2;
+        var indices = new ushort[MaxVisibleSources * trianglesPerSource * 3];
+        var index = 0;
+        for (var source = 0; source < MaxVisibleSources; source++)
+        {
+            var vertexOffset = source * verticesPerSource;
+            for (var triangle = 0; triangle < trianglesPerSource; triangle++)
+            {
+                var first = vertexOffset + (fan ? 0 : triangle);
+                var second = vertexOffset + triangle + 1;
+                if (!fan && triangle % 2 != 0)
+                    (first, second) = (second, first);
+                indices[index++] = (ushort) first;
+                indices[index++] = (ushort) second;
+                indices[index++] = (ushort) (vertexOffset + triangle + 2);
+            }
+        }
+        return indices;
     }
 
     private CachedHazeMesh GetHazeMesh(MapId mapId, in GlowSource source)
@@ -397,7 +432,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             return cached;
         }
 
-        var positions = new Vector2[HazeRayCount * 2];
+        var positions = cached.Vertices ?? new Vector2[HazeRayCount * 2];
         var perpendicular = new Vector2(-source.HazeDirection.Y, source.HazeDirection.X);
 
         for (var rayIndex = 0; rayIndex < HazeRayCount; rayIndex++)
@@ -424,7 +459,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             source.HazeDirection,
             source.HazeLength,
             source.HazeHalfWidth,
-            now + HazeCacheLifetime,
+            NextHazeUpdate(source.Entity, now),
             positions);
         _hazeCache[source.Entity] = cached;
         return cached;
@@ -437,16 +472,23 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             cached.ExpiresAt > now &&
             Vector2.DistanceSquared(cached.Center, source.HazeCenter) < 0.0004f &&
             cached.MountDirection == source.MountDirection &&
+            cached.Shape == source.HazeShape &&
             MathHelper.CloseTo(cached.Radius, source.RadialHazeRadius))
         {
             return cached;
         }
 
-        var positions = new Vector2[RadialHazeRayCount + 2];
+        var positions = cached.Vertices ?? new Vector2[RadialHazeRayCount + 2];
+        var uvs = cached.Uvs ?? new Vector2[RadialHazeRayCount + 1];
         positions[0] = source.HazeCenter;
+        var perpendicular = new Vector2(-source.MountDirection.Y, source.MountDirection.X);
         for (var rayIndex = 0; rayIndex <= RadialHazeRayCount; rayIndex++)
         {
             var direction = GetRadialDirection(source.MountDirection, rayIndex, RadialHazeRayCount);
+            var shaderDirection = source.HazeShape == HazeShape.RadialMounted
+                ? new Vector2(Vector2.Dot(direction, perpendicular), Vector2.Dot(direction, source.MountDirection))
+                : direction;
+            uvs[rayIndex] = new Vector2(0.5f) + shaderDirection * 0.5f;
             var distance = GetUnoccludedHazeLength(
                 mapId,
                 source.Entity,
@@ -463,10 +505,24 @@ public sealed partial class LightSourceGlowOverlay : Overlay
             source.HazeCenter,
             source.MountDirection,
             source.RadialHazeRadius,
-            now + HazeCacheLifetime,
-            positions);
+            source.HazeShape,
+            NextHazeUpdate(source.Entity, now),
+            positions,
+            uvs);
         _radialHazeCache[source.Entity] = cached;
         return cached;
+    }
+
+    private static TimeSpan NextHazeUpdate(EntityUid entity, TimeSpan now)
+    {
+        var period = HazeCacheLifetime.Ticks;
+        // Give each source a stable phase; never keep a mesh longer than the original cache lifetime.
+        var hash = unchecked((uint) entity.GetHashCode() * 2654435761u);
+        var phase = (long) ((ulong) hash * (ulong) period >> 32);
+        var next = now.Ticks - now.Ticks % period + phase;
+        if (next <= now.Ticks)
+            next += period;
+        return TimeSpan.FromTicks(next);
     }
 
     private float GetUnoccludedHazeLength(
@@ -690,7 +746,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         RadialOmnidirectional,
     }
 
-    private sealed record CachedHazeMesh(
+    private readonly record struct CachedHazeMesh(
         Vector2 Center,
         Vector2 Direction,
         float Length,
@@ -698,10 +754,12 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         TimeSpan ExpiresAt,
         Vector2[] Vertices);
 
-    private sealed record CachedRadialHazeMesh(
+    private readonly record struct CachedRadialHazeMesh(
         Vector2 Center,
         Vector2 MountDirection,
         float Radius,
+        HazeShape Shape,
         TimeSpan ExpiresAt,
-        Vector2[] Vertices);
+        Vector2[] Vertices,
+        Vector2[] Uvs);
 }

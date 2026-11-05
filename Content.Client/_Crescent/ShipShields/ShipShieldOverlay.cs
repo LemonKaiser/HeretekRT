@@ -1,4 +1,5 @@
 using Content.Shared._Crescent.ShipShields;
+using Content.Shared._WH40K.ShipShields;
 using Robust.Client.ResourceManagement;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
@@ -50,6 +51,9 @@ public sealed class ShipShieldOverlay : Overlay
         {
 
             if (xform.MapID != args.MapId)
+                continue;
+
+            if (_entManager.HasComponent<BastionShieldComponent>(uid))
                 continue;
 
             var fixture = _fixture.GetFixtureOrNull(uid, "shield", fixtures);

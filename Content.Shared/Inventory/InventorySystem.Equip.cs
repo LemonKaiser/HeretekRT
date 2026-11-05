@@ -100,7 +100,7 @@ public abstract partial class InventorySystem
         // unequip the item.
         if (itemUid != null)
         {
-            if (!TryUnequip(actor, ev.Slot, out var item, predicted: true, inventory: inventory, checkDoafter: true))
+            if (!TryUnequip(actor, ev.Slot, out var item, predicted: true, inventory: inventory, checkDoafter: true, triggerHandContact: true))
                 return;
 
             _handsSystem.PickupOrDrop(actor, item.Value);
@@ -123,15 +123,15 @@ public abstract partial class InventorySystem
 
         RaiseLocalEvent(held.Value, new HandDeselectedEvent(actor));
 
-        TryEquip(actor, actor, held.Value, ev.Slot, predicted: true, inventory: inventory, force: true, checkDoafter: true);
+        TryEquip(actor, actor, held.Value, ev.Slot, predicted: true, inventory: inventory, force: true, checkDoafter: true, triggerHandContact: true);
     }
 
     public bool TryEquip(EntityUid uid, EntityUid itemUid, string slot, bool silent = false, bool force = false, bool predicted = false,
-        InventoryComponent? inventory = null, ClothingComponent? clothing = null, bool checkDoafter = false) =>
-        TryEquip(uid, uid, itemUid, slot, silent, force, predicted, inventory, clothing, checkDoafter);
+        InventoryComponent? inventory = null, ClothingComponent? clothing = null, bool checkDoafter = false, bool triggerHandContact = false) =>
+        TryEquip(uid, uid, itemUid, slot, silent, force, predicted, inventory, clothing, checkDoafter, triggerHandContact);
 
     public bool TryEquip(EntityUid actor, EntityUid target, EntityUid itemUid, string slot, bool silent = false, bool force = false, bool predicted = false,
-        InventoryComponent? inventory = null, ClothingComponent? clothing = null, bool checkDoafter = false)
+        InventoryComponent? inventory = null, ClothingComponent? clothing = null, bool checkDoafter = false, bool triggerHandContact = false)
     {
         if (!Resolve(target, ref inventory, false))
         {
@@ -194,6 +194,9 @@ public abstract partial class InventorySystem
         }
 
         Dirty(target, inventory);
+
+        if (triggerHandContact && (slotDefinition.SlotFlags & SlotFlags.GLOVES) != 0)
+            TriggerHandContactInteraction(target);
 
         _movementSpeed.RefreshMovementSpeedModifiers(target, alsoFriction: true); // Mono
 
@@ -352,9 +355,9 @@ public abstract partial class InventorySystem
         ClothingComponent? clothing = null,
         bool reparent = true,
         bool checkDoafter = false,
-        bool child = false) // Frontier: raise DroppedEvent on all children
+        bool child = false, bool triggerHandContact = false) // Frontier: raise DroppedEvent on all children
     {
-        return TryUnequip(uid, uid, slot, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child); // Frontier: add child
+        return TryUnequip(uid, uid, slot, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child, triggerHandContact); // Frontier: add child
     }
 
     public bool TryUnequip(
@@ -368,9 +371,9 @@ public abstract partial class InventorySystem
         ClothingComponent? clothing = null,
         bool reparent = true,
         bool checkDoafter = false,
-        bool child = false) // Frontier: raise DroppedEvent on all children
+        bool child = false, bool triggerHandContact = false) // Frontier: raise DroppedEvent on all children
     {
-        return TryUnequip(actor, target, slot, out _, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child); // Frontier: add child
+        return TryUnequip(actor, target, slot, out _, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child, triggerHandContact); // Frontier: add child
     }
 
     public bool TryUnequip(
@@ -384,9 +387,9 @@ public abstract partial class InventorySystem
         ClothingComponent? clothing = null,
         bool reparent = true,
         bool checkDoafter = false,
-        bool child = false) // Frontier: raise DroppedEvent on all children
+        bool child = false, bool triggerHandContact = false) // Frontier: raise DroppedEvent on all children
     {
-        return TryUnequip(uid, uid, slot, out removedItem, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child); // Frontier: add child
+        return TryUnequip(uid, uid, slot, out removedItem, silent, force, predicted, inventory, clothing, reparent, checkDoafter, child, triggerHandContact); // Frontier: add child
     }
 
     public bool TryUnequip(
@@ -401,11 +404,11 @@ public abstract partial class InventorySystem
         ClothingComponent? clothing = null,
         bool reparent = true,
         bool checkDoafter = false,
-        bool child = false) // Frontier: raise DroppedEvent on all children
+        bool child = false, bool triggerHandContact = false) // Frontier: raise DroppedEvent on all children
     {
         var itemsDropped = 0;
         return TryUnequip(actor, target, slot, out removedItem, ref itemsDropped,
-            silent, force, predicted, inventory, clothing, reparent, checkDoafter, child); // Frontier: add child
+            silent, force, predicted, inventory, clothing, reparent, checkDoafter, child, triggerHandContact); // Frontier: add child
     }
 
     private bool TryUnequip(
@@ -421,7 +424,7 @@ public abstract partial class InventorySystem
         ClothingComponent? clothing = null,
         bool reparent = true,
         bool checkDoafter = false,
-        bool child = false) // Frontier: raise DroppedEvent on all children
+        bool child = false, bool triggerHandContact = false) // Frontier: raise DroppedEvent on all children
     {
         removedItem = null;
 
@@ -518,6 +521,9 @@ public abstract partial class InventorySystem
         }
 
         Dirty(target, inventory);
+
+        if (triggerHandContact && (slotDefinition.SlotFlags & SlotFlags.GLOVES) != 0)
+            TriggerHandContactInteraction(target);
 
         _movementSpeed.RefreshMovementSpeedModifiers(target, alsoFriction: true); // Mono
 

@@ -39,6 +39,16 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public KoronusSpaceMode SpaceMode = KoronusSpaceMode.Standard;
 
     /// <summary>
+    /// Diffuse scenery beneath the system's actual celestial bodies, reapplied on cold restore.
+    /// Parallax prototypes are client-only, so this uses the same string ID as ParallaxComponent.
+    /// </summary>
+    [DataField]
+    public string Parallax = "WH40KKoronusVeil";
+
+    [DataField]
+    public LocId? SpaceDescription;
+
+    /// <summary>
     /// Authored position of the star in a planetary system. It is the source of boundaries, orbit display
     /// and safe orbital arrivals; an optional initial grid must never redefine it.
     /// </summary>

@@ -8,6 +8,8 @@ namespace Content.Shared.Interaction
     [PublicAPI]
     public abstract class InteractEvent : HandledEntityEventArgs
     {
+        public bool SpawnInteractionParticles = true;
+
         /// <summary>
         ///     Entity that triggered the interaction.
         /// </summary>

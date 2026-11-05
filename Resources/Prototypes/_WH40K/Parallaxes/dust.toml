@@ -1,0 +1,20 @@
+[[layers]]
+type = "clear"
+color = "#000000"
+
+[[layers]]
+type = "points"
+closecolor = "#777D88"
+count = 85
+pointsize = 1
+seed = 41007
+
+[[layers]]
+type = "points"
+closecolor = "#4B5059"
+count = 24
+pointsize = 2
+seed = 41019
+
+[[layers]]
+type = "toalpha"

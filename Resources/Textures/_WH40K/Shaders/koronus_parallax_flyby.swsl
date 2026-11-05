@@ -1,0 +1,63 @@
+light_mode unshaded;
+
+uniform highp vec4 Tint;
+uniform highp float Interval;
+uniform highp float Seed;
+
+void fragment() {
+    highp float cycle = floor(TIME / Interval);
+    highp float phase = fract((cycle + Seed) * 0.6180339);
+    highp float random = fract(phase * (phase * 19.19 + 7.31));
+    highp float kind = fract(random * 13.71);
+    highp float slow = step(0.78, kind);
+    highp float duration = mix(2.4 + random * 0.8, 9.0 + random * 3.0, slow);
+    highp float start = Interval * (0.12 + random * 0.68);
+    highp float progress = (TIME - cycle * Interval - start) / duration;
+    if (progress < 0.0 || progress > 1.0) discard;
+
+    highp vec3 variation = fract(random * vec3(17.13, 29.37, 43.19));
+    highp float heading = variation.x < 0.5 ? -1.0 : 1.0;
+    highp float slope = (variation.y - 0.5) * 0.55;
+    highp vec2 direction = normalize(vec2(heading * 1.36, slope));
+    highp vec2 sideways = vec2(-direction.y, direction.x);
+    highp vec2 head = vec2(0.5 + heading * (progress - 0.5) * 1.36,
+        0.24 + variation.z * 0.52 + slope * (progress - 0.5));
+    highp vec2 delta = UV - head;
+    highp float along = dot(delta, direction);
+    highp float across = dot(delta, sideways);
+    highp float fade = smoothstep(0.0, 0.12, progress) * (1.0 - smoothstep(0.86, 1.0, progress));
+    highp vec3 colour;
+    highp float alpha;
+
+    if (slow > 0.5) {
+        highp float hull = 1.0 - smoothstep(0.75, 1.0,
+            max(abs(along) / 0.006, abs(across) / 0.0016));
+        highp float wings = 1.0 - smoothstep(0.75, 1.0,
+            max(abs(along + 0.002) / 0.002, abs(across) / 0.0045));
+        highp vec2 portDelta = delta - sideways * 0.004;
+        highp vec2 starboardDelta = delta + sideways * 0.004;
+        highp float port = exp(-dot(portDelta, portDelta) / 0.0000009);
+        highp float starboard = exp(-dot(starboardDelta, starboardDelta) / 0.0000009);
+        highp float blink = 0.55 + 0.45 * pow(0.5 + 0.5 * sin(TIME * 4.4), 6.0);
+        highp float body = max(hull, wings);
+        colour = vec3(0.06, 0.07, 0.09) * body;
+        colour += vec3(1.0, 0.18, 0.12) * port * blink;
+        colour += vec3(0.18, 0.85, 0.55) * starboard * blink;
+        alpha = max(body * 0.7, max(port, starboard) * blink);
+    }
+    else {
+        highp float trailLength = 0.055 + variation.y * 0.055;
+        highp float width = 0.0006;
+        highp float taper = clamp(1.0 + along / trailLength, 0.0, 1.0);
+        highp float tail = taper * exp(-abs(across) / (width * (0.25 + taper * 0.75)));
+        tail *= 1.0 - smoothstep(0.0, width, along);
+        highp float core = exp(-dot(delta, delta) / (width * width));
+        highp float halo = exp(-dot(delta, delta) / (width * width * 16.0)) * 0.16;
+        colour = Tint.rgb * (0.65 + core * 0.35);
+        alpha = clamp(tail * 0.65 + core + halo, 0.0, 1.0);
+    }
+
+    alpha *= fade * Tint.a;
+    if (alpha < 0.001) discard;
+    COLOR = vec4(colour, alpha);
+}

@@ -244,6 +244,7 @@ public abstract partial class SharedHandsSystem : EntitySystem
             return;
         }
         RaiseLocalEvent(entity, new PickedUpEvent(uid, entity), false); // Frontier
+        _interactionSystem.DoContactInteraction(uid, entity, null, true);
 
         if (log)
         {

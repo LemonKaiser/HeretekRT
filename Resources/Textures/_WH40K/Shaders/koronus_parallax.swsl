@@ -1,0 +1,19 @@
+light_mode unshaded;
+
+uniform highp vec4 Tint;
+uniform highp float Saturation;
+uniform highp float PulseStrength;
+uniform highp float PulseSpeed;
+uniform highp float PulseScale;
+
+void fragment() {
+    highp vec4 sampled = zTexture(UV);
+    highp float luminance = dot(sampled.rgb, vec3(0.2126, 0.7152, 0.0722));
+    highp vec3 colour = mix(vec3(luminance), sampled.rgb, Saturation) * Tint.rgb;
+    highp float glow = 1.0;
+    if (PulseStrength > 0.0) {
+        highp vec2 phase = UV * (6.2831853 * PulseScale);
+        glow -= PulseStrength * (0.5 + 0.5 * sin(TIME * PulseSpeed + sin(phase.x) + cos(phase.y)));
+    }
+    COLOR = vec4(colour * glow, sampled.a * Tint.a);
+}

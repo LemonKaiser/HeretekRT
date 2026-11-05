@@ -2,6 +2,8 @@
 - type: koronusSystem
   id: Footfall
   sector: KoronusExpanse
+  parallax: WH40KKoronusVeil
+  spaceDescription: koronus-space-veil-description
   displayName: Furibundus (Footfall)
   uiPosition: 0.541, 0.871
   initialGridSpawnDistance: 5200
@@ -39,6 +41,8 @@
 - type: koronusSystem
   id: Aivorius
   sector: KoronusExpanse
+  parallax: WH40KKoronusEmber
+  spaceDescription: koronus-space-ember-description
   displayName: Aivorius
   uiPosition: 0.525, 0.817
   # The authored derelict stays at the lower system marker; it is the Drifting Voidship from Aivorius.
@@ -61,6 +65,8 @@
 - type: koronusSystem
   id: SottosTomb
   sector: KoronusExpanse
+  parallax: WH40KKoronusFrost
+  spaceDescription: koronus-space-frost-description
   displayName: Sotto's Tomb
   uiPosition: 0.496, 0.841
   initialGridPath: /Maps/_WH40K/Citadel.yml
@@ -83,6 +89,8 @@
 - type: koronusSystem
   id: Trinnitos
   sector: KoronusExpanse
+  parallax: WH40KKoronusVeil
+  spaceDescription: koronus-space-veil-description
   displayName: Trinnitos (Foulstone)
   uiPosition: 0.529, 0.731
   initialGridPath: /Maps/_NF/POI/trade.yml
@@ -105,6 +113,8 @@
 - type: koronusSystem
   id: SystemSpeculum
   sector: KoronusExpanse
+  parallax: WH40KKoronusAbyss
+  spaceDescription: koronus-space-abyss-description
   displayName: koronus-system-speculum-name
   uiPosition: 0.506, 0.708
   spaceMode: Planetary
@@ -116,6 +126,8 @@
 - type: koronusSystem
   id: Omicron
   sector: KoronusExpanse
+  parallax: WH40KKoronusFrost
+  spaceDescription: koronus-space-frost-description
   displayName: koronus-system-omicron-name
   uiPosition: 0.507, 0.758
   spaceMode: Planetary
@@ -304,6 +316,8 @@
 - type: koronusSystem
   id: TelikosEpsilon
   sector: KoronusExpanse
+  parallax: WH40KKoronusVeil
+  spaceDescription: koronus-space-veil-description
   displayName: koronus-system-telikos-epsilon-name
   uiPosition: 0.550, 0.677
   spaceMode: Planetary
@@ -315,6 +329,8 @@
 - type: koronusSystem
   id: CradleOfKhepri
   sector: KoronusExpanse
+  parallax: WH40KKoronusEmber
+  spaceDescription: koronus-space-ember-description
   displayName: koronus-system-cradle-of-khepri-name
   uiPosition: 0.584, 0.774
   spaceMode: Planetary
@@ -327,6 +343,8 @@
 - type: koronusSystem
   id: PalatinumStellios
   sector: KoronusExpanse
+  parallax: WH40KKoronusFrost
+  spaceDescription: koronus-space-frost-description
   displayName: koronus-system-palatinum-stellios-name
   uiPosition: 0.604, 0.817
   spaceMode: Planetary
@@ -352,6 +370,8 @@
 - type: koronusSystem
   id: ForgottenTwins
   sector: KoronusExpanse
+  parallax: WH40KKoronusAbyss
+  spaceDescription: koronus-space-abyss-description
   displayName: koronus-system-forgotten-twins-name
   uiPosition: 0.638, 0.742
   spaceMode: Planetary

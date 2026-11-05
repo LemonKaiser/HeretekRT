@@ -1,0 +1,101 @@
+- type: shader
+  id: KoronusParallaxVeil
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#BA99C7CC"
+    Saturation: 0.5
+    PulseStrength: 0.12
+    PulseSpeed: 0.035
+    PulseScale: 1.0
+
+- type: shader
+  id: KoronusParallaxFlybyVeil
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax_flyby.swsl
+  params:
+    Tint: "#C3D6FFE6"
+    Interval: 100.0
+    Seed: 11.3
+
+- type: shader
+  id: KoronusParallaxFlybyEmber
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax_flyby.swsl
+  params:
+    Tint: "#FFD2A6E6"
+    Interval: 85.0
+    Seed: 31.7
+
+- type: shader
+  id: KoronusParallaxFlybyFrost
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax_flyby.swsl
+  params:
+    Tint: "#BCDFFFE6"
+    Interval: 125.0
+    Seed: 47.9
+
+- type: shader
+  id: KoronusParallaxFlybyAbyss
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax_flyby.swsl
+  params:
+    Tint: "#D8C4FFE6"
+    Interval: 145.0
+    Seed: 79.1
+
+- type: shader
+  id: KoronusParallaxEmber
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#FFB078B8"
+    Saturation: 0.15
+    PulseStrength: 0.15
+    PulseSpeed: 0.027
+    PulseScale: 1.0
+
+- type: shader
+  id: KoronusParallaxFrost
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#76B7E8B8"
+    Saturation: 0.1
+    PulseStrength: 0.1
+    PulseSpeed: 0.022
+    PulseScale: 1.0
+
+- type: shader
+  id: KoronusParallaxAbyss
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#8C72B899"
+    Saturation: 0.25
+    PulseStrength: 0.18
+    PulseSpeed: 0.02
+    PulseScale: 1.0
+
+- type: shader
+  id: KoronusParallaxStars
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#FFFFFFFF"
+    Saturation: 1.0
+    PulseStrength: 0.16
+    PulseSpeed: 0.24
+    PulseScale: 113.0
+
+- type: shader
+  id: KoronusParallaxDust
+  kind: source
+  path: /Textures/_WH40K/Shaders/koronus_parallax.swsl
+  params:
+    Tint: "#9AA6B880"
+    Saturation: 0.0
+    PulseStrength: 0.0
+    PulseSpeed: 0.025
+    PulseScale: 1.0

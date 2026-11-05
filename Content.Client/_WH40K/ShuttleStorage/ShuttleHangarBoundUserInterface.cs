@@ -3,7 +3,7 @@ using Robust.Client.GameObjects;
 
 namespace Content.Client._WH40K.ShuttleStorage;
 
-public sealed class ShuttleStorageBoundUserInterface(EntityUid owner, Enum key) : BoundUserInterface(owner, key)
+public sealed class ShuttleHangarBoundUserInterface(EntityUid owner, Enum key) : BoundUserInterface(owner, key)
 {
     private ShuttleStorageWindow? _window;
     private ShuttleStorageSnapshot? _snapshot;

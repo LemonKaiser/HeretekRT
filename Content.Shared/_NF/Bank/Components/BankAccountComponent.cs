@@ -3,7 +3,7 @@ using Robust.Shared.GameStates;
 namespace Content.Shared._NF.Bank.Components;
 
 [RegisterComponent, NetworkedComponent]
-[AutoGenerateComponentState]
+[AutoGenerateComponentState(true)]
 public sealed partial class BankAccountComponent : Component
 {
     // The amount of money this entity has in their bank account.

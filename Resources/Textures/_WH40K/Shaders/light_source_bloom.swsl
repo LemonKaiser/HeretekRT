@@ -21,6 +21,10 @@ highp vec3 brightSample(highp vec2 screenUv, highp vec2 pixelOffset)
 
 void fragment()
 {
+    highp vec2 local = UV2 * 2.0 - 1.0;
+    if (dot(local, local) >= 1.0)
+        discard;
+
     highp vec2 screenUv = FRAGCOORD.xy * SCREEN_PIXEL_SIZE;
 
     // One-pass 5x5 Gaussian bright-pass. The local quad keeps the cost proportional to the number of lamps,
@@ -57,7 +61,6 @@ void fragment()
     bloom += brightSample(screenUv, vec2( 4.0,  8.0)) * 0.0120;
     bloom += brightSample(screenUv, vec2( 8.0,  8.0)) * 0.0025;
 
-    highp vec2 local = UV2 * 2.0 - 1.0;
     highp float localMask = 1.0 - smoothstep(0.48, 1.0, dot(local, local));
     COLOR = vec4(bloom * 1.12, localMask);
 }

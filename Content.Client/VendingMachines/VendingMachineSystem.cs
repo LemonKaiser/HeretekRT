@@ -15,6 +15,7 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
     public override void Initialize()
     {
         base.Initialize();
+        InitializeKeypad();
 
         SubscribeLocalEvent<VendingMachineComponent, AppearanceChangeEvent>(OnAppearanceChange);
         SubscribeLocalEvent<VendingMachineComponent, AnimationCompletedEvent>(OnAnimationCompleted);

@@ -122,7 +122,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             inTargetHand = targetHandsComponent.ActiveHand.HeldEntity!.Value;
         }
 
-        Interaction.DoContactInteraction(user, target);
+        Interaction.DoContactInteraction(user, target, null, false);
 
         var attemptEvent = new DisarmAttemptEvent(target, user, inTargetHand);
 

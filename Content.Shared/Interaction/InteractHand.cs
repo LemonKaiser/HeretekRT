@@ -21,6 +21,8 @@ namespace Content.Shared.Interaction
     [PublicAPI]
     public sealed class InteractHandEvent : HandledEntityEventArgs, ITargetedInteractEventArgs
     {
+        public bool InteractionParticle = true;
+
         /// <summary>
         ///     Entity that triggered the interaction.
         /// </summary>

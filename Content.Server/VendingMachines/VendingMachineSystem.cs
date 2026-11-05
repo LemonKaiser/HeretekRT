@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.VendingMachines;
 using System.Linq;
 using Content.Server._NF.Bank;
 using System.Numerics;
@@ -77,6 +78,7 @@ namespace Content.Server.VendingMachines
             Subs.BuiEvents<VendingMachineComponent>(VendingMachineUiKey.Key, subs =>
             {
                 subs.Event<VendingMachineEjectMessage>(OnInventoryEjectMessage);
+                subs.Event<VendingMachineKeypadAudioMessage>(OnKeypadAudio);
             });
 
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineSelfDispenseEvent>(OnSelfDispense);
@@ -123,16 +125,13 @@ namespace Content.Server.VendingMachines
 
         private void OnInventoryEjectMessage(EntityUid uid, VendingMachineComponent component, VendingMachineEjectMessage args)
         {
-            if (!this.IsPowered(uid, EntityManager))
+            if (args.Actor is not { Valid: true } actor || Deleted(actor))
                 return;
 
-            if (args.Actor is not { Valid: true } entity || Deleted(entity))
-                return;
-
-            if (component.Ejecting)
-                return;
-
-            AuthorizedVend(uid, entity, args.Type, args.ID, component);
+            var success = this.IsPowered(uid, EntityManager) && !component.Broken && !component.Ejecting &&
+                          AuthorizedVend(uid, actor, args.Type, args.ID, component);
+            _keypadUi.ServerSendUiMessage(uid, VendingMachineUiKey.Key,
+                new VendingMachineVendResultMessage(args.Type, args.ID, success), actor);
         }
 
         private void OnPowerChanged(EntityUid uid, VendingMachineComponent component, ref PowerChangedEvent args)
@@ -329,10 +328,10 @@ namespace Content.Server.VendingMachines
         /// <param name="type">The type of inventory the item is from</param>
         /// <param name="itemId">The prototype ID of the item</param>
         /// <param name="component"></param>
-        public void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
+        public bool AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
         {
             if (!_prototypeManager.TryIndex<EntityPrototype>(itemId, out var proto))
-                return;
+                return false;
 
             var price = _pricing.GetEstimatedPrice(proto);
             // Somewhere deep in the code of pricing, a hardcoded 20 dollar value exists for anything without
@@ -365,7 +364,7 @@ namespace Content.Server.VendingMachines
                 {
                     _popupSystem.PopupEntity(Loc.GetString("bank-insufficient-funds"), uid);
                     Deny(uid, component);
-                    return;
+                    return false;
                 }
 
                 bool paidFully = false;
@@ -400,8 +399,10 @@ namespace Content.Server.VendingMachines
 
                     _adminLogger.Add(LogType.Action, LogImpact.Low,
                         $"{ToPrettyString(sender):user} bought from [vendingMachine:{ToPrettyString(uid!)}, product:{proto.Name}, cost:{totalPrice},  with ${cashSlotBalance} in the cash slot and ${bankBalance} in the bank.");
+                    return true;
                 }
             }
+            return false;
             // End Frontier
         }
 

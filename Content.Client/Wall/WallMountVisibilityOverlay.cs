@@ -1,8 +1,11 @@
 using Content.Client.Graphics;
 using Content.Client.Wall.Systems;
+using Content.Shared.ActionBlocker;
+using Content.Shared.Interaction;
 using Content.Shared.Wall;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Client.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Graphics;
 using Robust.Shared.Map;
@@ -18,7 +21,10 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
 {
     [Dependency] private IEntityManager _entManager = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
+    private readonly ActionBlockerSystem _actionBlocker;
+    private readonly SharedInteractionSystem _interaction;
     private readonly SharedMapSystem _map;
     private readonly OccluderSystem _occluder;
     private readonly SpriteSystem _sprite;
@@ -33,6 +39,8 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
     {
         IoCManager.InjectDependencies(this);
 
+        _actionBlocker = _entManager.System<ActionBlockerSystem>();
+        _interaction = _entManager.System<SharedInteractionSystem>();
         _map = _entManager.System<SharedMapSystem>();
         _occluder = _entManager.System<OccluderSystem>();
         _sprite = _entManager.System<SpriteSystem>();
@@ -148,15 +156,32 @@ public sealed partial class WallMountVisibilityOverlay : Overlay
 
             viewportState.SeenThisFrame.Add(uid);
 
-            var targetAlpha = ComputeTargetAlpha(wallmount, xform, eye, out var occluded);
+            var targetAlpha = ComputeTargetAlpha(uid, wallmount, xform, eye, out var occluded);
             UpdateFadeState(uid, originalAlpha, targetAlpha, fadeStep, occluded, viewportState);
         }
     }
 
     /// <summary>
+    /// Keeps reachable mounts visible in the player's own view even at an oblique angle.
+    /// </summary>
+    private float ComputeTargetAlpha(EntityUid uid, WallMountComponent wallmount, TransformComponent xform, IEye eye, out bool occluded)
+    {
+        var targetAlpha = ComputeDirectionalTargetAlpha(wallmount, xform, eye, out occluded);
+        if (targetAlpha > 0f ||
+            _playerManager.LocalEntity is not { } user ||
+            !_entManager.TryGetComponent(user, out EyeComponent? playerEye) || playerEye.Eye != eye ||
+            !_interaction.InRangeAndAccessible(user, (uid, xform)) ||
+            !_actionBlocker.CanInteract(user, uid))
+            return targetAlpha;
+
+        occluded = false;
+        return 1f;
+    }
+
+    /// <summary>
     /// Returns 1 when the wall's visible face is within the mount's arc and unobstructed from the eye.
     /// </summary>
-    private float ComputeTargetAlpha(WallMountComponent wallmount, TransformComponent xform, IEye eye, out bool occluded)
+    private float ComputeDirectionalTargetAlpha(WallMountComponent wallmount, TransformComponent xform, IEye eye, out bool occluded)
     {
         occluded = false;
         if (!wallmount.DirectionalVisibility || wallmount.Arc >= Math.Tau)

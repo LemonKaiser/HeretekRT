@@ -3,17 +3,22 @@ using Content.Client.UserInterface.Controls;
 using Content.Shared._WH40K.Activities;
 using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
+using Content.Shared._WH40K.SectorMap.Prototypes;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._WH40K.SectorMap.UI;
 
-public sealed class KoronusSectorDossierWindow : FancyWindow
+public sealed partial class KoronusSectorDossierWindow : FancyWindow
 {
+    [Dependency] private IPrototypeManager _prototypes = default!;
+
     private readonly BoxContainer _content = new() { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 10 };
     private readonly RichTextLabel _title = new();
     private readonly RichTextLabel _navigation = new();
+    private readonly RichTextLabel _environment = new();
     private readonly BoxContainer _activities = new() { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 10 };
     private string _signature = string.Empty;
 
@@ -22,6 +27,8 @@ public sealed class KoronusSectorDossierWindow : FancyWindow
 
     public KoronusSectorDossierWindow()
     {
+        IoCManager.InjectDependencies(this);
+
         Title = Loc.GetString("koronus-sector-dossier-title");
         MinSize = new(340, 280);
         SetSize = new(520, 580);
@@ -49,6 +56,7 @@ public sealed class KoronusSectorDossierWindow : FancyWindow
         layout.AddChild(scroll);
         _content.AddChild(_title);
         _content.AddChild(_navigation);
+        _content.AddChild(_environment);
         _content.AddChild(_activities);
     }
 
@@ -104,6 +112,15 @@ public sealed class KoronusSectorDossierWindow : FancyWindow
                 navigation += "\n" + Loc.GetString("koronus-sector-card-drive-offline");
         }
         _navigation.SetMessage(navigation);
+
+        _environment.Visible = false;
+        if (selected is { Enabled: true } &&
+            _prototypes.TryIndex<KoronusSystemPrototype>(selected.Id, out var system) &&
+            system.SpaceDescription is { } description)
+        {
+            _environment.SetMessage(Loc.GetString(description));
+            _environment.Visible = true;
+        }
 
         _activities.RemoveAllChildren();
         var activities = state.ActivityDossiers.Where(activity =>
