@@ -13,7 +13,7 @@ public sealed partial class ShipyardPricingSystem
     [Dependency] private DestructibleSystem _destructible = default!;
     [Dependency] private ShipyardPassengerSystem _passengers = default!;
 
-    public const double StockBuybackRate = 0.70;
+    public const double StockBuybackRate = 0.80;
 
     public void RecordPurchase(EntityUid grid, int purchasePrice)
     {
@@ -58,7 +58,9 @@ public sealed partial class ShipyardPricingSystem
 
         var paidStock = Math.Max(0, resale.PurchasePrice - resale.ExcludedStockValue);
         var buyback = paidStock * StockBuybackRate * Math.Min(stockCondition, deckCondition);
-        buyback += additionalEquipment * Math.Clamp(additionalEquipmentRate, 0, 1);
+        buyback += _materialMarket.Enabled
+            ? GetMaterialResaleValue(grid, Math.Clamp(additionalEquipmentRate, 0, 1))
+            : additionalEquipment * Math.Clamp(additionalEquipmentRate, 0, 1);
         // Appraisal and condition ratios use floating point; do not lose a credit to rounding noise.
         value = (int) Math.Clamp(Math.Floor(Math.Round(buyback, 6)), 0, int.MaxValue);
         return true;

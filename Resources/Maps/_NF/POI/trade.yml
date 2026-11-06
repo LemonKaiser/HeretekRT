@@ -10997,7 +10997,7 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
-- proto: ComputerTabletopPalletConsoleNFHighMarket
+- proto: ComputerTabletopPalletConsoleNFLowMarket
   entities:
   - uid: 1561
     components:

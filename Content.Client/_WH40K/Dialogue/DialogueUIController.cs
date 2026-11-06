@@ -22,7 +22,10 @@ using AudioComponent = Robust.Shared.Audio.Components.AudioComponent;
 
 namespace Content.Client._WH40K.Dialogue;
 
-public sealed class DialogueUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
+public sealed class DialogueUIController : UIController,
+    IOnStateEntered<GameplayState>,
+    IOnStateExited<GameplayState>,
+    IOnSystemChanged<DialogueInputLockSystem>
 {
     private const float DialogueMusicSidechainTail = 0.2f;
 
@@ -67,13 +70,25 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
     {
         base.Initialize();
 
+        var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
+        gameplayStateLoad.OnScreenLoad += OnScreenLoad;
+    }
+
+    public void OnSystemLoaded(DialogueInputLockSystem system)
+    {
         SubscribeNetworkEvent<DialogueOpenEvent>(OnDialogueOpened);
         SubscribeNetworkEvent<DialogueLineUpdateEvent>(OnDialogueUpdated);
         SubscribeNetworkEvent<DialogueCloseEvent>(OnDialogueClosed);
         SubscribeNetworkEvent<DialogueOperationEvent>(OnOperation);
+    }
 
-        var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
-        gameplayStateLoad.OnScreenLoad += OnScreenLoad;
+    public void OnSystemUnloaded(DialogueInputLockSystem system)
+    {
+        UnSubscribeNetworkEvent<DialogueOpenEvent>();
+        UnSubscribeNetworkEvent<DialogueLineUpdateEvent>();
+        UnSubscribeNetworkEvent<DialogueCloseEvent>();
+        UnSubscribeNetworkEvent<DialogueOperationEvent>();
+        ResetDialogueState(immediateMusicStop: true);
     }
 
     public void OnStateEntered(GameplayState state)
@@ -187,6 +202,9 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void OnDialogueOpened(DialogueOpenEvent ev, EntitySessionEventArgs args)
     {
+        if (_sessionId == ev.SessionId && ev.Line.Revision < _lineRevision)
+            return;
+
         var preservePresentation = _sessionId == ev.SessionId && _overlay != null;
 
         if (!preservePresentation)
@@ -198,6 +216,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
             _contentAudio?.PushMusicDuck(ev.Scene.BackgroundMusicDuckGain);
 
         _sessionId = ev.SessionId;
+        _lineRevision = ev.Line.Revision;
         _defaultTypewriterCps = ev.TypewriterCps;
         _typewriterCps = ev.TypewriterCps;
         _hideHud = ev.Scene.HideHud;
@@ -215,9 +234,10 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
 
     private void OnDialogueUpdated(DialogueLineUpdateEvent ev, EntitySessionEventArgs args)
     {
-        if (_sessionId != ev.SessionId)
+        if (_sessionId != ev.SessionId || ev.Line.Revision < _lineRevision)
             return;
 
+        _lineRevision = ev.Line.Revision;
         _pendingLine = ev.Line;
         if (_overlay == null)
             return;
@@ -282,7 +302,7 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         ApplyMusicCue(line.Music);
         _overlay.ApplySceneState(line.SceneState);
         _overlay.SetLineType(line.LineType);
-        UpdateActors(line.Actors, playActorEntrance);
+        UpdateActors(line.Actors, playActorEntrance, line.SceneState.ShowActors && (_pendingScene?.ShowActors ?? true));
         _overlay.SetSpeakerName(line.SpeakerName == null ? string.Empty : FormatText(line.SpeakerName));
         _overlay.SetChoices(line.Choices, FormatText);
         _overlay.SetChoicesVisible(false);
@@ -594,16 +614,31 @@ public sealed class DialogueUIController : UIController, IOnStateEntered<Gamepla
         return _currentText.Length / voiceDuration.Value;
     }
 
-    private void UpdateActors(DialogueActorStageData actors, bool playEntrance)
+    private void UpdateActors(DialogueActorStageData actors, bool playEntrance, bool showActors)
     {
         if (_overlay == null)
             return;
 
         DeleteActorPreviews();
-        var left = ResolveDialogueActor(actors.Left);
-        var right = ResolveDialogueActor(actors.Right);
-        _overlay.SetActors(left, right, playEntrance);
-        _overlay.SetActiveSpeaker(actors.ActiveSide);
+        if (!showActors)
+        {
+            _overlay.ClearActors();
+            return;
+        }
+
+        try
+        {
+            var left = ResolveDialogueActor(actors.Left);
+            var right = ResolveDialogueActor(actors.Right);
+            _overlay.SetActors(left, right, playEntrance);
+            _overlay.SetActiveSpeaker(actors.ActiveSide);
+        }
+        catch (Exception error)
+        {
+            DeleteActorPreviews();
+            _overlay.ClearActors();
+            Log.Warning($"Could not create dialogue portraits; continuing with text: {error}");
+        }
     }
 
     private EntityUid? ResolveDialogueActor(DialogueActorData? actor)

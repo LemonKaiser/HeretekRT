@@ -1,6 +1,6 @@
 using Content.Shared._NF.Shipyard.Prototypes;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.Utility;
 
 namespace Content.Shared._NF.Shipyard.Events;
 
@@ -10,5 +10,10 @@ namespace Content.Shared._NF.Shipyard.Events;
 [Serializable, NetSerializable]
 public sealed class ShipyardConsolePreviewMessage : BoundUserInterfaceMessage
 {
+    public readonly ProtoId<VesselPrototype> Vessel;
 
+    public ShipyardConsolePreviewMessage(ProtoId<VesselPrototype> vessel)
+    {
+        Vessel = vessel;
+    }
 }

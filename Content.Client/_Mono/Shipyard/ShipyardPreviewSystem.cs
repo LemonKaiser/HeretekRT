@@ -1,9 +1,7 @@
 using System.Linq;
 using System.Numerics;
-using Content.Client.Mind;
 using Content.Shared._Mono.Shipyard;
 using Content.Shared._NF.Shipyard.Prototypes;
-using Content.Shared.Anomaly;
 using Robust.Client.GameObjects;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
@@ -22,28 +20,22 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
     [Dependency] private MapLoaderSystem _loader = default!;
     [Dependency] private MetaDataSystem _meta = default!;
     [Dependency] private TransformSystem _xform = default!;
-    [Dependency] private MindSystem _mind = default!;
 
     public Entity<MapGridComponent>? CurrentGrid;
-    public override void Initialize()
-    {
-        base.Initialize();
-
-    }
-
-    public bool TryPreviewGrid(VesselPrototype vessel)
+    public bool TryPreviewGrid(VesselPrototype vessel, MapId mapId)
     {
         Dispose();
-        CachePreviewMap();
+        if (mapId == MapId.Nullspace || !_map.MapExists(mapId))
+            return false;
 
         var opts = new DeserializationOptions();
-        if (!_loader.TryLoadGrid(_previewMap,
+        if (!_loader.TryLoadGrid(mapId,
                 vessel.ShuttlePath,
                 out var grid,
                 opts))
             return false;
 
-        _xform.SetMapCoordinates(grid.Value, new MapCoordinates(Vector2.Zero, _previewMap));
+        _xform.SetMapCoordinates(grid.Value, new MapCoordinates(Vector2.Zero, mapId));
         _meta.SetEntityName(grid.Value, vessel.Name);
         CurrentGrid = grid.Value;
         return true;

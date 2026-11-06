@@ -127,15 +127,15 @@
       minStock: 6
       maxStock: 6
     - product: OreBoxFlatpack
-      price: 1000
+      price: 600
       minStock: 12
       maxStock: 12
     - product: BoxFlare
-      price: 500
+      price: 180
       minStock: 8
       maxStock: 10
     - product: Pickaxe
-      price: 2500
+      price: 750
       minStock: 5
       maxStock: 10
     - product: WHSapperShovel
@@ -215,15 +215,15 @@
     lookAtRange: 1
     offers:
     - product: FoodTinNutriPaste
-      price: 100
+      price: 50
       minStock: 15
       maxStock: 20
     - product: FoodTinGroxMeat
-      price: 200
+      price: 90
       minStock: 5
       maxStock: 7
     - product: FoodTinNutriPasteMeat
-      price: 250
+      price: 100
       minStock: 4
       maxStock: 6
     - product: FoodMealEggsbenedict
@@ -231,19 +231,19 @@
       minStock: 4
       maxStock: 6
     - product: FoodTinGroxPorridge
-      price: 400
+      price: 100
       minStock: 4
       maxStock: 6
     - product: DrinkGuardsmanFlask
-      price: 400
+      price: 50
       minStock: 20
       maxStock: 40
     - product: FoodBoxImperialMRESmall
-      price: 300
+      price: 120
       minStock: 4
       maxStock: 6
     - product: FoodBoxImperialMRE
-      price: 500
+      price: 250
       minStock: 7
       maxStock: 12
     - product: WHSoup

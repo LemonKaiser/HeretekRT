@@ -26,16 +26,8 @@ entities:
       chunks: {}
     # Only this authored central facility is protected. The procedural terrain grid created by
     # PlanetSystem deliberately has none of these components and remains fully destructible.
-    - type: KoronusSafetyZone
-      profile: KoronusStationSafeZone
-      radius: 15
-      showBoundary: true
-    - type: ProtectedGrid
-      preventFloorRemoval: true
-      preventFloorPlacement: true
-      preventRCDUse: true
-      preventEmpEvents: true
-      preventExplosions: true
+    - type: KoronusGridSafetyProfile
+      profile: KoronusPlanetProtection
     - type: Broadphase
     - type: Physics
       canCollide: false

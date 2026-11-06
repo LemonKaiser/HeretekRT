@@ -5,6 +5,7 @@ using Content.Shared.Charges.Systems;
 using Content.Shared.Construction;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
+using Content.Shared._WH40K.Construction;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
@@ -335,6 +336,14 @@ public partial class RCDSystem : EntitySystem
     {
         // Update cached prototype if required
         UpdateCachedPrototype(uid, component);
+
+        if (_net.IsServer && component.CachedPrototype.Mode is RcdMode.ConstructTile or RcdMode.ConstructObject)
+        {
+            var attempt = new StructureConstructionAttemptEvent(user, mapGridData.Location, popMsgs);
+            RaiseLocalEvent(ref attempt);
+            if (attempt.Cancelled)
+                return false;
+        }
 
         if (TryComp<ProtectedGridComponent>(mapGridData.GridUid, out var protectedGrid) &&
             protectedGrid.PreventRCDUse)

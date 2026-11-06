@@ -248,7 +248,7 @@
       minStock: 2
       maxStock: 4
     - product: EmergencyMedipen
-      price: 160
+      price: 6000
       minStock: 2
       maxStock: 5
 

@@ -74,6 +74,9 @@ namespace Content.Shared.VendingMachines
         public Dictionary<string, VendingMachineInventoryEntry> ContrabandInventory = new();
 
         [DataField, AutoNetworkedField]
+        public Dictionary<string, int> MarketPrices = new();
+
+        [DataField, AutoNetworkedField]
         public bool Contraband;
 
         public bool Ejecting;

@@ -55,16 +55,15 @@ public sealed class DialoguePreviewSystem : EntitySystem
         if (TryComp(source, out HumanoidAppearanceComponent? humanoid)
             && _prototypeManager.TryIndex<SpeciesPrototype>(humanoid.Species, out var species))
         {
-            var dummy = Spawn(species.DollPrototype, MapCoordinates.Nullspace);
-            EnsureComp<DialoguePreviewMarkerComponent>(dummy);
+            if (!_prototypeManager.HasIndex<EntityPrototype>(species.DollPrototype))
+                return null;
 
-            CopyHumanoidAppearance(source, dummy, humanoid);
-            CopyEquipment(source, dummy);
-            SyncHumanoidLayerState(source, dummy);
-            StripPreviewDisplacementLayers(dummy);
-            SetUnshaded(dummy);
-
-            return dummy;
+            return CreatePreview(species.DollPrototype, dummy =>
+            {
+                CopyHumanoidAppearance(source, dummy, humanoid);
+                CopyEquipment(source, dummy);
+                SyncHumanoidLayerState(source, dummy);
+            });
         }
 
         return TryCreateSpritePreview(source);
@@ -79,11 +78,25 @@ public sealed class DialoguePreviewSystem : EntitySystem
         if (!_prototypeManager.HasIndex<EntityPrototype>(prototype))
             return null;
 
+        return CreatePreview(prototype);
+    }
+
+    private EntityUid CreatePreview(EntProtoId prototype, Action<EntityUid>? initialize = null)
+    {
         var preview = Spawn(prototype, MapCoordinates.Nullspace);
-        EnsureComp<DialoguePreviewMarkerComponent>(preview);
-        StripPreviewDisplacementLayers(preview);
-        SetUnshaded(preview);
-        return preview;
+        try
+        {
+            EnsureComp<DialoguePreviewMarkerComponent>(preview);
+            initialize?.Invoke(preview);
+            StripPreviewDisplacementLayers(preview);
+            SetUnshaded(preview);
+            return preview;
+        }
+        catch
+        {
+            Del(preview);
+            throw;
+        }
     }
 
     public void DeletePreview(ref EntityUid? previewEntity)
@@ -145,11 +158,18 @@ public sealed class DialoguePreviewSystem : EntitySystem
             }
 
             var previewItem = Spawn(metadata.EntityPrototype.ID, MapCoordinates.Nullspace);
-            CopyItemVisualState(equipped.Value, previewItem);
-            SetUnshaded(previewItem);
-
-            if (!_inventory.TryEquip(dummy, previewItem, slot.Name, true, true))
+            try
+            {
+                CopyItemVisualState(equipped.Value, previewItem);
+                SetUnshaded(previewItem);
+                if (!_inventory.TryEquip(dummy, previewItem, slot.Name, true, true))
+                    Del(previewItem);
+            }
+            catch
+            {
                 Del(previewItem);
+                throw;
+            }
         }
     }
 
@@ -183,20 +203,17 @@ public sealed class DialoguePreviewSystem : EntitySystem
             return null;
         }
 
-        var dummy = Spawn(metadata.EntityPrototype.ID, MapCoordinates.Nullspace);
-        EnsureComp<DialoguePreviewMarkerComponent>(dummy);
-
-        if (TryComp(source, out AppearanceComponent? sourceAppearance))
+        return CreatePreview(metadata.EntityPrototype.ID, dummy =>
         {
-            TryComp(dummy, out AppearanceComponent? dummyAppearance);
-            _appearance.CopyData((source, sourceAppearance), (dummy, dummyAppearance));
-        }
+            if (TryComp(source, out AppearanceComponent? sourceAppearance))
+            {
+                TryComp(dummy, out AppearanceComponent? dummyAppearance);
+                _appearance.CopyData((source, sourceAppearance), (dummy, dummyAppearance));
+            }
 
-        TryComp(dummy, out SpriteComponent? dummySprite);
-        _sprite.CopySprite((source, sourceSprite), (dummy, dummySprite));
-        StripPreviewDisplacementLayers(dummy);
-        SetUnshaded(dummy);
-        return dummy;
+            TryComp(dummy, out SpriteComponent? dummySprite);
+            _sprite.CopySprite((source, sourceSprite), (dummy, dummySprite));
+        });
     }
 
     private void RefreshHumanoidSprite(EntityUid uid, HumanoidAppearanceComponent humanoid)

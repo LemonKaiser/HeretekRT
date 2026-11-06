@@ -1,4 +1,3 @@
-using Content.Client._Mono.Shipyard;
 using Content.Client._NF.Shipyard.UI;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared._NF.Shipyard.BUI;
@@ -11,7 +10,6 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 {
     private ShipyardConsoleMenu? _menu;
     private ShipyardRulesPopup? _rulesWindow;
-    [Dependency] private ShipyardPreviewSystem _preview = default!;
     public int Balance { get; private set; }
 
     public int? ShipSellValue { get; private set; }
@@ -114,7 +112,6 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         }
 
         var vessel = row.Vessel;
-        SendMessage(new ShipyardConsolePreviewMessage());
-        _preview.TryPreviewGrid(vessel);
+        SendMessage(new ShipyardConsolePreviewMessage(vessel.ID));
     }
 }

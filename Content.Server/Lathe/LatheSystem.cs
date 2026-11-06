@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Server.Administration.Logs;
+using Content.Server._WH40K.Economy;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Construction; // Frontier
 using Content.Server.Fluids.EntitySystems;
@@ -47,6 +48,7 @@ namespace Content.Server.Lathe
     [UsedImplicitly]
     public sealed partial class LatheSystem : SharedLatheSystem
     {
+        [Dependency] private MaterialMarketSystem _materialMarket = default!;
         [Dependency] private IGameTiming _timing = default!;
         [Dependency] private IPrototypeManager _proto = default!;
         [Dependency] private IAdminLogManager _adminLogger = default!;
@@ -285,6 +287,9 @@ namespace Content.Server.Lathe
                 }
                 return false;
             }
+
+            if (!_materialMarket.ObserveLatheMultiplier(component.FinalMaterialUseMultiplier))
+                return false;
 
             foreach (var (mat, amount) in recipe.Materials)
             {

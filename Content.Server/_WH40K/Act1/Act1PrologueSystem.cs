@@ -142,6 +142,11 @@ public sealed class Act1PrologueSystem : EntitySystem
                     TryStartEchoDialogue(session, mob, prologue, runtime);
                     break;
 
+                case Act1ProloguePhase.Dialogue when !_dialogue.IsInDialogue(session):
+                    SetPhase(mob, prologue, Act1ProloguePhase.Exploration);
+                    TryStartEchoDialogue(session, mob, prologue, runtime);
+                    break;
+
                 case Act1ProloguePhase.Vision:
                     UpdateVisionSequence(session, mob, prologue, runtime);
                     break;
@@ -476,6 +481,9 @@ public sealed class Act1PrologueSystem : EntitySystem
         if (runtime.VisionSequenceDeadline == TimeSpan.Zero)
             runtime.VisionSequenceDeadline = _timing.CurTime + VisionSequenceFallbackDuration;
 
+        if (!runtime.VisionDialogueCompleted && !_dialogue.IsInDialogue(session))
+            runtime.VisionDialoguePending = true;
+
         if (runtime.VisionDialoguePending && TryStartVisionDialogue(session, runtime))
             runtime.VisionDialoguePending = false;
 
@@ -519,6 +527,9 @@ public sealed class Act1PrologueSystem : EntitySystem
         Act1PrologueComponent prologue,
         Act1PrologueInstanceComponent runtime)
     {
+        if (!runtime.FractureDialogueCompleted && !_dialogue.IsInDialogue(session))
+            runtime.FractureDialogueStarted = false;
+
         if (!runtime.FractureDialogueStarted)
         {
             if (runtime.Echo == EntityUid.Invalid || Deleted(runtime.Echo))

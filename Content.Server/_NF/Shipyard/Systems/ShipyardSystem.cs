@@ -227,7 +227,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         TryComp<ShipyardConsoleComponent>(consoleUid, out var terms);
         bill = GetShipSaleValue(shuttleUid, terms);
-        if (approveSale != null && !approveSale(bill))
+        var appraisal = bill;
+        if (!_vesselPricing.ApproveMaterialSale(shuttleUid, () => approveSale == null || approveSale(appraisal)))
         {
             result.Error = ShipyardSaleError.MessageOverwritten;
             return result;

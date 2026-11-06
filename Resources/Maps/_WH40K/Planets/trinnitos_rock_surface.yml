@@ -30,6 +30,8 @@ entities:
     - type: Transform
       pos: 0,0
       parent: invalid
+    - type: KoronusGridSafetyProfile
+      profile: KoronusPlanetProtection
     - type: MapGrid
       chunks:
         0,0:

@@ -58,6 +58,7 @@
     board: Null
   - type: MarketModifier
     buy: false # The user _sells_ things to this machine.
+    mod: 0.85
 
 - type: entity
   parent: ComputerPalletConsoleNFMarket

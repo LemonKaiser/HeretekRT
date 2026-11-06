@@ -1,76 +1,127 @@
-# Reusable Koronus safety policies. Orbital stations use a dynamic component anchored to their
-# facility grid; planetary surfaces may opt into a map-wide profile without a green orbital ring.
-- type: koronusSafetyProfile
-  id: KoronusFullSafeSystem
-  autoCleanupHostileNpcs: true
-  blockShipWeapons: true
-  blockPlayerDamage: true
-  blockPlayerStaminaDamage: true
-  blockPlayerPulling: true
-  blockOtherPlayerStrip: true
-  blockPlayerExplosions: true
-  protectPlayerShipWires: true
-  protectPlayerShipDeconstruction: true
-  blockForcedBuckle: true
-  blockPlayerHarmfulInteractions: true
-  blockClassOffensiveActions: true
+# Four protection policies. area applies to territory; station applies only to selected facility grids.
+# A map-wide profile never grants station safeguards to arriving ships or procedural terrain.
 
+# Footfall: protection across the entire space-system map.
 - type: koronusSafetyProfile
-  id: KoronusStationSafeZone
-  autoCleanupHostileNpcs: true
-  blockShipWeapons: true
-  blockPlayerDamage: true
-  blockPlayerStaminaDamage: true
-  blockPlayerPulling: true
-  blockOtherPlayerStrip: true
-  blockPlayerExplosions: true
-  protectPlayerShipWires: true
-  protectPlayerShipDeconstruction: true
-  protectStation: true
-  blockForcedBuckle: true
-  blockPlayerHarmfulInteractions: true
-  protectNonHostileMobs: true
-  blockFireAndHighTemperature: true
-  blockClassOffensiveActions: true
-  blockClassDeviceInteractions: true
-  blockClassAreaEffects: true
-  blockClassMobilityActions: true
+  id: KoronusFootfallSystemProtection
+  area:
+    autoCleanupHostileNpcs: true
+    blockShipWeapons: true
+    blockPlayerDamage: true
+    blockPlayerStaminaDamage: true
+    blockPlayerPulling: true
+    blockOtherPlayerStrip: true
+    blockPlayerExplosions: true
+    protectPlayerShipWires: true
+    protectPlayerShipDeconstruction: true
+    blockForcedBuckle: true
+    blockPlayerHarmfulInteractions: true
+    blockClassOffensiveActions: true
 
+# Footfall: additional restrictions on explicitly configured public station grids.
 - type: koronusSafetyProfile
-  id: KoronusFootfallStationRestrictions
-  protectStation: true
-  protectNonHostileMobs: true
-  autoCleanupHostileNpcs: true
-  autoCleanPuddles: true
-  blockMaintenancePanelScrewdriving: true
-  blockAnchoring: true
-  blockDeconstruction: true
-  blockHandheldEntityPlacement: true
-  blockChemicalEffects: true
-  blockRadiationMunitions: true
-  blockPlayerDisposal: true
-  blockAtmosphericRelease: true
-  blockFireAndHighTemperature: true
-  blockClassDeviceInteractions: true
-  blockClassAreaEffects: true
+  id: KoronusFootfallStationProtection
+  station:
+    protectStation: true
+    protectNonHostileMobs: true
+    autoCleanupHostileNpcs: true
+    autoCleanPuddles: true
+    blockMaintenancePanelScrewdriving: true
+    blockAnchoring: true
+    blockDeconstruction: true
+    blockHandheldEntityPlacement: true
+    blockStructureConstruction: true
+    blockChemicalEffects: true
+    blockRadiationMunitions: true
+    blockPlayerDisposal: true
+    blockAtmosphericRelease: true
+    blockFireAndHighTemperature: true
+    blockClassDeviceInteractions: true
+    blockClassAreaEffects: true
+    protectProperty: true
+    lockInfrastructureControls: true
+    anchorGrid: true
+    blockArtifactTriggers: true
+    blockNpcAttacks: true
+    blockInfrastructureDamage: true
 
+# Outside Footfall: area rules inside the outpost radius; station rules on the outpost grid only.
 - type: koronusSafetyProfile
-  id: KoronusPlanetSafeSurface
-  autoCleanupHostileNpcs: true
-  blockShipWeapons: true
-  blockPlayerDamage: true
-  blockPlayerStaminaDamage: true
-  blockPlayerPulling: true
-  blockOtherPlayerStrip: true
-  blockPlayerExplosions: true
-  protectPlayerShipWires: true
-  protectPlayerShipDeconstruction: true
-  protectStation: true
-  blockForcedBuckle: true
-  blockPlayerHarmfulInteractions: true
-  protectNonHostileMobs: true
-  blockFireAndHighTemperature: true
-  blockClassOffensiveActions: true
-  blockClassDeviceInteractions: true
-  blockClassAreaEffects: true
-  blockClassMobilityActions: true
+  id: KoronusOutpostProtection
+  area:
+    autoCleanupHostileNpcs: true
+    blockShipWeapons: true
+    blockPlayerDamage: true
+    blockPlayerStaminaDamage: true
+    blockPlayerPulling: true
+    blockOtherPlayerStrip: true
+    blockPlayerExplosions: true
+    protectPlayerShipWires: true
+    protectPlayerShipDeconstruction: true
+    blockForcedBuckle: true
+    blockPlayerHarmfulInteractions: true
+    protectNonHostileMobs: true
+    blockFireAndHighTemperature: true
+    blockClassOffensiveActions: true
+    blockClassDeviceInteractions: true
+    blockClassAreaEffects: true
+    blockClassMobilityActions: true
+  station:
+    protectStation: true
+    blockMaintenancePanelScrewdriving: true
+    blockAnchoring: true
+    blockDeconstruction: true
+    blockHandheldEntityPlacement: true
+    blockStructureConstruction: true
+    blockChemicalEffects: true
+    blockRadiationMunitions: true
+    blockPlayerDisposal: true
+    blockAtmosphericRelease: true
+    protectProperty: true
+    lockInfrastructureControls: true
+    anchorGrid: true
+
+# Planets: area rules across the surface; station rules only on explicitly configured base grids.
+- type: koronusSafetyProfile
+  id: KoronusPlanetProtection
+  area:
+    autoCleanupHostileNpcs: true
+    blockShipWeapons: true
+    blockPlayerDamage: true
+    blockPlayerStaminaDamage: true
+    blockPlayerPulling: true
+    blockOtherPlayerStrip: true
+    blockPlayerExplosions: true
+    protectPlayerShipWires: true
+    protectPlayerShipDeconstruction: true
+    blockForcedBuckle: true
+    blockPlayerHarmfulInteractions: true
+    protectNonHostileMobs: true
+    blockFireAndHighTemperature: true
+    blockClassOffensiveActions: true
+    blockClassDeviceInteractions: true
+    blockClassAreaEffects: true
+    blockClassMobilityActions: true
+  station:
+    protectStation: true
+    protectNonHostileMobs: true
+    autoCleanupHostileNpcs: true
+    autoCleanPuddles: true
+    blockMaintenancePanelScrewdriving: true
+    blockAnchoring: true
+    blockDeconstruction: true
+    blockHandheldEntityPlacement: true
+    blockStructureConstruction: true
+    blockChemicalEffects: true
+    blockRadiationMunitions: true
+    blockPlayerDisposal: true
+    blockAtmosphericRelease: true
+    blockFireAndHighTemperature: true
+    blockClassDeviceInteractions: true
+    blockClassAreaEffects: true
+    protectProperty: true
+    lockInfrastructureControls: true
+    anchorGrid: true
+    blockArtifactTriggers: true
+    blockNpcAttacks: true
+    blockInfrastructureDamage: true

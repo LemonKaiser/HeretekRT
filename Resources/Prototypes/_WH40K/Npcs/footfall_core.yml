@@ -96,19 +96,19 @@
       minStock: 5
       maxStock: 10
     - product: HandLabeler
-      price: 100
+      price: 80
       minStock: 2
       maxStock: 4
     - product: BoxCardboard
-      price: 150
+      price: 20
       minStock: 12
       maxStock: 20
     - product: MaterialCardboard10
-      price: 250
+      price: 15
       minStock: 6
       maxStock: 10
     - product: BoxFolderClipboard
-      price: 500
+      price: 75
       minStock: 3
       maxStock: 5
     - product: Paper
@@ -120,11 +120,11 @@
       minStock: 8
       maxStock: 12
     - product: RubberStampApproved
-      price: 40
+      price: 25
       minStock: 2
       maxStock: 4
     - product: RubberStampDenied
-      price: 40
+      price: 25
       minStock: 2
       maxStock: 4
     - product: MaterialSiloFlatpack

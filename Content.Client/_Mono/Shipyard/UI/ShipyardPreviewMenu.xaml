@@ -11,7 +11,7 @@
             <PanelContainer.PanelOverride>
                 <gfx:StyleBoxFlat BorderThickness="7" BorderColor="#252525" BackgroundColor="#000000"/>
             </PanelContainer.PanelOverride>
-            <Label Name="ShipName" FontColorOverride="#00FF00" Text="shipyard-preview-unknown-ship" HorizontalAlignment="Center"/>
+            <Label Name="ShipName" FontColorOverride="#00FF00" HorizontalAlignment="Center"/>
         </PanelContainer>
         <PanelContainer SetSize="400 475"
                         HorizontalAlignment="Left"
@@ -28,13 +28,12 @@
                    VerticalAlignment="Top"
                    Margin="10 10 10 10"/>
             <RichTextLabel Name="ShipData"
-                           Text="shipyard-preview-data-label"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
                            Margin="10 45 10 10"/>
         </PanelContainer>
         <PanelContainer SetSize="400 150" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10 -10 10 10">
-            <controls:ConfirmButton
+            <Button
                 Name="ExitButton"
                 Text="{Loc 'shipyard-preview-exit'}"
                 SetSize="375 50"

@@ -97,35 +97,35 @@
     displayCount: 8
     offers:
     - product: WH40KFootfallSteelBundle
-      price: 1500
+      price: 750
       minStock: 80
       maxStock: 80
     - product: WH40KFootfallGlassBundle
-      price: 1500
+      price: 900
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallPlasticBundle
-      price: 3000
+      price: 1200
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallWoodBundle
-      price: 800
+      price: 1200
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallRodBundle
-      price: 1500
+      price: 375
       minStock: 60
       maxStock: 60
     - product: WH40KFootfallClothBundle
-      price: 3000
+      price: 600
       minStock: 40
       maxStock: 40
     - product: WH40KInflatableDoorStackImperium
-      price: 400
+      price: 350
       minStock: 40
       maxStock: 40
     - product: WH40KInflatableWallStackImperium
-      price: 300
+      price: 250
       minStock: 60
       maxStock: 60
 
@@ -190,27 +190,27 @@
     displayCount: 6
     offers:
     - product: AppraisalTool
-      price: 199
-      minStock: 6
-      maxStock: 6
-    - product: EncryptionKeyCommon
       price: 120
       minStock: 6
       maxStock: 6
+    - product: EncryptionKeyCommon
+      price: 100
+      minStock: 6
+      maxStock: 6
     - product: PowerCellHigh
-      price: 200
+      price: 160
       minStock: 10
       maxStock: 10
     - product: RadioHandheldNF
-      price: 90
+      price: 75
       minStock: 8
       maxStock: 8
     - product: GeigerCounter
-      price: 150
+      price: 120
       minStock: 6
       maxStock: 6
     - product: HandheldGPSBasic
-      price: 160
+      price: 120
       minStock: 6
       maxStock: 6
 

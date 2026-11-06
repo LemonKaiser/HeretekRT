@@ -107,39 +107,39 @@
     lookAtRange: 1
     offers:
     - product: Gauze
-      price: 250
+      price: 120
       minStock: 6
       maxStock: 10
     - product: Ointment
-      price: 240
+      price: 120
       minStock: 2
       maxStock: 7
     - product: Brutepack
-      price: 255
+      price: 130
       minStock: 5
       maxStock: 8
     - product: Bloodpack
-      price: 395
+      price: 200
       minStock: 3
       maxStock: 7
     - product: BodyBagFolded
-      price: 1000
+      price: 250
       minStock: 5
       maxStock: 6
     - product: Syringe
-      price: 199
+      price: 35
       minStock: 6
       maxStock: 10
     - product: EmergencyMedipen
-      price: 5999
+      price: 6000
       minStock: 1
       maxStock: 5
     - product: PillCanisterTricordrazine
-      price: 300
+      price: 180
       minStock: 5
       maxStock: 6
     - product: PillCanister
-      price: 100
+      price: 30
       minStock: 5
       maxStock: 6
     - product: DefibrillatorEmpty

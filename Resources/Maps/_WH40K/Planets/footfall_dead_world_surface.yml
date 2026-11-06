@@ -39,14 +39,8 @@ entities:
     - type: Transform
       pos: -16,80
       parent: invalid
-    - type: ProtectedGrid
-      hostileMobKillSound: !type:SoundPathSpecifier
-        path: /Audio/Effects/holy.ogg
-      preventExplosions: True
-      preventEmpEvents: True
-      preventRCDUse: True
-      preventFloorPlacement: True
-      preventFloorRemoval: True
+    - type: KoronusGridSafetyProfile
+      profile: KoronusPlanetProtection
     - type: MapGrid
       chunks:
         0,0:

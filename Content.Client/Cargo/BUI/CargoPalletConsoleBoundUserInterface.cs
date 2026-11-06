@@ -3,6 +3,7 @@ using Content.Shared.Cargo.BUI;
 using Content.Shared.Cargo.Events;
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
+using Content.Shared._WH40K.Economy;
 
 namespace Content.Client.Cargo.BUI;
 
@@ -41,10 +42,19 @@ public sealed class CargoPalletConsoleBoundUserInterface : BoundUserInterface
         if (state is not CargoPalletConsoleInterfaceState palletState)
             return;
 
+        _menu?.SetMarketState(palletState);
+
         _menu?.SetEnabled(palletState.Enabled);
         _menu?.SetAppraisal(palletState.Appraisal);
         _menu?.SetCount(palletState.Count);
         _menu?.SetTradeCrateMultiplier(palletState.TradeCrateMultiplier);
         _menu?.SetOtherMultiplier(palletState.OtherMultiplier);
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is MaterialMarketSaleResultMessage result)
+            _menu?.ShowSaleResult(result);
     }
 }

@@ -972,7 +972,7 @@ entities:
     - type: Transform
       pos: 3.5,10.5
       parent: 1
-- proto: MiningWindow
+- proto: ReinforcedWindow
   entities:
   - uid: 141
     components:

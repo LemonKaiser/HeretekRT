@@ -62,7 +62,7 @@ public sealed class VendingMachineBoundUserInterface : BoundUserInterface
         var modifier = EntMan.TryGetComponent<MarketModifierComponent>(Owner, out var market) ? market.Mod : 1f;
         var enabled = !vending.Broken &&
                       (!EntMan.TryGetComponent<ApcPowerReceiverComponent>(Owner, out var receiver) || receiver.Powered);
-        _menu.Populate(_inventory, modifier, balance, cash, vending.RequiresCash, enabled, hasAccount);
+        _menu.Populate(_inventory, modifier, balance, cash, vending.RequiresCash, enabled, hasAccount, vending.MarketPrices);
     }
 
     private bool OnCodeEntered(int index)
@@ -72,7 +72,9 @@ public sealed class VendingMachineBoundUserInterface : BoundUserInterface
             return false;
 
         var item = _inventory[index];
-        SendMessage(new VendingMachineEjectMessage(item.Type, item.ID));
+        var expected = EntMan.TryGetComponent<VendingMachineComponent>(Owner, out var vending) &&
+                       vending.MarketPrices.TryGetValue(item.ID, out var price) ? (int?) price : null;
+        SendMessage(new VendingMachineEjectMessage(item.Type, item.ID) { ExpectedPrice = expected });
         return true;
     }
 

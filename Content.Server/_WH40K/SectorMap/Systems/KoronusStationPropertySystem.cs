@@ -101,8 +101,8 @@ public sealed partial class KoronusStationPropertySystem : EntitySystem
         if (!_maps.IsInitialized(Transform(grid).MapID))
             return;
 
-        _pendingGrids.Remove(grid);
-        SnapshotGrid(grid);
+        // A profile can enable protection during MapInit; wait for storage fills and spawners.
+        _pendingGrids.Add(grid);
     }
 
     private void OnGridMapInit(EntityUid uid, KoronusStationPropertyRegistryComponent registry, MapInitEvent args)

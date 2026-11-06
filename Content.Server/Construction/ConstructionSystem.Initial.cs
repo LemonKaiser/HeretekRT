@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Construction.Components;
 using Content.Shared._Goobstation.Construction;
+using Content.Shared._WH40K.Construction;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Construction;
 using Content.Shared.Construction.Prototypes;
@@ -113,8 +114,12 @@ namespace Content.Server.Construction
             ConstructionGraphEdge edge,
             ConstructionGraphNode targetNode,
             EntityCoordinates coords,
-            Angle angle = default)
+            Angle angle = default,
+            bool structure = false)
         {
+            if (structure && !CanConstructAt(user, coords))
+                return null;
+
             // We need a place to hold our construction items!
             var container = _container.EnsureContainer<Container>(user, materialContainer, out var existed);
 
@@ -282,6 +287,12 @@ namespace Content.Server.Construction
                 return null;
             }
 
+            if (structure && !CanConstructAt(user, coords))
+            {
+                FailCleanup();
+                return null;
+            }
+
             var newEntityProto = graph.Nodes[edge.Target].Entity.GetId(null, user, new(EntityManager));
             var newEntity = EntityManager.SpawnAttachedTo(newEntityProto, coords, rotation: angle);
 
@@ -342,6 +353,9 @@ namespace Content.Server.Construction
                 Log.Error($"Tried to start construction of invalid recipe '{prototype}'!");
                 return false;
             }
+
+            if (constructionPrototype.Type != ConstructionType.Item)
+                return false;
 
             if (!PrototypeManager.TryIndex(constructionPrototype.Graph,
                     out ConstructionGraphPrototype? constructionGraph))
@@ -449,6 +463,12 @@ namespace Content.Server.Construction
             if (!PrototypeManager.TryIndex(prototypeName, out ConstructionPrototype? constructionPrototype))
             {
                 Log.Error($"Tried to start construction of invalid recipe '{prototypeName}'!");
+                RaiseNetworkEvent(new AckStructureConstructionMessage(ack), user);
+                return false;
+            }
+
+            if (constructionPrototype.Type != ConstructionType.Structure || !CanConstructAt(user, location))
+            {
                 RaiseNetworkEvent(new AckStructureConstructionMessage(ack), user);
                 return false;
             }
@@ -597,7 +617,8 @@ namespace Content.Server.Construction
                     edge,
                     targetNode,
                     location,
-                    constructionPrototype.CanRotate ? angle : Angle.Zero) is not {Valid: true} structure)
+                    constructionPrototype.CanRotate ? angle : Angle.Zero,
+                    structure: true) is not {Valid: true} structure)
             {
                 Cleanup();
                 return false;
@@ -612,6 +633,13 @@ namespace Content.Server.Construction
             _adminLogger.Add(LogType.Construction, LogImpact.Low, $"{ToPrettyString(user):player} has turned a {prototypeName} construction ghost into {ToPrettyString(structure)} at {Transform(structure).Coordinates}");
             Cleanup();
             return true;
+        }
+
+        public bool CanConstructAt(EntityUid user, EntityCoordinates coordinates)
+        {
+            var attempt = new StructureConstructionAttemptEvent(user, coordinates);
+            RaiseLocalEvent(ref attempt);
+            return !attempt.Cancelled;
         }
     }
 }

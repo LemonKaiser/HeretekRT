@@ -135,6 +135,9 @@ public sealed partial class ShipyardSystem
         if (_vesselPricing.TryGetResaleValue(shuttle, equipmentRate, out var resale))
             return resale;
 
+        if (_vesselPricing.UsesMaterialMarket)
+            return _vesselPricing.GetMaterialResaleValue(shuttle, equipmentRate, includeStock: true);
+
         return (int) (_pricing.AppraiseGrid(shuttle, LacksPreserveOnSaleComp) * equipmentRate);
     }
 }

@@ -687,11 +687,17 @@ public sealed partial class DialogueSystem : EntitySystem
         if (!_sessions.TryGetValue(args.SenderSession, out var session))
             return;
 
-        if (session.SessionId != ev.SessionId || !ValidQuestRevision(session, ev.Revision))
+        if (session.SessionId != ev.SessionId)
             return;
 
         if (!CanProcessDialogueRequest(session))
             return;
+
+        if (!ValidQuestRevision(session, ev.Revision))
+        {
+            SendDialogueOpen(session);
+            return;
+        }
 
         if (!TryGetCurrentStep(session, out var step) || step.Type == DialogueStepType.Choice)
             return;
@@ -700,7 +706,7 @@ public sealed partial class DialogueSystem : EntitySystem
         {
             // Cinematic dialogue may only advance through its authored timer. Send the current
             // state back so an older or desynchronised client cannot remain waiting for a reply.
-            RaiseNetworkEvent(new DialogueLineUpdateEvent(session.SessionId, BuildLineData(session)), session.Session);
+            SendDialogueState(session, open: false, startLine: false);
             return;
         }
 
@@ -712,7 +718,7 @@ public sealed partial class DialogueSystem : EntitySystem
             // A current client does not ask to advance a timed line manually,
             // but this acknowledgement keeps an older or desynchronised client
             // from remaining in its local "request pending" state forever.
-            RaiseNetworkEvent(new DialogueLineUpdateEvent(session.SessionId, BuildLineData(session)), session.Session);
+            SendDialogueState(session, open: false, startLine: false);
             return;
         }
 
@@ -736,11 +742,17 @@ public sealed partial class DialogueSystem : EntitySystem
         if (!_sessions.TryGetValue(args.SenderSession, out var session))
             return;
 
-        if (session.SessionId != ev.SessionId || !ValidQuestRevision(session, ev.Revision))
+        if (session.SessionId != ev.SessionId)
             return;
 
         if (!CanProcessDialogueRequest(session))
             return;
+
+        if (!ValidQuestRevision(session, ev.Revision))
+        {
+            SendDialogueOpen(session);
+            return;
+        }
 
         if (!TryGetCurrentStep(session, out var step) || step.Type != DialogueStepType.Choice)
             return;
@@ -1058,12 +1070,8 @@ public sealed partial class DialogueSystem : EntitySystem
             prototype.Scene.AllowSkip,
             prototype.Scene.ResumeMode,
             prototype.InteractionMode);
-        ProtectEntity(dialogue, initiator);
-
-        if (target != initiator)
-            ProtectEntity(dialogue, target);
-
         AddActiveSession(dialogue);
+        ProtectParticipants(dialogue);
 
         if (!ExecuteActions(dialogue, prototype.StartActions)
             || !ExecuteActions(dialogue, interaction.Actions))
@@ -1186,29 +1194,62 @@ public sealed partial class DialogueSystem : EntitySystem
 
         SetAutoAdvanceNotBefore(dialogue, step);
 
-        RaiseLocalEvent(
-            dialogue.Target,
-            new DialogueLineStartedEvent(
-                dialogue.UserId,
-                dialogue.Initiator,
-                dialogue.DialogueId.Id,
-                dialogue.RootSequence.Index));
-
-        SendDialogueOpen(dialogue);
-        return true;
+        return SendDialogueState(dialogue, open: true, startLine: true);
     }
 
     private void SendDialogueOpen(ActiveDialogueSession dialogue)
     {
-        RaiseNetworkEvent(
-            new DialogueOpenEvent(
-                dialogue.SessionId,
-                GetNetEntity(dialogue.Initiator),
-                GetNetEntity(dialogue.Target),
-                BuildLineData(dialogue),
-                dialogue.Prototype.TypewriterCps,
-                BuildSceneData(dialogue.Prototype.Scene)),
-            dialogue.Session);
+        SendDialogueState(dialogue, open: true, startLine: false);
+    }
+
+    private bool SendDialogueState(ActiveDialogueSession dialogue, bool open, bool startLine)
+    {
+        try
+        {
+            if (startLine)
+            {
+                RaiseLocalEvent(dialogue.Target, new DialogueLineStartedEvent(
+                    dialogue.UserId, dialogue.Initiator, dialogue.DialogueId.Id, dialogue.RootSequence.Index));
+            }
+
+            if (!_sessions.TryGetValue(dialogue.Session, out var active) || active != dialogue)
+                return false;
+
+            if (open)
+            {
+                RaiseNetworkEvent(new DialogueOpenEvent(dialogue.SessionId,
+                    GetNetEntity(dialogue.Initiator), GetNetEntity(dialogue.Target), BuildLineData(dialogue),
+                    dialogue.Prototype.TypewriterCps, BuildSceneData(dialogue.Prototype.Scene)), dialogue.Session);
+            }
+            else
+            {
+                if (startLine)
+                    dialogue.LineRevision++;
+                RaiseNetworkEvent(new DialogueLineUpdateEvent(dialogue.SessionId, BuildLineData(dialogue)), dialogue.Session);
+            }
+
+            return true;
+        }
+        catch
+        {
+            CloseSession(dialogue, sendCloseEvent: true);
+            throw;
+        }
+    }
+
+    private void ProtectParticipants(ActiveDialogueSession dialogue)
+    {
+        try
+        {
+            ProtectEntity(dialogue, dialogue.Initiator);
+            if (dialogue.Target != dialogue.Initiator)
+                ProtectEntity(dialogue, dialogue.Target);
+        }
+        catch
+        {
+            CloseSession(dialogue, sendCloseEvent: true);
+            throw;
+        }
     }
 
     private void ProtectEntity(ActiveDialogueSession dialogue, EntityUid uid)
@@ -1938,25 +1979,33 @@ public sealed partial class DialogueSystem : EntitySystem
 
     private bool ExecuteActions(ActiveDialogueSession dialogue, IReadOnlyList<DialogueActionPrototype> actions)
     {
-        if (actions.Any(IsQuestAction)) return false;
-        var previousActionSucceeded = true;
-
-        for (var i = 0; i < actions.Count; i++)
+        try
         {
-            var action = actions[i];
-            if (action.OnlyIfPreviousActionSucceeded && !previousActionSucceeded)
-                continue;
+            if (actions.Any(IsQuestAction)) return false;
+            var previousActionSucceeded = true;
 
-            previousActionSucceeded = ExecuteActionCore(dialogue, dialogue.UserId, dialogue.Initiator, dialogue.Target, action);
+            for (var i = 0; i < actions.Count; i++)
+            {
+                var action = actions[i];
+                if (action.OnlyIfPreviousActionSucceeded && !previousActionSucceeded)
+                    continue;
 
-            if (!previousActionSucceeded && DialogueActionRequirementSystem.IsRequirementAction(action.Type))
-                return false;
+                previousActionSucceeded = ExecuteActionCore(dialogue, dialogue.UserId, dialogue.Initiator, dialogue.Target, action);
 
-            if (dialogue.Closing)
-                return true;
+                if (!previousActionSucceeded && DialogueActionRequirementSystem.IsRequirementAction(action.Type))
+                    return false;
+
+                if (dialogue.Closing)
+                    return true;
+            }
+
+            return true;
         }
-
-        return true;
+        catch
+        {
+            CloseSession(dialogue, sendCloseEvent: true);
+            throw;
+        }
     }
 
     private bool ExecuteStandaloneActions(
@@ -2446,10 +2495,7 @@ public sealed partial class DialogueSystem : EntitySystem
         dialogue.Session = session;
         dialogue.SessionId = _nextSessionId++;
         AddActiveSession(dialogue);
-        ProtectEntity(dialogue, dialogue.Initiator);
-
-        if (dialogue.Target != dialogue.Initiator)
-            ProtectEntity(dialogue, dialogue.Target);
+        ProtectParticipants(dialogue);
 
         if (dialogue.Closing || !TryGetCurrentStep(dialogue, out _))
         {
@@ -2476,9 +2522,10 @@ public sealed partial class DialogueSystem : EntitySystem
 
     private bool RemoveActiveSession(ActiveDialogueSession dialogue)
     {
-        if (!_sessions.Remove(dialogue.Session, out _))
+        if (!_sessions.TryGetValue(dialogue.Session, out var active) || active != dialogue)
             return false;
 
+        _sessions.Remove(dialogue.Session);
         if (_sessionsByTarget.TryGetValue(dialogue.Target, out var targetSessions))
         {
             targetSessions.Remove(dialogue.Session);
@@ -2644,17 +2691,20 @@ public sealed partial class DialogueSystem : EntitySystem
 
         dialogue.Completing = true;
 
-        if (!ExecuteActions(dialogue, dialogue.Prototype.CompleteActions) || dialogue.Closing)
+        try
+        {
+            if (!ExecuteActions(dialogue, dialogue.Prototype.CompleteActions) || dialogue.Closing)
+                return;
+
+            var memory = GetOrCreateDialogueMemory(dialogue.Target, dialogue.UserId);
+            memory.CompletedDialogues.Add(dialogue.Prototype.ID);
+            SavePersistentMemory(dialogue.Target, dialogue.UserId);
+            RaiseLocalEvent(dialogue.Target, new DialogueCompletedEvent(dialogue.UserId, dialogue.Initiator, dialogue.Prototype.ID));
+        }
+        finally
         {
             CloseSession(dialogue, sendCloseEvent);
-            return;
         }
-
-        var memory = GetOrCreateDialogueMemory(dialogue.Target, dialogue.UserId);
-        memory.CompletedDialogues.Add(dialogue.Prototype.ID);
-        SavePersistentMemory(dialogue.Target, dialogue.UserId);
-        RaiseLocalEvent(dialogue.Target, new DialogueCompletedEvent(dialogue.UserId, dialogue.Initiator, dialogue.Prototype.ID));
-        CloseSession(dialogue, sendCloseEvent);
     }
 
     private void CloseSession(ActiveDialogueSession dialogue, bool sendCloseEvent)
@@ -2758,16 +2808,7 @@ public sealed partial class DialogueSystem : EntitySystem
 
         SetAutoAdvanceNotBefore(dialogue, step);
 
-        RaiseLocalEvent(
-            dialogue.Target,
-            new DialogueLineStartedEvent(
-                dialogue.UserId,
-                dialogue.Initiator,
-                dialogue.DialogueId.Id,
-                dialogue.RootSequence.Index));
-
-        dialogue.LineRevision++;
-        RaiseNetworkEvent(new DialogueLineUpdateEvent(dialogue.SessionId, BuildLineData(dialogue)), dialogue.Session);
+        SendDialogueState(dialogue, open: false, startLine: true);
     }
 
     private void SetAutoAdvanceNotBefore(ActiveDialogueSession dialogue, DialogueStep step)

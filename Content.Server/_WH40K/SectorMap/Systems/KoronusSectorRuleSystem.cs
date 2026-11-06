@@ -79,6 +79,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         SubscribeLocalEvent<LoadingMapsEvent>(OnLoadingMaps);
         SubscribeLocalEvent<PostGameMapLoad>(OnPostGameMapLoad);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<KoronusGridSafetyProfileComponent, MapInitEvent>(OnGridSafetyMapInit);
     }
 
     protected override void Added(EntityUid uid, KoronusSectorRuleComponent component,
@@ -705,10 +706,8 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
         ConfigureGrid(
             grid,
-            system.InitialGridLocalSafetyProfile,
             system.InitialGridSafetyProfile,
-            system.InitialGridSafetyRadius,
-            system.ProtectInitialGrid);
+            system.InitialGridSafetyRadius);
     }
 
     private void ConfigureAdditionalGrid(EntityUid grid, KoronusAdditionalGridDefinition additionalGrid)
@@ -718,29 +717,23 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
         ConfigureGrid(
             grid,
-            additionalGrid.LocalSafetyProfile,
             additionalGrid.SafetyProfile,
-            additionalGrid.SafetyRadius,
-            additionalGrid.ProtectGrid);
+            additionalGrid.SafetyRadius);
     }
 
     private void ConfigureGrid(
         EntityUid grid,
-        ProtoId<KoronusSafetyProfilePrototype>? localSafetyProfile,
         ProtoId<KoronusSafetyProfilePrototype>? safetyProfile,
-        float safetyRadius,
-        bool protectGrid)
+        float safetyRadius)
     {
-        if (localSafetyProfile is { } localProfile)
-        {
-            var localSafety = EnsureComp<KoronusGridSafetyProfileComponent>(grid);
-            localSafety.Profile = localProfile;
+        if (safetyProfile is not { } profile)
+            return;
 
-            // This local safety policy stays server-only. The networked safety zone below is
-            // dirtied separately when a client-visible boundary is configured.
-        }
+        var localSafety = EnsureComp<KoronusGridSafetyProfileComponent>(grid);
+        localSafety.Profile = profile;
+        ApplyStationProtection(grid, _prototypes.Index(profile).Station);
 
-        if (safetyProfile is { } profile && safetyRadius > 0f)
+        if (safetyRadius > 0f)
         {
             var zone = EnsureComp<KoronusSafetyZoneComponent>(grid);
             zone.Profile = profile;
@@ -748,30 +741,45 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
             zone.ShowBoundary = true;
             Dirty(grid, zone);
         }
+    }
 
-        if (!protectGrid)
+    private void OnGridSafetyMapInit(Entity<KoronusGridSafetyProfileComponent> ent, ref MapInitEvent args)
+    {
+        // Runtime configuration assigns the profile after adding the component.
+        if (string.IsNullOrEmpty(ent.Comp.Profile.Id))
             return;
 
-        EnsureComp<KoronusProtectedFacilityComponent>(grid);
-        var protectedGrid = EnsureComp<ProtectedGridComponent>(grid);
-        protectedGrid.PreventFloorRemoval = true;
-        protectedGrid.PreventFloorPlacement = true;
-        protectedGrid.PreventRCDUse = true;
-        protectedGrid.PreventEmpEvents = true;
-        protectedGrid.PreventExplosions = true;
-        if (TryGetSystemId(Transform(grid).MapID, out var systemId) && systemId == "Footfall")
+        ApplyStationProtection(ent.Owner, _prototypes.Index(ent.Comp.Profile).Station);
+    }
+
+    private void ApplyStationProtection(EntityUid grid, KoronusStationProtectionDefinition station)
+    {
+        if (!HasComp<MapGridComponent>(grid))
+            return;
+
+        if (station.ProtectStation)
         {
-            protectedGrid.PreventArtifactTriggers = true;
-            _stationProperty.ProtectGrid(grid);
+            EnsureComp<KoronusProtectedFacilityComponent>(grid);
+            var protectedGrid = EnsureComp<ProtectedGridComponent>(grid);
+            protectedGrid.PreventFloorRemoval = true;
+            protectedGrid.PreventFloorPlacement = true;
+            protectedGrid.PreventRCDUse = true;
+            protectedGrid.PreventEmpEvents = true;
+            protectedGrid.PreventExplosions = true;
+            protectedGrid.PreventArtifactTriggers = station.BlockArtifactTriggers;
         }
 
-        _infrastructure.ProtectGrid(grid);
+        if (station.ProtectProperty)
+            _stationProperty.ProtectGrid(grid);
 
-        // Facility maps are loaded before their Koronus safeguards are attached. Merely adding
-        // ForceAnchor here would miss its MapInit handler, leaving an otherwise protected station
-        // dynamic and vulnerable to being pushed by another shuttle.
-        EnsureComp<ForceAnchorComponent>(grid);
-        _forceAnchor.EnsureGridAnchored(grid);
+        if (station.LockInfrastructureControls)
+            _infrastructure.ProtectGrid(grid);
+
+        if (station.AnchorGrid)
+        {
+            EnsureComp<ForceAnchorComponent>(grid);
+            _forceAnchor.EnsureGridAnchored(grid);
+        }
     }
 
     private string GetInitialGridDisplayName(KoronusSystemPrototype system)

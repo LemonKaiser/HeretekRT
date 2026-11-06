@@ -8,5 +8,4 @@ namespace Content.Shared.Cargo.Events;
 [Serializable, NetSerializable]
 public sealed class CargoPalletSellMessage : BoundUserInterfaceMessage
 {
-
 }

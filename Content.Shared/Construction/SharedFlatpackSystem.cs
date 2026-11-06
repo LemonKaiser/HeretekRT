@@ -1,4 +1,5 @@
 using Content.Shared.Construction.Components;
+using Content.Shared._WH40K.Construction;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Database;
@@ -71,6 +72,11 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
             return;
 
         args.Handled = true;
+
+        var attempt = new StructureConstructionAttemptEvent(args.User, xform.Coordinates);
+        RaiseLocalEvent(ref attempt);
+        if (attempt.Cancelled)
+            return;
 
         if (comp.Entity is not { } flatpackEntity)
         {

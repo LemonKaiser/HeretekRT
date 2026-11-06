@@ -55,6 +55,7 @@ public sealed partial class CargoSystem
         SubscribeLocalEvent<CargoPalletConsoleComponent, CargoPalletSellMessage>(OnPalletSale);
         SubscribeLocalEvent<CargoPalletConsoleComponent, CargoPalletAppraiseMessage>(OnPalletAppraise);
         SubscribeLocalEvent<CargoPalletConsoleComponent, BoundUIOpenedEvent>(OnPalletUIOpen);
+        SubscribeLocalEvent<CargoPalletConsoleComponent, ComponentShutdown>((uid, _, _) => _palletMarketStates.Remove(uid));
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -88,11 +89,19 @@ public sealed partial class CargoSystem
     {
         if (Transform(uid).GridUid is not { Valid: true } gridUid)
         {
+            _palletMarketStates.Remove(uid.Owner);
             _uiSystem.SetUiState(uid.Owner,
                 CargoPalletConsoleUiKey.Sale, // Frontier: uid<uid.Owner
                 new CargoPalletConsoleInterfaceState(0, 0, false));
             return;
         }
+
+        if (_materialMarket.Enabled)
+        {
+            UpdateMaterialPalletInterface(uid, gridUid);
+            return;
+        }
+        _palletMarketStates.Remove(uid.Owner);
 
         // Frontier: per-object market modification
         GetPalletGoods(uid, gridUid, out var toSell, out var amount, out var noModAmount, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount, out _, out _);
@@ -119,6 +128,7 @@ public sealed partial class CargoSystem
 
     private void OnPalletUIOpen(EntityUid uid, CargoPalletConsoleComponent component, BoundUIOpenedEvent args)
     {
+        _palletMarketStates.Remove(uid);
         UpdatePalletConsoleInterface((uid, component)); // Frontier: EntityUid<Entity
     }
 
@@ -132,6 +142,7 @@ public sealed partial class CargoSystem
 
     private void OnPalletAppraise(EntityUid uid, CargoPalletConsoleComponent component, CargoPalletAppraiseMessage args)
     {
+        _palletMarketStates.Remove(uid);
         UpdatePalletConsoleInterface((uid, component)); // Frontier: EntityUid<Entity
     }
 
@@ -602,6 +613,12 @@ public sealed partial class CargoSystem
             return;
         }
 
+        if (_materialMarket.Enabled)
+        {
+            SellMaterialPallets((uid, component), gridUid, args);
+            return;
+        }
+
         if (!SellPallets((uid, component), gridUid, out var price, out var noMultiplierPrice, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount, out var currencyInjections, out var injectionCompany)) // Frontier: convert first arg to Entity, add noMultiplierPrice
             return;
 
@@ -652,6 +669,9 @@ public sealed partial class CargoSystem
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _palletMarketStates.Clear();
+        _marketRefreshQueue.Clear();
+        _marketRefresh = 0;
         Reset();
         CleanupTradeCrateDestinations(); // Frontier
     }

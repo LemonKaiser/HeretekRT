@@ -4,6 +4,7 @@ using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.Localizations;
 using Content.Server._WH40K.OperationalDomain;
 using Content.Server.Carrying;
+using Content.Server.Gatherable.Components;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.Components;
@@ -16,6 +17,7 @@ using Content.Server.Temperature.Systems;
 using Content.Shared._Mono;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared._WH40K.SectorMap.Components;
+using Content.Shared._WH40K.Construction;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._WH40K.ClassProgression;
 using Content.Shared.Atmos.Components;
@@ -37,6 +39,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Flash;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
+using Content.Shared.Mining.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
@@ -118,6 +121,8 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         _transformQuery = GetEntityQuery<TransformComponent>();
 
+        SubscribeLocalEvent<StructureConstructionAttemptEvent>(OnStructureConstructionAttempt);
+
         SubscribeLocalEvent<DamageableComponent, BeforeDamageChangedEvent>(OnBeforeDamageChanged);
         SubscribeLocalEvent<StaminaComponent, BeforeStaminaDamageEvent>(OnBeforeStaminaDamage);
         SubscribeLocalEvent<PullableComponent, BeingPulledAttemptEvent>(OnBeingPulledAttempt);
@@ -177,7 +182,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             _prototypes.TryIndex<KoronusPlanetSurfacePrototype>(surfaceId, out var surface) &&
             surface.SafetyProfile is { } surfaceProfile)
         {
-            rules |= _prototypes.Index(surfaceProfile).Rules;
+            rules |= _prototypes.Index(surfaceProfile).Area.Rules;
             if (surface.PreserveHostileNpcs)
                 rules &= ~KoronusSafetyRule.HostileNpcAutoCleanup;
         }
@@ -185,14 +190,14 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
                  _sector.TryGetSystemPrototype(systemId, out var system))
         {
             if (system.SafetyProfile is { } systemProfile)
-                rules |= _prototypes.Index(systemProfile).Rules;
+                rules |= _prototypes.Index(systemProfile).Area.Rules;
 
             foreach (var zone in system.SafetyZones)
             {
                 if (zone.Radius <= 0f || Vector2.DistanceSquared(position, zone.Center) > zone.Radius * zone.Radius)
                     continue;
 
-                rules |= _prototypes.Index(zone.Profile).Rules;
+                rules |= _prototypes.Index(zone.Profile).Area.Rules;
             }
         }
 
@@ -208,7 +213,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
             var centre = _transform.GetWorldPosition(transform);
             if (Vector2.DistanceSquared(position, centre) <= zone.Radius * zone.Radius)
-                rules |= _prototypes.Index(zone.Profile).Rules;
+                rules |= _prototypes.Index(zone.Profile).Area.Rules;
         }
 
         return rules;
@@ -269,17 +274,12 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
 
         var rules = GetAreaRules(transform.MapID, _transform.GetWorldPosition(transform));
         if (TryComp<KoronusGridSafetyProfileComponent>(entity, out var ownGridProfile))
-            rules |= _prototypes.Index(ownGridProfile.Profile).Rules;
+            rules |= _prototypes.Index(ownGridProfile.Profile).Station.Rules;
         else if (transform.GridUid is { } grid &&
                  TryComp<KoronusGridSafetyProfileComponent>(grid, out var gridProfile))
         {
-            rules |= _prototypes.Index(gridProfile.Profile).Rules;
+            rules |= _prototypes.Index(gridProfile.Profile).Station.Rules;
         }
-
-        // Portable containers can be bought or brought in after facility initialization.
-        // Their release restriction follows the protected grid, not an optional local profile.
-        if (TryGetGrid(entity, out var protectedGrid) && IsFacilityGrid(protectedGrid))
-            rules |= KoronusSafetyRule.AtmosphericRelease;
 
         return rules;
     }
@@ -346,6 +346,13 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     private bool IsProtectedFacility(EntityUid grid)
     {
         return IsFacilityGrid(grid) && HasRuleOnGrid(grid, KoronusSafetyRule.StationProtection);
+    }
+
+    private KoronusStationProtectionDefinition? GetStationProtection(EntityUid grid)
+    {
+        return TryComp<KoronusGridSafetyProfileComponent>(grid, out var profile)
+            ? _prototypes.Index(profile.Profile).Station
+            : null;
     }
 
     private bool IsPlayerShip(EntityUid grid)
@@ -479,8 +486,9 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         else if (TryComp<OrganComponent>(target, out var organ) && organ.Body is { } organBody)
             target = organBody;
 
-        return IsPlayerCharacter(target) && IsFootfallSpace(target) &&
+        return IsPlayerCharacter(target) &&
                TryGetGrid(target, out var grid) && IsProtectedFacility(grid) &&
+               GetStationProtection(grid)?.BlockNpcAttacks == true &&
                TryResolveResponsibleActor(source, out var actor) &&
                !IsPlayerCharacter(actor) && HasComp<MobStateComponent>(actor);
     }
@@ -515,11 +523,19 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (!TryGetGrid(target, out var grid))
             return false;
 
-        if (IsFootfallSpace(grid))
+        // Authored settlements can share a grid with mineable rocks and harvestable resources.
+        if (_sector.TryGetSurfaceId(Transform(grid).MapID, out _) &&
+            (HasComp<MiningScannerViewableComponent>(target) || HasComp<GatherableComponent>(target)))
+        {
+            return false;
+        }
+
+        var protectedInfrastructure = IsProtectedFacility(grid) &&
+                                      GetStationProtection(grid)?.BlockInfrastructureDamage == true;
+        if (protectedInfrastructure || IsFootfallSpace(grid) && IsPlayerShip(grid))
         {
             // Protect infrastructure without making passengers, their organs or carried items invulnerable.
-            return (IsProtectedFacility(grid) || IsPlayerShip(grid)) &&
-                   !HasComp<MobStateComponent>(target) && !HasComp<BodyComponent>(target) &&
+            return !HasComp<MobStateComponent>(target) && !HasComp<BodyComponent>(target) &&
                    !HasComp<BodyPartComponent>(target) && !HasComp<OrganComponent>(target) &&
                    (!HasComp<ItemComponent>(target) || Transform(target).Anchored);
         }
@@ -549,6 +565,28 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         return IsPlayerShip(grid) &&
                HasRuleOnGrid(grid, KoronusSafetyRule.PlayerShipDeconstruction) &&
                !_shipAccess.HasShipOwnerAccess(grid, user);
+    }
+
+    private void OnStructureConstructionAttempt(ref StructureConstructionAttemptEvent args)
+    {
+        if (args.Cancelled)
+            return;
+
+        if (!args.Coordinates.IsValid(EntityManager))
+        {
+            args.Cancelled = true;
+            return;
+        }
+        var blocked = _transform.GetGrid(args.Coordinates) is { } parent &&
+                      HasRuleOnGrid(parent, KoronusSafetyRule.StructureConstruction);
+        if (_mapSystem.TryFindGridAt(_transform.ToMapCoordinates(args.Coordinates), out var grid, out _))
+            blocked |= HasRuleOnGrid(grid, KoronusSafetyRule.StructureConstruction);
+        if (!blocked)
+            return;
+
+        args.Cancelled = true;
+        if (args.ShowPopup)
+            _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-construction-blocked"), args.User);
     }
 
     // Kept as a compatibility wrapper for existing construction/RCD callers.

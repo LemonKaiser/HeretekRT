@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Content.Server.Database;
+using Content.Server._WH40K.Economy;
 using Content.Server._WH40K.PersistentInventory.Serialization;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.PersistentInventory;
@@ -36,7 +37,7 @@ public sealed partial class MerchantSystem
     private readonly HashSet<EntityUid> _checking = new();
     private readonly Dictionary<NetUserId, Quote> _quotes = new();
     private sealed record Quote(Guid Id, EntityUid Merchant, EntityUid Body, EntityUid Item, Guid Token,
-        string Product, int Price, TimeSpan Expires, Guid Catalog);
+        string Product, int Price, TimeSpan Expires, MaterialMarketQuote? Market = null);
     public bool IsSelling(NetUserId user) => _selling.Contains(user);
     public event Action<MerchantSalePhase>? SalePhaseChanged;
     private float _saleRecoveryTimer;
@@ -120,8 +121,16 @@ public sealed partial class MerchantSystem
             MetaData(item).EntityPrototype is {} proto && valuation.Prices.TryGetValue(new EntProtoId(proto.ID), out var price) && price is > 0 and <= 1000000);
         if (!item.IsValid()) { Result(uid, ev.Actor, Guid.Empty, "wh40k-service-appraisal-refused"); return; }
         var product = MetaData(item).EntityPrototype!.ID;
+        var market = _materialMarket.Enabled
+            ? _materialMarket.Quote([item], specialPrices: new Dictionary<EntityUid, double> { [item] = valuation.Prices[new EntProtoId(product)] })
+            : null;
+        if (market is { Amount: <= 0 })
+        {
+            Result(uid, ev.Actor, Guid.Empty, "wh40k-service-appraisal-refused");
+            return;
+        }
         var quote = new Quote(Guid.NewGuid(), uid, ev.Actor, item, Comp<MerchantItemTokenComponent>(item).Token,
-            product, valuation.Prices[new EntProtoId(product)], _timing.CurTime + TimeSpan.FromSeconds(30), comp.CatalogId);
+            product, market?.Amount ?? valuation.Prices[new EntProtoId(product)], _timing.CurTime + TimeSpan.FromSeconds(30), market);
         _quotes[actor.PlayerSession.UserId] = quote;
         _ui.ServerSendUiMessage(uid, MerchantUiKey.Key, new MerchantAppraisalState(quote.Id, product, quote.Price), ev.Actor);
     }
@@ -130,14 +139,51 @@ public sealed partial class MerchantSystem
     {
         if (!ValidViewer(uid, comp, ev.Actor) || !TryComp(ev.Actor, out ActorComponent? actor) || ev.Operation == Guid.Empty ||
             !_quotes.TryGetValue(actor.PlayerSession.UserId, out var quote) || quote.Id != ev.Quote || quote.Merchant != uid ||
-            quote.Body != ev.Actor || !CanTrade(ev.Actor) || quote.Expires <= _timing.CurTime || quote.Catalog != comp.CatalogId ||
+            quote.Body != ev.Actor || !CanTrade(ev.Actor) ||
             !Eligible(ev.Actor, quote.Item) || Comp<MerchantItemTokenComponent>(quote.Item).Token != quote.Token)
         { Result(uid, ev.Actor, ev.Operation, "wh40k-service-stale"); return; }
         var user = actor.PlayerSession.UserId;
         if (!_selling.Add(user)) return;
+        if (!TryRefreshBuybackQuote(quote, comp, out quote))
+        {
+            _selling.Remove(user);
+            Result(uid, ev.Actor, ev.Operation, "wh40k-service-appraisal-refused");
+            return;
+        }
+        var reserved = quote.Market == null;
+        for (var attempt = 0; !reserved && attempt < 2 && quote.Market != null; attempt++)
+        {
+            reserved = _materialMarket.TryReserve(quote.Market, ev.Operation, quote.Token);
+            if (reserved || _materialMarket.IsCurrent(quote.Market) || !TryRefreshBuybackQuote(quote, comp, out quote))
+                break;
+        }
+        if (!reserved)
+        {
+            _selling.Remove(user);
+            Result(uid, ev.Actor, ev.Operation, "wh40k-market-unavailable");
+            return;
+        }
+        _quotes[user] = quote;
+        _ui.ServerSendUiMessage(uid, MerchantUiKey.Key, new MerchantAppraisalState(quote.Id, quote.Product, quote.Price), ev.Actor);
         var marker = EnsureComp<Wh40kQuestReservationComponent>(quote.Item);
         marker.Submission = ev.Operation; marker.UserId = user.UserId; marker.Units = marker.OriginalCount = 1; marker.Merchant = true;
         _sessions.TrackWork(SellAsync(user, quote, ev.Operation));
+    }
+
+    private bool TryRefreshBuybackQuote(Quote previous, MerchantComponent merchant, out Quote current)
+    {
+        current = previous;
+        if (merchant.Buyback is not { } catalog || !_prototypes.TryIndex(catalog, out var valuation) ||
+            !valuation.Prices.TryGetValue(new EntProtoId(previous.Product), out var referencePrice) || referencePrice is <= 0 or > 1000000)
+            return false;
+        var market = _materialMarket.Enabled
+            ? _materialMarket.Quote([previous.Item], specialPrices: new Dictionary<EntityUid, double> { [previous.Item] = referencePrice })
+            : null;
+        var price = market?.Amount ?? referencePrice;
+        if (price <= 0)
+            return false;
+        current = previous with { Price = price, Market = market, Expires = _timing.CurTime + TimeSpan.FromSeconds(30) };
+        return true;
     }
 
     private async Task SellAsync(NetUserId user, Quote quote, Guid operation)
@@ -190,9 +236,17 @@ public sealed partial class MerchantSystem
             catch (Exception error) { Log.Error($"Merchant item remains fenced: {error}"); }
             await _sessions.OnSimulationThread(() =>
             {
+                if (quote.Market != null)
+                    _materialMarket.FinishReservation(operation, confirmed ? paid : null);
                 if (confirmed && Exists(quote.Item))
                 {
-                    if (paid) { SalePhaseChanged?.Invoke(MerchantSalePhase.Paid); QueueDel(quote.Item); }
+                    if (paid)
+                    {
+                        SalePhaseChanged?.Invoke(MerchantSalePhase.Paid);
+                        if (quote.Market != null)
+                            _materialMarket.PreserveUnsoldChildren(quote.Market);
+                        QueueDel(quote.Item);
+                    }
                     else RemComp<Wh40kQuestReservationComponent>(quote.Item);
                     SalePhaseChanged?.Invoke(MerchantSalePhase.Released);
                 }
@@ -208,7 +262,22 @@ public sealed partial class MerchantSystem
         _saleRecoveryTimer += frameTime;
         if (_saleRecoveryTimer < 1 || _sessions.IsStopping) return;
         _saleRecoveryTimer = 0;
-        foreach (var (user, quote) in _quotes.ToArray()) if (quote.Expires <= _timing.CurTime) _quotes.Remove(user);
+        foreach (var (user, quote) in _quotes.ToArray())
+        {
+            if (_selling.Contains(user))
+                continue;
+            if (Exists(quote.Item) && TryComp<MerchantComponent>(quote.Merchant, out var merchant) &&
+                ValidViewer(quote.Merchant, merchant, quote.Body) && _hands.IsHolding(quote.Body, quote.Item) &&
+                TryRefreshBuybackQuote(quote, merchant, out var updated))
+            {
+                _quotes[user] = updated;
+                if (updated.Price != quote.Price)
+                    _ui.ServerSendUiMessage(quote.Merchant, MerchantUiKey.Key,
+                        new MerchantAppraisalState(updated.Id, updated.Product, updated.Price), quote.Body);
+            }
+            else if (quote.Expires <= _timing.CurTime)
+                _quotes.Remove(user);
+        }
         var query = EntityQueryEnumerator<MerchantItemTokenComponent>();
         var count = 0;
         while (query.MoveNext(out var uid, out var token))

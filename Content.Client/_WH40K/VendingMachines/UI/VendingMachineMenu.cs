@@ -81,7 +81,8 @@ public sealed partial class VendingMachineMenu
     }
 
     public void Populate(List<VendingMachineInventoryEntry> inventory, float priceModifier, int balance,
-        int? cashSlotBalance, bool requiresCash, bool enabled = true, bool hasBankAccount = true)
+        int? cashSlotBalance, bool requiresCash, bool enabled = true, bool hasBankAccount = true,
+        IReadOnlyDictionary<string, int>? serverPrices = null)
     {
         _enabled = enabled;
         _available = (long) balance + (cashSlotBalance ?? 0);
@@ -134,7 +135,9 @@ public sealed partial class VendingMachineMenu
             var entry = inventory[i];
             _prototypeManager.TryIndex(entry.ID, out var prototype);
             _slots[i].SetAmount(entry.Amount, entry.Amount == 0);
-            _slots[i].SetPrice(requiresCash ? GetPrice(entry, prototype, priceModifier) : 0, _available);
+            var price = serverPrices != null && serverPrices.TryGetValue(entry.ID, out var actual)
+                ? actual : GetPrice(entry, prototype, priceModifier);
+            _slots[i].SetPrice(requiresCash ? price : 0, _available);
         }
 
         ApplyFilter();

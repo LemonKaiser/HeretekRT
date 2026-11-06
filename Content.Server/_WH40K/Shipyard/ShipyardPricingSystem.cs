@@ -75,5 +75,6 @@ public sealed partial class ShipyardPricingSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent args)
     {
         _prices.Clear();
+        _materialSaleQuotes.Clear();
     }
 }

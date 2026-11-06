@@ -1,4 +1,5 @@
 using Content.Server._NF.Bank;
+using Content.Server._WH40K.Economy;
 using Content.Shared._NF.Bank.Events;
 using Content.Server._WH40K.Localizations;
 using Content.Shared._WH40K.Merchant;
@@ -27,6 +28,7 @@ namespace Content.Server._WH40K.Merchant;
 public sealed partial class MerchantSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private MaterialMarketSystem _materialMarket = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
@@ -262,6 +264,7 @@ public sealed partial class MerchantSystem : EntitySystem
         var outcome = "wh40k-merchant-out-of-stock";
         if (stock != null && Allowed(buyer, stock.Offer) && stock.Remaining > 0)
         {
+            var price = _materialMarket.GetPurchasePrice(stock.Offer.Product, stock.Offer.Price);
             EntityUid? product = null;
             var paid = false;
             try
@@ -271,11 +274,11 @@ public sealed partial class MerchantSystem : EntitySystem
                 PurchasePrepared?.Invoke();
                 if (!CanTrade(buyer) || !ValidViewer(uid, component, buyer) || TerminatingOrDeleted(product.Value))
                     outcome = "wh40k-service-failed";
-                else if (stock.Offer.Price <= 0 || !_bank.TryGetBalance(buyer, out var balance))
+                else if (price <= 0 || !_bank.TryGetBalance(buyer, out var balance))
                     outcome = "wh40k-service-failed";
-                else if (balance < stock.Offer.Price)
+                else if (balance < price)
                     outcome = "wh40k-merchant-insufficient-funds";
-                else if (!_bank.TryBankWithdraw(buyer, stock.Offer.Price))
+                else if (!_bank.TryBankWithdraw(buyer, price))
                     outcome = "wh40k-service-failed";
                 else
                 {
@@ -366,7 +369,7 @@ public sealed partial class MerchantSystem : EntitySystem
                 component.RefreshNumber,
                 component.CurrentStock.Where(entry => Allowed(actor, entry.Offer)).Select(entry => new MerchantOfferState(
                     entry.Offer.Product.Id,
-                    entry.Offer.Price,
+                    _materialMarket.GetPurchasePrice(entry.Offer.Product, entry.Offer.Price),
                     entry.Remaining,
                     entry.InitialStock,
                     entry.Offer.DisplayName?.Id,

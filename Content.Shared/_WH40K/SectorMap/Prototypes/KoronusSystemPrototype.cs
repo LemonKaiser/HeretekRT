@@ -82,8 +82,8 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public string? InitialGridDisplayName;
 
     /// <summary>
-    /// Optional profile attached to every grid loaded as this system's authored facility.
-    /// Unlike a static system circle, this follows the facility when it is moved at round start.
+    /// Station rules apply to the authored facility grid. Area rules apply within
+    /// InitialGridSafetyRadius, following the facility when it moves.
     /// </summary>
     [DataField]
     public ProtoId<KoronusSafetyProfilePrototype>? InitialGridSafetyProfile;
@@ -97,20 +97,6 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     /// </summary>
     [DataField]
     public bool ShowSafetyBoundaries = true;
-
-    /// <summary>
-    /// Optional rules attached directly to the authored facility grid. Unlike a circular safety
-    /// zone, these rules never apply to open space or another grid on the same system map.
-    /// </summary>
-    [DataField]
-    public ProtoId<KoronusSafetyProfilePrototype>? InitialGridLocalSafetyProfile;
-
-    /// <summary>
-    /// Adds the explicit infrastructure protection components to authored facility grids.
-    /// Procedural terrain and asteroid grids never receive these components automatically.
-    /// </summary>
-    [DataField]
-    public bool ProtectInitialGrid;
 
     /// <summary>
     /// Includes the authored initial facility in the scheduled vending-machine restock.
@@ -231,12 +217,6 @@ public sealed partial class KoronusAdditionalGridDefinition
 
     [DataField]
     public float SafetyRadius;
-
-    [DataField]
-    public ProtoId<KoronusSafetyProfilePrototype>? LocalSafetyProfile;
-
-    [DataField]
-    public bool ProtectGrid;
 
     /// <summary>
     /// Includes this supplementary facility in the scheduled vending-machine restock.

@@ -1167,12 +1167,8 @@ entities:
       bodyType: Static
       canCollide: false
     - type: PreventGridAnchorChanges
-    - type: ProtectedGrid
-      preventFloorRemoval: true
-      preventFloorPlacement: true
-      preventRCDUse: true
-      preventEmpEvents: true
-      preventExplosions: true
+    - type: KoronusGridSafetyProfile
+      profile: KoronusPlanetProtection
     - type: Roof
       data:
         -2,0: 57584

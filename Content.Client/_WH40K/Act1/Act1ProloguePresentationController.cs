@@ -23,7 +23,8 @@ public sealed class Act1ProloguePresentationController : UIController,
     IOnStateEntered<LobbyState>,
     IOnStateExited<LobbyState>,
     IOnStateEntered<GameplayState>,
-    IOnStateExited<GameplayState>
+    IOnStateExited<GameplayState>,
+    IOnSystemChanged<Act1PrologueControlLockSystem>
 {
     private static readonly SoundPathSpecifier GlassShatterSound = new("/Audio/_WH40K/Act1/glass-shatter.ogg");
 
@@ -39,11 +40,16 @@ public sealed class Act1ProloguePresentationController : UIController,
     private bool _holdingBlack;
     private bool _introPending;
 
-    public override void Initialize()
+    public void OnSystemLoaded(Act1PrologueControlLockSystem system)
     {
-        base.Initialize();
         SubscribeNetworkEvent<Act1ProloguePresentationEvent>(OnPresentation);
         SubscribeNetworkEvent<Act1PrologueFractureEvent>(OnFracture);
+    }
+
+    public void OnSystemUnloaded(Act1PrologueControlLockSystem system)
+    {
+        UnSubscribeNetworkEvent<Act1ProloguePresentationEvent>();
+        UnSubscribeNetworkEvent<Act1PrologueFractureEvent>();
     }
 
     public void OnStateEntered(GameplayState state)

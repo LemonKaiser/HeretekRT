@@ -5,8 +5,8 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._WH40K.SectorMap.Components;
 
 /// <summary>
-/// A safety profile bound to one facility grid. Unlike <c>KoronusSafetyZoneComponent</c>, it has
-/// no radius or client visual and therefore cannot spill over into the surrounding sector space.
+/// Applies only the station section of a protection profile to this facility grid.
+/// Area rules require a system/surface assignment or a separate <c>KoronusSafetyZoneComponent</c>.
 /// </summary>
 [RegisterComponent, Access(typeof(KoronusSectorRuleSystem), typeof(KoronusSafetyPolicySystem))]
 public sealed partial class KoronusGridSafetyProfileComponent : Component

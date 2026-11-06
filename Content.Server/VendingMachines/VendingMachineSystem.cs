@@ -84,6 +84,7 @@ namespace Content.Server.VendingMachines
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineSelfDispenseEvent>(OnSelfDispense);
 
             SubscribeLocalEvent<VendingMachineComponent, RestockDoAfterEvent>(OnDoAfter);
+            SubscribeLocalEvent<VendingMachineComponent, BoundUIOpenedEvent>(OnMarketUIOpened);
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
         }
@@ -127,6 +128,23 @@ namespace Content.Server.VendingMachines
         {
             if (args.Actor is not { Valid: true } actor || Deleted(actor))
                 return;
+
+            if (_materialMarket.Enabled && component.RequiresCash)
+            {
+                if (!_prototypeManager.TryIndex<EntityPrototype>(args.ID, out var product))
+                    return;
+                var actual = GetActualPrice(uid, component, product);
+                if (args.ExpectedPrice != actual)
+                {
+                    RefreshMarketPrices(uid, component);
+                    if (args.ExpectedPrice == null || actual > args.ExpectedPrice)
+                    {
+                        _keypadUi.ServerSendUiMessage(uid, VendingMachineUiKey.Key,
+                            new VendingMachineVendResultMessage(args.Type, args.ID, false), actor);
+                        return;
+                    }
+                }
+            }
 
             var success = this.IsPowered(uid, EntityManager) && !component.Broken && !component.Ejecting &&
                           AuthorizedVend(uid, actor, args.Type, args.ID, component);
@@ -333,24 +351,7 @@ namespace Content.Server.VendingMachines
             if (!_prototypeManager.TryIndex<EntityPrototype>(itemId, out var proto))
                 return false;
 
-            var price = _pricing.GetEstimatedPrice(proto);
-            // Somewhere deep in the code of pricing, a hardcoded 20 dollar value exists for anything without
-            // a staticprice component for some god forsaken reason, and I cant find it or think of another way to
-            // get an accurate price from a prototype with no staticprice comp.
-            // this will undoubtably lead to vending machine exploits if I cant find wtf pricing system is doing.
-            // also stacks, food, solutions, are handled poorly too f
-            if (price == 0)
-                price = 20;
-
-            if (TryComp<MarketModifierComponent>(component.Owner, out var modifier))
-                price *= modifier.Mod;
-
-            var totalPrice = component.RequiresCash ? (int) price : 0;
-
-            // If any price has a vendor price, explicitly use its value - higher OR lower, over others.
-            var priceVend = _pricing.GetEstimatedVendPrice(proto);
-            if (priceVend > 0.0 && component.RequiresCash) // if vending price exists, overwrite it.
-                totalPrice = (int) priceVend;
+            var totalPrice = GetActualPrice(uid, component, proto);
 
             if (IsAuthorized(uid, sender, component))
             {

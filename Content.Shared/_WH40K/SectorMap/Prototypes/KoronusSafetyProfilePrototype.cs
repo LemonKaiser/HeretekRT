@@ -13,6 +13,18 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
     [IdDataField]
     public string ID { get; private set; } = default!;
 
+    /// <summary>Rules for a system map, planetary surface or circular safe area.</summary>
+    [DataField]
+    public KoronusSafetyRulesDefinition Area = new();
+
+    /// <summary>Rules and safeguards applied only to explicitly configured facility grids.</summary>
+    [DataField]
+    public KoronusStationProtectionDefinition Station = new();
+}
+
+[DataDefinition]
+public partial class KoronusSafetyRulesDefinition
+{
     [DataField]
     public bool BlockShipWeapons;
 
@@ -93,6 +105,9 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
     /// </summary>
     [DataField]
     public bool BlockHandheldEntityPlacement;
+
+    [DataField]
+    public bool BlockStructureConstruction;
 
     /// <summary>
     /// Prevents sprays and spawned smoke or foam from applying chemical effects.
@@ -190,6 +205,8 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
                 rules |= KoronusSafetyRule.Deconstruction;
             if (BlockHandheldEntityPlacement)
                 rules |= KoronusSafetyRule.HandheldEntityPlacement;
+            if (BlockStructureConstruction)
+                rules |= KoronusSafetyRule.StructureConstruction;
             if (BlockChemicalEffects)
                 rules |= KoronusSafetyRule.ChemicalEffects;
             if (BlockRadiationMunitions)
@@ -215,6 +232,31 @@ public sealed partial class KoronusSafetyProfilePrototype : IPrototype
             return rules;
         }
     }
+}
+
+/// <summary>Facility safeguards reuse the existing grid, infrastructure and property systems.</summary>
+[DataDefinition]
+public sealed partial class KoronusStationProtectionDefinition : KoronusSafetyRulesDefinition
+{
+    /// <summary>Blocks NPC damage and harmful interactions against players on this facility grid.</summary>
+    [DataField]
+    public bool BlockNpcAttacks;
+
+    /// <summary>Protects facility structures even when damage has no responsible player.</summary>
+    [DataField]
+    public bool BlockInfrastructureDamage;
+
+    [DataField]
+    public bool ProtectProperty;
+
+    [DataField]
+    public bool LockInfrastructureControls;
+
+    [DataField]
+    public bool AnchorGrid;
+
+    [DataField]
+    public bool BlockArtifactTriggers;
 }
 
 /// <summary>
@@ -266,4 +308,5 @@ public enum KoronusSafetyRule : uint
     ClassAreaEffects = 1 << 26,
     ClassMobilityActions = 1 << 27,
     FireAndHighTemperature = 1 << 28,
+    StructureConstruction = 1 << 29,
 }

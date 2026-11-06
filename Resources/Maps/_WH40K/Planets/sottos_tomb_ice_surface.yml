@@ -83,12 +83,8 @@ entities:
     - type: Transform
       pos: -8,-30
       parent: invalid
-    - type: ProtectedGrid
-      preventFloorRemoval: true
-      preventFloorPlacement: true
-      preventRCDUse: true
-      preventEmpEvents: true
-      preventExplosions: true
+    - type: KoronusGridSafetyProfile
+      profile: KoronusPlanetProtection
     - type: MapGrid
       chunks:
         -1,-1:
@@ -15838,7 +15834,7 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
-- proto: ComputerPalletConsoleNFVeryHighMarket
+- proto: ComputerPalletConsoleNFLowMarket
   entities:
   - uid: 1881
     components:

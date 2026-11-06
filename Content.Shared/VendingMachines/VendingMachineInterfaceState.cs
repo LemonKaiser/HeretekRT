@@ -7,6 +7,7 @@ namespace Content.Shared.VendingMachines
     {
         public readonly InventoryType Type;
         public readonly string ID;
+        public int? ExpectedPrice;
         public VendingMachineEjectMessage(InventoryType type, string id)
         {
             Type = type;
