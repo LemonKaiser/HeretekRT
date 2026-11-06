@@ -1,0 +1,10 @@
+marking-PawSocks-pawsocks = Носочки
+marking-PawSocks = Носочки
+marking-PawSocksFeet = Носочки (ступни)
+marking-PawSocksFeet-pawsocks_feet = Носочки
+marking-PawSocksLegs = Носочки (ноги)
+marking-PawSocksLegs-pawsocks_legs = Носочки
+marking-PawSocksHands = Носочки (кисти)
+marking-PawSocksHands-pawsocks_hands = Носочки
+marking-PawSocksArms = Носочки (руки)
+marking-PawSocksArms-pawsocks_arms = Носочки

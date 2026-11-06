@@ -14,5 +14,8 @@ jobs:
     name: Submodule update in pr found
     runs-on: ubuntu-latest
     steps:
-      - name: Fail
-        run: exit 1
+      - uses: actions/checkout@v7
+      - name: Check approved engine revision
+        env:
+          APPROVED_ENGINE_REVISION: 39acdd5d3b67e48044366ef0cdb1d1c3b41cc85e # v278.0.4
+        run: test "$(git rev-parse HEAD:RobustToolbox)" = "$APPROVED_ENGINE_REVISION"

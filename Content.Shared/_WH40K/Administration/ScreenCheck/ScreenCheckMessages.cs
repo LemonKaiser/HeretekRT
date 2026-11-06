@@ -57,6 +57,7 @@ public sealed class MsgScreenCheckResponse : NetMessage
         if (length <= 0 || length > ScreenCheckImageValidator.MaxImageBytes)
             throw new InvalidDataException($"Invalid screencheck image length: {length}.");
 
+        buffer.AssertAtLeastSize(length);
         ImageData = new byte[length];
         buffer.ReadBytes(ImageData, 0, length);
     }
