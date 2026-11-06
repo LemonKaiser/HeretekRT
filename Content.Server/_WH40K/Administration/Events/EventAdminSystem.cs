@@ -6,12 +6,10 @@ using Content.Server.Chat.Managers;
 using Content.Shared._WH40K.Administration.Events;
 using Content.Shared.Administration;
 using Content.Shared.Database;
-using Content.Shared.Damage;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Systems;
 using Content.Shared.Bed.Sleep;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -64,8 +62,6 @@ public sealed partial class EventAdminSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => Reset(roundCleanup: true));
-        SubscribeLocalEvent<DamageableComponent, BeforeDamageChangedEvent>(OnBeforeTeamDamage);
-        SubscribeLocalEvent<StaminaComponent, BeforeStaminaDamageEvent>(OnBeforeTeamStaminaDamage);
         _admins.OnPermsChanged += OnPermissionsChanged;
     }
 

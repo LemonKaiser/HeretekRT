@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._WH40K.Administration.Events;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.ClassProgression;
 using Content.Server._WH40K.Localizations;
@@ -94,6 +95,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     [Dependency] private SharedGunSystem _guns = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private Wh40kPartyManager _wh40kParties = default!;
+    [Dependency] private EventAdminSystem _eventAdmin = default!;
     [Dependency] private FlammableSystem _flammable = default!;
     [Dependency] private AtmosphereSystem _atmosphere = default!;
     [Dependency] private TemperatureSystem _temperature = default!;
@@ -635,6 +637,12 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (args.Cancelled)
             return;
 
+        if (args.Damage.AnyPositive() && _eventAdmin.BlocksTeamDamage(args.Origin, uid))
+        {
+            args.Cancelled = true;
+            return;
+        }
+
         // The normal damage gate can attribute attacks to players, but fire and thermal
         // damage are often environmental and deliberately have no origin. Remove Heat
         // directly so burning, atmospheric heat and delayed effects cannot bypass a
@@ -682,7 +690,8 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         if (args.Cancelled || args.Value <= 0f)
             return;
 
-        if (ShouldBlockPlayerAgainstPlayer(args.Source, uid, KoronusSafetyRule.PlayerStaminaDamage) ||
+        if (_eventAdmin.BlocksTeamDamage(args.Source, uid) ||
+            ShouldBlockPlayerAgainstPlayer(args.Source, uid, KoronusSafetyRule.PlayerStaminaDamage) ||
             ShouldBlockNpcAgainstPlayer(args.Source, uid) ||
             ShouldBlockPlayerAgainstMob(args.Source, uid))
             args.Cancelled = true;
