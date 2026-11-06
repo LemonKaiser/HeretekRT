@@ -4,6 +4,7 @@ wh40k-merchant-subtitle = Полевой ассортимент
 wh40k-merchant-greeting = Подходи ближе. Сегодня у меня есть вещи, которые не успели стать незаконными.
 wh40k-merchant-menu = Что ищешь, путник?
 wh40k-merchant-choice-shop = Посмотреть ассортимент
+wh40k-merchant-verb-shop = Магазин
 wh40k-merchant-choice-talk = Поговорить
 wh40k-merchant-choice-goodbye = Пока
 wh40k-merchant-talk = Рынок живёт слухами. Если товар исчез — значит, он уже кому-то понадобился.

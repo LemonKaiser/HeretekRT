@@ -46,5 +46,12 @@ public sealed partial class MouseRotatorComponent : Component
 [Serializable, NetSerializable]
 public sealed class RequestMouseRotatorRotationEvent : EntityEventArgs
 {
-    public Angle Rotation;
+    public readonly NetEntity Entity;
+    public readonly Angle Rotation;
+
+    public RequestMouseRotatorRotationEvent(NetEntity entity, Angle rotation)
+    {
+        Entity = entity;
+        Rotation = rotation;
+    }
 }

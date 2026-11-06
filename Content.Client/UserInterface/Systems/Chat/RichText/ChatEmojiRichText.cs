@@ -11,15 +11,14 @@ using Robust.Shared.Utility;
 namespace Content.Client.UserInterface.Systems.Chat.RichText;
 
 /// <summary>
-/// Converts only server-normalized emoji shortcodes into inline controls. Direct Unicode is intentionally not
+/// Converts only server-normalized emoji shortcodes into inline glyphs. Direct Unicode is intentionally not
 /// parsed here: player input is normalized on the server, while arbitrary text from names and system messages
-/// remains text and cannot allocate an unbounded number of controls.
+/// remains text.
 /// </summary>
 public static class ChatEmojiRichText
 {
     public const string EmojiMarkupTag = "chatemoji";
 
-    private const float InlineEmojiScale = 20f / 72f;
     private const float PickerEmojiScale = 24f / 72f;
     private const float CategoryEmojiScale = 22f / 72f;
 
@@ -77,9 +76,6 @@ public static class ChatEmojiRichText
         return builder.Length == 0 ? FormattedMessage.Empty : FormattedMessage.FromMarkupOrThrow(builder.ToString());
     }
 
-    public static TextureRect CreateInlineTextureRect(IResourceCache resources, ChatEmojiDefinition emoji)
-        => CreateTextureRect(resources, emoji, InlineEmojiScale, 25f, new Thickness(1f, 2f, 1f, 2f));
-
     public static TextureRect CreatePickerTextureRect(IResourceCache resources, ChatEmojiDefinition emoji)
         => CreateTextureRect(resources, emoji, PickerEmojiScale, 28f, new Thickness(5f));
 
@@ -108,7 +104,7 @@ public static class ChatEmojiRichText
         };
     }
 
-    private static Texture ResolveTexture(IResourceCache resources, ChatEmojiDefinition emoji)
+    internal static Texture ResolveTexture(IResourceCache resources, ChatEmojiDefinition emoji)
     {
         if (resources.TryGetResource<RSIResource>(emoji.TexturePath, out var rsi) &&
             rsi.RSI.TryGetState(emoji.TextureState, out var state))

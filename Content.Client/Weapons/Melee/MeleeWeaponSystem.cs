@@ -44,6 +44,8 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         _xformQuery = GetEntityQuery<TransformComponent>();
         SubscribeNetworkEvent<MeleeLungeEvent>(OnMeleeLunge);
         UpdatesOutsidePrediction = true;
+        // Tracked melee arcs and muzzle flashes must follow this frame's interpolated position.
+        UpdatesAfter.Add(typeof(TransformSystem));
     }
 
     public override void FrameUpdate(float frameTime)

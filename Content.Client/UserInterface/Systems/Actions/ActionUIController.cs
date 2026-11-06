@@ -377,7 +377,7 @@ public sealed partial class ActionUIController : UIController, IOnStateChanged<G
         if (action is BaseTargetActionComponent targetAction && action.Toggled)
             StartTargeting(actionId, targetAction);
 
-        if (_actions.Contains(actionId))
+        if (!action.AutoPopulate || _actions.Contains(actionId))
             return;
 
         _actions.Add(actionId);

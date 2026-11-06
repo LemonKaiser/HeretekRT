@@ -1,11 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using Content.Shared.Chat;
 using Content.Shared.StatusIcon;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
-using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.RichText;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -20,7 +16,6 @@ public static class ChatJobIconMarkup
 {
     public const string TagName = "chatjobicon";
     private const string NameTagOpen = "[Name]";
-    private const string OutputLineHeightSpacer = "[font size=3]\n[/font]";
 
     /// <summary>
     ///     The icon represents credentials presented during ordinary speech or radio transmission. It must not
@@ -44,27 +39,6 @@ public static class ChatJobIconMarkup
         var iconMarkup = $"[{TagName} icon=\"{iconId}\"/] ";
         return wrappedMessage.Insert(nameIndex, iconMarkup);
     }
-
-    /// <summary>
-    ///     OutputPanel measures the first rich-text line before it accounts for an inline control's height.
-    ///     This invisible short line reserves the missing space for the full-size icon without modifying the
-    ///     message used by speech bubbles. It is appended after all visible output, otherwise a later suffix
-    ///     would start a new line at the icon's left edge.
-    /// </summary>
-    public static void ReserveOutputLineHeight(FormattedMessage message)
-    {
-        if (message.ToMarkup().Contains(OutputLineHeightSpacer, StringComparison.Ordinal))
-            return;
-
-        foreach (var node in message)
-        {
-            if (node.Name != TagName || node.Closing)
-                continue;
-
-            message.AddMarkupOrThrow(OutputLineHeightSpacer);
-            return;
-        }
-    }
 }
 
 [UsedImplicitly]
@@ -73,29 +47,27 @@ public sealed partial class ChatJobIconTag : IMarkupTagHandler
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IEntityManager _entities = default!;
 
-    private static readonly Vector2 IconSize = new(20f, 20f);
-
     public string Name => ChatJobIconMarkup.TagName;
 
-    public bool TryCreateControl(MarkupNode node, [NotNullWhen(true)] out Control? control)
+    public void PushDrawContext(MarkupNode node, MarkupDrawingContext context)
     {
-        control = null;
-        if (!node.Attributes.TryGetValue("icon", out var iconParameter) ||
-            !iconParameter.TryGetString(out var iconId) ||
-            !_prototypes.TryIndex<JobIconPrototype>(iconId, out var jobIcon))
+        var font = context.Font.Peek();
+        if (TryGetIcon(node, out var jobIcon))
         {
-            return false;
+            var texture = _entities.System<SpriteSystem>().Frame0(jobIcon.Icon);
+            font = new ChatImageFont(font, texture);
         }
+        context.Font.Push(font);
+    }
 
-        control = new TextureRect
-        {
-            Texture = _entities.System<SpriteSystem>().Frame0(jobIcon.Icon),
-            TextureScale = new Vector2(2.5f, 2.5f),
-            Stretch = TextureRect.StretchMode.KeepCentered,
-            VerticalAlignment = Control.VAlignment.Center,
-            MinSize = IconSize,
-            Margin = new Thickness(0f, 3f, 2f, 0f),
-        };
-        return true;
+    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context) => context.Font.Pop();
+
+    public string TextBefore(MarkupNode node) => TryGetIcon(node, out _) ? ChatImageFont.Glyph : string.Empty;
+
+    private bool TryGetIcon(MarkupNode node, out JobIconPrototype jobIcon)
+    {
+        jobIcon = default!;
+        return node.Attributes.TryGetValue("icon", out var parameter) &&
+               parameter.TryGetString(out var iconId) && _prototypes.TryIndex(iconId, out jobIcon!);
     }
 }

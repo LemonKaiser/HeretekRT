@@ -1,4 +1,5 @@
 using Content.Shared.DisplacementMap;
+using Content.Shared.Humanoid;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Serialization.Manager;
@@ -12,7 +13,14 @@ public sealed partial class DisplacementMapSystem : EntitySystem
     public bool TryAddDisplacement(DisplacementData data, SpriteComponent sprite, int index, string key, HashSet<string> revealedLayers)
     {
         if (data.ShaderOverride != null)
-            sprite.LayerSetShader(index, data.ShaderOverride);
+        {
+            var shader = data.ShaderOverride;
+            if (shader == "DisplacedStencilDraw" &&
+                !sprite.LayerMapTryGet(HumanoidVisualLayers.StencilMask, out _))
+                shader = "DisplacedDraw";
+
+            sprite.LayerSetShader(index, shader);
+        }
 
         var displacementKey = $"{key}-displacement";
         if (!revealedLayers.Add(displacementKey))

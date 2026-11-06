@@ -28,6 +28,7 @@
   description: You lift your head and look up at the sky.
   components:
   - type: InstantAction
+    autoPopulate: false
     checkCanInteract: false
     icon:
       sprite: _CE/Actions/zLevels.rsi

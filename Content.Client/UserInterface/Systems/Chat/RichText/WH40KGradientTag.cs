@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
 using Content.Shared._WH40K.MetaProgress;
 using Robust.Client.Graphics;
-using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.RichText;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -19,62 +16,32 @@ public sealed partial class WH40KGradientTag : IMarkupTagHandler
 {
     public string Name => "wh40kgradient";
 
-    public bool TryCreateControl(MarkupNode node, [NotNullWhen(true)] out Control? control)
-    {
-        var text = ReadString(node.Attributes, "text", string.Empty);
-        if (node.Closing || string.IsNullOrWhiteSpace(text))
-        {
-            control = null;
-            return false;
-        }
-
-        var palette = ParsePalette(node.Attributes);
-        if (palette.Count == 0)
-        {
-            control = null;
-            return false;
-        }
-
-        var animated = ReadBool(node.Attributes, "animated", false);
-        var durationMs = Math.Clamp(ReadInt(node.Attributes, "duration", 3500), 400, 60000);
-        var phaseMs = ReadInt(node.Attributes, "phase", 0);
-
-        var auraEnabled = ReadBool(node.Attributes, "aura", false);
-        var auraRadius = Math.Clamp(ReadInt(node.Attributes, "auraradius", 1), 1, 4);
-        var auraAlphaPercent = Math.Clamp(ReadInt(node.Attributes, "auraalpha", 65), 1, 100);
-        var auraColor = Color.White;
-        if (node.Attributes.TryGetValue("auracolor", out var auraColorParam) &&
-            auraColorParam.TryGetString(out var auraColorRaw) &&
-            TryResolveColor(auraColorRaw, out var parsedAura))
-        {
-            auraColor = parsedAura;
-            auraEnabled = true;
-        }
-
-        control = new WH40KGradientNameControl(
-            text,
-            palette,
-            animated,
-            durationMs,
-            phaseMs,
-            auraEnabled,
-            auraColor,
-            auraRadius,
-            auraAlphaPercent);
-        return true;
-    }
-
     public void PushDrawContext(MarkupNode node, MarkupDrawingContext context)
     {
-        if (ReadBool(node.Attributes, "overlay", false))
-            context.Color.Push(Color.Transparent);
+        var font = context.Font.Peek();
+        var text = ReadString(node.Attributes, "text", string.Empty);
+        var palette = ParsePalette(node.Attributes);
+        if (!string.IsNullOrEmpty(text) && palette.Count > 0)
+        {
+            var auraEnabled = ReadBool(node.Attributes, "aura", false);
+            var auraColor = Color.White;
+            if (node.Attributes.TryGetValue("auracolor", out var parameter) &&
+                parameter.TryGetString(out var raw) && TryResolveColor(raw, out var parsed))
+            {
+                auraColor = parsed;
+                auraEnabled = true;
+            }
+            font = new WH40KGradientFont(font, text, palette,
+                ReadBool(node.Attributes, "animated", false),
+                Math.Clamp(ReadInt(node.Attributes, "duration", 3500), 400, 60000),
+                ReadInt(node.Attributes, "phase", 0), auraEnabled, auraColor,
+                Math.Clamp(ReadInt(node.Attributes, "auraradius", 1), 1, 4),
+                Math.Clamp(ReadInt(node.Attributes, "auraalpha", 65), 1, 100));
+        }
+        context.Font.Push(font);
     }
 
-    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context)
-    {
-        if (ReadBool(node.Attributes, "overlay", false))
-            context.Color.Pop();
-    }
+    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context) => context.Font.Pop();
 
     private static List<Color> ParsePalette(IReadOnlyDictionary<string, MarkupParameter> attributes)
     {
@@ -157,172 +124,49 @@ public sealed partial class WH40KGradientTag : IMarkupTagHandler
     }
 }
 
-internal sealed partial class WH40KGradientNameControl : Control
+internal sealed partial class WH40KGradientFont : ChatFont
 {
     [Dependency] private IGameTiming _timing = default!;
 
-    private readonly List<Rune> _runes;
+    private readonly int _runeCount;
     private readonly List<Color> _palette;
     private readonly bool _animated;
     private readonly int _durationMs;
     private readonly int _phaseMs;
-
     private readonly bool _auraEnabled;
     private readonly Color _auraColor;
     private readonly int _auraRadius;
     private readonly int _auraAlphaPercent;
-    private float _availableWidthPixels;
-    private float _lastParentWidth;
+    private int _index;
 
-    public WH40KGradientNameControl(
-        string text,
-        List<Color> palette,
-        bool animated,
-        int durationMs,
-        int phaseMs,
-        bool auraEnabled,
-        Color auraColor,
-        int auraRadius,
-        int auraAlphaPercent)
+    public WH40KGradientFont(Font baseFont, string text, List<Color> palette, bool animated, int durationMs,
+        int phaseMs, bool auraEnabled, Color auraColor, int auraRadius, int auraAlphaPercent) : base(baseFont)
     {
         IoCManager.InjectDependencies(this);
-
+        foreach (var _ in text.EnumerateRunes())
+            _runeCount++;
         _palette = palette;
         _animated = animated;
         _durationMs = durationMs;
         _phaseMs = phaseMs;
-
         _auraEnabled = auraEnabled;
         _auraColor = auraColor;
         _auraRadius = auraRadius;
         _auraAlphaPercent = auraAlphaPercent;
-
-        _runes = new List<Rune>();
-        foreach (var rune in text.EnumerateRunes())
-        {
-            _runes.Add(rune);
-        }
-        MouseFilter = MouseFilterMode.Ignore;
     }
 
-    protected override Vector2 MeasureOverride(Vector2 availableSize)
+    public override float DrawChar(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
+        Color color, bool fallback = true)
     {
-        // The actual, transparent text is measured by RichTextEntry and provides normal word wrapping.
-        // This control is an overlay and must not participate in that layout as one huge inline glyph.
-        // RichTextEntry measures controls again while drawing, using the width occupied by the entry.
-        // Keep the larger layout width from the initial measurement so the overlay follows the source text.
-        var parentWidth = Parent?.PixelSizeBox.Width ?? 0f;
-        if (parentWidth > 0f)
-        {
-            if (_lastParentWidth > 0f && !MathHelper.CloseToPercent(parentWidth, _lastParentWidth, 0.001f))
-                _availableWidthPixels = 0f;
-
-            _lastParentWidth = parentWidth;
-        }
-
-        if (float.IsFinite(availableSize.X) && availableSize.X > _availableWidthPixels)
-            _availableWidthPixels = availableSize.X;
-
-        return Vector2.Zero;
-    }
-
-    protected override void Draw(DrawingHandleScreen handle)
-    {
-        base.Draw(handle);
-
-        if (_runes.Count == 0)
-            return;
-
-        var font = ResolveFont();
         var elapsedMs = _timing.RealTime.TotalMilliseconds + _phaseMs;
+        var shift = _animated ? (float) ((elapsedMs % _durationMs) / _durationMs) : 0f;
+        var t = (_runeCount <= 1 ? 0f : _index / (float) (_runeCount - 1)) + shift;
+        _index++;
+        t -= MathF.Floor(t);
+        var gradient = SampleGradient(_palette, t);
+        gradient = gradient.WithAlpha(gradient.A * color.A);
 
-        var shift = 0f;
-        if (_animated)
-        {
-            var wrapped = elapsedMs % _durationMs;
-            if (wrapped < 0)
-                wrapped += _durationMs;
-
-            shift = (float) (wrapped / _durationMs);
-        }
-
-        var auraColor = _auraColor.WithAlpha(Math.Clamp(_auraAlphaPercent / 100f, 0.05f, 1f));
-        DrawWrapped(font, (sourceRune, index, baseline) =>
-        {
-            var t = _runes.Count == 1
-                ? shift
-                : (index / (float) Math.Max(1, _runes.Count - 1)) + shift;
-            t -= MathF.Floor(t);
-
-            var color = SampleGradient(_palette, t);
-            DrawRune(handle, font, sourceRune, baseline, color, auraColor);
-        });
-    }
-
-    private void DrawWrapped(Font font, Action<Rune, int, Vector2> drawRune)
-    {
-        // RichTextEntry arranges an inline control at the exact source-text position. New lines begin at the
-        // parent content's left edge and use the same width as the transparent source text.
-        var lineLeft = Parent?.PixelSizeBox.Left ?? SizeBox.Left;
-        var lineWidth = _availableWidthPixels;
-        if (!float.IsFinite(lineWidth) || lineWidth <= 0f)
-            lineWidth = Parent?.PixelSizeBox.Width ?? 0f;
-
-        var lineRight = lineLeft + Math.Max(1f, lineWidth);
-        var baseline = SizeBox.TopLeft + new Vector2(0f, font.GetAscent(UIScale));
-        var lineHeight = font.GetLineHeight(UIScale);
-        var index = 0;
-
-        while (index < _runes.Count)
-        {
-            var rune = _runes[index];
-            if (rune.Value == '\n')
-            {
-                baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-                index++;
-                continue;
-            }
-
-            if (Rune.IsWhiteSpace(rune))
-            {
-                var advance = GetRuneAdvance(font, rune);
-                if (baseline.X > lineLeft && baseline.X + advance <= lineRight)
-                    baseline += new Vector2(advance, 0f);
-                else if (baseline.X > lineLeft)
-                    baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-                index++;
-                continue;
-            }
-
-            var wordEnd = index;
-            var wordWidth = 0f;
-            while (wordEnd < _runes.Count && !Rune.IsWhiteSpace(_runes[wordEnd]) && _runes[wordEnd].Value != '\n')
-            {
-                wordWidth += GetRuneAdvance(font, _runes[wordEnd]);
-                wordEnd++;
-            }
-
-            if (baseline.X > lineLeft && baseline.X + wordWidth > lineRight)
-                baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-            while (index < wordEnd)
-            {
-                rune = _runes[index];
-                var advance = GetRuneAdvance(font, rune);
-                if (baseline.X > lineLeft && baseline.X + advance > lineRight)
-                    baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-                drawRune(rune, index, baseline);
-                baseline += new Vector2(advance, 0f);
-                index++;
-            }
-        }
-    }
-
-    private void DrawRune(DrawingHandleScreen handle, Font font, Rune rune, Vector2 baseline, Color color, Color auraColor)
-    {
-        if (_auraEnabled)
+        if (_auraEnabled && !Rune.IsWhiteSpace(rune))
         {
             var offsets = _auraRadius switch
             {
@@ -331,30 +175,11 @@ internal sealed partial class WH40KGradientNameControl : Control
                 3 => AuraOffsetsR3,
                 _ => AuraOffsetsR4,
             };
-
+            var aura = _auraColor.WithAlpha(Math.Clamp(_auraAlphaPercent / 100f, 0.05f, 1f) * color.A);
             foreach (var offset in offsets)
-            {
-                font.DrawChar(handle, rune, baseline + offset, UIScale, auraColor);
-            }
+                BaseFont.DrawChar(handle, rune, baseline + offset, scale, aura, fallback);
         }
-
-        font.DrawChar(handle, rune, baseline, UIScale, color);
-    }
-
-    private Font ResolveFont()
-    {
-        if (TryGetStyleProperty<Font>("font", out var font))
-            return font;
-
-        return UserInterfaceManager.ThemeDefaults.LabelFont;
-    }
-
-    private float GetRuneAdvance(Font font, Rune rune)
-    {
-        if (font.TryGetCharMetrics(rune, UIScale, out var metrics))
-            return metrics.Advance;
-
-        return font.GetCharMetrics(new Rune('?'), UIScale, fallback: false)?.Advance ?? 0f;
+        return BaseFont.DrawChar(handle, rune, baseline, scale, gradient, fallback);
     }
 
     private static Color SampleGradient(IReadOnlyList<Color> palette, float t)

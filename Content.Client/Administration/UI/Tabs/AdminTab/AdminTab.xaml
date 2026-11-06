@@ -20,6 +20,7 @@
             <cc:CommandButton Command="timetransferpanel" Text="{Loc admin-player-actions-window-time-transfer}"/>
             <cc:CommandButton Command="whitelistpanel" Text="{Loc admin-player-actions-window-whitelist-panel}"/>
             <cc:CommandButton Command="maptransfer" Text="{Loc map-transfer-admin-menu-button}"/>
+            <cc:CommandButton Command="event_panel" Text="{Loc wh40k-event-menu}"/>
             <cc:CommandButton Command="faction_panel" Text="{Loc wh40k-faction-admin-menu}"/>
             <cc:CommandButton Command="persistentinv_panel" Text="{Loc wh40k-faction-admin-persistent-inventory}"/>
         </GridContainer>

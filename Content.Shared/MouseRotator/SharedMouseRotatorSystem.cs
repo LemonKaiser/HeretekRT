@@ -48,9 +48,10 @@ public abstract partial class SharedMouseRotatorSystem : EntitySystem
     private void OnRequestRotation(RequestMouseRotatorRotationEvent msg, EntitySessionEventArgs args)
     {
         if (args.SenderSession.AttachedEntity is not { } ent
+            || GetNetEntity(ent) != msg.Entity
             || !TryComp<MouseRotatorComponent>(ent, out var rotator))
         {
-            Log.Error($"User {args.SenderSession.Name} ({args.SenderSession.UserId}) tried setting local rotation directly without a valid mouse rotator component attached!");
+            // Input may arrive after leaving combat mode or switching controlled entities.
             return;
         }
 

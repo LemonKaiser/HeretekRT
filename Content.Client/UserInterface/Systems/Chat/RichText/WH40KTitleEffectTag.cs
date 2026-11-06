@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using Content.Shared._WH40K.MetaProgress;
 using Robust.Client.Graphics;
-using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.RichText;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -22,13 +19,17 @@ public sealed partial class WH40KTitleEffectTag : IMarkupTagHandler
 
     public string Name => "wh40ktitlefx";
 
-    public bool TryCreateControl(MarkupNode node, [NotNullWhen(true)] out Control? control)
+    public void PushDrawContext(MarkupNode node, MarkupDrawingContext context)
+        => context.Font.Push(CreateFont(node, context.Font.Peek()));
+
+    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context) => context.Font.Pop();
+
+    private static Font CreateFont(MarkupNode node, Font baseFont)
     {
         var text = ReadString(node.Attributes, "text", string.Empty);
         if (node.Closing || string.IsNullOrWhiteSpace(text))
         {
-            control = null;
-            return false;
+            return baseFont;
         }
 
         var effectRaw = ReadString(node.Attributes, "effect", string.Empty);
@@ -73,8 +74,8 @@ public sealed partial class WH40KTitleEffectTag : IMarkupTagHandler
             auraEnabled = true;
         }
 
-        control = new WH40KTitleEffectControl(
-            text,
+        return new WH40KTitleEffectFont(
+            baseFont, text,
             palette,
             animated,
             durationMs,
@@ -92,19 +93,6 @@ public sealed partial class WH40KTitleEffectTag : IMarkupTagHandler
             auraColor,
             auraRadius,
             auraAlphaPercent);
-        return true;
-    }
-
-    public void PushDrawContext(MarkupNode node, MarkupDrawingContext context)
-    {
-        if (ReadBool(node.Attributes, "overlay", false))
-            context.Color.Push(Color.Transparent);
-    }
-
-    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context)
-    {
-        if (ReadBool(node.Attributes, "overlay", false))
-            context.Color.Pop();
     }
 
     private static WH40KTitleFxMode ParseEffect(string source)
@@ -224,7 +212,7 @@ internal enum WH40KTitleFxMode : byte
     Flip = 10,
 }
 
-internal sealed partial class WH40KTitleEffectControl : Control
+internal sealed partial class WH40KTitleEffectFont : ChatFont
 {
     [Dependency] private  IGameTiming _timing = default!;
 
@@ -250,11 +238,12 @@ internal sealed partial class WH40KTitleEffectControl : Control
     private readonly int _auraRadius;
     private readonly int _auraAlphaPercent;
     private readonly int _seed;
-    private float _availableWidthPixels;
-    private float _lastParentWidth;
+    private int _index;
+    private float _uiScale;
+    private List<Rune>? _fishRunes;
 
-    public WH40KTitleEffectControl(
-        string text,
+    public WH40KTitleEffectFont(
+        Font baseFont, string text,
         List<Color> palette,
         bool animated,
         int durationMs,
@@ -271,7 +260,7 @@ internal sealed partial class WH40KTitleEffectControl : Control
         bool auraEnabled,
         Color auraColor,
         int auraRadius,
-        int auraAlphaPercent)
+        int auraAlphaPercent) : base(baseFont)
     {
         IoCManager.InjectDependencies(this);
 
@@ -299,205 +288,93 @@ internal sealed partial class WH40KTitleEffectControl : Control
         {
             _runes.Add(rune);
         }
-        MouseFilter = MouseFilterMode.Ignore;
     }
 
-    protected override Vector2 MeasureOverride(Vector2 availableSize)
+    public override float DrawChar(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
+        Color color, bool fallback = true)
     {
-        // The transparent source text owns rich-text layout and line height.
-        // RichTextEntry measures controls again while drawing, using the width occupied by the entry.
-        // Keep the larger layout width from the initial measurement so the overlay follows the source text.
-        var parentWidth = Parent?.PixelSizeBox.Width ?? 0f;
-        if (parentWidth > 0f)
-        {
-            if (_lastParentWidth > 0f && !MathHelper.CloseToPercent(parentWidth, _lastParentWidth, 0.001f))
-                _availableWidthPixels = 0f;
+        var index = _index++;
+        var font = BaseFont;
+        var sourceRune = rune;
+        if (Rune.IsWhiteSpace(rune) && _mode != WH40KTitleFxMode.Fish)
+            return font.DrawChar(handle, rune, baseline, scale, color, fallback);
 
-            _lastParentWidth = parentWidth;
-        }
-
-        if (float.IsFinite(availableSize.X) && availableSize.X > _availableWidthPixels)
-            _availableWidthPixels = availableSize.X;
-
-        return Vector2.Zero;
-    }
-
-    protected override void Draw(DrawingHandleScreen handle)
-    {
-        base.Draw(handle);
-
-        if (_runes.Count == 0)
-            return;
-
-        var font = ResolveFont();
+        _uiScale = scale;
         var elapsedMs = _timing.RealTime.TotalMilliseconds + _phaseMs;
         var shift = ResolveGradientShift(elapsedMs);
+        var flipAngle = _mode == WH40KTitleFxMode.Flip ? ResolveFlipAngle(elapsedMs) : 0f;
+        var drawPos = baseline;
+        var drawRune = sourceRune;
+        var drawColor = SampleGradient(_palette, ((_runes.Count == 1 ? 0f : index / (float) Math.Max(1, _runes.Count - 1)) + shift) % 1f);
+        var alpha = 1f;
+        var offset = Vector2.Zero;
+        var glitchSplit = false;
 
-        if (_mode == WH40KTitleFxMode.Fish)
+        switch (_mode)
         {
-            DrawFish(handle, font, elapsedMs, shift);
-            return;
+            case WH40KTitleFxMode.Binary:
+                drawRune = ResolveBinaryRune(index, sourceRune, elapsedMs);
+                break;
+            case WH40KTitleFxMode.Scan:
+                drawColor = ApplyScanColor(index, drawColor, elapsedMs);
+                break;
+            case WH40KTitleFxMode.Fish:
+                _fishRunes ??= ResolveFishDisplayRunes(elapsedMs);
+                if (index < _fishRunes.Count) drawRune = _fishRunes[index];
+                break;
+            case WH40KTitleFxMode.ScrambleDecode:
+                drawRune = ResolveScrambleDecodeRune(index, sourceRune, elapsedMs);
+                break;
+            case WH40KTitleFxMode.TypewriterCursor:
+                drawRune = ResolveTypewriterRune(index, sourceRune, elapsedMs);
+                break;
+            case WH40KTitleFxMode.Wave:
+                offset = ResolveWaveOffset(index, elapsedMs);
+                break;
+            case WH40KTitleFxMode.GlitchSlice:
+                ResolveGlitchState(index, sourceRune, elapsedMs, ref drawRune, ref offset, ref alpha, ref glitchSplit);
+                break;
+            case WH40KTitleFxMode.NoiseDissolve:
+                ResolveNoiseDissolveState(index, sourceRune, elapsedMs, ref drawRune, ref alpha);
+                break;
+            case WH40KTitleFxMode.Scanline:
+                drawColor = ApplyScanlineColor(index, drawColor, elapsedMs);
+                break;
+            case WH40KTitleFxMode.Flip:
+                break;
         }
 
-        var flipAngle = _mode == WH40KTitleFxMode.Flip
-            ? ResolveFlipAngle(elapsedMs)
-            : 0f;
-        DrawWrapped(font, _runes, (sourceRune, index, drawPos) =>
+        drawColor = drawColor.WithAlpha(Math.Clamp(drawColor.A * alpha, 0.02f, 1f));
+        drawColor = drawColor.WithAlpha(drawColor.A * color.A);
+        drawPos += offset;
+        var baseTransform = handle.GetTransform();
+        var applyFlipTransform = MathF.Abs(flipAngle) > 0.001f && drawRune.Value != ' ';
+
+        if (applyFlipTransform)
+            handle.SetTransform(CreateGlyphFlipTransform(baseTransform, drawPos, font, sourceRune, flipAngle));
+
+        if (_outlineEnabled && drawRune.Value != ' ')
         {
-            var drawRune = sourceRune;
-            var drawColor = SampleGradient(_palette, ((_runes.Count == 1 ? 0f : index / (float) Math.Max(1, _runes.Count - 1)) + shift) % 1f);
-            var alpha = 1f;
-            var offset = Vector2.Zero;
-            var glitchSplit = false;
-
-            switch (_mode)
-            {
-                case WH40KTitleFxMode.Binary:
-                    drawRune = ResolveBinaryRune(index, sourceRune, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.Scan:
-                    drawColor = ApplyScanColor(index, drawColor, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.Fish:
-                    break;
-                case WH40KTitleFxMode.ScrambleDecode:
-                    drawRune = ResolveScrambleDecodeRune(index, sourceRune, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.TypewriterCursor:
-                    drawRune = ResolveTypewriterRune(index, sourceRune, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.Wave:
-                    offset = ResolveWaveOffset(index, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.GlitchSlice:
-                    ResolveGlitchState(index, sourceRune, elapsedMs, ref drawRune, ref offset, ref alpha, ref glitchSplit);
-                    break;
-                case WH40KTitleFxMode.NoiseDissolve:
-                    ResolveNoiseDissolveState(index, sourceRune, elapsedMs, ref drawRune, ref alpha);
-                    break;
-                case WH40KTitleFxMode.Scanline:
-                    drawColor = ApplyScanlineColor(index, drawColor, elapsedMs);
-                    break;
-                case WH40KTitleFxMode.Flip:
-                    break;
-            }
-
-            drawColor = drawColor.WithAlpha(Math.Clamp(drawColor.A * alpha, 0.02f, 1f));
-            drawPos += offset;
-            var baseTransform = handle.GetTransform();
-            var applyFlipTransform = MathF.Abs(flipAngle) > 0.001f && drawRune.Value != ' ';
-
-            if (applyFlipTransform)
-                handle.SetTransform(CreateGlyphFlipTransform(baseTransform, drawPos, font, sourceRune, flipAngle));
-
-            if (_outlineEnabled && drawRune.Value != ' ')
-            {
-                var outlineAlpha = Math.Clamp(_outlineAlphaPercent / 100f, 0.02f, 1f) * Math.Clamp(alpha, 0.05f, 1f);
-                DrawOutline(handle, font, drawRune, drawPos, _outlineColor.WithAlpha(outlineAlpha));
-            }
-
-            DrawAura(handle, font, drawRune, drawPos, alpha);
-
-            if (glitchSplit)
-            {
-                font.DrawChar(handle, drawRune, drawPos + new Vector2(-0.8f, 0f), UIScale, new Color(255, 90, 90, 120));
-                font.DrawChar(handle, drawRune, drawPos + new Vector2(0.8f, 0f), UIScale, new Color(120, 210, 255, 120));
-            }
-
-            font.DrawChar(handle, drawRune, drawPos, UIScale, drawColor);
-
-            if (applyFlipTransform)
-                handle.SetTransform(baseTransform);
-        });
-    }
-
-    private void DrawFish(
-        DrawingHandleScreen handle,
-        Font font,
-        double elapsedMs,
-        float shift)
-    {
-        var displayRunes = ResolveFishDisplayRunes(elapsedMs);
-        if (displayRunes.Count == 0)
-            return;
-
-        DrawWrapped(font, displayRunes, (drawRune, index, baseline) =>
-        {
-            var drawColor = SampleGradient(_palette, ((displayRunes.Count == 1 ? 0f : index / (float) Math.Max(1, displayRunes.Count - 1)) + shift) % 1f);
-
-            if (_outlineEnabled && drawRune.Value != ' ')
-            {
-                var outlineAlpha = Math.Clamp(_outlineAlphaPercent / 100f, 0.02f, 1f);
-                DrawOutline(handle, font, drawRune, baseline, _outlineColor.WithAlpha(outlineAlpha));
-            }
-
-            DrawAura(handle, font, drawRune, baseline, 1f);
-            font.DrawChar(handle, drawRune, baseline, UIScale, drawColor);
-        });
-    }
-
-    private void DrawWrapped(Font font, IReadOnlyList<Rune> runes, Action<Rune, int, Vector2> drawRune)
-    {
-        // Keep the first glyph at the inline control's arranged position. New lines begin at the
-        // parent content's left edge, exactly like RichTextEntry's own layout.
-        var lineLeft = Parent?.PixelSizeBox.Left ?? SizeBox.Left;
-        var lineWidth = _availableWidthPixels;
-        if (!float.IsFinite(lineWidth) || lineWidth <= 0f)
-            lineWidth = Parent?.PixelSizeBox.Width ?? 0f;
-
-        var lineRight = lineLeft + Math.Max(1f, lineWidth);
-        var baseline = SizeBox.TopLeft + new Vector2(0f, font.GetAscent(UIScale));
-        var lineHeight = font.GetLineHeight(UIScale);
-        var index = 0;
-
-        while (index < runes.Count)
-        {
-            var rune = runes[index];
-            if (rune.Value == '\n')
-            {
-                baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-                index++;
-                continue;
-            }
-
-            if (Rune.IsWhiteSpace(rune))
-            {
-                var advance = GetRuneAdvance(font, rune);
-                if (baseline.X > lineLeft && baseline.X + advance <= lineRight)
-                    baseline += new Vector2(advance, 0f);
-                else if (baseline.X > lineLeft)
-                    baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-                index++;
-                continue;
-            }
-
-            var wordEnd = index;
-            var wordWidth = 0f;
-            while (wordEnd < runes.Count && !Rune.IsWhiteSpace(runes[wordEnd]) && runes[wordEnd].Value != '\n')
-            {
-                wordWidth += GetRuneAdvance(font, runes[wordEnd]);
-                wordEnd++;
-            }
-
-            if (baseline.X > lineLeft && baseline.X + wordWidth > lineRight)
-                baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-            while (index < wordEnd)
-            {
-                rune = runes[index];
-                var advance = GetRuneAdvance(font, rune);
-                if (baseline.X > lineLeft && baseline.X + advance > lineRight)
-                    baseline = new Vector2(lineLeft, baseline.Y + lineHeight);
-
-                drawRune(rune, index, baseline);
-                baseline += new Vector2(advance, 0f);
-                index++;
-            }
+            var outlineAlpha = Math.Clamp(_outlineAlphaPercent / 100f, 0.02f, 1f) * Math.Clamp(alpha, 0.05f, 1f);
+            DrawOutline(handle, font, drawRune, drawPos, _outlineColor.WithAlpha(outlineAlpha * color.A));
         }
+
+        DrawAura(handle, font, drawRune, drawPos, alpha * color.A);
+
+        if (glitchSplit)
+        {
+            font.DrawChar(handle, drawRune, drawPos + new Vector2(-0.8f, 0f), _uiScale, new Color(255, 90, 90, 120));
+            font.DrawChar(handle, drawRune, drawPos + new Vector2(0.8f, 0f), _uiScale, new Color(120, 210, 255, 120));
+        }
+
+        font.DrawChar(handle, drawRune, drawPos, _uiScale, drawColor);
+
+        if (applyFlipTransform)
+            handle.SetTransform(baseTransform);
+        return font.GetCharMetrics(sourceRune, scale, fallback)?.Advance ?? 0f;
     }
 
-    private void DrawAura(DrawingHandleScreen handle, Font font, Rune rune, Vector2 drawPos, float alpha)
+    private void DrawAura(DrawingHandleBase handle, Font font, Rune rune, Vector2 drawPos, float alpha)
     {
         if (!_auraEnabled || rune.Value == ' ')
             return;
@@ -513,7 +390,7 @@ internal sealed partial class WH40KTitleEffectControl : Control
 
         foreach (var offset in offsets)
         {
-            font.DrawChar(handle, rune, drawPos + offset, UIScale, color);
+            font.DrawChar(handle, rune, drawPos + offset, _uiScale, color);
         }
     }
 
@@ -592,8 +469,8 @@ internal sealed partial class WH40KTitleEffectControl : Control
         float angle)
     {
         var advance = GetRuneAdvance(font, sourceRune);
-        var ascent = font.GetAscent(UIScale);
-        var lineHeight = font.GetLineHeight(UIScale);
+        var ascent = font.GetAscent(_uiScale);
+        var lineHeight = font.GetLineHeight(_uiScale);
         var pivot = new Vector2(
             drawPos.X + (advance / 2f),
             drawPos.Y - ascent + (lineHeight / 2f));
@@ -982,25 +859,17 @@ internal sealed partial class WH40KTitleEffectControl : Control
         }
     }
 
-    private Font ResolveFont()
-    {
-        if (TryGetStyleProperty<Font>("font", out var font))
-            return font;
-
-        return UserInterfaceManager.ThemeDefaults.LabelFont;
-    }
-
     private float GetRuneAdvance(Font font, Rune rune)
     {
-        var metrics = font.GetCharMetrics(rune, UIScale, fallback: true);
+        var metrics = font.GetCharMetrics(rune, _uiScale, fallback: true);
         if (metrics is { } measured)
             return measured.Advance;
 
-        return font.GetCharMetrics(new Rune('?'), UIScale, fallback: false)?.Advance ?? 0f;
+        return font.GetCharMetrics(new Rune('?'), _uiScale, fallback: false)?.Advance ?? 0f;
     }
 
     private void DrawOutline(
-        DrawingHandleScreen handle,
+        DrawingHandleBase handle,
         Font font,
         Rune rune,
         Vector2 drawPos,
@@ -1017,7 +886,7 @@ internal sealed partial class WH40KTitleEffectControl : Control
                 if (Math.Abs(x) + Math.Abs(y) > width * 2)
                     continue;
 
-                font.DrawChar(handle, rune, drawPos + new Vector2(x, y), UIScale, outlineColor);
+                font.DrawChar(handle, rune, drawPos + new Vector2(x, y), _uiScale, outlineColor);
             }
         }
     }

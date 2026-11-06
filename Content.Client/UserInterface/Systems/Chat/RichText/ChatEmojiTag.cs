@@ -1,10 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Chat;
 using JetBrains.Annotations;
 using Robust.Client.ResourceManagement;
-using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.RichText;
-using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
 namespace Content.Client.UserInterface.Systems.Chat.RichText;
@@ -19,25 +16,29 @@ public sealed partial class ChatEmojiTag : IMarkupTagHandler
 
     public string Name => ChatEmojiRichText.EmojiMarkupTag;
 
-    public bool TryCreateControl(MarkupNode node, [NotNullWhen(true)] out Control? control)
+    public void PushDrawContext(MarkupNode node, MarkupDrawingContext context)
     {
-        control = null;
-        if (!node.Attributes.TryGetValue("alias", out var aliasParameter) ||
-            !aliasParameter.TryGetString(out var alias) ||
-            !_emojiCatalog.TryGet(alias, out var emoji))
+        var font = context.Font.Peek();
+        if (TryGetEmoji(node, out var emoji))
         {
-            return false;
+            var hide = node.Attributes.TryGetValue(TypewriterHiddenAttribute, out var hidden) &&
+                       hidden.TryGetString(out var value) &&
+                       bool.TryParse(value, out var isHidden) &&
+                       isHidden;
+            font = new ChatImageFont(font, ChatEmojiRichText.ResolveTexture(_resourceCache, emoji), hide);
         }
 
-        control = ChatEmojiRichText.CreateInlineTextureRect(_resourceCache, emoji);
-        if (node.Attributes.TryGetValue(TypewriterHiddenAttribute, out var hidden) &&
-            hidden.TryGetString(out var value) &&
-            bool.TryParse(value, out var isHidden) &&
-            isHidden)
-        {
-            control.ModulateSelfOverride = Color.Transparent;
-        }
+        context.Font.Push(font);
+    }
 
-        return true;
+    public void PopDrawContext(MarkupNode node, MarkupDrawingContext context) => context.Font.Pop();
+
+    public string TextBefore(MarkupNode node) => TryGetEmoji(node, out _) ? ChatImageFont.Glyph : string.Empty;
+
+    private bool TryGetEmoji(MarkupNode node, out ChatEmojiDefinition emoji)
+    {
+        emoji = default;
+        return node.Attributes.TryGetValue("alias", out var aliasParameter) &&
+               aliasParameter.TryGetString(out var alias) && _emojiCatalog.TryGet(alias, out emoji);
     }
 }

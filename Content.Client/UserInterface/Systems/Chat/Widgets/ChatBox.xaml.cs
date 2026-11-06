@@ -176,8 +176,6 @@ public partial class ChatBox : UIWidget
             ));
         } // WD EDIT END
 
-        // The spacer is output-only, so it belongs after every visible suffix and never affects speech bubbles.
-        ChatJobIconMarkup.ReserveOutputLineHeight(formatted);
         Contents.AddMessage(formatted, tagsAllowed: null);
     }
 

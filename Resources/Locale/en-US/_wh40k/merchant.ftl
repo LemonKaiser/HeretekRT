@@ -4,6 +4,7 @@ wh40k-merchant-subtitle = Field assortment
 wh40k-merchant-greeting = Come closer. Today I have things that have not become illegal yet.
 wh40k-merchant-menu = What are you looking for, traveller?
 wh40k-merchant-choice-shop = Browse the stock
+wh40k-merchant-verb-shop = Shop
 wh40k-merchant-choice-talk = Talk
 wh40k-merchant-choice-goodbye = Leave
 wh40k-merchant-talk = Markets run on rumours. If something disappears, someone already needed it.

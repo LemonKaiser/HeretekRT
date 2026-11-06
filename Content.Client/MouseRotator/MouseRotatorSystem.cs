@@ -55,10 +55,7 @@ public sealed partial class MouseRotatorSystem : SharedMouseRotatorSystem
                 rotation -= 2 * Math.PI;
             else if (rotation < -Math.PI)
                 rotation += 2 * Math.PI;
-            RaisePredictiveEvent(new RequestMouseRotatorRotationEvent
-            {
-                Rotation = rotation
-            });
+            RaisePredictiveEvent(new RequestMouseRotatorRotationEvent(GetNetEntity(player.Value), rotation));
 
             return;
         }
@@ -75,9 +72,6 @@ public sealed partial class MouseRotatorSystem : SharedMouseRotatorSystem
                 return;
         }
 
-        RaisePredictiveEvent(new RequestMouseRotatorRotationEvent
-        {
-            Rotation = angle
-        });
+        RaisePredictiveEvent(new RequestMouseRotatorRotationEvent(GetNetEntity(player.Value), angle));
     }
 }

@@ -7,6 +7,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.SSDIndicator;
+using Content.Shared.Verbs;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
@@ -59,6 +60,7 @@ public sealed partial class MerchantSystem : EntitySystem
         SubscribeLocalEvent<MerchantComponent, MerchantRequestRefreshMessage>(OnRequestRefresh);
         SubscribeLocalEvent<MerchantComponent, BoundUIOpenedEvent>(OnOpened);
         SubscribeLocalEvent<MerchantComponent, InteractHandEvent>(OnInteractHand);
+        SubscribeLocalEvent<MerchantComponent, GetVerbsEvent<Verb>>(OnGetVerbs);
         SubscribeLocalEvent<BalanceChangedEvent>(OnBalanceChanged);
         InitializeBuyback();
     }
@@ -69,6 +71,21 @@ public sealed partial class MerchantSystem : EntitySystem
             return;
 
         args.Handled = OpenUi(args.User, uid, comp);
+    }
+
+    private void OnGetVerbs(EntityUid uid, MerchantComponent component, GetVerbsEvent<Verb> args)
+    {
+        if (!args.CanAccess || !args.CanInteract || !CanTrade(args.User) ||
+            !_interaction.InRangeUnobstructed(args.User, uid, Math.Clamp(component.InteractionRange, 0.1f, 3f), popup: false))
+            return;
+
+        var user = args.User;
+        args.Verbs.Add(new Verb
+        {
+            Text = Loc.GetString("wh40k-merchant-verb-shop"),
+            TextLocId = "wh40k-merchant-verb-shop",
+            Act = () => OpenUi(user, uid, component)
+        });
     }
 
     public override void Update(float frameTime)

@@ -1,7 +1,6 @@
 using Content.Client.UserInterface.Systems.Chat.RichText;
 using Content.Shared.Chat;
 using NUnit.Framework;
-using Robust.Shared.Utility;
 
 namespace Content.Tests.Client.UserInterface.Systems.Chat.RichText;
 
@@ -33,26 +32,6 @@ public sealed class ChatJobIconMarkupTest
         const string message = "[chatjobicon icon=\"JobIconWanderer\"/] [Name]Mechanicus[/Name]";
 
         Assert.That(ChatJobIconMarkup.Inject(message, "JobIconWanderer"), Is.EqualTo(message));
-    }
-
-    [Test]
-    public void ReservesOutputHeightOnlyForMessagesWithAnIcon()
-    {
-        const string withIcon = "[chatjobicon icon=\"JobIconWanderer\"/] [Name]Mechanicus[/Name]";
-        const string withoutIcon = "[Name]Mechanicus[/Name]";
-        const string spacer = "[font size=3]\n[/font]";
-
-        var reserved = FormattedMessage.FromMarkupOrThrow(withIcon);
-        ChatJobIconMarkup.ReserveOutputLineHeight(reserved);
-
-        Assert.That(reserved.ToMarkup(), Does.EndWith(spacer));
-        var reservedMarkup = reserved.ToMarkup();
-        ChatJobIconMarkup.ReserveOutputLineHeight(reserved);
-        Assert.That(reserved.ToMarkup(), Is.EqualTo(reservedMarkup));
-
-        var plain = FormattedMessage.FromMarkupOrThrow(withoutIcon);
-        ChatJobIconMarkup.ReserveOutputLineHeight(plain);
-        Assert.That(plain.ToMarkup(), Is.EqualTo(withoutIcon));
     }
 
     [TestCase(ChatChannel.Local, true)]
