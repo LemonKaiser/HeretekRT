@@ -274,6 +274,25 @@ public partial class AtmosphereSystem
         return ev.Result;
     }
 
+    /// <summary>
+    /// Reduces the burning volume without removing fuel or cooling the surrounding gas.
+    /// </summary>
+    public bool TryReduceHotspotVolume(EntityUid gridUid, Vector2i tile, float volume)
+    {
+        if (volume <= 0f || !_atmosQuery.TryGetComponent(gridUid, out var atmos) ||
+            !atmos.Tiles.TryGetValue(tile, out var atmosTile) || !atmosTile.Hotspot.Valid)
+            return false;
+
+        atmosTile.Hotspot.Volume -= volume;
+        if (atmosTile.Hotspot.Volume <= 1f)
+        {
+            HotspotExtinguish(gridUid, tile);
+            InvalidateVisuals((gridUid, null), tile);
+        }
+
+        return true;
+    }
+
     public bool AddPipeNet(Entity<GridAtmosphereComponent?> grid, PipeNet pipeNet)
     {
         return _atmosQuery.Resolve(grid, ref grid.Comp, false) && grid.Comp.PipeNets.Add(pipeNet);

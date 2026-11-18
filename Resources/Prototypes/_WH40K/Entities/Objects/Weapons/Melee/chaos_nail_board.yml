@@ -18,6 +18,10 @@
         Piercing: 5
     soundHit:
       path: "/Audio/Weapons/smash.ogg"
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
   - type: StaminaDamageOnHit
     damage: 5
   - type: Clothing

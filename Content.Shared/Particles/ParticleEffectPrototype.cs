@@ -111,6 +111,33 @@ public partial record struct EmissionShapeData()
 }
 
 /// <summary>
+/// Optional flight above the floor with a short slide on landing.
+/// Vertical motion is projected onto the camera's up axis.
+/// </summary>
+[DataRecord]
+public partial record struct ParticleFlightData()
+{
+    [DataField] public float Height { get; private set; } = 0.3f;
+    [DataField] public float HeightVariance { get; private set; }
+    [DataField] public float Lift { get; private set; }
+    [DataField] public float LiftVariance { get; private set; }
+    [DataField] public float FallAcceleration { get; private set; } = 9.8f;
+    [DataField] public float ReleaseSpread { get; private set; }
+
+    /// <summary>Shifts the projected ground origin toward the bottom of the camera view.</summary>
+    [DataField] public float GroundOffset { get; private set; }
+
+    [DataField] public float Skid { get; private set; }
+    [DataField] public float MarkChance { get; private set; } = 1f;
+
+    /// <summary>Seconds a mark remains after landing. Zero keeps the particle's original lifetime.</summary>
+    [DataField] public float GroundLifetime { get; private set; }
+
+    /// <summary>Optional landing material. The local UV X coordinate includes twice the shape variant index.</summary>
+    [DataField] public string? GroundShader { get; private set; }
+}
+
+/// <summary>
 /// Defines a reusable particle effect prototype.
 /// </summary>
 [Prototype]
@@ -164,6 +191,16 @@ public sealed partial class ParticleEffectPrototype : IPrototype, IInheritingPro
     /// </summary>
     [DataField]
     public string? Shader { get; private set; }
+
+    /// <summary>
+    /// Send normalized age and an individual seed in UV, with the quad's local coordinates in UV2.
+    /// </summary>
+    [DataField]
+    public bool ShaderAnimation { get; private set; }
+
+    /// <summary>Point the top of the quad in the emission direction.</summary>
+    [DataField]
+    public bool AlignToEmission { get; private set; }
 
     /// <summary>
     /// Draw order. Higher values render on top.
@@ -250,6 +287,9 @@ public sealed partial class ParticleEffectPrototype : IPrototype, IInheritingPro
 
     #endregion
     #region Movement
+
+    [DataField]
+    public ParticleFlightData? Flight { get; private set; }
 
     /// <summary>
     /// Base spawn speed in world units per second.

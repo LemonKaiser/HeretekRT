@@ -24,6 +24,10 @@
     angle: 100
     soundHit:
       collection: MetalThud
+    soundSwing:
+      collection: WH40KHeavyMeleeSwing
+      params:
+        volume: -3
   # - type: DamageOtherOnHit
   #   meleeDamageMultiplier: 1.5
   - type: Wieldable
@@ -92,6 +96,10 @@
     angle: 100
     soundHit:
       collection: MetalThud
+    soundSwing:
+      collection: WH40KHeavyMeleeSwing
+      params:
+        volume: -3
   - type: Wieldable
   - type: IncreaseDamageOnWield
     damage:
@@ -141,3 +149,7 @@
     angle: 100
     soundHit:
       collection: MetalThud
+    soundSwing:
+      collection: WH40KHeavyMeleeSwing
+      params:
+        volume: -3

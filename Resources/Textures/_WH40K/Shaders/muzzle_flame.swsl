@@ -1,0 +1,75 @@
+preset raw;
+
+light_mode unshaded;
+blend_mode add;
+
+varying highp vec2 Appearance;
+
+void vertex()
+{
+    VERTEX = apply_mvp(aPos);
+    UV = tCoord;
+    UV2 = tCoord2;
+    Appearance = modulate.ra;
+}
+
+highp float flame(highp vec2 point, highp vec2 centre, highp vec2 direction, highp vec2 radii)
+{
+    highp vec2 offset = point - centre;
+    highp vec2 local = vec2(dot(offset, vec2(direction.y, -direction.x)), dot(offset, direction)) / radii;
+    highp float distance = dot(local, local);
+    return 1.0 - smoothstep(0.2, 1.0, distance);
+}
+
+void fragment()
+{
+    highp float age = UV.x;
+    highp float seed = UV.y;
+    highp vec2 point = UV2 - vec2(0.5);
+    highp vec2 pixel = (floor(UV2 * 34.0) + vec2(0.5)) / 34.0 - vec2(0.5);
+    highp float expansion = mix(0.78, 1.0, smoothstep(0.0, 0.26, age));
+    highp float pulse = 1.0 - smoothstep(0.12, 0.73, age);
+    highp float skew = (seed - 0.5) * 0.38;
+    pixel.x -= pixel.y * skew;
+
+    highp float heat;
+    highp vec2 haloRadii;
+    if (Appearance.x < 0.18)
+    {
+        // Pistol: a squat primary flare and one small uneven tip.
+        highp float body = flame(pixel, vec2(0.0, 0.080), vec2(0.0, 1.0), vec2(0.108, 0.14 * expansion));
+        highp float tip = flame(pixel, vec2(skew * 0.36, 0.147), vec2(0.45, 0.89), vec2(0.042, 0.102 * expansion));
+        heat = max(body, tip * 0.68);
+        haloRadii = vec2(0.153, 0.21);
+    }
+    else if (Appearance.x < 0.82)
+    {
+        // Machine gun: a broad central flash with two unequal side flares.
+        highp float body = flame(pixel, vec2(0.0, 0.155 * expansion), vec2(0.0, 1.0), vec2(0.094, 0.238 * expansion));
+        highp float left = flame(pixel, vec2(-0.103, 0.072), vec2(-0.88, 0.48), vec2(0.047, 0.149 * expansion));
+        highp float right = flame(pixel, vec2(0.099, 0.112), vec2(0.79, 0.61), vec2(0.053, (0.126 + seed * 0.023) * expansion));
+        heat = max(body, max(left * 0.78, right * 0.88));
+        haloRadii = vec2(0.244, 0.335);
+    }
+    else
+    {
+        // Automatic rifle: a narrow, tapered tongue with a short fork near its base.
+        highp float taper = 1.0 - 0.40 * smoothstep(0.035, 0.38, pixel.y);
+        highp float jet = flame(pixel, vec2(0.0, 0.152 * expansion), vec2(0.0, 1.0),
+                                vec2(0.071 * taper, 0.228 * expansion));
+        highp float fork = flame(pixel, vec2(0.060 * sign(seed - 0.5), 0.060),
+                                 vec2(0.74 * sign(seed - 0.5), 0.67), vec2(0.039, 0.099 * expansion));
+        heat = max(jet, fork * 0.77);
+        haloRadii = vec2(0.154, 0.30);
+    }
+    highp float core = smoothstep(0.31, 0.82, heat);
+
+    highp float halo = flame(point, vec2(0.0, 0.11), vec2(0.0, 1.0), haloRadii) * 0.16;
+    highp float root = smoothstep(-0.052, 0.014, point.y);
+    highp float alpha = (heat * 0.88 + halo) * pulse * root * Appearance.y;
+    if (alpha < 0.01)
+        discard;
+
+    highp vec3 colour = mix(vec3(1.0, 0.32, 0.052), vec3(1.0, 0.94, 0.64), core);
+    COLOR = vec4(colour, min(alpha, 1.0));
+}

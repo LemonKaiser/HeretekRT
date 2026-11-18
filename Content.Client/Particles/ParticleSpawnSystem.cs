@@ -17,7 +17,11 @@ public sealed class ParticleSpawnSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeNetworkEvent<SpawnParticlesEvent>(OnSpawnParticles);
+        SubscribeNetworkEvent<CleanGroundParticlesEvent>(OnCleanGroundParticles);
     }
+
+    private void OnCleanGroundParticles(CleanGroundParticlesEvent ev)
+        => _particles.CleanGroundParticles(GetCoordinates(ev.Coordinates));
 
     private void OnSpawnParticles(SpawnParticlesEvent ev)
     {

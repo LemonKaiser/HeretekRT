@@ -23,6 +23,10 @@
         Shock: 20
     soundHit:
       collection: MetalThud
+    soundSwing:
+      collection: WH40KFistSwing
+      params:
+        volume: -3
   - type: DisarmMalus
     malus: 0.7
   - type: MeleeThrowOnHit

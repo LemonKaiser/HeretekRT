@@ -1,6 +1,7 @@
 using Content.Shared.Particles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -16,12 +17,20 @@ public sealed class ParticleSpawnSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
+    [Dependency] private readonly SharedMapSystem _maps = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private readonly Dictionary<(EntityUid Source, ProtoId<ParticleEffectPrototype> Effect), TimeSpan> _nextAllowed = new();
     private readonly List<(EntityUid Source, ProtoId<ParticleEffectPrototype> Effect)> _expiredRateLimits = new();
     private TimeSpan _nextRateLimitCleanup;
+
+    public void CleanGroundParticles(TileRef tile, MapGridComponent grid)
+    {
+        var coordinates = _maps.GridTileToLocal(tile.GridUid, grid, tile.GridIndices);
+        RaiseNetworkEvent(new CleanGroundParticlesEvent(GetNetCoordinates(coordinates)),
+            Filter.Pvs(coordinates, entityMan: EntityManager));
+    }
 
     /// <summary>
     /// Spawns a burst at an entity's current map position. Set <paramref name="attached"/> for effects that should

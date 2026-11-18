@@ -18,6 +18,6 @@ public sealed class TracerOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        _tracer.Draw(args.WorldHandle, args.MapId);
+        _tracer.Draw(in args);
     }
 }

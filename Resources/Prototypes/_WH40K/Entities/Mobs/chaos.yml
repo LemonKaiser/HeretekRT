@@ -105,7 +105,8 @@
     useKey: false
     selectedMode: SemiAuto
     availableModes: [SemiAuto]
-    soundGunshot: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+    soundGunshot:
+      collection: WH40KLasgun
   - type: HitscanBatteryAmmoProvider
     proto: WH40KRedMediumLaserLasgun
     fireCost: 100
@@ -171,7 +172,8 @@
     useKey: false
     selectedMode: FullAuto
     availableModes: [FullAuto]
-    soundGunshot: /Audio/_WH40K/Weapons/flamethrower.ogg
+    soundGunshot:
+      collection: WH40KFlamer
   - type: BasicEntityAmmoProvider
     proto: WH40KChaosFlame
     capacity: 12
@@ -311,7 +313,8 @@
     useKey: false
     selectedMode: SemiAuto
     availableModes: [SemiAuto]
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
+    soundGunshot:
+      collection: WH40KPumpShotgun
   - type: BasicEntityAmmoProvider
     proto: WH40KChaosShotgunSpread
     capacity: 4

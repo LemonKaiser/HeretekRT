@@ -1,4 +1,5 @@
 using System.Numerics;
+using Robust.Shared.Map;
 
 namespace Content.Client.Particles;
 
@@ -29,6 +30,16 @@ public struct ParticleData
     /// </summary>
     public float Lifetime;
     public float InverseLifetime;
+
+    public float FlightDuration;
+    public float LaunchHeight;
+    public float LaunchLift;
+    public float FallAcceleration;
+    public Vector2 FlightOrigin;
+    public EntityCoordinates? GroundPosition;
+    public Vector2 GroundSlide;
+    public byte Variation;
+    public readonly bool Grounded => FlightDuration > 0f && Age >= FlightDuration;
 
     public float SpawnSpeed;
     public float SpawnIntensity;

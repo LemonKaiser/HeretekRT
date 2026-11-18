@@ -267,7 +267,8 @@ namespace Content.Shared.Damage
                         foreach (var (armor, absorbed) in wear)
                         {
                             if (!TerminatingOrDeleted(armor))
-                                RaiseLocalEvent(armor, new ArmorProtectionAppliedEvent(absorbed));
+                                RaiseLocalEvent(armor, new ArmorProtectionAppliedEvent(absorbed, uid, tool,
+                                    partDamage.ResolvedTargetPart));
                         }
                     }
 

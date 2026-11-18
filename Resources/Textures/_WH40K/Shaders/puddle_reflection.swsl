@@ -1,0 +1,26 @@
+light_mode unshaded;
+blend_mode multiply;
+
+// Contact line from the bottom of the viewport, and screen pixels per sprite texel.
+uniform highp vec2 ReflectionGeometry;
+
+void fragment()
+{
+    highp float depth = (ReflectionGeometry.x - FRAGCOORD.y) / ReflectionGeometry.y;
+    if (depth < 0.0) {
+        discard;
+    }
+
+    highp vec4 sprite = zTexture(UV) * MODULATE;
+    if (sprite.a < 0.5) {
+        discard;
+    }
+
+    highp float distanceFade = smoothstep(2.0, 25.0, depth);
+    highp float strength = mix(0.68, 0.30, distanceFade);
+    highp float luminance = smoothstep(0.018, 0.53, zGrayscale_BT709(sprite.rgb));
+    highp float modulation = mix(0.38, 1.48, luminance);
+    // Change the brightness of the liquid already on screen and preserve its colour and highlights.
+    COLOR = vec4(vec3(modulation * strength), strength);
+    MODULATE = vec4(1.0);
+}

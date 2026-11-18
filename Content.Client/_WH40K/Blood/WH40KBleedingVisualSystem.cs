@@ -1,77 +1,86 @@
+using Content.Client.Particles;
 using Content.Shared._WH40K.Blood;
-using Content.Shared.Humanoid;
+using Content.Shared._WH40K.Invisibility;
+using Content.Shared.Particles;
+using Content.Shared.Stealth.Components;
 using Robust.Client.GameObjects;
-using Robust.Shared.Utility;
+using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._WH40K.Blood;
 
-/// <summary>
-///     Adds Arcane's animated blood-drip layer to bleeding humanoids.
-/// </summary>
-public sealed class WH40KBleedingVisualSystem : EntitySystem
+public sealed partial class WH40KBleedingVisualSystem : EntitySystem
 {
-    private static readonly ResPath BleedingRsi = new("/Textures/_WH40K/Effects/bleeding_damage.rsi");
+    private static readonly ProtoId<ParticleEffectPrototype> BloodDrip = "HrtBloodDrip";
 
-    private static readonly (HumanoidVisualLayers Layer, string StatePrefix)[] BodyLayers =
-    [
-        (HumanoidVisualLayers.Chest, "Chest"),
-        (HumanoidVisualLayers.Head, "Head"),
-        (HumanoidVisualLayers.LArm, "LArm"),
-        (HumanoidVisualLayers.RArm, "RArm"),
-        (HumanoidVisualLayers.LLeg, "LLeg"),
-        (HumanoidVisualLayers.RLeg, "RLeg"),
-    ];
+    [Dependency] private ParticleSystem _particles = default!;
+
+    private readonly Dictionary<EntityUid, BleedingEffect> _effects = new();
 
     public override void Initialize()
     {
+        base.Initialize();
         SubscribeLocalEvent<WH40KBleedingVisualComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<WH40KBleedingVisualComponent, AfterAutoHandleStateEvent>(OnState);
         SubscribeLocalEvent<WH40KBleedingVisualComponent, ComponentShutdown>(OnShutdown);
     }
 
     private void OnStartup(Entity<WH40KBleedingVisualComponent> entity, ref ComponentStartup args)
     {
-        Apply(entity);
-    }
-
-    private void OnState(Entity<WH40KBleedingVisualComponent> entity, ref AfterAutoHandleStateEvent args)
-    {
-        Apply(entity);
+        _effects[entity.Owner] = new BleedingEffect(entity.Comp);
     }
 
     private void OnShutdown(Entity<WH40KBleedingVisualComponent> entity, ref ComponentShutdown args)
     {
-        if (!TryComp(entity, out SpriteComponent? sprite))
-            return;
-
-        foreach (var (bodyLayer, _) in BodyLayers)
-        {
-            var layerKey = GetLayerKey(bodyLayer);
-            if (!sprite.LayerMapTryGet(layerKey, out var layer))
-                continue;
-
-            sprite.LayerMapRemove(layerKey);
-            sprite.RemoveLayer(layer);
-        }
+        if (_effects.Remove(entity.Owner, out var effect))
+            _particles.RemoveParticle(effect.Emitter);
     }
 
-    private void Apply(Entity<WH40KBleedingVisualComponent> entity)
+    public override void FrameUpdate(float frameTime)
     {
-        if (!HasComp<HumanoidAppearanceComponent>(entity) || !TryComp(entity, out SpriteComponent? sprite))
-            return;
-
-        var severity = entity.Comp.Severity == WH40KBleedingVisualSeverity.Severe ? "Severe" : "Minor";
-        foreach (var (bodyLayer, statePrefix) in BodyLayers)
+        foreach (var (uid, effect) in _effects)
         {
-            var layerKey = GetLayerKey(bodyLayer);
-            if (!sprite.LayerMapTryGet(layerKey, out var layer))
-                layer = sprite.LayerMapReserveBlank(layerKey);
+            if (_particles.Quality == 0 || !CanEmit(uid))
+            {
+                _particles.RemoveParticle(effect.Emitter);
+                effect.Emitter = null;
+                continue;
+            }
 
-            sprite.LayerSetRSI(layer, BleedingRsi);
-            sprite.LayerSetState(layer, $"{statePrefix}_{severity}");
-            sprite.LayerSetVisible(layer, true);
+            var intensity = effect.Visual.Severity == WH40KBleedingVisualSeverity.Severe ? 1f : 0.55f;
+            if (effect.Emitter is not { Exhausted: false } emitter)
+            {
+                effect.Emitter = _particles.CreateParticle(BloodDrip, uid,
+                    new ParticleSpawnParameters(Color: effect.Visual.Color, Intensity: intensity));
+                continue;
+            }
+
+            emitter.Intensity = intensity;
+            emitter.ColorOverride = effect.Visual.Color;
         }
     }
 
-    private static string GetLayerKey(HumanoidVisualLayers layer) => $"WH40KBleeding{layer}";
+    private bool CanEmit(EntityUid uid)
+    {
+        var meta = MetaData(uid);
+        return (meta.Flags & MetaDataFlags.Detached) == 0 && !meta.EntityPaused &&
+               TryComp(uid, out TransformComponent? xform) && xform.MapID != MapId.Nullspace &&
+               TryComp(uid, out SpriteComponent? sprite) && sprite.AddToTree && sprite.Color.A > 0.01f &&
+               !HasComp<WH40KPsykerInvisibilityComponent>(uid) &&
+               !(TryComp(uid, out StealthComponent? stealth) && stealth.Enabled);
+    }
+
+    public override void Shutdown()
+    {
+        foreach (var effect in _effects.Values)
+            _particles.RemoveParticle(effect.Emitter);
+
+        _effects.Clear();
+        base.Shutdown();
+    }
+
+    private sealed class BleedingEffect(WH40KBleedingVisualComponent visual)
+    {
+        public readonly WH40KBleedingVisualComponent Visual = visual;
+        public ActiveEmitter? Emitter;
+    }
 }

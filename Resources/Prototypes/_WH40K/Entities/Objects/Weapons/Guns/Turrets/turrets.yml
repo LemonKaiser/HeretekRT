@@ -11,7 +11,7 @@
     availableModes:
     - FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/bolter.ogg
+      collection: WH40KBolter
   - type: ProjectileBatteryAmmoProvider
     proto: CartridgeBolter
     fireCost: 60
@@ -61,7 +61,7 @@
     angleIncrease: -1.2
     angleDecay: -4
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      collection: WH40KLascarbine
   - type: HitscanBatteryAmmoProvider
     proto: LaserMultilas
     fireCost: 120
@@ -116,6 +116,8 @@
     projectileSpeed: 50
     maxAngle: 12
     minAngle: 3
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/light_machinegun_fire.ogg
   - type: ProjectileBatteryAmmoProvider
     proto: CartridgeMinigun
     fireCost: 20
@@ -132,6 +134,8 @@
     projectileSpeed: 70
     maxAngle: 6
     minAngle: 0
+    soundGunshot:
+      collection: WH40KSniper
   - type: ProjectileBatteryAmmoProvider
     proto: CartridgeAntiMateriel
     fireCost: 80
@@ -150,6 +154,8 @@
     projectileSpeed: 40
     maxAngle: 20
     minAngle: 8
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/type3_shotgun_fire.ogg
   - type: ProjectileBatteryAmmoProvider
     proto: ShellShotgun
     fireCost: 30

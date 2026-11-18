@@ -13,7 +13,7 @@
   - type: MeleeWeapon
     autoAttack: true
     angle: 0
-    wideAnimationRotation: -135
+    wideAnimationRotation: -90
     attackRate: 3
     range: 1.6
     damage:
@@ -21,6 +21,10 @@
         Blunt: 1.25
     soundHit:
       path: /Audio/Weapons/chainsaw.ogg
+      params:
+        volume: -3
+    soundSwing:
+      collection: WH40KBluntSwing
       params:
         volume: -3
   - type: ItemToggle
@@ -41,6 +45,11 @@
       path: /Audio/Weapons/chainsaw.ogg
       params:
         volume: -3
+    activatedSoundOnSwing:
+      collection: WH40KChainswordSwing
+      params:
+        volume: -3
+        pitch: 0.85
   - type: Wieldable
   - type: IncreaseDamageOnWield
     damage:

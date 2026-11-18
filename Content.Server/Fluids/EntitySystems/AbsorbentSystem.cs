@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server.Particles;
 using Content.Server.Popups;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -29,6 +30,7 @@ public sealed partial class AbsorbentSystem : SharedAbsorbentSystem
     [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private UseDelaySystem _useDelay = default!;
     [Dependency] private MapSystem _mapSystem = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     private static readonly ProtoId<ReagentPrototype> Water = "Water"; // Frontier
     private static readonly ProtoId<ReagentPrototype> Holywater = "Holywater"; // Frontier
@@ -317,6 +319,8 @@ public sealed partial class AbsorbentSystem : SharedAbsorbentSystem
         {
             var tileRef = _mapSystem.GetTileRef(gridUid.Value, mapGrid, transform.Coordinates);
             _puddleSystem.DoTileReactions(tileRef, absorberSplit);
+            if (puddleSplit.Volume > 0)
+                _particles.CleanGroundParticles(tileRef, mapGrid);
         }
 
         _solutionContainerSystem.AddSolution(puddle.Solution.Value, absorberSplit);

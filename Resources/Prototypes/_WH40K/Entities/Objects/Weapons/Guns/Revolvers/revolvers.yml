@@ -10,7 +10,7 @@
   - type: Gun
     fireRate: 2
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/phosphor.ogg
+      collection: WH40KPhosphorPistol
   - type: RevolverAmmoProvider
     capacity: 6
     chambers: [ True, True, True, True, True, True ]
@@ -39,7 +39,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/electric_arc.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/arcpistol_fire1.ogg
   - type: Item
     sprite: _WH40K/Objects/Weapons/Guns/Pistol/electricarc.rsi
     size: Small
@@ -92,7 +92,7 @@
   - type: Gun
     fireRate: 3
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/mateba.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/antimaterial_fire1.ogg
   - type: RevolverAmmoProvider
     capacity: 6
     chambers: [ True, True, True, True, True, True ]
@@ -115,7 +115,7 @@
   - type: Gun
     fireRate: 0.75
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/phosphor.ogg
+      collection: WH40KPhosphorCarbine
   - type: RevolverAmmoProvider
     capacity: 5
     chambers: [ True, True, True, True, True ]

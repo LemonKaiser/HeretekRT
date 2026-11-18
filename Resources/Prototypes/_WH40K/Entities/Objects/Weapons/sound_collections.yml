@@ -1,0 +1,218 @@
+- type: soundCollection
+  id: WH40KAutogun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autogun_fire_single1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autogun_fire_single2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autogun_fire_single3.ogg
+
+- type: soundCollection
+  id: WH40KKalashnikov
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/rifle_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/rifle_fire2.ogg
+
+- type: soundCollection
+  id: WH40KLasgun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasgun_fire_single1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasgun_fire_single2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasgun_fire_single3.ogg
+
+- type: soundCollection
+  id: WH40KLascarbine
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_light1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_light2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_light3.ogg
+
+- type: soundCollection
+  id: WH40KLaspistol
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/laspistol_fire_single1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/laspistol_fire_single2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/laspistol_fire_single3.ogg
+
+- type: soundCollection
+  id: WH40KHellgun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_hvy1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_hvy2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_hvy3.ogg
+
+- type: soundCollection
+  id: WH40KLascannon
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lascannon_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/lascannon_fire2.ogg
+
+- type: soundCollection
+  id: WH40KPlasmagun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmagun_fire3.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmagun_fire4.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmagun_fire5.ogg
+
+- type: soundCollection
+  id: WH40KPlasmaPistol
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmapistol_fire3.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmapistol_fire4.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/plasmapistol_fire5.ogg
+
+- type: soundCollection
+  id: WH40KMeltagun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/meltagun_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/meltagun_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/meltagun_fire3.ogg
+
+- type: soundCollection
+  id: WH40KTauPulsePistol
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/laspistol_specfire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/laspistol_specfire2.ogg
+
+- type: soundCollection
+  id: WH40KBolter
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/bolter_medium_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/bolter_medium_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/bolter_medium_fire3.ogg
+
+- type: soundCollection
+  id: WH40KBoltPistol
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/weapon_bolt_pistol_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/weapon_bolt_pistol_2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/weapon_bolt_pistol_3.ogg
+
+- type: soundCollection
+  id: WH40KHeavyBolter
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/heavybolter_clipped1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/heavybolter_clipped2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/heavybolter_clipped3.ogg
+
+- type: soundCollection
+  id: WH40KAutocannon
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autocannon_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autocannon_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/autocannon_fire3.ogg
+
+- type: soundCollection
+  id: WH40KFlamer
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/flame_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/flame_4.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/flame_6.ogg
+
+- type: soundCollection
+  id: WH40KGrenadeLauncher
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/gl_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/gl_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/gl_fire3.ogg
+
+- type: soundCollection
+  id: WH40KRocketLauncher
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/wpn_grenadelauncher_fire_2d_01.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/wpn_grenadelauncher_fire_2d_02.ogg
+
+- type: soundCollection
+  id: WH40KSonicBlaster
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/sonic_fire3.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/sonic_fire4.ogg
+
+- type: soundCollection
+  id: WH40KPhosphorPistol
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_pistol_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_pistol_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_pistol_fire3.ogg
+
+- type: soundCollection
+  id: WH40KPhosphorCarbine
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_carbine_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_carbine_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/phosphor_carbine_fire3.ogg
+
+- type: soundCollection
+  id: WH40KGalvanicRifle
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/arcrifle_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/arcrifle_fire2.ogg
+
+- type: soundCollection
+  id: WH40KPumpShotgun
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/shotgun_fire_single1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/shotgun_fire_single2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/shotgun_fire_single3.ogg
+
+- type: soundCollection
+  id: WH40KSniper
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/sniper_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/sniper_fire2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/sniper_fire3.ogg
+
+- type: soundCollection
+  id: WH40KGauss
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/warrior_gauss_fire1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Guns/warrior_gauss_fire2.ogg
+
+- type: soundCollection
+  id: WH40KBladeSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/swing_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/swing_2.ogg
+
+- type: soundCollection
+  id: WH40KFistSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/wpn_swing_unarmed_01.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/wpn_swing_unarmed_02.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/wpn_swing_unarmed_03.ogg
+
+- type: soundCollection
+  id: WH40KChainswordSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/weapon_chainsword_27.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/weapon_chainsword_28.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/weapon_chainsword_29.ogg
+
+- type: soundCollection
+  id: WH40KPowerSwordSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/powersword_swing1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/powersword_swing2.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/powersword_swing3.ogg
+
+- type: soundCollection
+  id: WH40KStubRifleGunshots
+  files:
+  - /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/assault_rifle_fire.ogg
+  - /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/autogun_fire.ogg
+
+- type: soundCollection
+  id: WH40KKnifeSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/knife_swing_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/knife_swing_2.ogg
+
+- type: soundCollection
+  id: WH40KBluntSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/blunt_swing_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/blunt_swing_2.ogg
+
+- type: soundCollection
+  id: WH40KHeavyMeleeSwing
+  files:
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/heavy_swing_1.ogg
+  - /Audio/_WH40K/Weapons/Soundpack/Melee/heavy_swing_2.ogg

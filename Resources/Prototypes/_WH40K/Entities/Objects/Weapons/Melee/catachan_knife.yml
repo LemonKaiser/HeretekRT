@@ -14,6 +14,10 @@
     damage:
       types:
         Slash: 14
+    soundSwing:
+      collection: WH40KKnifeSwing
+      params:
+        volume: -3
   - type: Sprite
     sprite: _WH40K/Objects/Weapons/Melee/catachan_knife.rsi
     state: icon
@@ -37,6 +41,10 @@
     damage:
       types:
         Slash: 22
+    soundSwing:
+      collection: WH40KBladeSwing
+      params:
+        volume: -3
   - type: Item
     sprite: _WH40K/Objects/Weapons/Melee/catachan_machete.rsi
     storedSprite: null

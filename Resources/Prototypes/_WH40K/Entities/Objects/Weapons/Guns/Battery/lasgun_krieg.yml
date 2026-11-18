@@ -15,6 +15,10 @@
     animation: WeaponArcThrust
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+    soundSwing:
+      collection: WH40KKnifeSwing
+      params:
+        volume: -3
   - type: MeleeRequiresWield
   - type: AltFireMelee
     attackType: Heavy

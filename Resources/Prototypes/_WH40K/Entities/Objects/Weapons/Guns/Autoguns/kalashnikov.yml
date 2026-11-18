@@ -38,7 +38,7 @@
     - FullAuto
     selectedMode: FullAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rifle2.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/kalashnikov_fire.ogg
   - type: ItemDurability
     maxDurability: 150
     shotDrain: 0.08

@@ -17,6 +17,11 @@
       types:
         Slash: 14
         Blunt: 5
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
+        pitch: 0.90
   - type: EmbeddableProjectile
     sound: /Audio/Weapons/star_hit.ogg
     offset: -0.15,0.0

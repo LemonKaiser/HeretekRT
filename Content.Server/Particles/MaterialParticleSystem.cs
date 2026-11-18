@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Linq;
 using Content.Server.Body.Components;
 using Content.Server.Destructible;
+using Content.Shared._WH40K.Weapons;
 using Content.Shared.Body.Part;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Construction;
@@ -12,6 +13,7 @@ using Content.Shared.Materials;
 using Content.Shared.Mining.Components;
 using Content.Shared.Particles;
 using Content.Shared.Projectiles;
+using Content.Shared.Tag;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
@@ -19,17 +21,19 @@ using Content.Shared._Shitmed.Targeting;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
+using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Particles;
 
 /// <summary>
-/// Turns completed physical damage and destruction into local, material-aware particle bursts.
-/// This system observes post-mitigation damage only, so cancelled hits and fully absorbed damage stay silent.
+/// Turns confirmed contacts and destruction into local, material-aware effects.
 /// </summary>
 public sealed class MaterialParticleSystem : EntitySystem
 {
+    private static readonly ProtoId<TagPrototype> WallTag = "Wall";
+    private static readonly TimeSpan ContactCooldown = TimeSpan.FromMilliseconds(125);
     private static readonly HashSet<string> PhysicalDamageTypes = new(StringComparer.Ordinal)
     {
         "Blunt",
@@ -42,6 +46,7 @@ public sealed class MaterialParticleSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly TagSystem _tags = default!;
 
     public override void Initialize()
     {
@@ -63,27 +68,43 @@ public sealed class MaterialParticleSystem : EntitySystem
         var anchor = GetVisualAnchor(ent.Owner);
         var material = ResolveMaterial(ent.Owner, anchor, ent.Comp);
 
-        // Blood is deliberately a restrained visual response. Actual bleeding and puddles remain entirely owned by
-        // BloodstreamSystem; this merely communicates a confirmed physical hit.
-        if (material == ParticleSurfaceMaterial.Flesh &&
-            !_random.Prob(Math.Clamp(0.05f + physicalDamage * 0.035f, 0.08f, 0.4f)))
-        {
+        // BloodstreamSystem owns bleeding impacts. Limb events must not produce a second blood burst.
+        if (material == ParticleSurfaceMaterial.Flesh)
             return;
-        }
 
-        var coordinates = GetImpactCoordinates(ent.Owner, anchor, args);
+        var coordinates = GetImpactCoordinates(anchor, in args);
         var profile = GetImpactProfile(args, physicalDamage);
         var parameters = new ParticleSpawnParameters(
             EmitAngle: GetEmissionAngle(coordinates, args.Origin),
             Intensity: profile.Intensity);
 
-        _particles.SpawnMaterial(
+        var spawned = _particles.SpawnMaterial(
             coordinates,
             profile.EffectSet,
             material,
             parameters: parameters,
             rateLimitSource: anchor,
-            cooldown: TimeSpan.FromMilliseconds(material == ParticleSurfaceMaterial.Flesh ? 275 : 125));
+            cooldown: ContactCooldown);
+
+        if (spawned && args.Tool is { } tool && HasComp<ProjectileComponent>(tool) &&
+            !HasComp<ThrownItemComponent>(tool))
+        {
+            MarkWall(anchor, coordinates, material);
+        }
+    }
+
+    private void MarkWall(EntityUid wall, MapCoordinates impact, ParticleSurfaceMaterial material)
+    {
+        if (material is not (ParticleSurfaceMaterial.Default or ParticleSurfaceMaterial.Metal or ParticleSurfaceMaterial.Concrete or
+            ParticleSurfaceMaterial.Stone or ParticleSurfaceMaterial.Wood or ParticleSurfaceMaterial.Plastic) ||
+            TerminatingOrDeleted(wall) || !_tags.HasTag(wall, WallTag))
+            return;
+
+        var local = _transform.ToCoordinates(wall, impact);
+        // Keep the mark on the sprite when the collision point is against the edge of the fixture.
+        var offset = Vector2.Clamp(local.Position * 0.86f, new Vector2(-0.35f), new Vector2(0.35f));
+        RaiseNetworkEvent(new WH40KWallMarkEvent(GetNetEntity(wall), offset, material, _random.NextAngle()),
+            Filter.Pvs(wall, entityManager: EntityManager));
     }
 
     private void OnDestroyed(Entity<DestructibleComponent> ent, ref DestructionEventArgs args)
@@ -231,6 +252,12 @@ public sealed class MaterialParticleSystem : EntitySystem
             return true;
         }
 
+        if (ContainsMaterial(ids, "Concrete") || ContainsMaterial(ids, "Brick"))
+        {
+            material = ParticleSurfaceMaterial.Concrete;
+            return true;
+        }
+
         if (ContainsMaterial(ids, "Stone") || ContainsMaterial(ids, "Ore") ||
             ContainsMaterial(ids, "Diamond") || ContainsMaterial(ids, "Quartz"))
         {
@@ -257,7 +284,7 @@ public sealed class MaterialParticleSystem : EntitySystem
         return ids.Any(id => id.Contains(fragment, StringComparison.OrdinalIgnoreCase));
     }
 
-    private MapCoordinates GetImpactCoordinates(EntityUid target, EntityUid anchor, DamageChangedEvent args)
+    private MapCoordinates GetImpactCoordinates(EntityUid anchor, in DamageChangedEvent args)
     {
         var anchorCoordinates = _transform.GetMapCoordinates(anchor);
         var partOffset = GetBodyPartOffset(args.TargetPart);

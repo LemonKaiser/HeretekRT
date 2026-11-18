@@ -311,6 +311,20 @@ namespace Content.Client.Hands.Systems
                 OnPlayerHandUnblocked?.Invoke(hand.Name);
         }
 
+        public IReadOnlyCollection<string>? GetHeldVisualLayers(EntityUid holder, EntityUid item)
+        {
+            if (!TryComp<HandsComponent>(holder, out var hands))
+                return null;
+
+            foreach (var hand in hands.Hands.Values)
+            {
+                if (hand.HeldEntity == item)
+                    return hands.RevealedLayers.GetValueOrDefault(hand.Location);
+            }
+
+            return null;
+        }
+
         /// <summary>
         ///     Update the players sprite with new in-hand visuals.
         /// </summary>

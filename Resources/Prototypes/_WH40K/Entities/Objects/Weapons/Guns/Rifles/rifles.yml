@@ -15,7 +15,7 @@
   - type: Gun
     fireRate: 5
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/rad_carbine.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/radium_carbine_fire.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -74,7 +74,7 @@
     minAngle: 90
     maxAngle: 180
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/rad_carbine.ogg
+      collection: WH40KGalvanicRifle
   - type: GunWieldBonus
     minAngle: -90
     maxAngle: -180

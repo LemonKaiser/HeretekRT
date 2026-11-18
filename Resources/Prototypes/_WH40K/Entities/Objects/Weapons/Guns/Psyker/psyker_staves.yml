@@ -12,6 +12,10 @@
     damage:
       types:
         Blunt: 8
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
 
 - type: entity
   name: biomantic force staff
@@ -59,7 +63,7 @@
     availableModes:
     - FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/flamethrower.ogg
+      collection: WH40KFlamer
       params:
         volume: 2
     projectileSpeed: 22

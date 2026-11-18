@@ -12,7 +12,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      collection: WH40KLaspistol
   - type: Item
     sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol.rsi
     size: Small
@@ -45,7 +45,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      collection: WH40KLaspistol
   - type: Item
     sprite: _WH40K/Objects/Weapons/Guns/Battery/laspistol_elite.rsi
     size: Small

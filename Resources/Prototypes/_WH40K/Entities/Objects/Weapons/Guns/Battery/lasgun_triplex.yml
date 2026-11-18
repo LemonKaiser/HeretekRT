@@ -21,6 +21,8 @@
     shotsPerBurst: 3
     burstFireRate: 8
     burstCooldown: 1.75
+    soundGunshot:
+      collection: WH40KHellgun
 
 - type: entity
   parent: WeaponHereticLaserLasgun
@@ -45,4 +47,6 @@
     shotsPerBurst: 3
     burstFireRate: 8
     burstCooldown: 1.75
+    soundGunshot:
+      collection: WH40KHellgun
 

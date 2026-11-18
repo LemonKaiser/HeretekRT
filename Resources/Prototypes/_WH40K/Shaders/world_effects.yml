@@ -22,3 +22,23 @@
   id: WH40KContactShadow
   kind: source
   path: /Textures/_WH40K/Shaders/contact_shadow.swsl
+
+- type: shader
+  id: WH40KPuddleReflection
+  kind: source
+  path: /Textures/_WH40K/Shaders/puddle_reflection.swsl
+
+- type: shader
+  id: WH40KBloodStain
+  kind: source
+  path: /Textures/_WH40K/Shaders/blood_stain.swsl
+
+- type: shader
+  id: WH40KMuzzleFlame
+  kind: source
+  path: /Textures/_WH40K/Shaders/muzzle_flame.swsl
+
+- type: shader
+  id: WH40KMuzzleSmoke
+  kind: source
+  path: /Textures/_WH40K/Shaders/muzzle_smoke.swsl

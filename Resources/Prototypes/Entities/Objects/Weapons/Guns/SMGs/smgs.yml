@@ -28,7 +28,7 @@
     - SemiAuto
     - FullAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/smg.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/submachinegun_fire.ogg
     defaultDirection: 1, 0
   - type: ChamberMagazineAmmoProvider
     soundRack:
@@ -132,7 +132,7 @@
     - FullAuto
     - SemiAuto
     soundGunshot: # Mono change - Sound for WT
-      path: /Audio/_Mono/Weapons/Guns/SmallArms/Gunshots/wt_fire.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/submachinegun_fire.ogg
   - type: ItemSlots
     slots:
       gun_magazine:

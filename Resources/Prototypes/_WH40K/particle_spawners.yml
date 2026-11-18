@@ -265,6 +265,7 @@
   components:
   - type: ParticleEffectSpawner
     effect: HrtBloodSpray
+    color: "#9A2929"
 
 - type: entity
   parent: HrtParticleSpawnerBase

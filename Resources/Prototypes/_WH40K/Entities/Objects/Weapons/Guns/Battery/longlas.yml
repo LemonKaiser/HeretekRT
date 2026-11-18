@@ -24,6 +24,8 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/lasfusil_fire1.ogg
   # - type: Telescope
   - type: GunRequiresWield
   - type: Wh40kWeaponHandling

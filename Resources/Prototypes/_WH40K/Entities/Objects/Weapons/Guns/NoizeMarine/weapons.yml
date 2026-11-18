@@ -27,7 +27,7 @@
     - FullAuto
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/NoizeMarine/sonic_blaster.ogg
+      collection: WH40KSonicBlaster
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
@@ -94,7 +94,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/NoizeMarine/screamer_pistol.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/sonic_fire5.ogg
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/pistol_cock.ogg
@@ -146,7 +146,7 @@
   - type: Gun
     fireRate: 0.8
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/NoizeMarine/blastmaster.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/sonic_fire2.ogg
   - type: AmmoCounter
   - type: BallisticAmmoProvider
     whitelist:

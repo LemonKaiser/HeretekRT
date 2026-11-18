@@ -11,4 +11,7 @@
     sprite: _WH40K/Objects/Weapons/Guns/Shotguns/cyber_tozik_inhands.rsi
   - type: Clothing
     sprite: _WH40K/Objects/Weapons/Guns/Shotguns/cyber_tozik_inhands.rsi
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/type1_shotgun_fire.ogg
 

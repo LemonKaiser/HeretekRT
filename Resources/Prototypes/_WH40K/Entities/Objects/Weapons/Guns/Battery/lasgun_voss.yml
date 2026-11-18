@@ -5,6 +5,8 @@
   components:
   - type: Gun
     fireRate: 3
+    soundGunshot:
+      collection: WH40KLascarbine
   - type: Clothing
     sprite: _WH40K/Objects/Weapons/Guns/Battery/lasgun_voss/lasgun_in-hands.rsi
     quickEquip: false

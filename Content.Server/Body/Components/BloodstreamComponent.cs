@@ -44,6 +44,9 @@ namespace Content.Server.Body.Components
         [ViewVariables(VVAccess.ReadWrite)]
         public float BleedAmount;
 
+        internal TimeSpan NextBloodImpactEffect;
+        internal TimeSpan NextFullGunBloodImpactEffect;
+
         /// <summary>
         ///     How much should bleeding be reduced every update interval?
         /// </summary>

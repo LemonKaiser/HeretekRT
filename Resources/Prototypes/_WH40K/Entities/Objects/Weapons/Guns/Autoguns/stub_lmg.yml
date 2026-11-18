@@ -3,6 +3,8 @@
   id: WeaponStubLMG
   suffix: WH40K, Общий
   components:
+  - type: WH40KMuzzleProfile
+    profile: MachineGun
   - type: Item
     size: Huge
     sprite: _WH40K/Objects/Weapons/Guns/Autoguns/stub_lmg.rsi
@@ -29,7 +31,7 @@
     - FullAuto
     selectedMode: FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_2.wav
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/light_machinegun_fire.ogg
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg

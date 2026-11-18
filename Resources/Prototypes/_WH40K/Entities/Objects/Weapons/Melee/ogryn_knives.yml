@@ -18,6 +18,10 @@
     damage:
       types:
         Slash: 16
+    soundSwing:
+      collection: WH40KBladeSwing
+      params:
+        volume: -3
   - type: Item
     size: Normal
     sprite: _WH40K/Objects/Weapons/Melee/ogryn_combat_knife.rsi
@@ -46,6 +50,11 @@
     damage:
       types:
         Slash: 18
+    soundSwing:
+      collection: WH40KBladeSwing
+      params:
+        volume: -3
+        pitch: 0.86
   - type: Item
     size: Normal
     sprite: _WH40K/Objects/Weapons/Melee/ogryn_cleaver.rsi

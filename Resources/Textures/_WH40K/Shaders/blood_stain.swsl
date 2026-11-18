@@ -1,0 +1,19 @@
+void fragment()
+{
+    highp float variant = floor(UV2.x * 0.5);
+    highp vec2 cell = floor(vec2(UV2.x - variant * 2.0, UV2.y) * vec2(9.0, 5.0)) - vec2(4.0, 2.0);
+    highp float edge = mod(variant, 3.0) - 1.0;
+    highp float side = variant < 3.0 ? -1.0 : 1.0;
+
+    // Dense asymmetric center, a tapered skid and a separated fleck beside it.
+    highp float core = abs(cell.x + 1.0) + 1.4 * abs(cell.y);
+    bool tail = cell.x >= 1.0 && cell.x <= 2.0 + step(0.0, edge) && cell.y == side * floor(cell.x * 0.5);
+    bool lobe = cell.x == edge - 1.0 && cell.y == side;
+    bool fleck = cell.x == 4.0 && cell.y == -side * (1.0 + abs(edge));
+    if (core > 2.5 + 0.35 * edge && !tail && !lobe && !fleck) {
+        discard;
+    }
+
+    highp float shade = core <= 1.0 ? 1.0 : (fleck ? 0.72 : 0.83);
+    COLOR = vec4(vec3(shade), fleck ? 0.68 : 1.0);
+}

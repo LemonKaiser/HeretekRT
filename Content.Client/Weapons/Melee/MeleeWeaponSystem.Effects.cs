@@ -1,16 +1,26 @@
 using System.Numerics;
+using Content.Client._WH40K.Combat;
 using Content.Client.Animations;
 using Content.Client.Weapons.Melee.Components;
+using Content.Shared._WH40K.Weapons.Melee;
+using Content.Shared.Item;
+using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Shared.Animations;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Spawners;
 
 namespace Content.Client.Weapons.Melee;
 
 public sealed partial class MeleeWeaponSystem
 {
+    private static readonly ProtoId<TagPrototype> KnifeTag = "Knife";
+    [Dependency] private SpriteSystem _meleeSprites = default!;
+    [Dependency] private TagSystem _meleeTags = default!;
+
     private const string FadeAnimationKey = "melee-fade";
     private const string SlashAnimationKey = "melee-slash";
     private const string ThrustAnimationKey = "melee-thrust";
@@ -33,6 +43,9 @@ public sealed partial class MeleeWeaponSystem
             return;
 
         if (!_xformQuery.TryGetComponent(user, out var userXform) || userXform.MapID == MapId.Nullspace)
+            return;
+
+        if (user != weapon && TryPlayWeaponMotion(user, weapon, userXform.Coordinates, localPos, angle, animation))
             return;
 
         var animationUid = Spawn(animation, userXform.Coordinates);
@@ -90,6 +103,110 @@ public sealed partial class MeleeWeaponSystem
                     _animation.Play(animationUid, GetFadeAnimation(sprite, 0f, 0.15f), FadeAnimationKey);
                 break;
         }
+    }
+
+    private bool TryPlayWeaponMotion(EntityUid user, EntityUid weapon, EntityCoordinates origin, Vector2 direction,
+        Angle attackAngle, string animation)
+    {
+        if (animation is not ("WeaponArcPunch" or "WeaponArcSlash" or "WeaponArcThrust") ||
+            !TryComp<SpriteComponent>(weapon, out var art) ||
+            art.BaseRSI?.Path.CanonPath.StartsWith("/Textures/_WH40K/", StringComparison.Ordinal) != true ||
+            !TryComp<ItemComponent>(weapon, out var item) || !TryComp<MeleeWeaponComponent>(weapon, out var melee))
+            return false;
+
+        var motion = GetWeaponMotion(weapon, item, melee, animation);
+        var attackInterval = 0.72f / Math.Max(GetAttackRate(weapon, user, melee), 0.1f);
+        var length = Math.Min(motion.Duration, Math.Max(0.11f, attackInterval));
+        var radius = motion.Radius * Math.Clamp(melee.Range / 1.5f, 0.70f, 1.15f);
+        if (animation != "WeaponArcSlash")
+            radius = Math.Min(radius, Math.Max(0.50f, direction.Length() * 1.13f));
+        var sweep = animation == "WeaponArcSlash" && (motion == WH40KMeleeMotion.Blade || motion == WH40KMeleeMotion.Heavy)
+            ? Math.Clamp((float) Math.Abs(attackAngle.Degrees) / 75f, 0.8f, 1.28f)
+            : 1f;
+        if (melee.SwingLeft)
+            sweep = -sweep;
+
+        // The left-handed heavy sprites use a sideways grip in the stock arc. Turn the head into contact.
+        var gripRotation = motion == WH40KMeleeMotion.Heavy && melee.SwingLeft
+            ? melee.WideAnimationRotation + Angle.FromDegrees(90f)
+            : melee.WideAnimationRotation;
+
+        // Reuse the local arc entity and follow logic already used for wide attacks.
+        var effect = Spawn("WeaponArcSlash", origin);
+        var sprite = Comp<SpriteComponent>(effect);
+        var target = (effect, sprite);
+        _meleeSprites.CopySprite((weapon, art), target);
+        _meleeSprites.SetDrawDepth(target, (int) Content.Shared.DrawDepth.DrawDepth.Effects);
+        EnsureComp<TrackUserComponent>(effect).User = user;
+        Comp<TimedDespawnComponent>(effect).Lifetime = length + 0.06f;
+
+        var facing = direction.ToWorldAngle();
+        var rotation = new AnimationTrackComponentProperty
+        {
+            ComponentType = typeof(SpriteComponent),
+            Property = nameof(SpriteComponent.Rotation),
+            InterpolationMode = AnimationInterpolationMode.Linear,
+        };
+        var offset = new AnimationTrackComponentProperty
+        {
+            ComponentType = typeof(SpriteComponent),
+            Property = nameof(SpriteComponent.Offset),
+            InterpolationMode = AnimationInterpolationMode.Linear,
+        };
+        var previous = 0f;
+        foreach (var pose in motion.Poses)
+        {
+            var orbit = facing + Angle.FromDegrees(pose.Orbit * sweep);
+            var twist = orbit + gripRotation + Angle.FromDegrees(pose.Tilt * sweep);
+            var position = orbit.RotateVec(new Vector2(0f, -pose.Reach * radius));
+            var time = (pose.Time - previous) * length;
+            rotation.KeyFrames.Add(new AnimationTrackProperty.KeyFrame(twist, time));
+            offset.KeyFrames.Add(new AnimationTrackProperty.KeyFrame(position, time));
+            if (pose.Time == 0f)
+            {
+                _meleeSprites.SetRotation(target, twist);
+                _meleeSprites.SetOffset(target, position);
+            }
+            previous = pose.Time;
+        }
+
+        _animation.Play(effect, new Animation
+        {
+            Length = TimeSpan.FromSeconds(length),
+            AnimationTracks =
+            {
+                rotation,
+                offset,
+                new AnimationTrackComponentProperty
+                {
+                    ComponentType = typeof(SpriteComponent),
+                    Property = nameof(SpriteComponent.Color),
+                    KeyFrames =
+                    {
+                        new AnimationTrackProperty.KeyFrame(sprite.Color, length * motion.FadeStart),
+                        new AnimationTrackProperty.KeyFrame(sprite.Color.WithAlpha(0f), length * (1f - motion.FadeStart)),
+                    },
+                },
+            },
+        }, SlashAnimationKey);
+        return true;
+    }
+
+    private WH40KMeleeMotion GetWeaponMotion(EntityUid weapon, ItemComponent item, MeleeWeaponComponent melee, string animation)
+    {
+        if (HasComp<WH40KChainswordComponent>(weapon))
+            return WH40KMeleeMotion.Chain;
+
+        var piercing = melee.Damage.DamageDict.GetValueOrDefault("Piercing");
+        var slash = melee.Damage.DamageDict.GetValueOrDefault("Slash");
+        var blunt = melee.Damage.DamageDict.GetValueOrDefault("Blunt");
+        if (_meleeTags.HasTag(weapon, KnifeTag) || (piercing > slash && piercing > blunt) ||
+            (animation == "WeaponArcThrust" && melee.Angle == Angle.Zero))
+            return WH40KMeleeMotion.Thrust;
+
+        return blunt > slash || item.Size.Id is "Huge" or "Ginormous"
+            ? WH40KMeleeMotion.Heavy
+            : WH40KMeleeMotion.Blade;
     }
 
     private Animation GetSlashAnimation(Entity<SpriteComponent> sprite, Angle arc, Angle spriteRotation, float length, float offset)

@@ -23,6 +23,10 @@
         Structural: 20
     soundHit:
       collection: MetalThud
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
   - type: StaminaDamageOnHit
     damage: 6
   - type: DisarmMalus

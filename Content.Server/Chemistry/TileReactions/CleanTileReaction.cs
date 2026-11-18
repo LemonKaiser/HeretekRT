@@ -8,6 +8,8 @@ using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using System.Linq;
 using Content.Server._Mono.ChimeraFloorCleaner;
+using Content.Server.Particles;
+using Robust.Shared.Map.Components;
 
 namespace Content.Server.Chemistry.TileReactions;
 
@@ -38,6 +40,9 @@ public sealed partial class CleanTileReaction : ITileReaction
         IEntityManager entityManager
         , List<ReagentData>? data)
     {
+        if (entityManager.TryGetComponent<MapGridComponent>(tile.GridUid, out var grid))
+            entityManager.System<ParticleSpawnSystem>().CleanGroundParticles(tile, grid);
+
         var entities = entityManager.System<EntityLookupSystem>().GetLocalEntitiesIntersecting(tile, 0f).ToArray();
         var puddleQuery = entityManager.GetEntityQuery<PuddleComponent>();
         var chimeraQuery = entityManager.GetEntityQuery<ChimeraCleanableComponent>();

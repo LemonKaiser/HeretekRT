@@ -36,7 +36,9 @@
   - type: Gun
     fireRate: 2
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+      collection: WH40KLascannon
+    soundEmpty:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/lascannon_dry.ogg
   - type: ItemSlots
     slots:
       gun_magazine:

@@ -31,6 +31,8 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/type3_shotgun_fire.ogg
   - type: ClothingSpeedModifier
     walkModifier: 0.97
     sprintModifier: 0.97

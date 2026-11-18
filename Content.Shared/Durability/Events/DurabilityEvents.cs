@@ -1,3 +1,4 @@
+using Content.Shared._Shitmed.Targeting;
 using Content.Shared.Damage;
 using Content.Shared.DoAfter;
 using Robust.Shared.Serialization;
@@ -43,7 +44,11 @@ public readonly record struct RandomLootSpawnedEvent;
 /// <summary>
 /// Raised once per protective item with the damage prevented by that item's modifiers.
 /// </summary>
-public readonly record struct ArmorProtectionAppliedEvent(DamageSpecifier AbsorbedDamage);
+public readonly record struct ArmorProtectionAppliedEvent(
+    DamageSpecifier AbsorbedDamage,
+    EntityUid? Wearer = null,
+    EntityUid? Tool = null,
+    TargetBodyPart? TargetPart = null);
 
 /// <summary>
 /// Raised by a repair station after its repair cycle ends.

@@ -140,7 +140,9 @@
     angleIncrease: 3
     angleDecay: 10
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      collection: WH40KLaspistol
+      params:
+        pitch: 0.90
   - type: ItemSlots
     slots:
       gun_magazine:

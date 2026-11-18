@@ -18,6 +18,10 @@
     damage:
       types:
         Slash: 14
+    soundSwing:
+      collection: WH40KKnifeSwing
+      params:
+        volume: -3
   - type: EmbeddableProjectile
     sound: /Audio/Weapons/star_hit.ogg
     offset: -0.15,0.0

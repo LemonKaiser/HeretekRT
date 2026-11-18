@@ -5,6 +5,7 @@ using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
+using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
 
 namespace Content.Client.Particles;
 
@@ -33,6 +34,7 @@ public sealed class ParticleOverlay : Overlay
 
     private readonly DrawVertexUV2DColor[] _vertexScratch = new DrawVertexUV2DColor[MaxQuadsPerDraw * 4];
     private readonly ushort[] _indexScratch;
+    private (long Viewport, int Culled, int DrawCalls, int Drawn, float Milliseconds) _groundStatistics;
 
     private readonly record struct ParticleMaterialKey(int RenderLayer, string? Shader, Texture Texture, Box2 Uv);
     private readonly record struct ParticleRenderItem(ActiveEmitter Emitter, int ParticleIndex);
@@ -100,17 +102,22 @@ public sealed class ParticleOverlay : Overlay
     }
 
     protected override void Draw(in OverlayDrawArgs args)
+        => DrawParticles(args, groundedPass: false);
+
+    private void DrawParticles(in OverlayDrawArgs args, bool groundedPass)
     {
         var startedAt = Stopwatch.GetTimestamp();
         var handle = args.WorldHandle;
         var mapId = args.MapId;
         var eyeAngle = (float) _eye.CurrentEye.Rotation;
+        var viewportAngle = (float) (args.Viewport.Eye ?? _eye.CurrentEye).Rotation;
+        var screenUp = new Vector2(MathF.Sin(viewportAngle), MathF.Cos(viewportAngle));
         var culledParticles = 0;
         var drawnParticles = 0;
         var drawCalls = 0;
 
         ClearBuckets();
-        BuildMaterialBuckets(args, mapId, ref culledParticles);
+        BuildMaterialBuckets(args, mapId, screenUp, groundedPass, ref culledParticles);
         _activeMaterials.Sort(MaterialComparison);
 
         foreach (var material in _activeMaterials)
@@ -131,7 +138,7 @@ public sealed class ParticleOverlay : Overlay
                     quadCount = 0;
                 }
 
-                AppendQuad(vertices, quadCount++, material.Uv, item.Emitter, particle, eyeAngle);
+                AppendQuad(vertices, quadCount++, material.Uv, item.Emitter, particle, eyeAngle, screenUp);
                 drawnParticles++;
             }
 
@@ -144,25 +151,42 @@ public sealed class ParticleOverlay : Overlay
 
         ClearBuckets();
         handle.UseShader(null);
-        _system.ReportRenderStatistics(culledParticles, drawCalls, drawnParticles, ElapsedMilliseconds(startedAt));
+        var elapsed = ElapsedMilliseconds(startedAt);
+        if (groundedPass)
+        {
+            _groundStatistics = (args.Viewport.Id, culledParticles, drawCalls, drawnParticles, elapsed);
+            return;
+        }
+
+        var ground = _groundStatistics.Viewport == args.Viewport.Id ? _groundStatistics : default;
+        _groundStatistics = default;
+        _system.ReportRenderStatistics(culledParticles + ground.Culled, drawCalls + ground.DrawCalls,
+            drawnParticles + ground.Drawn, elapsed + ground.Milliseconds);
     }
 
-    private void BuildMaterialBuckets(in OverlayDrawArgs args, MapId mapId, ref int culledParticles)
+    private void BuildMaterialBuckets(in OverlayDrawArgs args, MapId mapId, Vector2 screenUp, bool groundedPass,
+        ref int culledParticles)
     {
         foreach (var emitter in _system.GetEmitters())
         {
-            if (emitter.MapCoords.MapId != mapId || emitter.LodMultiplier <= 0f || emitter.Frames.Length == 0)
+            if (emitter.MapCoords.MapId != mapId || emitter.LodMultiplier <= 0f || emitter.Frames.Length == 0 ||
+                groundedPass && emitter.Proto.Flight == null)
                 continue;
 
             var proto = emitter.Proto;
-            var shader = string.IsNullOrEmpty(proto.Shader) ? null : proto.Shader;
+            var shader = groundedPass ? proto.Flight?.GroundShader ?? proto.Shader : proto.Shader;
+            if (string.IsNullOrEmpty(shader))
+                shader = null;
             var layer = proto.RenderLayer;
             var particles = CollectionsMarshal.AsSpan(emitter.Particles);
 
             for (var index = 0; index < particles.Length; index++)
             {
                 ref readonly var particle = ref particles[index];
-                var worldPosition = ParticleSystem.GetParticleWorldPosition(particle, emitter);
+                if (particle.Age < 0f || particle.Grounded != groundedPass)
+                    continue;
+
+                var worldPosition = GetDrawPosition(particle, emitter, screenUp);
                 if (!args.WorldBounds.Contains(worldPosition))
                 {
                     culledParticles++;
@@ -183,6 +207,17 @@ public sealed class ParticleOverlay : Overlay
                 items.Add(new ParticleRenderItem(emitter, index));
             }
         }
+    }
+
+    private static Vector2 GetDrawPosition(in ParticleData particle, ActiveEmitter emitter, Vector2 screenUp)
+    {
+        var position = ParticleSystem.GetParticleWorldPosition(particle, emitter);
+        if (particle.FlightDuration <= 0f || particle.Grounded)
+            return position;
+
+        var age = particle.Age;
+        var height = particle.LaunchHeight + age * (particle.LaunchLift - 0.5f * particle.FallAcceleration * age);
+        return position + screenUp * Math.Max(height, 0f);
     }
 
     private static int GetFrameIndex(ActiveEmitter emitter, in ParticleData particle)
@@ -241,10 +276,17 @@ public sealed class ParticleOverlay : Overlay
         Box2 uv,
         ActiveEmitter emitter,
         in ParticleData particle,
-        float eyeAngle)
+        float eyeAngle,
+        Vector2 screenUp)
     {
         var proto = emitter.Proto;
         var ageRatio = particle.AgeRatio;
+        if (proto.ShaderAnimation)
+        {
+            var parameters = new Vector2(ageRatio, (particle.Variation + 0.5f) / 256f);
+            uv = new Box2(parameters, parameters);
+        }
+
         var color = CompiledParticleEffect.Sample(
             emitter.Runtime.ColorOverLifetime,
             ageRatio,
@@ -262,13 +304,46 @@ public sealed class ParticleOverlay : Overlay
         float halfY = halfSize;
         float cos;
         float sin;
-        var velocitySquared = particle.Velocity.LengthSquared();
-        if (stretchFactor > 0f && velocitySquared > 0.000001f)
+        var velocity = particle.Velocity;
+        if (particle.FlightDuration > 0f && !particle.Grounded)
+        {
+            var flightProgress = particle.Age / particle.FlightDuration;
+            var verticalSpeed = particle.LaunchLift - particle.FallAcceleration * particle.Age;
+            velocity += screenUp * verticalSpeed;
+            var streak = (particle.Variation & 3) == 0 ? 1f : 0.36f;
+            stretchFactor *= streak * (1f - 0.78f * flightProgress);
+        }
+
+        var velocitySquared = velocity.LengthSquared();
+        var variant = Vector2.Zero;
+        if (particle.Grounded)
+        {
+            var groundAge = particle.Age - particle.FlightDuration;
+            var surfaceTint = 0.86f - 0.20f * Math.Clamp(groundAge / 1.3f, 0f, 1f);
+            color = new Color(color.R * surfaceTint, color.G * surfaceTint, color.B * surfaceTint, color.A);
+            var spread = Math.Clamp(groundAge * 22f, 0f, 1f);
+            halfX *= 1f + 0.58f * spread;
+            halfY *= 1f - 0.34f * spread;
+            var direction = particle.GroundSlide != Vector2.Zero && velocitySquared > 0.000001f
+                ? velocity / MathF.Sqrt(velocitySquared)
+                : new Vector2(screenUp.Y, -screenUp.X);
+            cos = direction.X;
+            sin = direction.Y;
+            // Store a stable shape index alongside the local UV while keeping all marks in one material batch.
+            if (!string.IsNullOrEmpty(proto.Flight?.GroundShader))
+                variant.X = 2f * (particle.Variation % 6);
+        }
+        else if (stretchFactor > 0f && velocitySquared > 0.000001f)
         {
             var velocityLength = MathF.Sqrt(velocitySquared);
             halfY = halfSize * (1f + velocityLength * stretchFactor);
-            cos = particle.Velocity.Y / velocityLength;
-            sin = particle.Velocity.X / velocityLength;
+            cos = velocity.Y / velocityLength;
+            sin = (particle.FlightDuration > 0f ? -velocity.X : velocity.X) / velocityLength;
+        }
+        else if (proto.AlignToEmission)
+        {
+            cos = MathF.Cos(emitter.EffectiveEmitAngle);
+            sin = -MathF.Sin(emitter.EffectiveEmitAngle);
         }
         else
         {
@@ -281,13 +356,13 @@ public sealed class ParticleOverlay : Overlay
         var halfXSin = halfX * sin;
         var halfYCos = halfY * cos;
         var halfYSin = halfY * sin;
-        var worldPosition = ParticleSystem.GetParticleWorldPosition(particle, emitter);
+        var worldPosition = GetDrawPosition(particle, emitter, screenUp);
         var vertex = quad * 4;
 
-        vertices[vertex] = new DrawVertexUV2DColor(worldPosition + new Vector2(-halfXCos + halfYSin, -halfXSin - halfYCos), uv.BottomLeft, color) { UV2 = Uv2BL };
-        vertices[vertex + 1] = new DrawVertexUV2DColor(worldPosition + new Vector2(halfXCos + halfYSin, halfXSin - halfYCos), uv.BottomRight, color) { UV2 = Uv2BR };
-        vertices[vertex + 2] = new DrawVertexUV2DColor(worldPosition + new Vector2(halfXCos - halfYSin, halfXSin + halfYCos), uv.TopRight, color) { UV2 = Uv2TR };
-        vertices[vertex + 3] = new DrawVertexUV2DColor(worldPosition + new Vector2(-halfXCos - halfYSin, -halfXSin + halfYCos), uv.TopLeft, color) { UV2 = Uv2TL };
+        vertices[vertex] = new DrawVertexUV2DColor(worldPosition + new Vector2(-halfXCos + halfYSin, -halfXSin - halfYCos), uv.BottomLeft, color) { UV2 = Uv2BL + variant };
+        vertices[vertex + 1] = new DrawVertexUV2DColor(worldPosition + new Vector2(halfXCos + halfYSin, halfXSin - halfYCos), uv.BottomRight, color) { UV2 = Uv2BR + variant };
+        vertices[vertex + 2] = new DrawVertexUV2DColor(worldPosition + new Vector2(halfXCos - halfYSin, halfXSin + halfYCos), uv.TopRight, color) { UV2 = Uv2TR + variant };
+        vertices[vertex + 3] = new DrawVertexUV2DColor(worldPosition + new Vector2(-halfXCos - halfYSin, -halfXSin + halfYCos), uv.TopLeft, color) { UV2 = Uv2TL + variant };
     }
 
     private void DrawBatch(DrawingHandleWorld handle, Texture texture, int quadCount, Span<DrawVertexUV2DColor> vertices)
@@ -308,4 +383,20 @@ public sealed class ParticleOverlay : Overlay
 
     private static float ElapsedMilliseconds(long startedAt)
         => (Stopwatch.GetTimestamp() - startedAt) * 1000f / Stopwatch.Frequency;
+
+    internal sealed class GroundOverlay : Overlay
+    {
+        private readonly ParticleOverlay _particles;
+        public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
+
+        public GroundOverlay(ParticleOverlay particles)
+        {
+            _particles = particles;
+            ZIndex = (int) DrawDepth.Puddles + 3;
+        }
+
+        protected override bool BeforeDraw(in OverlayDrawArgs args) => _particles._system.HasGroundedParticles;
+
+        protected override void Draw(in OverlayDrawArgs args) => _particles.DrawParticles(args, groundedPass: true);
+    }
 }

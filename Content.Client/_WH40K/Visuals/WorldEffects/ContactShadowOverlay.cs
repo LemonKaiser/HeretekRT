@@ -8,9 +8,7 @@ using Content.Shared.Stealth.Components;
 using Content.Shared.Standing;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.Utility;
 using Robust.Shared.Enums;
-using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
@@ -32,6 +30,7 @@ public sealed partial class ContactShadowOverlay : Overlay
     private readonly EntityLookupSystem _lookup;
     private readonly SharedTransformSystem _transform;
     private readonly TurfSystem _turf;
+    private readonly SpriteSystem _sprites;
     private readonly ShaderInstance _shader;
     private readonly HashSet<EntityUid> _candidates = new();
     private readonly List<Shadow> _shadows = new();
@@ -56,6 +55,7 @@ public sealed partial class ContactShadowOverlay : Overlay
         _lookup = _entities.System<EntityLookupSystem>();
         _transform = _entities.System<SharedTransformSystem>();
         _turf = _entities.System<TurfSystem>();
+        _sprites = _entities.System<SpriteSystem>();
         _shader = _prototypes.Index(Shader).InstanceUnique();
         // Above floor details, below every mob draw depth.
         ZIndex = (int) DrawDepth.Puddles + 1;
@@ -144,31 +144,8 @@ public sealed partial class ContactShadowOverlay : Overlay
             }
             else
             {
-                var footBounds = new ContactShadowProjectedBounds();
-                // Visible footwear is the actual contact point when it covers the humanoid foot layers.
-                if (sprite.LayerMapTryGet("shoes", out var shoes) &&
-                    sprite[shoes] is SpriteComponent.Layer shoeLayer)
-                {
-                    IncludeLayer(sprite, shoeLayer, position, worldRotation, screenAngle, eye.Rotation,
-                        screenRight, screenUp, ref footBounds);
-                }
-
-                if (!footBounds.Valid)
-                {
-                    if (sprite.LayerMapTryGet(HumanoidVisualLayers.LFoot, out var leftFoot) &&
-                        sprite[leftFoot] is SpriteComponent.Layer leftLayer)
-                    {
-                        IncludeLayer(sprite, leftLayer, position, worldRotation, screenAngle, eye.Rotation,
-                            screenRight, screenUp, ref footBounds, allowHidden: true);
-                    }
-
-                    if (sprite.LayerMapTryGet(HumanoidVisualLayers.RFoot, out var rightFoot) &&
-                        sprite[rightFoot] is SpriteComponent.Layer rightLayer)
-                    {
-                        IncludeLayer(sprite, rightLayer, position, worldRotation, screenAngle, eye.Rotation,
-                            screenRight, screenUp, ref footBounds, allowHidden: true);
-                    }
-                }
+                var footBounds = SpriteLayerWorldTransform.GetFootBounds(_sprites, _geometry, (uid, sprite), position,
+                    worldRotation, screenAngle, eye.Rotation, screenRight, screenUp);
 
                 shape = ContactShadowGeometry.Standing(footBounds, bodyBounds, screenRight, screenUp,
                     -eye.Rotation);
@@ -221,26 +198,8 @@ public sealed partial class ContactShadowOverlay : Overlay
         Vector2 axisY,
         ref ContactShadowProjectedBounds bounds,
         bool allowHidden = false)
-    {
-        if ((!layer.Visible && !allowHidden) || layer.Blank || layer.Color.A <= 0.01f ||
-            layer.CopyToShaderParameters != null ||
-            layer.ActualState is not { } state)
-            return false;
-
-        var matrixDirection = SpriteComponent.Layer.GetDirection(state.RsiDirections, screenAngle);
-        var textureDirection = sprite.EnableDirectionOverride
-            ? sprite.DirectionOverride.Convert(state.RsiDirections)
-            : matrixDirection;
-        textureDirection = textureDirection.OffsetRsiDir(layer.DirOffset);
-        var opaque = _geometry.GetOpaqueGeometry(state, textureDirection, layer.AnimationFrame);
-        if (!opaque.Visible)
-            return false;
-
-        var transform = SpriteLayerWorldTransform.Get(sprite, layer, matrixDirection,
-            position, worldRotation, screenAngle, eyeRotation);
-        bounds.Include(opaque.Bounds, transform, axisX, axisY);
-        return true;
-    }
+        => SpriteLayerWorldTransform.IncludeOpaqueLayer(_geometry, sprite, layer, position, worldRotation, screenAngle,
+            eyeRotation, axisX, axisY, ref bounds, allowHidden);
 
     private readonly record struct Shadow(EntityUid Entity, Vector2 Center, Vector2 Size, Angle Rotation, float Alpha, float Distance);
 }

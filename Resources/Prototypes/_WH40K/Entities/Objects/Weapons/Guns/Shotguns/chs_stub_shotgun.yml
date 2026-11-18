@@ -17,12 +17,18 @@
     fireRate: 1
     availableModes:
     - SemiAuto
+    soundGunshot:
+      collection: WH40KPumpShotgun
   - type: BallisticAmmoProvider
     whitelist:
       tags:
       - ShellShotgun
     capacity: 5
     proto: ShellShotgun
+    soundRack:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/shotgun_pump.ogg
+    soundInsert:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/shotgun_reload_shell.ogg
   - type: Appearance
   - type: ClothingSpeedModifier
     walkModifier: 0.98

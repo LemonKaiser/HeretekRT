@@ -1,4 +1,6 @@
 using Content.Shared._WH40K.ItemRarity;
+using Content.Shared._WH40K.Weapons;
+using Content.Shared._Emberfall.Weapons.Ranged;
 using System.Linq;
 using System.Numerics;
 using Content.Server._Mono.FireControl;
@@ -7,10 +9,12 @@ using Content.Server.Particles;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Weapons.Ranged.Components;
 using Content.Shared._Mono.Weapons.Ranged.Components;
+using Content.Shared._Mono.SpaceArtillery;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Explosion.Components;
 using Content.Shared.Projectiles;
 using Content.Shared.Particles;
 using Content.Shared.Weapons.Melee;
@@ -216,13 +220,18 @@ public sealed partial class GunSystem : SharedGunSystem
                 var angles = LinearSpread(mapAngle - spreadEvent.Spread / 2,
                     mapAngle + spreadEvent.Spread / 2, ammoSpreadComp.Count);
 
-                ShootOrThrow(ammoEnt, angles[0].ToVec(), gunVelocity, gun, gunUid, user, offset, fromCoordinates);
+                var buckshot = IsBuckshot(ammoEnt);
+                ShootOrThrow(ammoEnt, angles[0].ToVec(), gunVelocity, gun, gunUid, user, offset, fromCoordinates,
+                    buckshot ? WH40KPelletVisual.Tracer : WH40KPelletVisual.Default);
                 shotProjectiles.Add(ammoEnt);
 
                 for (var i = 1; i < ammoSpreadComp.Count; i++)
                 {
                     var newuid = Spawn(ammoSpreadComp.Proto, fromEnt);
-                    ShootOrThrow(newuid, angles[i].ToVec(), gunVelocity, gun, gunUid, user, offset, fromCoordinates);
+                    var pelletVisual = i == ammoSpreadComp.Count / 2 || i == ammoSpreadComp.Count - 1
+                        ? WH40KPelletVisual.Tracer : WH40KPelletVisual.Plain;
+                    ShootOrThrow(newuid, angles[i].ToVec(), gunVelocity, gun, gunUid, user, offset, fromCoordinates,
+                        buckshot ? pelletVisual : WH40KPelletVisual.Default);
                     shotProjectiles.Add(newuid);
                 }
             }
@@ -240,8 +249,15 @@ public sealed partial class GunSystem : SharedGunSystem
         }
     }
 
+    private bool IsBuckshot(EntityUid projectile)
+    {
+        return _projectileQuery.TryComp(projectile, out var round) && round.Damage.DamageDict.ContainsKey("Piercing") &&
+               TryComp<TracerComponent>(projectile, out var tracer) && tracer.Color == Color.White &&
+               !HasComp<ShipWeaponProjectileComponent>(projectile) && !HasComp<ExplosiveComponent>(projectile);
+    }
+
     private void ShootOrThrow(EntityUid uid, Vector2 mapDirection, Vector2 gunVelocity, GunComponent gun, EntityUid gunUid, EntityUid? user,
-                              float offset = 0f, EntityCoordinates? fromCoordinates = null) // Mono - add offset and fromCoordinates
+                              float offset = 0f, EntityCoordinates? fromCoordinates = null, WH40KPelletVisual pelletVisual = WH40KPelletVisual.Default)
     {
         if (gun.Target is { } target && !TerminatingOrDeleted(target))
         {
@@ -287,6 +303,8 @@ public sealed partial class GunSystem : SharedGunSystem
             predicted.ClientEnt = user;
         }
 
+        var pelletVisualChanged = projectileComp.PelletVisual != pelletVisual;
+        projectileComp.PelletVisual = pelletVisual;
         projectileComp.Damage *= gun.DamageModifier;
         if (TryComp<ItemRarityStatsComponent>(gunUid, out var rarityStats) && rarityStats.Applied)
             projectileComp.ArmorPenetration = ItemRarityStatMath.CombineArmorPenetration(
@@ -299,6 +317,8 @@ public sealed partial class GunSystem : SharedGunSystem
             user,
             gun.ProjectileSpeedModified,
             offset); // Mono - add offset
+        if (pelletVisualChanged)
+            Dirty(uid, projectileComp);
 
         if (HasComp<FireControllableComponent>(gunUid))
         {
@@ -344,38 +364,25 @@ public sealed partial class GunSystem : SharedGunSystem
 
     protected override void CreateEffect(EntityUid gunUid, MuzzleFlashEvent message, EntityUid? user = null)
     {
-        // MuzzleFlash is raised only after a projectile or hitscan has actually been fired. The event contains the
-        // final firing angle, but the legacy muzzle-effect contract has no local muzzle offset. Use a small forward
-        // offset from the weapon rather than its centre, which is the closest available spatial fallback.
-        var gunCoordinates = _transform.GetMapCoordinates(gunUid);
-        var muzzleCoordinates = new MapCoordinates(
-            gunCoordinates.Position + message.Angle.ToVec() * 0.35f,
-            gunCoordinates.MapId);
-        var energy = IsEnergyMuzzle(message.Prototype);
-        var parameters = new ParticleSpawnParameters(EmitAngle: message.Angle);
-
-        _particles.Spawn(
-            muzzleCoordinates,
-            energy ? "HrtMuzzleFlashEnergy" : "HrtMuzzleFlashBallistic",
-            parameters: parameters,
-            rateLimitSource: gunUid,
-            cooldown: TimeSpan.FromMilliseconds(65));
-
-        // Smoke is intentionally less frequent than flashes so automatic fire cannot turn one weapon into a
-        // persistent emitter. Energy weapons keep their authored flash without an arbitrary ballistic smoke trail.
-        if (!energy)
+        if (!message.IsBallistic && IsEnergyMuzzle(message.Prototype))
         {
+            var gunCoordinates = _transform.GetMapCoordinates(gunUid);
+            var muzzleCoordinates = new MapCoordinates(
+                gunCoordinates.Position + message.Angle.ToVec() * 0.35f,
+                gunCoordinates.MapId);
             _particles.Spawn(
                 muzzleCoordinates,
-                "HrtMuzzleSmoke",
-                parameters: parameters,
+                "HrtMuzzleFlashEnergy",
+                parameters: new ParticleSpawnParameters(EmitAngle: message.Angle),
                 rateLimitSource: gunUid,
-                cooldown: TimeSpan.FromMilliseconds(250));
+                cooldown: TimeSpan.FromMilliseconds(65));
         }
 
-        var filter = Robust.Shared.Player.Filter.Pvs(gunUid, 0.6f, EntityManager); // Mono - default -> 0.6f
+        var filter = Filter.Pvs(gunUid, message.IsBallistic ? 1f : 0.6f, EntityManager);
 
-        if (TryComp<ActorComponent>(user, out var actor))
+        // A fire control operator does not predict the server-side mounted shot.
+        if ((!message.IsBallistic || !HasComp<FireControllableComponent>(gunUid)) &&
+            TryComp<ActorComponent>(user, out var actor))
             filter.RemovePlayer(actor.PlayerSession);
 
         RaiseNetworkEvent(message, filter);

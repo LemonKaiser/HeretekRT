@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "copyright": "Original pixel art for HeretekRT",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "metal"
+    },
+    {
+      "name": "concrete"
+    },
+    {
+      "name": "stone"
+    },
+    {
+      "name": "wood"
+    },
+    {
+      "name": "plastic"
+    }
+  ]
+}

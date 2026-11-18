@@ -27,7 +27,9 @@ using Content.Shared.Throwing;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared._WH40K.Blood;
+using System.Numerics;
 using Robust.Server.Audio;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -37,6 +39,11 @@ namespace Content.Server.Body.Systems;
 
 public sealed partial class BloodstreamSystem : EntitySystem
 {
+    private static readonly ProtoId<ParticleEffectPrototype> BloodSpray = "HrtBloodSpray";
+    private static readonly ProtoId<ParticleEffectPrototype> BloodSprayFollowup = "HrtBloodSprayFollowup";
+    private static readonly TimeSpan BloodImpactInterval = TimeSpan.FromMilliseconds(160);
+    private static readonly TimeSpan GunBloodImpactInterval = TimeSpan.FromMilliseconds(65);
+    private static readonly TimeSpan FullGunBloodImpactInterval = TimeSpan.FromMilliseconds(320);
     [Dependency] private IGameTiming _gameTiming = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IRobustRandom _robustRandom = default!;
@@ -52,6 +59,7 @@ public sealed partial class BloodstreamSystem : EntitySystem
     [Dependency] private ForensicsSystem _forensicsSystem = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
 
     public override void Initialize()
     {
@@ -257,34 +265,9 @@ public sealed partial class BloodstreamSystem : EntitySystem
         var totalFloat = total.Float();
         TryModifyBleedAmount(ent, totalFloat, ent);
 
-        // Bloodstream has already accepted the post-mitigation damage at this point. Emit once only when it
-        // truly increased the bleeding state; the normal periodic blood-loss update stays particle-free.
-        if (totalFloat > 0f && ent.Comp.BleedAmount > oldBleedAmount)
-        {
-            var coordinates = args.ImpactCoordinates ?? _transform.GetMapCoordinates(ent);
-            Color? tint = null;
-            if (_prototypeManager.TryIndex<ReagentPrototype>(ent.Comp.BloodReagent, out var reagent))
-                tint = reagent.SubstanceColor;
-
-            Angle? angle = null;
-            if (args.Origin is { } origin)
-            {
-                var originCoordinates = _transform.GetMapCoordinates(origin);
-                var direction = originCoordinates.Position - coordinates.Position;
-                if (originCoordinates.MapId == coordinates.MapId && direction.LengthSquared() > 0.0001f)
-                    angle = Angle.FromWorldVec(direction);
-            }
-
-            _particles.Spawn(
-                coordinates,
-                "HrtBloodSpray",
-                parameters: new ParticleSpawnParameters(
-                    Color: tint,
-                    EmitAngle: angle,
-                    Intensity: GetBloodImpactIntensity(args, totalFloat)),
-                rateLimitSource: ent.Owner,
-                cooldown: TimeSpan.FromMilliseconds(250));
-        }
+        // The bleed-rate cap does not prevent later wounds from producing an impact effect.
+        if (totalFloat > 0f && ent.Comp.BleedAmount > 0f && GetBloodLevelPercentage(ent, ent) > 0f)
+            SpawnBloodImpact(ent, args, totalFloat);
 
         /// <summary>
         ///     Critical hit. Causes target to lose blood, using the bleed rate modifier of the weapon, currently divided by 5
@@ -311,21 +294,69 @@ public sealed partial class BloodstreamSystem : EntitySystem
         }
     }
 
+    private void SpawnBloodImpact(Entity<BloodstreamComponent> ent, DamageChangedEvent args, float damage)
+    {
+        var now = _gameTiming.CurTime;
+        if (now < ent.Comp.NextBloodImpactEffect)
+            return;
+
+        var projectile = HasComp<ProjectileComponent>(args.Tool);
+        var thrown = HasComp<ThrownItemComponent>(args.Tool);
+        var gunHit = projectile || (!thrown && HasComp<GunComponent>(args.Tool));
+        // Keep an impact cue on fast follow-up hits. Restore a full spray after a lull.
+        var followup = gunHit && now < ent.Comp.NextFullGunBloodImpactEffect;
+        var target = _transform.GetMapCoordinates(ent);
+        var coordinates = args.ImpactCoordinates is { } impact && impact.MapId == target.MapId ? impact : target;
+        var direction = Vector2.Zero;
+        if (args.Tool is { } tool && (projectile || thrown))
+            direction = _physics.GetMapLinearVelocity(tool);
+
+        if (direction.LengthSquared() <= 0.0001f && args.Origin is { } origin && Exists(origin))
+        {
+            var source = _transform.GetMapCoordinates(origin);
+            if (source.MapId == target.MapId)
+                direction = target.Position - source.Position;
+        }
+
+        var angle = direction.LengthSquared() > 0.0001f
+            ? new Angle(Math.Atan2(direction.X, direction.Y))
+            : _robustRandom.NextAngle();
+        var intensity = GetBloodImpactIntensity(args, damage);
+        var parameters = new ParticleSpawnParameters(
+            Color: GetBloodParticleColor(ent.Comp),
+            EmitAngle: angle,
+            Intensity: followup ? Math.Min(intensity, 1f) : intensity);
+        if (!_particles.Spawn(coordinates, followup ? BloodSprayFollowup : BloodSpray, parameters: parameters))
+            return;
+
+        ent.Comp.NextBloodImpactEffect = now + (gunHit ? GunBloodImpactInterval : BloodImpactInterval);
+        if (gunHit)
+            ent.Comp.NextFullGunBloodImpactEffect = now + FullGunBloodImpactInterval;
+    }
+
     private float GetBloodImpactIntensity(DamageChangedEvent args, float damage)
     {
         if (args.Tool is { } tool && Exists(tool))
         {
             if (HasComp<ThrownItemComponent>(tool))
-                return Math.Clamp(0.10f + damage * 0.012f, 0.10f, 0.25f);
+                return Math.Clamp(0.36f + damage * 0.04f, 0.36f, 0.62f);
 
             if (HasComp<ProjectileComponent>(tool) || HasComp<GunComponent>(tool))
-                return Math.Clamp(0.25f + damage * 0.04f, 0.25f, 0.65f);
+                return Math.Clamp(0.52f + damage * 0.085f, 0.52f, 1.25f);
 
             if (HasComp<MeleeWeaponComponent>(tool))
-                return Math.Clamp(0.16f + damage * 0.02f, 0.16f, 0.42f);
+                return Math.Clamp(0.42f + damage * 0.06f, 0.42f, 0.88f);
         }
 
-        return Math.Clamp(0.18f + damage * 0.025f, 0.18f, 0.50f);
+        return Math.Clamp(0.40f + damage * 0.065f, 0.40f, 1.05f);
+    }
+
+    private Color GetBloodParticleColor(BloodstreamComponent bloodstream)
+    {
+        if (!_prototypeManager.TryIndex<ReagentPrototype>(bloodstream.BloodReagent, out var reagent))
+            return Color.Maroon;
+
+        return Color.InterpolateBetween(reagent.SubstanceColor.WithAlpha(1f), Color.White, 0.16f);
     }
     /// <summary>
     ///     Shows text on health examine, based on bleed rate and blood level.
@@ -500,7 +531,8 @@ public sealed partial class BloodstreamSystem : EntitySystem
 
     private void UpdateBleedingVisual(EntityUid uid, BloodstreamComponent bloodstream)
     {
-        if (bloodstream.BleedAmount <= 0f || !HasComp<HumanoidAppearanceComponent>(uid))
+        if (bloodstream.BleedAmount <= 0f || !HasComp<HumanoidAppearanceComponent>(uid) ||
+            GetBloodLevelPercentage(uid, bloodstream) <= 0f)
         {
             RemComp<WH40KBleedingVisualComponent>(uid);
             return;
@@ -511,10 +543,12 @@ public sealed partial class BloodstreamSystem : EntitySystem
             ? WH40KBleedingVisualSeverity.Severe
             : WH40KBleedingVisualSeverity.Minor;
 
-        if (visual.Severity == severity)
+        var color = GetBloodParticleColor(bloodstream);
+        if (visual.Severity == severity && visual.Color == color)
             return;
 
         visual.Severity = severity;
+        visual.Color = color;
         Dirty(uid, visual);
     }
 

@@ -6,6 +6,8 @@
   - type: GunRequiresWield
   - type: Gun
     fireRate: 5.5
+    soundGunshot:
+      collection: WH40KLascarbine
   - type: Clothing
     sprite: _WH40K/Objects/Weapons/Guns/Battery/lasgun_accatran/lasgun_in-hands.rsi
     quickEquip: false

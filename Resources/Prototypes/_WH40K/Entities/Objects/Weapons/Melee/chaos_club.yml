@@ -17,6 +17,10 @@
         Blunt: 25
     soundHit:
       path: "/Audio/Weapons/smash.ogg"
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
   - type: StaminaDamageOnHit
     damage: 6.5
   - type: Clothing

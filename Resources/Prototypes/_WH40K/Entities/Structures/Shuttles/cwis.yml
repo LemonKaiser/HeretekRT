@@ -32,6 +32,8 @@
     state: base
   - type: Gun
     fireRate: 8
+    soundGunshot:
+      collection: WH40KAutocannon
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -85,7 +87,7 @@
   - type: Gun
     fireRate: 16
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/repeater_fire1.ogg
   - type: HitscanBatteryAmmoProvider
     proto: LaserMultilas
     fireCost: 100

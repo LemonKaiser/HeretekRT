@@ -91,9 +91,9 @@
     availableModes:
     - FullAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/lmg.ogg
+      collection: WH40KHeavyBolter
     soundEmpty:
-      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/boltweapon_dry.ogg
   - type: MagazineAmmoProvider
   - type: AmmoCounter
   - type: ItemSlots

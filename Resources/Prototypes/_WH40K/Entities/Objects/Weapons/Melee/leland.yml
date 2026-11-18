@@ -10,6 +10,11 @@
     layers:
     - state: icon
       map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: MeleeWeapon
+    soundSwing:
+      collection: WH40KBluntSwing
+      params:
+        volume: -3
   - type: ItemToggleMeleeWeapon
     activatedDamage:
       types:

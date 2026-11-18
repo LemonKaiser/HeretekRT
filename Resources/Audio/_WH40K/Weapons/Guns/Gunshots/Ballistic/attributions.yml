@@ -1,0 +1,69 @@
+- files: ["autogun_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "AR15 Real Recording by SuperPhat. Trimmed to one shot and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/432366/"
+
+- files: ["submachinegun_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Dry Assault Rifle Automatic by SuperPhat. Trimmed to one shot and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417685/"
+
+- files: ["machinegun_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "LightMachineGun2 by SuperPhat. Trimmed to one shot and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417687/"
+
+- files: ["assault_rifle_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "AssaultRifle1.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/404562/"
+
+- files: ["kalashnikov_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Automatic Assault Rifle.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/416417/"
+
+- files: ["carbine_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Gun Version 2 with forward bolt by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/414827/"
+
+- files: ["radium_carbine_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Gun Version 2 without forward bolt by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/414826/"
+
+- files: ["compact_smg_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Submachine gun automatic fire.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417689/"
+
+- files: ["light_machinegun_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "LightMachineGun1.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417688/"
+
+- files: ["stub_machinegun_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "LightMachineGun3.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417686/"
+
+- files: ["twin_stubber_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "HeavyMachineGun.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/396324/"
+
+- files: ["heavy_autocannon_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Slowfiringheavyweapon.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/417148/"
+
+- files: ["sniper_rifle_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "Sniper Rifle by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/514228/"
+
+- files: ["pulse_blaster_fire.ogg"]
+  license: "CC0-1.0"
+  copyright: "ScifiHeavyBlasterShot.wav by SuperPhat. Trimmed to one shot from the Freesound preview and converted to mono OGG."
+  source: "https://freesound.org/people/SuperPhat/sounds/531861/"

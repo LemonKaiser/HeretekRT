@@ -89,7 +89,8 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+    soundGunshot:
+      collection: WH40KGauss
   - type: PointLight
     radius: 2.2
     energy: 1.8

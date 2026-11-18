@@ -19,7 +19,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/sniper.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/sniper_rifle_fire.ogg
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
@@ -163,7 +163,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/sniper.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/eventsniper_fire1.ogg
   - type: BallisticAmmoProvider
     capacity: 5
     proto: CartridgeLondoronMk2Possessed
@@ -195,8 +195,15 @@
     animation: WeaponArcThrust
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+    soundSwing:
+      collection: WH40KKnifeSwing
+      params:
+        volume: -3
   - type: MeleeRequiresWield
   - type: AltFireMelee
     attackType: Heavy
   - type: Sharp
   - type: GunRequiresWield
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/carbine_fire.ogg

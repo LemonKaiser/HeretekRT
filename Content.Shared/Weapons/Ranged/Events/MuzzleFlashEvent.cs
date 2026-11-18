@@ -3,7 +3,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.Weapons.Ranged.Events;
 
 /// <summary>
-/// Raised whenever a muzzle flash client-side entity needs to be spawned.
+/// Requests a muzzle effect after a shot.
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class MuzzleFlashEvent : EntityEventArgs
@@ -12,6 +12,9 @@ public sealed class MuzzleFlashEvent : EntityEventArgs
     public string Prototype;
 
     public Angle Angle;
+
+    public bool IsBallistic => Prototype is "MuzzleFlashEffect" or "MuzzleFlashEffectSmall";
+    public bool IsSmall => Prototype == "MuzzleFlashEffectSmall";
 
     public MuzzleFlashEvent(NetEntity uid, string prototype, Angle angle)
     {

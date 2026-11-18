@@ -189,10 +189,11 @@ public sealed partial class ClientClothingSystem : ClothingSystem
     {
         var item = GetEntity(args.Item);
 
-        if (!TryComp(item, out ClothingComponent? clothing) || clothing.InSlot == null)
+        if (!TryComp(item, out ClothingComponent? clothing) ||
+            !_inventorySystem.TryGetSlotEntity(uid, args.ContainerId, out var equipped, component) || equipped != item)
             return;
 
-        RenderEquipment(uid, item, clothing.InSlot, component, null, clothing);
+        RenderEquipment(uid, item, args.ContainerId, component, null, clothing);
     }
 
     private void OnDidUnequip(EntityUid uid, SpriteComponent component, DidUnequipEvent args)

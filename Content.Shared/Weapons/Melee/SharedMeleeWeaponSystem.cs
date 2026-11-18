@@ -24,6 +24,7 @@ using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -476,6 +477,7 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         }
 
         // Attack confirmed
+        var coordinates = GetCoordinates(attack.Coordinates);
         for (var i = 0; i < swings; i++)
         {
             string animation;
@@ -502,10 +504,10 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
             }
 
             // Mono - except specifically user
-            DoLungeAnimation(attacker, user, weaponUid, weapon.Angle, TransformSystem.ToMapCoordinates(GetCoordinates(attack.Coordinates)), weapon.Range, animation);
+            DoLungeAnimation(attacker, user, weaponUid, weapon.Angle, TransformSystem.ToMapCoordinates(coordinates), weapon.Range, animation);
         }
 
-        var attackEv = new MeleeAttackEvent(weaponUid);
+        var attackEv = new MeleeAttackEvent(weaponUid, attack is DisarmAttackEvent ? null : coordinates);
         RaiseLocalEvent(attacker, ref attackEv);
 
         weapon.Attacking = true;
@@ -644,7 +646,8 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         if (!TryComp(user, out TransformComponent? userXform))
             return false;
 
-        var targetMap = TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates));
+        var clickLocation = GetCoordinates(ev.Coordinates);
+        var targetMap = TransformSystem.ToMapCoordinates(clickLocation);
 
         if (targetMap.MapId != userXform.MapID)
             return false;
@@ -740,7 +743,7 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         }
 
         var appliedDamage = new DamageSpecifier();
-        var impactCoordinates = TransformSystem.ToMapCoordinates(GetCoordinates(ev.Coordinates));
+        var origin = new MapCoordinates(userPos, userXform.MapID);
 
         for (var i = targets.Count - 1; i >= 0; i--)
         {
@@ -755,9 +758,10 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
                 continue;
             }
 
-            var attackedEvent = new AttackedEvent(meleeUid, user, GetCoordinates(ev.Coordinates));
+            var attackedEvent = new AttackedEvent(meleeUid, user, clickLocation);
             RaiseLocalEvent(entity, attackedEvent);
             var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEvent.BonusDamage, hitEvent.ModifiersList);
+            var impactCoordinates = GetHeavyAttackContact(entity, origin);
 
             var damageResult = Damageable.TryChangeDamage(
                 entity,
@@ -816,6 +820,20 @@ public abstract partial class SharedMeleeWeaponSystem : EntitySystem
         }
 
         return true;
+    }
+
+    private MapCoordinates GetHeavyAttackContact(EntityUid target, MapCoordinates origin)
+    {
+        var targetPosition = TransformSystem.GetMapCoordinates(target);
+        if (targetPosition.MapId == origin.MapId &&
+            TryComp<FixturesComponent>(target, out var fixtures) && TryComp<PhysicsComponent>(target, out var body) &&
+            _physics.TryGetNearest(target, origin, out var contact, out var distance, manager: fixtures, body: body) &&
+            distance < float.MaxValue)
+        {
+            return new MapCoordinates(contact, origin.MapId);
+        }
+
+        return targetPosition;
     }
 
     public HashSet<EntityUid> ArcRayCast(Vector2 position, Angle angle, Angle arcWidth, float range, MapId mapId, EntityUid ignore) // Goob edit

@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.Weapons;
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Audio;
@@ -34,6 +35,9 @@ public sealed partial class ProjectileComponent : Component
     /// </summary>
     [AutoNetworkedField]
     public MapCoordinates? ShotOrigin;
+
+    [AutoNetworkedField]
+    public WH40KPelletVisual PelletVisual;
 
     /// <summary>
     ///     Weapon used to shoot.

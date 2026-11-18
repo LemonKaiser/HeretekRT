@@ -15,7 +15,7 @@
   - type: Gun
     fireRate: 0.5
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      collection: WH40KRocketLauncher
   - type: BallisticAmmoProvider
     whitelist:
       tags:
@@ -51,7 +51,7 @@
   - type: Gun
     fireRate: 0.5
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      collection: WH40KRocketLauncher
   - type: AmmoCounter
   - type: BallisticAmmoProvider
     whitelist:
@@ -84,7 +84,7 @@
   - type: Gun
     fireRate: 0.5
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      collection: WH40KRocketLauncher
   - type: AmmoCounter
   - type: BallisticAmmoProvider
     whitelist:
@@ -116,7 +116,7 @@
   - type: Gun
     fireRate: 0.5
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      collection: WH40KRocketLauncher
   - type: AmmoCounter
   - type: BasicEntityAmmoProvider
     proto: CartridgeRocketHE
@@ -144,7 +144,7 @@
   - type: Gun
     fireRate: 0.5
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/rpgfire.ogg
+      collection: WH40KRocketLauncher
   - type: AmmoCounter
   - type: BasicEntityAmmoProvider
     proto: CartridgeRocketHE
@@ -188,7 +188,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+      collection: WH40KGrenadeLauncher
   - type: GunRequiresWield
 
 - type: entity
@@ -227,5 +227,5 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+      collection: WH40KGrenadeLauncher
   - type: GunRequiresWield

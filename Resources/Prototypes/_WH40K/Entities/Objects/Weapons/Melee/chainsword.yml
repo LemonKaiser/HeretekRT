@@ -22,6 +22,10 @@
       path: /Audio/Weapons/chainsaw.ogg
       params:
         volume: -3
+    soundSwing:
+      collection: WH40KBladeSwing
+      params:
+        volume: -3
   - type: ItemDurability
     maxDurability: 500
     repairMaterial: Steel
@@ -45,6 +49,10 @@
         Slash: 18
     activatedSoundOnHit:
       path: /Audio/Weapons/chainsaw.ogg
+      params:
+        volume: -3
+    activatedSoundOnSwing:
+      collection: WH40KChainswordSwing
       params:
         volume: -3
   - type: UseDelay

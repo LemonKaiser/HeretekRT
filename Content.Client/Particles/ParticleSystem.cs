@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Content.Shared.CCVar;
+using Content.Shared.Maps;
 using Content.Shared.Particles;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -9,6 +10,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Shared.Configuration;
 using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
@@ -29,6 +31,9 @@ public sealed partial class ParticleSystem : EntitySystem
     [Dependency] private readonly IEyeManager _eye = default!;
     [Dependency] private readonly IResourceCache _resource = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private readonly SharedMapSystem _maps = default!;
+    [Dependency] private readonly TurfSystem _turf = default!;
+    [Dependency] private readonly OccluderSystem _occluders = default!;
 
     private readonly List<ActiveEmitter> _emitters = new();
     private readonly List<ActiveEmitter> _emissionOrder = new();
@@ -37,6 +42,7 @@ public sealed partial class ParticleSystem : EntitySystem
     private readonly Dictionary<ParticleEffectPrototype, CompiledParticleEffect> _runtimeCache = new();
     private readonly HashSet<ParticleEffectPrototype> _frameResolveFailures = new();
     private ParticleOverlay _particleOverlay = default!;
+    private ParticleOverlay.GroundOverlay _groundOverlay = default!;
 
     private int _quality;
     private int _manualBudget;
@@ -61,6 +67,7 @@ public sealed partial class ParticleSystem : EntitySystem
 
     public int Quality => _quality;
     public ParticleStatistics Statistics => _statistics;
+    internal bool HasGroundedParticles { get; private set; }
 
     public override void Initialize()
     {
@@ -68,6 +75,8 @@ public sealed partial class ParticleSystem : EntitySystem
 
         _particleOverlay = new ParticleOverlay(this);
         _overlay.AddOverlay(_particleOverlay);
+        _groundOverlay = new ParticleOverlay.GroundOverlay(_particleOverlay);
+        _overlay.AddOverlay(_groundOverlay);
 
         _cfg.OnValueChanged(CCVars.ParticleQuality, OnQualityChanged, invokeImmediately: true);
         _cfg.OnValueChanged(CCVars.ParticleGlobalBudget, OnManualBudgetChanged, invokeImmediately: true);
@@ -81,6 +90,7 @@ public sealed partial class ParticleSystem : EntitySystem
         _cfg.UnsubValueChanged(CCVars.ParticleGlobalBudget, OnManualBudgetChanged);
         _proto.PrototypesReloaded -= OnPrototypesReloaded;
         _overlay.RemoveOverlay(_particleOverlay);
+        _overlay.RemoveOverlay(_groundOverlay);
         KillAll();
         _frameCache.Clear();
         _runtimeCache.Clear();
@@ -151,6 +161,7 @@ public sealed partial class ParticleSystem : EntitySystem
         _trimOrder.Clear();
         _liveParticleCount = 0;
         _liveParticleCost = 0f;
+        HasGroundedParticles = false;
         _statistics = default;
         return count;
     }
@@ -195,6 +206,7 @@ public sealed partial class ParticleSystem : EntitySystem
         var emissionDelta = ParticleRuntimeMath.ClampEmissionDelta(frameTime);
         var simulatedParticles = 0;
         var emittedParticles = 0;
+        HasGroundedParticles = false;
 
         if (_quality == 0)
         {
@@ -392,6 +404,7 @@ public sealed partial class ParticleSystem : EntitySystem
         for (var i = 0; i < emitter.Particles.Count;)
         {
             ref var particle = ref particles[i];
+            var previousAge = particle.Age;
             particle.Age += ageDelta;
             simulated++;
 
@@ -401,12 +414,113 @@ public sealed partial class ParticleSystem : EntitySystem
                 continue;
             }
 
-            SimulateParticle(ref particle, simulationDelta, dragMultiplier, constantForce, terminalSpeedSquared,
-                terminalSpeed, gravity, noiseStrength, noiseFrequency, emitter.Runtime);
+            var flightDelta = simulationDelta;
+            if (particle.FlightDuration > 0f)
+            {
+                var activeTime = Math.Min(particle.Age, particle.FlightDuration) - Math.Max(previousAge, 0f);
+                flightDelta = Math.Clamp(activeTime, 0f, simulationDelta);
+            }
+
+            if (flightDelta > 0f)
+            {
+                var particleDrag = flightDelta < simulationDelta && drag > 0f ? MathF.Exp(-drag * flightDelta) : dragMultiplier;
+                SimulateParticle(ref particle, flightDelta, particleDrag, constantForce, terminalSpeedSquared,
+                    terminalSpeed, gravity, noiseStrength, noiseFrequency, emitter.Runtime);
+            }
+
+            if (particle.Grounded && !UpdateGroundPosition(emitter, ref particle))
+            {
+                RemoveParticleAt(emitter, i);
+                continue;
+            }
+
+            HasGroundedParticles |= particle.Grounded;
             i++;
         }
 
         return simulated;
+    }
+
+    private bool UpdateGroundPosition(ActiveEmitter emitter, ref ParticleData particle)
+    {
+        if (particle.GroundPosition is { } ground)
+        {
+            if (Deleted(ground.EntityId))
+                return false;
+
+            var position = _transform.ToMapCoordinates(ground.Offset(GetGroundSlide(particle)));
+            if (position.MapId != emitter.MapCoords.MapId)
+                return false;
+
+            particle.Position = emitter.Proto.WorldSpace ? position.Position : position.Position - emitter.MapCoords.Position;
+            return true;
+        }
+
+        if (emitter.Proto.Flight is not { } flight || particle.Variation / 256f >= flight.MarkChance)
+            return false;
+
+        var landing = new MapCoordinates(GetParticleWorldPosition(particle, emitter), emitter.MapCoords.MapId);
+        if (!_maps.TryGetMap(landing.MapId, out var map))
+            return false;
+
+        var local = _transform.ToCoordinates(map.Value, landing);
+        if (!_turf.TryGetTileRef(local, out var tile) || _turf.IsSpace(tile.Value) ||
+            !_occluders.InRangeUnoccluded(new MapCoordinates(particle.FlightOrigin, landing.MapId), landing,
+                range: 0f, ignoreTouching: false))
+            return false;
+
+        var grid = tile.Value.GridUid;
+        var groundPosition = _transform.ToCoordinates(grid, landing);
+        particle.GroundPosition = groundPosition;
+        if (flight.GroundLifetime > 0f)
+        {
+            particle.Lifetime = particle.FlightDuration + flight.GroundLifetime;
+            particle.InverseLifetime = 1f / particle.Lifetime;
+        }
+
+        if (flight.Skid > 0f && particle.Velocity.LengthSquared() > 0.01f)
+        {
+            var speed = particle.Velocity.Length();
+            var offset = particle.Velocity * (flight.Skid / MathF.Max(speed, 3f));
+            var end = new MapCoordinates(landing.Position + offset, landing.MapId);
+            var localEnd = _transform.ToCoordinates(grid, end);
+            if (_turf.TryGetTileRef(localEnd, out var endTile) && endTile.Value.GridUid == grid && !_turf.IsSpace(endTile.Value) &&
+                _occluders.InRangeUnoccluded(landing, end, range: 0f, ignoreTouching: false))
+                particle.GroundSlide = localEnd.Position - groundPosition.Position;
+        }
+
+        return true;
+    }
+
+    private static Vector2 GetGroundSlide(in ParticleData particle)
+    {
+        var time = Math.Clamp((particle.Age - particle.FlightDuration) / 0.09f, 0f, 1f);
+        return particle.GroundSlide * (time * (2f - time));
+    }
+
+    internal void CleanGroundParticles(EntityCoordinates coordinates)
+    {
+        var gridUid = coordinates.EntityId;
+        if (!TryComp<MapGridComponent>(gridUid, out var grid))
+            return;
+
+        var tile = _maps.TileIndicesFor(gridUid, grid, coordinates);
+        foreach (var emitter in _emitters)
+        {
+            if (emitter.Proto.Flight == null)
+                continue;
+
+            for (var i = emitter.Particles.Count - 1; i >= 0; i--)
+            {
+                var particle = emitter.Particles[i];
+                if (particle.GroundPosition is not { } ground || ground.EntityId != gridUid)
+                    continue;
+
+                var position = ground.Offset(GetGroundSlide(particle));
+                if (_maps.TileIndicesFor(gridUid, grid, position) == tile)
+                    RemoveParticleAt(emitter, i);
+            }
+        }
     }
 
     private int EmitForEmitter(ActiveEmitter emitter, float emissionDelta)
@@ -429,7 +543,7 @@ public sealed partial class ParticleSystem : EntitySystem
         }
 
         var capacity = scaledMaximum - emitter.Particles.Count;
-        if (capacity <= 0)
+        if (capacity <= 0 && proto.Flight is not { GroundLifetime: > 0f })
             return emitted;
 
         var duration = (float) proto.Duration.TotalSeconds;
@@ -440,12 +554,42 @@ public sealed partial class ParticleSystem : EntitySystem
         emitter.EmitAccum += proto.EmissionRate * emissionMultiplier * emissionDelta * emitter.Intensity * emitter.LodMultiplier;
         var requested = (int) emitter.EmitAccum;
         emitter.EmitAccum -= requested;
+        if (requested > capacity && proto.Flight is { GroundLifetime: > 0f })
+        {
+            // A long-lived mark must not block new drops from a continuous emitter.
+            while (capacity < requested && DropOldestGroundMark(emitter))
+                capacity++;
+        }
+
         requested = Math.Min(requested, capacity);
 
         for (var i = 0; i < requested && TryEmitParticle(emitter); i++)
             emitted++;
 
         return emitted;
+    }
+
+    private bool DropOldestGroundMark(ActiveEmitter emitter)
+    {
+        var oldestIndex = -1;
+        var oldestAge = 0f;
+        var particles = CollectionsMarshal.AsSpan(emitter.Particles);
+        for (var i = 0; i < particles.Length; i++)
+        {
+            ref var particle = ref particles[i];
+            var groundAge = particle.Age - particle.FlightDuration;
+            if (!particle.Grounded || groundAge <= oldestAge)
+                continue;
+
+            oldestIndex = i;
+            oldestAge = groundAge;
+        }
+
+        if (oldestIndex < 0)
+            return false;
+
+        RemoveParticleAt(emitter, oldestIndex);
+        return true;
     }
 
     private int EmitBurst(ActiveEmitter emitter, int count, int scaledMaximum)
@@ -473,15 +617,40 @@ public sealed partial class ParticleSystem : EntitySystem
 
         var spreadAngle = (float) proto.SpreadAngle.Theta;
         var angle = emitter.EffectiveEmitAngle + emitter.Random.NextFloat(-spreadAngle * 0.5f, spreadAngle * 0.5f);
-        var speed = Math.Max(0f, proto.Speed + emitter.Random.NextFloat(-proto.SpeedVariance, proto.SpeedVariance));
+        var speedRoll = emitter.Random.NextFloat(0f, 1f);
+        if (proto.Flight != null)
+            speedRoll *= speedRoll;
+        var speed = Math.Max(0f, proto.Speed + (2f * speedRoll - 1f) * proto.SpeedVariance);
         var position = SampleEmissionShape(proto.Shape, emitter.Random);
+        var flightDuration = 0f;
+        var releaseDelay = 0f;
+        var launchHeight = 0f;
+        var launchLift = 0f;
+        var fallAcceleration = 0f;
+        if (proto.Flight is { } flight)
+        {
+            launchHeight = Math.Max(0.01f, flight.Height + emitter.Random.NextFloat(-flight.HeightVariance, flight.HeightVariance));
+            launchLift = flight.Lift + emitter.Random.NextFloat(-flight.LiftVariance, flight.LiftVariance);
+            fallAcceleration = Math.Max(0.01f, flight.FallAcceleration);
+            flightDuration = (launchLift + MathF.Sqrt(launchLift * launchLift + 2f * fallAcceleration * launchHeight)) / fallAcceleration;
+            var delayRoll = emitter.Random.NextFloat(0f, 1f);
+            releaseDelay = flight.ReleaseSpread * delayRoll * delayRoll;
+            position -= (-_eye.CurrentEye.Rotation).RotateVec(Vector2.UnitY) * flight.GroundOffset;
+        }
 
         var particle = new ParticleData
         {
             Position = proto.WorldSpace ? emitter.MapCoords.Position + position : position,
             Velocity = new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * speed,
+            Age = -releaseDelay,
             Lifetime = lifetime,
             InverseLifetime = 1f / lifetime,
+            FlightDuration = flightDuration,
+            LaunchHeight = launchHeight,
+            LaunchLift = launchLift,
+            FallAcceleration = fallAcceleration,
+            FlightOrigin = flightDuration > 0f ? emitter.MapCoords.Position + position : default,
+            Variation = flightDuration > 0f || proto.ShaderAnimation ? (byte) emitter.Random.NextFloat(0f, 256f) : (byte) 0,
             SpawnSpeed = speed,
             SpawnIntensity = emitter.Intensity,
             SizeMultiplier = proto.SizeVariance > 0f

@@ -16,6 +16,10 @@
       path: /Audio/Weapons/chainsaw.ogg
       params:
         volume: -5
+    soundSwing:
+      collection: WH40KChainswordSwing
+      params:
+        volume: -3
   - type: Item
     sprite: _WH40K/Objects/Weapons/Melee/pilokosa.rsi
     storedSprite: null

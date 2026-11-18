@@ -55,16 +55,11 @@ public sealed partial class PuddleSystem : SharedPuddleSystem
             }
         }
 
-        var baseColor = Color.White;
-
         if (args.AppearanceData.TryGetValue(PuddleVisuals.SolutionColor, out var colorObj))
         {
             var color = (Color)colorObj;
-            _sprite.SetColor((uid, args.Sprite), color * baseColor);
-        }
-        else
-        {
-            _sprite.SetColor((uid, args.Sprite), args.Sprite.Color * baseColor);
+            var transmittance = 1f - color.A;
+            _sprite.SetColor((uid, args.Sprite), color.WithAlpha(1f - transmittance * transmittance));
         }
     }
 

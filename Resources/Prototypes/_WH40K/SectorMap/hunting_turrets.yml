@@ -41,7 +41,7 @@
     selectedMode: FullAuto
     availableModes: [FullAuto]
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/machinegun_fire.ogg
   - type: BasicEntityAmmoProvider
     proto: KoronusHuntingBullet
     capacity: null

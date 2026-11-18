@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._WH40K.Visuals.WorldEffects;
 using Content.Client.Animations;
 using Content.Client.Gameplay;
 using Content.Client.Items;
@@ -40,6 +41,7 @@ namespace Content.Client.Weapons.Ranged.Systems;
 
 public sealed partial class GunSystem : SharedGunSystem
 {
+    [Dependency] private WH40KBallisticMuzzleSystem _ballisticMuzzle = default!;
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IInputManager _inputManager = default!;
     [Dependency] private IPlayerManager _player = default!;
@@ -124,8 +126,7 @@ public sealed partial class GunSystem : SharedGunSystem
             else
             {
                 // The parent might be a hand container, check its parent
-                var parentXform = Transform(parent);
-                if (parentXform.ParentUid != EntityUid.Invalid && HasComp<HandsComponent>(parentXform.ParentUid))
+                if (TryComp<TransformComponent>(parent, out var parentXform) && HasComp<HandsComponent>(parentXform.ParentUid))
                 {
                     holder = parentXform.ParentUid;
                 }
@@ -345,6 +346,12 @@ public sealed partial class GunSystem : SharedGunSystem
         if (gunUid == EntityUid.Invalid)
         {
             Log.Debug($"Invalid Entity sent MuzzleFlashEvent (proto: {message.Prototype}, gun: {ToPrettyString(gunUid)})");
+            return;
+        }
+
+        if (message.IsBallistic)
+        {
+            _ballisticMuzzle.ShowShot(gunUid, user, message.Angle, message.IsSmall);
             return;
         }
 

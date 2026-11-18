@@ -27,7 +27,9 @@
   - type: Gun
     fireRate: 8
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/repeater_fire1.ogg
+    soundEmpty:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/lascannon_dry.ogg
   - type: Fixtures
     fixtures:
       fix1:

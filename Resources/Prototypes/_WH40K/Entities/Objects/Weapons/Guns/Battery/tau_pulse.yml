@@ -32,7 +32,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+      collection: WH40KTauPulsePistol
   - type: HitscanBatteryAmmoProvider
     proto: Pulse
     fireCost: 200
@@ -56,7 +56,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/lasfire_phased1.ogg
   - type: Item
     size: Huge
     shape:
@@ -96,8 +96,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -138,8 +136,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -181,8 +177,6 @@
     availableModes:
     - SemiAuto
     - FullAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -224,8 +218,6 @@
     availableModes:
     - SemiAuto
     - FullAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -267,7 +259,7 @@
     availableModes:
     - FullAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/pulse_blaster_fire.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -311,8 +303,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: GunRequiresWield
   - type: ItemSlots
     slots:
@@ -354,8 +344,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser3.ogg
   - type: GunRequiresWield
   - type: ItemSlots
     slots:
@@ -398,7 +386,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/wpn_riflegauss_fire_2.ogg
   - type: GunRequiresWield
   - type: ItemSlots
     slots:

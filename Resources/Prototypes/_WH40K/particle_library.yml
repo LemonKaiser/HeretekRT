@@ -260,14 +260,10 @@
 
 - type: particleEffect
   id: HrtImpactFlesh
-  parent: HrtParticleBaseFluid
-  startColor: "#C93436FF"
-  endColor: "#67141B00"
-  speed: 3.4
-  speedVariance: 1.2
-  particleSize: 0.2
-  maxCount: 20
-  gravity: 6.2
+  parent: HrtBloodSpray
+  startColor: "#A32232FF"
+  endColor: "#A32232FF"
+  maxCount: 9
 
 - type: particleEffect
   id: HrtImpactIce
@@ -542,14 +538,82 @@
 
 - type: particleEffect
   id: HrtBloodSpray
-  parent: HrtImpactFlesh
-  startColor: "#B51E2CFF"
-  endColor: "#4B081000"
-  speed: 4.1
-  speedVariance: 1.5
-  particleSize: 0.17
-  maxCount: 24
-  spreadAngle: 85
+  sprite: _WH40K/Particles/blood_drop.png
+  priority: Normal
+  cost: 0.65
+  maxDistance: 15
+  boundsRadius: 1.45
+  flight:
+    height: 0.34
+    heightVariance: 0.045
+    lift: 0.50
+    liftVariance: 0.95
+    fallAcceleration: 10.5
+    releaseSpread: 0.052
+    groundOffset: 0.29
+    skid: 0.07
+    markChance: 0.63
+    groundLifetime: 60
+    groundShader: WH40KBloodStain
+  lifetime: 0.8
+  speed: 2.95
+  speedVariance: 2.20
+  drag: 1.4
+  particleSize: 0.124
+  sizeVariance: 0.52
+  stretchFactor: 0.18
+  spreadAngle: 57
+  maxCount: 11
+  burst: true
+  startColor: "#FFFFFFFF"
+  endColor: "#FFFFFFFF"
+  alphaOverLifetime:
+    - time: 0.0
+      value: 1
+    - time: 0.64
+      value: 0.91
+    - time: 0.84
+      value: 0.72
+    - time: 1.0
+      value: 0
+
+- type: particleEffect
+  id: HrtBloodSprayFollowup
+  parent: HrtBloodSpray
+  particleSize: 0.10
+  maxCount: 4
+
+- type: particleEffect
+  id: HrtBloodDrip
+  parent: HrtBloodSpray
+  priority: Decorative
+  maxDistance: 12
+  boundsRadius: 0.5
+  flight:
+    height: 0.30
+    heightVariance: 0.035
+    lift: -0.18
+    liftVariance: 0.22
+    fallAcceleration: 9.8
+    releaseSpread: 0
+    groundOffset: 0.26
+    skid: 0.02
+    markChance: 0.60
+    groundLifetime: 60
+    groundShader: WH40KBloodStain
+  speed: 0.34
+  speedVariance: 0.20
+  inheritVelocity: 0.12
+  particleSize: 0.112
+  sizeVariance: 0.25
+  stretchFactor: 0.11
+  spreadAngle: 360
+  emissionRate: 3.25
+  maxCount: 14
+  burst: false
+  shape:
+    type: CircleFill
+    radius: 0.105
 
 - type: particleEffect
   id: HrtOilSpray
@@ -767,26 +831,48 @@
 
 - type: particleEffect
   id: HrtMuzzleFlashBallistic
+  sprite: _WH40K/Tiles/pure_white.png
+  shader: WH40KMuzzleFlame
+  shaderAnimation: true
+  alignToEmission: true
+  priority: Important
+  cost: 0.65
+  maxDistance: 22
+  boundsRadius: 0.65
+  # WH40KMuzzleFlame reads red as its shape selector and alpha as opacity.
+  startColor: "#FFFFFFFF"
+  endColor: "#FFFFFFFF"
+  lifetime: 0.074
+  lifetimeVariance: 0.004
+  speed: 0
+  speedVariance: 0
+  particleSize: 0.94
+  maxCount: 1
+  burst: true
+  renderLayer: 1
+
+- type: particleEffect
+  id: HrtMuzzleFlashPistol
+  parent: HrtMuzzleFlashBallistic
+  startColor: "#000000FF"
+  endColor: "#000000FF"
+  lifetime: 0.056
+  particleSize: 0.69
+
+- type: particleEffect
+  id: HrtMuzzleFlashMachineGun
+  parent: HrtMuzzleFlashBallistic
+  startColor: "#800000FF"
+  endColor: "#800000FF"
+  lifetime: 0.084
+  particleSize: 1.12
+
+- type: particleEffect
+  id: HrtMuzzleFlashEnergy
   parent: HrtParticleBaseEnergy
   sprite:
     sprite: _WH40K/Particles/generic.rsi
     state: cross
-  colorOverLifetime:
-    - time: 0.0
-      color: "#FFFFFFFF"
-    - time: 0.15
-      color: "#FFE9A0FF"
-    - time: 1.0
-      color: "#FF8C0000"
-  lifetime: 0.12
-  speed: 1.5
-  particleSize: 0.38
-  maxCount: 5
-  spreadAngle: 38
-
-- type: particleEffect
-  id: HrtMuzzleFlashEnergy
-  parent: HrtMuzzleFlashBallistic
   colorOverLifetime:
     - time: 0.0
       color: "#FFFFFFFF"
@@ -796,17 +882,64 @@
       color: "#318CFF00"
   particleSize: 0.42
   maxCount: 6
+  lifetime: 0.12
+  speed: 1.5
+  spreadAngle: 38
 
 - type: particleEffect
   id: HrtMuzzleSmoke
-  parent: HrtParticleBaseSmokeBurst
-  startColor: "#B5B1A9AA"
-  endColor: "#66625B00"
-  lifetime: 0.95
-  speed: 0.75
-  particleSize: 0.2
-  maxCount: 7
-  spreadAngle: 34
+  sprite: _WH40K/Tiles/pure_white.png
+  shader: WH40KMuzzleSmoke
+  shaderAnimation: true
+  alignToEmission: true
+  priority: Normal
+  cost: 0.55
+  maxDistance: 17
+  boundsRadius: 0.72
+  startColor: "#E1DDD3A3"
+  endColor: "#C6CDD573"
+  alphaOverLifetime:
+    - time: 0
+      value: 0.22
+    - time: 0.17
+      value: 1
+    - time: 0.44
+      value: 0.63
+    - time: 0.72
+      value: 0.22
+    - time: 1
+      value: 0
+  sizeOverLifetime:
+    - time: 0
+      value: 0.48
+    - time: 0.36
+      value: 0.84
+    - time: 1
+      value: 1.06
+  lifetime: 0.19
+  lifetimeVariance: 0.012
+  speed: 3.2
+  speedVariance: 0.28
+  drag: 12
+  particleSize: 0.49
+  sizeVariance: 0.08
+  maxCount: 1
+  burst: true
+  spreadAngle: 8
+
+- type: particleEffect
+  id: HrtMuzzleGasPistol
+  parent: HrtMuzzleSmoke
+  lifetime: 0.13
+  speed: 2.45
+  particleSize: 0.35
+
+- type: particleEffect
+  id: HrtMuzzleGasMachineGun
+  parent: HrtMuzzleSmoke
+  lifetime: 0.23
+  speed: 3.75
+  particleSize: 0.61
 
 - type: particleEffect
   id: HrtTracerBallistic
@@ -1463,7 +1596,7 @@
   id: HrtParticleDebrisSet
   effects:
     Default: HrtDustLight
-    Flesh: HrtBloodSpray
+    Flesh: HrtImpactFlesh
     Metal: HrtMetalChips
     Stone: HrtConcreteDebris
     Concrete: HrtConcreteDebris

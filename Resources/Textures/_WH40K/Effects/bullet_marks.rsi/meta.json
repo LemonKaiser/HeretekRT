@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "copyright": "Original procedural pixel art for HeretekRT",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "skin1",
+      "directions": 4
+    },
+    {
+      "name": "skin2",
+      "directions": 4
+    },
+    {
+      "name": "skin3",
+      "directions": 4
+    },
+    {
+      "name": "skin4",
+      "directions": 4
+    },
+    {
+      "name": "skin5",
+      "directions": 4
+    },
+    {
+      "name": "skin6",
+      "directions": 4
+    },
+    {
+      "name": "skin7",
+      "directions": 4
+    },
+    {
+      "name": "cloth1",
+      "directions": 4
+    },
+    {
+      "name": "cloth2",
+      "directions": 4
+    },
+    {
+      "name": "cloth3",
+      "directions": 4
+    },
+    {
+      "name": "cloth4",
+      "directions": 4
+    },
+    {
+      "name": "cloth5",
+      "directions": 4
+    },
+    {
+      "name": "cloth6",
+      "directions": 4
+    },
+    {
+      "name": "cloth7",
+      "directions": 4
+    },
+    {
+      "name": "armor1",
+      "directions": 4
+    },
+    {
+      "name": "armor2",
+      "directions": 4
+    },
+    {
+      "name": "armor3",
+      "directions": 4
+    },
+    {
+      "name": "armor4",
+      "directions": 4
+    },
+    {
+      "name": "armor5",
+      "directions": 4
+    },
+    {
+      "name": "armor6",
+      "directions": 4
+    },
+    {
+      "name": "armor7",
+      "directions": 4
+    }
+  ]
+}

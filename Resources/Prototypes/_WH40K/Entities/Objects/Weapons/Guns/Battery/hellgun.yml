@@ -19,7 +19,7 @@
     availableModes:
     - FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/lasgunpew.ogg
+      collection: WH40KHellgun
   - type: GunRequiresWield
   - type: Appearance
   - type: StaticPrice

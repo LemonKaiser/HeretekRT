@@ -32,7 +32,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/type2_shotgun_fire.ogg
     soundEmpty:
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: MagazineAmmoProvider
@@ -89,8 +89,6 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
     soundEmpty:
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: ItemSlots
@@ -142,7 +140,7 @@
     - FullAuto
     selectedMode: FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_2.wav
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/machinegun_fire.ogg
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
@@ -205,8 +203,6 @@
     availableModes:
     - FullAuto
     selectedMode: FullAuto
-    soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_2.wav
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -262,7 +258,7 @@
     - FullAuto
     selectedMode: FullAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_2.wav
+      path: /Audio/_WH40K/Weapons/Guns/Gunshots/Ballistic/twin_stubber_fire.ogg
   - type: ChamberMagazineAmmoProvider
     soundRack:
       path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
@@ -325,8 +321,6 @@
     availableModes:
     - FullAuto
     selectedMode: FullAuto
-    soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/stubber_fire_2.wav
   - type: ItemSlots
     slots:
       gun_magazine:

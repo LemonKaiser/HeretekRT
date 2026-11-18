@@ -12,7 +12,9 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_WH40K/Weapons/Guns/Gunshots/meltagun.ogg
+      collection: WH40KMeltagun
+    soundEmpty:
+      path: /Audio/_WH40K/Weapons/Soundpack/Guns/melta_dry.ogg
   - type: ItemSlots
     slots:
       gun_magazine:

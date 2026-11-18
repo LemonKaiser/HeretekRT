@@ -13,6 +13,10 @@
     damage:
       types:
         Slash: 25
+    soundSwing:
+      collection: WH40KBladeSwing
+      params:
+        volume: -3
   - type: Item
     sprite: _WH40K/Objects/Weapons/Melee/machete_rager.rsi
     storedSprite: null
