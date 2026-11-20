@@ -1,0 +1,67 @@
+<ScrollContainer xmlns="https://spacestation14.io"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:aug="clr-namespace:Content.Client._WH40K.Augments"
+                 x:Class="Content.Client._WH40K.Augments.Wh40kAugmentCatalogue"
+                 HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+    <BoxContainer Orientation="Vertical" SeparationOverride="12" Margin="8 12">
+        <PanelContainer Name="TerminalHeader">
+            <BoxContainer SeparationOverride="11">
+                <TextureRect Name="Insignia"
+                             SetSize="46 46" Stretch="KeepAspectCentered" VerticalAlignment="Center"/>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" VerticalAlignment="Center">
+                    <Label Name="TerminalTitle" Text="{Loc 'wh40k-augments-terminal'}" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.Text}"/>
+                    <RichTextLabel Name="Usage" HorizontalExpand="True"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+        <aug:Wh40kAugmentCatalogueLayout HorizontalExpand="True">
+            <PanelContainer Name="ScannerPanel" HorizontalExpand="True" VerticalAlignment="Top">
+                <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                    <BoxContainer SeparationOverride="8">
+                        <Label Text="{Loc 'wh40k-augments-body-map'}"/>
+                        <Control HorizontalExpand="True"/>
+                        <Label Name="SelectedZone" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.Text}"/>
+                    </BoxContainer>
+                    <aug:Wh40kAugmentBodyMap Name="BodyMap" HorizontalExpand="True"/>
+                    <PanelContainer Name="FacingPanel" HorizontalAlignment="Right">
+                        <BoxContainer SeparationOverride="5">
+                            <Button Name="TurnLeft" Text="◀" MinWidth="34" MinHeight="24" ToolTip="{Loc 'wh40k-augments-turn-left'}"/>
+                            <Label Name="Angle" MinWidth="54" Align="Center"/>
+                            <Button Name="TurnRight" Text="▶" MinWidth="34" MinHeight="24" ToolTip="{Loc 'wh40k-augments-turn-right'}"/>
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer Name="InspectionPanel" HorizontalExpand="True" VerticalAlignment="Top">
+                <BoxContainer Orientation="Vertical" SeparationOverride="10">
+                    <BoxContainer SeparationOverride="10">
+                        <PanelContainer Name="IconPanel" SetSize="62 62" VerticalAlignment="Top">
+                            <TextureRect Name="Icon" Stretch="KeepAspectCentered" HorizontalExpand="True" VerticalExpand="True"/>
+                        </PanelContainer>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalAlignment="Center">
+                            <Label Name="Tier" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.SecondaryText}"/>
+                            <RichTextLabel Name="Title" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <RichTextLabel Name="Installation" HorizontalExpand="True"/>
+                    <Label Text="{Loc 'wh40k-augments-variants'}" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.SecondaryText}"/>
+                    <BoxContainer Name="Variants" SeparationOverride="5"/>
+                    <aug:Wh40kAugmentModelPicker Name="OtherModels" HorizontalExpand="True"/>
+                    <Label Name="EffectsTitle" Text="{Loc 'wh40k-augments-passives'}" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.SecondaryText}" Margin="0 3 0 0"/>
+                    <BoxContainer Name="Effects" Orientation="Vertical" SeparationOverride="6"/>
+                    <PanelContainer Name="PairPanel" Margin="0 4 0 0">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                            <BoxContainer SeparationOverride="6">
+                                <Label Text="{Loc 'wh40k-augments-servo-step'}" StyleClasses="LabelHeading" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.Text}"/>
+                                <Control HorizontalExpand="True"/>
+                                <Label Text="{Loc 'wh40k-augments-servo-step-value'}" FontColorOverride="{x:Static aug:Wh40kAugmentStyle.SecondaryText}"/>
+                            </BoxContainer>
+                            <BoxContainer Name="PairModules" SeparationOverride="4"/>
+                            <RichTextLabel Name="PairEffect" HorizontalExpand="True"/>
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </PanelContainer>
+        </aug:Wh40kAugmentCatalogueLayout>
+    </BoxContainer>
+</ScrollContainer>

@@ -145,6 +145,9 @@ public abstract partial class SharedBuckleSystem
         // Add unstrap verbs for every strapped entity.
         foreach (var entity in component.BuckledEntities)
         {
+            if (HasComp<BuckleLockComponent>(uid))
+                break;
+
             var buckledComp = Comp<BuckleComponent>(entity);
 
             if (!_interaction.InRangeUnobstructed(args.User, args.Target, range: buckledComp.Range))
@@ -211,7 +214,8 @@ public abstract partial class SharedBuckleSystem
 
     private void AddUnbuckleVerb(EntityUid uid, BuckleComponent component, GetVerbsEvent<InteractionVerb> args)
     {
-        if (!args.CanAccess || !args.CanInteract || !component.Buckled)
+        if (!args.CanAccess || !args.CanInteract || !component.Buckled
+            || HasComp<BuckleLockComponent>(component.BuckledTo))
             return;
 
         InteractionVerb verb = new()

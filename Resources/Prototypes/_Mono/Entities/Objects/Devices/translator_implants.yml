@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: GaryTranslatorImplant
   name: gary translator implant
   description: An implant that helps you speak and understand the language of Gary.
@@ -14,7 +14,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: NovaCygniTranslatorImplant
   name: nova cygni translator implant
   description: An implant that helps you speak and understand the language of the USSP.

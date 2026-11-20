@@ -36,6 +36,8 @@ public partial class SharedBodySystem
         {
             component.ID = part.BaseLayerId;
             component.Type = relevantLayer;
+            if (Prototypes.TryIndex<HumanoidSpeciesSpriteLayer>(part.BaseLayerId, out var sprite) && !sprite.MatchSkin)
+                component.Color ??= Color.White;
             return;
         }
 

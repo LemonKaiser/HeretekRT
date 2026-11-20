@@ -1,3 +1,5 @@
+using Content.Shared._WH40K.Augments;
+using Content.Shared.Body.Part;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Slippery;
@@ -13,6 +15,7 @@ public sealed partial class SpeedModifierContactsSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private MovementSpeedModifierSystem _speedModifierSystem = default!;
     [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private Wh40kProstheticSystem _prosthetics = default!;
 
     // TODO full-game-save
     // Either these need to be processed before a map is saved, or slowed/slowing entities need to update on init.
@@ -130,6 +133,7 @@ public sealed partial class SpeedModifierContactsSystem : EntitySystem
             walkSpeed = MathF.Max(walkSpeed, evMax.MaxWalkSlowdown);
             sprintSpeed = MathF.Max(sprintSpeed, evMax.MaxSprintSlowdown);
 
+            (walkSpeed, sprintSpeed) = _prosthetics.ReduceSlowdown(uid, BodyPartType.Leg, walkSpeed, sprintSpeed);
             args.ModifySpeed(walkSpeed, sprintSpeed);
         }
 

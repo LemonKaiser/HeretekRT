@@ -1,4 +1,4 @@
-ent-GaryTranslatorImplant = имплант переводчика Гэри
-    .desc = Имплант, помогающий говорить и понимать язык Гэри.
-ent-NovaCygniTranslatorImplant = имплант переводчика Nova Cygni
-    .desc = Имплант, помогающий говорить и понимать язык Nova Cygni.
+ent-GaryTranslatorImplant = имплант-переводчик языка Гэри
+    .desc = Позволяет понимать язык Гэри и говорить на нём. { -wh40k-translator-implant-low-gothic }
+ent-NovaCygniTranslatorImplant = имплант-переводчик языка Nova Cygni
+    .desc = Позволяет понимать Nova Cygni, язык СССП, и говорить на нём. { -wh40k-translator-implant-low-gothic }

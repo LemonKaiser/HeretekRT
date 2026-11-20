@@ -19,6 +19,9 @@ public sealed partial class WH40KPhantomStepComponent : Component
     public int MaxCharges = 1;
 
     [ViewVariables]
+    public int ProstheticCharges;
+
+    [ViewVariables]
     public int Charges = 1;
 
     [DataField]

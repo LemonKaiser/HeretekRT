@@ -44,7 +44,7 @@
     radioChannel: "Mieyo"
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: UndergroundCodespeakTranslatorImplant
   name: codespeak translator implant
   description: An advanced implant that automatically translates any Underground Codespeak detected into Andromeda Standard and allows the user to automatically translate their own words back into it.

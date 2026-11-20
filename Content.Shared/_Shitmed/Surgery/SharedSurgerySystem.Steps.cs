@@ -548,9 +548,14 @@ public abstract partial class SharedSurgerySystem
 
         foreach (var tool in args.Tools)
         {
-            if (HasComp(tool, firstOrgan.Component.GetType())
-                && TryComp<OrganComponent>(tool, out var insertedOrgan)
-                && _body.InsertOrgan(args.Part, tool, insertedOrgan.SlotId, partComp, insertedOrgan))
+            if (!HasComp(tool, firstOrgan.Component.GetType()) || !TryComp<OrganComponent>(tool, out var insertedOrgan))
+                continue;
+
+            if (insertedOrgan.SlotId is Content.Shared._WH40K.Augments.Wh40kAugmentCatalog.LeftEye
+                or Content.Shared._WH40K.Augments.Wh40kAugmentCatalog.RightEye)
+                _body.TryCreateOrganSlot(args.Part, insertedOrgan.SlotId, out _, partComp);
+
+            if (_body.InsertOrgan(args.Part, tool, insertedOrgan.SlotId, partComp, insertedOrgan))
             {
                 EnsureComp<OrganReattachedComponent>(tool);
                 if (_body.TrySetOrganUsed(tool, true, insertedOrgan)

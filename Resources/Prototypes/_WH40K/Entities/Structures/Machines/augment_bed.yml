@@ -1,0 +1,79 @@
+- type: entity
+  parent: BaseMachinePowered
+  id: WH40KAugmentationCapsule
+  name: augmentation capsule
+  description: A surgical couch that scans the patient's inventory and fits compatible implants and prostheses.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/augmentation_capsule.rsi
+    noRot: true
+    enableOverrideDir: true
+    overrideDir: South
+    drawdepth: BelowMobs
+    state: closed
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/augmentation_capsule.rsi
+    state: icon
+  - type: Appearance
+  - type: Strap
+    position: Down
+    rotation: 90
+    buckleOffset: "0,0.125"
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.05"
+        density: 190
+        mask:
+        - TableMask
+        layer: []
+  - type: Wh40kAugmentBed
+  - type: ApcPowerReceiver
+    powerLoad: 250
+  - type: UserInterface
+    interfaces:
+      enum.Wh40kAugmentBedKey.Key:
+        type: Content.Client._WH40K.Augments.Wh40kAugmentBedBui
+
+- type: entity
+  parent: WH40KAugmentationCapsule
+  id: WH40KAugmentationCapsuleImperium
+  name: Imperial augmentation capsule
+  description: An augmentation capsule bearing the golden Aquila of the Imperium.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_imperium.rsi
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_imperium.rsi
+
+- type: entity
+  parent: WH40KAugmentationCapsule
+  id: WH40KAugmentationCapsuleChaos
+  name: Chaos augmentation capsule
+  description: A working augmentation capsule defaced with Chaos markings.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_chaos.rsi
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_chaos.rsi
+
+- type: entity
+  parent: WH40KAugmentationCapsule
+  id: WH40KAugmentationCapsuleDamaged
+  name: damaged augmentation capsule
+  description: The casing is damaged, but the restraints and surgical tools still work.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_damaged.rsi
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/augmentation_capsule_damaged.rsi
+
+- type: entity
+  parent: WH40KAugmentationCapsule
+  id: WH40KAugmentationBed
+  categories: [ HideSpawnMenu ]

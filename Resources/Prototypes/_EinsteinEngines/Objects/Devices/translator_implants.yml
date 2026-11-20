@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: BasicTauCetiBasicTranslatorImplant
   name: basic common translator implant
   description: Provides your illiterate friends the ability to understand the common galactic tongue.
@@ -10,7 +10,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: TauCetiBasicTranslatorImplant
   name: advanced common translator implant
   description: A more advanced version of the translator implant, teaches your illiterate friends the ability to both speak and understand the galactic tongue!
@@ -23,7 +23,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: BubblishTranslatorImplant
   name: bubblish translator implant
   description: An implant that helps you speak and understand the language of slimes! Special vocal chords not included.
@@ -38,7 +38,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: NekomimeticTranslatorImplant
   name: nekomimetic translator implant
   description: A translator implant intially designed to help domestic cat owners understand their pets, now granting the ability to understand and speak to Felinids!
@@ -53,7 +53,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: DraconicTranslatorImplant
   name: draconic translator implant
   description: A translator implant giving the ability to speak to dragons! Subsequently, also allows to communicate with the Unathi.
@@ -68,7 +68,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: CanilunztTranslatorImplant
   name: canilunzt translator implant
   description: A translator implant that helps you communicate with your local yeepers. Yeep!
@@ -83,7 +83,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: SolCommonTranslatorImplant
   name: sol-common translator implant
   description: An implant giving the ability to understand and speak SolCommon. Raaagh!
@@ -98,7 +98,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: NovuNedericTranslatorImplant
   name: novu-nederic translator implant
   description: An implant giving the ability to understand and speak Novu-Nederic. Hoezee!
@@ -113,7 +113,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: RootSpeakTranslatorImplant
   name: root-speak translator implant
   description: An implant that lets you speak for the trees. Or to the trees.
@@ -128,7 +128,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: MofficTranslatorImplant
   name: Moffic translator implant
   description: An implant designed to help domesticate mothroaches. Subsequently, allows you to communicate with the moth people.
@@ -143,7 +143,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: ValyrianStandardTranslatorImplant
   name: valyrian standard translator implant
   description: An implant giving the ability to understand and speak Valyrian Standard. Chirp!
@@ -158,7 +158,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: AzazibaTranslatorImplant
   name: azaziba translator implant
   description: An implant giving the ability to understand and speak Azaziba. # Intended for Admins Only, this item is for lore reasons not obtainable.
@@ -173,7 +173,7 @@
     - Draconic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: ChittinTranslatorImplant
   name: chittin translator implant
   description: An implant giving the ability to understand and speak Chittin.
@@ -188,7 +188,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: SiikMaasTranslatorImplant
   name: siik'maas translator implant
   description: An implant giving the ability to understand and speak Siik'maas.
@@ -203,7 +203,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: MarishTranslatorImplant
   name: marish translator implant
   description: An implant giving the ability to understand and speak Marish.
@@ -218,7 +218,7 @@
     - TauCetiBasic
 
 - type: entity
-  parent: BaseSubdermalImplant
+  parent: WH40KBaseTranslatorImplant
   id: NewKinPidginTranslatorImplant
   name: ka'rakk translator implant
   description: An implant giving the ability to understand and speak Ka'rakk.

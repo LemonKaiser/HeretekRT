@@ -1,0 +1,211 @@
+- type: wh40kNpcProfile
+  id: FootfallSolexSeven
+  name: wh40k-footfall-solex-seven-name
+  description: wh40k-footfall-solex-seven-desc
+  role: SolexSeven
+  department: mechanicus
+  kind: Special
+  exclusivity: VenueUnique
+  faction: FootfallMechanicus
+  services: [Trade]
+  gear: WH40KFootfallMechanicusGear
+  dialogue: WH40KFootfallSolexSeven
+
+- type: wh40kNpcAnchor
+  id: FootfallSolexSeven
+  profile: FootfallSolexSeven
+
+- type: entity
+  id: MobWH40KFootfallSolexSeven
+  parent: MobWH40KFootfallNpcBase
+  name: wh40k-footfall-solex-seven-name
+  description: wh40k-footfall-solex-seven-desc
+  suffix: WH40K, Footfall, Augment merchant
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: FootfallSolexSeven
+  - type: Loadout
+    prototypes: [WH40KFootfallMechanicusGear]
+  - type: DialogueInteractable
+    dialogue: WH40KFootfallSolexSeven
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-footfall-solex-seven-shop-title
+    greeting: wh40k-footfall-solex-seven-greeting
+    refreshInterval: 900
+    displayCount: 4
+    offers:
+    - product: WH40KProstheticCheapLeftArm
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapRightArm
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapLeftLeg
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapRightLeg
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapLeftHand
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapRightHand
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapLeftFoot
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KProstheticCheapRightFoot
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KCyberneticEyeRedLeft
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: WH40KCyberneticEyeRedRight
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+    - product: HeretekAugmentPowerCellSlot
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 100
+
+    - product: WH40KProstheticAdamantiumLeftArm
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumRightArm
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumLeftLeg
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumRightLeg
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumLeftHand
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumRightHand
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumLeftFoot
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KProstheticAdamantiumRightFoot
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KCyberneticEyeArcheotechLeft
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KCyberneticEyeArcheotechRight
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: HeretekAugmentStrength
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: HeretekAugmentToolPanel
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+
+    - product: WH40KProstheticReinforcedLeftArm
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedRightArm
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedLeftLeg
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedRightLeg
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedLeftHand
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedRightHand
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedLeftFoot
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KProstheticReinforcedRightFoot
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+
+- type: entity
+  id: MarkerWH40KFootfallSolexSeven
+  parent: MarkerWH40KFootfallNpcBase
+  suffix: WH40K, Footfall, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: FootfallSolexSeven
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KFootfallSolexSeven

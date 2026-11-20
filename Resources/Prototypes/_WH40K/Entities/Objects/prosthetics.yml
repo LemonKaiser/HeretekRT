@@ -1,0 +1,711 @@
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapLeftArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapLeftHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-hand
+
+- type: entity
+  id: WH40KProstheticCheapLeftArm
+  parent: LeftArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapLeftArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticCheapLeftHand
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+
+- type: entity
+  id: WH40KProstheticCheapLeftHand
+  parent: LeftHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapLeftHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.857143
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapLeftLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapLeftFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-foot
+
+- type: entity
+  id: WH40KProstheticCheapLeftLeg
+  parent: LeftLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapLeftLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticCheapLeftFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+  - type: MovementBodyPart
+    walkSpeed: 2.625
+    sprintSpeed: 4.725
+
+- type: entity
+  id: WH40KProstheticCheapLeftFoot
+  parent: LeftFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheapleftleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapLeftFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapRightArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapRightHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-hand
+
+- type: entity
+  id: WH40KProstheticCheapRightArm
+  parent: RightArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapRightArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticCheapRightHand
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+
+- type: entity
+  id: WH40KProstheticCheapRightHand
+  parent: RightHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapRightHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.857143
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapRightLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticCheapRightFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-foot
+
+- type: entity
+  id: WH40KProstheticCheapRightLeg
+  parent: RightLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapRightLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticCheapRightFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+  - type: MovementBodyPart
+    walkSpeed: 2.625
+    sprintSpeed: 4.725
+
+- type: entity
+  id: WH40KProstheticCheapRightFoot
+  parent: RightFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: cheaprightleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticCheapRightFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 5
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumLeftArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumLeftHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-hand
+
+- type: entity
+  id: WH40KProstheticAdamantiumLeftArm
+  parent: LeftArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumLeftArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticAdamantiumLeftHand
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+
+- type: entity
+  id: WH40KProstheticAdamantiumLeftHand
+  parent: LeftHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumLeftHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.818182
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumLeftLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumLeftFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-foot
+
+- type: entity
+  id: WH40KProstheticAdamantiumLeftLeg
+  parent: LeftLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumLeftLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticAdamantiumLeftFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+  - type: MovementBodyPart
+    walkSpeed: 2.750
+    sprintSpeed: 4.950
+  - type: Wh40kServoStepLeg
+
+- type: entity
+  id: WH40KProstheticAdamantiumLeftFoot
+  parent: LeftFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumleftleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumLeftFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumRightArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumRightHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-hand
+
+- type: entity
+  id: WH40KProstheticAdamantiumRightArm
+  parent: RightArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumRightArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticAdamantiumRightHand
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+
+- type: entity
+  id: WH40KProstheticAdamantiumRightHand
+  parent: RightHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumRightHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.818182
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumRightLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticAdamantiumRightFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-foot
+
+- type: entity
+  id: WH40KProstheticAdamantiumRightLeg
+  parent: RightLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumRightLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticAdamantiumRightFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+  - type: MovementBodyPart
+    walkSpeed: 2.750
+    sprintSpeed: 4.950
+  - type: Wh40kServoStepLeg
+
+- type: entity
+  id: WH40KProstheticAdamantiumRightFoot
+  parent: RightFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: adamantiumrightleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticAdamantiumRightFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 10
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedLeftArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedLeftHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-hand
+
+- type: entity
+  id: WH40KProstheticReinforcedLeftArm
+  parent: LeftArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedLeftArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticReinforcedLeftHand
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+
+- type: entity
+  id: WH40KProstheticReinforcedLeftHand
+  parent: LeftHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedLeftHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.782609
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedLeftLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedLeftFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-foot
+
+- type: entity
+  id: WH40KProstheticReinforcedLeftLeg
+  parent: LeftLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedLeftLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticReinforcedLeftFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+  - type: MovementBodyPart
+    walkSpeed: 2.875
+    sprintSpeed: 5.175
+
+- type: entity
+  id: WH40KProstheticReinforcedLeftFoot
+  parent: LeftFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumleftleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedLeftFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedRightArmLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedRightHandLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-hand
+
+- type: entity
+  id: WH40KProstheticReinforcedRightArm
+  parent: RightArmCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedRightArmLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticReinforcedRightHand
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+
+- type: entity
+  id: WH40KProstheticReinforcedRightHand
+  parent: RightHandCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-hand
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightarm-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedRightHandLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+  - type: DoAfterDelayMultiplier
+    multiplier: 0.782609
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedRightLegLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-part
+
+- type: humanoidBaseSprite
+  id: WH40KProstheticReinforcedRightFootLayer
+  matchSkin: false
+  baseSprite:
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-foot
+
+- type: entity
+  id: WH40KProstheticReinforcedRightLeg
+  parent: RightLegCyberneticBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-icon
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-icon
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedRightLegLayer
+  - type: GenerateChildPart
+    id: WH40KProstheticReinforcedRightFoot
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+  - type: MovementBodyPart
+    walkSpeed: 2.875
+    sprintSpeed: 5.175
+
+- type: entity
+  id: WH40KProstheticReinforcedRightFoot
+  parent: RightFootCybernetic
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-foot
+  - type: Icon
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: reinforcedadamantiumrightleg-icon
+  - type: BodyPart
+    baseLayerId: WH40KProstheticReinforcedRightFootLayer
+  - type: Wh40kProsthetic
+    bonusPercent: 15
+
+- type: entity
+  id: WH40KCyberneticEyeBase
+  abstract: true
+  parent: BaseCyberneticEyes
+  components:
+  - type: Sprite
+    layers: []
+  - type: Item
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    heldPrefix: module
+  - type: Organ
+    onAdd:
+    - type: ShowHealthIcons
+
+- type: entity
+  id: WH40KCyberneticEyeRedLeft
+  parent: WH40KCyberneticEyeBase
+  components:
+  - type: Organ
+    slotId: leftEye
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: redlefteye-icon
+  - type: Wh40kCyberneticEye
+    marking: WH40KCyberneticEyeRedLeftMarking
+
+- type: marking
+  id: WH40KCyberneticEyeRedLeftMarking
+  bodyPart: Eyes
+  markingCategory: Overlay
+  speciesRestriction: []
+  sprites:
+  - sprite: _WH40K/Objects/Augments/augments.rsi
+    state: redlefteye
+
+- type: entity
+  id: WH40KCyberneticEyeRedRight
+  parent: WH40KCyberneticEyeBase
+  components:
+  - type: Organ
+    slotId: rightEye
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: redrighteye-icon
+  - type: Wh40kCyberneticEye
+    marking: WH40KCyberneticEyeRedRightMarking
+
+- type: marking
+  id: WH40KCyberneticEyeRedRightMarking
+  bodyPart: Eyes
+  markingCategory: Overlay
+  speciesRestriction: []
+  sprites:
+  - sprite: _WH40K/Objects/Augments/augments.rsi
+    state: redrighteye
+
+- type: entity
+  id: WH40KCyberneticEyeArcheotechLeft
+  parent: WH40KCyberneticEyeBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: archeoteklefteye-icon
+  - type: Wh40kCyberneticEye
+    marking: WH40KCyberneticEyeArcheotechLeftMarking
+  - type: Organ
+    slotId: leftEye
+    onAdd:
+    - type: ShowHealthIcons
+    - type: ShowHealthBars
+
+- type: marking
+  id: WH40KCyberneticEyeArcheotechLeftMarking
+  bodyPart: Eyes
+  markingCategory: Overlay
+  speciesRestriction: []
+  sprites:
+  - sprite: _WH40K/Objects/Augments/augments.rsi
+    state: archeoteklefteye
+
+- type: entity
+  id: WH40KCyberneticEyeArcheotechRight
+  parent: WH40KCyberneticEyeBase
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: archeotekrighteye-icon
+  - type: Wh40kCyberneticEye
+    marking: WH40KCyberneticEyeArcheotechRightMarking
+  - type: Organ
+    slotId: rightEye
+    onAdd:
+    - type: ShowHealthIcons
+    - type: ShowHealthBars
+
+- type: marking
+  id: WH40KCyberneticEyeArcheotechRightMarking
+  bodyPart: Eyes
+  markingCategory: Overlay
+  speciesRestriction: []
+  sprites:
+  - sprite: _WH40K/Objects/Augments/augments.rsi
+    state: archeotekrighteye

@@ -539,7 +539,7 @@ public abstract partial class SharedBuckleSystem
 
         var unstrapAttempt = new UnstrapAttemptEvent(strap, buckle!, user, popup);
         RaiseLocalEvent(strap, ref unstrapAttempt);
-        return !unstrapAttempt.Cancelled;
+        return !unstrapAttempt.Cancelled && !HasComp<BuckleLockComponent>(strap.Owner);
     }
 
     /// <summary>

@@ -4,6 +4,9 @@
   description: A microscopic chip that's injected under the skin.
   abstract: true
   components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Augments/augments.rsi
+    state: otherimplants-icon
   - type: SubdermalImplant
   - type: Tag
     tags:

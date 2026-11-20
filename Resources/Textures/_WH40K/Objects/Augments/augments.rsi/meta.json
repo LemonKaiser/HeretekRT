@@ -1,0 +1,281 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Sprites by londorondondon for HeretekRT",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "adamantiumleftarm-icon"
+        },
+        {
+            "name": "adamantiumleftarm",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumleftleg-icon"
+        },
+        {
+            "name": "adamantiumleftleg",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightarm-icon"
+        },
+        {
+            "name": "adamantiumrightarm",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightleg-icon"
+        },
+        {
+            "name": "adamantiumrightleg",
+            "directions": 4
+        },
+        {
+            "name": "archeoteklefteye-icon"
+        },
+        {
+            "name": "archeoteklefteye",
+            "directions": 4
+        },
+        {
+            "name": "archeotekrighteye-icon"
+        },
+        {
+            "name": "archeotekrighteye",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftarm-icon"
+        },
+        {
+            "name": "cheapleftarm",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftleg-icon"
+        },
+        {
+            "name": "cheapleftleg",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightarm-icon"
+        },
+        {
+            "name": "cheaprightarm",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightleg-icon"
+        },
+        {
+            "name": "cheaprightleg",
+            "directions": 4
+        },
+        {
+            "name": "headimplants-icon"
+        },
+        {
+            "name": "ironjaw-icon"
+        },
+        {
+            "name": "ironjaw",
+            "directions": 4
+        },
+        {
+            "name": "ironscull-icon"
+        },
+        {
+            "name": "ironscull",
+            "directions": 4
+        },
+        {
+            "name": "mechanicusimplants-icon"
+        },
+        {
+            "name": "otherimplants-icon"
+        },
+        {
+            "name": "redlefteye-icon"
+        },
+        {
+            "name": "redlefteye",
+            "directions": 4
+        },
+        {
+            "name": "redrighteye-icon"
+        },
+        {
+            "name": "redrighteye",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftarm-icon"
+        },
+        {
+            "name": "reinforcedadamantiumleftarm",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftleg-icon"
+        },
+        {
+            "name": "reinforcedadamantiumleftleg",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightarm-icon"
+        },
+        {
+            "name": "reinforcedadamantiumrightarm",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightleg-icon"
+        },
+        {
+            "name": "reinforcedadamantiumrightleg",
+            "directions": 4
+        },
+        {
+            "name": "sikariiscull-icon"
+        },
+        {
+            "name": "sikariiscull",
+            "directions": 4
+        },
+        {
+            "name": "inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "module-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "module-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftarm-part",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftleg-part",
+            "directions": 4
+        },
+        {
+            "name": "cheapleftleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightarm-part",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightleg-part",
+            "directions": 4
+        },
+        {
+            "name": "cheaprightleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumleftarm-part",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumleftarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumleftleg-part",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumleftleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightarm-part",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightleg-part",
+            "directions": 4
+        },
+        {
+            "name": "adamantiumrightleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftarm-part",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftleg-part",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumleftleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightarm-part",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightarm-hand",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightleg-part",
+            "directions": 4
+        },
+        {
+            "name": "reinforcedadamantiumrightleg-foot",
+            "directions": 4
+        },
+        {
+            "name": "headimplants-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "headimplants-inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "mechanicusimplants-inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "mechanicusimplants-inhand-right",
+            "directions": 4
+        }
+    ]
+}

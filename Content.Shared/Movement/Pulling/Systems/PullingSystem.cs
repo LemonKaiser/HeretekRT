@@ -1,6 +1,8 @@
+using Content.Shared._WH40K.Augments;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Alert;
+using Content.Shared.Body.Part;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Database;
@@ -48,6 +50,7 @@ public sealed partial class PullingSystem : EntitySystem
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private HeldSpeedModifierSystem _clothingMoveSpeed = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private Wh40kProstheticSystem _prosthetics = default!;
 
     public override void Initialize()
     {
@@ -228,15 +231,16 @@ public sealed partial class PullingSystem : EntitySystem
 
     private void OnRefreshMovespeed(EntityUid uid, PullerComponent component, RefreshMovementSpeedModifiersEvent args)
     {
+        var walkMod = component.WalkSpeedModifier;
+        var sprintMod = component.SprintSpeedModifier;
         if (TryComp<HeldSpeedModifierComponent>(component.Pulling, out var heldMoveSpeed) && component.Pulling.HasValue)
         {
-            var (walkMod, sprintMod) =
+            (walkMod, sprintMod) =
                 _clothingMoveSpeed.GetHeldMovementSpeedModifiers(component.Pulling.Value, heldMoveSpeed);
-            args.ModifySpeed(walkMod, sprintMod);
-            return;
         }
 
-        args.ModifySpeed(component.WalkSpeedModifier, component.SprintSpeedModifier);
+        (walkMod, sprintMod) = _prosthetics.ReduceSlowdown(uid, BodyPartType.Arm, walkMod, sprintMod);
+        args.ModifySpeed(walkMod, sprintMod);
     }
 
     private void OnPullableMoveInput(EntityUid uid, PullableComponent component, ref MoveInputEvent args)

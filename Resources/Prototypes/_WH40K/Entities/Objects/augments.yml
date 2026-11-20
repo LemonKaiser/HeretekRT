@@ -1,4 +1,12 @@
 - type: entity
+  id: WH40KBaseTranslatorImplant
+  parent: BaseSubdermalImplant
+  abstract: true
+  components:
+  - type: Sprite
+    state: headimplants-icon
+
+- type: entity
   abstract: true
   parent: BaseItem
   id: BaseHeretekAugment

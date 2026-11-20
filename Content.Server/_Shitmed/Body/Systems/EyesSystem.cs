@@ -80,6 +80,12 @@ namespace Content.Server.Body.Systems
             || args.Organ.Comp.Body is not { Valid: true } body)
                 return;
 
+            foreach (var (other, organ) in _bodySystem.GetBodyOrgans(body))
+            {
+                if (other != uid && organ.Enabled && HasComp<EyesComponent>(other))
+                    return;
+            }
+
             EnsureComp<TemporaryBlindnessComponent>(body);
             HandleSight(body, uid);
         }

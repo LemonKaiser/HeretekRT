@@ -6,6 +6,7 @@
          xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
          xmlns:style="clr-namespace:Content.Client.Stylesheets"
          xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
+         xmlns:aug="clr-namespace:Content.Client._WH40K.Augments"
          HorizontalExpand="True">
         <!-- Left side -->
         <BoxContainer Orientation="Vertical" Margin="10 10 10 10" HorizontalExpand="True">
@@ -175,6 +176,7 @@
                         <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
                     </ScrollContainer>
                 </BoxContainer>
+                <aug:Wh40kAugmentCatalogue Name="AugmentsTab" />
             </TabContainer>
         </BoxContainer>
         <!-- Right side -->

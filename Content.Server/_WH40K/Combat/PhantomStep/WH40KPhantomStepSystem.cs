@@ -2,8 +2,11 @@ using System.Numerics;
 using Content.Shared._Mono.Weapons.Hitscan.Components;
 using Content.Shared.Actions;
 using Content.Shared.ActionBlocker;
+using Content.Shared._Shitmed.Body.Events;
 using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared._WH40K.Combat.PhantomStep;
+using Content.Shared.Body.Part;
+using Content.Shared.Body.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Maps;
@@ -33,6 +36,7 @@ namespace Content.Server._WH40K.Combat.PhantomStep;
 public sealed partial class WH40KPhantomStepSystem : EntitySystem
 {
     public const int MaximumCharacterCharges = Wh40kCharacteristicEffects.MaximumPhantomStepCharges;
+    public const int ServoStepCharges = 2;
 
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
@@ -45,8 +49,10 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TagSystem _tags = default!;
     [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private SharedBodySystem _body = default!;
 
     private static readonly ProtoId<TagPrototype> UnavoidableTrapTag = "UnavoidableTrap";
+    private readonly HashSet<EntityUid> _prostheticChanges = new();
 
     public override void Initialize()
     {
@@ -62,11 +68,20 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
             before: [typeof(HitscanReflectSystem), typeof(HitscanBasicDamageSystem), typeof(HitscanStunSystem)]);
         SubscribeLocalEvent<WH40KPhantomStepComponent, ProjectileImpactAttemptEvent>(OnProjectileImpact);
         SubscribeLocalEvent<WH40KPhantomStepComponent, BeforeDamageChangedEvent>(OnBeforeDamage);
+        SubscribeLocalEvent<Wh40kServoStepLegComponent, BodyPartComponentsModifyEvent>(OnProstheticChanged);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        foreach (var uid in _prostheticChanges)
+        {
+            if (!TerminatingOrDeleted(uid))
+                RefreshProstheticCharges(uid);
+        }
+
+        _prostheticChanges.Clear();
 
         var now = _timing.CurTime;
         var query = EntityQueryEnumerator<WH40KPhantomStepComponent, TransformComponent>();
@@ -104,18 +119,50 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
     public void ConfigureForCharacter(EntityUid uid, int maxCharges)
     {
         var existed = TryComp<WH40KPhantomStepComponent>(uid, out var existing);
-        var previousMaxCharges = existed ? existing!.MaxCharges : 0;
-        var previousCharges = existed ? existing!.Charges : 0;
+        var previousBase = existing is null ? 0 : existing.MaxCharges - existing.ProstheticCharges;
         var step = EnsureComp<WH40KPhantomStepComponent>(uid);
-        var charges = Math.Clamp(maxCharges, 0, MaximumCharacterCharges);
+        var characterCharges = Math.Clamp(maxCharges, 0, MaximumCharacterCharges);
+        var available = existed
+            ? Math.Clamp(step.Charges + Math.Max(0, characterCharges - previousBase), 0, characterCharges + step.ProstheticCharges)
+            : characterCharges;
 
-        if (!existed || step.MaxCharges != charges)
+        ApplyCapacity(uid, step, characterCharges + step.ProstheticCharges, available);
+    }
+
+    private void OnProstheticChanged(Entity<Wh40kServoStepLegComponent> ent, ref BodyPartComponentsModifyEvent args)
+    {
+        _prostheticChanges.Add(args.Body);
+    }
+
+    private void RefreshProstheticCharges(EntityUid uid)
+    {
+        var left = false;
+        var right = false;
+        foreach (var (part, component) in _body.GetBodyChildrenOfType(uid, BodyPartType.Leg))
         {
-            step.MaxCharges = charges;
-            step.Charges = existed
-                ? GetChargesAfterReconfigure(previousMaxCharges, previousCharges, charges)
-                : charges;
+            if (!component.Enabled || !HasComp<Wh40kServoStepLegComponent>(part))
+                continue;
+
+            left |= component.Symmetry == BodyPartSymmetry.Left;
+            right |= component.Symmetry == BodyPartSymmetry.Right;
         }
+
+        var bonus = left && right ? ServoStepCharges : 0;
+        var existed = TryComp<WH40KPhantomStepComponent>(uid, out var step);
+        if (bonus == (step?.ProstheticCharges ?? 0))
+            return;
+
+        step ??= EnsureComp<WH40KPhantomStepComponent>(uid);
+        var capacity = (existed ? step.MaxCharges - step.ProstheticCharges : 0) + bonus;
+        var available = existed ? Math.Min(step.Charges, capacity) : 0;
+        step.ProstheticCharges = bonus;
+        ApplyCapacity(uid, step, capacity, available);
+    }
+
+    private void ApplyCapacity(EntityUid uid, WH40KPhantomStepComponent step, int charges, int available)
+    {
+        step.MaxCharges = charges;
+        step.Charges = available;
 
         if (charges == 0)
         {
@@ -141,16 +188,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
 
         Dirty(uid, step);
         SyncAction(step, uid);
-    }
-
-    internal static int GetChargesAfterReconfigure(
-        int previousMaxCharges,
-        int previousCharges,
-        int requestedMaxCharges)
-    {
-        var charges = Math.Clamp(requestedMaxCharges, 0, MaximumCharacterCharges);
-        var addedCapacity = Math.Max(0, charges - Math.Max(0, previousMaxCharges));
-        return Math.Clamp(previousCharges + addedCapacity, 0, charges);
     }
 
     private void OnStartup(Entity<WH40KPhantomStepComponent> ent, ref ComponentStartup args)

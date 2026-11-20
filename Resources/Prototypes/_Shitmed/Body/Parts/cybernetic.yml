@@ -74,6 +74,10 @@
   id: LeftHandCybernetic
   name: cybernetic left hand
   components:
+  - type: Sprite
+    state: l_hand
+  - type: Icon
+    state: l_hand
   - type: BodyPart
     baseLayerId: MobCyberneticBishopLHand
 
@@ -82,6 +86,10 @@
   id: RightHandCybernetic
   name: cybernetic right hand
   components:
+  - type: Sprite
+    state: r_hand
+  - type: Icon
+    state: r_hand
   - type: BodyPart
     baseLayerId: MobCyberneticBishopRHand
 
@@ -90,6 +98,10 @@
   id: LeftFootCybernetic
   name: cybernetic left foot
   components:
+  - type: Sprite
+    state: l_foot
+  - type: Icon
+    state: l_foot
   - type: BodyPart
     baseLayerId: MobCyberneticBishopLFoot
 
@@ -98,6 +110,10 @@
   id: RightFootCybernetic
   name: cybernetic right foot
   components:
+  - type: Sprite
+    state: r_foot
+  - type: Icon
+    state: r_foot
   - type: BodyPart
     baseLayerId: MobCyberneticBishopRFoot
 

@@ -95,7 +95,9 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         var proto = _prototypeManager.Index<HumanoidSpeciesSpriteLayer>(protoId);
         component.BaseLayers[key] = proto;
 
-        if (proto.MatchSkin && !overrideSkin) // Shitmed Change
+        if (!proto.MatchSkin)
+            layer.Color = color ?? Color.White;
+        else if (!overrideSkin) // Shitmed Change
             layer.Color = component.SkinColor.WithAlpha(proto.LayerAlpha);
 
         if (proto.BaseSprite != null)

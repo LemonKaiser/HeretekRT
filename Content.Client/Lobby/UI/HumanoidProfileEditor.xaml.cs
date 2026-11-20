@@ -493,6 +493,7 @@ namespace Content.Client.Lobby.UI
             #region Markings
 
             TabContainer.SetTabTitle(4, Loc.GetString("humanoid-profile-editor-markings-tab"));
+            TabContainer.SetTabTitle(TabContainer.ChildCount - 1, Loc.GetString("wh40k-augments-tab"));
 
             Markings.OnMarkingAdded += OnMarkingChange;
             Markings.OnMarkingRemoved += OnMarkingChange;
@@ -583,7 +584,7 @@ namespace Content.Client.Lobby.UI
                 _extendedDescription.Dispose();
                 _extendedDescription = null;
                 _extendedDescriptionTab = null;
-                ProfilePreviewSidebar.Visible = true;
+                UpdateProfilePreviewSidebar(TabContainer.CurrentTab);
             }
         }
 
@@ -596,7 +597,8 @@ namespace Content.Client.Lobby.UI
 
         private void UpdateProfilePreviewSidebar(int tab)
         {
-            ProfilePreviewSidebar.Visible = _extendedDescriptionTab != tab;
+            var augmentsSelected = tab >= 0 && tab < TabContainer.ChildCount && TabContainer.GetChild(tab) == AugmentsTab;
+            ProfilePreviewSidebar.Visible = !augmentsSelected && _extendedDescriptionTab != tab;
         }
 
         /// <summary>
