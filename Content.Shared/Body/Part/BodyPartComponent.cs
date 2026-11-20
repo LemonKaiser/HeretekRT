@@ -126,7 +126,7 @@ public sealed partial class BodyPartComponent : Component, ISurgeryToolComponent
     /// <summary>
     ///     Shitmed Change: The ID of the base layer for this body part.
     /// </summary>
-    [DataField, AutoNetworkedField, AlwaysPushInheritance]
+    [DataField, AutoNetworkedField]
     public string? BaseLayerId;
 
     /// <summary>
