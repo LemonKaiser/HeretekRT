@@ -1,0 +1,15 @@
+ent-WeaponTurretWH40KLanceCannon = Imperial lance cannon
+    .desc = A heavy gothic ship-mounted energy lance engineered to slice cleanly through voidship armor plates. Linkable to a gunnery control console.
+    .suffix = WH40K, Imperial Navy, T4
+ent-WeaponTurretWH40KDoubleLanceCannon = twin-linked Imperial lance battery
+    .desc = A superheavy dual-barreled lance turret delivering paired coherent energy beams capable of gutting capital hulls. Linkable to a gunnery control console.
+    .suffix = WH40K, Imperial Navy, T5
+ent-WeaponTurretWH40KDoubleMacrocannon = twin-linked macro-cannon
+    .desc = A heavy dual-barreled broadside macro-cannon firing devastating armor-piercing high-explosive salvos. Linkable to a gunnery control console.
+    .suffix = WH40K, Imperial Navy, T4
+ent-WeaponTurretWH40KTripleMacrocannon = triple macro-cannon battery
+    .desc = A massive three-barreled Imperial broadside battery unleashing punishing kinetic barrages across the void. Linkable to a gunnery control console.
+    .suffix = WH40K, Imperial Navy, T5
+ent-WeaponTurretWH40KMacroBombarda = Imperial macro-bombard
+    .desc = A colossal short-barreled siege bombard firing slow, cataclysmic high-explosive shells built to shatter fortified hulls. Linkable to a gunnery control console.
+    .suffix = WH40K, Imperial Navy, T5

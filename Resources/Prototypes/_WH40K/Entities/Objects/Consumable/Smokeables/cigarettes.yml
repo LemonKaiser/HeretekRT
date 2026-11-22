@@ -1,0 +1,110 @@
+# Imperial cigarettes and packs: Astra Red and Lho-sticks
+
+- type: entity
+  id: WH40KCigPackBase
+  parent: CigPackBase
+  abstract: true
+  suffix: WH40K
+  components:
+  - type: Sprite
+    layers:
+    - state: closed
+      map: [ "closeLayer" ]
+    - state: open-full
+      map: [ "openLayer" ]
+      visible: false
+  - type: ItemCounter
+    count:
+      tags: [ Cigarette ]
+    composite: false
+    baseLayer: openLayer
+    amount: 10
+    # One entry for each count from 0 to 10.
+    layerStates:
+    - open-empty
+    - open-1
+    - open-2
+    - open-3
+    - open-full
+    - open-full
+    - open-full
+    - open-full
+    - open-full
+    - open-full
+    - open-full
+
+- type: entity
+  id: CigaretteWH40KAstraRed
+  parent: Cigarette
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/astra_cigarette.rsi
+    state: unlit-icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/astra_cigarette_equipped.rsi
+    slots: [ mask ]
+    equippedPrefix: unlit
+  - type: Item
+    size: Tiny
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/astra_cigarette.rsi
+    heldPrefix: unlit
+  - type: SolutionContainerManager
+    solutions:
+      smokable:
+        maxVol: 20
+        reagents:
+        - ReagentId: Nicotine
+          Quantity: 12
+
+- type: entity
+  id: CigPackWH40KAstraRed
+  parent: WH40KCigPackBase
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/astra_pack.rsi
+  - type: Item
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/astra_pack.rsi
+  - type: StorageFill
+    contents:
+    - id: CigaretteWH40KAstraRed
+      amount: 10
+
+- type: entity
+  id: CigaretteWH40KLhoStick
+  parent: Cigarette
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/lho_cigarette.rsi
+    state: unlit-icon
+  - type: Clothing
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/lho_cigarette_equipped.rsi
+    slots: [ mask ]
+    equippedPrefix: unlit
+  - type: Item
+    size: Tiny
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/lho_cigarette.rsi
+    heldPrefix: unlit
+  - type: SolutionContainerManager
+    solutions:
+      smokable:
+        maxVol: 20
+        reagents:
+        - ReagentId: Nicotine
+          Quantity: 15
+
+- type: entity
+  id: CigPackWH40KLhoStick
+  parent: WH40KCigPackBase
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/lho_pack.rsi
+  - type: Item
+    sprite: _WH40K/Objects/Consumable/Smokeables/Cigarettes/lho_pack.rsi
+  - type: StorageFill
+    contents:
+    - id: CigaretteWH40KLhoStick
+      amount: 10

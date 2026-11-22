@@ -1,0 +1,35 @@
+-wh40k-tau-infantry-suffix = WH40K, Tau
+-wh40k-tau-spawner-suffix = WH40K, Tau, Mapping
+-wh40k-tau-spawner-desc = Spawns one T'au infantry NPC when the map initializes.
+
+ent-MobWH40KTauStrike = T'au Fire Warrior
+    .desc = A Fire Caste soldier from a Strike Team, armed with a pulse rifle.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauPathfinder = T'au Pathfinder
+    .desc = A lightly armoured Fire Caste scout carrying a pulse carbine.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauBreacher = T'au Breacher
+    .desc = A Fire Warrior in close-assault gear with a short-range pulse blaster.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauMarksman = T'au marksman
+    .desc = A Pathfinder carrying a precision pulse rifle to cover the cadre from a distance.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauShasui = T'au Shas'ui
+    .desc = A veteran Fire Warrior in officer armour, carrying a veteran-pattern pulse rifle.
+    .suffix = { -wh40k-tau-infantry-suffix }
+
+ent-SpawnWH40KTauStrike = T'au Fire Warrior spawner
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauPathfinder = T'au Pathfinder spawner
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauBreacher = T'au Breacher spawner
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauMarksman = T'au marksman spawner
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauShasui = T'au Shas'ui spawner
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }

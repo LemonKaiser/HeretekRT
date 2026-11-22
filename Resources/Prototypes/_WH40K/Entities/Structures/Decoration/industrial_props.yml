@@ -1,0 +1,173 @@
+- type: entity
+  id: WH40KDecorSmallFuelTankBase
+  parent: WH40KDecorPropBase
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/fuel_tanks_32x64.rsi
+    drawdepth: Mobs
+
+- type: entity
+  id: WH40KDecorFuelTank1
+  parent: WH40KDecorSmallFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_1
+
+- type: entity
+  id: WH40KDecorFuelTank2
+  parent: WH40KDecorSmallFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_2
+
+- type: entity
+  id: WH40KDecorFuelTank3
+  parent: WH40KDecorSmallFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_3
+
+- type: entity
+  id: WH40KDecorLargeFuelTankBase
+  parent: WH40KDecorPropBase
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/fuel_tanks_64x64.rsi
+    drawdepth: Mobs
+
+- type: entity
+  id: WH40KDecorFuelTank4
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_4
+
+- type: entity
+  id: WH40KDecorFuelTank5
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_5
+
+- type: entity
+  id: WH40KDecorFuelTank6
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_6
+
+- type: entity
+  id: WH40KDecorFuelTank7
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_7
+
+- type: entity
+  id: WH40KDecorFuelTank8
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_8
+
+- type: entity
+  id: WH40KDecorFuelTank9
+  parent: WH40KDecorLargeFuelTankBase
+  components:
+  - type: Sprite
+    state: fuel_tank_9
+
+- type: entity
+  id: WH40KDecorIndustrialPipeBase
+  parent: WH40KDecorPropBase
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/industrial_pipes.rsi
+    drawdepth: FloorObjects
+
+- type: entity
+  id: WH40KDecorIndustrialPipe1
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_1
+
+- type: entity
+  id: WH40KDecorIndustrialPipe2
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_2
+
+- type: entity
+  id: WH40KDecorIndustrialPipe3
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_3
+
+- type: entity
+  id: WH40KDecorIndustrialPipe4
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_4
+
+- type: entity
+  id: WH40KDecorIndustrialPipe5
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_5
+
+- type: entity
+  id: WH40KDecorIndustrialPipe6
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_6
+
+- type: entity
+  id: WH40KDecorIndustrialPipe7
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_7
+
+- type: entity
+  id: WH40KDecorIndustrialPipe8
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_8
+
+- type: entity
+  id: WH40KDecorIndustrialPipe9
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_9
+
+- type: entity
+  id: WH40KDecorIndustrialPipe10
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_10
+
+- type: entity
+  id: WH40KDecorIndustrialPipe11
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_11
+
+- type: entity
+  id: WH40KDecorIndustrialPipe12
+  parent: WH40KDecorIndustrialPipeBase
+  components:
+  - type: Sprite
+    state: pipe_12

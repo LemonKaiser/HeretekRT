@@ -17,3 +17,269 @@
   components:
   - type: Sprite
     state: Statue_ch
+
+- type: entity
+  id: WH40KImperialStatue80Base
+  parent: BaseStructure
+  abstract: true
+  suffix: WH40K, Статуи
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    noRot: true
+    sprite: _WH40K/Structures/Decorations/imperial_statues_80.rsi
+    drawdepth: Mobs
+    offset: "0.0,0.65"
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 400
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 350
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatuePedestal
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: pedestal
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatuePedestalRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatuePedestalRuined
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: pedestal_ruined
+
+- type: entity
+  id: WH40KStatueCommissar
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: commissar
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatueCommissarRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatueCommissarRuined
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: commissar_ruined
+
+- type: entity
+  id: WH40KStatuePriest
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: priest
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatuePriestRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatuePriestRuined
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: priest_ruined
+
+- type: entity
+  id: WH40KStatueTechpriest1
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: techpriest1
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatueTechpriestRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatueTechpriest2
+  parent: WH40KStatueTechpriest1
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: techpriest2
+
+- type: entity
+  id: WH40KStatueTechpriest3
+  parent: WH40KStatueTechpriest1
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: techpriest3
+
+- type: entity
+  id: WH40KStatueTechpriestRuined
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: techpriest_ruined
+
+- type: entity
+  id: WH40KStatueSoldier1
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: soldier1
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatuePedestalRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatueSoldier2
+  parent: WH40KStatueSoldier1
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: soldier2
+
+- type: entity
+  id: WH40KStatueSoldier3
+  parent: WH40KStatueSoldier1
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: soldier3
+
+- type: entity
+  id: WH40KStatueLeader
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: leader
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        offset: 0
+        spawn:
+          WH40KStatueLeaderRuined:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KStatueLeaderRuined
+  parent: WH40KImperialStatue80Base
+  suffix: WH40K, Статуи
+  components:
+  - type: Sprite
+    state: leader_ruined

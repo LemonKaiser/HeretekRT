@@ -1,0 +1,215 @@
+# Ambient servitor mobs and puddle-cleaning servitors
+
+- type: entity
+  id: MobWH40KServitorBase
+  parent: SimpleSpaceMobBase
+  abstract: true
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    noRot: true
+    sprite: _WH40K/Mobs/NPCs/servitors.rsi
+    layers:
+    - state: servitor1
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+  - type: Appearance
+  - type: RotationVisuals
+    defaultRotation: 90
+    horizontalRotation: 90
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Critical
+    - Dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      100: Critical
+      180: Dead
+  - type: DamageVisuals
+    thresholds: [ 10, 20, 30, 40, 50, 70, 100 ]
+    targetLayers:
+    - "enum.HumanoidVisualLayers.Chest"
+    - "enum.HumanoidVisualLayers.Head"
+    - "enum.HumanoidVisualLayers.LArm"
+    - "enum.HumanoidVisualLayers.LLeg"
+    - "enum.HumanoidVisualLayers.RArm"
+    - "enum.HumanoidVisualLayers.RLeg"
+    damageOverlayGroups:
+      Brute:
+        sprite: _WH40K/Effects/brute_damage.rsi
+        color: "#8A1C1C"
+      Burn:
+        sprite: _WH40K/Effects/burn_damage.rsi
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.0
+    baseSprintSpeed: 2.5
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 185
+        restitution: 0.0
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+  - type: Access
+    tags:
+    - BasicSilicon
+  - type: HealthExaminable
+    examinableTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+
+# Ambient / labor servitors
+- type: entity
+  id: MobWH40KServitorUsual1
+  parent: MobWH40KServitorBase
+  suffix: WH40K, Сервиторы
+
+- type: entity
+  id: MobWH40KServitorUsual2
+  parent: MobWH40KServitorBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: servitor2
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+- type: entity
+  id: MobWH40KServitorUsual3
+  parent: MobWH40KServitorBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: servitor3
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+- type: entity
+  id: MobWH40KServitorUsual4
+  parent: MobWH40KServitorBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: servitor4
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+# Cleaner servitors (seek and mop puddles like Cleanbot)
+- type: entity
+  id: MobWH40KServitorCleanerBase
+  parent: MobWH40KServitorBase
+  abstract: true
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Absorbent
+    pickupAmount: 10
+  - type: UseDelay
+    delay: 2
+  - type: SolutionRegeneration
+    solution: absorbed
+    generated:
+      reagents:
+      - ReagentId: Water
+        Quantity: 10
+  - type: SolutionPurge
+    solution: absorbed
+    preserve:
+    - Water
+    quantity: 10
+  - type: SolutionContainerManager
+    solutions:
+      absorbed:
+        maxVol: 50
+  - type: DrainableSolution
+    solution: drainBuffer
+  - type: HTN
+    rootTask:
+      task: CleanbotCompound
+
+- type: entity
+  id: MobWH40KServitorCleaner1
+  parent: MobWH40KServitorCleanerBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: cleanerservitor1
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+- type: entity
+  id: MobWH40KServitorCleaner2
+  parent: MobWH40KServitorCleanerBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: cleanerservitor2
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+- type: entity
+  id: MobWH40KServitorCleaner3
+  parent: MobWH40KServitorCleanerBase
+  suffix: WH40K, Сервиторы
+  components:
+  - type: Sprite
+    layers:
+    - state: cleanerservitor3
+      map: [ "base" ]
+    - map: [ "enum.HumanoidVisualLayers.Chest" ]
+    - map: [ "enum.HumanoidVisualLayers.Head" ]
+    - map: [ "enum.HumanoidVisualLayers.RArm" ]
+    - map: [ "enum.HumanoidVisualLayers.LArm" ]
+    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
+    - map: [ "enum.HumanoidVisualLayers.LLeg" ]

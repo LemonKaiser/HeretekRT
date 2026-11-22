@@ -1,0 +1,900 @@
+# Decorative Yautja / alien hunter props imported from CMU14 (visual only).
+
+- type: entity
+  id: WH40KCMUYautjaDecorBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        density: 250
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StrongMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackBase
+  parent: WH40KCMUYautjaDecorBase
+  abstract: true
+  components:
+  - type: PlaceableSurface
+  - type: Climbable
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 55
+        mask:
+        - TableMask
+        layer:
+        - TableLayer
+
+# Bone Throne & Armor Stands
+- type: entity
+  id: WH40KCMUYautjaBoneThrone
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: bone_throne
+  - type: Strap
+    position: Stand
+    buckleOffset: "0,0.05"
+
+- type: entity
+  id: WH40KCMUYautjaBoneThroneTop
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: bone_throne_top
+
+- type: entity
+  id: WH40KCMUYautjaArmorStand1
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: hunter_armor_prop
+
+- type: entity
+  id: WH40KCMUYautjaArmorStand2
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: hunter_armor_prop_2
+
+- type: entity
+  id: WH40KCMUYautjaArmorStand3
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: hunter_armor_prop_3
+
+- type: entity
+  id: WH40KCMUYautjaArmorStand4
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: hunter_armor_prop_4
+
+# Modular Trophy Display Racks
+- type: entity
+  id: WH40KCMUYautjaTrophyRackBottomLeft
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_bottom_left
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackTopLeft
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_top_left
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackCenter
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_center
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackTopCenter
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_top_center
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackBottomRight
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_bottom_right
+
+- type: entity
+  id: WH40KCMUYautjaTrophyRackTopRight
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    state: pred_trophy_vendor_top_right
+
+# Fountain & Temple Stairs
+- type: entity
+  id: WH40KCMUYautjaFountain
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    layers:
+    - state: fountain_head_flowing
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: fountain_head_flowing }
+          False: { state: fountain_head_static }
+
+- type: entity
+  id: WH40KCMUYautjaBorderStairs
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/32x32_hunter_props.rsi
+    drawdepth: FloorObjects
+    state: border_stairs
+  - type: Physics
+    canCollide: false
+
+- type: entity
+  id: WH40KCMUYautjaBorderStairsRune
+  parent: WH40KCMUYautjaBorderStairs
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: border_stairs_rune
+
+# Ancient Warrior Statues
+- type: entity
+  id: WH40KCMUYautjaStatueAncient
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/ancientsmallstatue.rsi
+    state: statue_ancient
+
+- type: entity
+  id: WH40KCMUYautjaStatueGrey
+  parent: WH40KCMUYautjaStatueAncient
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: statue_grey
+
+- type: entity
+  id: WH40KCMUYautjaStatueSandstone
+  parent: WH40KCMUYautjaStatueAncient
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: statue_sandstone
+
+- type: entity
+  id: WH40KCMUYautjaStatuePedestal
+  parent: WH40KCMUYautjaStatueAncient
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: small_statue_base
+
+# Sarcophagi & Ancient Coffins (64x64)
+- type: entity
+  id: WH40KCMUYautjaSarcophagus
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/sarcophagus.rsi
+    drawdepth: Mobs
+    layers:
+    - state: sarcophagus0
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: sarcophagus1 }
+          False: { state: sarcophagus0 }
+
+- type: entity
+  id: WH40KCMUYautjaAncientCoffin
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/sarcophagus.rsi
+    drawdepth: Mobs
+    layers:
+    - state: ancient_coffin_deco
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: ancient_coffin_empty_deco_open }
+          False: { state: ancient_coffin_deco }
+
+- type: entity
+  id: WH40KCMUYautjaAncientCoffinMummified
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/sarcophagus.rsi
+    drawdepth: Mobs
+    layers:
+    - state: ancient_coffin_deco
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_creaking.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: ancient_coffin_mumified_deco_open }
+          False: { state: ancient_coffin_deco }
+
+# Cryogenic Cells & Ancient Monuments
+- type: entity
+  id: WH40KCMUYautjaCryoCell
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/cryogenics2.rsi
+    drawdepth: Mobs
+    layers:
+    - state: pred_cell-on-empty
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 2.0
+    energy: 1.0
+    color: "#38d9a9"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: pred_cell-on-empty }
+          False: { state: pred_cell-off-empty }
+
+- type: entity
+  id: WH40KCMUYautjaCryoCellOccupied
+  parent: WH40KCMUYautjaCryoCell
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: pred_cell-on-occupied
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: pred_cell-on-occupied }
+          False: { state: pred_cell-off-occupied }
+
+- type: entity
+  id: WH40KCMUYautjaSpaceJockey
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/engineerJockey.rsi
+    drawdepth: Overdoors
+    state: spacejockey
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.2,-1.2,1.2,1.2"
+        density: 1000
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  id: WH40KCMUYautjaEngineerPod
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/engineerPod.rsi
+    drawdepth: Mobs
+    state: pod
+
+- type: entity
+  id: WH40KCMUYautjaEngineerPodBroken
+  parent: WH40KCMUYautjaEngineerPod
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: pod_broken
+
+- type: entity
+  id: WH40KCMUYautjaEngineerConsole
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/consoles.rsi
+    drawdepth: Objects
+    state: engineerconsole
+
+# Hunter Ship Tech, Consoles & Furniture
+- type: entity
+  id: WH40KCMUYautjaHoloGlobe
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: globe
+  - type: PointLight
+    radius: 2.2
+    energy: 1.1
+    color: "#38d9a9"
+
+- type: entity
+  id: WH40KCMUYautjaBoilingVat
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    layers:
+    - state: vat_boiling
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: vat_boiling }
+          False: { state: vat }
+
+- type: entity
+  id: WH40KCMUYautjaAutodoc
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    layers:
+    - state: autodoc_operate
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: autodoc_operate }
+          False: { state: autodoc_closed }
+
+- type: entity
+  id: WH40KCMUYautjaSleeper
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    layers:
+    - state: sleeper_open
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_close.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_open.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: sleeper_closed }
+          False: { state: sleeper_open }
+
+- type: entity
+  id: WH40KCMUYautjaBodyScanner
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    layers:
+    - state: body_scanner_open
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_close.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_open.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: body_scanner_closed }
+          False: { state: body_scanner_open }
+
+- type: entity
+  id: WH40KCMUYautjaSpecimenTank
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: tank_hugger
+  - type: PointLight
+    radius: 1.8
+    energy: 0.9
+    color: "#52e37d"
+
+- type: entity
+  id: WH40KCMUYautjaSpecimenTankBroken
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: tank_broken
+
+- type: entity
+  id: WH40KCMUYautjaCrewConsole
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: crew
+  - type: PointLight
+    radius: 1.5
+    energy: 0.9
+    color: "#38d9a9"
+
+- type: entity
+  id: WH40KCMUYautjaOverwatchConsole
+  parent: WH40KCMUYautjaCrewConsole
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: overwatch
+
+- type: entity
+  id: WH40KCMUYautjaCamerasConsole
+  parent: WH40KCMUYautjaCrewConsole
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: cameras
+
+- type: entity
+  id: WH40KCMUYautjaShuttleConsole
+  parent: WH40KCMUYautjaCrewConsole
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: console_shuttle
+
+- type: entity
+  id: WH40KCMUYautjaHoloTable
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    layers:
+    - state: table2-active
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 2.0
+    energy: 1.0
+    color: "#38d9a9"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: table2-active }
+          False: { state: table2-idle }
+
+- type: entity
+  id: WH40KCMUYautjaRunedTable
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/hunter_table.rsi
+    state: full
+
+- type: entity
+  id: WH40KCMUYautjaChair
+  parent: ChairBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: chair
+
+- type: entity
+  id: WH40KCMUYautjaBed
+  parent: WH40KCMUYautjaTrophyRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/yautja_machines.rsi
+    state: abed
+  - type: Strap
+    position: Down
+    buckleOffset: "0,0.05"
+
+# Ritual Lighting (click to light/extinguish)
+- type: entity
+  id: WH40KCMUYautjaBrazier
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/bonfire.rsi
+    layers:
+    - state: brazier_frame_filled
+    - state: brazier
+      map: [ "flame" ]
+      shader: unshaded
+      visible: true
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 5.0
+    energy: 1.6
+    color: "#ff9b3d"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        flame:
+          True: { visible: true }
+          False: { visible: false }
+
+- type: entity
+  id: WH40KCMUYautjaWallTorch
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/bonfire.rsi
+    noRot: true
+    drawdepth: WallMountedItems
+    layers:
+    - state: torch_frame
+    - state: torch
+      map: [ "flame" ]
+      shader: unshaded
+      visible: true
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 4.5
+    energy: 1.4
+    color: "#ffaa44"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        flame:
+          True: { visible: true }
+          False: { visible: false }
+
+- type: entity
+  id: WH40KCMUYautjaCampfire
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/bonfire.rsi
+    drawdepth: FloorObjects
+    layers:
+    - state: campfire_on
+      map: [ "base" ]
+  - type: Physics
+    canCollide: false
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 4.5
+    energy: 1.5
+    color: "#ff9b3d"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: campfire_on }
+          False: { state: campfire }
+
+# Display Shields
+- type: entity
+  id: WH40KCMUYautjaAncientShield
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/shields.rsi
+    state: ancient_shield
+
+- type: entity
+  id: WH40KCMUYautjaTempleShield
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/shields.rsi
+    state: ancient_shield_temple
+
+- type: entity
+  id: WH40KCMUYautjaEnergyShield
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/shields.rsi
+    layers:
+    - state: eshield1
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: eshield1 }
+          False: { state: eshield0 }
+
+# Decorative Animated Hunter Doors (click to open/close)
+- type: entity
+  id: WH40KCMUYautjaHunterDoor
+  parent: WH40KCMUYautjaDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: false
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/hunter_door.rsi
+    drawdepth: Doors
+    layers:
+    - state: door_closed
+      map: [ "enum.DoorVisualLayers.Base" ]
+  - type: Icon
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/hunter_door.rsi
+    state: door_closed
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: Door
+    state: Closed
+    openSpriteState: door_open
+    closedSpriteState: door_closed
+    openingSpriteState: door_opening
+    closingSpriteState: door_closing
+    openTimeOne: 0.3
+    openTimeTwo: 0.3
+    closeTimeOne: 0.3
+    closeTimeTwo: 0.3
+    openingAnimationTime: 0.6
+    closingAnimationTime: 0.6
+    clickOpen: true
+    bumpOpen: true
+    canPry: false
+    canCrush: false
+    occludes: false
+    changeAirtight: false
+    openSound:
+      path: /Audio/Machines/airlock_open.ogg
+    closeSound:
+      path: /Audio/Machines/airlock_close.ogg
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49"
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+
+- type: entity
+  id: WH40KCMUYautjaHunterShutter
+  parent: WH40KCMUYautjaHunterDoor
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/hunter_shutter.rsi
+    drawdepth: BlastDoors
+    layers:
+    - state: hdoor1
+      map: [ "enum.DoorVisualLayers.Base" ]
+  - type: Icon
+    sprite: _WH40K/Imported/CMU14/Structures/Yautja/hunter_shutter.rsi
+    state: hdoor1
+  - type: Door
+    state: Closed
+    openSpriteState: hdoor0
+    closedSpriteState: hdoor1
+    openingSpriteState: hdoorc0
+    closingSpriteState: hdoorc1
+    openTimeOne: 0.5
+    openTimeTwo: 0.5
+    closeTimeOne: 0.5
+    closeTimeTwo: 0.5
+    openingAnimationTime: 1.0
+    closingAnimationTime: 1.0
+    openDrawDepth: BlastDoors
+    closedDrawDepth: BlastDoors
+    bumpOpen: false
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg

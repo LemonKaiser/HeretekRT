@@ -1,0 +1,443 @@
+- type: entity
+  id: WH40KCMUCargoDecorBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 250
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+# Animated 5x5 ASRS cargo elevator (pure visual: click to raise/lower)
+- type: entity
+  id: WH40KCMUCargoElevator
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/elevator.rsi
+    drawdepth: LowFloors
+    noRot: true
+    layers:
+    - state: supply_elevator_raised
+      map: [ "enum.DoorVisualLayers.Base" ]
+  - type: Icon
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/elevator.rsi
+    state: supply_elevator_raised
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: Door
+    state: Open
+    openSpriteState: supply_elevator_raised
+    closedSpriteState: supply_elevator_lowered
+    openingSpriteState: supply_elevator_raising
+    closingSpriteState: supply_elevator_lowering
+    openTimeOne: 1.0
+    openTimeTwo: 1.1
+    closeTimeOne: 1.0
+    closeTimeTwo: 1.1
+    openingAnimationTime: 2.1
+    closingAnimationTime: 2.1
+    openDrawDepth: LowFloors
+    closedDrawDepth: LowFloors
+    clickOpen: true
+    bumpOpen: false
+    canPry: false
+    canCrush: false
+    performCollisionCheck: false
+    occludes: false
+    changeAirtight: false
+    openSound:
+      path: /Audio/Machines/blastdoor.ogg
+    closeSound:
+      path: /Audio/Machines/blastdoor.ogg
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        hard: false
+
+- type: entity
+  id: WH40KCMUCargoElevatorLowered
+  parent: WH40KCMUCargoElevator
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: supply_elevator_lowered
+      map: [ "enum.DoorVisualLayers.Base" ]
+  - type: Icon
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/elevator.rsi
+    state: supply_elevator_lowered
+  - type: Door
+    state: Closed
+  - type: Physics
+    canCollide: true
+
+# Animated retractable cargo bay railing (click to raise/lower)
+- type: entity
+  id: WH40KCMUCargoRailing
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: false
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/railing.rsi
+    drawdepth: Objects
+    offset: 0,0.5
+    layers:
+    - state: raised
+      map: [ "enum.DoorVisualLayers.Base" ]
+  - type: Icon
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/railing.rsi
+    state: icon
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: Door
+    state: Closed
+    openSpriteState: lowered
+    closedSpriteState: raised
+    openingSpriteState: lowering
+    closingSpriteState: raising
+    openTimeOne: 0.6
+    openTimeTwo: 0.6
+    closeTimeOne: 0.6
+    closeTimeTwo: 0.6
+    openingAnimationTime: 1.2
+    closingAnimationTime: 1.2
+    openDrawDepth: FloorObjects
+    closedDrawDepth: Objects
+    clickOpen: true
+    bumpOpen: false
+    canPry: false
+    canCrush: false
+    occludes: false
+    changeAirtight: false
+    openSound:
+      path: /Audio/Machines/boltsup.ogg
+    closeSound:
+      path: /Audio/Machines/boltsdown.ogg
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,-0.25"
+        density: 190
+        mask:
+        - TableMask
+        layer:
+        - TableLayer
+
+# Animated machinery gear (click to start/stop spinning)
+- type: entity
+  id: WH40KCMUCargoGear
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/gear.rsi
+    drawdepth: FloorObjects
+    noRot: true
+    layers:
+    - state: base
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: moving }
+          False: { state: base }
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+
+# Decorative ASRS supply console (click to toggle screen/light)
+- type: entity
+  id: WH40KCMUASRSConsole
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/asrs_console.rsi
+    layers:
+    - state: on
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 1.5
+    energy: 1.4
+    color: "#b89f25"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: on }
+          False: { state: off }
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.35,0.3,0.35"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  id: WH40KCMUASRSConsoleBroken
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/asrs_console.rsi
+    state: broken
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.35,0.3,0.35"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+# Decorative Power Loaders (click to toggle idle/active animation)
+- type: entity
+  id: WH40KCMUPowerLoaderBase
+  parent: WH40KCMUCargoDecorBase
+  abstract: true
+  components:
+  - type: Transform
+    anchored: true
+  - type: Rotatable
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/power_loader.rsi
+    drawdepth: Mobs
+    layers:
+    - state: powerloader_open
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/boltsdown.ogg
+    soundDeactivate:
+      path: /Audio/Machines/boltsup.ogg
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 400
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  id: WH40KCMUPowerLoaderYellow
+  parent: WH40KCMUPowerLoaderBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: powerloader_open
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: powerloader_overlay }
+          False: { state: powerloader_open }
+
+- type: entity
+  id: WH40KCMUPowerLoaderGreen
+  parent: WH40KCMUPowerLoaderBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: powerloader_open_jd
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: powerloader_overlay_jd }
+          False: { state: powerloader_open_jd }
+
+- type: entity
+  id: WH40KCMUPowerLoaderBlue
+  parent: WH40KCMUPowerLoaderBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: powerloader_open_ft
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: powerloader_overlay_ft }
+          False: { state: powerloader_open_ft }
+
+- type: entity
+  id: WH40KCMUPowerLoaderWreckYellow
+  parent: WH40KCMUCargoDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/power_loader.rsi
+    drawdepth: BelowMobs
+    noRot: true
+    state: wreck
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 300
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  id: WH40KCMUPowerLoaderWreckGreen
+  parent: WH40KCMUPowerLoaderWreckYellow
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: wreck_jd
+
+- type: entity
+  id: WH40KCMUPowerLoaderWreckBlue
+  parent: WH40KCMUPowerLoaderWreckYellow
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: wreck_ft
+
+# Overhead crane tracks
+- type: entity
+  id: WH40KCMUOverheadCraneTrackBase
+  abstract: true
+  suffix: CMU, Decor
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Cargo/overhead_crane_track.rsi
+    drawdepth: Overdoors
+
+- type: entity
+  id: WH40KCMUOverheadCraneTrackHorizontal
+  parent: WH40KCMUOverheadCraneTrackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: horizontal
+
+- type: entity
+  id: WH40KCMUOverheadCraneTrackVertical
+  parent: WH40KCMUOverheadCraneTrackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: vertical
+
+- type: entity
+  id: WH40KCMUOverheadCraneTrackCorner
+  parent: WH40KCMUOverheadCraneTrackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: corner
+
+- type: entity
+  id: WH40KCMUOverheadCraneTrackT
+  parent: WH40KCMUOverheadCraneTrackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: t-joint
+
+- type: entity
+  id: WH40KCMUOverheadCraneTrackCross
+  parent: WH40KCMUOverheadCraneTrackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: cross

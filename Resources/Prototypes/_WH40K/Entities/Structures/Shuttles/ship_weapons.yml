@@ -1,0 +1,449 @@
+# Imperial Navy ship artillery: lance cannons and macro-cannons
+
+- type: entity
+  id: WeaponTurretWH40KLanceCannon
+  parent:
+  - BallisticArtillery
+  - BallisticArtilleryTier4HP
+  suffix: WH40K, Военный Флот, T4
+  components:
+  - type: StaticPrice
+    price: 25000
+  - type: Sprite
+    sprite: _WH40K/Structures/Shuttles/Weapons/lancecannon.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [1, 2, 3]
+    damageDivisor: 2500
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Structures/Shuttles/Weapons/lancecannon.rsi
+  - type: AmmoCounter
+  - type: FireControlRotate
+  - type: Battery
+    maxCharge: 50000
+    startingCharge: 50000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 4500
+  - type: ExaminableBattery
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.6,-0.6,0.6,0.6"
+        density: 1500
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Gun
+    fireRate: 0.5
+    recoil: 15
+    minAngle: 0
+    maxAngle: 0
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    shootThermalSignature: 6000000
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_perforator.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/EmptyAlarm/smg_empty_alarm.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 25000
+    powerUsePassive: 1200
+    powerUseActive: 0
+  - type: Actions
+  - type: HitscanBatteryAmmoProvider
+    proto: PrometheusLaser
+    fireCost: 6000
+  - type: RadarBlip
+    radarColor: "#C92BCC"
+    scale: 2.5
+    visibleFromOtherGrids: true
+    gridConfig:
+      color: "#C92BCC"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-1.5,-1.5,1.5,1.5"
+  - type: ShipGunType
+    shipType: Energy
+  - type: ShipGunClass
+    shipClass: Heavy
+  - type: ShipRepairable
+    repairTime: 35
+    repairCost: 150
+  - type: HardpointAnchorableOnly
+    class: Energy
+    size: Heavy
+
+- type: entity
+  id: WeaponTurretWH40KDoubleLanceCannon
+  parent:
+  - BallisticArtillery
+  - BallisticArtilleryTier5HP
+  suffix: WH40K, Военный Флот, T5
+  components:
+  - type: StaticPrice
+    price: 45000
+  - type: Sprite
+    sprite: _WH40K/Structures/Shuttles/Weapons/doublelancecannon.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [1, 2, 3]
+    damageDivisor: 3750
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Structures/Shuttles/Weapons/doublelancecannon.rsi
+  - type: AmmoCounter
+  - type: FireControlRotate
+  - type: Battery
+    maxCharge: 80000
+    startingCharge: 80000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 7000
+  - type: ExaminableBattery
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.75,-0.75,0.75,0.75"
+        density: 1800
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Gun
+    fireRate: 0.35
+    recoil: 30
+    minAngle: 0
+    maxAngle: 0
+    burstCooldown: 6
+    burstFireRate: 2.5
+    shotsPerBurst: 2
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    shootThermalSignature: 12000000
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_perforator.ogg
+      params:
+        pitch: 0.85
+        volume: 1.2
+    soundEmpty:
+      path: /Audio/Weapons/Guns/EmptyAlarm/smg_empty_alarm.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 40000
+    powerUsePassive: 2500
+    powerUseActive: 0
+  - type: Actions
+  - type: HitscanBatteryAmmoProvider
+    proto: PrometheusLaser
+    fireCost: 6000
+  - type: RadarBlip
+    radarColor: "#C92BCC"
+    scale: 3
+    visibleFromOtherGrids: true
+    gridConfig:
+      color: "#C92BCC"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-2,-2,2,2"
+  - type: ShipGunType
+    shipType: Energy
+  - type: ShipGunClass
+    shipClass: Superheavy
+  - type: ShipRepairable
+    repairTime: 45
+    repairCost: 250
+  - type: HardpointAnchorableOnly
+    class: Energy
+    size: Superheavy
+
+- type: entity
+  id: WeaponTurretWH40KDoubleMacrocannon
+  parent:
+  - BallisticArtillery
+  - BallisticArtilleryTier4HP
+  suffix: WH40K, Военный Флот, T4
+  components:
+  - type: StaticPrice
+    price: 28000
+  - type: Sprite
+    sprite: _WH40K/Structures/Shuttles/Weapons/doublemacrocannon.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [1, 2, 3]
+    damageDivisor: 2500
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Structures/Shuttles/Weapons/doublemacrocannon.rsi
+  - type: FireControlRotate
+  - type: AmmoCounter
+  - type: Battery
+    maxCharge: 16000
+    startingCharge: 16000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 12000
+  - type: ExaminableBattery
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.65,-0.65,0.65,0.65"
+        density: 1600
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Gun
+    projectileSpeed: 500
+    minAngle: 0
+    maxAngle: 1
+    fireRate: 0.2
+    recoil: 50
+    burstCooldown: 9
+    burstFireRate: 2.5
+    shotsPerBurst: 2
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    shootThermalSignature: 120000000
+    soundGunshot:
+      path: /Audio/_Mono/Weapons/Guns/Gunshots/cannon.ogg
+      params:
+        volume: 1.2
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 12000
+    powerUsePassive: 1500
+    powerUseActive: 0
+  - type: Actions
+  - type: ProjectileBatteryAmmoProvider
+    proto: 255mmBulletAPHE
+    fireCost: 6000
+  - type: RadarBlip
+    radarColor: "#FF0000"
+    scale: 2.5
+    visibleFromOtherGrids: true
+    gridConfig:
+      color: "#FF0000"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-1.5,-1.5,1.5,1.5"
+  - type: ShipGunType
+    shipType: Ballistic
+  - type: ShipGunClass
+    shipClass: Heavy
+  - type: ShipRepairable
+    repairTime: 35
+    repairCost: 200
+  - type: HardpointAnchorableOnly
+    class: Ballistic
+    size: Heavy
+
+- type: entity
+  id: WeaponTurretWH40KTripleMacrocannon
+  parent:
+  - BallisticArtillery
+  - BallisticArtilleryTier5HP
+  suffix: WH40K, Военный Флот, T5
+  components:
+  - type: StaticPrice
+    price: 42000
+  - type: Sprite
+    sprite: _WH40K/Structures/Shuttles/Weapons/triplemacrocannon.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [1, 2, 3]
+    damageDivisor: 3750
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Structures/Shuttles/Weapons/triplemacrocannon.rsi
+  - type: FireControlRotate
+  - type: AmmoCounter
+  - type: Battery
+    maxCharge: 24000
+    startingCharge: 24000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 14000
+  - type: ExaminableBattery
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.75,-0.75,0.75,0.75"
+        density: 2000
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Gun
+    projectileSpeed: 500
+    minAngle: 0
+    maxAngle: 1.5
+    fireRate: 0.15
+    recoil: 80
+    burstCooldown: 12
+    burstFireRate: 3
+    shotsPerBurst: 3
+    selectedMode: Burst
+    availableModes:
+    - Burst
+    shootThermalSignature: 160000000
+    soundGunshot:
+      path: /Audio/_Mono/Weapons/Guns/Gunshots/cannon.ogg
+      params:
+        pitch: 0.9
+        volume: 1.3
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 15000
+    powerUsePassive: 2200
+    powerUseActive: 0
+  - type: Actions
+  - type: ProjectileBatteryAmmoProvider
+    proto: 255mmBulletAPHE
+    fireCost: 6000
+  - type: RadarBlip
+    radarColor: "#FF0000"
+    scale: 3
+    visibleFromOtherGrids: true
+    gridConfig:
+      color: "#FF0000"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-2,-2,2,2"
+  - type: ShipGunType
+    shipType: Ballistic
+  - type: ShipGunClass
+    shipClass: Superheavy
+  - type: ShipRepairable
+    repairTime: 45
+    repairCost: 300
+  - type: HardpointAnchorableOnly
+    class: Ballistic
+    size: Superheavy
+
+- type: entity
+  id: WeaponTurretWH40KMacroBombarda
+  parent:
+  - BallisticArtillery
+  - BallisticArtilleryTier5HP
+  suffix: WH40K, Военный Флот, T5
+  components:
+  - type: StaticPrice
+    price: 40000
+  - type: Sprite
+    sprite: _WH40K/Structures/Shuttles/Weapons/macrobombarda.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Appearance
+  - type: DamageVisuals
+    thresholds: [1, 2, 3]
+    damageDivisor: 3750
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Structures/Shuttles/Weapons/macrobombarda.rsi
+  - type: FireControlRotate
+  - type: AmmoCounter
+  - type: Battery
+    maxCharge: 40000
+    startingCharge: 40000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 400
+  - type: ExaminableBattery
+  - type: WirelessNetworkConnection
+    range: 500
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.75,-0.75,0.75,0.75"
+        density: 2000
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Gun
+    projectileSpeed: 160
+    minAngle: 0
+    maxAngle: 1
+    fireRate: 0.06
+    recoil: 300
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    shootThermalSignature: 160000000
+    soundGunshot:
+      collection: ShipGunMjolnir
+      params:
+        pitch: 0.6
+        volume: 1.8
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 15000
+    powerUsePassive: 2000
+    powerUseActive: 0
+  - type: Actions
+  - type: ProjectileBatteryAmmoProvider
+    proto: R300BulletHE
+    fireCost: 2000
+  - type: RadarBlip
+    radarColor: "#FF0000"
+    scale: 3
+    visibleFromOtherGrids: true
+    gridConfig:
+      color: "#FF0000"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-2,-2,2,2"
+  - type: ShipGunType
+    shipType: Ballistic
+  - type: ShipGunClass
+    shipClass: Superheavy
+  - type: ShipRepairable
+    repairTime: 45
+    repairCost: 300
+  - type: HardpointAnchorableOnly
+    class: Ballistic
+    size: Superheavy

@@ -1,0 +1,9 @@
+ent-ClothingHeadHatVoidsmanBeret = voidsman beret
+    .desc = A crisp white naval beret bearing the Imperial Navy emblem, worn by shipboard voidsmen.
+    .suffix = WH40K, Voidsmen
+ent-ClothingMaskVoidsmanUnderhelmet = voidsman under-helmet cap
+    .desc = A padded white voidsuit liner cap worn beneath helmets or naval berets during deck duty.
+    .suffix = WH40K, Voidsmen
+ent-ClothingUniformJumpsuitVoidsmanNaval = voidsman naval uniform
+    .desc = A white-and-navy shipboard duty uniform issued to Imperial Navy voidsmen.
+    .suffix = WH40K, Voidsmen

@@ -1,0 +1,589 @@
+# Purely decorative equipment and weapon racks (no vending or storage functionality).
+
+- type: entity
+  id: WH40KCMUDecorRackBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: base }
+          False: { state: off }
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KCMUDecorWallRackBase
+  parent: BaseSign
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: base }
+          False: { state: off }
+
+- type: entity
+  id: WH40KCMUDecorGunRackBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+# RMC14 ColMarTech decorative racks
+- type: entity
+  id: WH40KCMURackPrep
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/prep.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackSquadPrep
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/squad_prep.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackEquipment
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/equipment.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackGear
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackClothing
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/clothing.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackDress
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/dress.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackGuns
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/guns.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackAttachments
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/attachments.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackRequisitionGuns
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/requisition_guns.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackRequisitionAmmo
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/requisitions_ammo.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackCombatTech
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/combat_technician_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackFireteamLeader
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/fireteam_leader_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackSpecialist
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/specialist_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackSmartGunner
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/smart_gun_operator_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackMedicalGear
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/medical_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackMedicalEquip
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/medical_equipment.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackMarineMedical
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/marine_medical.rsi
+    layers:
+    - state: normal
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: normal }
+          False: { state: off }
+
+- type: entity
+  id: WH40KCMURackIntel
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/intel.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackExperimental
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/experimental.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackPMC
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/pmc.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackSPP
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/spp_gear.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackCLF
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/clf_surplus.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+# Wall-mounted requisition racks
+- type: entity
+  id: WH40KCMUWallRackAmmo
+  parent: WH40KCMUDecorWallRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/wall_ammo.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMUWallRackAttachments
+  parent: WH40KCMUDecorWallRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/wall_attachments.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMUWallRackGuns
+  parent: WH40KCMUDecorWallRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/wall_guns.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+# CMU14 decorative gear & suit racks
+- type: entity
+  id: WH40KCMURackUSCMGear
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/uscmgearrack.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackUSCMForecon
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/uscmforecongearrack.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackUSCMCommand
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/uscmcommandclothes.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackAssortedEquip
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/assortedequipment.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackGenericWeapon
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/genericweaponrack.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMURackWYPMC
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/wypmcvendor.rsi
+    layers:
+    - state: base
+      map: [ "base" ]
+
+- type: entity
+  id: WH40KCMUSuitStorage
+  parent: WH40KCMUDecorRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/suit_storage_cm13.rsi
+    layers:
+    - state: closed
+      map: [ "base" ]
+  - type: ItemToggle
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_open.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_close.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: open }
+          False: { state: closed }
+
+# Decorative weapon & gun racks (static visual only)
+- type: entity
+  id: WH40KCMUGunRackM54C
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m54c_rack.rsi
+    state: fill_5
+
+- type: entity
+  id: WH40KCMUGunRackM54C2
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m54c2_rack.rsi
+    state: fill_5
+
+- type: entity
+  id: WH40KCMUGunRackL90
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/l90_rack.rsi
+    state: fill_5
+
+- type: entity
+  id: WH40KCMUGunRackType71
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/t71_rack.rsi
+    state: fill_6
+
+- type: entity
+  id: WH40KCMUGunRackSSG45
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/ssg45_rack.rsi
+    state: fill_5
+
+- type: entity
+  id: WH40KCMUGunRackM34
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m34_rack.rsi
+    state: fill_2
+
+- type: entity
+  id: WH40KCMUGunRackM42A2
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m42a2_rack.rsi
+    state: fill_2
+
+- type: entity
+  id: WH40KCMUGunRackEmpty
+  parent: WH40KCMUDecorGunRackBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m54c_rack.rsi
+    state: empty
+
+- type: entity
+  id: WH40KCMUWallGunRackM357
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/m357_wall_rack.rsi
+    state: fill_1
+
+- type: entity
+  id: WH40KCMUWallGunRackMAR50
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Racks/mar50_wall_rack.rsi
+    state: fill_1
+
+- type: entity
+  id: WH40KCMUWallGunRackMP5
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Racks/mp5_wall_rack.rsi
+    state: fill_1

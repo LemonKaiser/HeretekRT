@@ -1,0 +1,42 @@
+# Packed sterile gauze and torn bandage wrapper
+
+- type: entity
+  id: WH40KGauzePack
+  parent: BaseItem
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Specific/Medical/gauzepack.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _WH40K/Objects/Specific/Medical/gauzepack.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: SpawnItemsOnUse
+    items:
+    - id: WH40KGauzePackWrapper
+    - id: Gauze
+    sound:
+      path: /Audio/Effects/packetrip.ogg
+  - type: Tag
+    tags:
+    - Wh40kSkillMedicalItem
+
+- type: entity
+  id: WH40KGauzePackWrapper
+  parent: BaseItem
+  suffix: WH40K
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Specific/Medical/gauzepack.rsi
+    state: opened
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - Trash
+  - type: SpaceGarbage

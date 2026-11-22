@@ -1,7 +1,9 @@
 using Robust.Shared.Audio;
 using Content.Server.Chat;
 using Content.Server.Chat.Systems;
+using Content.Shared.Inventory;
 using Content.Shared.Speech;
+using Content.Shared._WH40K.Voice;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -16,6 +18,7 @@ namespace Content.Server.Speech
         [Dependency] private IPrototypeManager _protoManager = default!;
         [Dependency] private IRobustRandom _random = default!;
         [Dependency] private SharedAudioSystem _audio = default!;
+        [Dependency] private InventorySystem _inventory = default!;
 
         public override void Initialize()
         {
@@ -26,12 +29,17 @@ namespace Content.Server.Speech
 
         public SoundSpecifier? GetSpeechSound(Entity<SpeechComponent> ent, string message)
         {
-            if (ent.Comp.SpeechSounds == null)
+            var speechSounds = ent.Comp.SpeechSounds;
+            if (_inventory.TryGetSlotEntity(ent.Owner, "mask", out var mask) &&
+                TryComp<WH40KSpeechSoundOverrideComponent>(mask, out var speechOverride))
+                speechSounds = speechOverride.SpeechSounds;
+
+            if (speechSounds == null || message.Length == 0)
                 return null;
 
             // Play speech sound
             SoundSpecifier? contextSound;
-            var prototype = _protoManager.Index<SpeechSoundsPrototype>(ent.Comp.SpeechSounds);
+            var prototype = _protoManager.Index(speechSounds.Value);
 
             // Different sounds for ask/exclaim based on last character
             contextSound = message[^1] switch
@@ -60,9 +68,6 @@ namespace Content.Server.Speech
 
         private void OnEntitySpoke(EntityUid uid, SpeechComponent component, EntitySpokeEvent args)
         {
-            if (component.SpeechSounds == null)
-                return;
-
             var currentTime = _gameTiming.CurTime;
             var cooldown = TimeSpan.FromSeconds(component.SoundCooldownTime);
 
@@ -71,6 +76,9 @@ namespace Content.Server.Speech
                 return;
 
             var sound = GetSpeechSound((uid, component), args.Message);
+            if (sound == null)
+                return;
+
             component.LastTimeSoundPlayed = currentTime;
             _audio.PlayPvs(sound, uid);
         }

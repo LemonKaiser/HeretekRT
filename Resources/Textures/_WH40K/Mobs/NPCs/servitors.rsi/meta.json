@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "By londorondondon",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "servitor1",
+      "directions": 4
+    },
+    {
+      "name": "servitor2",
+      "directions": 4
+    },
+    {
+      "name": "servitor3",
+      "directions": 4
+    },
+    {
+      "name": "servitor4",
+      "directions": 4
+    },
+    {
+      "name": "cleanerservitor1",
+      "directions": 4
+    },
+    {
+      "name": "cleanerservitor2",
+      "directions": 4
+    },
+    {
+      "name": "cleanerservitor3",
+      "directions": 4
+    }
+  ]
+}

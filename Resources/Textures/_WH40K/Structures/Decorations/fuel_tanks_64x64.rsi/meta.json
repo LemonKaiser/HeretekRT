@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "By londorondondon",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "fuel_tank_4"
+    },
+    {
+      "name": "fuel_tank_5"
+    },
+    {
+      "name": "fuel_tank_6"
+    },
+    {
+      "name": "fuel_tank_7"
+    },
+    {
+      "name": "fuel_tank_8"
+    },
+    {
+      "name": "fuel_tank_9"
+    }
+  ]
+}

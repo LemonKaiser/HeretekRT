@@ -16,3 +16,10 @@
 - type: npcFaction
   id: Heretics
   defaultHostile: true
+
+- type: npcFaction
+  id: TauEmpire
+  neutral:
+  - Passive
+  - SimpleNeutral
+  defaultHostile: true

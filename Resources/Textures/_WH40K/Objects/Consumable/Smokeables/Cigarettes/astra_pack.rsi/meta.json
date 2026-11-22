@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "By londorondondon",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "closed"
+    },
+    {
+      "name": "open-empty"
+    },
+    {
+      "name": "open-1"
+    },
+    {
+      "name": "open-2"
+    },
+    {
+      "name": "open-3"
+    },
+    {
+      "name": "open-full"
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
+    }
+  ]
+}

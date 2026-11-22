@@ -30,8 +30,11 @@
     tags:
     - Ointment
     - Wh40kSkillMedicalItem
+  - type: Appearance
   - type: Sprite
-    state: ointment
+    layers:
+    - state: ointment-full
+      map: [ "base" ]
   - type: Item
     heldPrefix: ointment
   - type: Healing
@@ -56,6 +59,11 @@
   - type: Stack
     stackType: Ointment
     count: 15 #Was 10, Buffed due to limb damage changes (Goobstation)
+    baseLayer: base
+    layerStates:
+    - ointment-1
+    - ointment-2
+    - ointment-full
   - type: StackPrice
     price: 15 # Mono - 5->15
 
@@ -137,8 +145,13 @@
     tags:
     - Brutepack
     - Wh40kSkillMedicalItem
+  - type: Appearance
   - type: Sprite
-    state: brutepack
+    layers:
+    - state: brutepack-full
+      map: [ "base" ]
+  - type: Item
+    heldPrefix: brutepack
   - type: Healing
     damageContainers:
     - Biological
@@ -158,6 +171,11 @@
   - type: Stack
     stackType: Brutepack
     count: 15 #Was 10, Buffed due to limb damage changes (Goobstation)
+    baseLayer: base
+    layerStates:
+    - brutepack-1
+    - brutepack-2
+    - brutepack-full
   - type: StackPrice
     price: 15 # Mono - 5->15
 
@@ -316,8 +334,13 @@
     tags:
     - Gauze
     - Wh40kSkillMedicalItem
+  - type: Appearance
   - type: Sprite
-    state: gauze
+    layers:
+    - state: gauze-full
+      map: [ "base" ]
+  - type: Item
+    heldPrefix: gauze
   - type: Construction
     graph: Gauze
     node: gauze
@@ -342,6 +365,11 @@
   - type: Stack
     stackType: Gauze
     count: 15 #Was 10, Buffed due to limb damage changes (Goobstation)
+    baseLayer: base
+    layerStates:
+    - gauze-1
+    - gauze-2
+    - gauze-full
   - type: StackPrice
     price: 15 # Mono 10->15
 
@@ -370,10 +398,13 @@
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/aloe.rsi
-    state: cream
+    layers:
+    - state: cream
   - type: Stack
     stackType: AloeCream
     count: 15 #Was 10, Buffed due to limb damage changes (Goobstation)
+    baseLayer: ""
+    layerStates: []
 
 - type: entity
   parent: BaseHealingItem

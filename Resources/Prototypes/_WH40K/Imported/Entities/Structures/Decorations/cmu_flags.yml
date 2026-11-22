@@ -1,0 +1,354 @@
+# Decorative flags and banners imported from CMU14 and RMC14.
+
+- type: entity
+  id: WH40KCMURMCBannerBase
+  parent: BaseFlag
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Flags/banners.rsi
+    drawdepth: WallTops
+
+- type: entity
+  id: WH40KCMUWallFlagBase
+  parent: BaseFlag
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/wallflags.rsi
+    drawdepth: WallTops
+
+- type: entity
+  id: WH40KCMUStandingFlagBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 150
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - HighImpassable
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  id: WH40KCMUDeskFlagBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  placement:
+    mode: PlaceFree
+  components:
+  - type: Transform
+    anchored: false
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Pullable
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+
+# RMC14 Wall Flags / Banners
+- type: entity
+  id: WH40KCMUWallFlagUNMC
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: unmcflag
+
+- type: entity
+  id: WH40KCMUWallFlagUNMCWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: unmcflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagUN
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: unflag
+
+- type: entity
+  id: WH40KCMUWallFlagUNWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: unflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagSPP
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: sppflag
+
+- type: entity
+  id: WH40KCMUWallFlagSPPWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: sppflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagTSE
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tseflag
+
+- type: entity
+  id: WH40KCMUWallFlagTSEWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tseflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagTSEAlt
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tseflag_alt
+
+- type: entity
+  id: WH40KCMUWallFlagCLF
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: clfflag
+
+- type: entity
+  id: WH40KCMUWallFlagCLFWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: clfflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagWEYA
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: weyaflag
+
+- type: entity
+  id: WH40KCMUWallFlagBlank
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: blankflag
+
+- type: entity
+  id: WH40KCMUWallFlagBlankWorn
+  parent: WH40KCMURMCBannerBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: blankflag_worn
+
+# CMU14 Wall Flags
+- type: entity
+  id: WH40KCMUWallFlagUSCM
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: cmflag
+
+- type: entity
+  id: WH40KCMUWallFlagUSCMWorn
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: cmflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagUA
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: uaflag
+
+- type: entity
+  id: WH40KCMUWallFlagUAWorn
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: uaflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagTWE
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tweflag
+
+- type: entity
+  id: WH40KCMUWallFlagTWEWorn
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tweflag_worn
+
+- type: entity
+  id: WH40KCMUWallFlagUPP
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: uppflag
+
+- type: entity
+  id: WH40KCMUWallFlagUPPWorn
+  parent: WH40KCMUWallFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: uppflag_worn
+
+# Animated Flagpoles & Tall Standing Flags
+- type: entity
+  id: WH40KCMUFlagpoleUA
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/flagpoles.rsi
+    state: flag_ua_planted
+
+- type: entity
+  id: WH40KCMUFlagpoleUPP
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/flagpoles.rsi
+    state: flag_upp_planted
+
+- type: entity
+  id: WH40KCMUStandingFlagUNMC
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Flags/unmc_flag.rsi
+    state: deploy
+    offset: 0,0.4
+
+- type: entity
+  id: WH40KCMUStandingFlagUN
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Flags/un_flag.rsi
+    state: deploy
+    offset: 0,0.4
+
+- type: entity
+  id: WH40KCMUStandingFlagUA
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/ua_flag.rsi
+    state: deploy
+    offset: 0,0.4
+
+- type: entity
+  id: WH40KCMUStandingFlagUPP
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/upp_flag.rsi
+    state: deploy
+    offset: 0,0.4
+
+- type: entity
+  id: WH40KCMUStandingFlagCLF
+  parent: WH40KCMUStandingFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/clf_flag.rsi
+    state: deploy
+    offset: 0,0.4
+
+# Desk Flags
+- type: entity
+  id: WH40KCMUDeskFlagUSMC
+  parent: WH40KCMUDeskFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Flags/desk_flag.rsi
+    state: usmcflag2
+
+- type: entity
+  id: WH40KCMUDeskFlagUA
+  parent: WH40KCMUDeskFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/uadeskflag.rsi
+    state: uaflag
+
+- type: entity
+  id: WH40KCMUDeskFlagUSCM
+  parent: WH40KCMUDeskFlagBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Flags/uscmdeskflag.rsi
+    state: uscmflag

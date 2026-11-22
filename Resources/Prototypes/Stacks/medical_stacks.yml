@@ -22,7 +22,7 @@
 - type: stack
   id: Brutepack
   name: brutepack
-  icon: { sprite: "/Textures/Objects/Specific/Medical/medical.rsi", state: gauze }
+  icon: { sprite: "/Textures/Objects/Specific/Medical/medical.rsi", state: brutepack }
   spawn: Brutepack
   maxCount: 15 #Mono: Increased stacks from 10 to 15
 

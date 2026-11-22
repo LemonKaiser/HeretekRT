@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "By londorondondon",
+  "size": {
+    "x": 80,
+    "y": 80
+  },
+  "states": [
+    {
+      "name": "commissar"
+    },
+    {
+      "name": "commissar_ruined"
+    },
+    {
+      "name": "priest"
+    },
+    {
+      "name": "priest_ruined"
+    },
+    {
+      "name": "techpriest1"
+    },
+    {
+      "name": "techpriest2"
+    },
+    {
+      "name": "techpriest3"
+    },
+    {
+      "name": "techpriest_ruined"
+    },
+    {
+      "name": "soldier1"
+    },
+    {
+      "name": "soldier2"
+    },
+    {
+      "name": "soldier3"
+    },
+    {
+      "name": "leader"
+    },
+    {
+      "name": "leader_ruined"
+    },
+    {
+      "name": "pedestal"
+    },
+    {
+      "name": "pedestal_ruined"
+    }
+  ]
+}

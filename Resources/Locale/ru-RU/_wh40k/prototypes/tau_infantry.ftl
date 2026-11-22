@@ -1,0 +1,35 @@
+-wh40k-tau-infantry-suffix = WH40K, Тау
+-wh40k-tau-spawner-suffix = WH40K, Тау, маппинг
+-wh40k-tau-spawner-desc = Создаёт одного пехотинца тау при инициализации карты.
+
+ent-MobWH40KTauStrike = огненный воин тау
+    .desc = Боец ударной команды касты Огня с импульсной винтовкой.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauPathfinder = следопыт тау
+    .desc = Разведчик касты Огня в лёгкой броне с импульсным карабином.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauBreacher = штурмовик тау
+    .desc = Огненный воин в штурмовом снаряжении с импульсным бластером ближнего боя.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauMarksman = снайпер тау
+    .desc = Следопыт с точной импульсной винтовкой, прикрывающий отряд на расстоянии.
+    .suffix = { -wh40k-tau-infantry-suffix }
+ent-MobWH40KTauShasui = шас'уи тау
+    .desc = Ветеран касты Огня в офицерской броне с ветеранской импульсной винтовкой.
+    .suffix = { -wh40k-tau-infantry-suffix }
+
+ent-SpawnWH40KTauStrike = спавнер огненного воина тау
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauPathfinder = спавнер следопыта тау
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauBreacher = спавнер штурмовика тау
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauMarksman = спавнер снайпера тау
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }
+ent-SpawnWH40KTauShasui = спавнер шас'уи тау
+    .desc = { -wh40k-tau-spawner-desc }
+    .suffix = { -wh40k-tau-spawner-suffix }

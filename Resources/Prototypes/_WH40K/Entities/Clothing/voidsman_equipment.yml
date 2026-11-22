@@ -222,3 +222,54 @@
       - state: equipped-BACKPACK
       suitstorage:
       - state: equipped-SUITSTORAGE
+
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatVoidsmanBeret
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Head/Hats/voidsman_beret.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Head/Hats/voidsman_beret.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+
+- type: entity
+  parent: ClothingMaskBase
+  id: ClothingMaskVoidsmanUnderhelmet
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Mask/voidsman_underhelmet.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Mask/voidsman_underhelmet.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: HideLayerClothing
+    layers:
+      Hair: MASK
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitVoidsmanNaval
+  suffix: WH40K, Войдсмены
+  components:
+  - type: Sprite
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/voidsman_naval.rsi
+  - type: Clothing
+    sprite: _WH40K/Clothing/Uniforms/Jumpsuit/voidsman_naval.rsi
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right

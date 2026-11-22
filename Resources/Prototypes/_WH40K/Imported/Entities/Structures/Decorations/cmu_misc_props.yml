@@ -1,0 +1,516 @@
+# Miscellaneous field, military, memorial and lab decorative props from CMU14 and RMC14.
+
+- type: entity
+  id: WH40KCMUMiscDecorBase
+  parent: BaseStructure
+  abstract: true
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+# Field / FOB Props
+- type: entity
+  id: WH40KCMUFieldGenerator
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/backup_generator.rsi
+    layers:
+    - state: backup_generator_on
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: backup_generator_on }
+          False: { state: backup_generator }
+
+- type: entity
+  id: WH40KCMUFieldFloodlight
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/illuminator.rsi
+    drawdepth: Mobs
+    offset: 0,0.6
+    layers:
+    - state: floodlight
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 7.5
+    energy: 2.0
+    color: "#e6f2ff"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: floodlight }
+          False: { state: floodlight_off }
+
+- type: entity
+  id: WH40KCMUFieldTerminal
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/service_terminal.rsi
+    drawdepth: Mobs
+    offset: 0,0.35
+    layers:
+    - state: terminal
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/button.ogg
+    soundDeactivate:
+      path: /Audio/Machines/button.ogg
+  - type: ItemTogglePointLight
+  - type: PointLight
+    enabled: true
+    radius: 1.8
+    energy: 1.0
+    color: "#4fd1c5"
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: terminal }
+          False: { state: terminal_off }
+
+- type: entity
+  id: WH40KCMUFieldSensor
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/sensor.rsi
+    layers:
+    - state: sensor
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: true
+    soundActivate:
+      path: /Audio/Machines/beep.ogg
+    soundDeactivate:
+      path: /Audio/Machines/beep.ogg
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: sensor }
+          False: { state: sensor_undeployed }
+
+- type: entity
+  id: WH40KCMUFOBCrate
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/crates.rsi
+    state: fob_crate
+
+- type: entity
+  id: WH40KCMUConcreteBarrier
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Transform
+    noRot: false
+  - type: Rotatable
+  - type: Climbable
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/concretebarrier.rsi
+    layers:
+    - state: concrete
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.3,0.45,0.3"
+        density: 400
+        mask:
+        - TableMask
+        layer:
+        - TableLayer
+
+- type: entity
+  id: WH40KCMUConcreteBarrierWire
+  parent: WH40KCMUConcreteBarrier
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: concrete
+    - state: concrete_wire
+
+- type: entity
+  id: WH40KCMUWatchtower
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/watchtower.rsi
+    drawdepth: Overdoors
+    offset: 0,0.8
+    state: watchtower
+
+- type: entity
+  id: WH40KCMUBlackBox
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/blackbox.rsi
+    state: blackbox
+
+# Military Field Tents (96x128)
+- type: entity
+  id: WH40KCMUTentBase
+  parent: WH40KCMUMiscDecorBase
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/tentprops.rsi
+    drawdepth: Overdoors
+    offset: 0,1.0
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.0,-0.5,1.0,0.5"
+        density: 300
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+
+- type: entity
+  id: WH40KCMUTentCommand
+  parent: WH40KCMUTentBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: command_tent
+
+- type: entity
+  id: WH40KCMUTentMedical
+  parent: WH40KCMUTentBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: medical_tent
+
+- type: entity
+  id: WH40KCMUTentSupply
+  parent: WH40KCMUTentBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: supply_tent
+
+- type: entity
+  id: WH40KCMUTentSmall
+  parent: WH40KCMUTentBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: small_tent
+
+- type: entity
+  id: WH40KCMUTentSmallClosed
+  parent: WH40KCMUTentBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: small_closed_tent
+
+# Dumpsters (click to toggle lid open/closed)
+- type: entity
+  id: WH40KCMUDumpsterBase
+  parent: WH40KCMUMiscDecorBase
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/dumpsters.rsi
+    drawdepth: Mobs
+    layers:
+    - state: green
+      map: [ "base" ]
+  - type: Appearance
+  - type: ItemToggle
+    onActivate: true
+    onUse: false
+    activated: false
+    soundActivate:
+      path: /Audio/Machines/airlock_open.ogg
+    soundDeactivate:
+      path: /Audio/Machines/airlock_close.ogg
+
+- type: entity
+  id: WH40KCMUDumpsterGreen
+  parent: WH40KCMUDumpsterBase
+  suffix: CMU, Decor
+  components:
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: green-open }
+          False: { state: green }
+
+- type: entity
+  id: WH40KCMUDumpsterBlue
+  parent: WH40KCMUDumpsterBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: blue
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: blue-open }
+          False: { state: blue }
+
+- type: entity
+  id: WH40KCMUDumpsterYellow
+  parent: WH40KCMUDumpsterBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: yellow
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: yellow-open }
+          False: { state: yellow }
+
+- type: entity
+  id: WH40KCMUDumpsterRed
+  parent: WH40KCMUDumpsterBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: red-open }
+          False: { state: red }
+
+- type: entity
+  id: WH40KCMUDumpsterCorporate
+  parent: WH40KCMUDumpsterBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    layers:
+    - state: we-yu
+      map: [ "base" ]
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        base:
+          True: { state: we-yu-open }
+          False: { state: we-yu }
+
+# Memorials & Grave Markers
+- type: entity
+  id: WH40KCMUShipMemorial
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/memorial.rsi
+    state: ship_memorial
+
+- type: entity
+  id: WH40KCMUWallMemorial
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/memorial.rsi
+    state: ship_memorial_wall
+
+- type: entity
+  id: WH40KCMUGraveCross
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/cross.rsi
+    state: cross1
+  - type: Physics
+    canCollide: false
+
+- type: entity
+  id: WH40KCMUGravestone1
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/gravestone.rsi
+    state: gravestone1
+  - type: Physics
+    canCollide: false
+
+- type: entity
+  id: WH40KCMUGravestone2
+  parent: WH40KCMUGravestone1
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: gravestone2
+
+- type: entity
+  id: WH40KCMUGravestone3
+  parent: WH40KCMUGravestone1
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: gravestone3
+
+# Xeno Specimen Tanks & Lab Props
+- type: entity
+  id: WH40KCMUSpecimenTankEmpty
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/alien_autopsy.rsi
+    state: tank_empty
+
+- type: entity
+  id: WH40KCMUSpecimenTankBroken
+  parent: WH40KCMUSpecimenTankEmpty
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tank_broken
+
+- type: entity
+  id: WH40KCMUSpecimenTankLarva
+  parent: WH40KCMUSpecimenTankEmpty
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tank_larva
+  - type: PointLight
+    radius: 1.6
+    energy: 0.8
+    color: "#66e38f"
+
+- type: entity
+  id: WH40KCMUSpecimenTankParasite
+  parent: WH40KCMUSpecimenTankLarva
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tank_hugger
+
+- type: entity
+  id: WH40KCMUSpecimenTankXeno
+  parent: WH40KCMUSpecimenTankLarva
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    state: tank_alien
+
+- type: entity
+  id: WH40KCMUSpecimenJarShelf
+  parent: WH40KCMUMiscDecorBase
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/RMC14/Structures/Misc/alien_autopsy.rsi
+    state: jarshelf_9
+
+# Military Wall Posters
+- type: entity
+  id: WH40KCMUMarinePoster1
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/uscm_posters.rsi
+    state: prop1_alt
+
+- type: entity
+  id: WH40KCMUMarinePoster2
+  parent: BaseSign
+  suffix: CMU, Decor
+  components:
+  - type: Sprite
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/uscm_posters.rsi
+    state: prop1_alt2

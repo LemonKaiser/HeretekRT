@@ -1,0 +1,12 @@
+ent-CigaretteWH40KAstraRed = Astra Red cigarette
+    .desc = A harsh, unfiltered Imperial Guard cigarette rolled from coarse red-label tobacco.
+    .suffix = WH40K
+ent-CigPackWH40KAstraRed = Astra Red cigarette packet
+    .desc = A battered red-and-white packet of Astra Red cigarettes, standard solace of the Astra Militarum.
+    .suffix = WH40K
+ent-CigaretteWH40KLhoStick = lho-stick
+    .desc = A tightly rolled stick of dried lho-leaf producing pungent, soothing smoke.
+    .suffix = WH40K
+ent-CigPackWH40KLhoStick = lho-stick packet
+    .desc = A classic Imperial packet of hand-rolled lho-sticks prized across hive cities and voidships alike.
+    .suffix = WH40K

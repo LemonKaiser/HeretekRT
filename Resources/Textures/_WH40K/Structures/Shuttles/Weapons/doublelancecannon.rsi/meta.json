@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "By londorondondon",
+  "size": {
+    "x": 144,
+    "y": 144
+  },
+  "states": [
+    {
+      "name": "space_artillery"
+    },
+    {
+      "name": "DamageOverlay_1"
+    },
+    {
+      "name": "DamageOverlay_2"
+    },
+    {
+      "name": "DamageOverlay_3"
+    }
+  ]
+}

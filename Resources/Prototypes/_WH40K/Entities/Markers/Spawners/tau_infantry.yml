@@ -1,0 +1,79 @@
+- type: entity
+  id: BaseSpawnWH40KTauInfantry
+  parent: MarkerBase
+  abstract: true
+  suffix: WH40K, Tau, Mapping
+  components:
+  - type: RandomSpawner
+    chance: 1
+    offset: 0
+
+- type: entity
+  id: SpawnWH40KTauStrike
+  parent: BaseSpawnWH40KTauInfantry
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Tau/strike.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KTauStrike
+
+- type: entity
+  id: SpawnWH40KTauPathfinder
+  parent: BaseSpawnWH40KTauInfantry
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Tau/pathfinder.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KTauPathfinder
+
+- type: entity
+  id: SpawnWH40KTauBreacher
+  parent: BaseSpawnWH40KTauInfantry
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Tau/breacher.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KTauBreacher
+
+- type: entity
+  id: SpawnWH40KTauMarksman
+  parent: BaseSpawnWH40KTauInfantry
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Tau/marksman.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KTauMarksman
+
+- type: entity
+  id: SpawnWH40KTauShasui
+  parent: BaseSpawnWH40KTauInfantry
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+    - sprite: _WH40K/Mobs/Tau/shasui.rsi
+      state: base
+    - state: ai
+  - type: RandomSpawner
+    prototypes:
+    - MobWH40KTauShasui
