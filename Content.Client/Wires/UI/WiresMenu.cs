@@ -1,5 +1,7 @@
 using System.Numerics;
 using Content.Client.Examine;
+using Content.Client._WH40K.UserInterface;
+using Content.Client._WH40K.CharacterCreation;
 using Content.Client.Resources;
 using Content.Client.Stylesheets;
 using Content.Shared.Wires;
@@ -39,13 +41,7 @@ namespace Content.Client.Wires.UI
 
             MouseFilter = MouseFilterMode.Stop;
 
-            var panelTex = _resourceCache.GetTexture("/Textures/Interface/Nano/button.svg.96dpi.png");
-            var back = new StyleBoxTexture
-            {
-                Texture = panelTex,
-                Modulate = Color.FromHex("#252725"),
-            };
-            back.SetPatchMargin(StyleBox.Margin.All, 10);
+            var back = Wh40kInterfaceTheme.Surface("#17130F", "#75613D", 10, 10);
 
             var topPanel = new PanelContainer
             {
@@ -70,7 +66,7 @@ namespace Content.Client.Wires.UI
                     new PanelContainer
                     {
                         MinSize = new Vector2(2, 0),
-                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#75613D")}
                     },
                     new PanelContainer
                     {
@@ -82,7 +78,7 @@ namespace Content.Client.Wires.UI
                     new PanelContainer
                     {
                         MinSize = new Vector2(2, 0),
-                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#75613D")}
                     },
                 }
             };
@@ -145,7 +141,7 @@ namespace Content.Client.Wires.UI
 
             LayoutContainer.SetAnchorPreset(topContainerWrap, LayoutContainer.LayoutPreset.Wide);
 
-            var font = _resourceCache.GetFont("/Fonts/Boxfont-round/Boxfont Round.ttf", 13);
+            var font = Wh40kOnboardingTypography.Display(_resourceCache, 13);
             var fontSmall = _resourceCache.GetFont("/Fonts/Boxfont-round/Boxfont Round.ttf", 10);
 
             Button helpButton;
@@ -166,7 +162,7 @@ namespace Content.Client.Wires.UI
                     {
                         Text = Loc.GetString("wires-menu-dead-beef-text"),
                         FontOverride = fontSmall,
-                        FontColorOverride = Color.Gray,
+                        FontColorOverride = Color.FromHex("#ADA391"),
                         VerticalAlignment = VAlignment.Center,
                         Margin = new Thickness(8, 0, 20, 0),
                         HorizontalAlignment = HAlignment.Left,
@@ -175,6 +171,7 @@ namespace Content.Client.Wires.UI
                     (helpButton = new Button
                     {
                         Text = "?",
+                        StyleClasses = { "Wh40kCompactButton" },
                         Margin = new Thickness(0, 0, 2, 0),
                     }),
                     (CloseButton = new TextureButton
@@ -195,7 +192,7 @@ namespace Content.Client.Wires.UI
 
             var middle = new PanelContainer
             {
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#202320")},
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#100D0A")},
                 Children =
                 {
                     new BoxContainer
@@ -217,13 +214,13 @@ namespace Content.Client.Wires.UI
             _topContainer.AddChild(new PanelContainer
             {
                 MinSize = new Vector2(0, 2),
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#75613D")}
             });
             _topContainer.AddChild(middle);
             _topContainer.AddChild(new PanelContainer
             {
                 MinSize = new Vector2(0, 2),
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#75613D")}
             });
             CloseButton.OnPressed += _ => Close();
             SetHeight = 200;

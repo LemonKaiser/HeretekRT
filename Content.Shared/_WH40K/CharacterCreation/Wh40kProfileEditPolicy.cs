@@ -38,6 +38,7 @@ public static class Wh40kProfileEditPolicy
             .WithSex(original.Sex)
             .WithGender(original.Gender)
             .WithSpecies(original.Species)
+            .WithSpeechStyle(original.SpeechStyle)
             .WithCharacterAppearance(new HumanoidCharacterAppearance(original.Appearance));
     }
 }

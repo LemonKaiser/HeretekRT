@@ -390,10 +390,10 @@ public sealed partial class Wh40kQuestWindow : DefaultWindow
         switch (style)
         {
             case ButtonStyle.Good:
-                button.AddStyleClass("ButtonColorGreen");
+                UserInterface.Wh40kInterfaceTheme.UsePrimaryButton(button);
                 break;
             case ButtonStyle.Caution:
-                button.AddStyleClass("ButtonColorRed");
+                button.AddStyleClass(Content.Client.Stylesheets.StyleBase.ButtonCaution);
                 break;
         }
 

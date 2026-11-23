@@ -5,6 +5,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Prototypes;
 using System.Numerics;
 using Content.Shared.Roles;
+using Content.Client._WH40K.UserInterface;
 
 namespace Content.Client.CrewManifest.UI;
 
@@ -21,17 +22,18 @@ public sealed class CrewManifestSection : BoxContainer
 
         AddChild(new Label()
         {
-            StyleClasses = { "LabelBig" },
+            StyleClasses = { "LabelHeading" },
             Text = Loc.GetString(section.Name)
         });
 
-        var gridContainer = new GridContainer()
+        var listing = new BoxContainer()
         {
             HorizontalExpand = true,
-            Columns = 2
+            Orientation = LayoutOrientation.Vertical,
+            SeparationOverride = 4,
         };
 
-        AddChild(gridContainer);
+        AddChild(listing);
 
         foreach (var entry in entries)
         {
@@ -39,7 +41,7 @@ public sealed class CrewManifestSection : BoxContainer
             {
                 HorizontalExpand = true,
             };
-            name.SetMessage(entry.Name);
+            name.SetMessage(entry.Name, Wh40kInterfaceTheme.Text);
 
             var titleContainer = new BoxContainer()
             {
@@ -48,14 +50,14 @@ public sealed class CrewManifestSection : BoxContainer
             };
 
             var title = new RichTextLabel();
-            title.SetMessage(entry.JobTitle);
+            title.SetMessage(entry.JobTitle, Color.FromHex("#ADA391"));
 
 
             if (prototypeManager.TryIndex<JobIconPrototype>(entry.JobIcon, out var jobIcon))
             {
                 var icon = new TextureRect()
                 {
-                    TextureScale = new Vector2(2, 2),
+                    TextureScale = Vector2.One,
                     VerticalAlignment = VAlignment.Center,
                     Texture = spriteSystem.Frame0(jobIcon.Icon),
                     Margin = new Thickness(0, 0, 4, 0)
@@ -69,8 +71,16 @@ public sealed class CrewManifestSection : BoxContainer
                 titleContainer.AddChild(title);
             }
 
-            gridContainer.AddChild(name);
-            gridContainer.AddChild(titleContainer);
+            var row = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 4 };
+            row.AddChild(name);
+            row.AddChild(titleContainer);
+            var panel = new PanelContainer
+            {
+                HorizontalExpand = true,
+                PanelOverride = Wh40kInterfaceTheme.Surface("#100D0AEB", "#79603D80", 8, 6, 3),
+            };
+            panel.AddChild(row);
+            listing.AddChild(panel);
         }
     }
 }

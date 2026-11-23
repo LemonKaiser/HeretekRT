@@ -6,25 +6,25 @@
                         Resizable="False"
                         MouseFilter="Stop">
 
-    <PanelContainer Name="Background" StyleClasses="PdaBackgroundRect" ModulateSelfOverride="#4a5466"/>
-    <PanelContainer Name="Border" StyleClasses="PdaBorderRect" />
+    <PanelContainer Name="Background" StyleClasses="windowPanel"/>
+    <PanelContainer Name="Border" />
 
     <BoxContainer Orientation="Vertical" HorizontalExpand="True">
 
         <!--Header-->
         <BoxContainer SetHeight="26" Margin="4 2 8 0" Orientation="Horizontal">
             <Control HorizontalExpand="True"/>
-            <TextureButton Name="CloseButton" StyleClasses="windowCloseButton" Modulate="#646464" VerticalAlignment="Center" Margin="0 4 4 0"/>
+            <TextureButton Name="CloseButton" StyleClasses="windowCloseButton" VerticalAlignment="Center"/>
         </BoxContainer>
 
         <!--Content-->
         <Control Margin="18 0" RectClipContent="True" VerticalExpand="true"
                  HorizontalExpand="True">
-            <PanelContainer Name="ContentBorder" StyleClasses="PdaBackground"/>
+            <PanelContainer Name="ContentBorder" StyleClasses="PanelBackgroundBaseDark"/>
             <Control Name="ContentsContainer" Margin="3 3" Modulate="#FFFFFF">
 
                 <!-- Screen Background -->
-                <PanelContainer Name="ContentBackground" StyleClasses="PdaContentBackground"/>
+                <PanelContainer Name="ContentBackground" StyleClasses="PanelBackgroundBaseDark"/>
 
                 <!-- Screen foreground -->
                 <BoxContainer Orientation="Vertical">
@@ -35,7 +35,7 @@
                     <!-- Linked devices -->
                     <PanelContainer Margin="10 5 10 5">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderColor="#FFFFFF" BorderThickness="2" />
+                            <gfx:StyleBoxFlat BorderColor="#BE9E64" BorderThickness="2" />
                         </PanelContainer.PanelOverride>
 
                         <BoxContainer Orientation="Vertical" MinHeight="195" Margin="5 5 5 5">
@@ -64,7 +64,7 @@
                     <!-- Armament controls -->
                     <PanelContainer Margin="10 0 10 5">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderColor="#FFFFFF" BorderThickness="2" />
+                            <gfx:StyleBoxFlat BorderColor="#BE9E64" BorderThickness="2" />
                         </PanelContainer.PanelOverride>
 
                         <BoxContainer Orientation="Vertical">
@@ -92,7 +92,7 @@
                     <!-- Targeting controls -->
                     <PanelContainer Name="TargetingControlsPanel" Margin="10 0 10 10" VerticalExpand="True" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderColor="#FFFFFF" BorderThickness="2" />
+                            <gfx:StyleBoxFlat BorderColor="#BE9E64" BorderThickness="2" />
                         </PanelContainer.PanelOverride>
 
                         <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True">

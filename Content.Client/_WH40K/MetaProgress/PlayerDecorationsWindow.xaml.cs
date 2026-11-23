@@ -27,10 +27,9 @@ public sealed partial class PlayerDecorationsWindow : FancyWindow
     private const float PreviewHeight = 120f;
     private const float PreviewTextMaxWidth = 260f;
 
-    // Нейтральные цвета штатного лобби: отделяют карточки от контейнера без старой золотой палитры.
-    private static readonly Color CardBackground = Color.FromHex("#1B1B1E");
-    private static readonly Color SelectedCardBackground = Color.FromHex("#252525");
-    private static readonly Color PreviewBackground = Color.FromHex("#101010");
+    private static readonly Color CardBackground = Color.FromHex("#18140F");
+    private static readonly Color SelectedCardBackground = Color.FromHex("#392B1C");
+    private static readonly Color PreviewBackground = Color.FromHex("#100D0A");
 
     [Dependency] private readonly IEntityManager _entities = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
@@ -254,6 +253,8 @@ public sealed partial class PlayerDecorationsWindow : FancyWindow
         return new StyleBoxFlat
         {
             BackgroundColor = selected ? SelectedCardBackground : CardBackground,
+            BorderColor = Color.FromHex(selected ? "#BE9E64" : "#56452D"),
+            BorderThickness = new Thickness(1),
             ContentMarginLeftOverride = 10,
             ContentMarginTopOverride = 10,
             ContentMarginRightOverride = 10,

@@ -7,7 +7,7 @@ namespace Content.Client.UserInterface.Controls;
 
 public static class WindowOpacityHelper
 {
-    private static readonly Color FallbackPanelColor = Color.FromHex("#25252ADD");
+    private static readonly Color FallbackPanelColor = Color.FromHex("#15120FE8");
     public const float MinUiWindowOpacity = 0.75f;
     public const float MaxUiWindowOpacity = 1f;
     private const float MaxReadableBackdropOpacity = 0.58f;
@@ -67,6 +67,9 @@ public static class WindowOpacityHelper
     {
         switch (source)
         {
+            case Content.Client._WH40K.UserInterface.Wh40kWindowStyleBox:
+                style = source;
+                return true;
             case StyleBoxFlat flat:
                 style = new StyleBoxFlat(flat)
                 {

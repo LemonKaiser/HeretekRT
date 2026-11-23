@@ -36,12 +36,12 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
         TurretLoadedAmmo,
     }
 
-    private static readonly Color PanelBg = Color.FromHex("#111820");
-    private static readonly Color SlotBg = Color.FromHex("#11171e");
-    private static readonly Color SlotBorder = Color.FromHex("#2c3846");
-    private static readonly Color SlotSelectedBorder = Color.FromHex("#7ec8e3");
-    private static readonly Color Accent = Color.FromHex("#7ec8e3");
-    private static readonly Color DropHighlight = Color.FromHex("#1c3540");
+    private static readonly Color PanelBg = Color.FromHex("#18140F");
+    private static readonly Color SlotBg = Color.FromHex("#100D0A");
+    private static readonly Color SlotBorder = Color.FromHex("#56452D");
+    private static readonly Color SlotSelectedBorder = Color.FromHex("#E1C17E");
+    private static readonly Color Accent = Color.FromHex("#E1C17E");
+    private static readonly Color DropHighlight = Color.FromHex("#392B1C");
     private static readonly Vector2 SlotSize = new(108, 126);
     private static readonly Vector2 QuickSlotSize = new(48, 48);
     private static readonly Vector2 TurretSlotSize = new(48, 48);
@@ -364,14 +364,14 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
             MaxHeight = 18,
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.FromHex("#151d26e6"),
+                BackgroundColor = Color.FromHex("#211A12E6"),
                 BorderColor = Color.Transparent,
             },
         };
         var title = new MarqueeLabel
         {
             Text = slotName,
-            FontColorOverride = selected ? Accent : Color.FromHex("#d0d6e0"),
+            FontColorOverride = selected ? Accent : Color.FromHex("#E9E1D0"),
             MinHeight = 18,
             MaxHeight = 18,
             HorizontalExpand = true,
@@ -382,7 +382,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
         var countLabel = new Label
         {
             Text = FormatGroupCount(group),
-            FontColorOverride = group.IsEmpty ? Color.FromHex("#8a93a3") : Color.FromHex("#e8eef6"),
+            FontColorOverride = group.IsEmpty ? Color.FromHex("#ADA391") : Color.FromHex("#E9E1D0"),
             MouseFilter = MouseFilterMode.Ignore,
             Margin = new Thickness(0, 0, 3, 2),
         };
@@ -448,7 +448,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
             MouseFilter = MouseFilterMode.Ignore,
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = selected ? Color.FromHex("#1a2c35") : Color.FromHex("#0d1319"),
+                BackgroundColor = selected ? Color.FromHex("#392B1C") : Color.FromHex("#100D0A"),
                 BorderColor = selected ? SlotSelectedBorder : SlotBorder,
                 BorderThickness = new Thickness(2),
             },
@@ -518,7 +518,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
                 BorderColor = isSelected ? SlotSelectedBorder : SlotBorder,
                 BorderThickness = new Thickness(2),
             };
-            if (_slotTitles.TryGetValue(id, out var title)) title.FontColorOverride = isSelected ? Accent : Color.FromHex("#d0d6e0");
+            if (_slotTitles.TryGetValue(id, out var title)) title.FontColorOverride = isSelected ? Accent : Color.FromHex("#E9E1D0");
         }
         RefreshSelectionPanel();
     }
@@ -535,7 +535,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
                 BorderColor = SlotBorder,
                 BorderThickness = new Thickness(2),
             };
-            if (_slotTitles.TryGetValue(id, out var title)) title.FontColorOverride = Color.FromHex("#d0d6e0");
+            if (_slotTitles.TryGetValue(id, out var title)) title.FontColorOverride = Color.FromHex("#E9E1D0");
         }
         RefreshTurretSelectionBorders();
         RefreshSelectionPanel();
@@ -548,7 +548,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
             var isSelected = netEntity == _selectedTurret && _infoMode is InfoMode.Turret or InfoMode.TurretLoadedAmmo;
             panel.PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = isSelected ? Color.FromHex("#1a2c35") : Color.FromHex("#0d1319"),
+                BackgroundColor = isSelected ? Color.FromHex("#392B1C") : Color.FromHex("#100D0A"),
                 BorderColor = isSelected ? SlotSelectedBorder : SlotBorder,
                 BorderThickness = new Thickness(2),
             };
@@ -734,8 +734,8 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
                 VerticalExpand = false,
                 PanelOverride = new StyleBoxFlat
                 {
-                    BackgroundColor = Color.FromHex("#0d1319"),
-                    BorderColor = Color.FromHex("#24313d"),
+                    BackgroundColor = Color.FromHex("#100D0A"),
+                    BorderColor = Color.FromHex("#56452D"),
                     BorderThickness = new Thickness(2),
                 },
             });
@@ -757,8 +757,8 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
                 VerticalExpand = false,
                 PanelOverride = new StyleBoxFlat
                 {
-                    BackgroundColor = Color.FromHex("#0d1319"),
-                    BorderColor = Color.FromHex("#24313d"),
+                    BackgroundColor = Color.FromHex("#100D0A"),
+                    BorderColor = Color.FromHex("#56452D"),
                     BorderThickness = new Thickness(2),
                 },
             });
@@ -824,7 +824,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
     {
         return new StyleBoxFlat
         {
-            BackgroundColor = active ? Color.FromHex("#1a2c35") : Color.FromHex("#0d1319"),
+            BackgroundColor = active ? Color.FromHex("#392B1C") : Color.FromHex("#100D0A"),
             BorderColor = active ? Accent : SlotBorder,
             BorderThickness = new Thickness(2),
         };
@@ -881,7 +881,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
         QuickUnloadPanel.PanelOverride = new StyleBoxFlat
         {
             BackgroundColor = active ? DropHighlight : PanelBg,
-            BorderColor = active ? Accent : Color.FromHex("#334252"),
+            BorderColor = active ? Accent : Color.FromHex("#56452D"),
             BorderThickness = new Thickness(2),
         };
         for (var i = 0; i < _quickSlots.Count; i++) _quickSlots[i].PanelOverride = MakeSlotStyle(active && _quickQueue[i] == null);
@@ -892,7 +892,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
         StoragePanel.PanelOverride = new StyleBoxFlat
         {
             BackgroundColor = active ? DropHighlight : PanelBg,
-            BorderColor = active ? Accent : Color.FromHex("#334252"),
+            BorderColor = active ? Accent : Color.FromHex("#56452D"),
             BorderThickness = new Thickness(2),
         };
     }

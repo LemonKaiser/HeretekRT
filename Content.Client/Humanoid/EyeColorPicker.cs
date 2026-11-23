@@ -1,5 +1,5 @@
+using Content.Client._WH40K.CharacterCreation;
 using Robust.Client.UserInterface;
-using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client.Humanoid;
 
@@ -7,35 +7,17 @@ public sealed class EyeColorPicker : Control
 {
     public event Action<Color>? OnEyeColorPicked;
 
-    private readonly ColorSelectorSliders _colorSelectors;
-
-    private Color _lastColor;
+    private readonly Wh40kColorPalette _palette;
+    public bool Disabled { set => _palette.SetDisabled(value); }
 
     public void SetData(Color color)
     {
-        _lastColor = color;
-
-        _colorSelectors.Color = color;
+        _palette.SetColor(color);
     }
 
     public EyeColorPicker()
     {
-        var vBox = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical
-        };
-        AddChild(vBox);
-
-        vBox.AddChild(_colorSelectors = new ColorSelectorSliders());
-        _colorSelectors.SelectorType = ColorSelectorSliders.ColorSelectorType.Hsv; // defaults color selector to HSV
-
-        _colorSelectors.OnColorChanged += ColorValueChanged;
-    }
-
-    private void ColorValueChanged(Color newColor)
-    {
-        OnEyeColorPicked?.Invoke(newColor);
-
-        _lastColor = newColor;
+        AddChild(_palette = new Wh40kColorPalette(Color.Brown));
+        _palette.OnColorChanged += color => OnEyeColorPicked?.Invoke(color);
     }
 }

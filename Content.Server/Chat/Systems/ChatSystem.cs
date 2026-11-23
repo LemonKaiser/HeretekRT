@@ -1228,15 +1228,25 @@ public sealed partial class ChatSystem : SharedChatSystem
             ? Loc.GetString("chat-manager-language-prefix", ("language", language.ChatName))
             : "";
 
+        var languageFont = language.SpeechOverride.FontId;
+        var profileFont = languageFont == null
+            ? GetProfileSpeechFont(source, speech.Bold, chatType == InGameICChatType.Whisper)
+            : null;
+        if (profileFont != null && wrapId == "chat-manager-entity-say-bold-wrap-message")
+            wrapId = "chat-manager-entity-say-wrap-message";
+
         return Loc.GetString(wrapId,
             ("color", color),
             ("entityName", entityName),
             ("verb", Loc.GetString(verbId)),
-            ("fontType", language.SpeechOverride.FontId ?? speech.FontId),
+            ("fontType", languageFont ?? profileFont ?? speech.FontId),
             ("fontSize", language.SpeechOverride.FontSize ?? speech.FontSize),
             ("message", message),
             ("language", languageDisplay));
     }
+
+    internal string? GetProfileSpeechFont(EntityUid source, bool bold, bool italic = false) =>
+        CompOrNull<Content.Shared.Humanoid.HumanoidAppearanceComponent>(source)?.SpeechStyle.GetFont(bold, italic);
     // Einstein Engines - Language end
 
 

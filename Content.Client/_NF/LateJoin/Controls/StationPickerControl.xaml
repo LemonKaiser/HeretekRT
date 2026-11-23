@@ -9,18 +9,18 @@
         <PanelContainer VerticalExpand="True" SetWidth="400">
             <PanelContainer.PanelOverride>
                 <!-- Using PanelBackgroundLight adds padding left and right, so we manually set background color -->
-                <graphics:StyleBoxFlat BackgroundColor="#303030"/>
+                <graphics:StyleBoxFlat BackgroundColor="#211A12"/>
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical"
                           VerticalExpand="True"
                           HorizontalExpand="True">
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#141414"/>
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#75613D" BackgroundColor="#100D0A"/>
                     </PanelContainer.PanelOverride>
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                 <ScrollContainer HorizontalExpand="True"
                                  VerticalExpand="True"
@@ -37,22 +37,22 @@
 
         <PanelContainer VerticalExpand="True" HorizontalExpand="True">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#303030"/>
+                <graphics:StyleBoxFlat BackgroundColor="#211A12"/>
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical"
                           VerticalExpand="True"
                           HorizontalExpand="True">
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3" MinHeight="280">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#191919"/>
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#75613D" BackgroundColor="#18140F"/>
                     </PanelContainer.PanelOverride>
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                            <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3">
                             <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#1f1f1f"/>
+                                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#18140F"/>
                             </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Vertical"
                               VerticalExpand="True"
@@ -73,7 +73,7 @@
 
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 0 0 0">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#262626" BackgroundColor="#111111"/>
+                        <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                     </PanelContainer.PanelOverride>
                 <ScrollContainer HorizontalExpand="True"
                                  VerticalExpand="True"

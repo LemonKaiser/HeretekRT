@@ -15,12 +15,12 @@
         <BoxContainer Orientation="Vertical" MinWidth="300" MaxWidth="300" HorizontalExpand="False" Margin="5 0 5 5">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#696969"/>
+                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#75613D" BackgroundColor="#18140F"/>
                 </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Vertical" MinWidth="290" MaxWidth="290" HorizontalExpand="False" Margin="0 2.5 0 2.5">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#1f1f1f" BackgroundColor="#1f1f1f"/>
+                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#18140F"/>
                 </PanelContainer.PanelOverride>
                 <BoxContainer Name="ControlsBox" Orientation="Vertical" MinWidth="285" MaxWidth="285" HorizontalExpand="False" Margin="0 0 0 0">
             <!-- Status Section -->
@@ -30,7 +30,7 @@
             </controls:StripeBack>
             <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
             <Button Name="RefreshButton" Access="Public" Text="{Loc admin-logs-refresh}"
                     StyleClasses="ButtonSquare" Margin="2 2 2 2"/>
@@ -48,26 +48,26 @@
             </BoxContainer>
             <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#262626" BackgroundColor="#111111" />
+                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#100D0A" />
                 </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" MinWidth="256" MaxWidth="256" HorizontalExpand="False" Margin="2 3 2 3">
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                        <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                     </PanelContainer.PanelOverride>
             <Button Name="SelectBallisticButton" Access="Public" Text="Ballistics"
                     StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4"/>
                 </PanelContainer>
             <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
             <Button Name="SelectEnergyButton" Access="Public" Text="Energy"
                     StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4"/>
             </PanelContainer>
             <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
             <Button Name="SelectMissileButton" Access="Public" Text="Missiles"
                     StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4"/>
@@ -76,26 +76,26 @@
             </PanelContainer>
             <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#262626" BackgroundColor="#111111" />
+                    <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#100D0A" />
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Horizontal" MinWidth="256" MaxWidth="256" HorizontalExpand="False" Margin="2 3 2 3">
                     <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                         </PanelContainer.PanelOverride>
                         <Button Name="IFFToggle" Access="Public" Text="{Loc 'shuttle-console-iff-toggle-short'}"
                                 StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4" ToggleMode="True"/>
                     </PanelContainer>
                     <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                         </PanelContainer.PanelOverride>
                         <Button Name="IFFDetailedToggle" Access="Public" Text="{Loc 'shuttle-console-iff-detailed-short'}"
                                 StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4" ToggleMode="True"/>
                     </PanelContainer>
                     <PanelContainer VerticalExpand="False" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#2e2e2e" BackgroundColor="#1c1c1c" />
+                            <gfx:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F" />
                         </PanelContainer.PanelOverride>
                         <Button Name="DockToggle" Access="Public" Text="{Loc 'shuttle-console-dock-toggle-short'}"
                                 StyleClasses="ButtonSquare" HorizontalExpand="True" Margin="4 4" ToggleMode="True"/>
@@ -106,7 +106,7 @@
             <!-- Weapons List -->
             <PanelContainer VerticalExpand="True" Margin="0 3 0 3">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#111111" />
+                    <gfx:StyleBoxFlat BackgroundColor="#100D0A" />
                 </PanelContainer.PanelOverride>
                 <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                     <BoxContainer Name="ControllablesBox" Orientation="Vertical"

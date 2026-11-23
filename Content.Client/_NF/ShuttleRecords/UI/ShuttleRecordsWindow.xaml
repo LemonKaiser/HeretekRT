@@ -1,4 +1,4 @@
-﻿<controls:FancyWindow xmlns="https://spacestation14.io"
+<controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       Title="{Loc 'shuttle-records-console-window-title'}"
@@ -8,7 +8,7 @@
 
         <PanelContainer>
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#1B1E1B" />
+                <graphics:StyleBoxFlat BackgroundColor="#18140F" />
             </PanelContainer.PanelOverride>
 
             <GridContainer Columns="3" HorizontalExpand="True" Margin="10">
@@ -35,7 +35,7 @@
                 <BoxContainer Orientation="Vertical" MinSize="250 300" VerticalExpand="True">
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#777777" />
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#BE9E64" />
                         </PanelContainer.PanelOverride>
                         <BoxContainer Orientation="Vertical"
                                       VerticalExpand="True"

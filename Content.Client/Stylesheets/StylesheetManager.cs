@@ -15,7 +15,8 @@ namespace Content.Client.Stylesheets
         public void Initialize()
         {
             SheetNano = new StyleNano(_resourceCache).Stylesheet;
-            SheetSpace = new StyleSpace(_resourceCache).Stylesheet;
+            // Legacy callers must use the same controls and palette as ordinary game windows.
+            SheetSpace = SheetNano;
 
             _userInterfaceManager.Stylesheet = SheetNano;
         }

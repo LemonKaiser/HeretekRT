@@ -1,0 +1,11 @@
+wh40k-window-minimize = Свернуть окно
+wh40k-changelog-older = Показать более ранние обновления
+wh40k-ui-resume = Продолжить
+wh40k-ui-help = Справочник
+wh40k-window-restore = Развернуть окно
+wh40k-ui-frosted-glass = Матовое стекло окон
+wh40k-ui-glass-transparency = Прозрачность матового стекла
+wh40k-ui-frosted-glass-tooltip = Размывает фон под окнами. Отключите для снижения нагрузки на видеокарту. Изменение применяется после сохранения.
+wh40k-context-section-interaction = ВЗАИМОДЕЙСТВИЕ
+wh40k-context-section-character = ПЕРСОНАЖ
+wh40k-context-section-service = СЛУЖЕБНОЕ

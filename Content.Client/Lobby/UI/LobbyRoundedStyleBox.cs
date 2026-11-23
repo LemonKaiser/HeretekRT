@@ -73,7 +73,7 @@ internal sealed class LobbyRoundedStyleBox : StyleBox
 
         _borderVertices[^2] = _outerContour[0];
         _borderVertices[^1] = _innerContour[0];
-        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, _borderVertices, BorderColor);
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, _borderVertices, Color.ToSrgb(BorderColor));
 
         DrawHighlight(handle, box, radius, uiScale);
     }
@@ -158,7 +158,9 @@ internal sealed class LobbyRoundedStyleBox : StyleBox
         fill[0] = center;
         Array.Copy(contour, 0, fill, 1, contour.Length);
         fill[^1] = contour[0];
-        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, fill, color);
+        // The primitive overload converts sRGB to linear; stylebox colors, like
+        // DrawRect colors, are already linear.
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, fill, Color.ToSrgb(color));
     }
 
     private static void FillVertices(UIBox2 box, float radius, Vector2[] vertices)

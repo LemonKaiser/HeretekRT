@@ -6,12 +6,12 @@
     <BoxContainer Orientation="Vertical" Margin="14 12 14 12">
         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
             <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 16 0">
-                <Label Name="MerchantTitle" ClipText="True" StyleClasses="LabelHeading" FontColorOverride="#e4bd70" />
-                <Label Name="MerchantSubtitle" StyleClasses="LabelSubText" Text="{Loc 'wh40k-merchant-subtitle'}" FontColorOverride="#8f9aa5" />
+                <Label Name="MerchantTitle" ClipText="True" StyleClasses="LabelHeading" />
+                <Label Name="MerchantSubtitle" StyleClasses="LabelSubText" Text="{Loc 'wh40k-merchant-subtitle'}" />
             </BoxContainer>
             <BoxContainer Orientation="Vertical" HorizontalAlignment="Right" MinWidth="200">
                 <Label Name="RefreshLabel" HorizontalAlignment="Right" StyleClasses="LabelSubText" FontColorOverride="#e4bd70" />
-                <Label Name="CycleLabel" HorizontalAlignment="Right" StyleClasses="LabelSubText" FontColorOverride="#8f9aa5" />
+                <Label Name="CycleLabel" HorizontalAlignment="Right" StyleClasses="LabelSubText" />
             </BoxContainer>
         </BoxContainer>
         <PanelContainer StyleClasses="Inset" Margin="0 0 0 8">
@@ -26,7 +26,7 @@
         <ScrollContainer Name="OffersScroll" VerticalExpand="True" HScrollEnabled="False">
             <BoxContainer Name="OffersContainer" Orientation="Vertical" HorizontalExpand="True" Margin="0 0 6 0" />
         </ScrollContainer>
-        <Label Name="FooterLabel" Margin="0 8 0 0" StyleClasses="LabelSubText" FontColorOverride="#7d8791" />
+        <Label Name="FooterLabel" Margin="0 8 0 0" StyleClasses="LabelSubText" />
         <BoxContainer Name="AppraisalRow" Orientation="Horizontal" Margin="0 8 0 0" Visible="False">
             <Button Name="AppraiseButton" Text="{Loc 'wh40k-service-appraise'}" />
             <Label Name="AppraisalLabel" HorizontalExpand="True" Margin="8 0" />

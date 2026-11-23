@@ -1,4 +1,5 @@
 <BoxContainer xmlns="https://spacestation14.io"
+              xmlns:creation="clr-namespace:Content.Client._WH40K.CharacterCreation"
               Orientation="Vertical"
               HorizontalExpand="True"
               VerticalExpand="True">
@@ -13,13 +14,17 @@
 
     <!-- Item list -->
     <BoxContainer Name="MarkingSelectorContainer" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-        <ScrollContainer MinHeight="500" VerticalExpand="True" HorizontalExpand="True">
+        <ScrollContainer Name="LegacyListScroll" MinHeight="500" VerticalExpand="True" HorizontalExpand="True">
             <ItemList Name="MarkingList" VerticalExpand="True" />
         </ScrollContainer>
 
         <!-- Color sliders -->
-        <ScrollContainer MinHeight="200" HorizontalExpand="True">
+        <ScrollContainer Name="TileScroll" MinHeight="254" MaxHeight="254" HorizontalExpand="True" HScrollEnabled="False" Visible="False">
+            <creation:Wh40kPreviewGrid Name="Tiles" HorizontalExpand="True"/>
+        </ScrollContainer>
+        <ScrollContainer Name="LegacyColorScroll" MinHeight="200" HorizontalExpand="True">
             <BoxContainer Name="ColorSelectorContainer" HorizontalExpand="True" />
         </ScrollContainer>
+        <BoxContainer Name="PaletteContainer" Orientation="Vertical" HorizontalAlignment="Center" Visible="False" />
     </BoxContainer>
 </BoxContainer>

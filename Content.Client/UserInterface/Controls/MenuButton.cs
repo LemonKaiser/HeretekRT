@@ -8,6 +8,9 @@ namespace Content.Client.UserInterface.Controls;
 
 public sealed partial class MenuButton : ContainerButton
 {
+    public const string StylePropertyIconColor = "menu-icon-color";
+    public const string StylePropertyIconHoverColor = "menu-icon-hover-color";
+    public const string StylePropertyIconPressedColor = "menu-icon-pressed-color";
     [Dependency] private IInputManager _inputManager = default!;
     public const string StyleClassLabelTopButton = "topButtonLabel";
     public const string StyleClassRedTopButton = "topButtonLabel";
@@ -19,8 +22,12 @@ public sealed partial class MenuButton : ContainerButton
     private static readonly Color ColorPressed = Color.FromHex("#878787");
 
     private const float VertPad = 8f;
-    private Color NormalColor => HasStyleClass(StyleClassRedTopButton) ? ColorRedNormal : ColorNormal;
-    private Color HoveredColor => HasStyleClass(StyleClassRedTopButton) ? ColorRedHovered : ColorHovered;
+    private Color NormalColor => GetIconColor(StylePropertyIconColor, HasStyleClass(StyleClassRedTopButton) ? ColorRedNormal : ColorNormal);
+    private Color HoveredColor => GetIconColor(StylePropertyIconHoverColor, HasStyleClass(StyleClassRedTopButton) ? ColorRedHovered : ColorHovered);
+    private Color PressedColor => GetIconColor(StylePropertyIconPressedColor, ColorPressed);
+
+    private Color GetIconColor(string property, Color fallback) =>
+        TryGetStyleProperty<Color>(property, out var color) ? color : fallback;
 
     private BoundKeyFunction _function;
     private readonly BoxContainer _root;
@@ -77,6 +84,8 @@ public sealed partial class MenuButton : ContainerButton
 
     protected override void EnteredTree()
     {
+        base.EnteredTree();
+        UserInterfaceManager.GetUIController<Content.Client._WH40K.UserInterface.Wh40kInterfaceUIController>().RegisterFloatingPanel(this);
         _inputManager.OnKeyBindingAdded += OnKeyBindingChanged;
         _inputManager.OnKeyBindingRemoved += OnKeyBindingChanged;
         _inputManager.OnInputModeChanged += OnKeyBindingChanged;
@@ -84,9 +93,11 @@ public sealed partial class MenuButton : ContainerButton
 
     protected override void ExitedTree()
     {
+        UserInterfaceManager.GetUIController<Content.Client._WH40K.UserInterface.Wh40kInterfaceUIController>().UnregisterFloatingPanel(this);
         _inputManager.OnKeyBindingAdded -= OnKeyBindingChanged;
         _inputManager.OnKeyBindingRemoved -= OnKeyBindingChanged;
         _inputManager.OnInputModeChanged -= OnKeyBindingChanged;
+        base.ExitedTree();
     }
 
 
@@ -118,8 +129,8 @@ public sealed partial class MenuButton : ContainerButton
                 break;
 
             case DrawModeEnum.Pressed:
-                _buttonIcon.ModulateSelfOverride = ColorPressed;
-                _buttonLabel.ModulateSelfOverride = ColorPressed;
+                _buttonIcon.ModulateSelfOverride = PressedColor;
+                _buttonLabel.ModulateSelfOverride = PressedColor;
                 break;
 
             case DrawModeEnum.Hover:

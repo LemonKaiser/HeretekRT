@@ -1,5 +1,6 @@
 using System.Numerics;
 using System.Linq;
+using Content.Client._WH40K.UserInterface;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Systems.Chat.RichText;
 using Content.Shared.CCVar;
@@ -26,9 +27,8 @@ public sealed partial class EmojiPickerPopup : Popup
     private const int EmojiColumns = 6;
     private const int RecentLimit = 24;
     private const float EmojiButtonSize = 48f;
-    private static readonly Color PanelBackgroundColor = Color.FromHex("#0A0907E8");
-    private static readonly Color RailBackgroundColor = Color.FromHex("#070605C2");
-    private static readonly Color ContentBackgroundColor = Color.FromHex("#0D0B08D1");
+    private static readonly Color RailBackgroundColor = Color.FromHex("#07060533");
+    private static readonly Color ContentBackgroundColor = Color.FromHex("#0D0B0826");
     private static readonly Color BorderColor = Color.FromHex("#B6975499");
     private static readonly Color HeaderTextColor = Color.FromHex("#E5C879");
     private static readonly Color PreviewTextColor = Color.FromHex("#DFD7C3");
@@ -85,7 +85,7 @@ public sealed partial class EmojiPickerPopup : Popup
         var panel = new PanelContainer
         {
             MinSize = MinSize,
-            PanelOverride = CreateSurfaceStyle(PanelBackgroundColor, BorderColor, 8f),
+            PanelOverride = new Wh40kWindowStyleBox(),
         };
         AddChild(panel);
 
@@ -525,6 +525,18 @@ public sealed partial class EmojiPickerPopup : Popup
 
     private static string GetCategoryName(ChatEmojiCategory category)
         => Loc.GetString($"hud-chatbox-emoji-category-{category}");
+
+    protected override void EnteredTree()
+    {
+        base.EnteredTree();
+        UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().RegisterFloatingPanel(this);
+    }
+
+    protected override void ExitedTree()
+    {
+        UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().UnregisterFloatingPanel(this);
+        base.ExitedTree();
+    }
 
     protected override void Dispose(bool disposing)
     {

@@ -1,0 +1,29 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1200" viewBox="0 0 480 600" fill="none">
+  <defs>
+    <radialGradient id="halo" gradientUnits="userSpaceOnUse" cx="240" cy="300" r="200">
+      <stop stop-color="#9bb9a6" stop-opacity=".08"/>
+      <stop offset=".6" stop-color="#9bb9a6" stop-opacity=".035"/>
+      <stop offset="1" stop-color="#9bb9a6" stop-opacity="0"/>
+    </radialGradient>
+    <g id="side" stroke="#bfa56e">
+      <path d="M24 40h32M24 40v32M24 560h32M24 560v-32" stroke-opacity=".34"/>
+      <path d="M24 232h20l20 20v96l-20 20H24" stroke-opacity=".2"/>
+      <path d="M64 300h16" stroke-opacity=".2"/>
+      <circle cx="24" cy="232" r="1.5" fill="#bfa56e" fill-opacity=".25" stroke="none"/>
+      <circle cx="24" cy="368" r="1.5" fill="#bfa56e" fill-opacity=".25" stroke="none"/>
+    </g>
+  </defs>
+  <path d="M40 40V560M80 40V560M120 40V560M160 40V560M200 40V560M240 40V560M280 40V560M320 40V560M360 40V560M400 40V560M440 40V560M40 40H440M40 80H440M40 120H440M40 160H440M40 200H440M40 240H440M40 280H440M40 320H440M40 360H440M40 400H440M40 440H440M40 480H440M40 520H440M40 560H440" stroke="#829589" stroke-opacity=".055"/>
+  <circle cx="240" cy="300" r="200" fill="url(#halo)"/>
+  <g stroke="#bfa56e">
+    <circle cx="240" cy="300" r="160" stroke-opacity=".12"/>
+    <circle cx="240" cy="300" r="176" stroke-opacity=".07"/>
+    <path d="M240 112v16m0 344v16M144 204l10 10m172 172 10 10M144 396l10-10m172-172 10-10" stroke-opacity=".16"/>
+    <path d="M184 72h40m32 0h40M184 528h40m32 0h40" stroke-opacity=".25"/>
+  </g>
+  <use href="#side"/>
+  <use href="#side" transform="translate(480 0) scale(-1 1)"/>
+  <g fill="#bfa56e" fill-opacity=".4">
+    <path d="m240 67 6 5-6 5-6-5Zm0 456 6 5-6 5-6-5Z"/>
+  </g>
+</svg>

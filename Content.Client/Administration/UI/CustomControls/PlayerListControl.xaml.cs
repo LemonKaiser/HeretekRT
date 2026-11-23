@@ -45,7 +45,7 @@ public sealed partial class PlayerListControl : BoxContainer
         PopulateList(_adminSystem.PlayerList);
         FilterLineEdit.OnTextChanged += _ => FilterList();
         _adminSystem.PlayerListChanged += PopulateList;
-        BackgroundPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = new Color(54, 54, 54) };
+        BackgroundPanel.PanelOverride = Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Surface("#100D0A", horizontal: 0, vertical: 0);
     }
 
     public IReadOnlyList<PlayerInfo> PlayerInfo => _playerList;

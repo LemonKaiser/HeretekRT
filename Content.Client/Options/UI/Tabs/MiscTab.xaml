@@ -1,4 +1,5 @@
-﻿<tabs:MiscTab xmlns="https://spacestation14.io"
+<tabs:MiscTab xmlns:heritage="clr-namespace:Content.Client._WH40K.UserInterface"
+         xmlns="https://spacestation14.io"
               xmlns:tabs="clr-namespace:Content.Client.Options.UI.Tabs"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:ui="clr-namespace:Content.Client.Options.UI">
@@ -6,49 +7,50 @@
         <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
             <BoxContainer Orientation="Vertical" Margin="8 8 8 8" VerticalExpand="True">
                 <Label Text="{Loc 'ui-options-general-ui-style'}"
-                       StyleClasses="LabelKeyText"/>
+                       StyleClasses="Wh40kSectionHeading"/>
                 <ui:OptionDropDown Name="DropDownHudTheme" Title="{Loc 'ui-options-hud-theme'}" />
                 <ui:OptionDropDown Name="DropDownHudLayout" Title="{Loc 'ui-options-hud-layout'}" />
+                <heritage:Wh40kToggleSwitch Name="FrostedGlass" Text="{Loc 'wh40k-ui-frosted-glass'}" ToolTip="{Loc 'wh40k-ui-frosted-glass-tooltip'}" />
                 <Label Name="LanguageHeaderLabel"
                        Text="{Loc 'ui-options-general-language-translation'}"
-                       StyleClasses="LabelKeyText" />
+                       StyleClasses="Wh40kSectionHeading" />
                 <ui:OptionDropDown Name="DropDownLanguage" Title="{Loc 'ui-options-language'}" />
                 <Label Text="{Loc 'ui-options-general-lobby'}"
-                       StyleClasses="LabelKeyText"/>
+                       StyleClasses="Wh40kSectionHeading"/>
                 <ui:OptionDropDown Name="DropDownLobbyBackgroundType" Title="{Loc 'ui-options-lobby-background-type'}" />
                 <ui:OptionDropDown Name="DropDownLobbyStaticBackground" Title="{Loc 'ui-options-lobby-static-background'}" />
                 <ui:OptionDropDown Name="DropDownLobbyAnimatedBackground" Title="{Loc 'ui-options-lobby-animated-background'}" />
                 <ui:OptionSlider Name="LobbyPanelOpacitySlider" Title="{Loc 'ui-options-lobby-panel-opacity'}" />
-                <ui:OptionSlider Name="UiWindowOpacitySlider" Title="{Loc 'ui-options-ui-window-opacity'}" />
+                <ui:OptionSlider Name="UiWindowOpacitySlider" Title="{Loc 'wh40k-ui-glass-transparency'}" />
                 <Label Text="{Loc 'ui-options-general-discord'}"
-                       StyleClasses="LabelKeyText"/>
-                <CheckBox Name="DiscordRich" Text="{Loc 'ui-options-discordrich'}" />
+                       StyleClasses="Wh40kSectionHeading"/>
+                <heritage:Wh40kToggleSwitch Name="DiscordRich" Text="{Loc 'ui-options-discordrich'}" />
                 <Label Text="{Loc 'ui-options-general-speech'}"
-                       StyleClasses="LabelKeyText"/>
-                <CheckBox Name="ShowOocPatronColor" Text="{Loc 'ui-options-show-ooc-patron-color'}" />
-                <CheckBox Name="ShowLoocAboveHeadCheckBox" Text="{Loc 'ui-options-show-looc-on-head'}" />
-                <CheckBox Name="FancySpeechBubblesCheckBox" Text="{Loc 'ui-options-fancy-speech'}" />
-                <CheckBox Name="FancyNameBackgroundsCheckBox" Text="{Loc 'ui-options-fancy-name-background'}" />
-                <CheckBox Name="LogInChatCheckBox" Text="{Loc 'ui-options-log-in-chat'}" /> <!-- WD EDIT -->
-                <CheckBox Name="CoalesceIdenticalMessagesCheckBox" Text="{Loc 'ui-options-coalesce-identical-messages'}" /> <!-- WD EDIT -->
-                <CheckBox Name="DetailedExamineCheckBox" Text="{Loc 'ui-options-detailed-examine'}" /> <!-- Goobstation Change -->
-		<Label Text="{Loc 'ui-options-general-area-echo'}"
-                	StyleClasses="LabelKeyText"/> <!-- Mono -->
-                <CheckBox Name="AreaEchoCheckBox" Text="{Loc 'ui-options-area-echo-enabled'}" /> <!-- Mono -->
-                <CheckBox Name="AreaEchoHighResolutionCheckBox" Text="{Loc 'ui-options-area-echo-highres'}" /> <!-- Mono -->
-                <CheckBox Name="RadioNoiseCheckBox" Text="{Loc 'ui-options-radio-noise'}" /> <!-- Mono -->
+                       StyleClasses="Wh40kSectionHeading"/>
+                <heritage:Wh40kToggleSwitch Name="ShowOocPatronColor" Text="{Loc 'ui-options-show-ooc-patron-color'}" />
+                <heritage:Wh40kToggleSwitch Name="ShowLoocAboveHeadCheckBox" Text="{Loc 'ui-options-show-looc-on-head'}" />
+                <heritage:Wh40kToggleSwitch Name="FancySpeechBubblesCheckBox" Text="{Loc 'ui-options-fancy-speech'}" />
+                <heritage:Wh40kToggleSwitch Name="FancyNameBackgroundsCheckBox" Text="{Loc 'ui-options-fancy-name-background'}" />
+                <heritage:Wh40kToggleSwitch Name="LogInChatCheckBox" Text="{Loc 'ui-options-log-in-chat'}" /> <!-- WD EDIT -->
+                <heritage:Wh40kToggleSwitch Name="CoalesceIdenticalMessagesCheckBox" Text="{Loc 'ui-options-coalesce-identical-messages'}" /> <!-- WD EDIT -->
+                <heritage:Wh40kToggleSwitch Name="DetailedExamineCheckBox" Text="{Loc 'ui-options-detailed-examine'}" /> <!-- Goobstation Change -->
+                <Label Text="{Loc 'ui-options-general-area-echo'}"
+                       StyleClasses="Wh40kSectionHeading"/> <!-- Mono -->
+                <heritage:Wh40kToggleSwitch Name="AreaEchoCheckBox" Text="{Loc 'ui-options-area-echo-enabled'}" /> <!-- Mono -->
+                <heritage:Wh40kToggleSwitch Name="AreaEchoHighResolutionCheckBox" Text="{Loc 'ui-options-area-echo-highres'}" /> <!-- Mono -->
+                <heritage:Wh40kToggleSwitch Name="RadioNoiseCheckBox" Text="{Loc 'ui-options-radio-noise'}" /> <!-- Mono -->
                 <Label Text="{Loc 'ui-options-general-cursor'}"
-                       StyleClasses="LabelKeyText"/>
-                <CheckBox Name="ShowHeldItemCheckBox" Text="{Loc 'ui-options-show-held-item'}" />
+                       StyleClasses="Wh40kSectionHeading"/>
+                <heritage:Wh40kToggleSwitch Name="ShowHeldItemCheckBox" Text="{Loc 'ui-options-show-held-item'}" />
                 <ui:OptionSlider Name="InHandInteractionParticleScaleSlider" Title="{Loc 'ui-options-inhand-interaction-particle-scale'}" />
-                <CheckBox Name="ShowCombatModeIndicatorsCheckBox" Text="{Loc 'ui-options-show-combat-mode-indicators'}" />
+                <heritage:Wh40kToggleSwitch Name="ShowCombatModeIndicatorsCheckBox" Text="{Loc 'ui-options-show-combat-mode-indicators'}" />
                 <Label Text="{Loc 'ui-options-general-storage'}"
-                       StyleClasses="LabelKeyText"/>
+                       StyleClasses="Wh40kSectionHeading"/>
                 <ui:OptionDropDown Name="DropDownDurabilityBarVisibility" Title="{Loc 'ui-options-durability-bar-visibility'}" />
                 <ui:OptionDropDown Name="DropDownDurabilityBarColor" Title="{Loc 'ui-options-durability-bar-color'}" />
-                <CheckBox Name="OpaqueStorageWindowCheckBox" Text="{Loc 'ui-options-opaque-storage-window'}" />
-                <CheckBox Name="StaticStorageUI" Text="{Loc 'ui-options-static-storage-ui'}" />
-                <!-- <CheckBox Name="ToggleWalk" Text="{Loc 'ui-options-hotkey-toggle-walk'}" /> -->
+                <heritage:Wh40kToggleSwitch Name="OpaqueStorageWindowCheckBox" Text="{Loc 'ui-options-opaque-storage-window'}" />
+                <heritage:Wh40kToggleSwitch Name="StaticStorageUI" Text="{Loc 'ui-options-static-storage-ui'}" />
+                <!-- <heritage:Wh40kToggleSwitch Name="ToggleWalk" Text="{Loc 'ui-options-hotkey-toggle-walk'}" /> -->
             </BoxContainer>
         </ScrollContainer>
         <ui:OptionsTabControlRow Name="Control" Access="Public" />

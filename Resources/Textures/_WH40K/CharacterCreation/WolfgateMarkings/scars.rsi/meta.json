@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Drawn by Ubaser",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "scar_chest_bullets",
+      "directions": 4
+    },
+    {
+      "name": "scar_face_1",
+      "directions": 4
+    },
+    {
+      "name": "scar_face_2",
+      "directions": 4
+    },
+    {
+      "name": "scar_neck",
+      "directions": 4
+    },
+    {
+      "name": "scar_stomach_bullets",
+      "directions": 4
+    }
+  ]
+}

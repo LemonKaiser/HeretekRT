@@ -237,12 +237,7 @@ public sealed partial class FactionDashboard : BoxContainer
 
     private static PanelContainer NewPanel() => new()
     {
-        PanelOverride = new StyleBoxFlat
-        {
-            BackgroundColor = Color.FromHex("#242424"),
-            ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
-            ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10,
-        },
+        PanelOverride = UserInterface.Wh40kInterfaceTheme.Surface("#18140F", horizontal: 12, vertical: 10),
     };
     private static Button NewButton(string key, bool accent = false) => new LobbyFactionButton
     {
@@ -253,12 +248,7 @@ public sealed partial class FactionDashboard : BoxContainer
     {
         button.AddStyleClass(StyleNano.ButtonCaution);
         button.Label.FontOverride = Wh40kOnboardingTypography.Text(IoCManager.Resolve<IResourceCache>(), 12);
-        button.StyleBoxOverride = new StyleBoxFlat
-        {
-            BackgroundColor = Color.White, BorderColor = Color.FromHex("#D0C6C6"), BorderThickness = new Thickness(1),
-            ContentMarginLeftOverride = 14, ContentMarginRightOverride = 14,
-            ContentMarginTopOverride = 5, ContentMarginBottomOverride = 5,
-        };
+        button.StyleBoxOverride = null;
     }
 
     private static void AddEmpty(Control parent, string key)

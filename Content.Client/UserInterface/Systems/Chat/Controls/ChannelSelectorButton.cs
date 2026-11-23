@@ -9,6 +9,7 @@ public sealed class ChannelSelectorButton : ChatPopupButton<ChannelSelectorPopup
     public event Action<ChatSelectChannel>? OnChannelSelect;
 
     public ChatSelectChannel SelectedChannel { get; private set; }
+    public bool TintWithChannelColor { get; set; } = true;
 
     private const int SelectorDropdownOffset = 38;
 
@@ -72,20 +73,21 @@ public sealed class ChannelSelectorButton : ChatPopupButton<ChannelSelectorPopup
     // Goobstation - Starlight collective mind port
     public void UpdateChannelSelectButton(ChatSelectChannel channel, Shared.Radio.RadioChannelPrototype? radio, CollectiveMindPrototype? collectiveMind = null)
     {
+        Modulate = Color.White;
         if (radio != null)
         {
             Text = Loc.GetString(radio.Name);
-            Modulate = radio?.Color ?? ChannelSelectColor(channel);
+            Label.FontColorOverride = TintWithChannelColor ? (radio?.Color ?? ChannelSelectColor(channel)) : null;
         }
         else if (collectiveMind != null)
         {
             Text = Loc.GetString(collectiveMind.Name);
-            Modulate = collectiveMind.Color;
+            Label.FontColorOverride = TintWithChannelColor ? collectiveMind.Color : null;
         }
         else
         {
             Text = ChannelSelectorName(channel);
-            Modulate = ChannelSelectColor(channel);
+            Label.FontColorOverride = TintWithChannelColor ? ChannelSelectColor(channel) : null;
         }
     }
 }

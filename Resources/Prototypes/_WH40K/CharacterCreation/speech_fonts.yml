@@ -1,0 +1,143 @@
+- type: font
+  id: Wh40kAlegreya
+  path: /Fonts/_WH40K/Speech/Alegreya/Alegreya-Regular.ttf
+
+- type: font
+  id: Wh40kAlegreyaBold
+  path: /Fonts/_WH40K/Speech/Alegreya/Alegreya-Bold.ttf
+
+- type: font
+  id: Wh40kAlegreyaItalic
+  path: /Fonts/_WH40K/Speech/Alegreya/Alegreya-Italic.ttf
+
+- type: font
+  id: Wh40kAlegreyaBoldItalic
+  path: /Fonts/_WH40K/Speech/Alegreya/Alegreya-BoldItalic.ttf
+
+- type: font
+  id: Wh40kExo2
+  path: /Fonts/_WH40K/Speech/Exo2/Exo2-Regular.ttf
+
+- type: font
+  id: Wh40kExo2Bold
+  path: /Fonts/_WH40K/Speech/Exo2/Exo2-Bold.ttf
+
+- type: font
+  id: Wh40kExo2Italic
+  path: /Fonts/_WH40K/Speech/Exo2/Exo2-Italic.ttf
+
+- type: font
+  id: Wh40kExo2BoldItalic
+  path: /Fonts/_WH40K/Speech/Exo2/Exo2-BoldItalic.ttf
+
+- type: font
+  id: Wh40kJetBrainsMono
+  path: /Fonts/_WH40K/Speech/JetBrainsMono/JetBrainsMono-Regular.ttf
+
+- type: font
+  id: Wh40kJetBrainsMonoBold
+  path: /Fonts/_WH40K/Speech/JetBrainsMono/JetBrainsMono-Bold.ttf
+
+- type: font
+  id: Wh40kJetBrainsMonoItalic
+  path: /Fonts/_WH40K/Speech/JetBrainsMono/JetBrainsMono-Italic.ttf
+
+- type: font
+  id: Wh40kJetBrainsMonoBoldItalic
+  path: /Fonts/_WH40K/Speech/JetBrainsMono/JetBrainsMono-BoldItalic.ttf
+
+- type: font
+  id: Wh40kBellota
+  path: /Fonts/_WH40K/Speech/Bellota/Bellota-Regular.ttf
+
+- type: font
+  id: Wh40kBellotaBold
+  path: /Fonts/_WH40K/Speech/Bellota/Bellota-Bold.ttf
+
+- type: font
+  id: Wh40kBellotaItalic
+  path: /Fonts/_WH40K/Speech/Bellota/Bellota-Italic.ttf
+
+- type: font
+  id: Wh40kBellotaBoldItalic
+  path: /Fonts/_WH40K/Speech/Bellota/Bellota-BoldItalic.ttf
+
+- type: font
+  id: Wh40kBrygada1918
+  path: /Fonts/_WH40K/Speech/Brygada1918/Brygada1918-Regular.ttf
+
+- type: font
+  id: Wh40kBrygada1918Bold
+  path: /Fonts/_WH40K/Speech/Brygada1918/Brygada1918-Bold.ttf
+
+- type: font
+  id: Wh40kBrygada1918Italic
+  path: /Fonts/_WH40K/Speech/Brygada1918/Brygada1918-Italic.ttf
+
+- type: font
+  id: Wh40kBrygada1918BoldItalic
+  path: /Fonts/_WH40K/Speech/Brygada1918/Brygada1918-BoldItalic.ttf
+
+- type: font
+  id: Wh40kCormorantGaramond
+  path: /Fonts/_WH40K/Speech/CormorantGaramond/CormorantGaramond-Regular.ttf
+
+- type: font
+  id: Wh40kCormorantGaramondBold
+  path: /Fonts/_WH40K/Speech/CormorantGaramond/CormorantGaramond-Bold.ttf
+
+- type: font
+  id: Wh40kCormorantGaramondItalic
+  path: /Fonts/_WH40K/Speech/CormorantGaramond/CormorantGaramond-Italic.ttf
+
+- type: font
+  id: Wh40kCormorantGaramondBoldItalic
+  path: /Fonts/_WH40K/Speech/CormorantGaramond/CormorantGaramond-BoldItalic.ttf
+
+- type: font
+  id: Wh40kShantellSans
+  path: /Fonts/_WH40K/Speech/ShantellSans/ShantellSans-Regular.ttf
+
+- type: font
+  id: Wh40kShantellSansBold
+  path: /Fonts/_WH40K/Speech/ShantellSans/ShantellSans-Bold.ttf
+
+- type: font
+  id: Wh40kShantellSansItalic
+  path: /Fonts/_WH40K/Speech/ShantellSans/ShantellSans-Italic.ttf
+
+- type: font
+  id: Wh40kShantellSansBoldItalic
+  path: /Fonts/_WH40K/Speech/ShantellSans/ShantellSans-BoldItalic.ttf
+
+- type: font
+  id: Wh40kTiny5Mono
+  path: /Fonts/_WH40K/Speech/Tiny5Mono/Tiny5Mono-Regular.ttf
+
+- type: font
+  id: Wh40kTiny5MonoBold
+  path: /Fonts/_WH40K/Speech/Tiny5Mono/Tiny5Mono-Bold.ttf
+
+- type: font
+  id: Wh40kTiny5MonoItalic
+  path: /Fonts/_WH40K/Speech/Tiny5Mono/Tiny5Mono-Italic.ttf
+
+- type: font
+  id: Wh40kTiny5MonoBoldItalic
+  path: /Fonts/_WH40K/Speech/Tiny5Mono/Tiny5Mono-BoldItalic.ttf
+
+- type: font
+  id: Wh40kYsabeau
+  path: /Fonts/_WH40K/Speech/Ysabeau/Ysabeau-Regular.ttf
+
+- type: font
+  id: Wh40kYsabeauBold
+  path: /Fonts/_WH40K/Speech/Ysabeau/Ysabeau-Bold.ttf
+
+- type: font
+  id: Wh40kYsabeauItalic
+  path: /Fonts/_WH40K/Speech/Ysabeau/Ysabeau-Italic.ttf
+
+- type: font
+  id: Wh40kYsabeauBoldItalic
+  path: /Fonts/_WH40K/Speech/Ysabeau/Ysabeau-BoldItalic.ttf

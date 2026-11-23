@@ -7,13 +7,13 @@
     <BoxContainer Margin="10 2 10 2" Orientation="Vertical">
         <PanelContainer VerticalExpand="True" HorizontalExpand="True">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#696969"/>
+                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#75613D" BackgroundColor="#18140F"/>
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal">
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#0f0f0f"/>
+                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <BoxContainer Orientation="Horizontal">
                             <Label Text="{Loc 'bank-atm-menu-balance-label'}"
@@ -28,7 +28,7 @@
                 <BoxContainer Orientation="Horizontal">
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#0f0f0f"/>
+                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <BoxContainer Orientation="Horizontal">
                             <Label Text="{Loc 'bank-atm-menu-savings-label'}"
@@ -45,7 +45,7 @@
                 <RichTextLabel Name="FactionTaxLabel" Visible="False" Margin="6 4"/>
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#3d3d3d" BackgroundColor="#111111" />
+                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#100D0A" />
                     </PanelContainer.PanelOverride>
                 <Button Name="WithdrawButton"
                         Text="{Loc 'bank-atm-menu-withdraw-button'}"
@@ -54,12 +54,12 @@
                 </PanelContainer>
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#262626" BackgroundColor="#111111" />
+                        <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#100D0A" />
                     </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Horizontal">
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#0f0f0f"/>
+                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <BoxContainer Orientation="Horizontal">
                     <Label Text="{Loc 'bank-atm-menu-deposit-label'}"
@@ -74,12 +74,12 @@
                 </PanelContainer>
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#262626" BackgroundColor="#111111" />
+                        <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#100D0A" />
                     </PanelContainer.PanelOverride>
                     <BoxContainer Orientation="Horizontal">
                         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2">
                             <PanelContainer.PanelOverride>
-                                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#303030" BackgroundColor="#0f0f0f"/>
+                                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                             </PanelContainer.PanelOverride>
                             <BoxContainer Orientation="Horizontal">
                                 <Label Text="{Loc 'bank-atm-menu-deposit-label-ut'}"
@@ -94,7 +94,7 @@
                 </PanelContainer>
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#3d3d3d" BackgroundColor="#111111" />
+                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#100D0A" />
                     </PanelContainer.PanelOverride>
                 <Button Name="DepositButton"
                         Text="{Loc 'bank-atm-menu-deposit-button'}"

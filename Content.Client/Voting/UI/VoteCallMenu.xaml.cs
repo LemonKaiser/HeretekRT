@@ -21,7 +21,7 @@ using Robust.Shared.Timing;
 namespace Content.Client.Voting.UI
 {
     [GenerateTypedNameReferences]
-    public sealed partial class VoteCallMenu : BaseWindow
+    public sealed partial class VoteCallMenu : Content.Client.UserInterface.Controls.FancyWindow
     {
         [Dependency] private IClientConsoleHost _consoleHost = default!;
         [Dependency] private IVoteManager _voteManager = default!;
@@ -64,8 +64,9 @@ namespace Content.Client.Voting.UI
             _votingSystem = _entityManager.System<VotingSystem>();
 
             Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSpace;
-            CloseButton.OnPressed += _ => Close();
             VoteNotTrustedLabel.Text = Loc.GetString("ui-vote-trusted-users-notice", ("timeReq", _cfg.GetCVar(CCVars.VotekickEligibleVoterDeathtime)));
+            VoteNotTrustedLabel.ToolTip = VoteNotTrustedLabel.Text;
+            VoteWarningLabel.ToolTip = VoteWarningLabel.Text;
 
             foreach (StandardVoteType voteType in Enum.GetValues<StandardVoteType>())
             {

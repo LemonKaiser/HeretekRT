@@ -16,14 +16,14 @@
                     </PanelContainer.PanelOverride>
                 </PanelContainer>
                 <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
-                             Modulate="#B69754A8"
-                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                             Modulate="#FFFFFFA8"
+                             TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                 <Label Name="CharacteristicsTitle" Access="Public" Text="{Loc 'heretek-onboarding-characteristics'}"
                        FontColorOverride="#E5C879" HorizontalAlignment="Center"
                        StyleClasses="Wh40kOnboardingSectionTitle" />
                 <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
-                                                        MouseFilter="Ignore" Modulate="#B69754A8"
-                                                        TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                                                        MouseFilter="Ignore" Modulate="#FFFFFFA8"
+                                                        TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                 <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
@@ -35,7 +35,7 @@
 
             <PanelContainer HorizontalExpand="True" Margin="0 5 0 0">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BackgroundColor="#080907A8" BorderColor="#B697547A" BorderThickness="1"
+                    <graphics:StyleBoxFlat BackgroundColor="#100D0AA8" BorderColor="#B697547A" BorderThickness="1"
                                            ContentMarginLeftOverride="14" ContentMarginRightOverride="14"
                                            ContentMarginTopOverride="11" ContentMarginBottomOverride="11" />
                 </PanelContainer.PanelOverride>
@@ -76,7 +76,7 @@
                                 <Button Name="DecreaseButton" Access="Public" Text="−" SetWidth="36" MinHeight="38" />
                                 <PanelContainer SetWidth="54" MinHeight="38">
                                     <PanelContainer.PanelOverride>
-                                        <graphics:StyleBoxFlat BackgroundColor="#100F08CC" BorderColor="#B6975452" BorderThickness="1" />
+                                        <graphics:StyleBoxFlat BackgroundColor="#100D0ACC" BorderColor="#B6975452" BorderThickness="1" />
                                     </PanelContainer.PanelOverride>
                                     <Label Name="SelectedCharacteristicPoints" Access="Public" Align="Center" FontColorOverride="#E5C879"
                                            StyleClasses="Wh40kOnboardingTechnicalValue" />
@@ -92,7 +92,7 @@
 
             <PanelContainer HorizontalExpand="True" Margin="0 5 0 0">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BackgroundColor="#08090776" BorderColor="#B6975447" BorderThickness="1"
+                    <graphics:StyleBoxFlat BackgroundColor="#100D0A76" BorderColor="#B6975447" BorderThickness="1"
                                            ContentMarginLeftOverride="16" ContentMarginRightOverride="16"
                                            ContentMarginTopOverride="14" ContentMarginBottomOverride="14" />
                 </PanelContainer.PanelOverride>

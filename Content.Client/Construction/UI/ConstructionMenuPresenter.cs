@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Numerics;
-using Content.Client.Stylesheets;
+using Content.Client._WH40K.UserInterface;
 using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Whitelist;
@@ -38,7 +38,7 @@ namespace Content.Client.Construction.UI
         private ConstructionSystem? _constructionSystem;
         private ConstructionPrototype? _selected;
         private List<ConstructionPrototype> _favoritedRecipes = [];
-        private Dictionary<string, TextureButton> _recipeButtons = new();
+        private Dictionary<string, ContainerButton> _recipeButtons = new();
         private string _selectedCategory = string.Empty;
         private string _favoriteCatName = "construction-category-favorites";
         private string _forAllCategoryName = "construction-category-all";
@@ -220,7 +220,8 @@ namespace Content.Client.Construction.UI
             recipesList.Clear();
 
             var recipesGrid = _constructionView.RecipesGrid;
-            recipesGrid.RemoveAllChildren();
+            recipesGrid.DisposeAllChildren();
+            _recipeButtons.Clear();
 
             _constructionView.RecipesGridScrollContainer.Visible = _constructionView.GridViewButtonPressed;
             _constructionView.Recipes.Visible = !_constructionView.GridViewButtonPressed;
@@ -229,20 +230,20 @@ namespace Content.Client.Construction.UI
             {
                 foreach (var recipe in recipes)
                 {
-                    var itemButton = new TextureButton
+                    var itemButton = new ContainerButton
                     {
-                        TextureNormal = _spriteSystem.Frame0(recipe.Icon),
-                        VerticalAlignment = Control.VAlignment.Center,
+                        SetSize = new Vector2(40),
                         Name = recipe.ID,
                         ToolTip = recipe.LocalizedName,
-                        Scale = new Vector2(1.35f),
                         ToggleMode = true,
                     };
-                    var itemButtonPanelContainer = new PanelContainer
+                    itemButton.AddChild(new TextureRect
                     {
-                        PanelOverride = new StyleBoxFlat { BackgroundColor = StyleNano.ButtonColorDefault },
-                        Children = { itemButton },
-                    };
+                        Texture = _spriteSystem.Frame0(recipe.Icon),
+                        CanShrink = true,
+                        Stretch = TextureRect.StretchMode.KeepAspectCentered,
+                        MouseFilter = Control.MouseFilterMode.Ignore,
+                    });
 
                     itemButton.OnToggled += buttonToggledEventArgs =>
                     {
@@ -250,7 +251,7 @@ namespace Content.Client.Construction.UI
 
                         if (buttonToggledEventArgs.Pressed &&
                             _selected != null &&
-                            _recipeButtons.TryGetValue(_selected.ID, out var oldButton))
+                            _recipeButtons.TryGetValue(_selected.ID, out var oldButton) && oldButton != itemButton)
                         {
                             oldButton.Pressed = false;
                             SelectGridButton(oldButton, false);
@@ -259,7 +260,7 @@ namespace Content.Client.Construction.UI
                         OnGridViewRecipeSelected(this, buttonToggledEventArgs.Pressed ? recipe : null);
                     };
 
-                    recipesGrid.AddChild(itemButtonPanelContainer);
+                    recipesGrid.AddChild(itemButton);
                     _recipeButtons[recipe.ID] = itemButton;
                     var isCurrentButtonSelected = _selected == recipe;
                     itemButton.Pressed = isCurrentButtonSelected;
@@ -275,14 +276,9 @@ namespace Content.Client.Construction.UI
             }
         }
 
-        private void SelectGridButton(TextureButton button, bool select)
+        private void SelectGridButton(ContainerButton button, bool select)
         {
-            if (button.Parent is not PanelContainer buttonPanel)
-                return;
-
-            button.Modulate = select ? Color.Green : Color.White;
-            var buttonColor = select ? StyleNano.ButtonColorDefault : Color.Transparent;
-            buttonPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = buttonColor };
+            button.StyleBoxOverride = Wh40kInterfaceTheme.BitmapSurface(select ? "button-selected" : "button", 4, 4);
         }
 
         private void PopulateCategories(string? selectCategory = null)

@@ -199,11 +199,7 @@ public sealed partial class LobbyGui : UIScreen
         SetAnchorPreset(OnboardingPages, LayoutPreset.Wide);
         SetAnchorPreset(OnboardingPreviewField, LayoutPreset.Wide);
         OnboardingPreviewField.OnResized += UpdateOnboardingPreviewSpriteViewport;
-        SetAnchorPreset(OnboardingPreviewLogo, LayoutPreset.Center);
-        SetMarginLeft(OnboardingPreviewLogo, -95);
-        SetMarginTop(OnboardingPreviewLogo, -54);
-        SetMarginRight(OnboardingPreviewLogo, 95);
-        SetMarginBottom(OnboardingPreviewLogo, 53);
+        SetAnchorPreset(OnboardingPreviewLogo, LayoutPreset.Wide);
         SetAnchorPreset(OnboardingPreviewTopRule, LayoutPreset.CenterTop);
         SetMarginLeft(OnboardingPreviewTopRule, -29);
         SetMarginTop(OnboardingPreviewTopRule, 12);
@@ -495,7 +491,6 @@ public sealed partial class LobbyGui : UIScreen
         OnboardingAppearancePage.PortraitsDescription.FontOverride = _onboardingSectionDescriptionFont;
         OnboardingAppearancePage.BasicsTitle.FontOverride = _onboardingSectionTitleFont;
         OnboardingAppearancePage.HairTitle.FontOverride = _onboardingSectionTitleFont;
-        OnboardingAppearancePage.EyesTitle.FontOverride = _onboardingSectionTitleFont;
         OnboardingAppearancePage.MarkingsTitle.FontOverride = _onboardingSectionTitleFont;
         OnboardingOriginPage.OriginTitle.FontOverride = _onboardingSectionTitleFont;
         OnboardingTraitsPage.TraitTitle.FontOverride = _onboardingSectionTitleFont;
@@ -513,21 +508,10 @@ public sealed partial class LobbyGui : UIScreen
         OnboardingCancelButton.TextAlign = Label.AlignMode.Center;
         OnboardingCancelButton.Label.FontOverride = _technicalStrongFont;
         OnboardingCancelButton.Label.FontColorOverride = Paper;
-        OnboardingCancelButton.StyleBoxOverride = CreateStyleBox(
-            Color.FromHex("#0C0B08D1"),
-            Color.FromHex("#B697548A"),
-            16f,
-            10f);
 
         OnboardingCompleteButton.DefaultCursorShape = Control.CursorShape.Hand;
         OnboardingCompleteButton.TextAlign = Label.AlignMode.Center;
         OnboardingCompleteButton.Label.FontOverride = _technicalStrongFont;
-        OnboardingCompleteButton.Label.FontColorOverride = Paper;
-        OnboardingCompleteButton.StyleBoxOverride = CreateStyleBox(
-            Color.FromHex("#3D3418"),
-            BrightGold,
-            10f,
-            5f);
         OnboardingCompleteButton.OnPressed += _ =>
         {
             if (_onboardingDraft is null || OnboardingCompleteButton.Disabled)
@@ -546,7 +530,6 @@ public sealed partial class LobbyGui : UIScreen
             (OnboardingPortraitsButton, OnboardingPortraitsIndex, OnboardingPortraitsTitle, OnboardingPortraitsDescription, Wh40kAppearanceSection.Portraits),
             (OnboardingAppearanceBasicsButton, OnboardingAppearanceBasicsIndex, OnboardingAppearanceBasicsTitle, OnboardingAppearanceBasicsDescription, Wh40kAppearanceSection.Basics),
             (OnboardingHairButton, OnboardingHairIndex, OnboardingHairTitle, OnboardingHairDescription, Wh40kAppearanceSection.Hair),
-            (OnboardingEyesButton, OnboardingEyesIndex, OnboardingEyesTitle, OnboardingEyesDescription, Wh40kAppearanceSection.Eyes),
             (OnboardingAppearanceTraitsButton, OnboardingAppearanceTraitsIndex, OnboardingAppearanceTraitsTitle, OnboardingAppearanceTraitsDescription, Wh40kAppearanceSection.Markings),
             (OnboardingAppearanceFlavorTextButton, OnboardingAppearanceFlavorTextIndex, OnboardingAppearanceFlavorTextTitle, OnboardingAppearanceFlavorTextDescription, Wh40kAppearanceSection.FlavorText),
         };
@@ -604,10 +587,11 @@ public sealed partial class LobbyGui : UIScreen
             UpdateOnboardingCharacteristicsNavigation();
             RefreshOnboardingResult();
         };
+        ApplyOnboardingTheme();
         ApplyOnboardingTab(0);
     }
 
-    private void RequestOnboardingTab(int index)
+    internal void RequestOnboardingTab(int index)
     {
         if (index < 0 || index >= _onboardingTabs.Count)
             return;
@@ -690,14 +674,14 @@ public sealed partial class LobbyGui : UIScreen
         foreach (var candidate in _onboardingTabs)
         {
             var selected = candidate.Index == _selectedOnboardingTab;
-            candidate.Button.StyleBoxOverride = CreateOnboardingTabStyleBox(selected);
-            candidate.Button.Label.FontColorOverride = selected ? BrightGold : Color.FromHex("#AAA18F");
+            candidate.Button.ToggleMode = true;
+            candidate.Button.Pressed = selected;
         }
 
         RefreshOnboardingResponsiveLayout();
     }
 
-    private void SelectOnboardingAppearanceSection(Wh40kAppearanceSection section)
+    internal void SelectOnboardingAppearanceSection(Wh40kAppearanceSection section)
     {
         _selectedOnboardingAppearanceSection = section;
         OnboardingAppearancePage.SelectSection(section);
@@ -1309,6 +1293,9 @@ public sealed partial class LobbyGui : UIScreen
 
     private void ConfigureCommunityButton(Button button, string texturePath, CVarDef<string> linkCVar)
     {
+        // Keep a square slot even when the shared Button style has a larger minimum height.
+        button.MinSize = button.MaxSize = button.SetSize = new Vector2(32f);
+        button.VerticalAlignment = VAlignment.Center;
         button.Text = string.Empty;
         button.DefaultCursorShape = Control.CursorShape.Hand;
         var icon = new TextureRect
@@ -1420,22 +1407,6 @@ public sealed partial class LobbyGui : UIScreen
         };
     }
 
-    private static StyleBoxFlat CreateOnboardingTabStyleBox(bool selected)
-    {
-        return new StyleBoxFlat
-        {
-            BackgroundColor = selected ? Color.FromHex("#392D128A") : Color.Transparent,
-            BorderColor = selected ? Color.FromHex("#E5C87994") : Color.FromHex("#B697543D"),
-            BorderThickness = selected
-                ? new Thickness(1f, 1f, 1f, 2f)
-                : new Thickness(0f, 0f, 0f, 1f),
-            ContentMarginLeftOverride = 8f,
-            ContentMarginRightOverride = 8f,
-            ContentMarginTopOverride = 9f,
-            ContentMarginBottomOverride = 8f,
-        };
-    }
-
     private static LobbyRoundedStyleBox CreateUtilityStyleBox(Color background, Color border, float cornerRadius)
     {
         return new LobbyRoundedStyleBox
@@ -1460,7 +1431,7 @@ public sealed partial class LobbyGui : UIScreen
             BackgroundColor = background,
             BorderColor = border,
             BorderThickness = new Thickness(1f),
-            CornerRadius = 15f,
+            CornerRadius = 16f,
             HighlightColor = Color.FromHex("#FFF8E019"),
             ShadowColor = Color.Transparent,
             ContentMarginLeftOverride = 0f,
@@ -1519,6 +1490,8 @@ public sealed partial class LobbyGui : UIScreen
         inputBox.ChannelSelector.Label.FontOverride = _technicalFont;
         inputBox.ChannelSelector.TextAlign = Label.AlignMode.Center;
         inputBox.ChannelSelector.DefaultCursorShape = Control.CursorShape.Hand;
+        inputBox.ChannelSelector.TintWithChannelColor = false;
+        inputBox.ChannelSelector.Modulate = Color.White;
         ConfigureChatPopupHover(inputBox.ChannelSelector, ChatControlKind.Channel);
 
         inputBox.FilterButton.MinSize = new Vector2(38f, chatControlHeight);
@@ -2651,7 +2624,7 @@ public sealed partial class LobbyGui : UIScreen
             : LerpColor(Color.FromHex("#17140DC7"), Color.FromHex("#43361CD9"), presentation.HoverAmount);
         var border = presentation.Pressed
             ? Color.FromHex("#FFF1C8")
-            : LerpColor(Color.FromHex("#DFD7C38A"), BrightGold, presentation.HoverAmount);
+            : LerpColor(Color.FromHex("#B697548C"), BrightGold, presentation.HoverAmount);
         var style = presentation.Button.StyleBoxOverride as LobbyRoundedStyleBox;
         if (style == null)
         {
@@ -2684,15 +2657,14 @@ public sealed partial class LobbyGui : UIScreen
         if (reducedMotion)
             presentation.HoverAmount = presentation.Hovered ? 1f : 0f;
 
-        var isChannel = presentation.Kind == ChatControlKind.Channel;
-        var normalBackground = isChannel ? Color.FromHex("#15394CB8") : Color.FromHex("#120F0AD0");
-        var hoverBackground = isChannel ? Color.FromHex("#1F506AD9") : Color.FromHex("#2A2111E8");
-        var normalBorder = isChannel ? Color.FromHex("#4B7F9C8C") : Color.FromHex("#9E86504D");
-        var hoverBorder = isChannel ? Color.FromHex("#90D2EE") : BrightGold;
-        var normalText = isChannel ? Color.FromHex("#90D2EE") : Paper;
-        var hoverText = isChannel ? Color.FromHex("#C6EEFF") : BrightGold;
-        var pressedBackground = isChannel ? Color.FromHex("#285C76EF") : Color.FromHex("#4A3816E8");
-        var pressedBorder = isChannel ? Color.FromHex("#D7F5FF") : Color.FromHex("#FFF1C8");
+        var normalBackground = Color.FromHex("#120F0AD0");
+        var hoverBackground = Color.FromHex("#2A2111E8");
+        var normalBorder = Color.FromHex("#9E86504D");
+        var hoverBorder = BrightGold;
+        var normalText = Paper;
+        var hoverText = BrightGold;
+        var pressedBackground = Color.FromHex("#4A3816E8");
+        var pressedBorder = Color.FromHex("#FFF1C8");
 
         var background = presentation.Pressed
             ? pressedBackground

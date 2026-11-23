@@ -52,7 +52,7 @@
         </ScrollContainer>
         <PanelContainer>
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#292c27" BorderColor="#9d824e" BorderThickness="0 3 0 0" />
+                <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#8F744A" BorderThickness="0 1 0 0" />
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Horizontal" Margin="0 10 0 2" SeparationOverride="10">
                 <Button Name="StoreButton" Text="{Loc 'wh40k-shuttle-storage-store'}" HorizontalExpand="True" MinHeight="38" Disabled="True" />

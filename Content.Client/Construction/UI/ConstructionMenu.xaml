@@ -6,8 +6,8 @@
                 <OptionButton Name="OptionCategories" Access="Public" MinSize="130 0"/>
             </BoxContainer>
             <ItemList Name="Recipes" Access="Public" SelectMode="Single" VerticalExpand="True"/>
-            <ScrollContainer Name="RecipesGridScrollContainer" VerticalExpand="True" Access="Public" Visible="False">
-                <GridContainer Name="RecipesGrid" Columns="5" Access="Public"/>
+            <ScrollContainer Name="RecipesGridScrollContainer" VerticalExpand="True" HScrollEnabled="False" Access="Public" Visible="False">
+                <GridContainer Name="RecipesGrid" Columns="5" HSeparationOverride="3" VSeparationOverride="3" Access="Public"/>
             </ScrollContainer>
         </BoxContainer>
         <BoxContainer Orientation="Vertical" HorizontalExpand="True">

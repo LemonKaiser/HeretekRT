@@ -35,9 +35,9 @@
                 <LineEdit Name="WhitelistFilterLineEdit"
                           PlaceHolder="{Loc whitelist-panel-filter-placeholder}"
                           HorizontalExpand="True" />
-                <PanelContainer Name="WhitelistEntriesPanel" VerticalExpand="True" MinHeight="300">
+                <PanelContainer StyleClasses="Inset" VerticalExpand="True" MinHeight="300">
                     <ScrollContainer HScrollEnabled="False">
-                        <BoxContainer Name="EntriesContainer" Orientation="Vertical" />
+                        <BoxContainer Name="EntriesContainer" Orientation="Vertical" Margin="6" />
                     </ScrollContainer>
                 </PanelContainer>
                 <Control MinHeight="14" />

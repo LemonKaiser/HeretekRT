@@ -47,7 +47,7 @@ public sealed partial class FactionDepotPanel : DefaultWindow
             ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
             ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10,
         };
-        CapacityBar.BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#0b1014") };
+        CapacityBar.BackgroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#100D0A") };
         CapacityBar.ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = Gold };
         RefreshButton.OnPressed += _ =>
         {
@@ -231,8 +231,8 @@ public sealed partial class FactionDepotPanel : DefaultWindow
             if (StyleBoxOverride is not StyleBoxFlat style)
                 return;
             var hover = DrawMode is DrawModeEnum.Hover or DrawModeEnum.Pressed;
-            style.BackgroundColor = Color.FromHex(hover ? "#303b42" : Occupied ? "#202b33" : "#141b20");
-            style.BorderColor = hover ? Gold : Color.FromHex(Occupied ? "#756040" : "#303b42");
+            style.BackgroundColor = Color.FromHex(hover ? "#392B1C" : Occupied ? "#211A12" : "#100D0A");
+            style.BorderColor = hover ? Gold : Color.FromHex(Occupied ? "#756040" : "#392B1C");
         }
     }
 }

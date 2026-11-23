@@ -124,7 +124,7 @@ public sealed partial class TurretControllerWindow : BaseWindow
         var shiftedIndex = index + 1;
 
         if (shiftedIndex >= 0 && shiftedIndex < _themeColors.Length)
-            ContentsContainer.Modulate = _themeColors[shiftedIndex];
+            TurretStatusHeader.FontColorOverride = _themeColors[shiftedIndex];
     }
 
     public void SetOwner(EntityUid owner)

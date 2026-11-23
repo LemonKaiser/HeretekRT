@@ -244,6 +244,28 @@ public abstract class RadialMenuTextureButtonBase : BaseButton
 /// </summary>
 public sealed class RadialMenuContextualCentralTextureButton : RadialMenuTextureButtonBase
 {
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        var centre = (Vector2) PixelSize / 2;
+        var radius = Math.Min(centre.X, centre.Y) - 2 * UIScale;
+        if (radius <= 0) return;
+        var hover = DrawMode == DrawModeEnum.Hover;
+        var edge = Color.FromHex(hover ? "#E1C17E" : "#8F744A");
+        handle.DrawCircle(centre, radius, Color.FromHex(hover ? "#392B1C80" : "#18140F80"));
+        handle.DrawCircle(centre, radius, edge, false);
+        var offset = 6 * UIScale;
+        if (Parent is RadialMenu menu && menu.BackButtonStyleClass is { } back && HasStyleClass(back))
+        {
+            handle.DrawLine(centre + new Vector2(offset / 2, -offset), centre + new Vector2(-offset / 2, 0), edge);
+            handle.DrawLine(centre + new Vector2(-offset / 2, 0), centre + new Vector2(offset / 2, offset), edge);
+        }
+        else
+        {
+            handle.DrawLine(centre - new Vector2(offset), centre + new Vector2(offset), edge);
+            handle.DrawLine(centre + new Vector2(offset, -offset), centre + new Vector2(-offset, offset), edge);
+        }
+    }
+
     public float InnerRadius { get; set; }
 
     public Vector2? ParentCenter { get; set; }
@@ -380,10 +402,10 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
     private bool _isWholeCircle;
     private Vector2? _parentCenter;
 
-    private Color _backgroundColorSrgb = Color.ToSrgb(new Color(30, 30, 33, 128));
-    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(new Color(107, 107, 112, 128));
-    private Color _borderColorSrgb = Color.ToSrgb(new Color(255,255,255, 70));
-    private Color _hoverBorderColorSrgb = Color.ToSrgb(new Color(107, 107, 112, 128));
+    private Color _backgroundColorSrgb = Color.ToSrgb(Color.FromHex("#18140F80"));
+    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(Color.FromHex("#392B1C80"));
+    private Color _borderColorSrgb = Color.ToSrgb(Color.FromHex("#8F744A9C"));
+    private Color _hoverBorderColorSrgb = Color.ToSrgb(Color.FromHex("#E1C17E"));
 
     /// <summary>
     /// Marker, that control should render border of segment. Is false by default.
@@ -446,7 +468,7 @@ public class RadialMenuTextureButtonWithSector : RadialMenuTextureButton, IRadia
     /// Color of separator lines.
     /// Separator lines are used to visually separate sector of radial menu items.
     /// </summary>
-    public Color SeparatorColor { get; set; } = new Color(128, 128, 128, 128);
+    public Color SeparatorColor { get; set; } = Color.FromHex("#8F744A80");
 
     /// <inheritdoc />
     float IRadialMenuItemWithSector.AngleSectorFrom

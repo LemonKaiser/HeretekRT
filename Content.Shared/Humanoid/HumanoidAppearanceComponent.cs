@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.CharacterCreation;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared._Forge.Barks;
@@ -86,6 +87,9 @@ public sealed partial class HumanoidAppearanceComponent : Component
 
     [DataField, AutoNetworkedField]
     public Color EyeColor = Color.Brown;
+
+    [AutoNetworkedField]
+    public Wh40kSpeechStyle SpeechStyle;
 
     [DataField, AutoNetworkedField]
     public float Height = 1.0f;

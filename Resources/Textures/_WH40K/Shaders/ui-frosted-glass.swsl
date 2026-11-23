@@ -1,0 +1,16 @@
+uniform highp vec2 BlurDirection;
+
+void fragment() {
+    highp vec2 stride = TEXTURE_PIXEL_SIZE * BlurDirection;
+    // Adjacent texel pairs, compensating for the direction uniform's 1.2 scale.
+    highp vec4 colour = zTexture(UV) * 0.10647791;
+    colour += zTexture(UV + stride * 1.228935) * 0.19598401;
+    colour += zTexture(UV - stride * 1.228935) * 0.19598401;
+    colour += zTexture(UV + stride * 2.867701) * 0.14066510;
+    colour += zTexture(UV - stride * 2.867701) * 0.14066510;
+    colour += zTexture(UV + stride * 4.506905) * 0.07742859;
+    colour += zTexture(UV - stride * 4.506905) * 0.07742859;
+    colour += zTexture(UV + stride * 6.146779) * 0.03268335;
+    colour += zTexture(UV - stride * 6.146779) * 0.03268335;
+    COLOR = colour;
+}

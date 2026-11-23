@@ -24,6 +24,8 @@ public sealed partial class TTSTab : Control
     private readonly List<TTSVoicePrototype> _filteredVoices = [];
     private readonly Dictionary<string, List<TTSVoicePrototype>> _categorizedVoices = [];
     private string? _selectedVoiceId;
+    private string? _selectedCategory;
+    private float _lastVoicesWidth;
 
     private static readonly Regex CategoryRegex = new(@"^(.*?)\s*\(([^)]+)\)\s*$", RegexOptions.Compiled);
 
@@ -31,7 +33,29 @@ public sealed partial class TTSTab : Control
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        SearchEdit.OnTextChanged += _ => UpdateResults();
+        SearchEdit.OnTextChanged += _ =>
+        {
+            _selectedCategory = null;
+            UpdateResults();
+        };
+        VoicesGrid.OnResized += () =>
+        {
+            // The scroll viewport has already reserved space for its scrollbar here.
+            var width = Math.Max(1, VoicesGrid.Width);
+            if (Math.Abs(width - _lastVoicesWidth) < 0.5f)
+                return;
+            _lastVoicesWidth = width;
+            VoicesGrid.MaxGridWidth = width;
+        };
+        OnResized += () =>
+        {
+            CategoriesContainer.MaxGridWidth = Math.Max(1, Size.X - 20);
+            var shortWindow = Size.Y < 300;
+            CategoriesTitle.Visible = !shortWindow;
+            var categoriesHeight = shortWindow ? 54 : 140;
+            if (CategoriesPanel.SetHeight != categoriesHeight)
+                CategoriesPanel.SetHeight = categoriesHeight;
+        };
     }
 
     public void UpdateControls(HumanoidCharacterProfile? profile, Sex sex)
@@ -40,6 +64,7 @@ public sealed partial class TTSTab : Control
             return;
 
         _selectedVoiceId = profile.Voice;
+        _selectedCategory = null;
         _allVoices.Clear();
         _allVoices.AddRange(_prototypeManager
             .EnumeratePrototypes<TTSVoicePrototype>()
@@ -73,7 +98,12 @@ public sealed partial class TTSTab : Control
                 ToolTip = Loc.GetString("humanoid-profile-editor-voice-category-tooltip", ("category", category)),
                 HorizontalExpand = true,
             };
-            button.OnPressed += _ => SearchEdit.Text = category;
+            button.OnPressed += _ =>
+            {
+                _selectedCategory = category;
+                SearchEdit.SetText(category);
+                UpdateResults();
+            };
             CategoriesContainer.AddChild(button);
         }
 
@@ -91,8 +121,11 @@ public sealed partial class TTSTab : Control
         VoicesGrid.RemoveAllChildren();
         _filteredVoices.Clear();
 
-        var search = SearchEdit.Text.ToLowerInvariant();
-        foreach (var voice in _allVoices)
+        var search = _selectedCategory == null ? SearchEdit.Text.ToLowerInvariant() : string.Empty;
+        var source = _selectedCategory != null && _categorizedVoices.TryGetValue(_selectedCategory, out var categoryVoices)
+            ? categoryVoices
+            : _allVoices;
+        foreach (var voice in source)
         {
             var name = Loc.GetString(voice.Name).ToLowerInvariant();
             if (string.IsNullOrEmpty(search) || name.Contains(search) || voice.ID.ToLowerInvariant().Contains(search))
@@ -113,10 +146,10 @@ public sealed partial class TTSTab : Control
                 Text = Loc.GetString(voice.Name),
                 ToolTip = voice.ID,
                 HorizontalExpand = true,
+                ToggleMode = true,
+                Pressed = voice.ID == _selectedVoiceId,
                 StyleClasses = { StyleNano.ButtonOpenRight },
             };
-            if (voice.ID == _selectedVoiceId)
-                select.AddStyleClass(StyleBase.ButtonCaution);
             select.OnPressed += _ => OnVoiceSelected?.Invoke(voice.ID);
 
             var preview = new Button

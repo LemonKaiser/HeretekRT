@@ -32,9 +32,9 @@ public sealed partial class VendingMachineGridSlot : PanelContainer
     private bool _pendingSoldOut;
 
     // highlighting
-    private readonly StyleBoxFlat _normalStyle = new() { BackgroundColor = Color.FromHex("#222222"), BorderColor = Color.FromHex("#626262"), BorderThickness = new Thickness(1) };
-    private readonly StyleBoxFlat _rowMatchStyle = new() { BackgroundColor = Color.FromHex("#343434"), BorderColor = Color.FromHex("#a2a2a2"), BorderThickness = new Thickness(2) };
-    private readonly StyleBoxFlat _exactMatchStyle = new() { BackgroundColor = Color.FromHex("#343c32"), BorderColor = Color.FromHex("#b0c59f"), BorderThickness = new Thickness(2) };
+    private readonly StyleBoxFlat _normalStyle = new() { BackgroundColor = Color.FromHex("#100D0A"), BorderColor = Color.FromHex("#56452D"), BorderThickness = new Thickness(1) };
+    private readonly StyleBoxFlat _rowMatchStyle = new() { BackgroundColor = Color.FromHex("#2B2117"), BorderColor = Color.FromHex("#BE9E64"), BorderThickness = new Thickness(2) };
+    private readonly StyleBoxFlat _exactMatchStyle = new() { BackgroundColor = Color.FromHex("#392B1C"), BorderColor = Color.FromHex("#E1C17E"), BorderThickness = new Thickness(2) };
 
     public bool SoldOut { get; private set; }
     public string ItemName { get; private set; } = string.Empty;

@@ -17,7 +17,7 @@ public sealed partial class TraitCategoryButton : Control
     public string CategoryName { get; }
     public bool IsExpanded
     {
-        get => ExpandedStates.GetValueOrDefault(CategoryName, false);
+        get => ExpandedStates.GetValueOrDefault(CategoryName, true);
         private set => ExpandedStates[CategoryName] = value;
     }
 
@@ -26,24 +26,13 @@ public sealed partial class TraitCategoryButton : Control
         RobustXamlLoader.Load(this);
         CategoryName = categoryName;
 
-        CategoryButton.Text = categoryName;
         CategoryButton.OnPressed += ToggleExpanded;
-
-        // Apply the saved expanded state when created
-        bool expanded = ExpandedStates.GetValueOrDefault(categoryName, false);
-        TraitsContainer.Visible = expanded;
-
-        // Always use the OpenBottom style
-        CategoryButton.StyleClasses.Remove("OpenBoth");
-        CategoryButton.StyleClasses.Add("OpenBottom");
+        ShowExpanded(IsExpanded);
     }
 
     private void ToggleExpanded(BaseButton.ButtonEventArgs args)
     {
-        IsExpanded = !IsExpanded;
-        TraitsContainer.Visible = IsExpanded;
-
-        // No need to change style classes as we always use OpenBottom now
+        SetExpanded(!TraitsContainer.Visible);
     }
 
     public void AddTrait(Control control)
@@ -55,7 +44,13 @@ public sealed partial class TraitCategoryButton : Control
     public void SetExpanded(bool expanded)
     {
         IsExpanded = expanded;
+        ShowExpanded(expanded);
+    }
+
+    public void ShowExpanded(bool expanded)
+    {
         TraitsContainer.Visible = expanded;
+        CategoryButton.Text = $"{(expanded ? "▾" : "▸")}  {CategoryName}";
     }
 
     // Static method to set all categories to a specific expanded state

@@ -34,9 +34,9 @@ public sealed partial class LoadingScreenControl : Control
 
         Background.PanelOverride = new StyleBoxFlat()
         {
-            BackgroundColor = Color.FromHex("#303033"),
-            BorderColor = Color.FromHex("#5a5a5a"),
-            BorderThickness = new Thickness(4)
+            BackgroundColor = Color.FromHex("#18140F"),
+            BorderColor = Color.FromHex("#79603D"),
+            BorderThickness = new Thickness(1)
         };
     }
 }

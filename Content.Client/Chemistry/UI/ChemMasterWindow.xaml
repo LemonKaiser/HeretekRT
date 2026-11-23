@@ -15,7 +15,7 @@
 
             <PanelContainer VerticalExpand="True" MinSize="0 200">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1E1B" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
 
                 <ScrollContainer HorizontalExpand="True" MinSize="0 200">
@@ -41,7 +41,7 @@
             <!-- Buffer info -->
             <PanelContainer VerticalExpand="True" MinSize="0 200">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1E1B" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
 
                 <ScrollContainer HorizontalExpand="True" MinSize="0 200">
@@ -63,7 +63,7 @@
 
             <PanelContainer VerticalExpand="True" MinSize="0 200">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1E1B" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
 
                 <ScrollContainer HorizontalExpand="True" MinSize="0 200">
@@ -91,7 +91,7 @@
             <!-- Wrap the packaging info-->
             <PanelContainer>
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1E1B" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
 
                 <!-- Packaging Info -->

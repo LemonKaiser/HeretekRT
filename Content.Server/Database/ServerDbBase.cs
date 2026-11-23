@@ -295,8 +295,12 @@ namespace Content.Server.Database
             // Get the company with fallback to default "None"
             var company = profile.Company ?? "None";
 
-            var wh40kBuild = profile.Wh40kBuild?.RootElement.Deserialize<Wh40kCharacterBuild>()?.Validated()
+            var wh40kData = profile.Wh40kBuild?.RootElement;
+            var wh40kBuild = wh40kData?.Deserialize<Wh40kCharacterBuild>()?.Validated()
                 ?? new Wh40kCharacterBuild();
+            var speechStyle = wh40kData is { ValueKind: JsonValueKind.Object } data &&
+                              data.TryGetProperty("SpeechStyle", out var savedStyle)
+                ? savedStyle.Deserialize<Wh40kSpeechStyle>() : default;
 
             // Validate height and width to prevent sprite scale errors
             // Database migration set default values to 0f for existing profiles
@@ -333,6 +337,7 @@ namespace Content.Server.Database
                 wh40kBuild)
                 .WithVoice(voice)
                 .WithBarkVoice(barkVoice)
+                .WithSpeechStyle(speechStyle)
                 .WithOocFlavorText(profile.OocFlavorText)
                 .WithCharacterFlavorText(profile.CharacterFlavorText)
                 .WithGreenFlavorText(profile.GreenFlavorText)
@@ -388,7 +393,9 @@ namespace Content.Server.Database
             profile.Slot = slot;
             profile.PreferenceUnavailable = (DbPreferenceUnavailableMode) humanoid.PreferenceUnavailable;
             profile.Company = humanoid.Company;
-            profile.Wh40kBuild = JsonSerializer.SerializeToDocument(humanoid.Wh40kBuild.Validated());
+            var wh40kData = JsonSerializer.SerializeToNode(humanoid.Wh40kBuild.Validated())!.AsObject();
+            wh40kData["SpeechStyle"] = JsonSerializer.SerializeToNode(humanoid.SpeechStyle.Validated());
+            profile.Wh40kBuild = JsonSerializer.SerializeToDocument(wh40kData);
 
             profile.Jobs.Clear();
             profile.Jobs.AddRange(

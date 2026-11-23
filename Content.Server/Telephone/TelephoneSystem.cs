@@ -363,9 +363,10 @@ public sealed partial class TelephoneSystem : SharedTelephoneSystem
             ? FormattedMessage.EscapeText(message)
             : message;
 
-        var wrappedMessage = Loc.GetString(speech.Bold ? "chat-telephone-message-wrap-bold" : "chat-telephone-message-wrap",
+        var profileFont = _chat.GetProfileSpeechFont(messageSource, speech.Bold);
+        var wrappedMessage = Loc.GetString(speech.Bold && profileFont == null ? "chat-telephone-message-wrap-bold" : "chat-telephone-message-wrap",
             ("color", Color.White),
-            ("fontType", speech.FontId),
+            ("fontType", profileFont ?? speech.FontId),
             ("fontSize", speech.FontSize),
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
             ("name", name),

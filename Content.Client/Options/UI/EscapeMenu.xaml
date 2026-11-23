@@ -2,17 +2,21 @@
             xmlns:changelog="clr-namespace:Content.Client.Changelog"
             xmlns:ui="clr-namespace:Content.Client.Voting.UI"
             xmlns:ui1="clr-namespace:Content.Client.Options.UI"
+            xmlns:heritage="clr-namespace:Content.Client._WH40K.UserInterface"
             Title="{Loc 'ui-escape-title'}"
+            SetSize="390 540"
             Resizable="False">
 
-    <BoxContainer Orientation="Vertical" SeparationOverride="4" MinWidth="150">
+    <BoxContainer Orientation="Vertical" SeparationOverride="7" MinWidth="190">
+        <heritage:Wh40kSigil />
+        <Button Name="ResumeButton" Text="{Loc 'wh40k-ui-resume'}" StyleClasses="Wh40kPrimaryButton" />
         <changelog:ChangelogButton Access="Public" Name="ChangelogButton"/>
         <ui:VoteCallMenuButton />
         <Button Access="Public" Name="OptionsButton" Text="{Loc 'ui-escape-options'}" />
         <Button Access="Public" Name="RulesButton" Text="{Loc 'ui-escape-rules'}" />
         <Button Access="Public" Name="GuidebookButton" Text="{Loc 'ui-escape-guidebook'}" />
         <Button Access="Public" Name="WikiButton" Text="{Loc 'ui-escape-wiki'}" />
-        <Button Access="Public" Name="DisconnectButton" Text="{Loc 'ui-escape-disconnect'}" />
-        <Button Access="Public" Name="QuitButton" Text="{Loc 'ui-escape-quit'}" />
+        <Button Access="Public" Name="DisconnectButton" Text="{Loc 'ui-escape-disconnect'}" StyleClasses="Caution" />
+        <Button Access="Public" Name="QuitButton" Text="{Loc 'ui-escape-quit'}" StyleClasses="Caution" />
     </BoxContainer>
 </ui1:EscapeMenu>

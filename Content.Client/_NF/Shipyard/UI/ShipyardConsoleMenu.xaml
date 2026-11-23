@@ -6,16 +6,16 @@
                            Resizable="True">
     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
         <PanelContainer.PanelOverride>
-            <gfx:StyleBoxFlat BorderThickness="7" BorderColor="#252525" BackgroundColor="#3d474d"/>
+            <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#75613D" BackgroundColor="#18140F"/>
         </PanelContainer.PanelOverride>
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
             </PanelContainer.PanelOverride>
     <BoxContainer Orientation="Vertical" Margin="5 0 5 0">
         <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="0 8 0 2">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#141414"/>
+                <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
             </PanelContainer.PanelOverride>
             <BoxContainer Orientation="Vertical" Margin="5 0 5 0">
         <BoxContainer Orientation="Horizontal">
@@ -45,7 +45,7 @@
         <BoxContainer Orientation="Horizontal">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#141414"/>
+                    <gfx:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
             <controls:StripeBack MinSize="48 48">
             <LineEdit Name="SearchBar"
@@ -58,11 +58,11 @@
         <BoxContainer Orientation="Horizontal">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#333333" BackgroundColor="#333333"/>
+                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#211A12"/>
                 </PanelContainer.PanelOverride>
                 <PanelContainer Margin="1 1 1 1">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#636363" BackgroundColor="#141414"/>
+                        <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                     </PanelContainer.PanelOverride>
                     <BoxContainer Orientation="Horizontal">
             <OptionButton Name="Categories"
@@ -97,11 +97,11 @@
         </ScrollContainer>
         <PanelContainer HorizontalExpand="True" Margin="0 8 0 2">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#333333" BackgroundColor="#333333"/>
+                <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#211A12"/>
             </PanelContainer.PanelOverride>
             <PanelContainer Margin="1 1 1 1">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#636363" BackgroundColor="#141414"/>
+                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="6" SeparationOverride="6">
             <BoxContainer Orientation="Horizontal" SeparationOverride="8">

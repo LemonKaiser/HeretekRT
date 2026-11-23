@@ -1,8 +1,10 @@
+using System.Numerics;
 using Content.Client.Info;
 using Content.Client.Info.PlaytimeStats;
 using Content.Client.Resources;
 using Content.Client.Administration.Managers;
 using Content.Client._WH40K.MetaProgress;
+using Content.Client._WH40K.CharacterCreation;
 using Content.Shared.CCVar;
 using Content.Shared.Administration;
 using Content.Shared._WH40K.CharacterCreation;
@@ -35,6 +37,7 @@ namespace Content.Client.Lobby.UI
 
         private readonly Button _createNewCharacterButton;
         private BaseWindow? _decorationsWindow;
+        private Vector2 _lastPersonalizationHeaderSize;
 
         public event Action<int>? SelectCharacter;
         public event Action<int>? DeleteCharacter;
@@ -44,15 +47,29 @@ namespace Content.Client.Lobby.UI
             RobustXamlLoader.Load(this);
             IoCManager.InjectDependencies(this);
 
-            var panelTex = _resourceCache.GetTexture("/Textures/Interface/Nano/button.svg.96dpi.png");
-            var back = new StyleBoxTexture
-            {
-                Texture = panelTex,
-                Modulate = new Color(37, 37, 42)
-            };
-            back.SetPatchMargin(StyleBox.Margin.All, 10);
+            PersonalizationBackdrop.Texture = _resourceCache.GetResource<TextureResource>("/Textures/_WH40K/LobbyScreens/wps4.webp");
 
-            BackgroundPanel.PanelOverride = back;
+            BackgroundPanel.PanelOverride = new OnboardingPageFrameStyleBox
+            {
+                BackgroundColor = Color.FromHex("#100E0BEB"),
+                BorderColor = Color.FromHex("#B697547A"),
+                ContentMarginLeftOverride = 20,
+                ContentMarginRightOverride = 20,
+                ContentMarginTopOverride = 12,
+                ContentMarginBottomOverride = 12,
+            };
+            Wh40kPersonalizationTheme.Apply(this);
+            Title.FontOverride = Wh40kOnboardingTypography.Display(_resourceCache, Wh40kOnboardingTypography.ShellTitleSize);
+            HelpPopup.Orphan();
+            HelpPopup.OnPopupHide += HelpPopup.Orphan;
+            HelpButton.OnPressed += _ => TogglePersonalizationHelp();
+            foreach (var button in new Button[] { RulesButton, StatsButton, DecorationsButton, AdminRemarksButton })
+                button.OnPressed += _ => HelpPopup.Close();
+            OnResized += () =>
+            {
+                BackgroundPanel.Margin = new Thickness(Size.X < 1100 ? 12 : 24);
+            };
+            Header.OnResized += UpdatePersonalizationHeaderLayout;
 
             _createNewCharacterButton = new Button
             {
@@ -84,6 +101,23 @@ namespace Content.Client.Lobby.UI
             _adminManager.AdminStatusUpdated += RefreshDecorationsButton;
         }
 
+        internal void TogglePersonalizationHelp() => Wh40kPersonalizationTheme.ToggleMenu(HelpPopup, HelpButton);
+
+        private void UpdatePersonalizationHeaderLayout()
+        {
+            if (Vector2.DistanceSquared(Header.Size, _lastPersonalizationHeaderSize) < 0.25f)
+                return;
+            _lastPersonalizationHeaderSize = Header.Size;
+            HeaderActions.Measure(new Vector2(float.PositiveInfinity));
+            HeaderLockup.Measure(new Vector2(float.PositiveInfinity));
+            var actionsWidth = HeaderActions.DesiredSize.X;
+            var stacked = Header.Size.X < HeaderLockup.DesiredSize.X + 2 * actionsWidth + 24;
+            Header.Orientation = stacked ? BoxContainer.LayoutOrientation.Vertical : BoxContainer.LayoutOrientation.Horizontal;
+            HeaderBalance.Visible = !stacked;
+            HeaderBalance.SetWidth = actionsWidth;
+            HeaderActions.HorizontalAlignment = stacked ? HAlignment.Right : HAlignment.Stretch;
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -94,6 +128,7 @@ namespace Content.Client.Lobby.UI
             _adminManager.AdminStatusUpdated -= RefreshDecorationsButton;
             _decorationsWindow?.Dispose();
             _decorationsWindow = null;
+            HelpPopup.Dispose();
         }
 
         private static void OpenOrFocus(ref BaseWindow? window, Func<BaseWindow> factory)

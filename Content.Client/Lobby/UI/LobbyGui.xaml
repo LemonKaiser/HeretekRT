@@ -128,7 +128,7 @@
         <PanelContainer Name="OnboardingShell" Access="Public" SetWidth="1480" HorizontalAlignment="Center"
                         VerticalAlignment="Center" Margin="0 24 0 24">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#080907A3" BorderColor="#B697547A" BorderThickness="1"
+                <graphics:StyleBoxFlat BackgroundColor="#100D0AA3" BorderColor="#B697547A" BorderThickness="1"
                                        ContentMarginLeftOverride="20" ContentMarginRightOverride="20"
                                        ContentMarginTopOverride="20" ContentMarginBottomOverride="20" />
             </PanelContainer.PanelOverride>
@@ -137,13 +137,13 @@
                 <BoxContainer Name="OnboardingTitleLockup" Access="Public" Orientation="Horizontal" SeparationOverride="12"
                               HorizontalAlignment="Center" VerticalAlignment="Center" MouseFilter="Ignore">
                     <TextureRect Name="OnboardingTitleLeftOrnament" Access="Public" SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
-                                 Modulate="#B69754C7"
-                                 TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/header-wreath.svg.192dpi.png" />
+                                 Modulate="#FFFFFFC7"
+                                 TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                     <Label Name="OnboardingTitle" Access="Public" Text="{Loc 'heretek-onboarding-title'}"
                            FontColorOverride="#DFD7C3" VerticalAlignment="Center" />
                     <lobbyUi:OnboardingMirroredTextureRect Name="OnboardingTitleRightOrnament" SetSize="96 30" Stretch="KeepAspectCentered" CanShrink="True"
-                                                            MouseFilter="Ignore" Modulate="#B69754C7"
-                                                            TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/header-wreath.svg.192dpi.png" />
+                                                            MouseFilter="Ignore" Modulate="#FFFFFFC7"
+                                                            TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                 </BoxContainer>
                 <Button Name="OnboardingCancelButton" Access="Public" Text="{Loc 'heretek-onboarding-cancel'}"
                         VerticalAlignment="Center" SetWidth="170" />
@@ -157,9 +157,9 @@
 
             <BoxContainer Name="OnboardingWorkspaceFrame" Access="Public" Orientation="Vertical"
                           HorizontalAlignment="Center">
-            <PanelContainer HorizontalExpand="True" MinHeight="54" Margin="0 16 0 10">
+            <PanelContainer Name="OnboardingTabsPanel" HorizontalExpand="True" MinHeight="54" Margin="0 16 0 10">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BackgroundColor="#0E0F0CC7" BorderColor="#B697547A" BorderThickness="1"
+                    <graphics:StyleBoxFlat BackgroundColor="#100D0AC7" BorderColor="#B697547A" BorderThickness="1"
                                             ContentMarginLeftOverride="8" ContentMarginRightOverride="8"
                                             ContentMarginTopOverride="6" ContentMarginBottomOverride="6" />
                 </PanelContainer.PanelOverride>
@@ -208,7 +208,7 @@
             <BoxContainer Name="OnboardingWorkspaceColumns" Access="Public" Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="18" Align="Center">
                 <PanelContainer Name="OnboardingNavigationPanel" Access="Public" SetWidth="300" SetHeight="790">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#11120FE8" BorderColor="#B6975452" BorderThickness="1"
+                        <graphics:StyleBoxFlat BackgroundColor="#100D0AE8" BorderColor="#B6975452" BorderThickness="1"
                                                ContentMarginLeftOverride="10" ContentMarginRightOverride="10"
                                                ContentMarginTopOverride="14" ContentMarginBottomOverride="16" />
                     </PanelContainer.PanelOverride>
@@ -270,18 +270,9 @@
                                     </BoxContainer>
                                 </BoxContainer>
                             </Button>
-                            <Button Name="OnboardingEyesButton" Access="Public" MinHeight="69" ClipText="True">
-                                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="12" MouseFilter="Ignore">
-                                    <Label Name="OnboardingEyesIndex" Access="Public" Text="04" SetWidth="27" Align="Center" VerticalAlignment="Center" />
-                                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="4">
-                                        <Label Name="OnboardingEyesTitle" Access="Public" Text="{Loc 'heretek-onboarding-eyes'}" HorizontalExpand="True" ClipText="True" />
-                                        <Label Name="OnboardingEyesDescription" Access="Public" Text="{Loc 'heretek-onboarding-eyes-card-description'}" HorizontalExpand="True" ClipText="True" />
-                                    </BoxContainer>
-                                </BoxContainer>
-                            </Button>
                             <Button Name="OnboardingAppearanceTraitsButton" Access="Public" MinHeight="69" ClipText="True">
                                 <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="12" MouseFilter="Ignore">
-                                    <Label Name="OnboardingAppearanceTraitsIndex" Access="Public" Text="05" SetWidth="27" Align="Center" VerticalAlignment="Center" />
+                                    <Label Name="OnboardingAppearanceTraitsIndex" Access="Public" Text="04" SetWidth="27" Align="Center" VerticalAlignment="Center" />
                                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="4">
                                         <Label Name="OnboardingAppearanceTraitsTitle" Access="Public" Text="{Loc 'heretek-onboarding-appearance-traits'}" HorizontalExpand="True" ClipText="True" />
                                         <Label Name="OnboardingAppearanceTraitsDescription" Access="Public" Text="{Loc 'heretek-onboarding-appearance-traits-card-description'}" HorizontalExpand="True" ClipText="True" />
@@ -290,7 +281,7 @@
                             </Button>
                             <Button Name="OnboardingAppearanceFlavorTextButton" Access="Public" MinHeight="69" ClipText="True">
                                 <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="12" MouseFilter="Ignore">
-                                    <Label Name="OnboardingAppearanceFlavorTextIndex" Access="Public" Text="06" SetWidth="27" Align="Center" VerticalAlignment="Center" />
+                                    <Label Name="OnboardingAppearanceFlavorTextIndex" Access="Public" Text="05" SetWidth="27" Align="Center" VerticalAlignment="Center" />
                                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="4">
                                         <Label Name="OnboardingAppearanceFlavorTextTitle" Access="Public" Text="{Loc 'heretek-onboarding-appearance-flavor'}" HorizontalExpand="True" ClipText="True" />
                                         <Label Name="OnboardingAppearanceFlavorTextDescription" Access="Public" Text="{Loc 'heretek-onboarding-appearance-flavor-card-description'}" HorizontalExpand="True" ClipText="True" />
@@ -338,7 +329,7 @@
                             </BoxContainer>
                             <PanelContainer HorizontalExpand="True" MinHeight="34">
                                 <PanelContainer.PanelOverride>
-                                    <graphics:StyleBoxFlat BackgroundColor="#100F08CC" BorderColor="#B6975452" BorderThickness="1"
+                                    <graphics:StyleBoxFlat BackgroundColor="#100D0ACC" BorderColor="#B6975452" BorderThickness="1"
                                                            ContentMarginLeftOverride="10" ContentMarginRightOverride="10"
                                                            ContentMarginTopOverride="6" ContentMarginBottomOverride="6" />
                                 </PanelContainer.PanelOverride>
@@ -426,7 +417,7 @@
 
                 <PanelContainer Name="OnboardingPreviewPanel" Access="Public" SetWidth="252" SetHeight="790">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BackgroundColor="#0E0F0CEE" BorderColor="#B697547A" BorderThickness="1"
+                        <graphics:StyleBoxFlat BackgroundColor="#100D0AEE" BorderColor="#B697547A" BorderThickness="1"
                                                ContentMarginLeftOverride="16" ContentMarginRightOverride="16"
                                                ContentMarginTopOverride="14" ContentMarginBottomOverride="18" />
                     </PanelContainer.PanelOverride>
@@ -441,12 +432,12 @@
                         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
                             <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
                                          Modulate="#B6975494"
-                                         TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                                         TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                             <Label Name="OnboardingPreviewTitle" Access="Public" Text="{Loc 'heretek-onboarding-preview-title'}"
                                    HorizontalExpand="True" Align="Center" ClipText="True" FontColorOverride="#E5C879" />
                             <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
                                                                     MouseFilter="Ignore" Modulate="#B6975494"
-                                                                    TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                                                                    TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                         </BoxContainer>
                         <lobbyUi:OnboardingGradientLine StartColor="#B69754" MiddleColor="#B697543B"
                                                          EndColor="#00000000" Thickness="1" SetHeight="1" />
@@ -460,22 +451,22 @@
                                         <graphics:StyleBoxFlat BackgroundColor="#00000000" BorderColor="#00000000" BorderThickness="0" />
                                     </PanelContainer.PanelOverride>
                                 </PanelContainer>
-                                <TextureRect Name="OnboardingPreviewLogo" Access="Public" SetSize="190 107"
-                                             Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore" Modulate="#DFD7C317"
-                                             TexturePath="/Textures/_WH40K/Logo/logo.png" />
-                                <PanelContainer Name="OnboardingPreviewTopRule" Access="Public" SetSize="58 1" MouseFilter="Ignore">
+                                <TextureRect Name="OnboardingPreviewLogo" Access="Public"
+                                             Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
+                                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/personalization-stage.svg.192dpi.png" />
+                                <PanelContainer Name="OnboardingPreviewTopRule" Access="Public" Visible="False" SetSize="58 1" MouseFilter="Ignore">
                                     <PanelContainer.PanelOverride>
                                         <graphics:StyleBoxFlat BackgroundColor="#B697547A" />
                                     </PanelContainer.PanelOverride>
                                 </PanelContainer>
-                                <PanelContainer Name="OnboardingPreviewBottomRule" Access="Public" SetSize="58 1" MouseFilter="Ignore">
+                                <PanelContainer Name="OnboardingPreviewBottomRule" Access="Public" Visible="False" SetSize="58 1" MouseFilter="Ignore">
                                     <PanelContainer.PanelOverride>
                                         <graphics:StyleBoxFlat BackgroundColor="#B697547A" />
                                     </PanelContainer.PanelOverride>
                                 </PanelContainer>
                                 <Label Name="OnboardingPreviewReadout" Access="Public" Visible="False" Text="{Loc 'heretek-onboarding-preview-readout'}"
                                        FontColorOverride="#B69754" HorizontalAlignment="Center" />
-                                <TextureRect Name="OnboardingPreviewPlinth" Access="Public" MouseFilter="Ignore" SetSize="198 74"
+                                <TextureRect Name="OnboardingPreviewPlinth" Access="Public" Visible="False" MouseFilter="Ignore" SetSize="198 74"
                                              Stretch="KeepAspectCentered" CanShrink="True" Modulate="#B6975480"
                                              TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/preview-plinth.svg.192dpi.png" />
                                 <BoxContainer Name="OnboardingPreviewPlaceholder" Access="Public" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
@@ -489,7 +480,7 @@
                                 <PanelContainer Name="OnboardingResultPortraitFrame" Access="Public" Visible="False"
                                                 MouseFilter="Ignore" SetSize="144 184">
                                     <PanelContainer.PanelOverride>
-                                        <graphics:StyleBoxFlat BackgroundColor="#080907E8" BorderColor="#E5C879D6" BorderThickness="1"
+                                        <graphics:StyleBoxFlat BackgroundColor="#100D0AE8" BorderColor="#E5C879D6" BorderThickness="1"
                                                                ContentMarginLeftOverride="4" ContentMarginRightOverride="4"
                                                                ContentMarginTopOverride="4" ContentMarginBottomOverride="4" />
                                     </PanelContainer.PanelOverride>
@@ -523,7 +514,7 @@
     <lobbyUi:LobbyDrawerBlurBackdrop Name="DrawerBlurBackdrop" Access="Public" SetWidth="520" Visible="False" MouseFilter="Ignore" />
     <PanelContainer Name="RightSide" Access="Public" SetWidth="520" Visible="False" RectClipContent="True">
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BackgroundColor="#0B0A08D9" BorderColor="#9E8760" BorderThickness="1 0 0 0"
+            <graphics:StyleBoxFlat BackgroundColor="#100D0AD9" BorderColor="#9E8760" BorderThickness="1 0 0 0"
                                    ContentMarginLeftOverride="24" ContentMarginRightOverride="24"
                                    ContentMarginTopOverride="0" ContentMarginBottomOverride="14" />
         </PanelContainer.PanelOverride>

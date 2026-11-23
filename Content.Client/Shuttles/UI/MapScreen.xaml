@@ -27,11 +27,11 @@
                                      MaxWidth="286"
                                      Margin="4 4 4 4">
                 <controls:PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#525252" BackgroundColor="#3d474d"/>
+                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#75613D" BackgroundColor="#18140F"/>
                 </controls:PanelContainer.PanelOverride>
                 <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                     </controls:PanelContainer.PanelOverride>
             <controls:ScrollContainer VerticalExpand="True"
                                       HorizontalExpand="True"
@@ -52,7 +52,7 @@
                 </controls1:StripeBack>
                 <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                     </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Orientation="Vertical"
                                            Margin="2 2 2 2">
@@ -66,7 +66,7 @@
                     VerticalExpand="False">
                 <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                     </controls:PanelContainer.PanelOverride>
                 <controls:ProgressBar Name="FTLBar" HorizontalExpand="True"
                                       Margin="5"
@@ -85,7 +85,7 @@
                 </controls1:StripeBack>
                 <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                     </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Orientation="Vertical"
                                            Margin="2 2 2 2">
@@ -119,11 +119,11 @@
                 </controls1:StripeBack>
                 <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                     </controls:PanelContainer.PanelOverride>
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                         </controls:PanelContainer.PanelOverride>
                 <controls:ScrollContainer VerticalExpand="True" HScrollEnabled="False"
                                  ReturnMeasure="True">

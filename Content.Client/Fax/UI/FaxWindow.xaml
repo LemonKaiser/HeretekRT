@@ -10,20 +10,20 @@
     <BoxContainer Orientation="Vertical" VerticalExpand="True">
         <PanelContainer VerticalExpand="True" HorizontalExpand="True">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#121212" BackgroundColor="#191919"/>
+                <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#18140F"/>
             </PanelContainer.PanelOverride>
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3 3 3">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#35434d" BackgroundColor="#121212"/>
+                <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#75613D" BackgroundColor="#100D0A"/>
             </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Vertical" VerticalExpand="True">
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3 3 3">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#353535" BackgroundColor="#191919"/>
+                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#18140F"/>
                 </PanelContainer.PanelOverride>
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#242424" BackgroundColor="#050505"/>
+                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#050505"/>
                     </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <Label Text="{Loc 'fax-machine-ui-paper'}" />
@@ -34,12 +34,12 @@
             </PanelContainer>
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="3 3 3 3">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#353535" BackgroundColor="#191919"/>
+                    <graphics:StyleBoxFlat BorderThickness="3" BorderColor="#79603D" BackgroundColor="#18140F"/>
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#242424" BackgroundColor="#050505"/>
+                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#050505"/>
                         </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <Label Text="{Loc 'fax-machine-ui-from'}" />
@@ -50,7 +50,7 @@
                     <controls:HLine Color="{xNamespace:Static style:StyleNano.ChatBackgroundColor}" Thickness="2" Access="Public" Margin="0 2 0 2"/>
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#242424" BackgroundColor="#050505"/>
+                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#050505"/>
                         </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <Label Text="{Loc 'fax-machine-ui-to'}" />
@@ -62,7 +62,7 @@
         </PanelContainer>
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#242424" BackgroundColor="#050505"/>
+                <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#56452D" BackgroundColor="#050505"/>
             </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Vertical" VerticalExpand="True">
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" HorizontalAlignment="Stretch">

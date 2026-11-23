@@ -34,9 +34,9 @@ public sealed partial class LobbyFactionCard : PanelContainer, IFactionCatalogCa
     {
         PanelOverride = new StyleBoxFlat
         {
-            BackgroundColor = Color.FromHex(selected ? "#302D27" : "#242424"),
+            BackgroundColor = Color.FromHex(selected ? "#30271B" : "#1D1812"),
             BorderColor = Color.FromHex("#C0A66E"),
-            BorderThickness = selected ? new Thickness(2, 0, 0, 0) : new Thickness(0),
+            BorderThickness = selected ? new Thickness(2, 1, 1, 1) : new Thickness(1),
             ContentMarginLeftOverride = 16,
             ContentMarginRightOverride = 16,
             ContentMarginTopOverride = 10,

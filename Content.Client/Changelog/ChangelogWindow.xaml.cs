@@ -23,8 +23,8 @@ namespace Content.Client.Changelog
         public ChangelogWindow()
         {
             RobustXamlLoader.Load(this);
-            WindowTitle.AddStyleClass(StyleBase.StyleClassLabelHeading);
             Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSpace;
+            Tabs.OnTabChanged += _ => PopulateCurrentTab();
         }
 
         protected override void Opened()
@@ -56,6 +56,7 @@ namespace Content.Client.Changelog
         {
             // Changelog is not kept in memory so load it again.
             var changelogs = await _changelog.LoadChangelog();
+            if (Disposed) return;
 
             Tabs.DisposeAllChildren();
 
@@ -72,6 +73,13 @@ namespace Content.Client.Changelog
             VersionLabel.Text = _changelog.GetClientVersion();
 
             TabsUpdated();
+            PopulateCurrentTab();
+        }
+
+        private void PopulateCurrentTab()
+        {
+            if (Tabs.CurrentTab >= 0 && Tabs.CurrentTab < Tabs.ChildCount && Tabs.GetChild(Tabs.CurrentTab) is ChangelogTab tab)
+                tab.EnsurePopulated();
         }
 
         private void TabsUpdated()

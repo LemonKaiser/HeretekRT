@@ -2,11 +2,14 @@
 <Control xmlns="https://spacestation14.io"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:stylesheets="clr-namespace:Content.Client.Stylesheets">
-    <BoxContainer Name="Container" Orientation="Vertical" HorizontalAlignment="Left">
-        <Button Name="TraitButton" Access="Public" StyleClasses="OpenBottom" MaxWidth="250" TextAlign="Left">
-            <BoxContainer Orientation="Horizontal">
-                <Label Name="CostLabel" MinWidth="30" />
-                <Label Name="NameLabel" Margin="10,0,0,0" />
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+        <Button Name="TraitButton" Access="Public" HorizontalExpand="True">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4">
+                <BoxContainer SeparationOverride="8">
+                    <Label Name="NameLabel" HorizontalExpand="True" ClipText="True" />
+                    <Label Name="CostLabel" />
+                </BoxContainer>
+                <RichTextLabel Name="DescriptionLabel" HorizontalExpand="True" />
             </BoxContainer>
         </Button>
     </BoxContainer>

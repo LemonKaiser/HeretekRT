@@ -1,202 +1,182 @@
-<BoxContainer xmlns="https://spacestation14.io"
-         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-         xmlns:humanoid="clr-namespace:Content.Client.Humanoid"
-         xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
-         xmlns:ui="clr-namespace:Content.Client.Lobby.UI"
-         xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-         xmlns:style="clr-namespace:Content.Client.Stylesheets"
-         xmlns:factions="clr-namespace:Content.Client._WH40K.Factions"
-         xmlns:aug="clr-namespace:Content.Client._WH40K.Augments"
-         HorizontalExpand="True">
-        <!-- Left side -->
-        <BoxContainer Orientation="Vertical" Margin="10 10 10 10" HorizontalExpand="True">
-            <!-- Middle container -->
-            <BoxContainer Orientation="Horizontal" SeparationOverride="10" HorizontalExpand="True">
-                <!-- Name box-->
-                <BoxContainer Orientation="Vertical">
-                    <ui:HighlightedContainer>
-                        <BoxContainer Orientation="Vertical">
-                            <ui:HighlightedContainer>
-                                <BoxContainer Orientation="Vertical">
-                                    <BoxContainer Orientation="Horizontal" VerticalExpand="True">
-                                        <Label Text="{Loc 'humanoid-profile-editor-name-label'}" />
-                                        <LineEdit Name="NameEdit" MinSize="270 0" VerticalAlignment="Center" Margin="5 0 0 0" />
-                                        <Button Name="NameRandomize" Text="{Loc 'humanoid-profile-editor-name-random-button'}" />
-                                    </BoxContainer>
-                                    <Button Name="RandomizeEverythingButton" HorizontalAlignment="Center"
-                                            HorizontalExpand="False" MaxWidth="256"
-                                            Text="{Loc 'humanoid-profile-editor-randomize-everything-button'}" />
-                                    <RichTextLabel Name="WarningLabel" HorizontalExpand="False"
-                                                   VerticalExpand="True" MaxWidth="425"
-                                                   HorizontalAlignment="Left" />
-                                </BoxContainer>
-                            </ui:HighlightedContainer>
-                        </BoxContainer>
-                    </ui:HighlightedContainer>
+<BoxContainer xmlns="https://spacestation14.io" xmlns:humanoid="clr-namespace:Content.Client.Humanoid" xmlns:ui="clr-namespace:Content.Client.Lobby.UI" xmlns:creation="clr-namespace:Content.Client._WH40K.CharacterCreation" xmlns:factions="clr-namespace:Content.Client._WH40K.Factions" xmlns:aug="clr-namespace:Content.Client._WH40K.Augments" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
+    <PanelContainer Name="ProfileHighlight">
+        <BoxContainer Orientation="Vertical" SeparationOverride="6">
+            <BoxContainer Name="NameRow" SeparationOverride="8">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4">
+                    <Label Text="{Loc 'humanoid-profile-editor-name-label'}"/>
+                    <LineEdit Name="NameEdit" HorizontalExpand="True"/>
                 </BoxContainer>
-                <!-- Import/Export -->
-                <BoxContainer Orientation="Vertical" MinSize="60 0" HorizontalExpand="True" HorizontalAlignment="Right">
-                    <ui:HighlightedContainer Name="ProfileHighlight">
-                        <BoxContainer Orientation="Vertical">
-                            <Button Name="SaveButton" Text="{Loc 'humanoid-profile-editor-save-button'}"/>
-                            <Button Name="ResetButton" Disabled="True" Text="{Loc 'humanoid-profile-editor-reset-button'}"/>
-                            <Button Name="ImportButton" Text="{Loc 'humanoid-profile-editor-import-button'}"/>
-                            <Button Name="ExportButton" Text="{Loc 'humanoid-profile-editor-export-button'}"/>
-                            <Button Name="ExportImageButton" Text="{Loc 'humanoid-profile-editor-export-image-button'}"/>
-                            <Button Name="OpenImagesButton" Text="{Loc 'humanoid-profile-editor-open-image-button'}"/>
-                        </BoxContainer>
-                    </ui:HighlightedContainer>
+                <BoxContainer Name="RandomizeRow" SeparationOverride="6" VerticalAlignment="Bottom">
+                    <Button Name="NameRandomize" Text="{Loc 'humanoid-profile-editor-name-random-button'}"/>
+                    <Button Name="RandomizeEverythingButton" Text="{Loc 'humanoid-profile-editor-randomize-everything-button'}"/>
                 </BoxContainer>
             </BoxContainer>
-            <Control MinHeight="10" />
-            <!-- tabContainer -->
+            <RichTextLabel Name="WarningLabel" HorizontalExpand="True"/>
+        </BoxContainer>
+    </PanelContainer>
+    <creation:Wh40kPersonalizationTabs Name="ProfileTabs"/>
+    <BoxContainer Name="EditorColumns" SeparationOverride="12" VerticalExpand="True">
+        <PanelContainer Name="EditorSurface" HorizontalExpand="True" VerticalExpand="True">
             <TabContainer Name="TabContainer" HorizontalExpand="True" VerticalExpand="True">
                 <BoxContainer Orientation="Vertical">
-                    <ScrollContainer VerticalExpand="True">
-                        <!-- appearanceList -->
-                        <BoxContainer Orientation="Vertical">
-                            <BoxContainer Margin="10" Orientation="Vertical" HorizontalExpand="True">
-                                <!-- Species -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-species-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <TextureButton Name="SpeciesInfoButton" Scale="0.3 0.3"
-                                                   VerticalAlignment="Center"
-                                                   ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
-                                    <OptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Age -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-age-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <LineEdit Name="AgeEdit" MinSize="40 0" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Sex -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-sex-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="SexButton" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Pronouns -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-pronouns-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="PronounsButton" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Show clothing -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-clothing'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <Button Name="ShowClothes" Pressed="True" ToggleMode="True" Text="{Loc 'humanoid-profile-editor-clothing-show'}" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Spawn Priority -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Height -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-height-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <Slider Name="HeightSlider" MinValue="0.8" MaxValue="1.2" Value="1.0" HorizontalAlignment="Right" MinSize="200 0" />
-                                    <Button Name="HeightResetButton" Text="{Loc 'humanoid-profile-editor-reset-button'}" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <!-- Width -->
-                                <BoxContainer HorizontalExpand="True">
-                                    <Label Text="{Loc 'humanoid-profile-editor-width-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <Slider Name="WidthSlider" MinValue="0.8" MaxValue="1.2" Value="1.0" HorizontalAlignment="Right" MinSize="200 0" />
-                                    <Button Name="WidthResetButton" Text="{Loc 'humanoid-profile-editor-reset-button'}" HorizontalAlignment="Right" />
-                                </BoxContainer>
-                                <BoxContainer Name="BarksContainer" HorizontalExpand="True" Visible="False">
-                                    <Label Text="{Loc 'humanoid-profile-editor-voice-label'}" />
-                                    <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="BarkVoiceButton" HorizontalAlignment="Right" />
-                                    <Button Name="BarkVoicePlayButton" Text="{Loc 'humanoid-profile-editor-BarkVoice-play'}" MaxWidth="80" />
-                                </BoxContainer>
+                    <ScrollContainer Name="AppearanceScroll" HScrollEnabled="False" VerticalExpand="True">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="16">
+                            <BoxContainer Name="AppearanceColumns" SeparationOverride="20" HorizontalExpand="True">
+                                <PanelContainer Name="IdentityCard" HorizontalExpand="True">
+                                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                                        <Label Text="{Loc 'wh40k-personalization-identity'}" StyleClasses="Wh40kOnboardingSectionTitle" FontColorOverride="#E1C17E"/>
+                                        <creation:Wh40kSectionRule/>
+                                        <GridContainer Columns="2" HorizontalExpand="True">
+                                            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" Margin="0 0 8 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-age-label'}"/>
+                                                <LineEdit Name="AgeEdit" HorizontalExpand="True"/>
+                                            </BoxContainer>
+                                            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" Margin="0 0 0 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-species-label'}"/>
+                                                <BoxContainer SeparationOverride="5">
+                                                    <OptionButton Name="SpeciesButton" HorizontalExpand="True"/>
+                                                    <TextureButton Name="SpeciesInfoButton" Scale="0.3 0.3" VerticalAlignment="Center" ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
+                                                </BoxContainer>
+                                            </BoxContainer>
+                                            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" Margin="0 0 8 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-sex-label'}"/>
+                                                <creation:Wh40kSexPicker Name="SexButton"/>
+                                            </BoxContainer>
+                                            <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" Margin="0 0 0 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-pronouns-label'}"/>
+                                                <OptionButton Name="PronounsButton" HorizontalExpand="True"/>
+                                            </BoxContainer>
+                                        </GridContainer>
+                                        <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}"/>
+                                        <OptionButton Name="SpawnPriorityButton" HorizontalExpand="True"/>
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <PanelContainer Name="BodyCard" HorizontalExpand="True">
+                                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                                        <Label Text="{Loc 'wh40k-personalization-body'}" StyleClasses="Wh40kOnboardingSectionTitle" FontColorOverride="#E1C17E"/>
+                                        <creation:Wh40kSectionRule/>
+                                        <GridContainer Columns="2" HorizontalExpand="True">
+                                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" Margin="0 0 8 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-height-label'}"/>
+                                                <BoxContainer SeparationOverride="5">
+                                                    <Slider Name="HeightSlider" MinValue="0.8" MaxValue="1.2" Value="1" MinWidth="100" HorizontalExpand="True"/>
+                                                    <Button Name="HeightResetButton" Text="{Loc 'humanoid-profile-editor-reset-button'}"/>
+                                                </BoxContainer>
+                                            </BoxContainer>
+                                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" Margin="0 0 0 8">
+                                                <Label Text="{Loc 'humanoid-profile-editor-width-label'}"/>
+                                                <BoxContainer SeparationOverride="5">
+                                                    <Slider Name="WidthSlider" MinValue="0.8" MaxValue="1.2" Value="1" MinWidth="100" HorizontalExpand="True"/>
+                                                    <Button Name="WidthResetButton" Text="{Loc 'humanoid-profile-editor-reset-button'}"/>
+                                                </BoxContainer>
+                                            </BoxContainer>
+                                        </GridContainer>
+                                        <Label Text="{Loc 'humanoid-profile-editor-skin-color-label'}"/>
+                                        <Slider Name="Skin" MinValue="0" MaxValue="100" Value="20" HorizontalExpand="True"/>
+                                        <BoxContainer Name="RgbSkinColorContainer" Visible="False" Orientation="Vertical" HorizontalExpand="True"/>
+                                        <BoxContainer Name="BarksContainer" Visible="False" Orientation="Vertical" SeparationOverride="4">
+                                            <Label Text="{Loc 'humanoid-profile-editor-voice-label'}"/>
+                                            <BoxContainer SeparationOverride="5">
+                                                <OptionButton Name="BarkVoiceButton" HorizontalExpand="True"/>
+                                                <Button Name="BarkVoicePlayButton" Text="{Loc 'humanoid-profile-editor-BarkVoice-play'}" MinWidth="32"/>
+                                            </BoxContainer>
+                                        </BoxContainer>
+                                    </BoxContainer>
+                                </PanelContainer>
                             </BoxContainer>
-                            <!-- Skin -->
-                            <BoxContainer Margin="10" HorizontalExpand="True" Orientation="Vertical">
-                                <Label Text="{Loc 'humanoid-profile-editor-skin-color-label'}" />
-                                <Slider HorizontalExpand="True" Name="Skin" MinValue="0" MaxValue="100" Value="20" />
-                                <BoxContainer Name="RgbSkinColorContainer" Visible="False" Orientation="Vertical" HorizontalExpand="True"></BoxContainer>
-                            </BoxContainer>
-                            <!-- Hair -->
-                            <BoxContainer Margin="10" Orientation="Horizontal">
-                                <humanoid:SingleMarkingPicker Name="HairStylePicker" Category="Hair" />
-                                <humanoid:SingleMarkingPicker Name="FacialHairPicker" Category="FacialHair" />
-                            </BoxContainer>
-                            <!-- Eyes -->
-                            <BoxContainer Margin="10" Orientation="Vertical">
-                                <Label Text="{Loc 'humanoid-profile-editor-eyes-label'}" />
-                                <humanoid:EyeColorPicker Name="EyeColorPicker" />
+                            <creation:Wh40kSectionRule/>
+                            <creation:Wh40kSpeechStylePicker Name="SpeechStylePicker"/>
+                            <creation:Wh40kSectionRule/>
+                            <BoxContainer Name="HairColumns" SeparationOverride="16">
+                                <PanelContainer Name="HairCard" HorizontalExpand="True">
+                                    <humanoid:SingleMarkingPicker Name="HairStylePicker" Category="Hair" UseTiles="True"/>
+                                </PanelContainer>
+                                <PanelContainer Name="BeardCard" HorizontalExpand="True">
+                                    <humanoid:SingleMarkingPicker Name="FacialHairPicker" Category="FacialHair" UseTiles="True"/>
+                                </PanelContainer>
                             </BoxContainer>
                         </BoxContainer>
                     </ScrollContainer>
                 </BoxContainer>
                 <BoxContainer Orientation="Vertical">
-                    <!-- Jobs -->
-                    <OptionButton Name="PreferenceUnavailableButton" />
+                    <OptionButton Name="PreferenceUnavailableButton"/>
                     <ScrollContainer VerticalExpand="True">
-                        <BoxContainer Name="JobList" Orientation="Vertical" />
+                        <BoxContainer Name="JobList" Orientation="Vertical"/>
                     </ScrollContainer>
                 </BoxContainer>
-                <!-- Frontier: no Antags tab
-                <BoxContainer Orientation="Vertical" Margin="10">
-                    <! - - Antags  - - >
-                    <ScrollContainer VerticalExpand="True">
-                        <BoxContainer Name="AntagList" Orientation="Vertical" />
+                <BoxContainer Orientation="Vertical" SeparationOverride="7">
+                    <LineEdit Name="TraitSearch" PlaceHolder="{Loc 'wh40k-personalization-traits-search'}" HorizontalExpand="True"/>
+                    <BoxContainer SeparationOverride="8">
+                        <OptionButton Name="TraitSort"/>
+                        <CheckBox Name="HideUnavailableTraits" Text="{Loc 'wh40k-personalization-traits-hide'}" />
+                        <Control HorizontalExpand="True"/>
+                        <Label Name="TraitSelectionCount" StyleClasses="LabelSubText"/>
+                    </BoxContainer>
+                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True" ReserveScrollbarSpace="True">
+                        <BoxContainer Name="TraitsList" Orientation="Vertical" SeparationOverride="6"/>
                     </ScrollContainer>
                 </BoxContainer>
-                End Frontier -->
-                <BoxContainer Orientation="Vertical" Margin="10">
-                    <!-- Traits -->
-                    <ScrollContainer VerticalExpand="True">
-                        <BoxContainer Name="TraitsList" Orientation="Vertical" />
-                    </ScrollContainer>
-                </BoxContainer>
-                <!-- Faction tab -->
-                <BoxContainer Orientation="Vertical" Margin="10">
+                <BoxContainer Orientation="Vertical">
                     <ScrollContainer Name="FactionDirectory" VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
-                        <BoxContainer Orientation="Vertical" MaxWidth="760" HorizontalAlignment="Left" SeparationOverride="12" Margin="6">
-                            <BoxContainer Orientation="Horizontal" SeparationOverride="12" Margin="0 0 0 4">
-                                <Label Text="{Loc 'humanoid-profile-editor-faction-tab'}" StyleClasses="LabelHeadingBigger" FontColorOverride="#E9E2D6"/>
-                            </BoxContainer>
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="12">
+                            <Label Text="{Loc 'humanoid-profile-editor-faction-tab'}" StyleClasses="Wh40kOnboardingSectionTitle" FontColorOverride="#E1C17E"/>
                             <RichTextLabel Name="FactionNotice" Visible="False"/>
                             <factions:LobbyFactionCatalog Name="FactionCatalog"/>
                         </BoxContainer>
                     </ScrollContainer>
-                    <factions:FactionDashboard Name="MemberDashboard" Visible="False" HorizontalExpand="True" VerticalExpand="True"
-                                               MaxWidth="1100" HorizontalAlignment="Left" Margin="6"/>
+                    <factions:FactionDashboard Name="MemberDashboard" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
                 </BoxContainer>
-                <BoxContainer Name="MarkingsTab" Orientation="Vertical" Margin="10">
-                    <!-- Markings -->
-                    <ScrollContainer VerticalExpand="True">
-                        <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
+                <BoxContainer Name="MarkingsTab" Orientation="Vertical">
+                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                        <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" UseTiles="True"/>
                     </ScrollContainer>
                 </BoxContainer>
-                <aug:Wh40kAugmentCatalogue Name="AugmentsTab" />
+                <aug:Wh40kAugmentCatalogue Name="AugmentsTab"/>
             </TabContainer>
-        </BoxContainer>
-        <!-- Right side -->
-        <BoxContainer Name="ProfilePreviewSidebar" Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
-            <PanelContainer Name="Wh40kPortraitFrame" Access="Public" Visible="False" SetSize="144 184"
-                            HorizontalAlignment="Center" Margin="4 10 4 0" MouseFilter="Ignore">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#080907E8" BorderColor="{x:Static style:StyleNano.NanoGold}" BorderThickness="1"
-                                       ContentMarginLeftOverride="4" ContentMarginRightOverride="4"
-                                       ContentMarginTopOverride="4" ContentMarginBottomOverride="4" />
-                </PanelContainer.PanelOverride>
-                <TextureRect Name="Wh40kPortrait" Access="Public" HorizontalExpand="True" VerticalExpand="True"
-                             MouseFilter="Ignore" Stretch="KeepAspectCentered" />
-            </PanelContainer>
-            <Control SetHeight="40" />
-            <SpriteView Name="SpriteView" Scale="8 8" Margin="4" SizeFlagsStretchRatio="1" />
-            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
-                <Button Name="SpriteRotateLeft" Text="◀" StyleClasses="OpenRight" />
-                <cc:VSeparator Margin="2 0 3 0" />
-                <Button Name="SpriteRotateRight" Text="▶" StyleClasses="OpenLeft" />
+        </PanelContainer>
+        <PanelContainer Name="PreviewPanel" SetWidth="380">
+            <BoxContainer Name="ProfilePreviewSidebar" Orientation="Vertical" SeparationOverride="8">
+                <Label Name="PreviewTitle" Text="{Loc 'wh40k-personalization-preview'}" HorizontalAlignment="Center" FontColorOverride="#E1C17E"/>
+                <BoxContainer Name="PreviewFigures" Orientation="Vertical" VerticalExpand="True">
+                    <PanelContainer Name="PreviewStage" VerticalExpand="True">
+                        <TextureRect TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/personalization-stage.svg.192dpi.png" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"/>
+                        <SpriteView Name="SpriteView" Stretch="Fill" Scale="1 1" Margin="24"/>
+                        <PanelContainer Name="Wh40kPortraitFrame" Access="Public" Visible="False" MouseFilter="Ignore">
+                            <TextureRect Name="Wh40kPortrait" Access="Public" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"/>
+                        </PanelContainer>
+                    </PanelContainer>
+                </BoxContainer>
+                <RichTextLabel Name="PreviewName" HorizontalExpand="True" StyleClasses="Wh40kOnboardingDisplaySmall"/>
+                <BoxContainer SeparationOverride="4">
+                    <creation:Wh40kPortraitButton Name="PortraitButton"/>
+                    <Control HorizontalExpand="True"/>
+                    <BoxContainer SeparationOverride="8">
+                        <Button Name="SpriteRotateLeft" Text="&lt;" ToolTip="{Loc 'wh40k-personalization-turn-left'}" MinWidth="32"/>
+                        <Button Name="ShowClothes" Pressed="True" ToggleMode="True" Text="{Loc 'wh40k-personalization-clothes'}" ToolTip="{Loc 'humanoid-profile-editor-clothing'}"/>
+                        <Button Name="SpriteRotateRight" Text="&gt;" ToolTip="{Loc 'wh40k-personalization-turn-right'}" MinWidth="32"/>
+                    </BoxContainer>
+                    <Control HorizontalExpand="True"/>
+                    <Control SetWidth="32"/>
+                </BoxContainer>
             </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+    <PanelContainer Name="ActionPanel">
+        <BoxContainer SeparationOverride="8">
+            <Label Name="SaveStatus" HorizontalExpand="True" VerticalAlignment="Center"/>
+            <Button Name="FilesButton" Text="{Loc 'wh40k-personalization-files'}" ToolTip="{Loc 'wh40k-personalization-files-tooltip'}"/>
+            <Button Name="ResetButton" Disabled="True" Text="{Loc 'humanoid-profile-editor-reset-button'}"/>
+            <Button Name="SaveButton" Text="{Loc 'humanoid-profile-editor-save-button'}" MinWidth="110"/>
         </BoxContainer>
+    </PanelContainer>
+    <Popup Name="FilePopup">
+        <PanelContainer StyleClasses="Wh40kPersonalizationField">
+            <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                <Button Name="ImportButton" Text="{Loc 'humanoid-profile-editor-import-button'}"/>
+                <Button Name="ExportButton" Text="{Loc 'humanoid-profile-editor-export-button'}"/>
+                <Button Name="ExportImageButton" Text="{Loc 'humanoid-profile-editor-export-image-button'}"/>
+                <Button Name="OpenImagesButton" Text="{Loc 'humanoid-profile-editor-open-image-button'}"/>
+            </BoxContainer>
+        </PanelContainer>
+    </Popup>
 </BoxContainer>

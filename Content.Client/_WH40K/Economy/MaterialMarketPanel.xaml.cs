@@ -26,15 +26,11 @@ public sealed partial class MaterialMarketPanel : BoxContainer
     [Dependency] private IResourceCache _resources = default!;
     private static readonly Color Rising = Color.FromHex("#9ed1aa");
     private static readonly Color Falling = Color.FromHex("#ea9393");
-    private static readonly Color Neutral = Color.FromHex("#a9b6c3");
-    private static readonly Color Gold = Color.FromHex("#ddc389");
+    private static readonly Color Neutral = Color.FromHex("#ADA391");
+    private static readonly Color Gold = Color.FromHex("#E1C17E");
     private readonly Font _bodyFont;
     private readonly Font _smallFont;
     private readonly Font _headingFont;
-    private readonly StyleBoxFlat _sellStyle = new() { BackgroundColor = Color.FromHex("#46513e"),
-        ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
-    private readonly StyleBoxFlat _disabledStyle = new() { BackgroundColor = Color.FromHex("#30343a"),
-        ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
     private readonly List<MarketRow> _rows = new();
     private TimeSpan _cycleAt;
     private bool _cycles;
@@ -55,8 +51,9 @@ public sealed partial class MaterialMarketPanel : BoxContainer
         NetLabel.FontOverride = _resources.GetFont("/Fonts/NotoSans/NotoSans-Bold.ttf", 28);
         SellButton.Label.FontOverride = _headingFont;
         SellButton.ModulateSelfOverride = Color.White;
-        SaleBackground.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#25272b") };
-        MarketBackground.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#1c1f23") };
+        SellButton.AddStyleClass("Wh40kPrimaryButton");
+        SaleBackground.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#211A12") };
+        MarketBackground.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#18140F") };
         ShowAllCheckBox.OnToggled += _ => UpdateVisibleRows();
         SellButton.OnPressed += _ =>
         {
@@ -130,7 +127,7 @@ public sealed partial class MaterialMarketPanel : BoxContainer
             var heading = label.HasStyleClass("LabelHeading");
             var small = label.HasStyleClass("LabelSubText");
             label.FontOverride = heading ? _headingFont : small ? _smallFont : _bodyFont;
-            label.FontColorOverride ??= heading ? Gold : small ? Neutral : Color.FromHex("#e7e9ed");
+            label.FontColorOverride ??= heading ? Gold : small ? Neutral : Color.FromHex("#E9E1D0");
         }
         if (control is RichTextLabel)
             control.Stylesheet = new Stylesheet(new[]
@@ -145,7 +142,6 @@ public sealed partial class MaterialMarketPanel : BoxContainer
     private void UpdateSellButton()
     {
         SellButton.Disabled = !_canSell || _pending;
-        SellButton.StyleBoxOverride = SellButton.Disabled ? _disabledStyle : _sellStyle;
     }
 
     private static string Money(int amount) => Loc.GetString("wh40k-market-price-value", ("price", amount.ToString("N0")));
@@ -199,7 +195,7 @@ public sealed partial class MaterialMarketPanel : BoxContainer
             _prototypes = prototypes;
             _sprites = sprites;
             PanelOverride = new StyleBoxFlat { BackgroundColor = Color.Transparent,
-                BorderColor = Color.FromHex("#2b3036"), BorderThickness = new Thickness(0, 0, 0, 1),
+                BorderColor = Color.FromHex("#56452D"), BorderThickness = new Thickness(0, 0, 0, 1),
                 ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
             var row = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 12 };
             var material = new BoxContainer { Orientation = LayoutOrientation.Horizontal, MinWidth = 128,
@@ -207,7 +203,7 @@ public sealed partial class MaterialMarketPanel : BoxContainer
             var names = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 0 };
             _name.FontOverride = _price.FontOverride = _demand.FontOverride = bodyFont;
             _unit.FontOverride = smallFont;
-            var tile = new PanelContainer { PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#282d34"),
+            var tile = new PanelContainer { PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#211A12"),
                 ContentMarginLeftOverride = 2, ContentMarginRightOverride = 2,
                 ContentMarginTopOverride = 2, ContentMarginBottomOverride = 2 }, VerticalAlignment = VAlignment.Center };
             tile.AddChild(_icon);

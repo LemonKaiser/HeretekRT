@@ -6,14 +6,14 @@
     <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Margin="5">
         <PanelContainer StyleClasses="Inset">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BackgroundColor="#303133"/>
+                <graphics:StyleBoxFlat BackgroundColor="#211A12"/>
             </PanelContainer.PanelOverride>
 
             <BoxContainer Orientation="Vertical" VerticalExpand="True" SeparationOverride="5">
                 <PanelContainer Name="TextContainer" StyleClasses="Inset" Margin="5">
                     <PanelContainer.PanelOverride>
-                        <!-- <graphics:StyleBoxFlat BackgroundColor="#464950"/> -->
-                        <graphics:StyleBoxFlat BackgroundColor="#303133"/>
+                        <!-- <graphics:StyleBoxFlat BackgroundColor="#2B2117"/> -->
+                        <graphics:StyleBoxFlat BackgroundColor="#211A12"/>
                     </PanelContainer.PanelOverride>
                 </PanelContainer>
 

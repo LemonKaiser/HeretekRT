@@ -1,0 +1,4 @@
+- type: shader
+  id: Wh40kUiFrostedGlass
+  kind: source
+  path: /Textures/_WH40K/Shaders/ui-frosted-glass.swsl

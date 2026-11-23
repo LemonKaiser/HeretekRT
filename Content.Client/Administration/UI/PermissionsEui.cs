@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Threading;
 using Content.Client.Administration.Managers;
 using Content.Client.Administration.UI.CustomControls;
+using Content.Client._WH40K.UserInterface;
 using Content.Client.Eui;
 using Content.Client.Stylesheets;
 using Content.Shared.Administration;
@@ -1099,16 +1100,16 @@ namespace Content.Client.Administration.UI
         /// </summary>
         private static class PermissionsPalette
         {
-            public static readonly Color Panel = StyleNano.PanelDark;
-            public static readonly Color RaisedPanel = Color.FromHex("#242424");
-            public static readonly Color Row = Color.FromHex("#2B2B2B");
-            public static readonly Color SelectedRow = Color.FromHex("#3F3F3F");
-            public static readonly Color LockedRow = Color.FromHex("#252525");
-            public static readonly Color Button = StyleNano.ButtonColorDefault;
-            public static readonly Color Border = Color.FromHex("#444444");
-            public static readonly Color MutedBorder = StyleNano.DisabledFore;
-            public static readonly Color SelectedBorder = StyleNano.ButtonColorHovered;
-            public static readonly Color MetaText = StyleNano.NanoGold;
+            public static readonly Color Panel = Wh40kInterfaceTheme.TableRow;
+            public static readonly Color RaisedPanel = Wh40kInterfaceTheme.TableAlternateRow;
+            public static readonly Color Row = Color.FromHex("#18140F");
+            public static readonly Color SelectedRow = Color.FromHex("#342719");
+            public static readonly Color LockedRow = Color.FromHex("#15120F");
+            public static readonly Color Button = Wh40kInterfaceTheme.TableHeader;
+            public static readonly Color Border = Wh40kInterfaceTheme.Border;
+            public static readonly Color MutedBorder = Border.WithAlpha(0.65f);
+            public static readonly Color SelectedBorder = Color.FromHex("#BE9E64");
+            public static readonly Color MetaText = Wh40kInterfaceTheme.Gold;
 
             public static readonly Color SuccessBackground = Color.FromHex("#1E2B20");
             public static readonly Color SuccessBorder = StyleNano.GoodGreenFore;
@@ -1118,15 +1119,15 @@ namespace Content.Client.Administration.UI
             public static readonly Color DangerBorder = StyleNano.DangerousRedFore;
 
             // Выбранные режимы флагов: фон намеренно заметен только после выбора.
-            public static readonly Color ModePanel = Color.FromHex("#151515");
-            public static readonly Color ModeIdle = Color.FromHex("#080808");
-            public static readonly Color ModeIdleBorder = Color.FromHex("#1B1B1B");
-            public static readonly Color ModeNeutral = Color.FromHex("#1B1B1B");
+            public static readonly Color ModePanel = Panel;
+            public static readonly Color ModeIdle = Color.FromHex("#0C0A08");
+            public static readonly Color ModeIdleBorder = MutedBorder;
+            public static readonly Color ModeNeutral = SelectedRow;
             public static readonly Color ModeGrant = Color.FromHex("#0D2B12");
             public static readonly Color ModeGrantBorder = Color.FromHex("#286837");
             public static readonly Color ModeDeny = Color.FromHex("#371111");
             public static readonly Color ModeDenyBorder = Color.FromHex("#783535");
-            public static readonly Color ModeHoverBorder = Color.FromHex("#747474");
+            public static readonly Color ModeHoverBorder = Wh40kInterfaceTheme.Gold;
         }
 
         private static StyleBoxFlat CreatePanelStyle(Color background, Color border)
@@ -2154,7 +2155,7 @@ namespace Content.Client.Administration.UI
             }
         }
 
-        private sealed class AdminFlagsWindow : DefaultWindow
+        internal sealed class AdminFlagsWindow : DefaultWindow
         {
             public readonly Button ConfirmButton;
             public readonly Button CancelButton;
@@ -2298,7 +2299,7 @@ namespace Content.Client.Administration.UI
 
         }
 
-        private sealed class RankFlagsWindow : DefaultWindow
+        internal sealed class RankFlagsWindow : DefaultWindow
         {
             public readonly Button ConfirmButton;
             public readonly Button CancelButton;
@@ -2684,7 +2685,7 @@ namespace Content.Client.Administration.UI
             // У этого переключателя цвет уже является итоговым, иначе тёмные состояния неразличимы.
             button.ModulateSelfOverride = Color.White;
             button.Label.FontColorOverride = button.Disabled
-                ? StyleNano.DisabledFore
+                ? Wh40kInterfaceTheme.MutedText
                 : active
                     ? Color.White
                     : MetaTextColor;

@@ -15,6 +15,7 @@ namespace Content.Client.UserInterface.Controls
         private bool _hasMargins = true;
 
         public const string StylePropertyBackground = "background";
+        public const string StylePropertyEdgeColor = "edge-color";
 
         public bool HasTopEdge
         {
@@ -97,20 +98,21 @@ namespace Content.Client.UserInterface.Controls
         protected override void Draw(DrawingHandleScreen handle)
         {
             UIBox2 centerBox = PixelSizeBox;
+            var edgeColor = StylePropertyDefault(StylePropertyEdgeColor, EdgeColor);
 
             var padSize = HasMargins ? PadSize : 0;
 
             if (HasTopEdge)
             {
                 centerBox += (0, (padSize + EdgeSize) * UIScale, 0, 0);
-                handle.DrawRect(new UIBox2(0, padSize * UIScale, PixelWidth, centerBox.Top), EdgeColor);
+                handle.DrawRect(new UIBox2(0, padSize * UIScale, PixelWidth, centerBox.Top), edgeColor);
             }
 
             if (HasBottomEdge)
             {
                 centerBox += (0, 0, 0, -((padSize + EdgeSize) * UIScale));
                 handle.DrawRect(new UIBox2(0, centerBox.Bottom, PixelWidth, PixelHeight - padSize * UIScale),
-                    EdgeColor);
+                    edgeColor);
             }
 
             GetActualStyleBox()?.Draw(handle, centerBox, UIScale);

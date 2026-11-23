@@ -34,7 +34,7 @@
                           Margin="0 0 0 10">
                 <PanelContainer Name="ResearchesContainer" VerticalExpand="True" HorizontalExpand="True">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BackgroundColor="#222226FF" />
+                        <gfx:StyleBoxFlat BackgroundColor="#211A12FF" />
                     </PanelContainer.PanelOverride>
                     <goob:ResearchesContainerPanel
                         HorizontalExpand="True"
@@ -49,7 +49,7 @@
             </BoxContainer>
             <PanelContainer SizeFlagsStretchRatio="2">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
                 <BoxContainer Name="InfoContainer"
                     Orientation="Vertical"

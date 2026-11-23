@@ -1,0 +1,11 @@
+wh40k-window-minimize = Collapse window
+wh40k-changelog-older = Show earlier updates
+wh40k-ui-resume = Resume
+wh40k-ui-help = Guidebook
+wh40k-window-restore = Expand window
+wh40k-ui-frosted-glass = Frosted window glass
+wh40k-ui-glass-transparency = Frosted glass transparency
+wh40k-ui-frosted-glass-tooltip = Blurs the background behind windows. Disable to reduce GPU load. Applied after saving.
+wh40k-context-section-interaction = INTERACTION
+wh40k-context-section-character = CHARACTER
+wh40k-context-section-service = ADMIN TOOLS

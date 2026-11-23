@@ -27,6 +27,7 @@ namespace Content.Client.ContextMenu.UI
         public ContextMenuPopup? ParentMenu;
 
         private ContextMenuPopup? _subMenu;
+        private bool _appearanceReady;
 
         /// <summary>
         ///     The pop-up menu that is opened when hovering over this element.
@@ -44,16 +45,29 @@ namespace Content.Client.ContextMenu.UI
         /// <summary>
         ///     Convenience property to set label text.
         /// </summary>
-        public virtual string Text { set => Label.SetMessage(FormattedMessage.FromMarkupPermissive(value.Trim())); }
+        public virtual string Text { set => Label.SetMessage(FormattedMessage.FromMarkupPermissive(value.Trim()), Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Text); }
 
         public ContextMenuElement(string? text = null)
         {
             RobustXamlLoader.Load(this);
+            _appearanceReady = true;
+            HorizontalExpand = true;
             Margin = new Thickness(ElementMargin, ElementMargin, ElementMargin, ElementMargin);
             SetOnlyStyleClass(StyleClassContextMenuButton);
 
             if (text != null)
                 Text = text;
+        }
+
+        protected override void DrawModeChanged()
+        {
+            base.DrawModeChanged();
+            if (!_appearanceReady) return;
+            // RichTextLabel draws its own message colour and does not use Label's font-color style.
+            if (Label != null)
+                Label.ModulateSelfOverride = Color.White.WithAlpha(Disabled ? 0.38f : 1f);
+            if (Icon != null)
+                Icon.ModulateSelfOverride = Color.White.WithAlpha(Disabled ? 0.38f : 1f);
         }
 
         protected override void Dispose(bool disposing)

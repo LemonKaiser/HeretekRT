@@ -9,11 +9,11 @@
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="7" BorderColor="#252525" BackgroundColor="#000000"/>
+                <graphics:StyleBoxFlat BorderThickness="7" BorderColor="#56452D" BackgroundColor="#000000"/>
             </PanelContainer.PanelOverride>
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#000000"/>
+                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#000000"/>
                 </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Vertical"
                       HorizontalAlignment="Stretch"
@@ -22,7 +22,7 @@
         <!-- Top row mode buttons -->
         <PanelContainer VerticalExpand="False" HorizontalExpand="True">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#121212"/>
+                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
             </PanelContainer.PanelOverride>
         <BoxContainer Name="ModeButtons"
                        Orientation="Horizontal"

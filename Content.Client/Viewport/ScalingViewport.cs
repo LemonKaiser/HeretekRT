@@ -43,6 +43,10 @@ namespace Content.Client.Viewport
 
         public int CurrentRenderScale => _curRenderScale;
 
+        // Read-only access for content UI glass; this reuses the frame already rendered by this viewport.
+        internal Texture? RenderedTexture => _viewport?.RenderTarget.Texture;
+        internal UIBox2i GlobalDrawBox => GetDrawBox().Translated(GlobalPixelPosition);
+
         /// <summary>
         ///     The eye to render.
         /// </summary>

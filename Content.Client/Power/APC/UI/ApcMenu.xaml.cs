@@ -25,6 +25,9 @@ namespace Content.Client.Power.APC.UI
             IoCManager.InjectDependencies(this);
             RobustXamlLoader.Load(this);
 
+            BreakerTitle.SetMessage(Loc.GetString("apc-menu-breaker-label"), Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Text);
+            ExternalPowerTitle.SetMessage(Loc.GetString("apc-menu-external-label"), Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Text);
+
             BreakerButton.OnPressed += _ => OnBreaker?.Invoke();
         }
 

@@ -31,8 +31,8 @@ public sealed partial class Wh40kCharacteristicsPage : BoxContainer
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
 
-        DecreaseButton.StyleBoxOverride = CreateStepStyle(Color.FromHex("#12130FDB"));
-        IncreaseButton.StyleBoxOverride = CreateStepStyle(Color.FromHex("#2B2311D0"));
+        DecreaseButton.StyleBoxOverride = Wh40kPersonalizationTheme.Surface("#18140F", "#796642", 0, 4);
+        IncreaseButton.StyleBoxOverride = Wh40kPersonalizationTheme.Surface("#392B1C", "#BE9E64", 0, 4);
         DecreaseButton.OnPressed += _ => AdjustSelectedCharacteristic(-1);
         IncreaseButton.OnPressed += _ => AdjustSelectedCharacteristic(1);
     }
@@ -212,17 +212,4 @@ public sealed partial class Wh40kCharacteristicsPage : BoxContainer
             : null;
     }
 
-    private static StyleBoxFlat CreateStepStyle(Color background)
-    {
-        return new StyleBoxFlat
-        {
-            BackgroundColor = background,
-            BorderColor = Color.FromHex("#B697545C"),
-            BorderThickness = new Thickness(1f),
-            ContentMarginLeftOverride = 0f,
-            ContentMarginRightOverride = 0f,
-            ContentMarginTopOverride = 0f,
-            ContentMarginBottomOverride = 0f,
-        };
-    }
 }

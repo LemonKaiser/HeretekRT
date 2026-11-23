@@ -9,6 +9,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Controls.FancyTree;
 using Content.Client.Verbs.UI;
 using Content.Client._WH40K.CharacterCreation;
+using Content.Client._WH40K.UserInterface;
 using Content.Shared.Verbs;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -130,20 +131,20 @@ namespace Content.Client.Stylesheets
         public const string StyleClassPopupMessageLarge = "PopupMessageLarge";
         public const string StyleClassPopupMessageLargeCaution = "PopupMessageLargeCaution";
 
-        public static readonly Color PanelDark = Color.FromHex("#1E1E1E");
+        public static readonly Color PanelDark = Color.FromHex("#15120F");
 
-        public static readonly Color NanoGold = Color.FromHex("#bdbdbd");
+        public static readonly Color NanoGold = Color.FromHex("#E1C17E");
         public static readonly Color GoodGreenFore = Color.FromHex("#31843E");
         public static readonly Color ConcerningOrangeFore = Color.FromHex("#A5762F");
         public static readonly Color DangerousRedFore = Color.FromHex("#BB3232");
-        public static readonly Color DisabledFore = Color.FromHex("#5A5A5A");
+        public static readonly Color DisabledFore = Color.FromHex("#8A7A62");
 
-        public static readonly Color ButtonColorDefault = Color.FromHex("#363636");
+        public static readonly Color ButtonColorDefault = Color.FromHex("#372A1C");
         public static readonly Color ButtonColorDefaultRed = Color.FromHex("#D43B3B");
-        public static readonly Color ButtonColorHovered = Color.FromHex("#878787");
+        public static readonly Color ButtonColorHovered = Color.FromHex("#9D7D49");
         public static readonly Color ButtonColorHoveredRed = Color.FromHex("#DF6B6B");
-        public static readonly Color ButtonColorPressed = Color.FromHex("#212121");
-        public static readonly Color ButtonColorDisabled = Color.FromHex("#1B1D1F");
+        public static readonly Color ButtonColorPressed = Color.FromHex("#392B1C");
+        public static readonly Color ButtonColorDisabled = Color.FromHex("#18140F");
 
         public static readonly Color ButtonColorCautionDefault = Color.FromHex("#ab3232");
         public static readonly Color ButtonColorCautionHovered = Color.FromHex("#cf2f2f");
@@ -172,9 +173,9 @@ namespace Content.Client.Stylesheets
         public static readonly Color ExamineButtonColorContextDisabled = Color.FromHex("#5A5A5A");
 
         // Fancy Tree elements
-        public static readonly Color FancyTreeEvenRowColor = Color.FromHex("#242424");
+        public static readonly Color FancyTreeEvenRowColor = Color.FromHex("#15110DEB");
         public static readonly Color FancyTreeOddRowColor = FancyTreeEvenRowColor * new Color(0.8f, 0.8f, 0.8f);
-        public static readonly Color FancyTreeSelectedRowColor = new Color(63, 63, 63);
+        public static readonly Color FancyTreeSelectedRowColor = Color.FromHex("#342719");
 
         //Used by the APC and SMES menus
         public const string StyleClassPowerStateNone = "PowerStateNone";
@@ -194,7 +195,7 @@ namespace Content.Client.Stylesheets
         public const string StyleClassButtonColorRed = "ButtonColorRed";
         public const string StyleClassButtonColorGreen = "ButtonColorGreen";
 
-        public static readonly Color ChatBackgroundColor = Color.FromHex("#2B2B2BDD");
+        public static readonly Color ChatBackgroundColor = Color.FromHex("#15120FE8");
 
         //Bwoink
         public const string StyleClassPinButtonPinned = "pinButtonPinned";
@@ -1852,7 +1853,7 @@ namespace Content.Client.Stylesheets
                     {
                         Modulate = ButtonColorGoodDefault
                     }),
-            }).ToList());
+            }).Concat(Wh40kInterfaceTheme.CreateRules(resCache)).ToList());
         }
     }
 }

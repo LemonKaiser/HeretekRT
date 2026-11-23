@@ -1,13 +1,13 @@
-<Control xmlns="https://spacestation14.io">
+<Control xmlns="https://spacestation14.io" xmlns:creation="clr-namespace:Content.Client._WH40K.CharacterCreation">
     <!-- Primary container -->
-    <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+    <BoxContainer Name="LegacyEditor" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8">
         <!-- Marking lists -->
-        <BoxContainer Orientation="Horizontal" SeparationOverride="5" HorizontalExpand="True">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8" HorizontalExpand="True">
             <!-- Unused markings -->
             <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                    <Label Text="{Loc 'markings-unused'}" HorizontalAlignment="Stretch" HorizontalExpand="True" />
-                    <Label Name="CMarkingPoints" Text="uwu" HorizontalAlignment="Right" />
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="8">
+                    <Label Text="{Loc 'markings-unused'}" StyleClasses="LabelHeading" HorizontalExpand="True" />
+                    <Label Name="CMarkingPoints" HorizontalAlignment="Right" />
                 </BoxContainer>
 
                 <OptionButton Name="CMarkingCategoryButton" StyleClasses="OpenLeft" />
@@ -19,7 +19,7 @@
 
             <!-- Used markings -->
             <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                <Label Text="{Loc 'markings-used'}" />
+                <Label Text="{Loc 'markings-used'}" StyleClasses="LabelHeading" />
 
                 <ItemList Name="CMarkingsUsed" VerticalExpand="True" MinSize="300 250" />
 
@@ -33,5 +33,50 @@
 
         <!-- Colors -->
         <BoxContainer Name="CMarkingColors" Orientation="Vertical" Visible="False" />
+    </BoxContainer>
+    <BoxContainer Name="GalleryEditor" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="12" Visible="False">
+        <GridContainer Name="CategoryTiles" MaxGridWidth="400" HSeparationOverride="5" VSeparationOverride="5"/>
+        <BoxContainer Name="GalleryColumns" SeparationOverride="12" HorizontalExpand="True">
+            <PanelContainer Name="GalleryCatalog" HorizontalExpand="True" VerticalAlignment="Top">
+                <BoxContainer Orientation="Vertical" SeparationOverride="9">
+                    <BoxContainer Name="GalleryHeader" SeparationOverride="8">
+                        <Label Name="GalleryTitle" StyleClasses="LabelHeading" HorizontalExpand="True" VerticalAlignment="Center"/>
+                        <LineEdit Name="GallerySearch" PlaceHolder="{Loc 'wh40k-personalization-markings-search'}" HorizontalExpand="True"/>
+                    </BoxContainer>
+                    <Label Name="GalleryPoints"/>
+                    <ScrollContainer Name="GalleryScroll" MaxHeight="365" HScrollEnabled="False" ReturnMeasure="True">
+                        <creation:Wh40kPreviewGrid Name="Tiles" LargeTiles="True" HorizontalExpand="True"/>
+                    </ScrollContainer>
+                    <Label Name="GalleryEmpty" Text="{Loc 'wh40k-personalization-markings-empty'}" Visible="False"/>
+                </BoxContainer>
+            </PanelContainer>
+            <BoxContainer Name="GallerySide" Orientation="Vertical" SeparationOverride="10" VerticalAlignment="Top">
+                <PanelContainer Name="GalleryLayers">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                        <BoxContainer SeparationOverride="6">
+                            <Label Text="{Loc 'wh40k-personalization-markings-applied'}" StyleClasses="LabelHeading" HorizontalExpand="True"/>
+                            <Label Name="GalleryLayerCount" VerticalAlignment="Center"/>
+                        </BoxContainer>
+                        <ScrollContainer Name="GalleryLayerScroll" MaxHeight="178" HScrollEnabled="False" ReturnMeasure="True">
+                            <BoxContainer Name="GalleryRows" Orientation="Vertical" SeparationOverride="5"/>
+                        </ScrollContainer>
+                        <Label Name="GalleryNoLayers" Text="{Loc 'wh40k-personalization-markings-no-layers'}" Visible="False"/>
+                    </BoxContainer>
+                </PanelContainer>
+                <PanelContainer Name="GalleryDetails" Visible="False">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="8">
+                        <BoxContainer SeparationOverride="8">
+                            <PanelContainer Name="GallerySample" MinSize="43 43" VerticalAlignment="Top"/>
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                                <Label Name="GalleryDetailCategory"/>
+                                <RichTextLabel Name="GalleryDetailName" HorizontalExpand="True"/>
+                            </BoxContainer>
+                        </BoxContainer>
+                        <BoxContainer Name="GalleryActions" SeparationOverride="5"/>
+                        <BoxContainer Name="GalleryColors" Orientation="Vertical" SeparationOverride="8"/>
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+        </BoxContainer>
     </BoxContainer>
 </Control>

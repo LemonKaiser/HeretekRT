@@ -49,7 +49,7 @@ public sealed partial class AdminMessagePopupWindow : Control
             MessageContainer.AddChild(new AdminMessagePopupMessage(message));
         }
 
-        Description.SetMessage(FormattedMessage.FromMarkupOrThrow(Loc.GetString("admin-notes-message-desc", ("count", state.Messages.Length))));
+        Description.SetMessage(FormattedMessage.FromMarkupOrThrow(Loc.GetString("admin-notes-message-desc", ("count", state.Messages.Length))), Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Text);
     }
 
     private void OnDismissButtonPressed(BaseButton.ButtonEventArgs obj)

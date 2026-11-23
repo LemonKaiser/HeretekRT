@@ -36,7 +36,7 @@ public sealed partial class KoronusSectorDossierWindow : FancyWindow
         {
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.FromHex("#111510").WithAlpha(0.97f),
+                BackgroundColor = Color.FromHex("#15120F").WithAlpha(0.97f),
                 BorderColor = Color.FromHex("#8A7956"),
                 BorderThickness = new Thickness(1),
                 ContentMarginLeftOverride = 14,
@@ -182,8 +182,8 @@ public sealed partial class KoronusSectorDossierWindow : FancyWindow
             {
                 PanelOverride = new StyleBoxFlat
                 {
-                    BackgroundColor = Color.FromHex("#1C241C"),
-                    BorderColor = Color.FromHex("#405640"),
+                    BackgroundColor = Color.FromHex("#211A12"),
+                    BorderColor = Color.FromHex("#56452D"),
                     BorderThickness = new Thickness(1),
                     ContentMarginLeftOverride = 10,
                     ContentMarginRightOverride = 10,

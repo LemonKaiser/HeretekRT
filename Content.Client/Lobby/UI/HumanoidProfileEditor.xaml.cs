@@ -45,6 +45,7 @@ using Direction = Robust.Shared.Maths.Direction;
 using Content.Client._Mono.Company;
 using Content.Client._WH40K.CharacterDescription;
 using Content.Client._WH40K.Factions;
+using Content.Client._WH40K.UserInterface;
 using Content.Shared._WH40K.Progression;
 
 namespace Content.Client.Lobby.UI
@@ -209,7 +210,9 @@ namespace Content.Client.Lobby.UI
             NameEdit.OnTextChanged += args => { SetName(args.Text); };
             NameRandomize.OnPressed += args => RandomizeName();
             RandomizeEverythingButton.OnPressed += args => { RandomizeEverything(); };
-            WarningLabel.SetMarkup($"[color=red]{Loc.GetString("humanoid-profile-editor-naming-rules-warning")}[/color]");
+            WarningLabel.SetMarkup(Loc.GetString("wh40k-personalization-naming-warning"));
+            WarningLabel.ToolTip = Loc.GetString("humanoid-profile-editor-naming-rules-warning");
+            WarningLabel.AddStyleClass("Wh40kOnboardingBodySmall");
 
             #endregion Name
 
@@ -219,10 +222,14 @@ namespace Content.Client.Lobby.UI
 
             #region Sex
 
-            SexButton.OnItemSelected += args =>
+            SexButton.OnSelected += SetSex;
+            SpeechStylePicker.StyleSelected += style =>
             {
-                SexButton.SelectId(args.Id);
-                SetSex((Sex) args.Id);
+                if (IsWh40kAppearanceEditingLocked || Profile is null)
+                    return;
+
+                Profile = Profile.WithSpeechStyle(style);
+                SetDirty();
             };
 
             #endregion Sex
@@ -288,17 +295,21 @@ namespace Content.Client.Lobby.UI
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairStyleName(newStyle.id));
-                ReloadPreview();
+                UpdateHairPickers();
+                UpdateCMarkingsHair();
+                ReloadProfilePreview();
             };
 
             HairStylePicker.OnColorChanged += newColor =>
             {
                 if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
+                if (Profile.Appearance.HairColor == newColor.marking.MarkingColors[0])
+                    return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithHairColor(newColor.marking.MarkingColors[0]));
                 UpdateCMarkingsHair();
-                ReloadPreview();
+                ReloadProfilePreview();
             };
 
             FacialHairPicker.OnMarkingSelect += newStyle =>
@@ -307,17 +318,21 @@ namespace Content.Client.Lobby.UI
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairStyleName(newStyle.id));
-                ReloadPreview();
+                UpdateHairPickers();
+                UpdateCMarkingsFacialHair();
+                ReloadProfilePreview();
             };
 
             FacialHairPicker.OnColorChanged += newColor =>
             {
                 if (IsWh40kAppearanceEditingLocked || Profile is null)
                     return;
+                if (Profile.Appearance.FacialHairColor == newColor.marking.MarkingColors[0])
+                    return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithFacialHairColor(newColor.marking.MarkingColors[0]));
                 UpdateCMarkingsFacialHair();
-                ReloadPreview();
+                ReloadProfilePreview();
             };
 
             HairStylePicker.OnSlotRemove += _ =>
@@ -433,9 +448,11 @@ namespace Content.Client.Lobby.UI
 
             #region Eyes
 
-            EyeColorPicker.OnEyeColorPicked += newColor =>
+            SpeechStylePicker.Eyes.OnEyeColorPicked += newColor =>
             {
                 if (IsWh40kAppearanceEditingLocked || Profile is null)
+                    return;
+                if (Profile.Appearance.EyeColor == newColor)
                     return;
                 Profile = Profile.WithCharacterAppearance(
                     Profile.Appearance.WithEyeColor(newColor));
@@ -474,6 +491,16 @@ namespace Content.Client.Lobby.UI
 
             #endregion Jobs
 
+            TraitSort.AddItem(Loc.GetString("wh40k-personalization-traits-sort-name"), 0);
+            TraitSort.AddItem(Loc.GetString("wh40k-personalization-traits-sort-cost"), 1);
+            TraitSort.SelectId(0);
+            TraitSort.OnItemSelected += args =>
+            {
+                TraitSort.SelectId(args.Id);
+                RefreshTraits();
+            };
+            TraitSearch.OnTextChanged += _ => RefreshTraitFilters();
+            HideUnavailableTraits.OnToggled += _ => RefreshTraitFilters();
             RefreshTraits();
 
             #region Faction
@@ -531,6 +558,7 @@ namespace Content.Client.Lobby.UI
             UpdateSpeciesGuidebookIcon();
             UpdateCompanyControls();
             IsDirty = false;
+            InitializeWh40kLayout();
         }
 
         /// <summary>
@@ -598,7 +626,9 @@ namespace Content.Client.Lobby.UI
         private void UpdateProfilePreviewSidebar(int tab)
         {
             var augmentsSelected = tab >= 0 && tab < TabContainer.ChildCount && TabContainer.GetChild(tab) == AugmentsTab;
-            ProfilePreviewSidebar.Visible = !augmentsSelected && _extendedDescriptionTab != tab;
+            var voiceSelected = tab >= 0 && tab < TabContainer.ChildCount && TabContainer.GetChild(tab) is Content.Client.TTS.TTSTab;
+            ProfilePreviewSidebar.Visible = !augmentsSelected && !voiceSelected && _extendedDescriptionTab != tab;
+            PreviewPanel.Visible = ProfilePreviewSidebar.Visible;
         }
 
         /// <summary>
@@ -707,9 +737,12 @@ namespace Content.Client.Lobby.UI
                     var traitA = _prototypeManager.Index<TraitPrototype>(a);
                     var traitB = _prototypeManager.Index<TraitPrototype>(b);
 
-                    var costCompare = traitA.Cost.CompareTo(traitB.Cost);
-                    if (costCompare != 0)
-                        return costCompare;
+                    if (TraitSort.SelectedId == 1)
+                    {
+                        var costCompare = traitA.Cost.CompareTo(traitB.Cost);
+                        if (costCompare != 0)
+                            return costCompare;
+                    }
 
                     var traitNameA = Loc.GetString(traitA.Name);
                     var traitNameB = Loc.GetString(traitB.Name);
@@ -839,27 +872,8 @@ namespace Content.Client.Lobby.UI
                                 if (categoryButton.TraitsContainer.GetChild(0) is ProgressBar progressBar)
                                 {
                                     progressBar.Value = pointsLeft;
-                                    float percentRemaining = pointsLeft / maxPoints;
-
-                                    Color barColor;
-
-                                    if (percentRemaining > 0.5f)
-                                    {
-                                        barColor = Color.FromHex("#33FF33");
-                                    }
-                                    else if (percentRemaining > 0.25f)
-                                    {
-                                        barColor = Color.FromHex("#FFFF33");
-                                    }
-                                    else
-                                    {
-                                        barColor = Color.FromHex("#FF3333");
-                                    }
-
                                     if (progressBar.ForegroundStyleBoxOverride is StyleBoxFlat styleBox)
-                                    {
-                                        styleBox.BackgroundColor = barColor;
-                                    }
+                                        styleBox.BackgroundColor = TraitBalanceColor(pointsLeft, maxPoints);
                                 }
 
                                 if (categoryButton.TraitsContainer.GetChild(1) is Label pointsLabel)
@@ -873,6 +887,7 @@ namespace Content.Client.Lobby.UI
                             // Update all trait colors based on the new point total
                             RefreshTraitColors(categoryButton, category, currentPoints);
                         }
+                        RefreshTraitFilters();
                     };
                     selectors.Add(selector);
                 }
@@ -881,36 +896,16 @@ namespace Content.Client.Lobby.UI
                 if (category is { MaxTraitPoints: >= 0 })
                 {
                     var maxPoints = category.MaxTraitPoints.Value;
+                    var pointsLeft = Math.Max(0, maxPoints - selectionCount);
                     var progressBar = new ProgressBar
                     {
                         MinHeight = 4,
                         SetHeight = 4f,
                         MinValue = 0,
                         MaxValue = maxPoints,
-                        Value = Math.Max(0, maxPoints - selectionCount),
-                        Margin = new Thickness(0, 0, 0, 2)
-                    };
-
-                    float pointsLeft = Math.Max(0, maxPoints - selectionCount);
-                    float percentRemaining = pointsLeft / maxPoints;
-
-                    Color barColor;
-                    if (percentRemaining > 0.5f)
-                    {
-                        barColor = Color.FromHex("#33FF33");
-                    }
-                    else if (percentRemaining > 0.25f)
-                    {
-                        barColor = Color.FromHex("#FFFF33");
-                    }
-                    else
-                    {
-                        barColor = Color.FromHex("#FF3333");
-                    }
-
-                    progressBar.ForegroundStyleBoxOverride = new StyleBoxFlat
-                    {
-                        BackgroundColor = barColor,
+                        Value = pointsLeft,
+                        Margin = new Thickness(0, 0, 0, 2),
+                        ForegroundStyleBoxOverride = new StyleBoxFlat(TraitBalanceColor(pointsLeft, maxPoints)),
                     };
 
                     categoryButton.AddTrait(progressBar);
@@ -918,7 +913,7 @@ namespace Content.Client.Lobby.UI
                     categoryButton.AddTrait(new Label
                     {
                         Text = Loc.GetString("humanoid-profile-editor-trait-count-hint", ("current", pointsLeft), ("max", category.MaxTraitPoints)),
-                        FontColorOverride = Color.Gray
+                        FontColorOverride = Wh40kInterfaceTheme.MutedText,
                     });
                 }
 
@@ -949,9 +944,33 @@ namespace Content.Client.Lobby.UI
 
                 UpdateTraitIncompatibilityVisibility(allSelectors);
             }
+            RefreshTraitFilters();
+        }
+
+        private void RefreshTraitFilters()
+        {
+            var search = TraitSearch.Text.Trim();
+            TraitSelectionCount.Text = Loc.GetString("wh40k-personalization-traits-selected", ("count", Profile?.TraitPreferences.Count ?? 0));
+            foreach (var category in TraitsList.Children.OfType<TraitCategoryButton>())
+            {
+                var visible = false;
+                foreach (var selector in category.TraitsContainer.Children.OfType<TraitPreferenceSelector>())
+                {
+                    selector.Visible = selector.SearchText.Contains(search, StringComparison.CurrentCultureIgnoreCase) &&
+                                       (!HideUnavailableTraits.Pressed || !selector.TraitButton.Disabled || selector.Preference);
+                    visible |= selector.Visible;
+                }
+                category.Visible = visible;
+                category.ShowExpanded(search.Length > 0 || category.IsExpanded);
+            }
         }
 
         // Helper method to refresh trait colors when points change
+        private static Color TraitBalanceColor(float remaining, int max)
+        {
+            return remaining > max * 0.25f ? Wh40kInterfaceTheme.Gold : Color.FromHex("#EF987E");
+        }
+
         private void RefreshTraitColors(TraitCategoryButton categoryButton, TraitCategoryPrototype category, int currentPoints)
         {
             // Skip the first child which is the points label
@@ -1170,6 +1189,7 @@ namespace Content.Client.Lobby.UI
         /// </remarks>
         private void ReloadPreview()
         {
+            _appearancePreviewPending = false;
             _entManager.DeleteEntity(PreviewDummy);
             PreviewDummy = EntityUid.Invalid;
 
@@ -1200,6 +1220,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void SetProfile(HumanoidCharacterProfile? profile, int? slot)
         {
+            _appearancePreviewPending = false;
             Profile = profile?.Clone();
             CharacterSlot = slot;
             IsDirty = false;
@@ -1216,6 +1237,7 @@ namespace Content.Client.Lobby.UI
             UpdateBarkVoiceControls();
             UpdateAgeEdit();
             UpdateEyePickers();
+            SpeechStylePicker.SetData(Profile?.SpeechStyle ?? default);
             UpdateSaveButton();
             UpdateMarkings();
             UpdateHairPickers();
@@ -1257,19 +1279,19 @@ namespace Content.Client.Lobby.UI
             SpeciesButton.Disabled = appearanceLocked;
             AgeEdit.Editable = !appearanceLocked;
             SexButton.Disabled = appearanceLocked;
+            SpeechStylePicker.Disabled = appearanceLocked;
             PronounsButton.Disabled = appearanceLocked;
             Skin.Disabled = appearanceLocked;
             _rgbSkinColorSelector.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
-            HairStylePicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
-            FacialHairPicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            HairStylePicker.EditingDisabled = appearanceLocked;
+            FacialHairPicker.EditingDisabled = appearanceLocked;
             HeightSlider.Disabled = appearanceLocked;
             HeightResetButton.Disabled = appearanceLocked;
             WidthSlider.Disabled = appearanceLocked;
             WidthResetButton.Disabled = appearanceLocked;
             BarkVoiceButton.Disabled = appearanceLocked;
             BarkVoicePlayButton.Disabled = appearanceLocked;
-            EyeColorPicker.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
-            Markings.MouseFilter = appearanceLocked ? MouseFilterMode.Ignore : MouseFilterMode.Stop;
+            Markings.EditingDisabled = appearanceLocked;
             UpdateSaveButton();
         }
 
@@ -1368,11 +1390,9 @@ namespace Content.Client.Lobby.UI
         {
             if (Profile == null || !_entManager.EntityExists(PreviewDummy))
                 return;
-
-            _entManager.System<HumanoidAppearanceSystem>().LoadProfile(PreviewDummy, Profile);
-
-            // Check and set the dirty flag to enable the save/reset buttons as appropriate.
-            SetDirty();
+            if (!_appearancePreviewPending)
+                SetDirty();
+            _appearancePreviewPending = true;
         }
 
         private void RefreshWh40kPortrait()
@@ -1380,14 +1400,13 @@ namespace Content.Client.Lobby.UI
             if (Profile?.Wh40kBuild.PortraitId is not { } portraitId ||
                 !_prototypeManager.TryIndex<Wh40kPortraitPrototype>(portraitId, out var portrait))
             {
-                Wh40kPortraitFrame.Visible = false;
+                PortraitButton.SetPortrait(null);
                 _extendedDescription?.SetPortrait(null);
                 return;
             }
 
             var portraitTexture = _entManager.System<SpriteSystem>().Frame0(portrait.LargeSprite);
-            Wh40kPortrait.Texture = portraitTexture;
-            Wh40kPortraitFrame.Visible = true;
+            PortraitButton.SetPortrait(portraitTexture);
             _extendedDescription?.SetPortrait(portraitTexture);
         }
 
@@ -1853,6 +1872,8 @@ namespace Content.Client.Lobby.UI
 
         protected override void Dispose(bool disposing)
         {
+            if (disposing)
+                FilePopup.Dispose();
             base.Dispose(disposing);
             if (!disposing)
                 return;
@@ -1921,6 +1942,7 @@ namespace Content.Client.Lobby.UI
             UpdateGenderControls();
             UpdateTTSControls();
             Markings.SetSex(newSex);
+            UpdateHairPickers();
             ReloadPreview();
         }
 
@@ -1986,6 +2008,7 @@ namespace Content.Client.Lobby.UI
 
             Profile = Profile?.WithName(newName);
             SetDirty();
+            UpdatePersonalizationStatus();
 
             if (!IsDirty)
                 return;
@@ -2001,12 +2024,12 @@ namespace Content.Client.Lobby.UI
 
         private void SetHeight(float newHeight)
         {
-            if (IsWh40kAppearanceEditingLocked)
+            if (IsWh40kAppearanceEditingLocked || Profile == null || Profile.Appearance.Height == newHeight)
                 return;
 
             Profile = Profile?.WithCharacterAppearance(Profile.Appearance.WithHeight(newHeight));
             SetDirty();
-            ReloadPreview();
+            UpdatePersonalizationPreviewScale();
         }
 
         private void ResetHeight()
@@ -2017,12 +2040,12 @@ namespace Content.Client.Lobby.UI
 
         private void SetWidth(float newWidth)
         {
-            if (IsWh40kAppearanceEditingLocked)
+            if (IsWh40kAppearanceEditingLocked || Profile == null || Profile.Appearance.Width == newWidth)
                 return;
 
             Profile = Profile?.WithCharacterAppearance(Profile.Appearance.WithWidth(newWidth));
             SetDirty();
-            ReloadPreview();
+            UpdatePersonalizationPreviewScale();
         }
 
         private void ResetWidth()
@@ -2047,6 +2070,7 @@ namespace Content.Client.Lobby.UI
         private void UpdateNameEdit()
         {
             NameEdit.Text = Profile?.Name ?? "";
+            UpdatePersonalizationStatus();
         }
 
         private void UpdateFlavorTextEdit()
@@ -2076,33 +2100,9 @@ namespace Content.Client.Lobby.UI
             if (Profile == null)
                 return;
 
-            SexButton.Clear();
-
-            var sexes = new List<Sex>();
-
-            // add species sex options, default to just none if we are in bizzaro world and have no species
-            if (_prototypeManager.TryIndex<SpeciesPrototype>(Profile.Species, out var speciesProto))
-            {
-                foreach (var sex in speciesProto.Sexes)
-                {
-                    sexes.Add(sex);
-                }
-            }
-            else
-            {
-                sexes.Add(Sex.Unsexed);
-            }
-
-            // add button for each sex
-            foreach (var sex in sexes)
-            {
-                SexButton.AddItem(Loc.GetString($"humanoid-profile-editor-sex-{sex.ToString().ToLower()}-text"), (int) sex);
-            }
-
-            if (sexes.Contains(Profile.Sex))
-                SexButton.SelectId((int) Profile.Sex);
-            else
-                SexButton.SelectId((int) sexes[0]);
+            IEnumerable<Sex> sexes = _prototypeManager.TryIndex<SpeciesPrototype>(Profile.Species, out var species)
+                ? species.Sexes : new[] { Sex.Unsexed };
+            SexButton.SetOptions(sexes, Profile.Sex);
         }
 
         private void UpdateSkinColor()
@@ -2271,11 +2271,11 @@ namespace Content.Client.Lobby.UI
             HairStylePicker.UpdateData(
                 hairMarking,
                 Profile.Species,
-                1);
+                1, Profile.Sex);
             FacialHairPicker.UpdateData(
                 facialHairMarking,
                 Profile.Species,
-                1);
+                1, Profile.Sex);
         }
 
         private void UpdateCMarkingsHair()
@@ -2355,7 +2355,7 @@ namespace Content.Client.Lobby.UI
             }
 
             Markings.CurrentEyeColor = Profile.Appearance.EyeColor;
-            EyeColorPicker.SetData(Profile.Appearance.EyeColor);
+            SpeechStylePicker.Eyes.SetData(Profile.Appearance.EyeColor);
         }
 
         private void UpdateSaveButton()
@@ -2363,11 +2363,16 @@ namespace Content.Client.Lobby.UI
             var canSave = Profile is not null && !IsWh40kProfileEditingFullyLocked;
             SaveButton.Disabled = !canSave || !IsDirty;
             ResetButton.Disabled = !canSave || !IsDirty;
+            UpdatePersonalizationStatus();
         }
 
         private void SetPreviewRotation(Direction direction)
         {
-            SpriteView.OverrideDirection = (Direction) ((int) direction % 4 * 2);
+            var facing = (Direction) ((int) direction % 4 * 2);
+            SpriteView.OverrideDirection = facing;
+            HairStylePicker.SetPreviewDirection(facing);
+            FacialHairPicker.SetPreviewDirection(facing);
+            Markings.SetPreviewDirection(facing);
         }
 
         private void RandomizeEverything()
@@ -2410,6 +2415,7 @@ namespace Content.Client.Lobby.UI
 
         private async void ExportImage()
         {
+            FlushPersonalizationPreview();
             if (_imaging)
                 return;
 

@@ -1,5 +1,6 @@
 using Content.Client._WH40K.CharacterCreation;
 using Content.Client.Lobby.UI;
+using Content.Client._WH40K.UserInterface;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -15,6 +16,8 @@ public sealed partial class VotePopup
     protected override void EnteredTree()
     {
         base.EnteredTree();
+        UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().RegisterFloatingPanel(this);
+        Wh40kInterfaceTheme.ApplyControls(this);
         for (var ancestor = Parent; ancestor != null; ancestor = ancestor.Parent)
         {
             if (ancestor is not LobbyGui)
@@ -23,6 +26,12 @@ public sealed partial class VotePopup
             ApplyLobbyStyle();
             break;
         }
+    }
+
+    protected override void ExitedTree()
+    {
+        UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().UnregisterFloatingPanel(this);
+        base.ExitedTree();
     }
 
     private void ApplyLobbyStyle()
@@ -40,13 +49,7 @@ public sealed partial class VotePopup
         MaxWidth = float.PositiveInfinity;
         HorizontalExpand = true;
         Modulate = Color.White;
-        VoteFrame.RemoveStyleClass("AngleRect");
-        VoteFrame.PanelOverride = new OnboardingPageFrameStyleBox
-        {
-            BackgroundColor = Color.FromHex("#10110FEF"),
-            BorderColor = Color.FromHex("#B6975480"),
-        };
-        VoteContent.Margin = new Thickness(20f, 16f, 20f, 14f);
+        VoteContent.Margin = new Thickness(10);
         VoteContent.SeparationOverride = 7;
         LobbyHeading.Visible = true;
         LobbyHeading.Text = Loc.GetString("wh40k-lobby-vote-heading");
@@ -59,7 +62,7 @@ public sealed partial class VotePopup
         {
             new StyleRule(new SelectorElement(typeof(RichTextLabel), null, null, null), new[]
             {
-                new StyleProperty("font", Wh40kOnboardingTypography.Display(resources, 21)),
+                new StyleProperty("font", Wh40kOnboardingTypography.Display(resources, 16)),
                 new StyleProperty("font-color", paper),
             }),
         });
@@ -83,37 +86,8 @@ public sealed partial class VotePopup
             button.MinWidth = 0;
             button.MinHeight = 36;
             button.Margin = new Thickness(0f, 0f, 6f, 4f);
-            button.Label.FontOverride = Wh40kOnboardingTypography.Display(resources, _voteButtons.Length > 1 ? 14 : 16);
             button.Label.ClipText = true;
-            button.Label.FontColorOverride = paper;
-            button.OnMouseEntered += _ => UpdateLobbyButton(button, true);
-            button.OnMouseExited += _ => UpdateLobbyButton(button, false);
-            button.OnToggled += _ => UpdateLobbyButtons();
         }
 
-        UpdateLobbyButtons();
-    }
-
-    private void UpdateLobbyButtons()
-    {
-        foreach (var button in _voteButtons)
-            UpdateLobbyButton(button, button.IsHovered);
-    }
-
-    private static void UpdateLobbyButton(Button button, bool hovered)
-    {
-        var active = button.Pressed || hovered;
-        button.Label.FontColorOverride = Color.FromHex(button.Pressed ? "#FFF0B8" : active ? "#E5C879" : "#DFD7C3");
-        button.StyleBoxOverride = new StyleBoxFlat
-        {
-            BackgroundColor = Color.FromHex(button.Pressed ? "#826321EA" : active ? "#40361FDA" : "#24241BC0"),
-            BorderColor = Color.FromHex(active ? "#D8B966" : "#8C77494D"),
-            BorderThickness = new Thickness(button.Pressed ? 3f : 1f, 0f, 0f, 0f),
-            ContentMarginLeftOverride = 10,
-            ContentMarginRightOverride = 8,
-            ContentMarginTopOverride = 6,
-            ContentMarginBottomOverride = 6,
-        };
-        button.ToolTip = button.Text;
     }
 }

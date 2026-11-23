@@ -2,6 +2,6 @@
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 0 5">
         <Button Name="CategoryButton" Access="Public" StyleClasses="OpenBottom" HorizontalExpand="True" />
-        <BoxContainer Name="TraitsContainer" Access="Public" Orientation="Vertical" Visible="False" Margin="10 0 0 0" />
+        <BoxContainer Name="TraitsContainer" Access="Public" Orientation="Vertical" Visible="False" SeparationOverride="5" Margin="4 5 0 0" />
     </BoxContainer>
-</Control> 
+</Control>

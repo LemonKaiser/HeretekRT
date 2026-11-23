@@ -20,7 +20,7 @@
         <Control MinHeight="10"/>
         <PanelContainer VerticalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1b1b1e" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" />
                 </PanelContainer.PanelOverride>
             <ScrollContainer HScrollEnabled="False"
                      HorizontalExpand="True"

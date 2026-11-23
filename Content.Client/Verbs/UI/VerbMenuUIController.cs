@@ -6,6 +6,7 @@ using Content.Client.Gameplay;
 using Content.Client.Localization;
 using Content.Client.Mapping;
 using Content.Shared.Input;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Verbs;
 using Content.Shared.Localizations;
 using Robust.Client.Player;
@@ -48,6 +49,13 @@ namespace Content.Client.Verbs.UI
         ///     of an entity menu element. If that happens, we need to be aware and close it properly.
         /// </summary>
         public ContextMenuPopup? OpenMenu = null;
+
+        private enum VerbSection : byte
+        {
+            Interaction,
+            Character,
+            Service,
+        }
 
         public void OnStateEntered(GameplayState state)
         {
@@ -155,6 +163,9 @@ namespace Content.Client.Verbs.UI
         {
             HashSet<string> listedCategories = new();
             var extras = new ValueList<string>(ExtraCategories.Count);
+            var entries = new List<(VerbSection Section, VerbMenuElement Element)>();
+            var isObjectTarget = EntityManager.TryGetEntity(CurrentTarget, out var target) &&
+                                 !EntityManager.HasComponent<MobStateComponent>(target);
 
             foreach (var cat in ExtraCategories)
             {
@@ -165,27 +176,52 @@ namespace Content.Client.Verbs.UI
             {
                 if (verb.Category == null)
                 {
-                    var element = new VerbMenuElement(verb);
-                    _context.AddElement(popup, element);
+                    entries.Add((VerbSection.Interaction, new VerbMenuElement(verb)));
                 }
                 // Add the category if it's not an extra (this is to avoid shuffling if we're filling from server verbs response).
-                else if (!extras.Contains(GetCategoryKey(verb.Category)) && listedCategories.Add(GetCategoryKey(verb.Category)))
-                    AddVerbCategory(verb.Category, popup);
+                else if (!extras.Contains(GetCategoryKey(verb.Category)))
+                {
+                    AddCategory(verb.Category);
+                }
             }
 
             foreach (var category in ExtraCategories)
+                AddCategory(category);
+
+            foreach (var section in entries.GroupBy(entry => entry.Section).OrderBy(group => group.Key))
             {
-                if (listedCategories.Add(GetCategoryKey(category)))
-                    AddVerbCategory(category, popup);
+                popup.AddSection(Loc.GetString(section.Key switch
+                {
+                    VerbSection.Character => "wh40k-context-section-character",
+                    VerbSection.Service => "wh40k-context-section-service",
+                    _ => "wh40k-context-section-interaction",
+                }));
+                foreach (var (_, element) in section)
+                    _context.AddElement(popup, element);
             }
 
             popup.InvalidateMeasure();
+
+            void AddCategory(VerbCategory category)
+            {
+                if (!listedCategories.Add(GetCategoryKey(category)))
+                    return;
+
+                var section = category.TextLocId switch
+                {
+                    "verb-categories-admin" when isObjectTarget => VerbSection.Service,
+                    "verb-categories-admin" or "verb-categories-antag" => VerbSection.Character,
+                    "verb-categories-debug" or "verb-categories-smite" or "verb-categories-tricks" => VerbSection.Service,
+                    _ => VerbSection.Interaction,
+                };
+                entries.Add((section, CreateVerbCategory(category)));
+            }
         }
 
         /// <summary>
-        ///     Add a verb category button to the pop-up
+        ///     Create a verb category button and its pop-up.
         /// </summary>
-        public void AddVerbCategory(VerbCategory category, ContextMenuPopup popup)
+        private VerbMenuElement CreateVerbCategory(VerbCategory category)
         {
             // Get a list of the verbs in this category
             List<Verb> verbsInCategory = new();
@@ -199,15 +235,11 @@ namespace Content.Client.Verbs.UI
                 }
             }
 
-            if (verbsInCategory.Count == 0 && !ExtraCategories.Contains(category))
-                return;
-
             var style = verbsInCategory.FirstOrDefault()?.TextStyleClass ?? Verb.DefaultTextStyleClass;
             var element = new VerbMenuElement(category, style);
-            _context.AddElement(popup, element);
 
             // Create the pop-up that appears when hovering over this element
-            element.SubMenu = new ContextMenuPopup(_context, element);
+            var subMenu = new ContextMenuPopup(_context, element);
             foreach (var verb in verbsInCategory)
             {
                 var subElement = new VerbMenuElement(verb)
@@ -215,10 +247,11 @@ namespace Content.Client.Verbs.UI
                     IconVisible = drawIcons,
                     TextVisible = !category.IconsOnly
                 };
-                _context.AddElement(element.SubMenu, subElement);
+                _context.AddElement(subMenu, subElement);
             }
 
-            element.SubMenu.MenuBody.Columns = category.Columns;
+            subMenu.MenuBody.Columns = category.Columns;
+            return element;
         }
 
         private static string GetCategoryKey(VerbCategory category)

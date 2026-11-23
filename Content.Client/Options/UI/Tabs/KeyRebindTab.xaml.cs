@@ -514,17 +514,17 @@ namespace Content.Client.Options.UI.Tabs
             public readonly BindButton BindButton1;
             public readonly BindButton BindButton2;
             public readonly Button ResetButton;
+            private readonly RichTextLabel _name;
 
             public KeyControl(KeyRebindTab parent, BoundKeyFunction function)
             {
                 Function = function;
-                var name = new Label
+                var name = _name = new RichTextLabel
                 {
-                    Text = Loc.GetString(
-                        $"ui-options-function-{CaseConversion.PascalToKebab(function.FunctionName)}"),
                     HorizontalExpand = true,
-                    HorizontalAlignment = HAlignment.Left
+                    VerticalAlignment = VAlignment.Center,
                 };
+                name.SetMessage(Loc.GetString($"ui-options-function-{CaseConversion.PascalToKebab(function.FunctionName)}"));
 
                 BindButton1 = new BindButton(parent, this, StyleBase.ButtonOpenRight);
                 BindButton2 = new BindButton(parent, this, StyleBase.ButtonOpenLeft);
@@ -533,6 +533,7 @@ namespace Content.Client.Options.UI.Tabs
                 var hBox = new BoxContainer
                 {
                     Orientation = LayoutOrientation.Horizontal,
+                    SeparationOverride = 4,
                     Children =
                     {
                         new Control {MinSize = new Vector2(5, 0)},
@@ -554,6 +555,17 @@ namespace Content.Client.Options.UI.Tabs
                 };
 
                 AddChild(hBox);
+            }
+
+            protected override Vector2 MeasureOverride(Vector2 availableSize)
+            {
+                BindButton1.Measure(availableSize);
+                BindButton2.Measure(availableSize);
+                ResetButton.Measure(availableSize);
+                // Reserve the complete binding controls; long action names wrap in the space left over.
+                _name.MaxWidth = MathF.Max(80, availableSize.X - BindButton1.DesiredSize.X -
+                    BindButton2.DesiredSize.X - ResetButton.DesiredSize.X - 35);
+                return base.MeasureOverride(availableSize);
             }
         }
 

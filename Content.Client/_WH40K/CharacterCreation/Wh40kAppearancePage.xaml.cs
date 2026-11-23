@@ -88,12 +88,12 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
                 SetSpecies(_species[args.Id].ID);
         };
 
-        SexButton.OnItemSelected += args =>
+        SexButton.OnSelected += sex =>
         {
-            SexButton.SelectId(args.Id);
             if (!_loadingControls)
-                SetSex((Sex) args.Id);
+                SetSex(sex);
         };
+        SpeechStylePicker.StyleSelected += style => UpdateProfile(profile => profile.WithSpeechStyle(style));
 
         PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-male-text"), (int) Gender.Male);
         PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-female-text"), (int) Gender.Female);
@@ -139,7 +139,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         FacialHairPicker.OnSlotRemove += _ => RemoveFacialHair();
         FacialHairPicker.OnSlotAdd += AddFacialHair;
 
-        EyeColorPicker.OnEyeColorPicked += SetEyeColor;
+        SpeechStylePicker.Eyes.OnEyeColorPicked += SetEyeColor;
         AppearanceMarkings.OnMarkingAdded += SetMarkings;
         AppearanceMarkings.OnMarkingRemoved += SetMarkings;
         AppearanceMarkings.OnMarkingColorChange += SetMarkings;
@@ -168,49 +168,8 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
     private void ApplyOnboardingControlTheme()
     {
-        foreach (var option in new[]
-                 {
-                     SpeciesButton,
-                     SexButton,
-                     PronounsButton,
-                     SpawnPriorityButton,
-                 })
-        {
-            option.StyleBoxOverride = CreateOnboardingFieldStyle("#10110FEE", "#B6975470");
-        }
-
-        AgeEdit.StyleBoxOverride = CreateOnboardingFieldStyle("#0D0F0CE8", "#B697547A");
-        ShowClothesButton.StyleBoxOverride = CreateOnboardingFieldStyle("#2B2311D0", "#B69754A8");
-        ShowClothesButton.Label.FontColorOverride = Color.FromHex("#DFD7C3");
-
-        foreach (var slider in new[] { HeightSlider, WidthSlider, SkinToneSlider })
-        {
-            slider.BackgroundStyleBoxOverride = CreateOnboardingFieldStyle("#0D0F0CE8", "#B697545C");
-            slider.FillStyleBoxOverride = new StyleBoxFlat
-            {
-                BackgroundColor = Color.FromHex("#B69754"),
-            };
-            slider.GrabberStyleBoxOverride = new StyleBoxFlat
-            {
-                BackgroundColor = Color.FromHex("#E5C879"),
-                BorderColor = Color.FromHex("#4A3B19"),
-                BorderThickness = new Thickness(1),
-            };
-        }
-    }
-
-    private static StyleBoxFlat CreateOnboardingFieldStyle(string background, string border)
-    {
-        return new StyleBoxFlat
-        {
-            BackgroundColor = Color.FromHex(background),
-            BorderColor = Color.FromHex(border),
-            BorderThickness = new Thickness(1),
-            ContentMarginLeftOverride = 9,
-            ContentMarginRightOverride = 9,
-            ContentMarginTopOverride = 6,
-            ContentMarginBottomOverride = 6,
-        };
+        Wh40kPersonalizationTheme.Apply(this);
+        Wh40kPersonalizationTheme.UseSkinToneGradient(SkinToneSlider);
     }
 
     public void SetDraft(Wh40kOnboardingDraft draft)
@@ -248,7 +207,6 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         PortraitsSection.Visible = section == Wh40kAppearanceSection.Portraits;
         BasicsSection.Visible = section == Wh40kAppearanceSection.Basics;
         HairSection.Visible = section == Wh40kAppearanceSection.Hair;
-        EyesSection.Visible = section == Wh40kAppearanceSection.Eyes;
         MarkingsSection.Visible = section == Wh40kAppearanceSection.Markings;
         FlavorTextSection.Visible = section == Wh40kAppearanceSection.FlavorText &&
                                     _cfg.GetCVar(CCVars.FlavorText);
@@ -269,6 +227,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         WidthSlider.Value = _draft.Profile.Appearance.Width;
         UpdateSkinColorControls();
         UpdateEyeControls();
+        SpeechStylePicker.SetData(_draft.Profile.SpeechStyle);
         UpdateHairPickers();
         UpdateMarkings();
         OnboardingFlavorText.CFlavorTextInput.TextRope = new Rope.Leaf(_draft.Profile.FlavorText);
@@ -301,17 +260,10 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         if (_draft is null)
             return;
 
-        SexButton.Clear();
         IEnumerable<Sex> sexes = _prototypeManager.TryIndex<SpeciesPrototype>(_draft.Profile.Species, out var species)
             ? species.Sexes
             : new[] { Sex.Unsexed };
-
-        foreach (var sex in sexes)
-        {
-            SexButton.AddItem(Loc.GetString($"humanoid-profile-editor-sex-{sex.ToString().ToLower()}-text"), (int) sex);
-        }
-
-        SexButton.SelectId((int) _draft.Profile.Sex);
+        SexButton.SetOptions(sexes, _draft.Profile.Sex);
     }
 
     private void UpdateSkinColorControls()
@@ -351,7 +303,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         if (_draft is null)
             return;
 
-        EyeColorPicker.SetData(_draft.Profile.Appearance.EyeColor);
+        SpeechStylePicker.Eyes.SetData(_draft.Profile.Appearance.EyeColor);
         AppearanceMarkings.SetEyeColor(_draft.Profile.Appearance.EyeColor);
     }
 
@@ -368,8 +320,8 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             ? new List<Marking>()
             : new List<Marking> { new(appearance.FacialHairStyleId, new List<Color> { appearance.FacialHairColor }) };
 
-        HairStylePicker.UpdateData(hair, _draft.Profile.Species, 1);
-        FacialHairPicker.UpdateData(facialHair, _draft.Profile.Species, 1);
+        HairStylePicker.UpdateData(hair, _draft.Profile.Species, 1, _draft.Profile.Sex);
+        FacialHairPicker.UpdateData(facialHair, _draft.Profile.Species, 1, _draft.Profile.Sex);
     }
 
     private void UpdateMarkings()
@@ -384,7 +336,11 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             profile.Sex,
             profile.Appearance.SkinColor,
             profile.Appearance.EyeColor);
+        UpdateMarkingHair(profile);
+    }
 
+    private void UpdateMarkingHair(HumanoidCharacterProfile profile)
+    {
         AppearanceMarkings.HairMarking = profile.Appearance.HairStyleId == HairStyles.DefaultHairStyle
             ? null
             : new Marking(profile.Appearance.HairStyleId, new List<Color> { profile.Appearance.HairColor });
@@ -524,25 +480,31 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
     private void SetHairStyle(string style)
     {
         UpdateProfile(profile => profile.WithCharacterAppearance(profile.Appearance.WithHairStyleName(style)));
-        UpdateMarkings();
+        UpdateHairPickers();
+        if (_draft is { } draft)
+            UpdateMarkingHair(draft.Profile);
     }
 
     private void SetHairColor(Color color)
     {
         UpdateProfile(profile => profile.WithCharacterAppearance(profile.Appearance.WithHairColor(color)));
-        UpdateMarkings();
+        if (_draft is { } draft)
+            UpdateMarkingHair(draft.Profile);
     }
 
     private void SetFacialHairStyle(string style)
     {
         UpdateProfile(profile => profile.WithCharacterAppearance(profile.Appearance.WithFacialHairStyleName(style)));
-        UpdateMarkings();
+        UpdateHairPickers();
+        if (_draft is { } draft)
+            UpdateMarkingHair(draft.Profile);
     }
 
     private void SetFacialHairColor(Color color)
     {
         UpdateProfile(profile => profile.WithCharacterAppearance(profile.Appearance.WithFacialHairColor(color)));
-        UpdateMarkings();
+        if (_draft is { } draft)
+            UpdateMarkingHair(draft.Profile);
     }
 
     private void AddHair()
@@ -554,8 +516,6 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             .Keys.FirstOrDefault();
         if (!string.IsNullOrEmpty(style))
             SetHairStyle(style);
-
-        UpdateHairPickers();
     }
 
     private void AddFacialHair()
@@ -567,20 +527,16 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             .Keys.FirstOrDefault();
         if (!string.IsNullOrEmpty(style))
             SetFacialHairStyle(style);
-
-        UpdateHairPickers();
     }
 
     private void RemoveHair()
     {
         SetHairStyle(HairStyles.DefaultHairStyle);
-        UpdateHairPickers();
     }
 
     private void RemoveFacialHair()
     {
         SetFacialHairStyle(HairStyles.DefaultFacialHairStyle);
-        UpdateHairPickers();
     }
 
     private void SetEyeColor(Color color)
@@ -993,7 +949,6 @@ public enum Wh40kAppearanceSection : byte
     Portraits,
     Basics,
     Hair,
-    Eyes,
     Markings,
     FlavorText,
 }

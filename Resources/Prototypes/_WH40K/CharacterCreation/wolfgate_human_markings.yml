@@ -1,0 +1,1113 @@
+- type: marking
+  id: WGMeridianMarkingEyeBagsHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#484848"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: eye_bags_head
+
+- type: marking
+  id: WGMeridianMarkingEyelinerHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: eyeliner_head
+
+- type: marking
+  id: WGMeridianMarkingFlushedCheeksHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#CCCCCC"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: flushed_cheeks_head
+
+- type: marking
+  id: WGMeridianMarkingClownCrossHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFF00"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: clown_cross_head
+
+- type: marking
+  id: WGMeridianMarkingClownLipsHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FF0033"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: clown_lips_head
+
+- type: marking
+  id: WGMeridianMarkingHarlequinHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: harlequin_head
+
+- type: marking
+  id: WGMeridianMarkingHarlequinReversedHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: harlequin_reversed_head
+
+- type: marking
+  id: WGMeridianMarkingSplotchesHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: splotches_head
+
+- type: marking
+  id: WGMeridianMarkingSplotchesSwappedHead
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_head.rsi
+    state: splotches_swapped_head
+
+- type: marking
+  id: WGMeridianMarkingBackStripeChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: back_stripe_chest
+
+- type: marking
+  id: WGMeridianMarkingSplotchesChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: splotches_chest
+
+- type: marking
+  id: WGMeridianMarkingTattooButterflyChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: tattoo_butterfly_chest
+
+- type: marking
+  id: WGMeridianMarkingTattooHeartChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: tattoo_heart_chest
+
+- type: marking
+  id: WGMeridianMarkingTattooInfinityChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: tattoo_infinity_chest
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerChest
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_chest.rsi
+    state: tattoo_tiger_chest
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_alt_l_arm
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_alt_r_arm
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_alt_l_hand
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_alt_r_hand
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_l_arm
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_r_arm
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_l_hand
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: bands_and_stripes_r_hand
+
+- type: marking
+  id: WGMeridianMarkingColorBandsLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: color_bands_l_arm
+
+- type: marking
+  id: WGMeridianMarkingColorBandsRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: color_bands_r_arm
+
+- type: marking
+  id: WGMeridianMarkingColorBandsLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: color_bands_l_hand
+
+- type: marking
+  id: WGMeridianMarkingColorBandsRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: color_bands_r_hand
+
+- type: marking
+  id: WGMeridianMarkingSplotchesLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: splotches_l_arm
+
+- type: marking
+  id: WGMeridianMarkingSplotchesRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: splotches_r_arm
+
+- type: marking
+  id: WGMeridianMarkingSplotchesLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: splotches_l_hand
+
+- type: marking
+  id: WGMeridianMarkingSplotchesRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: splotches_r_hand
+
+- type: marking
+  id: WGMeridianMarkingTattooHeartLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_heart_l_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooHeartRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_heart_r_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooInfinityLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_infinity_l_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooInfinityRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_infinity_r_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_tiger_l_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_tiger_r_arm
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_tiger_l_hand
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tattoo_tiger_r_hand
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeLArm
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tiger_stripe_l_arm
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeRArm
+  bodyPart: RArm
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tiger_stripe_r_arm
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeLHand
+  bodyPart: LHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tiger_stripe_l_hand
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeRHand
+  bodyPart: RHand
+  markingCategory: Arms
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_arms.rsi
+    state: tiger_stripe_r_hand
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_alt_l_leg
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_alt_r_leg
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_alt_l_foot
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesAltRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_alt_r_foot
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_l_leg
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_r_leg
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_l_foot
+
+- type: marking
+  id: WGMeridianMarkingBandsAndStripesRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: bands_and_stripes_r_foot
+
+- type: marking
+  id: WGMeridianMarkingColorBandsLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: color_bands_l_leg
+
+- type: marking
+  id: WGMeridianMarkingColorBandsRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: color_bands_r_leg
+
+- type: marking
+  id: WGMeridianMarkingColorBandsFootLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: color_bands_foot_l_foot
+
+- type: marking
+  id: WGMeridianMarkingColorBandsFootRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: color_bands_foot_r_foot
+
+- type: marking
+  id: WGMeridianMarkingLegBandLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: leg_band_l_leg
+
+- type: marking
+  id: WGMeridianMarkingLegBandRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: leg_band_r_leg
+
+- type: marking
+  id: WGMeridianMarkingSplotchesLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: splotches_l_leg
+
+- type: marking
+  id: WGMeridianMarkingSplotchesRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: splotches_r_leg
+
+- type: marking
+  id: WGMeridianMarkingSplotchesLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: splotches_l_foot
+
+- type: marking
+  id: WGMeridianMarkingSplotchesRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: splotches_r_foot
+
+- type: marking
+  id: WGMeridianMarkingTattooInfinityLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_infinity_l_leg
+
+- type: marking
+  id: WGMeridianMarkingTattooInfinityRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_infinity_r_leg
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_tiger_l_leg
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_tiger_r_leg
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerFootLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_tiger_foot_l_foot
+
+- type: marking
+  id: WGMeridianMarkingTattooTigerFootRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#112222"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tattoo_tiger_foot_r_foot
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeLLeg
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tiger_stripe_l_leg
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeRLeg
+  bodyPart: RLeg
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tiger_stripe_r_leg
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeLFoot
+  bodyPart: LFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tiger_stripe_l_foot
+
+- type: marking
+  id: WGMeridianMarkingTigerStripeRFoot
+  bodyPart: RFoot
+  markingCategory: Legs
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type:
+        !type:CategoryColoring
+          category: Hair
+      fallbackTypes:
+        - !type:SkinColoring
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/body_legs.rsi
+    state: tiger_stripe_r_foot
+
+- type: marking
+  id: ScarNeck
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/scars.rsi
+    state: scar_neck
+
+- type: marking
+  id: ScarChestBullets
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/scars.rsi
+    state: scar_chest_bullets
+
+- type: marking
+  id: ScarStomachBullets
+  bodyPart: Chest
+  markingCategory: Chest
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/scars.rsi
+    state: scar_stomach_bullets
+
+- type: marking
+  id: ScarFace1
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/scars.rsi
+    state: scar_face_1
+
+- type: marking
+  id: ScarFace2
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  followSkinColor: true
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/scars.rsi
+    state: scar_face_2
+
+- type: marking
+  id: TattooEyeMothLeft
+  bodyPart: Eyes
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type: !type:EyeColoring
+  sprites:
+    - sprite: _WH40K/CharacterCreation/WolfgateMarkings/tattoos.rsi
+      state: tattoo_eye_moth_l
+
+- type: marking
+  id: TattooEyeMothRight
+  bodyPart: Eyes
+  markingCategory: Head
+  speciesRestriction: [Human]
+  coloring:
+    default:
+      type: !type:EyeColoring
+  sprites:
+    - sprite: _WH40K/CharacterCreation/WolfgateMarkings/tattoos.rsi
+      state: tattoo_eye_moth_r
+
+- type: marking
+  id: FacepaintClown
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_clown
+
+- type: marking
+  id: FacepaintClownMinimal
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_clown_minimal
+
+- type: marking
+  id: FacepaintClownSad
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_clown_sad
+
+- type: marking
+  id: FacepaintClownSerious
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_clown_serious
+
+- type: marking
+  id: FacepaintClownSmug
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_clown_smug
+
+- type: marking
+  id: FacepaintMime
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_mime
+
+- type: marking
+  id: FacepaintMimeBlush
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_mime_blush
+
+- type: marking
+  id: FacepaintMimeOdd
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_mime_odd
+
+- type: marking
+  id: FacepaintMimeSad
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_mime_sad
+
+- type: marking
+  id: FacepaintMimeSerious
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_mime_serious
+
+- type: marking
+  id: FacepaintWhite
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Human]
+  forcedColoring: true
+  coloring:
+    default:
+      type:
+        !type:SimpleColoring
+          color: "#FFFFFF"
+  sprites:
+  - sprite: _WH40K/CharacterCreation/WolfgateMarkings/facepaint.rsi
+    state: facepaint_white

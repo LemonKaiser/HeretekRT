@@ -7,14 +7,14 @@ namespace Content.Client._WH40K.Factions;
 
 internal static class FactionUiPresentation
 {
-    public static readonly Color Text = Color.FromHex("#DDDCD3");
-    public static readonly Color Muted = Color.FromHex("#9CA69F");
-    public static readonly Color Gold = Color.FromHex("#C4AC78");
+    public static readonly Color Text = UserInterface.Wh40kInterfaceTheme.Text;
+    public static readonly Color Muted = Color.FromHex("#ADA391");
+    public static readonly Color Gold = UserInterface.Wh40kInterfaceTheme.Gold;
 
     public static StyleBoxFlat Panel(Color accent, bool selected = false) => new()
     {
-        BackgroundColor = Color.FromHex(selected ? "#29342D" : "#202622"),
-        BorderColor = selected ? accent : Color.FromHex("#48534A"),
+        BackgroundColor = Color.FromHex(selected ? "#392B1C" : "#18140F"),
+        BorderColor = selected ? accent : Color.FromHex("#56452D"),
         BorderThickness = new Thickness(selected ? 3 : 1, 1, 1, 1),
         ContentMarginLeftOverride = 12,
         ContentMarginRightOverride = 12,

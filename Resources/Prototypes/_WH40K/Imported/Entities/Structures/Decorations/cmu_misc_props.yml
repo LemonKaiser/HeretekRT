@@ -46,7 +46,7 @@
   suffix: CMU, Decor
   components:
   - type: Sprite
-    sprite: _WH40K/Imported/CMU14/Structures/Misc/backup_generator.rsi
+    sprite: _WH40K/Imported/CMU14/Structures/Misc/field_generator.rsi
     layers:
     - state: backup_generator_on
       map: [ "base" ]

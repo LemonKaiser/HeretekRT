@@ -26,7 +26,7 @@
                                              SetWidth="224"
                                              MouseFilter="Stop">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#747474" BackgroundColor="#030505F2"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#BE9E64" BackgroundColor="#030505F2"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:BoxContainer Orientation="Vertical" Margin="7 6 7 7">
                             <controls:Label Name="PlanetaryBodyName"
@@ -50,7 +50,7 @@
 
                             <controls:PanelContainer Name="PlanetaryLandingSitesPanel" MinHeight="54" MaxHeight="142" Margin="0 6 0 6">
                                 <controls:PanelContainer.PanelOverride>
-                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#5A5A5A" BackgroundColor="#010101E8"/>
+                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#010101E8"/>
                                 </controls:PanelContainer.PanelOverride>
                                 <controls:ScrollContainer Name="PlanetaryLandingSiteScroll"
                                                           MinHeight="50"
@@ -86,11 +86,11 @@
                                          MaxWidth="286"
                                          Margin="4 4 4 4">
                     <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#525252" BackgroundColor="#3d474d"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#75613D" BackgroundColor="#18140F"/>
                     </controls:PanelContainer.PanelOverride>
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                 <controls:ScrollContainer VerticalExpand="True"
                                           HorizontalExpand="True"
@@ -110,7 +110,7 @@
                     </controls1:StripeBack>
                     <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:BoxContainer Orientation="Horizontal" Margin="2 2 2 2">
                             <controls:Button Name="NavSubModeButton"
@@ -135,11 +135,11 @@
                     </controls1:StripeBack>
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#141414"/>
+                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                         </controls:PanelContainer.PanelOverride>
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="8 8 8 8">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                         </controls:PanelContainer.PanelOverride>
                     <controls:GridContainer Columns="2"
                                    HorizontalAlignment="Stretch"
@@ -191,7 +191,7 @@
                     </controls1:StripeBack>
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:BoxContainer Orientation="Vertical"
                                                Margin="2 2 2 2">
@@ -215,7 +215,7 @@
                     <!-- Frontier - Inertia dampener controls-->
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Name="DampenerModeButtons"
                                   Orientation="Horizontal"
@@ -247,7 +247,7 @@
                     <!-- Frontier - IFF search -->
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True" Name="IffSearchBox" Margin="4 4 4 4">
                         <controls:Label Text="{controls:Loc 'shuttle-console-iff-search'}"/>
@@ -259,7 +259,7 @@
                     <!-- Frontier - Maximum IFF Distance -->
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True">
                     <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True" Name="MaximumIFFDistanceBox" Margin="4 4 4 4">
@@ -287,7 +287,7 @@
                     <!-- Network Port Buttons -->
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:Button Name="AutoDockButton"
                                          Text="{controls:Loc 'shuttle-console-auto-dock-button'}"
@@ -298,7 +298,7 @@
 
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                         <controls:Button Name="NavAutopilotButton"
                                          ToggleMode="True"
@@ -310,12 +310,12 @@
 
                     <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                         <controls:PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </controls:PanelContainer.PanelOverride>
                     <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True">
                         <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 6">
                             <controls:PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#050505"/>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#050505"/>
                             </controls:PanelContainer.PanelOverride>
                             <controls:Label Text="{controls:Loc 'shuttle-console-network-ports'}"
                                    FontColorOverride="#00ff2a"
@@ -400,7 +400,7 @@
                         </controls1:StripeBack>
                         <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
                             <controls:PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                             </controls:PanelContainer.PanelOverride>
                             <controls:BoxContainer Orientation="Vertical" Margin="2 2 2 2">
                                 <controls:Label Name="BssFTLState"
@@ -409,7 +409,7 @@
                                 <controls1:StripeBack Margin="5 5 5 5">
                                     <controls:PanelContainer HorizontalExpand="True" Margin="2 2 2 2">
                                         <controls:PanelContainer.PanelOverride>
-                                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                                         </controls:PanelContainer.PanelOverride>
                                         <controls:ProgressBar Name="BssFTLBar"
                                                               HorizontalExpand="True"
@@ -428,7 +428,7 @@
                         </controls1:StripeBack>
                         <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
                             <controls:PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                             </controls:PanelContainer.PanelOverride>
                             <controls:BoxContainer Orientation="Vertical" Margin="2 2 2 2">
                                 <controls:Button Name="BssFTLButton"
@@ -449,11 +449,11 @@
                         </controls1:StripeBack>
                         <controls:PanelContainer HorizontalExpand="True" Margin="4 4 4 4">
                             <controls:PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                             </controls:PanelContainer.PanelOverride>
                             <controls:PanelContainer HorizontalExpand="True" Margin="2 2 2 2">
                                 <controls:PanelContainer.PanelOverride>
-                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                                 </controls:PanelContainer.PanelOverride>
                                 <controls:ScrollContainer HScrollEnabled="False"
                                                           MinHeight="96"

@@ -1,4 +1,5 @@
 ﻿using Content.Shared.Chat.TypingIndicator;
+using Content.Shared.Humanoid;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Prototypes;
@@ -17,7 +18,9 @@ public sealed partial class TypingIndicatorVisualizerSystem : VisualizerSystem<T
         if (args.Sprite == null)
             return;
 
-        var currentTypingIndicator = component.TypingIndicatorPrototype;
+        var currentTypingIndicator = TryComp<HumanoidAppearanceComponent>(uid, out var humanoid) &&
+                                     humanoid.SpeechStyle.TypingBubble is { } bubble
+            ? new ProtoId<TypingIndicatorPrototype>(bubble) : component.TypingIndicatorPrototype;
 
         var evt = new BeforeShowTypingIndicatorEvent();
 

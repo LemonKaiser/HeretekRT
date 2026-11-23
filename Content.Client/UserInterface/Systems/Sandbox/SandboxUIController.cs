@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client._WH40K.Mapping;
 using Content.Client.Administration.Managers;
 using Content.Client.Gameplay;
 using Content.Client.Markers;
@@ -16,7 +17,6 @@ using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
-using Robust.Client.UserInterface.Controllers.Implementations;
 using Robust.Shared.Console;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Map;
@@ -44,8 +44,7 @@ public sealed partial class SandboxUIController : UIController, IOnStateChanged<
     private SandboxWindow? _window;
 
     // TODO hud refactor cache
-    private EntitySpawningUIController EntitySpawningController => UIManager.GetUIController<EntitySpawningUIController>();
-    private TileSpawningUIController TileSpawningController => UIManager.GetUIController<TileSpawningUIController>();
+    private Wh40kMappingUIController MappingController => UIManager.GetUIController<Wh40kMappingUIController>();
     private DecalPlacerUIController DecalPlacerController => UIManager.GetUIController<DecalPlacerUIController>();
     private WallPaintUIController WallPaintController => UIManager.GetUIController<WallPaintUIController>();
 
@@ -63,7 +62,7 @@ public sealed partial class SandboxUIController : UIController, IOnStateChanged<
             {
                 if (!_admin.CanAdminPlace())
                     return;
-                EntitySpawningController.ToggleWindow();
+                MappingController.ToggleEntities();
             }));
         _input.SetInputCommand(ContentKeyFunctions.OpenSandboxWindow,
             InputCmdHandler.FromDelegate(_ => ToggleWindow()));
@@ -72,7 +71,7 @@ public sealed partial class SandboxUIController : UIController, IOnStateChanged<
             {
                 if (!_admin.CanAdminPlace())
                     return;
-                TileSpawningController.ToggleWindow();
+                MappingController.ToggleTiles();
             }));
         _input.SetInputCommand(ContentKeyFunctions.OpenDecalSpawnWindow,
             InputCmdHandler.FromDelegate(_ =>
@@ -142,13 +141,13 @@ public sealed partial class SandboxUIController : UIController, IOnStateChanged<
                 _console.ExecuteCommand($"rmcomp {pnent.Id} StationAiOverlay");
         };
         _window.RespawnButton.OnPressed += _ => _sandbox.Respawn();
-        _window.SpawnTilesButton.OnPressed += _ => TileSpawningController.ToggleWindow();
-        _window.SpawnEntitiesButton.OnPressed += _ => EntitySpawningController.ToggleWindow();
+        _window.SpawnTilesButton.OnPressed += _ => MappingController.ToggleTiles();
+        _window.SpawnEntitiesButton.OnPressed += _ => MappingController.ToggleEntities();
         _window.SpawnDecalsButton.OnPressed += _ => DecalPlacerController.ToggleWindow();
         _window.PaintWallsButton.OnPressed += _ =>
         {
-            EntitySpawningController.CloseWindow();
-            TileSpawningController.CloseWindow();
+            MappingController.CloseWindows();
+            DecalPlacerController.CloseWindow();
             WallPaintController.ToggleWindow();
         };
         _window.GiveFullAccessButton.OnPressed += _ => _sandbox.GiveAdminAccess();
@@ -203,8 +202,7 @@ public sealed partial class SandboxUIController : UIController, IOnStateChanged<
     private void CloseAll()
     {
         _window?.Close();
-        EntitySpawningController.CloseWindow();
-        TileSpawningController.CloseWindow();
+        MappingController.CloseWindows();
         WallPaintController.CloseWindow();
     }
 

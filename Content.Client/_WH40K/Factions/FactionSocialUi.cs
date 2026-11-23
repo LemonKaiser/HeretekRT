@@ -10,12 +10,7 @@ internal static class FactionSocialUi
     public static PanelContainer Card(bool accent = false) => new()
     {
         HorizontalExpand = true,
-        PanelOverride = new StyleBoxFlat
-        {
-            BackgroundColor = Color.FromHex(accent ? "#302A23" : "#202021"),
-            ContentMarginLeftOverride = 16, ContentMarginRightOverride = 16,
-            ContentMarginTopOverride = 12, ContentMarginBottomOverride = 12,
-        },
+        PanelOverride = UserInterface.Wh40kInterfaceTheme.Surface(accent ? "#302A23" : "#18140F", horizontal: 16, vertical: 12),
     };
 
     public static Label Heading(string text, int size = 18) => new()

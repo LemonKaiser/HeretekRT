@@ -41,16 +41,7 @@ public sealed partial class Wh40kTraitsPage : BoxContainer
     {
         RobustXamlLoader.Load(this);
 
-        TraitActionButton.StyleBoxOverride = new StyleBoxFlat
-        {
-            BackgroundColor = Color.FromHex("#5B461AE8"),
-            BorderColor = Color.FromHex("#E5C879E6"),
-            BorderThickness = new Thickness(1),
-            ContentMarginLeftOverride = 12,
-            ContentMarginRightOverride = 12,
-            ContentMarginTopOverride = 7,
-            ContentMarginBottomOverride = 7,
-        };
+        TraitActionButton.StyleBoxOverride = Wh40kPersonalizationTheme.Button("#5B461A", "#BE9E64", 7);
         TraitActionButton.Label.FontColorOverride = Color.FromHex("#FFF4D3");
         IoCManager.InjectDependencies(this);
         TraitActionButton.Label.FontOverride = Wh40kOnboardingTypography.Text(

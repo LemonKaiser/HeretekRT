@@ -8,11 +8,11 @@
          Margin="0 0 0 5">
     <PanelContainer MinSize="70 8" VerticalExpand="True" HorizontalExpand="False">
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#202020" BackgroundColor="#101010"/>
+            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#56452D" BackgroundColor="#100D0A"/>
         </PanelContainer.PanelOverride>
         <PanelContainer>
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#404040" BackgroundColor="#000000"/>
+            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#79603D" BackgroundColor="#000000"/>
         </PanelContainer.PanelOverride>
             <controls:StripeBack>
     <Label Name="Price" MinSize="70 8" VerticalExpand="True" HorizontalAlignment="Center" VerticalAlignment="Center" Align="Center"/>
@@ -21,22 +21,22 @@
     </PanelContainer>
     <PanelContainer HorizontalExpand="True">
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#202020" BackgroundColor="#101010"/>
+            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#56452D" BackgroundColor="#100D0A"/>
         </PanelContainer.PanelOverride>
         <PanelContainer>
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#404040" BackgroundColor="#101010"/>
+                <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#79603D" BackgroundColor="#100D0A"/>
             </PanelContainer.PanelOverride>
     <Button Name="SelectButton" ToggleMode="True" Margin="2 2 2 2" HorizontalExpand="True" StyleClasses="ButtonSquare" />
         </PanelContainer>
     </PanelContainer>
     <PanelContainer SetSize="64 64" HorizontalAlignment="Right">
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#202020" BackgroundColor="#252525"/>
+            <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#56452D" BackgroundColor="#211A12"/>
         </PanelContainer.PanelOverride>
         <PanelContainer>
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#303030" BackgroundColor="#101010"/>
+                <graphics:StyleBoxFlat BorderThickness="5" BorderColor="#56452D" BackgroundColor="#100D0A"/>
             </PanelContainer.PanelOverride>
         <SpriteView Name="Sprite" Scale="4 4" MouseFilter="Stop"/>
         </PanelContainer>

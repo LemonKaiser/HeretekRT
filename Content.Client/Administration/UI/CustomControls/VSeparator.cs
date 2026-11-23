@@ -7,7 +7,7 @@ namespace Content.Client.Administration.UI.CustomControls;
 
 public sealed class VSeparator : PanelContainer
 {
-    private static readonly Color SeparatorColor = Color.FromHex("#444444");
+    private static readonly Color SeparatorColor = Color.FromHex("#56452D");
 
     public VSeparator(Color color)
     {

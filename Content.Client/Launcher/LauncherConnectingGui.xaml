@@ -58,7 +58,7 @@
             </BoxContainer>
             <PanelContainer Name="ConnectingFooterDivider">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#444" ContentMarginTopOverride="2" />
+                    <gfx:StyleBoxFlat BackgroundColor="#8F744A66" ContentMarginTopOverride="2" />
                 </PanelContainer.PanelOverride>
             </PanelContainer>
 

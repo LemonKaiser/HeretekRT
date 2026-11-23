@@ -290,6 +290,7 @@ namespace Content.Server.Preferences.Managers
                 .WithGender(submitted.Gender)
                 .WithSpecies(submitted.Species)
                 .WithCharacterAppearance(submitted.Appearance.Clone())
+                .WithSpeechStyle(submitted.SpeechStyle)
                 .WithSpawnPriorityPreference(submitted.SpawnPriority)
                 .WithTraitPreferences(submitted.TraitPreferences)
                 .WithWh40kCharacterBuild(build);

@@ -115,7 +115,7 @@ namespace Content.Client.Construction.UI
 
             FavoriteButton.OnPressed += args => RecipeFavorited?.Invoke(this, EventArgs.Empty);
 
-            MenuGridViewButton.OnPressed += _ =>
+            MenuGridViewButton.OnToggled += _ =>
                 PopulateRecipes?.Invoke(this, (SearchBar.Text, Categories[OptionCategories.SelectedId]));
         }
 

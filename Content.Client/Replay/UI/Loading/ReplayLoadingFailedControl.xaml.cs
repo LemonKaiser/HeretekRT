@@ -10,18 +10,26 @@ namespace Content.Client.Replay.UI.Loading;
 [GenerateTypedNameReferences]
 public sealed partial class ReplayLoadingFailedControl : Control
 {
+    protected override void Resized()
+    {
+        base.Resized();
+        DialogCard.MaxSize = System.Numerics.Vector2.Max(new System.Numerics.Vector2(120), Size - new System.Numerics.Vector2(40));
+    }
+
     public ReplayLoadingFailedControl(IStylesheetManager stylesheet)
     {
         RobustXamlLoader.Load(this);
 
         Stylesheet = stylesheet.SheetSpace;
+        Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.ApplyControls(this);
         LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
     }
 
     public void SetData(Exception exception, Action? cancelPressed, Action? retryPressed)
     {
         ReasonLabel.SetMessage(
-            FormattedMessage.FromUnformatted(Loc.GetString("replay-loading-failed", ("reason", exception))));
+            FormattedMessage.FromUnformatted(Loc.GetString("replay-loading-failed", ("reason", exception))),
+            Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.Text);
 
         if (cancelPressed != null)
         {

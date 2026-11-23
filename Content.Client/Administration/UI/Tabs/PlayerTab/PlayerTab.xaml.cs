@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._WH40K.UserInterface;
 using Content.Client.Administration.Systems;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Administration;
@@ -23,8 +24,8 @@ public sealed partial class PlayerTab : Control
 
     private const string ArrowUp = "↑";
     private const string ArrowDown = "↓";
-    private readonly Color _altColor = Color.FromHex("#363636");
-    private readonly Color _defaultColor = Color.FromHex("#2F2F3B");
+    private readonly Color _altColor = Wh40kInterfaceTheme.TableAlternateRow;
+    private readonly Color _defaultColor = Wh40kInterfaceTheme.TableRow;
     private readonly AdminSystem _adminSystem;
     private IReadOnlyList<PlayerInfo> _players = new List<PlayerInfo>();
 
@@ -56,7 +57,7 @@ public sealed partial class PlayerTab : Control
         OverlayButton.OnPressed += OverlayButtonPressed;
         ShowDisconnectedButton.OnPressed += ShowDisconnectedPressed;
 
-        ListHeader.BackgroundColorPanel.PanelOverride = new StyleBoxFlat(_altColor);
+        ListHeader.BackgroundColorPanel.PanelOverride = new StyleBoxFlat(Wh40kInterfaceTheme.TableHeader);
         ListHeader.OnHeaderClicked += HeaderClicked;
 
         SearchList.SearchBar = SearchLineEdit;

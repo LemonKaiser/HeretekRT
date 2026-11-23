@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._WH40K.UserInterface;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._WH40K.Administration.Events;
@@ -14,6 +15,9 @@ namespace Content.Client._WH40K.Administration.Events;
 
 public sealed partial class EventAdminWindow : FancyWindow
 {
+    private static readonly StyleBox CardStyle = Wh40kInterfaceTheme.Card(10);
+    private static readonly StyleBox ParticipantStyle = Wh40kInterfaceTheme.Surface("#211A12", horizontal: 8, vertical: 5);
+
     [Dependency] private IPrototypeManager _prototypes = default!;
     private EventAdminEuiState _state = new();
     private readonly HashSet<Guid> _selection = new();
@@ -27,8 +31,8 @@ public sealed partial class EventAdminWindow : FancyWindow
     private readonly OptionButton _statusFilter = new();
     private readonly OptionButton _team = new();
     private readonly OptionButton _point = new();
-    private readonly Label _summary = new() { ClipText = true };
-    private readonly Label _selectionLabel = new() { ClipText = true };
+    private readonly Label _summary = new() { ClipText = true, FontColorOverride = Wh40kInterfaceTheme.Gold };
+    private readonly Label _selectionLabel = new() { ClipText = true, StyleClasses = { StyleNano.StyleClassLabelSubText } };
     private readonly Label _teamInfo = new() { ClipText = true };
     private readonly Label _friendlyFireInfo = new() { ClipText = true };
     private readonly Label _timer = new();
@@ -62,22 +66,29 @@ public sealed partial class EventAdminWindow : FancyWindow
     {
         IoCManager.InjectDependencies(this);
         Title = T("title");
-        MinSize = new Vector2(1020, 620);
-        SetSize = new Vector2(1180, 760);
+        var available = Vector2.Max(new Vector2(120), UserInterfaceManager.RootControl.Size - new Vector2(40));
+        MinSize = Vector2.Min(new Vector2(980, 620), available);
+        SetSize = Vector2.Min(new Vector2(1180, 760), available);
         var root = Vertical();
         root.Margin = new Thickness(12);
         root.SeparationOverride = 10;
         ContentsContainer.AddChild(root);
-        var heading = new Label { Text = T("heading"), StyleClasses = { "LabelHeadingBigger" } };
+        var heading = Heading("heading");
         root.AddChild(heading);
-        root.AddChild(new Label { Text = T("subtitle"), Modulate = Color.FromHex("#A9B6C7"), ClipText = true });
-        root.AddChild(_summary);
+        var overview = Card(root);
+        overview.SeparationOverride = 3;
+        overview.AddChild(_summary);
+        overview.AddChild(Hint("subtitle"));
         var body = new BoxContainer { HorizontalExpand = true, VerticalExpand = true, SeparationOverride = 14 };
         root.AddChild(body);
         var roster = Vertical();
-        roster.SetWidth = 420;
-        roster.HorizontalExpand = false;
-        body.AddChild(roster);
+        body.AddChild(new PanelContainer
+        {
+            SetWidth = Math.Clamp(SetSize.X * 0.36f, 380, 430),
+            VerticalExpand = true,
+            PanelOverride = CardStyle,
+            Children = { roster },
+        });
         roster.AddChild(Heading("players"));
         _search.PlaceHolder = T("search");
         roster.AddChild(_search);
@@ -107,8 +118,7 @@ public sealed partial class EventAdminWindow : FancyWindow
         BuildBroadcast();
         foreach (var (key, index) in new[] { ("tab-actions", 0), ("tab-teams", 1), ("tab-supply", 2), ("tab-broadcast", 3) })
             _tabs.SetTabTitle(index, T(key));
-        var footer = Card(root);
-        footer.AddChild(_result);
+        root.AddChild(new PanelContainer { StyleClasses = { "Wh40kWindowFooter" }, Children = { _result } });
         _search.OnTextChanged += _ => RenderRoster();
         _teamFilter.OnItemSelected += args => { _teamFilter.SelectId(args.Id); RenderRoster(); };
         _statusFilter.OnItemSelected += args => { _statusFilter.SelectId(args.Id); RenderRoster(); };
@@ -239,14 +249,16 @@ public sealed partial class EventAdminWindow : FancyWindow
         var page = Page();
         var messaging = Card(page, "messaging");
         _message.Placeholder = new Rope.Leaf(T("message-placeholder"));
-        messaging.AddChild(_message);
+        _message.Margin = new Thickness(8, 6);
+        messaging.AddChild(new PanelContainer { StyleClasses = { StyleNano.StyleClassInset }, Children = { _message } });
         Add(messaging, EventAdminAction.MessageSelection, () => Request(EventAdminAction.MessageSelection, text: Rope.Collapse(_message.TextRope)),
             () => HasSelection() && _message.TextLength is > 0 and <= EventAdminLimits.MessageLength);
         Add(messaging, EventAdminAction.Announce, () => Request(EventAdminAction.Announce, text: Rope.Collapse(_message.TextRope)),
             () => _message.TextLength is > 0 and <= EventAdminLimits.MessageLength, confirm: true);
         messaging.AddChild(Hint("message-hint"));
         var timer = Card(page, "timer");
-        _timer.AddStyleClass("LabelHeadingBigger"); timer.AddChild(_timer);
+        _timer.AddStyleClass(StyleNano.StyleClassLabelHeading);
+        timer.AddChild(_timer);
         timer.AddChild(Hint("seconds")); timer.AddChild(_seconds);
         var grid = Grid(timer);
         Add(grid, EventAdminAction.StartTimer, () => Request(EventAdminAction.StartTimer, number: Number(_seconds)), () => ValidNumber(_seconds, 1, EventAdminLimits.TimerSeconds));
@@ -291,7 +303,7 @@ public sealed partial class EventAdminWindow : FancyWindow
         _summary.Text = T("summary", ("online", state.Players.Count(p => p.Online)), ("teams", state.Teams.Length), ("points", state.Points.Length));
         _timer.Text = $"{state.SecondsLeft / 60:00}:{state.SecondsLeft % 60:00}  ·  {T(state.TimerRunning ? "running" : "paused")}";
         _result.SetMessage(state.Busy || _pending ? T("busy") : string.IsNullOrEmpty(state.Result.Key) ? T("ready") :
-            Loc.GetString(state.Result.Key, ("applied", state.Result.Applied), ("skipped", state.Result.Skipped)));
+            Loc.GetString(state.Result.Key, ("applied", state.Result.Applied), ("skipped", state.Result.Skipped)), Wh40kInterfaceTheme.Text);
         RenderRoster();
         UpdateTeamInfo();
         UpdateButtons();
@@ -309,8 +321,9 @@ public sealed partial class EventAdminWindow : FancyWindow
         _checks.Clear(); _rows.RemoveAllChildren();
         foreach (var player in players)
         {
-            var row = Card(_rows);
+            var row = Vertical();
             row.SeparationOverride = 2;
+            _rows.AddChild(new PanelContainer { PanelOverride = ParticipantStyle, Children = { row } });
             var check = new CheckBox { Text = string.IsNullOrEmpty(player.Character) ? player.Account : player.Character, Pressed = _selection.Contains(player.Id) };
             check.Label.ClipText = true; check.Label.HorizontalExpand = true;
             check.HorizontalExpand = true;
@@ -319,14 +332,14 @@ public sealed partial class EventAdminWindow : FancyWindow
             header.AddChild(check);
             row.AddChild(header);
             var team = _state.Teams.FirstOrDefault(t => t.Id == player.Team)?.Name ?? T("unassigned");
-            var label = new Label { Text = $"@{player.Account}  ·  {team}", ClipText = true, Modulate = Color.FromHex("#B1BED0") };
+            var label = new Label { Text = $"@{player.Account}  ·  {team}", ClipText = true, StyleClasses = { StyleNano.StyleClassLabelSubText } };
             row.AddChild(label);
             var flags = new List<string> { T(!player.Online ? "offline" : player.Ghost ? "observer" : !player.HasBody ? "no-body-short" : player.Dead ? "dead" : player.Sleeping ? "sleeping" : "alive") };
             if (player.Frozen) flags.Add(T("frozen-short"));
             if (player.God) flags.Add("GOD");
             if (player.CanReturn) flags.Add("R");
             header.AddChild(new Label { Text = string.Join(" · ", flags), ToolTip = T("status-hint"),
-                Modulate = Color.FromHex(player.Dead ? "#EB9191" : player.Online ? "#8ACCB0" : "#9AA1AE") });
+                FontColorOverride = player.Dead ? Color.FromHex("#EB9191") : player.Online ? Color.FromHex("#8ACCB0") : Wh40kInterfaceTheme.MutedText });
             _checks.Add(player.Id, check);
             check.OnToggled += args =>
             {
@@ -375,7 +388,7 @@ public sealed partial class EventAdminWindow : FancyWindow
         _requestedAction = action;
         _requestedText = text;
         _pending = true; ResetConfirmations(); UpdateButtons();
-        _result.SetMessage(T("busy"));
+        _result.SetMessage(T("busy"), Wh40kInterfaceTheme.Text);
         ActionRequested?.Invoke(new EventAdminRequest(action, _state.Epoch,
             EventAdminAccess.UsesSelection(action) ? _selection.ToArray() : [], _team.SelectedId,
             _point.SelectedId, text, number, _pendingRequest));
@@ -415,7 +428,7 @@ public sealed partial class EventAdminWindow : FancyWindow
 
     private BoxContainer Page()
     {
-        var page = Vertical(); page.Margin = new Thickness(0, 8, 0, 0); page.SeparationOverride = 10;
+        var page = Vertical(); page.Margin = new Thickness(0, 8, 6, 0); page.SeparationOverride = 10;
         _tabs.AddChild(new ScrollContainer { HScrollEnabled = false, Children = { page } });
         return page;
     }
@@ -423,15 +436,14 @@ public sealed partial class EventAdminWindow : FancyWindow
     private static Label Heading(string key) => new() { Text = T(key), StyleClasses = { "LabelHeading" } };
     private static RichTextLabel Hint(string key)
     {
-        var hint = new RichTextLabel { HorizontalExpand = true, Modulate = Color.FromHex("#A9B6C7") };
-        hint.SetMessage(T(key));
+        var hint = new RichTextLabel { HorizontalExpand = true };
+        hint.SetMessage(T(key), Wh40kInterfaceTheme.MutedText);
         return hint;
     }
     private static BoxContainer Card(Control parent, string? heading = null)
     {
-        var content = Vertical(); content.Margin = new Thickness(8);
-        var panel = new PanelContainer { PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#202833") } };
-        panel.AddChild(content); parent.AddChild(panel);
+        var content = Vertical();
+        parent.AddChild(new PanelContainer { PanelOverride = CardStyle, Children = { content } });
         if (heading != null) content.AddChild(Heading(heading));
         return content;
     }

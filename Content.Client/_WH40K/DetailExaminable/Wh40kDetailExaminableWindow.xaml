@@ -6,12 +6,12 @@
                SetSize="1000 700">
     <PanelContainer HorizontalExpand="True" VerticalExpand="True" Margin="6">
         <PanelContainer.PanelOverride>
-            <gfx:StyleBoxFlat BackgroundColor="#141715" BorderColor="#E5C87966" BorderThickness="1" />
+            <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87966" BorderThickness="1" />
         </PanelContainer.PanelOverride>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer MinWidth="244" MaxWidth="244" HorizontalExpand="False" VerticalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                    <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87955" BorderThickness="1" />
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="8">
                     <controls:StripeBack>
@@ -19,7 +19,7 @@
                     </controls:StripeBack>
                     <PanelContainer MinSize="206 252" MaxSize="206 252" HorizontalAlignment="Center" Margin="0 8">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#080907E8" BorderColor="#E5C87977" BorderThickness="1"
+                            <gfx:StyleBoxFlat BackgroundColor="#100D0AE8" BorderColor="#E5C87977" BorderThickness="1"
                                                ContentMarginLeftOverride="4" ContentMarginRightOverride="4"
                                                ContentMarginTopOverride="4" ContentMarginBottomOverride="4" />
                         </PanelContainer.PanelOverride>
@@ -28,7 +28,7 @@
                     <Control MinHeight="28" />
                     <PanelContainer MinSize="206 180" HorizontalExpand="True" VerticalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#242424" BorderColor="#E5C87955" BorderThickness="1" />
+                            <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87955" BorderThickness="1" />
                         </PanelContainer.PanelOverride>
                         <SpriteView Name="PreviewSprite" Scale="6 6" />
                     </PanelContainer>
@@ -48,7 +48,7 @@
                 <TabContainer Name="DescriptionTabs" HorizontalExpand="True" VerticalExpand="True">
                     <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                            <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87955" BorderThickness="1" />
                         </PanelContainer.PanelOverride>
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <RichTextLabel Name="AppearanceText" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
@@ -56,7 +56,7 @@
                     </PanelContainer>
                     <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                            <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87955" BorderThickness="1" />
                         </PanelContainer.PanelOverride>
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <RichTextLabel Name="CharacterText" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
@@ -64,7 +64,7 @@
                     </PanelContainer>
                     <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#E5C87955" BorderThickness="1" />
+                            <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#E5C87955" BorderThickness="1" />
                         </PanelContainer.PanelOverride>
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Orientation="Vertical" HorizontalExpand="True">
@@ -85,7 +85,7 @@
                         </controls:StripeBack>
                         <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
                             <PanelContainer.PanelOverride>
-                                <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#80008077" BorderThickness="1" />
+                                <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#80008077" BorderThickness="1" />
                             </PanelContainer.PanelOverride>
                             <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                                 <RichTextLabel Name="OocText" HorizontalExpand="True" VerticalExpand="True" Margin="8" />
@@ -98,7 +98,7 @@
                         </controls:StripeBack>
                         <PanelContainer StyleClasses="Inset" HorizontalExpand="True" VerticalExpand="True">
                             <PanelContainer.PanelOverride>
-                                <gfx:StyleBoxFlat BackgroundColor="#1A1A1A" BorderColor="#00FA9A77" BorderThickness="1" />
+                                <gfx:StyleBoxFlat BackgroundColor="#18140F" BorderColor="#00FA9A77" BorderThickness="1" />
                             </PanelContainer.PanelOverride>
                             <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                                 <BoxContainer Name="Links" Orientation="Vertical" HorizontalExpand="True" Margin="6" />

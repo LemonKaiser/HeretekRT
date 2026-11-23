@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <defs><linearGradient id="brass" x1="10" y1="58" x2="48" y2="4" gradientUnits="userSpaceOnUse"><stop stop-color="#755432"/><stop offset=".5" stop-color="#dbbc7b"/><stop offset="1" stop-color="#f3dea6"/></linearGradient></defs>
+  <g stroke="url(#brass)"><path d="m32 4 5 15 12-5-5 12 16 6-16 6 5 12-12-5-5 15-5-15-12 5 5-12-16-6 16-6-5-12 12 5Z" stroke-opacity=".6"/><path d="m32 13 12 19-12 19-12-19Z"/><path d="M15 32h34M32 9v46M9 9h7M9 9v7M48 9h7v7M9 48v7h7M55 48v7h-7" stroke-opacity=".5"/></g>
+  <path d="m32 23 6 9-6 9-6-9Z" fill="url(#brass)"/><circle cx="32" cy="32" r="2" fill="#21180e"/>
+</svg>

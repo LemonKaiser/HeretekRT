@@ -9,7 +9,7 @@ public sealed class HSeparator : Control
 {
     private PanelContainer _panel;
 
-    public static readonly Color DefaultSeparatorColor = Color.FromHex("#3D4059");
+    public static readonly Color DefaultSeparatorColor = Color.FromHex("#56452D");
 
     public Color Color
     {

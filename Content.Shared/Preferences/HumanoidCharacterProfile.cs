@@ -216,6 +216,9 @@ namespace Content.Shared.Preferences
         [DataField]
         public Wh40kCharacterBuild Wh40kBuild { get; private set; } = new();
 
+        [DataField]
+        public Wh40kSpeechStyle SpeechStyle { get; private set; }
+
         public HumanoidCharacterProfile(
             string name,
             string flavortext,
@@ -273,6 +276,7 @@ namespace Content.Shared.Preferences
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
+            SpeechStyle = other.SpeechStyle;
             OocFlavorText = other.OocFlavorText;
             CharacterFlavorText = other.CharacterFlavorText;
             GreenFlavorText = other.GreenFlavorText;
@@ -309,6 +313,7 @@ namespace Content.Shared.Preferences
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
+            SpeechStyle = other.SpeechStyle;
             OocFlavorText = other.OocFlavorText;
             CharacterFlavorText = other.CharacterFlavorText;
             GreenFlavorText = other.GreenFlavorText;
@@ -490,6 +495,11 @@ namespace Content.Shared.Preferences
         public HumanoidCharacterProfile WithBarkVoice(string barkVoice)
         {
             return new(this) { BarkVoice = barkVoice };
+        }
+
+        public HumanoidCharacterProfile WithSpeechStyle(Wh40kSpeechStyle style)
+        {
+            return new(this) { SpeechStyle = style.Validated() };
         }
 
         // Frontier: this is probably an issue and should be removed.
@@ -731,6 +741,7 @@ namespace Content.Shared.Preferences
             if (!Items.SequenceEqual(other.Items)) return false; // Mono
             if (Voice != other.Voice) return false;
             if (BarkVoice != other.BarkVoice) return false;
+            if (SpeechStyle != other.SpeechStyle) return false;
             if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
             if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
@@ -923,6 +934,7 @@ namespace Content.Shared.Preferences
             Voice = voice;
             BarkVoice = barkVoice;
             Wh40kBuild = Wh40kBuild.Validated();
+            SpeechStyle = SpeechStyle.Validated();
 
             // Check if the company exists, if not set to "None"
             if (!string.IsNullOrEmpty(Company) &&
@@ -1056,6 +1068,7 @@ namespace Content.Shared.Preferences
             hashCode.Add((int)Gender);
             hashCode.Add(Voice);
             hashCode.Add(BarkVoice);
+            hashCode.Add(SpeechStyle);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
             // Mono start

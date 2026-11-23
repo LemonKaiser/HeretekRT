@@ -180,6 +180,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         targetHumanoid.Width = sourceHumanoid.Width;
         SetSex(target, sourceHumanoid.Sex, false, targetHumanoid);
         targetHumanoid.Voice = sourceHumanoid.Voice;
+        targetHumanoid.SpeechStyle = sourceHumanoid.SpeechStyle;
         if (TryComp<TTSComponent>(source, out var sourceTts) &&
             TryComp<TTSComponent>(target, out var targetTts))
         {
@@ -424,6 +425,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         SetSpecies(uid, profile.Species, false, humanoid);
         SetSex(uid, profile.Sex, false, humanoid);
         humanoid.EyeColor = profile.Appearance.EyeColor;
+        humanoid.SpeechStyle = profile.SpeechStyle.Validated();
 
         SetSkinColor(uid, profile.Appearance.SkinColor, false);
 

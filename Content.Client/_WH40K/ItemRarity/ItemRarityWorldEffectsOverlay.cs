@@ -58,7 +58,7 @@ public sealed class ItemRarityWorldEffectsHoverOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        return _renderer.ShouldDraw(args);
+        return _renderer.ShouldDraw(args, hoveredOnly: true);
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -96,6 +96,11 @@ internal sealed class ItemRarityWorldEffectsRenderer : IDisposable
     private readonly List<VisibleRarityItem> _visibleItems = new(MaxVisibleEffects);
     private readonly Dictionary<EntityUid, CachedAura> _auras = new();
     private readonly List<EntityUid> _expiredAuras = new();
+    private readonly HashSet<Entity<ItemComponent>> _intersectingItems = new();
+    private IClydeViewport? _collectedViewport;
+    private Box2Rotated _collectedBounds;
+    private MapId _collectedMap;
+    private long _collectedFrame = -1;
 
     private long _drawFrame;
 
@@ -116,9 +121,10 @@ internal sealed class ItemRarityWorldEffectsRenderer : IDisposable
         _lookupSystem = entityManager.System<EntityLookupSystem>();
     }
 
-    public bool ShouldDraw(in OverlayDrawArgs args)
+    public bool ShouldDraw(in OverlayDrawArgs args, bool hoveredOnly = false)
     {
-        return GetEffectMode() != EffectMode.Off && args.MapId != MapId.Nullspace;
+        return GetEffectMode() != EffectMode.Off && args.MapId != MapId.Nullspace &&
+               (!hoveredOnly || _hoveredEntity() != null);
     }
 
     public void BeginFrame()
@@ -156,11 +162,22 @@ internal sealed class ItemRarityWorldEffectsRenderer : IDisposable
 
     private void CollectVisibleItems(in OverlayDrawArgs args)
     {
+        // Both stages draw the same selected items. Reuse this frame's selection for this viewport only.
+        if (_collectedFrame == _drawFrame && ReferenceEquals(_collectedViewport, args.Viewport) &&
+            _collectedMap == args.MapId && _collectedBounds.Equals(args.WorldBounds))
+            return;
+        _collectedFrame = _drawFrame;
+        _collectedViewport = args.Viewport;
+        _collectedMap = args.MapId;
+        _collectedBounds = args.WorldBounds;
         _visibleCandidates.Clear();
         _visibleItems.Clear();
         var hoveredEntity = _hoveredEntity();
 
-        foreach (var uid in _lookupSystem.GetEntitiesIntersecting(args.MapId, args.WorldBounds))
+        // Contained items are rejected below anyway. Avoid collecting all station fixtures and allocating a set.
+        _intersectingItems.Clear();
+        _lookupSystem.GetEntitiesIntersecting(args.MapId, args.WorldBounds, _intersectingItems, LookupFlags.Uncontained);
+        foreach (var (uid, _) in _intersectingItems)
         {
             if (TryGetVisibleItem(uid, args.MapId, out var item))
                 _visibleCandidates.Add(item);

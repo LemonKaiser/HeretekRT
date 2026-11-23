@@ -1,5 +1,6 @@
 ﻿using Content.Client.Decals.UI;
 using Content.Client.Gameplay;
+using Content.Client.Administration.Managers;
 using Content.Client.Sandbox;
 using Content.Shared.Decals;
 using Robust.Client.UserInterface;
@@ -13,21 +14,25 @@ namespace Content.Client.UserInterface.Systems.DecalPlacer;
 public sealed partial class DecalPlacerUIController : UIController, IOnStateExited<GameplayState>, IOnSystemChanged<SandboxSystem>
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IClientAdminManager _admin = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
 
     private DecalPlacerWindow? _window;
 
     public void ToggleWindow()
     {
-        EnsureWindow();
-
-        if (_window!.IsOpen)
+        if (_window is { IsOpen: true })
         {
             _window.Close();
         }
-        else if(_sandbox.SandboxAllowed)
+        else if (_sandbox.SandboxAllowed || _admin.CanAdminPlace())
         {
-            _window.Open();
+            var firstOpen = _window == null || _window.Disposed;
+            EnsureWindow();
+            if (firstOpen)
+                _window!.OpenCenteredAt(new System.Numerics.Vector2(.5f, .62f));
+            else
+                _window!.Open();
         }
     }
 
@@ -35,6 +40,7 @@ public sealed partial class DecalPlacerUIController : UIController, IOnStateExit
     {
         if (_window == null)
             return;
+        _window.Close();
         _window.Dispose();
         _window = null;
     }
@@ -71,15 +77,16 @@ public sealed partial class DecalPlacerUIController : UIController, IOnStateExit
         if (_window is { Disposed: false })
             return;
         _window = UIManager.CreateWindow<DecalPlacerWindow>();
-        LayoutContainer.SetAnchorPreset(_window, LayoutContainer.LayoutPreset.CenterLeft);
         ReloadPrototypes();
     }
 
-    private void CloseWindow()
+    public void CloseWindow()
     {
         if (_window == null || _window.Disposed)
             return;
 
         _window.Close();
     }
+
+    internal void PausePlacement() => _window?.PausePlacement();
 }

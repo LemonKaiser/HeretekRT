@@ -60,6 +60,7 @@ public sealed partial class MiscTab : Control
 
         Control.AddOptionDropDown(CVars.InterfaceTheme, DropDownHudTheme, themeEntries);
         Control.AddOptionDropDown(CCVars.UILayout, DropDownHudLayout, layoutEntries);
+        Control.AddOptionCheckBox(CCVars.WH40KUiFrostedGlass, FrostedGlass);
         var languageOption = Control.AddOptionDropDown(
             CVars.LocCultureName,
             DropDownLanguage,
@@ -68,7 +69,7 @@ public sealed partial class MiscTab : Control
         Control.AddOptionDropDown(CCVars.LobbyStaticBackground, DropDownLobbyStaticBackground, BuildLobbyBackgroundOptions(animated: false));
         Control.AddOptionDropDown(CCVars.LobbyAnimatedBackground, DropDownLobbyAnimatedBackground, BuildLobbyBackgroundOptions(animated: true));
         Control.AddOptionPercentSlider(CCVars.LobbyPanelOpacity, LobbyPanelOpacitySlider);
-        Control.AddOptionPercentSlider(CCVars.UiWindowOpacity, UiWindowOpacitySlider, min: 0.75f, max: 1f);
+        Control.AddOptionPercentSlider(CCVars.WH40KUiGlassTransparency, UiWindowOpacitySlider);
 
         Control.AddOptionCheckBox(CVars.DiscordEnabled, DiscordRich);
         Control.AddOptionCheckBox(CCVars.ShowOocPatronColor, ShowOocPatronColor);

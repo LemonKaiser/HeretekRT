@@ -34,7 +34,7 @@
       - type: StationNameSetup
         mapNameTemplate: 'Футфол'
       - type: ExtraStationInformation
-        icon: /Textures/_Mono/Logo/icon/icon-256x256.png
+        icon: /Textures/_WH40K/Interface/Lobby/footfall-emblem.svg.192dpi.png
         stationSubtext: 'frontier-lobby-frontier-subtext'
         stationDescription: 'frontier-lobby-frontier-description'
         lobbySortOrder: 1

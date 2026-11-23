@@ -48,6 +48,7 @@ namespace Content.Client.Launcher
             LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
 
             Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSpace;
+            Content.Client._WH40K.UserInterface.Wh40kInterfaceTheme.ApplyControls(this);
 
             ChangeLoginTip();
             ExitButton.Text = Loc.GetString(state.UsesManualConnectTarget ? "connecting-back" : "connecting-exit");

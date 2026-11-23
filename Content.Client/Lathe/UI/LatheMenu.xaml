@@ -21,7 +21,7 @@
                 SeparationOverride="5">
                 <PanelContainer VerticalExpand="False">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BackgroundColor="#111111" />
+                        <gfx:StyleBoxFlat BackgroundColor="#100D0A" />
                     </PanelContainer.PanelOverride>
                     <controls:StripeBack MinSize="48 48">
                 <BoxContainer Orientation="Horizontal"
@@ -35,7 +35,7 @@
                 </PanelContainer>
                 <PanelContainer VerticalExpand="False">
                     <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#212121" BackgroundColor="#111111"/>
+                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Horizontal"
                               VerticalExpand="False"
@@ -56,7 +56,7 @@
                     SizeFlagsStretchRatio="4">
                     <PanelContainer VerticalExpand="True">
                         <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#212121" BackgroundColor="#111111"/>
+                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <ScrollContainer VerticalExpand="True" HScrollEnabled="False" Margin="7 7 7 7">
                             <BoxContainer
@@ -150,7 +150,7 @@
             <Label Text="{Loc 'lathe-menu-materials-title'}" Margin="5 5 5 5" HorizontalAlignment="Center"/>
             <PanelContainer VerticalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="9" BorderColor="#212121" BackgroundColor="#111111"/>
+                    <gfx:StyleBoxFlat BorderThickness="9" BorderColor="#56452D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
                 <BoxContainer
                     Orientation="Vertical"

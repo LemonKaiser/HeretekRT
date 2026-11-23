@@ -7,11 +7,11 @@
     Resizable="False"> <!-- Shitmed Change -->
     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
         <PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#525252" BackgroundColor="#3d474d"/>
+            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#75613D" BackgroundColor="#18140F"/>
         </PanelContainer.PanelOverride>
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
             <PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
             </PanelContainer.PanelOverride>
         <BoxContainer
             Name="RootContainer"
@@ -24,7 +24,7 @@
             <!-- Shitmed Change Start -->
                 <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="2 2 2 2" MinHeight="40">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#050505"/>
+                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#050505"/>
                     </PanelContainer.PanelOverride>
             <Button Name="ReturnButton"
                     Text="{Loc 'health-analyzer-window-return-button-text'}"
@@ -41,17 +41,17 @@
                 <!-- Shitmed Change Start -->
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#333333" BackgroundColor="#181818"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
                         </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Horizontal"
                               Margin="0 0 0 5">
                     <PanelContainer VerticalExpand="False" HorizontalExpand="False" Margin="2 2">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#141414"/>
+                            <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                         </PanelContainer.PanelOverride>
                         <PanelContainer VerticalExpand="False" HorizontalExpand="False" Margin="1 1">
                             <PanelContainer.PanelOverride>
-                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                             </PanelContainer.PanelOverride>
                     <PanelContainer>
                         <TextureRect Name="NoDataTex"
@@ -237,11 +237,11 @@
 
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#141414"/>
+                        <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                     </PanelContainer.PanelOverride>
                     <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4">
                         <PanelContainer.PanelOverride>
-                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                         </PanelContainer.PanelOverride>
                 <GridContainer Margin="2 2"
                                Columns="2">
@@ -274,11 +274,11 @@
 
             <PanelContainer VerticalExpand="False" HorizontalExpand="True" Margin="4 4 4 4" SetHeight="62">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#141414"/>
+                    <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                     </PanelContainer.PanelOverride>
                     <ScrollContainer
                         Margin="5 5 5 5"
@@ -299,11 +299,11 @@
             <!-- Shitmed Change End -->
             <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
                 <PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#333333" BackgroundColor="#141414"/>
+                    <graphics:StyleBoxFlat BorderThickness="4" BorderColor="#79603D" BackgroundColor="#100D0A"/>
                 </PanelContainer.PanelOverride>
                 <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4">
                     <PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#151515" BackgroundColor="#050505"/>
+                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
                     </PanelContainer.PanelOverride>
             <ScrollContainer
                 Margin="5 5 5 5"

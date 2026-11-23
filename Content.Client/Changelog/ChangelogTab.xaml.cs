@@ -21,6 +21,12 @@ public sealed partial class ChangelogTab : Control
     [Dependency] private IResourceCache _resourceCache = default!;
 
     public bool AdminOnly;
+    private const int DaysPerBatch = 7;
+    private IGrouping<DateTime, ChangelogEntry>[] _days = [];
+    private int _nextDay;
+    private bool _hasRead;
+    private bool _populated;
+    private Button? _older;
 
     public ChangelogTab()
     {
@@ -30,15 +36,28 @@ public sealed partial class ChangelogTab : Control
 
     public void PopulateChangelog(ChangelogManager.Changelog changelog)
     {
-        var byDay = changelog.Entries
+        _days = changelog.Entries
             .GroupBy(e => e.Time.ToLocalTime().Date)
-            .OrderByDescending(c => c.Key);
+            .OrderByDescending(c => c.Key).ToArray();
 
-        var hasRead = changelog.Name != MainChangelogName ||
+        _hasRead = changelog.Name != MainChangelogName ||
                       _changelog.MaxId <= _changelog.LastReadId;
+    }
 
-        foreach (var dayEntries in byDay)
+    public void EnsurePopulated()
+    {
+        if (_populated) return;
+        _populated = true;
+        AppendDays();
+    }
+
+    internal void AppendDays()
+    {
+        _older?.Orphan();
+        var end = Math.Min(_nextDay + DaysPerBatch, _days.Length);
+        for (; _nextDay < end; _nextDay++)
         {
+            var dayEntries = _days[_nextDay];
             var day = dayEntries.Key;
 
             var groupedEntries = dayEntries
@@ -73,9 +92,9 @@ public sealed partial class ChangelogTab : Control
                     ChangelogBody.AddChild(new Control { Margin = new Thickness(4) });
                 }
 
-                if (read && !hasRead)
+                if (read && !_hasRead)
                 {
-                    hasRead = true;
+                    _hasRead = true;
 
                     var upArrow =
                         _resourceCache.GetTexture("/Textures/Interface/Changelog/up_arrow.svg.192dpi.png");
@@ -150,6 +169,19 @@ public sealed partial class ChangelogTab : Control
                     });
                 }
             }
+        }
+        if (_nextDay < _days.Length)
+        {
+            if (_older == null)
+            {
+                _older = new Button { Text = Loc.GetString("wh40k-changelog-older"), Margin = new Thickness(4, 10) };
+                _older.OnPressed += _ => AppendDays();
+            }
+            ChangelogBody.AddChild(_older);
+        }
+        else
+        {
+            _older = null;
         }
     }
 

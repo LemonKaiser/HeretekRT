@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Resources;
 using Content.Client._WH40K.Dialogue;
+using Content.Client._WH40K.UserInterface;
 using Content.Shared._WH40K.Dialogue;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -44,8 +45,8 @@ public sealed class DialogueOverlay : LayoutContainer
     private static readonly Color NarrationTextColor = new(198, 194, 186);
     private static readonly Color AccentGold = new(215, 190, 132);
     private static readonly Color AccentGoldBright = new(246, 221, 159);
-    private static readonly Color PanelBackground = new(8, 12, 16, 242);
-    private static readonly Color PanelInnerBackground = new(17, 24, 31, 236);
+    private static readonly Color PanelBackground = Wh40kInterfaceTheme.TableRow.WithAlpha(0.95f);
+    private static readonly Color PanelInnerBackground = Wh40kInterfaceTheme.TableAlternateRow.WithAlpha(0.93f);
     private static readonly Color ChoiceTextColor = new(255, 247, 225);
     private static readonly Color ChoiceDisabledTextColor = new(218, 204, 176);
     private static readonly Color CancelTextColor = new(178, 62, 52);
@@ -61,8 +62,8 @@ public sealed class DialogueOverlay : LayoutContainer
     // primitive-based cut-corner box is suitable for dark decoration, but its vertex colour path
     // makes authored button palettes much darker than ordinary UI colours.
     private static readonly StyleBoxFlat ChoiceButtonNormalStyle = CreateChoiceButtonStyle(
-        new Color(14, 19, 24, 150),
-        new Color(89, 83, 65, 170));
+        Wh40kInterfaceTheme.TableRow.WithAlpha(0.6f),
+        Wh40kInterfaceTheme.Border.WithAlpha(0.67f));
     private static readonly StyleBoxFlat ChoiceButtonHoverStyle = CreateChoiceButtonStyle(
         new Color(54, 45, 25, 220),
         AccentGoldBright);
@@ -70,8 +71,8 @@ public sealed class DialogueOverlay : LayoutContainer
         new Color(37, 30, 18, 240),
         AccentGold);
     private static readonly StyleBoxFlat ChoiceButtonDisabledStyle = CreateChoiceButtonStyle(
-        new Color(8, 10, 12, 220),
-        new Color(73, 61, 35));
+        Wh40kInterfaceTheme.TableRow.WithAlpha(0.86f),
+        Wh40kInterfaceTheme.Border);
     private static readonly StyleBoxFlat ContinueIndicatorStyle = new()
     {
         BackgroundColor = Color.Transparent,

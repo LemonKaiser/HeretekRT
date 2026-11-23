@@ -1,0 +1,6 @@
+- type: typingIndicator
+  id: Wh40kVulpkanin
+  spritePath: /Textures/_WH40K/Effects/TypingBubble/vulpkanin.rsi
+  typingState: vulpkanin0
+  idleState: vulpkanin3
+  offset: 0, 0.125

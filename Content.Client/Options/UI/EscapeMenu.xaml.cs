@@ -5,11 +5,12 @@ using Robust.Client.UserInterface.XAML;
 namespace Content.Client.Options.UI
 {
     [GenerateTypedNameReferences]
-    public sealed partial class EscapeMenu : DefaultWindow
+    public sealed partial class EscapeMenu : Content.Client._WH40K.UserInterface.Wh40kDefaultWindow
     {
         public EscapeMenu()
         {
             RobustXamlLoader.Load(this);
+            ResumeButton.OnPressed += _ => Close();
         }
     }
 }

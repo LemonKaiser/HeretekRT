@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Vulpkanin sprites by Cabin_keeper (Github), taken from space-wizards/space-station-14 at commit https://github.com/space-wizards/space-station-14/commit/241764b23c",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "vulpkanin0",
+      "delays": [
+        [
+          0.3,
+          0.3,
+          0.3,
+          0.4
+        ]
+      ]
+    },
+    {
+      "name": "vulpkanin1"
+    },
+    {
+      "name": "vulpkanin2"
+    },
+    {
+      "name": "vulpkanin3",
+      "delays": [
+        [
+          0.2,
+          0.3,
+          0.3,
+          0.5,
+          0.5
+        ]
+      ]
+    }
+  ]
+}

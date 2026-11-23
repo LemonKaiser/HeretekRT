@@ -16,14 +16,14 @@
                     </PanelContainer.PanelOverride>
                 </PanelContainer>
                 <TextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True" MouseFilter="Ignore"
-                             Modulate="#B69754A8"
-                             TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                             Modulate="#FFFFFFA8"
+                             TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                 <Label Name="ResultTitle" Access="Public" Text="{Loc 'heretek-onboarding-result-summary-title'}"
                        FontColorOverride="#E5C879" HorizontalAlignment="Center"
                        StyleClasses="Wh40kOnboardingSectionTitle" />
                 <lobbyUi:OnboardingMirroredTextureRect SetSize="36 21" Stretch="KeepAspectCentered" CanShrink="True"
-                                                        MouseFilter="Ignore" Modulate="#B69754A8"
-                                                        TexturePath="/Textures/_WH40K/CharacterCreation/Ornaments/heading-laurel.svg.192dpi.png" />
+                                                        MouseFilter="Ignore" Modulate="#FFFFFFA8"
+                                                        TexturePath="/Textures/_WH40K/Interface/header-laurel.svg.192dpi.png" />
                 <PanelContainer MinWidth="8" HorizontalExpand="True" SetHeight="1" VerticalAlignment="Center">
                     <PanelContainer.PanelOverride>
                         <graphics:StyleBoxFlat BackgroundColor="#B69754B8" />
