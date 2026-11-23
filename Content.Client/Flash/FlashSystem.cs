@@ -25,8 +25,16 @@ public sealed partial class FlashSystem : SharedFlashSystem
         _overlay = new();
     }
 
+    public override void Shutdown()
+    {
+        _overlayMan.RemoveOverlay(_overlay);
+        _overlay.Dispose();
+        base.Shutdown();
+    }
+
     private void OnPlayerAttached(EntityUid uid, FlashedComponent component, LocalPlayerAttachedEvent args)
     {
+        _overlay.RequestScreenTexture = true;
         _overlayMan.AddOverlay(_overlay);
     }
 

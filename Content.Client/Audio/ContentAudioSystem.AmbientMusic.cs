@@ -125,7 +125,8 @@ public sealed partial class ContentAudioSystem
         if (!_timing.IsFirstTimePredicted) //otherwise this will tick like 5x faster on client. thanks prediction
             return;
 
-        if (_initialStationMusicBool)
+        var paused = IsWh40kMusicPaused(_ambientMusicStream);
+        if (_initialStationMusicBool && !paused)
         {
             _initialStationMusicTimer += frameTime;
             if (_replayAmbientMusicTimer > InitialStationMusicTimeToDrop)
@@ -136,7 +137,7 @@ public sealed partial class ContentAudioSystem
                 _replayAmbientMusicTimer = 0;
             }
         }
-        if (_replayAmbientMusicBool)
+        if (_replayAmbientMusicBool && !paused)
         {
             _replayAmbientMusicTimer += frameTime;
             if (_replayAmbientMusicTimer > _timeUntilNextAmbientTrack)
@@ -145,7 +146,7 @@ public sealed partial class ContentAudioSystem
                 _replayAmbientMusicTimer = 0;
             }
         }
-        if (_replayCombatMusicBool)
+        if (_replayCombatMusicBool && !paused)
         {
             _replayCombatMusicTimer += frameTime;
             if (_replayCombatMusicTimer > _timeUntilNextAmbientTrack)

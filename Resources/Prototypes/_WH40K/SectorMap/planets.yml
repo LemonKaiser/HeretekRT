@@ -60,6 +60,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherTemperate
 
 - type: planet
   id: FoulstoneForestWorld
@@ -120,6 +121,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherDesert
 
 - type: planet
   id: TrinnitosDesertWorldSurface
@@ -183,6 +185,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherRocky
 
 - type: planet
   id: TrinnitosRockWorldSurface
@@ -246,6 +249,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherVolcanic
 
 - type: planet
   id: TrinnitosFlamingWorldSurface
@@ -312,6 +316,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherFrozen
 
 - type: planet
   id: SottosTombIceWorldSurface
@@ -376,6 +381,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherChaosVolcanic
 
 - type: planet
   id: AivoriusBurningWorldSurface
@@ -429,6 +435,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherTropical
 
 - type: planet
   id: AivoriusJungleWorldSurface
@@ -491,6 +498,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherDesert
 
 - type: planet
   id: AivoriusDesertWorldSurface
@@ -589,6 +597,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherVolcanic
 
 - type: planet
   id: FootfallDeadWorldProfile

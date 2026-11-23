@@ -94,6 +94,12 @@ public sealed partial class CCVars
         CVarDef.Create("accessibility.colorblind_friendly", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Replaces spinning flash after-images with a still fade from black.
+    /// </summary>
+    public static readonly CVarDef<bool> AccessibilityDarkFlash =
+        CVarDef.Create("accessibility.dark_flash", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
     ///     Speech bubble text opacity slider, controlling the alpha of speech bubble's text.
     ///     Goes from to 0 (completely transparent) to 1 (completely opaque)
     /// </summary>
@@ -114,5 +120,10 @@ public sealed partial class CCVars
     public static readonly CVarDef<float> SpeechBubbleBackgroundOpacity =
         CVarDef.Create("accessibility.speech_bubble_background_opacity", 0.75f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    ///     Toggles fading-out screen effects and camera sway when the local body is badly injured or critical.
+    /// </summary>
+    public static readonly CVarDef<bool> DyingScreenEffects =
+        CVarDef.Create("accessibility.dying_screen_effects", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 
 }

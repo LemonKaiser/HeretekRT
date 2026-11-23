@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._WH40K.Weather;
 using Content.Shared.Light.Components;
 using Content.Shared.Weather;
 using Robust.Client.Audio;
@@ -40,7 +41,8 @@ public sealed partial class WeatherSystem : SharedWeatherSystem
         var entXform = Transform(ent.Value);
 
         // Maybe have the viewports manage this?
-        if (mapUid == null || entXform.MapUid != mapUid)
+        if (mapUid == null || entXform.MapUid != mapUid ||
+            TryComp<WolfWeatherMapComponent>(uid, out var wolfWeather) && wolfWeather.Weathers.Count > 0)
         {
             weather.Stream = _audio.Stop(weather.Stream);
             return;

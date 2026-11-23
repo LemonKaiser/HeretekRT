@@ -1,3 +1,4 @@
+using Content.Client._WH40K.UserInterface.WindowPopout;
 using Content.Client.Gameplay;
 using Content.Client.Info;
 using Robust.Client.Input;
@@ -29,6 +30,8 @@ public sealed partial class CloseAllWindowsUIController : UIController
                 ((BaseWindow) childControl).Close();
             }
         }
+
+        _uiManager.GetUIController<Wh40kWindowPopoutUIController>().ClosePopouts();
     }
 }
 

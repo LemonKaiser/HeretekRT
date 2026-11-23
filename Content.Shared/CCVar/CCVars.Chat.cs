@@ -44,6 +44,28 @@ public sealed partial class CCVars
         CVarDef.Create("chat.show_typing_indicator", true, CVar.ARCHIVE | CVar.REPLICATED | CVar.SERVER);
 
     /// <summary>
+    /// Shows others a typing indicator while this player types.
+    /// </summary>
+    public static readonly CVarDef<bool> ChatShowMyTyping =
+        CVarDef.Create("chat.show_my_typing", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>Shows speech bubbles at all. LOOC bubbles keep their own setting.</summary>
+    public static readonly CVarDef<bool> ChatSpeechBubbles =
+        CVarDef.Create("chat.speech_bubbles", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>Shows bubbles from things that aren't mobs, such as radios and vending machines.</summary>
+    public static readonly CVarDef<bool> ChatSpeechBubblesNonMobs =
+        CVarDef.Create("chat.speech_bubbles_non_mobs", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>Shows dead chat as bubbles while the player is a ghost.</summary>
+    public static readonly CVarDef<bool> ChatSpeechBubblesGhosts =
+        CVarDef.Create("chat.speech_bubbles_ghosts", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>Shows emotes as bubbles.</summary>
+    public static readonly CVarDef<bool> ChatSpeechBubblesEmotes =
+        CVarDef.Create("chat.speech_bubbles_emotes", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>
     ///     Maximum length of a directed emote sent to another nearby player.
     /// </summary>
     public static readonly CVarDef<int> DirectionalEmoteMaxLength =
@@ -92,6 +114,14 @@ public sealed partial class CCVars
     /// <summary>Locally persisted favourite emoji aliases, separated by commas.</summary>
     public static readonly CVarDef<string> ChatEmojiFavorites =
         CVarDef.Create("chat.emoji_favorites", string.Empty, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>Locally persisted chat tabs and their channel bitmasks.</summary>
+    public static readonly CVarDef<string> ChatTabs =
+        CVarDef.Create(
+            "chat.tabs",
+            string.Empty,
+            CVar.CLIENTONLY | CVar.ARCHIVE,
+            "Locally persisted chat tabs and their channel bitmasks.");
 
     public static readonly CVarDef<bool> ChatEnableFancyBubbles =
         CVarDef.Create("chat.enable_fancy_bubbles",

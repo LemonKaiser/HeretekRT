@@ -72,3 +72,28 @@
     EdgeStrength: 1.2
     Smear: 0.02
     Phase: 0.0
+
+- type: shader
+  id: WH40KExplosionShockwave
+  kind: source
+  path: "/Textures/_WH40K/Shaders/explosion_shockwave.swsl"
+
+- type: shader
+  id: WH40KFlashedEffectStill
+  kind: source
+  path: "/Textures/_WH40K/Shaders/flashed_effect_still.swsl"
+
+- type: shader
+  id: WH40KDyingEffects
+  kind: source
+  path: "/Textures/_WH40K/Shaders/dying_effects.swsl"
+
+- type: shader
+  id: WH40KWolfWeather
+  kind: source
+  path: "/Textures/_WH40K/Shaders/wolf_weather.swsl"
+
+- type: shader
+  id: WH40KWolfWeatherBlur
+  kind: source
+  path: "/Textures/_WH40K/Shaders/wolf_weather_blur.swsl"

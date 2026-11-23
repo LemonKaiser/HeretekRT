@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Shared._DV.Planet;
+using Content.Shared._WH40K.Weather;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -287,5 +288,11 @@ public sealed partial class KoronusPlanetSurfacePrototype : IPrototype
     /// </summary>
     [DataField]
     public float TransitArrivalTime = 5f;
+
+    /// <summary>
+    /// Optional automatic weather schedule attached when this planetary surface is registered.
+    /// </summary>
+    [DataField]
+    public ProtoId<WeatherSchedulePrototype>? WeatherSchedule;
 
 }

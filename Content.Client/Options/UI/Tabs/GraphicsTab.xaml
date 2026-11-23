@@ -9,6 +9,7 @@
                 <Label Text="{Loc 'ui-options-display-label'}" StyleClasses="Wh40kSectionHeading"/>
                 <heritage:Wh40kToggleSwitch Name="VSyncCheckBox" Text="{Loc 'ui-options-vsync'}" />
                 <heritage:Wh40kToggleSwitch Name="FullscreenCheckBox" Text="{Loc 'ui-options-fullscreen'}" />
+                <ui:OptionDropDown Name="DropDownMaxFps" Title="{Loc 'wh40k-options-max-fps'}" />
 
                 <!-- Quality -->
                 <Label Text="{Loc 'ui-options-quality-label'}" StyleClasses="Wh40kSectionHeading"/>
@@ -28,6 +29,9 @@
                           ToolTip="{Loc 'wh40k-options-contact-shadows-tooltip'}" />
                 <heritage:Wh40kToggleSwitch Name="PuddleReflectionsCheckBox" Text="{Loc 'wh40k-options-puddle-reflections'}"
                           ToolTip="{Loc 'wh40k-options-puddle-reflections-tooltip'}" />
+                <heritage:Wh40kToggleSwitch Name="ShockwaveCheckBox" Text="{Loc 'wh40k-options-shockwave'}" />
+                <ui:OptionSlider Name="ShockwaveStrengthSlider" Title="{Loc 'wh40k-options-shockwave-strength'}" />
+                <ui:OptionDropDown Name="DropDownWeatherQuality" Title="{Loc 'wh40k-options-weather-quality'}" />
 
                 <!-- Interface -->
                 <Label Text="{Loc 'ui-options-interface-label'}" StyleClasses="Wh40kSectionHeading"/>

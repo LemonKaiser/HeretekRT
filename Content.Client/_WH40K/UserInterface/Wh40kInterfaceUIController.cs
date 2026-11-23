@@ -10,6 +10,7 @@ using Content.Client.Options.UI;
 using Content.Client.PDA;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Client._WH40K.UserInterface.WindowPopout;
 
 namespace Content.Client._WH40K.UserInterface;
 
@@ -79,7 +80,12 @@ public sealed class Wh40kInterfaceUIController : UIController
                 ToolTip = Loc.GetString("wh40k-window-minimize"),
             };
             row.AddChild(minimize);
-            minimize.SetPositionInParent(Math.Max(0, row.ChildCount - 2));
+            var insertBefore = buttons.FirstOrDefault(child =>
+                child is Wh40kPopoutButton ||
+                (child is TextureButton tb && tb.HasStyleClass(DefaultWindow.StyleClassWindowCloseButton)));
+            minimize.SetPositionInParent(insertBefore != null
+                ? insertBefore.GetPositionInParent()
+                : Math.Max(0, row.ChildCount - 2));
             if (control is OptionsMenu)
             {
                 var help = new TextureButton
@@ -115,6 +121,7 @@ public sealed class Wh40kInterfaceUIController : UIController
                         window.MinHeight = minHeight; window.Resizable = resizable; window.SetHeight = height;
                     }
                     collapsed = !collapsed;
+                    minimize.IsCollapsed = collapsed;
                     minimize.ToolTip = Loc.GetString(collapsed ? "wh40k-window-restore" : "wh40k-window-minimize");
                 };
             }

@@ -23,6 +23,12 @@ public sealed partial class CCVars
         CVarDef.Create("ui.layout", "Default", CVar.CLIENTONLY | CVar.ARCHIVE);
 
     /// <summary>
+    /// Shows a pop-out button in window title bars so windows can be moved into separate OS windows.
+    /// </summary>
+    public static readonly CVarDef<bool> UIWindowPopout =
+        CVarDef.Create("ui.window_popout", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
     /// The dimensions for the chat window in Default UI mode
     /// </summary>
     public static readonly CVarDef<string> DefaultScreenChatSize =

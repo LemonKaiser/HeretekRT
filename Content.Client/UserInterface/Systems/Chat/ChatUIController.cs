@@ -26,6 +26,7 @@ using Content.Shared._Forge.Barks;
 using Content.Shared.Damage.ForceSay;
 using Content.Shared.Decals;
 using Content.Shared.Input;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Radio;
 using Content.Shared.Roles.RoleCodeword;
 using Content.Shared.StatusIcon;
@@ -458,7 +459,27 @@ public sealed partial class ChatUIController : UIController
             return;
         }
 
+        if (!ShouldShowSpeechBubble(ent, msg, speechType))
+            return;
+
         EnqueueSpeechBubble(ent, msg, speechType);
+    }
+
+    private bool ShouldShowSpeechBubble(EntityUid sender, ChatMessage msg, SpeechBubble.SpeechType type)
+    {
+        if (type == SpeechBubble.SpeechType.Looc)
+            return true;
+
+        if (!_config.GetCVar(CCVars.ChatSpeechBubbles))
+            return false;
+
+        if (msg.Channel == ChatChannel.Dead && !_config.GetCVar(CCVars.ChatSpeechBubblesGhosts))
+            return false;
+
+        if (type == SpeechBubble.SpeechType.Emote && !_config.GetCVar(CCVars.ChatSpeechBubblesEmotes))
+            return false;
+
+        return _config.GetCVar(CCVars.ChatSpeechBubblesNonMobs) || EntityManager.HasComponent<MobStateComponent>(sender);
     }
 
     private void CreateSpeechBubble(EntityUid entity, SpeechBubbleData speechData)
@@ -999,6 +1020,7 @@ public sealed partial class ChatUIController : UIController
                     History.RemoveRange(0, excess);
             }
             MessageAdded?.Invoke(msg);
+            NotifyTabsOfMessage(msg);
 
             if (!msg.Read)
             {

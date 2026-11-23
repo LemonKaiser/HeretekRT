@@ -1,0 +1,246 @@
+# Planetary weather schedules: 15-30 minute clear intervals, 5-10 minute active weather spells.
+
+- type: weatherSchedule
+  id: Wh40kWeatherTemperate
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: RainLight
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+  - weather: RainModerate
+    weight: 2.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: FogWisps
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+  - weather: RainHeavy
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: FogBank
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Storm
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherTropical
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: RainModerate
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+  - weather: RainHeavy
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 140
+      max: 220
+  - weather: FogBank
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Storm
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+  - weather: FogHaze
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Thunderstorm
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherFrozen
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: Snow
+    weight: 3.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Blizzard
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: FogWisps
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: FogHaze
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherDesert
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: DustLight
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Sandstorm
+    weight: 2.5
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: SandstormHeavy
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+
+- type: weatherSchedule
+  id: Wh40kWeatherRockyDesert
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: DustLight
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+  - weather: Sandstorm
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: FogHaze
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherRocky
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: DustLight
+    weight: 2.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: FogWisps
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+  - weather: FogHaze
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherVolcanic
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: Ashfall
+    weight: 3
+    duration:
+      min: 5m
+      max: 10m
+  - weather: AshStorm
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: FogHaze
+    weight: 1
+    duration:
+      min: 5m
+      max: 10m
+
+- type: weatherSchedule
+  id: Wh40kWeatherChaosVolcanic
+  gap:
+    min: 15m
+    max: 30m
+  weathers:
+  - weather: Ashfall
+    weight: 2.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: AshStorm
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+    windAngle:
+      min: 150
+      max: 210
+  - weather: BloodRainHeavy
+    weight: 2
+    duration:
+      min: 5m
+      max: 10m
+  - weather: BloodFog
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m
+  - weather: BloodStorm
+    weight: 1.5
+    duration:
+      min: 5m
+      max: 10m

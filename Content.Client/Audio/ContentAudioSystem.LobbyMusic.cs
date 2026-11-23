@@ -247,6 +247,7 @@ public sealed partial class ContentAudioSystem
     {
         if (
             _lobbySoundtrackInfo != null
+            && !IsWh40kMusicPaused(_lobbySoundtrackInfo.MusicStreamEntityUid)
             && _timing.CurTime >= _lobbySoundtrackInfo.NextTrackOn
             && _lobbyPlaylist?.Length > 0
             )

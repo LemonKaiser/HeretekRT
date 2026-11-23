@@ -31,6 +31,9 @@
                     <heritage:Wh40kToggleSwitch Name="BwoinkSoundCheckBox" Text="{Loc 'ui-options-bwoink-sound'}" />
                     <heritage:Wh40kToggleSwitch Name="TtsCheckBox" Text="{Loc 'ui-options-tts-enabled'}" />
                     <heritage:Wh40kToggleSwitch Name="RadioTtsCheckBox" Text="{Loc 'ui-options-radio-tts-enabled'}" />
+                    <heritage:Wh40kToggleSwitch Name="SoundtrackMuteCheckBox" Text="{Loc 'wh40k-options-soundtrack-mute'}" />
+                    <heritage:Wh40kToggleSwitch Name="RadioNoiseCheckBox" Text="{Loc 'ui-options-radio-noise'}" />
+                    <heritage:Wh40kToggleSwitch Name="CritHeartbeatCheckBox" Text="{Loc 'wh40k-options-crit-heartbeat'}" />
                 </BoxContainer>
             </BoxContainer>
         </ScrollContainer>

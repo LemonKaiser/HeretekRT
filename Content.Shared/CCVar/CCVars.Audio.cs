@@ -70,4 +70,16 @@ public sealed partial class CCVars
         public static readonly CVarDef<float> InterfaceVolume =
             CVarDef.Create("audio.interface_volume", 1.5f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
+        /// <summary>
+        ///     Whether background music fades out while a jukebox or instrument is audible nearby.
+        /// </summary>
+        public static readonly CVarDef<bool> SoundtrackMuteEnabled =
+            CVarDef.Create("audio.soundtrack_mute", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+        /// <summary>
+        ///     Plays a looping heartbeat while the local player's own body is in critical condition.
+        /// </summary>
+        public static readonly CVarDef<bool> CritHeartbeatEnabled =
+            CVarDef.Create("audio.crit_heartbeat", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
 }

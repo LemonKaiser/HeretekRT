@@ -104,6 +104,9 @@ public sealed partial class AudioTab : Control
         Control.AddOptionCheckBox(CCVars.BwoinkSoundEnabled, BwoinkSoundCheckBox);
         Control.AddOptionCheckBox(CCVars.LocalTTSEnabled, TtsCheckBox);
         Control.AddOptionCheckBox(CCVars.LocalRadioTTSEnabled, RadioTtsCheckBox);
+        Control.AddOptionCheckBox(CCVars.SoundtrackMuteEnabled, SoundtrackMuteCheckBox);
+        Control.AddOptionCheckBox(MonoCVars.RadioNoiseEnabled, RadioNoiseCheckBox);
+        Control.AddOptionCheckBox(CCVars.CritHeartbeatEnabled, CritHeartbeatCheckBox);
 
         Control.Initialize();
     }

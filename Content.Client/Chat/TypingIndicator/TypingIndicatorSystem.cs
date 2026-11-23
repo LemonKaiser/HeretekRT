@@ -17,18 +17,20 @@ public sealed partial class TypingIndicatorSystem : SharedTypingIndicatorSystem
     private TimeSpan _lastTextChange;
     private bool _isClientTyping;
     private bool _isClientChatFocused;
+    private bool ShowTyping => _cfg.GetCVar(CCVars.ChatShowTypingIndicator) && _cfg.GetCVar(CCVars.ChatShowMyTyping);
 
     public override void Initialize()
     {
         base.Initialize();
 
         Subs.CVar(_cfg, CCVars.ChatShowTypingIndicator, OnShowTypingChanged);
+        Subs.CVar(_cfg, CCVars.ChatShowMyTyping, OnShowTypingChanged);
     }
 
     public void ClientChangedChatText()
     {
         // don't update it if player don't want to show typing indicator
-        if (!_cfg.GetCVar(CCVars.ChatShowTypingIndicator))
+        if (!ShowTyping)
             return;
 
         // client typed something - show typing indicator
@@ -39,24 +41,17 @@ public sealed partial class TypingIndicatorSystem : SharedTypingIndicatorSystem
 
     public void ClientSubmittedChatText()
     {
-        // don't update it if player don't want to show typing
-        if (!_cfg.GetCVar(CCVars.ChatShowTypingIndicator))
-            return;
-
         // client submitted text - hide typing indicator
         _isClientTyping = false;
-        ClientUpdateTyping();
+        if (ShowTyping)
+            ClientUpdateTyping();
     }
 
     public void ClientChangedChatFocus(bool isFocused)
     {
-        // don't update it if player don't want to show typing
-        if (!_cfg.GetCVar(CCVars.ChatShowTypingIndicator))
-            return;
-
-        // client submitted text - hide typing indicator
         _isClientChatFocused = isFocused;
-        ClientUpdateTyping();
+        if (ShowTyping)
+            ClientUpdateTyping();
     }
 
     public override void Update(float frameTime)
@@ -86,7 +81,7 @@ public sealed partial class TypingIndicatorSystem : SharedTypingIndicatorSystem
             return;
 		
         var state = TypingIndicatorState.None;
-        if (_isClientChatFocused)
+        if (_isClientChatFocused && ShowTyping)
             state = _isClientTyping ? TypingIndicatorState.Typing : TypingIndicatorState.Idle;
 
         // send a networked event to server
@@ -95,11 +90,9 @@ public sealed partial class TypingIndicatorSystem : SharedTypingIndicatorSystem
 
     private void OnShowTypingChanged(bool showTyping)
     {
-        // hide typing indicator immediately if player don't want to show it anymore
         if (!showTyping)
-        {
             _isClientTyping = false;
-            ClientUpdateTyping();
-        }
+
+        ClientUpdateTyping();
     }
 }

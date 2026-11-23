@@ -1,0 +1,34 @@
+cmd-wolfweather-desc = Устанавливает погоду на карте с необязательной длительностью в секундах. "clear" останавливает её.
+cmd-wolfweather-help = Использование: wolfweather <mapId> <weather|clear> [seconds]
+wolf-weather-command-bad-map = Карта с таким ID не найдена.
+wolf-weather-command-bad-weather = Неизвестный тип погоды. Нажмите Tab для списка.
+wolf-weather-command-set = Погода изменена на: {$weather}.
+wolf-weather-command-bad-seconds = Длительность в секундах должна быть больше 0 и не превышать неделю (604800).
+wolf-weather-command-planet = На этой карте включено расписание погоды; оно продолжится после завершения текущей погоды.
+wolf-weather-command-not-surface = Эта карта не является поверхностью: погода возможна только под открытым небом.
+wolf-weather-command-hint-map = ID карты
+wolf-weather-command-hint-weather = погода
+wolf-weather-command-hint-seconds = секунды (необязательно)
+cmd-wolfweather_schedule-desc = Управляет автоматическим расписанием погоды на карте. Укажите расписание, "off", "next" (запустить сейчас) или "status".
+cmd-wolfweather_schedule-help = Использование: wolfweather_schedule <mapId> <schedule|off|next|status>
+wolf-weather-schedule-command-bad-schedule = Неизвестное расписание погоды. Нажмите Tab для списка.
+wolf-weather-schedule-command-planet = Эта карта не является поверхностью и не может использовать расписание погоды.
+wolf-weather-schedule-command-set = Расписание погоды установлено: {$schedule}.
+wolf-weather-schedule-command-off = Расписание погоды отключено. Запущенная им погода очищена.
+wolf-weather-schedule-command-rolled = Запущена новая случайная погода.
+wolf-weather-schedule-command-not-rolled = Не удалось выбрать погоду, начат период ясной погоды.
+wolf-weather-schedule-command-none = нет
+wolf-weather-schedule-command-clear = ясно
+wolf-weather-schedule-command-hint = расписание, off, next или status
+wolf-weather-schedule-command-status = Расписание: {$schedule}, погода: {$weather}. До следующей смены: {$seconds} с, далее: {$next}. Ожидание окончания админ-погоды: {$waiting}.
+wolf-weather-schedule-command-random = случайная погода
+wolf-weather-schedule-command-yes = да
+wolf-weather-schedule-command-no = нет
+
+wh40k-options-weather-quality = Детализация погоды
+wh40k-options-weather-quality-off = Выкл.
+wh40k-options-weather-quality-reduced = Сниженная
+wh40k-options-weather-quality-full = Полная
+
+ent-Wh40kThunderbolt = молния
+ent-Wh40kThunderboltFar = далёкая молния

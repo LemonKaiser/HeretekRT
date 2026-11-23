@@ -1,0 +1,41 @@
+// Explosion shockwave. Each wave drags screen pixels towards a thin band around its front and shoves
+// that band outwards, so the front reads as a pressure wave running out from the epicentre.
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform lowp int count;
+
+// The `4`s cap how many waves can distort the screen at once. Changing it means changing every array
+// length here, the loop bound, and MaxCount in the overlay that fills these.
+uniform highp vec2[4] position;   // Epicentre, in fragment space.
+uniform highp float[4] radius;    // Front radius, in fragment pixels.
+uniform highp float[4] width;     // Half thickness of the band, in fragment pixels.
+uniform highp float[4] strength;  // Peak displacement, in fragment pixels.
+
+// How hard the band shoves the world outwards, relative to how hard it compresses towards the front.
+const highp float push = 0.4;
+
+void fragment() {
+    highp vec2 finalCoords = FRAGCOORD.xy;
+
+    for (int i = 0; i < 4 && i < count; i++) {
+
+        highp vec2 delta = FRAGCOORD.xy - position[i];
+        highp float dist = max(length(delta), 0.001);
+
+        // -1 at the inner edge of the band, 0 on the front, +1 at the outer edge.
+        highp float offset = (dist - radius[i]) / width[i];
+
+        // Zero outside the band, so waves that don't reach this pixel cost nothing but the arithmetic.
+        highp float band = step(abs(offset), 1.0);
+
+        // Antisymmetric, peaking either side of the front; 2.598 normalises that peak to 1.
+        highp float compression = offset * (1.0 - offset * offset) * 2.598;
+
+        // Sampling inwards moves the world outwards, hence the subtraction.
+        highp float bulge = 1.0 - offset * offset;
+
+        finalCoords += (delta / dist) * band * strength[i] * (compression - push * bulge);
+    }
+
+    COLOR = zTextureSpec(SCREEN_TEXTURE, finalCoords * SCREEN_PIXEL_SIZE);
+}

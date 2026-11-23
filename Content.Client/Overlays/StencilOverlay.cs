@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Client.Graphics;
 using Content.Client.Parallax;
 using Content.Client.Weather;
+using Content.Shared._WH40K.Weather;
 using Content.Shared.Salvage;
 using Content.Shared.Weather;
 using Robust.Client.GameObjects;
@@ -63,7 +64,8 @@ public sealed partial class StencilOverlay : Overlay
             res.Blep = _clyde.CreateRenderTarget(args.Viewport.Size, new RenderTargetFormatParameters(RenderTargetColorFormat.Rgba8Srgb), name: "weather-stencil");
         }
 
-        if (_entManager.TryGetComponent<WeatherComponent>(mapUid, out var comp))
+        if (_entManager.TryGetComponent<WeatherComponent>(mapUid, out var comp) &&
+            (!_entManager.TryGetComponent<WolfWeatherMapComponent>(mapUid, out var wolfWeather) || wolfWeather.Weathers.Count == 0))
         {
             foreach (var (proto, weather) in comp.Weather)
             {

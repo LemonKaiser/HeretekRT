@@ -1,8 +1,10 @@
+using Content.Shared.CCVar;
 using Content.Shared.Flash;
 using Content.Shared.Flash.Components;
 using Content.Shared.StatusEffect;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -15,12 +17,16 @@ namespace Content.Client.Flash
         [Dependency] private IEntityManager _entityManager = default!;
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private IGameTiming _timing = default!;
+        [Dependency] private IConfigurationManager _cfg = default!;
 
         private readonly SharedFlashSystem _flash;
         private readonly StatusEffectsSystem _statusSys;
 
+        private static readonly ProtoId<ShaderPrototype> StillFlashShaderId = "WH40KFlashedEffectStill";
+
         public override OverlaySpace Space => OverlaySpace.WorldSpace;
         private readonly ShaderInstance _shader;
+        private ShaderInstance? _stillShader;
         public float PercentComplete = 0.0f;
         public Texture? ScreenshotTexture;
 
@@ -50,7 +56,7 @@ namespace Content.Client.Flash
             var lastsFor = (float) (time.Value.Item2 - time.Value.Item1).TotalSeconds;
             var timeDone = (float) (curTime - time.Value.Item1).TotalSeconds;
 
-            PercentComplete = timeDone / lastsFor;
+            PercentComplete = lastsFor > 0f ? Math.Clamp(timeDone / lastsFor, 0f, 1f) : 1f;
         }
 
         protected override bool BeforeDraw(in OverlayDrawArgs args)
@@ -74,8 +80,11 @@ namespace Content.Client.Flash
                 return;
 
             var worldHandle = args.WorldHandle;
-            _shader.SetParameter("percentComplete", PercentComplete);
-            worldHandle.UseShader(_shader);
+            var shader = _cfg.GetCVar(CCVars.AccessibilityDarkFlash)
+                ? (_stillShader ??= _prototypeManager.Index(StillFlashShaderId).InstanceUnique())
+                : _shader;
+            shader.SetParameter("percentComplete", PercentComplete);
+            worldHandle.UseShader(shader);
             worldHandle.DrawTextureRectRegion(ScreenshotTexture, args.WorldBounds);
             worldHandle.UseShader(null);
         }
@@ -83,6 +92,8 @@ namespace Content.Client.Flash
         protected override void DisposeBehavior()
         {
             base.DisposeBehavior();
+            _shader.Dispose();
+            _stillShader?.Dispose();
             ScreenshotTexture = null;
         }
     }

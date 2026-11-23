@@ -1,4 +1,3 @@
-using Content.Shared._White;
 using Content.Shared._White.Standing;
 using Content.Shared.CCVar;
 using Robust.Shared.Configuration;
@@ -17,12 +16,17 @@ public sealed partial class LayingDownSystem : SharedLayingDownSystem
 
     private void OnCheckAutoGetUp(CheckAutoGetUpEvent ev, EntitySessionEventArgs args)
     {
-        var uid = GetEntity(ev.User);
+        if (args.SenderSession.AttachedEntity is not { } uid || GetNetEntity(uid) != ev.User)
+            return;
 
         if (!TryComp(uid, out LayingDownComponent? layingDown))
             return;
 
-        layingDown.AutoGetUp = _cfg.GetClientCVar(args.SenderSession.Channel, CCVars.AutoGetUp);
+        var autoGetUp = _cfg.GetClientCVar(args.SenderSession.Channel, CCVars.AutoGetUp);
+        if (layingDown.AutoGetUp == autoGetUp)
+            return;
+
+        layingDown.AutoGetUp = autoGetUp;
         Dirty(uid, layingDown);
     }
 }

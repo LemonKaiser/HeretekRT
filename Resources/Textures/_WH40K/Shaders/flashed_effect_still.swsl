@@ -1,0 +1,10 @@
+uniform highp float percentComplete;
+const highp float fadeFalloffExp = 8.0;
+
+// The flashed effect without the spinning after-images: a plain fade from black back to the view.
+void fragment() {
+    highp float remaining = -pow(percentComplete, fadeFalloffExp) + 1.0;
+    highp vec4 view = zTexture(UV);
+    highp vec4 mixed = mix(vec4(0.0, 0.0, 0.0, 1.0), view, percentComplete);
+    COLOR = vec4(mixed.rgb, remaining);
+}

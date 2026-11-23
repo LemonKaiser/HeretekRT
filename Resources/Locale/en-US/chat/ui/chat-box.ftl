@@ -60,3 +60,26 @@ hud-chatbox-emoji-category-Travel = Travel
 hud-chatbox-emoji-category-Objects = Objects
 hud-chatbox-emoji-category-Symbols = Symbols
 hud-chatbox-emoji-category-Flags = Flags
+
+hud-chatbox-tab-all = All
+hud-chatbox-tab-local = Local
+hud-chatbox-tab-radio = Radio
+hud-chatbox-tab-ooc = OOC
+hud-chatbox-tab-add-tooltip = Add chat tab ({$count}/{$max})
+    LMB: switch tab • RMB: edit or delete
+    Mouse wheel over tabs: scroll horizontally
+hud-chatbox-tab-add-limit = Maximum of {$max} tabs reached
+    LMB: switch tab • RMB: edit or delete
+    Mouse wheel over tabs: scroll horizontally
+hud-chatbox-tab-create-title = New Chat Tab
+hud-chatbox-tab-edit-title = Edit Chat Tab
+hud-chatbox-tab-name-label = Name
+hud-chatbox-tab-name-placeholder = Tab name...
+hud-chatbox-tab-channels-label = Channels
+hud-chatbox-tab-channels-all = All
+hud-chatbox-tab-channels-none = None
+hud-chatbox-tab-create-button = Create
+hud-chatbox-tab-save-button = Save
+hud-chatbox-tab-delete-button = Delete
+hud-chatbox-tab-cancel-button = Cancel
+hud-chatbox-tab-delete-disabled-tooltip = Cannot delete the last remaining tab

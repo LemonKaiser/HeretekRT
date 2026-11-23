@@ -23,6 +23,8 @@ using Robust.Shared.Containers;
 using Content.Shared._White.Standing;
 using Content.Shared.Jittering;
 using Content.Shared.Speech.EntitySystems;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
 
 namespace Content.Shared.Stunnable;
 
@@ -40,6 +42,7 @@ public abstract partial class SharedStunSystem : EntitySystem
     [Dependency] private SharedContainerSystem _container = default!; // WD EDIT
     [Dependency] private SharedStutteringSystem _stutter = default!; // goob edit
     [Dependency] private SharedJitteringSystem _jitter = default!; // goob edit
+    [Dependency] private INetManager _net = default!;
 
     /// <summary>
     /// Friction modifier for knocked down players.
@@ -144,7 +147,8 @@ public abstract partial class SharedStunSystem : EntitySystem
 
     private void OnKnockInit(EntityUid uid, KnockedDownComponent component, ComponentInit args)
     {
-        RaiseNetworkEvent(new CheckAutoGetUpEvent(GetNetEntity(uid))); // WD EDIT
+        if (_net.IsServer)
+            RaiseNetworkEvent(new CheckAutoGetUpEvent(GetNetEntity(uid)), Filter.Pvs(uid, entityManager: EntityManager));
         _layingDown.TryLieDown(uid, null, null, DropHeldItemsBehavior.DropIfStanding); // WD EDIT
     }
 

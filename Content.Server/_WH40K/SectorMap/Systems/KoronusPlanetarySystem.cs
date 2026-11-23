@@ -8,6 +8,7 @@ using Content.Server.Parallax;
 using Content.Server._NF.Shuttles.Components;
 using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.SectorMap.Components;
+using Content.Server._WH40K.Weather;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._WH40K.SectorMap.Components;
@@ -96,6 +97,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private SharedKoronusPlanetSurfaceBoundarySystem _surfaceBoundary = default!;
+    [Dependency] private WeatherScheduleSystem _weatherSchedule = default!;
 
     private TimeSpan _nextBoundaryUpdate;
     private TimeSpan _nextBoundaryTrackingRefresh;
@@ -400,6 +402,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                 var generationBounds = EnsureComp<BiomeGenerationBoundsComponent>(terrainGrid);
                 generationBounds.Bounds = runtime.GenerationBounds;
             }
+
+            if (surface.WeatherSchedule is { } weatherSchedule)
+                _weatherSchedule.SetSchedule(mapUid.Value, weatherSchedule);
         }
 
         if (persistent)

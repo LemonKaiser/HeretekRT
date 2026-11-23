@@ -12,10 +12,12 @@ internal sealed class Wh40kWindowStyleBox : StyleBox
 {
     private readonly IConfigurationManager _cfg = IoCManager.Resolve<IConfigurationManager>();
     private readonly LobbyRoundedStyleBox _base = MakeFrame("#17130F");
+    private readonly bool _glass;
     private static readonly Color BackdropShade = Color.FromHex("#554C40");
 
-    internal Wh40kWindowStyleBox(bool shadow = true)
+    internal Wh40kWindowStyleBox(bool shadow = true, bool glass = true)
     {
+        _glass = glass;
         if (!shadow) _base.ShadowColor = Color.Transparent;
     }
 
@@ -32,6 +34,8 @@ internal sealed class Wh40kWindowStyleBox : StyleBox
     protected override void DoDraw(DrawingHandleScreen handle, UIBox2 box, float uiScale)
     {
         _base.Draw(handle, box, uiScale);
+        if (!_glass)
+            return;
         var glass = IoCManager.Resolve<IUserInterfaceManager>().GetUIController<Wh40kInterfaceUIController>().Glass;
         if (glass.Texture is not { } texture || glass.ScreenSize.X <= 0 || glass.ScreenSize.Y <= 0)
             return;

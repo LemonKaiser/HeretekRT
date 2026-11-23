@@ -8,6 +8,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Controls.FancyTree;
 using Content.Client.Verbs.UI;
 using Content.Client._WH40K.CharacterCreation;
+using Content.Client._WH40K.UserInterface.WindowPopout;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -380,6 +381,15 @@ internal static class Wh40kInterfaceTheme
             yield return Element<TextureButton>().Class(name).Pseudo(ContainerButton.StylePseudoClassPressed)
                 .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#BE9E64"));
         }
+        yield return Element<TextureButton>().Class(Wh40kPopoutButton.StyleClassWindowPopoutButton)
+            .Prop(Control.StylePropertyModulateSelf, white);
+        yield return Element<TextureButton>().Class(Wh40kPopoutButton.StyleClassWindowPopoutButton).Pseudo(ContainerButton.StylePseudoClassHover)
+            .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#F0D49B"));
+        yield return Element<TextureButton>().Class(Wh40kPopoutButton.StyleClassWindowPopoutButton).Pseudo(ContainerButton.StylePseudoClassPressed)
+            .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#BE9E64"));
+        yield return Element<PanelContainer>().Class(Wh40kPopoutWindow.StyleClassPoppedOutPanel)
+            .Prop(PanelContainer.StylePropertyPanel, new Wh40kWindowStyleBox(shadow: false, glass: false))
+            .Prop(Control.StylePropertyModulateSelf, white);
     }
 
     private static IEnumerable<StyleRule> ButtonRules(Type type, string[] classes, bool danger, int padding, int minHeight = 36, int verticalPadding = 7)

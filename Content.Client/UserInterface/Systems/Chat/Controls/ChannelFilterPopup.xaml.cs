@@ -11,7 +11,7 @@ namespace Content.Client.UserInterface.Systems.Chat.Controls;
 public sealed partial class ChannelFilterPopup : Popup
 {
     // order in which the available channel filters show up when available
-    private static readonly ChatChannel[] ChannelFilterOrder =
+    public static readonly ChatChannel[] ChannelFilterOrder =
     {
         ChatChannel.Local,
         ChatChannel.Whisper,
@@ -29,6 +29,7 @@ public sealed partial class ChannelFilterPopup : Popup
     };
 
     private readonly Dictionary<ChatChannel, ChannelFilterCheckbox> _filterStates = new();
+    private ChatChannel _activeChannels = (ChatChannel) uint.MaxValue;
 
     public event Action<ChatChannel, bool>? OnChannelFilter;
     public event Action<string>? OnNewHighlights;
@@ -40,26 +41,13 @@ public sealed partial class ChannelFilterPopup : Popup
         HighlightEdit.Placeholder = new Rope.Leaf(Loc.GetString("hud-chatbox-highlights-placeholder"));
     }
 
-    public bool IsActive(ChatChannel channel)
+    public void SetActiveChannels(ChatChannel activeChannels)
     {
-        return _filterStates.TryGetValue(channel, out var checkbox) && checkbox.Pressed;
-    }
-
-    public ChatChannel GetActive()
-    {
-        ChatChannel active = 0;
-
-        foreach (var (key, value) in _filterStates)
+        _activeChannels = activeChannels;
+        foreach (var (channel, checkbox) in _filterStates)
         {
-            if (value.IsHidden || !value.Pressed)
-            {
-                continue;
-            }
-
-            active |= key;
+            checkbox.Pressed = (activeChannels & channel) != 0;
         }
-
-        return active;
     }
 
     public void SetChannels(ChatChannel channels)
@@ -71,7 +59,7 @@ public sealed partial class ChannelFilterPopup : Popup
                 checkbox = new ChannelFilterCheckbox(channel);
                 _filterStates.Add(channel, checkbox);
                 checkbox.OnPressed += CheckboxPressed;
-                checkbox.Pressed = true;
+                checkbox.Pressed = (_activeChannels & channel) != 0;
             }
 
             if ((channels & channel) == 0)

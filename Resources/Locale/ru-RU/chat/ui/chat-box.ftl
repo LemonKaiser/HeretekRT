@@ -57,3 +57,26 @@ hud-chatbox-emoji-category-Travel = Транспорт
 hud-chatbox-emoji-category-Objects = Предметы
 hud-chatbox-emoji-category-Symbols = Символы
 hud-chatbox-emoji-category-Flags = Флаги
+
+hud-chatbox-tab-all = Все
+hud-chatbox-tab-local = Рядом
+hud-chatbox-tab-radio = Рация
+hud-chatbox-tab-ooc = OOC
+hud-chatbox-tab-add-tooltip = Добавить вкладку чата ({$count}/{$max})
+    ЛКМ по вкладке — открыть • ПКМ — настроить
+    Колесо мыши по вкладкам — прокрутка влево/вправо
+hud-chatbox-tab-add-limit = Достигнут лимит в {$max} вкладок
+    ЛКМ по вкладке — открыть • ПКМ — настроить
+    Колесо мыши по вкладкам — прокрутка влево/вправо
+hud-chatbox-tab-create-title = Новая вкладка
+hud-chatbox-tab-edit-title = Настройка вкладки
+hud-chatbox-tab-name-label = Название
+hud-chatbox-tab-name-placeholder = Название вкладки...
+hud-chatbox-tab-channels-label = Каналы
+hud-chatbox-tab-channels-all = Все
+hud-chatbox-tab-channels-none = Сброс
+hud-chatbox-tab-create-button = Создать
+hud-chatbox-tab-save-button = Сохранить
+hud-chatbox-tab-delete-button = Удалить
+hud-chatbox-tab-cancel-button = Отмена
+hud-chatbox-tab-delete-disabled-tooltip = Нельзя удалить последнюю вкладку

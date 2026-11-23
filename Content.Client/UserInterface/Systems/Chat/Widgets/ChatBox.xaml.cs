@@ -56,7 +56,10 @@ public partial class ChatBox : UIWidget
         _controller.MessageAdded += OnMessageAdded;
         _controller.HighlightsUpdated += OnHighlightsUpdated;
         _controller.AutoFillUpdated += OnAutoFillUpdated;
+        _controller.TabsChanged += OnTabsChanged;
         _controller.RegisterChat(this);
+
+        ChatInput.FilterButton.Popup.SetActiveChannels(_controller.ActiveTab.Channels);
 
         // WD EDIT START
         _cfg = IoCManager.Resolve<IConfigurationManager>();
@@ -75,12 +78,17 @@ public partial class ChatBox : UIWidget
     private void OnMessageAdded(ChatMessage msg)
     {
         Logger.DebugS("chat", $"{msg.Channel}: {msg.Message}");
-        if (!ChatInput.FilterButton.Popup.IsActive(msg.Channel))
+        AppendMessage(msg, playAudio: true);
+    }
+
+    private void AppendMessage(ChatMessage msg, bool playAudio)
+    {
+        if (!_controller.IsChannelVisibleInActiveTab(msg.Channel))
         {
             return;
         }
 
-        if (msg is { Read: false, AudioPath: { } })
+        if (playAudio && msg is { Read: false, AudioPath: { } })
             _entManager.System<AudioSystem>().PlayGlobal(msg.AudioPath, Filter.Local(), false, AudioParams.Default.WithVolume(msg.AudioVolume));
 
         msg.Read = true;
@@ -122,25 +130,19 @@ public partial class ChatBox : UIWidget
 
         foreach (var message in _controller.History)
         {
-            OnMessageAdded(message.Item2);
+            AppendMessage(message.Item2, playAudio: false);
         }
     }
 
     private void OnChannelFilter(ChatChannel channel, bool active)
     {
-        Contents.Clear();
-        _lastLine = null;
-        _lastLineRepeatCount = 0;
+        _controller.SetActiveTabChannel(channel, active);
+    }
 
-        foreach (var message in _controller.History)
-        {
-            OnMessageAdded(message.Item2);
-        }
-
-        if (active)
-        {
-            _controller.ClearUnfilteredUnreads(channel);
-        }
+    private void OnTabsChanged()
+    {
+        ChatInput.FilterButton.Popup.SetActiveChannels(_controller.ActiveTab.Channels);
+        Repopulate();
     }
 
     private void OnNewHighlights(string highlighs)
@@ -266,11 +268,19 @@ public partial class ChatBox : UIWidget
         base.Dispose(disposing);
 
         if (!disposing) return;
+        _controller.MessageAdded -= OnMessageAdded;
+        _controller.HighlightsUpdated -= OnHighlightsUpdated;
+        _controller.AutoFillUpdated -= OnAutoFillUpdated;
+        _controller.TabsChanged -= OnTabsChanged;
         _controller.UnregisterChat(this);
         ChatInput.Input.OnTextEntered -= OnTextEntered;
         ChatInput.Input.OnKeyBindDown -= OnInputKeyBindDown;
         ChatInput.Input.OnTextChanged -= OnTextChanged;
+        ChatInput.Input.OnFocusEnter -= OnFocusEnter;
+        ChatInput.Input.OnFocusExit -= OnFocusExit;
         ChatInput.ChannelSelector.OnChannelSelect -= OnChannelSelect;
+        ChatInput.FilterButton.Popup.OnChannelFilter -= OnChannelFilter;
+        ChatInput.FilterButton.Popup.OnNewHighlights -= OnNewHighlights;
         _cfg.UnsubValueChanged(CCVars.CoalesceIdenticalMessages, UpdateCoalescence); // WD EDIT
     }
 }

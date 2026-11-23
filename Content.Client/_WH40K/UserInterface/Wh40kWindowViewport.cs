@@ -45,6 +45,11 @@ internal sealed class Wh40kWindowViewport : ScrollContainer
 
     private void UpdateBounds()
     {
+        if (_window.Parent is OSWindow)
+        {
+            _window.MaxSize = new Vector2(float.PositiveInfinity);
+            return;
+        }
         var available = Vector2.Max(new Vector2(120), UserInterfaceManager.RootControl.Size - new Vector2(40));
         _window.MinSize = Vector2.Min(_minimum, available);
         _window.MaxSize = available;

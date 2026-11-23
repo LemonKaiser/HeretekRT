@@ -1,0 +1,82 @@
+- type: wolfWeather
+  parent: RainLight
+  id: BloodRainLight
+  ambientTint: "#f0c8c8"
+  layerOverrides:
+  - index: 0
+    color: "#d0141cb3"
+  - index: 1
+    color: "#e0202ab3"
+
+- type: wolfWeather
+  parent: RainModerate
+  id: BloodRainModerate
+  ambientTint: "#e0b0b0"
+  layerOverrides:
+  - index: 0
+    color: "#a80c14b3"
+  - index: 1
+    color: "#e01a22cc"
+  - index: 2
+    color: "#e0202acc"
+
+- type: wolfWeather
+  parent: RainHeavy
+  id: BloodRainHeavy
+  ambientTint: "#c89090"
+  lightning:
+    interval: 30, 90
+    flashColor: "#ffd0c8"
+    farSound:
+      collection: Wh40kWeatherThunderFar
+      params:
+        volume: 0
+        variation: 0.05
+  layerOverrides:
+  - index: 0
+    color: "#a80c14bf"
+  - index: 1
+    color: "#d0141cd9"
+  - index: 2
+    color: "#f02830e6"
+  - index: 3
+    color: "#e0202ad9"
+
+- type: wolfWeather
+  parent: FogBank
+  id: BloodFog
+  ambientTint: "#d8a8a8ff"
+  layerOverrides:
+  - index: 0
+    color: "#9a0f14b3"
+  - index: 1
+    color: "#c4141e80"
+
+- type: wolfWeather
+  parent: FogHaze
+  id: BloodHaze
+  ambientTint: "#e8c4c4ff"
+  layerOverrides:
+  - index: 0
+    color: "#a3141a8c"
+
+- type: wolfWeather
+  parent: BloodRainHeavy
+  id: BloodStorm
+  wind: 2, 0
+  lightning:
+    interval: 6, 22
+    strikeChance: 1
+    flashColor: "#ffd0c8"
+    nearSound:
+      collection: Wh40kWeatherThunderNear
+      params:
+        maxDistance: 120
+        referenceDistance: 10
+        rolloffFactor: 0.3
+        variation: 0.05
+    farSound:
+      collection: Wh40kWeatherThunderFar
+      params:
+        volume: 0
+        variation: 0.05

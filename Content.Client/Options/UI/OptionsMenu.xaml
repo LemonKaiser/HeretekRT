@@ -1,7 +1,6 @@
 <heritage:Wh40kDefaultWindow xmlns="https://spacestation14.io"
             xmlns:heritage="clr-namespace:Content.Client._WH40K.UserInterface"
             xmlns:tabs="clr-namespace:Content.Client.Options.UI.Tabs"
-            xmlns:dtabs="clr-namespace:Content.Client._DV.Options.UI.Tabs"
             Title="{Loc 'ui-options-title'}"
             MinSize="800 450">
     <TabContainer Name="Tabs" Access="Public">
@@ -11,6 +10,5 @@
         <tabs:AudioTab Name="AudioTab" />
         <tabs:AccessibilityTab Name="AccessibilityTab" />
         <tabs:AdminOptionsTab Name="AdminOptionsTab" />
-        <dtabs:DeltaTab Name="ExtraTab" /> <!-- Delta-V -->
     </TabContainer>
 </heritage:Wh40kDefaultWindow>

@@ -11,6 +11,9 @@
                 <ui:OptionDropDown Name="DropDownItemRarityWorldEffects" Title="{Loc 'ui-options-item-rarity-world-effects'}" />
                 <heritage:Wh40kToggleSwitch Name="EnableColorNameCheckBox" Text="{Loc 'ui-options-enable-color-name'}" />
                 <heritage:Wh40kToggleSwitch Name="ColorblindFriendlyCheckBox" Text="{Loc 'ui-options-colorblind-friendly'}" />
+                <heritage:Wh40kToggleSwitch Name="DarkFlashCheckBox" Text="{Loc 'wh40k-options-dark-flash'}" ToolTip="{Loc 'wh40k-options-dark-flash-tooltip'}" />
+                <heritage:Wh40kToggleSwitch Name="NoVisionFiltersCheckBox" Text="{Loc 'ui-options-no-filters'}" />
+                <heritage:Wh40kToggleSwitch Name="DyingEffectsCheckBox" Text="{Loc 'wh40k-options-dying-effects'}" ToolTip="{Loc 'wh40k-options-dying-effects-tooltip'}" />
                 <ui:OptionSlider Name="ScreenShakeIntensitySlider" Title="{Loc 'ui-options-screen-shake-intensity'}" />
                 <ui:OptionSlider Name="ChatWindowOpacitySlider" Title="{Loc 'ui-options-chat-window-opacity'}" />
                 <ui:OptionSlider Name="SpeechBubbleTextOpacitySlider" Title="{Loc 'ui-options-speech-bubble-text-opacity'}" />

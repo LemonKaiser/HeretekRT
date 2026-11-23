@@ -99,6 +99,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherTemperate
 
 - type: planet
   id: JanusAgriWorld
@@ -360,6 +361,7 @@
   landingTransitTime: 10
   launchTransitTime: 10
   transitArrivalTime: 5
+  weatherSchedule: Wh40kWeatherRockyDesert
 
 - type: planet
   id: OmicronMinorisWorld

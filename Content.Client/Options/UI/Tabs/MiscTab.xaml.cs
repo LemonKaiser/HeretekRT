@@ -61,6 +61,7 @@ public sealed partial class MiscTab : Control
         Control.AddOptionDropDown(CVars.InterfaceTheme, DropDownHudTheme, themeEntries);
         Control.AddOptionDropDown(CCVars.UILayout, DropDownHudLayout, layoutEntries);
         Control.AddOptionCheckBox(CCVars.WH40KUiFrostedGlass, FrostedGlass);
+        Control.AddOptionCheckBox(CCVars.UIWindowPopout, WindowPopoutCheckBox);
         var languageOption = Control.AddOptionDropDown(
             CVars.LocCultureName,
             DropDownLanguage,
@@ -82,11 +83,15 @@ public sealed partial class MiscTab : Control
         Control.AddOptionCheckBox(CCVars.ChatFancyNameBackground, FancyNameBackgroundsCheckBox);
         Control.AddOptionCheckBox(CCVars.LogInChat, LogInChatCheckBox);
         Control.AddOptionCheckBox(CCVars.CoalesceIdenticalMessages, CoalesceIdenticalMessagesCheckBox);
+        Control.AddOptionCheckBox(CCVars.ChatShowMyTyping, ShowMyTypingCheckBox);
+        Control.AddOptionCheckBox(CCVars.ChatSpeechBubbles, SpeechBubblesCheckBox);
+        Control.AddOptionCheckBox(CCVars.ChatSpeechBubblesNonMobs, SpeechBubblesNonMobsCheckBox);
+        Control.AddOptionCheckBox(CCVars.ChatSpeechBubblesGhosts, SpeechBubblesGhostsCheckBox);
+        Control.AddOptionCheckBox(CCVars.ChatSpeechBubblesEmotes, SpeechBubblesEmotesCheckBox);
         Control.AddOptionCheckBox(CCVars.StaticStorageUI, StaticStorageUI);
         Control.AddOptionCheckBox(CCVars.DetailedExamine, DetailedExamineCheckBox); // Goobstation Change
         Control.AddOptionDropDown(DurabilityCVars.BarVisibility, DropDownDurabilityBarVisibility, BuildDurabilityVisibilityOptions());
         Control.AddOptionDropDown(DurabilityCVars.BarColor, DropDownDurabilityBarColor, BuildDurabilityColorOptions());
-        Control.AddOptionCheckBox(MonoCVars.RadioNoiseEnabled, RadioNoiseCheckBox); // Mono
         Control.AddOptionCheckBox(MonoCVars.AreaEchoEnabled, AreaEchoCheckBox); // Mono
         Control.AddOptionCheckBox(MonoCVars.AreaEchoHighResolution, AreaEchoHighResolutionCheckBox); // Mono
 

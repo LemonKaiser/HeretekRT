@@ -4,6 +4,7 @@
  */
 
 using Content.Shared._CE.ZLevels.Core.Components;
+using Content.Shared._WH40K.Weather;
 using Content.Shared.Weather;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
@@ -16,6 +17,7 @@ namespace Content.Shared._CE.ZLevels.Weather;
 public sealed partial class CEWeatherSystem : EntitySystem
 {
     [Dependency] private SharedWeatherSystem _weather = default!;
+    [Dependency] private SharedWolfWeatherSystem _wolfWeather = default!;
 
     public void SetWeather(Entity<CEZMapNetworkComponent?> network, WeatherPrototype? proto, TimeSpan? duration)
     {
@@ -24,7 +26,10 @@ public sealed partial class CEWeatherSystem : EntitySystem
 
         foreach (var (_, map) in network.Comp.ZLevels)
         {
-            if (!TryComp<MapComponent>(map, out var mapComp))
+            if (map is not { } mapUid || !TryComp<MapComponent>(mapUid, out var mapComp))
+                continue;
+
+            if (!_wolfWeather.IsSurface(mapUid))
                 continue;
 
             _weather.SetWeather(mapComp.MapId, proto, duration);
