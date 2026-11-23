@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Client.Hands.Systems;
+using Content.Client.Light.Components;
 using Content.Client.Particles;
 using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.Visuals;
@@ -8,6 +9,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Spawners;
 using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.Visuals.WorldEffects;
@@ -18,8 +20,11 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
     private static readonly ShotEffects Automatic = new("HrtMuzzleFlashBallistic", "HrtMuzzleSmoke");
     private static readonly ShotEffects MachineGun = new("HrtMuzzleFlashMachineGun", "HrtMuzzleGasMachineGun");
     private static readonly TimeSpan GasInterval = TimeSpan.FromMilliseconds(125);
+    private static readonly Color MuzzleLightColor = Color.FromHex("#ffa223");
+    private const float MuzzleLightDuration = 0.12f;
 
     [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private PointLightSystem _lights = default!;
     [Dependency] private HandsSystem _hands = default!;
     [Dependency] private RsiVisualGeometryCache _geometry = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -35,8 +40,7 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
 
     public void ShowShot(EntityUid gun, EntityUid? holder, Angle angle, bool compact)
     {
-        if (_particles.Quality == 0 || !TryComp<TransformComponent>(gun, out var gunTransform) ||
-            gunTransform.MapID == MapId.Nullspace)
+        if (!TryComp<TransformComponent>(gun, out var gunTransform) || gunTransform.MapID == MapId.Nullspace)
             return;
 
         var now = _timing.CurTime;
@@ -46,6 +50,8 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
 
         var direction = angle.ToVec();
         var muzzle = GetMuzzlePosition(gun, gunTransform, holder, direction);
+        SpawnMuzzleLight(muzzle);
+
         var profile = GetProfile(gun, compact);
         var effects = profile switch
         {
@@ -67,6 +73,17 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
             gasAt = now + GasInterval;
         }
         _recentShots[gun] = new ShotTiming(now, gasAt);
+    }
+
+    private void SpawnMuzzleLight(MapCoordinates muzzle)
+    {
+        var uid = Spawn(null, muzzle);
+        var light = _lights.EnsureLight(uid);
+        _lights.SetColor(uid, MuzzleLightColor, light);
+        _lights.SetRadius(uid, 1.4f, light);
+        _lights.SetEnergy(uid, 5f, light);
+        AddComp(uid, new LightFadeComponent { Duration = MuzzleLightDuration });
+        AddComp(uid, new TimedDespawnComponent { Lifetime = MuzzleLightDuration });
     }
 
     private WH40KMuzzleProfile GetProfile(EntityUid gun, bool compact)

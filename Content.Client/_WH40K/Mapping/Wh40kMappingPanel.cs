@@ -7,6 +7,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Input;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -45,7 +46,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private readonly Wh40kMappingGrid _grid = new();
     private readonly BoxContainer _body = new() { VerticalExpand = true, SeparationOverride = 8, RectClipContent = true };
     private readonly PanelContainer _inspector = new() { PanelOverride = Wh40kInterfaceTheme.Card(7) };
-    private readonly TextureRect _preview = Preview(43);
+    private readonly Control _preview = new() { MouseFilter = MouseFilterMode.Ignore, VerticalAlignment = VAlignment.Center };
     private readonly Wh40kMappingLabel _previewName = new(2) { MouseFilter = MouseFilterMode.Pass, FontColorOverride = Wh40kInterfaceTheme.Gold };
     private readonly Wh40kMappingLabel _previewId = new(1) { MouseFilter = MouseFilterMode.Pass, FontColorOverride = Wh40kInterfaceTheme.MutedText };
     private readonly Button _pin = new() { Text = Loc.GetString("wh40k-mapping-pin"), VerticalAlignment = VAlignment.Center };
@@ -68,7 +69,13 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private (int First, int End, int Columns) _visible = (-1, -1, -1);
     private Color _tint = Color.White;
 
-    internal readonly record struct Entry(string Id, string Name, string Category, Func<Texture?> Icon, string? EditorSuffix = null);
+    internal readonly record struct Entry(
+        string Id,
+        string Name,
+        string Category,
+        Func<Texture?>? Icon,
+        string? EditorSuffix = null,
+        EntProtoId? Prototype = null);
 
     public BoxContainer Options { get; } = new() { Orientation = LayoutOrientation.Vertical, SeparationOverride = 5 };
     internal event Action<string>? EntrySelected;
@@ -253,7 +260,8 @@ public sealed class Wh40kMappingPanel : BoxContainer
         if (_tint == tint)
             return;
         _tint = tint;
-        _preview.Modulate = tint;
+        if (_preview.ChildCount > 0)
+            _preview.GetChild(0).Modulate = tint;
         _visible = (-1, -1, -1);
         RenderSlots();
     }
@@ -393,9 +401,6 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private Control MakeCard(Entry entry)
     {
         var text = new Wh40kMappingLabel(2) { FullText = entry.Name };
-        var texture = Preview(54);
-        texture.Texture = entry.Icon();
-        texture.Modulate = _tint;
         var body = new ContainerButton
         {
             MouseFilter = MouseFilterMode.Stop, HorizontalExpand = true, VerticalExpand = true,
@@ -412,7 +417,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
                         new PanelContainer
                         {
                             MouseFilter = MouseFilterMode.Ignore, PanelOverride = new StyleBoxFlat(Wh40kInterfaceTheme.TableAlternateRow),
-                            Children = { texture },
+                            Children = { MakePreview(entry, 54) },
                         },
                         text,
                     },
@@ -460,8 +465,11 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private void UpdateSelection()
     {
         var entry = _selected != null && _entries.TryGetValue(_selected, out var selected) ? selected : (Entry?) null;
-        _preview.Texture = entry?.Icon();
-        _preview.Visible = _preview.Texture != null;
+        _preview.RemoveAllChildren();
+        var preview = entry is { } previewEntry ? MakePreview(previewEntry, 43, showEmpty: false) : null;
+        _preview.Visible = preview?.Visible == true;
+        if (preview != null)
+            _preview.AddChild(preview);
         _previewName.FullText = entry?.Name ?? Loc.GetString("wh40k-mapping-none");
         _previewName.ToolTip = entry?.Name;
         _previewId.Visible = entry != null && entry.Value.Name != entry.Value.Id;
@@ -479,11 +487,9 @@ public sealed class Wh40kMappingPanel : BoxContainer
         {
             var index = i;
             var id = _slotIds[index];
-            var icon = Preview(17);
-            var entry = id != null && _entries.TryGetValue(id, out var found) ? found : (Entry?) null;
-            icon.Texture = entry?.Icon();
-            icon.Modulate = _tint;
-            Control visual = entry != null ? icon : new Label { Text = "+", SetWidth = 17, Align = Label.AlignMode.Center };
+            var visual = id != null && _entries.TryGetValue(id, out var entry)
+                ? MakePreview(entry, 17)
+                : new Label { Text = "+", SetWidth = 17, Align = Label.AlignMode.Center };
             var slot = new ContainerButton
             {
                 SetWidth = 43, SetHeight = 30, EnableAllKeybinds = true, ToggleMode = true,
@@ -566,10 +572,31 @@ public sealed class Wh40kMappingPanel : BoxContainer
             HScrollEnabled = true, VScrollEnabled = false, HScrollBarHidden = false,
             FallbackDeltaScroll = true, ReserveScrollbarSpace = true, SetHeight = 38, HorizontalExpand = true,
         };
-    private static TextureRect Preview(float size) =>
-        new()
+    private Control MakePreview(Entry entry, float size, bool showEmpty = true)
+    {
+        Control preview;
+        if (entry.Prototype is { } prototype)
         {
-            SetSize = new Vector2(size), Stretch = TextureRect.StretchMode.KeepAspectCentered,
-            MouseFilter = MouseFilterMode.Ignore, HorizontalAlignment = HAlignment.Center, VerticalAlignment = VAlignment.Center,
-        };
+            var view = new EntityPrototypeView { Stretch = SpriteView.StretchMode.Fill };
+            view.SetPrototype(prototype);
+            preview = view;
+        }
+        else
+        {
+            var texture = entry.Icon?.Invoke();
+            preview = new TextureRect
+            {
+                Texture = texture,
+                Stretch = TextureRect.StretchMode.KeepAspectCentered,
+                Visible = showEmpty || texture != null,
+            };
+        }
+
+        preview.SetSize = new Vector2(size);
+        preview.MouseFilter = MouseFilterMode.Ignore;
+        preview.HorizontalAlignment = HAlignment.Center;
+        preview.VerticalAlignment = VAlignment.Center;
+        preview.Modulate = _tint;
+        return preview;
+    }
 }

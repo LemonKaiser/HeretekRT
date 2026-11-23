@@ -38,6 +38,7 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
     [Dependency] private readonly IClientAdminManager _admin = default!;
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly IMapManager _maps = default!;
+    [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
     [UISystemDependency] private readonly SpriteSystem _sprites = default!;
 
@@ -211,9 +212,11 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
             .Select(entity =>
             {
                 var locale = _localization.GetEntityData(entity.ID);
+                var hasSprite = entity.HasComp<SpriteComponent>(_componentFactory);
                 return new Wh40kMappingPanel.Entry(entity.ID,
                     string.IsNullOrWhiteSpace(locale.Name) ? entity.ID : locale.Name, Wh40kMappingCategories.Entity(entity),
-                    () => _sprites.GetPrototypeIcon(entity).Default, locale.Suffix);
+                    hasSprite ? null : () => _sprites.GetPrototypeIcon(entity).Default, locale.Suffix,
+                    Prototype: hasSprite ? entity.ID : null);
             }));
     }
 
