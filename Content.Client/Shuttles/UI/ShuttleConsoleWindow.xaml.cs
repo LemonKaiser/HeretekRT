@@ -25,7 +25,7 @@ public sealed partial class ShuttleConsoleWindow : FancyWindow,
     public event Action<NetEntity>? RequestAutopilotGrid;
     public event Action? RequestAutoDock;
     public event Action<string>? RequestSectorJump;
-    public event Action<string, string>? RequestPlanetaryLanding;
+    public event Action<string, string?>? RequestPlanetaryLanding;
     public event Action? RequestPlanetaryLaunch;
 
     public event Action<NetEntity, NetEntity>? DockRequest;

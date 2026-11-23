@@ -41,6 +41,7 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
     [UISystemDependency] private readonly SpriteSystem _sprites = default!;
+    [UISystemDependency] private readonly AppearanceSystem _appearance = default!;
 
     private Window? _entities;
     private Window? _tileWindow;
@@ -167,7 +168,16 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
         window.Catalog.Options.AddChild(window.Pick);
         window.Catalog.Options.AddChild(window.Hint);
         window.Catalog.EntrySelected += id => Begin(window, id);
-        window.Pick.OnToggled += args => SetPick(args.Pressed ? window : null);
+        window.Catalog.EntryDeselected += () =>
+        {
+            if (_owner == window)
+                _placement.Clear();
+        };
+        window.Pick.OnToggled += args =>
+        {
+            SetPick(args.Pressed ? window : null);
+            window.Pick.Pressed = _picking == window;
+        };
         window.Erase.OnToggled += args => SetErase(window, args.Pressed);
         window.Rotate.OnPressed += _ => ((PlacementManager) _placement).Rotate();
         window.Mirror.OnToggled += args => _placement.Mirrored = args.Pressed;
@@ -207,6 +217,7 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
             return;
         }
         _prototypes.TryIndex<EntityCategoryPrototype>(_cfg.GetCVar(CVars.EntitiesCategoryFilter), out var filter);
+        var hadSelection = window.Catalog.Selected != null;
         window.Catalog.SetEntries(_prototypes.EnumeratePrototypes<EntityPrototype>()
             .Where(entity => !entity.Abstract && !entity.HideSpawnMenu && (filter == null || entity.Categories.Contains(filter)))
             .Select(entity =>
@@ -218,6 +229,8 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
                     hasSprite ? null : () => _sprites.GetPrototypeIcon(entity).Default, locale.Suffix,
                     Prototype: hasSprite ? entity.ID : null);
             }));
+        if (_owner == window && hadSelection && window.Catalog.Selected == null)
+            _placement.Clear();
     }
 
     private static string TileName(ITileDefinition tile)
@@ -239,7 +252,10 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
     private void Begin(Window window, string id)
     {
         if (!Allowed || !window.IsOpen)
+        {
+            window.Catalog.ClearSelection();
             return;
+        }
         SetPick(null);
         PlacementInformation info;
         if (window.IsTile)
@@ -259,7 +275,15 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
                 EntityType = entity.ID, Range = 2,
             };
         }
-        DrivePlacement(window, () => _placement.BeginPlacing(info));
+        DrivePlacement(window, () =>
+        {
+            _placement.BeginPlacing(info);
+            if (!window.IsTile && _placement is PlacementManager { CurrentPlacementOverlayEntity: { } uid } &&
+                EntityManager.TryGetComponent(uid, out SpriteComponent? sprite))
+            {
+                _appearance.OnChangeData(uid, sprite);
+            }
+        });
     }
 
     private void DrivePlacement(Window window, Action action)
@@ -270,18 +294,32 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
         _changing = true;
         try { action(); }
         finally { _changing = false; }
+        if (!_placement.IsActive)
+        {
+            _owner = null;
+            window.Catalog.ClearSelection();
+        }
         if (previous != window)
+        {
+            previous?.Catalog.ClearSelection();
             UpdateOptions(previous);
+        }
         UpdateOptions(window);
     }
 
     internal void PausePlacement()
     {
         SetPick(null);
+        StopPlacement();
+    }
+
+    private void StopPlacement()
+    {
         var previous = _owner;
         _owner = null;
         if (_placement.IsActive)
             _placement.Clear();
+        previous?.Catalog.ClearSelection();
         UpdateOptions(previous);
     }
 
@@ -349,6 +387,7 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
         if (next != null && Allowed)
         {
             UIManager.GetUIController<DecalPlacerUIController>().PausePlacement();
+            StopPlacement();
             _picking = next;
             next.Pick.Pressed = true;
             _input.Contexts.SetActiveContext("editor");

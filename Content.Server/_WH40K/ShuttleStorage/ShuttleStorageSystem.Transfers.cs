@@ -8,6 +8,7 @@ using Content.Shared._WH40K.ShuttleStorage;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
+using Robust.Shared.Serialization.Markdown.Mapping;
 
 namespace Content.Server._WH40K.ShuttleStorage;
 
@@ -28,6 +29,7 @@ public sealed partial class ShuttleStorageSystem
         public bool Published;
         public bool PlacementCompleted;
         public Wh40kShuttleSlot? Row;
+        public MappingDataNode? Snapshot;
     }
 
     // Server-side business entry point. Network requests additionally pass CanUse and actor/UI membership checks.
@@ -166,7 +168,7 @@ public sealed partial class ShuttleStorageSystem
 
         // Let native undocking, physics and node-group cleanup finish before sampling the paused grid.
         await NextCaptureFrameAsync(2);
-        var snapshot = await CaptureAsync(operation, settle: true);
+        var snapshot = await CaptureAsync(operation);
         if (snapshot.Result != ShuttleStorageResult.Ready)
             return await CancelDepositAsync(operation, snapshot.Result);
         var captured = await OnMain(() =>
@@ -176,6 +178,7 @@ public sealed partial class ShuttleStorageSystem
                 throw new InvalidOperationException("The isolated shuttle split or left entities outside its grid.");
             var payload = snapshot.Payload!;
             var info = snapshot.Info;
+            operation.Snapshot = snapshot.Node;
             var next = operation.Row!.Copy();
             next.Payload = payload;
             next.Sha256 = SHA256.HashData(payload!);
@@ -217,7 +220,7 @@ public sealed partial class ShuttleStorageSystem
             if (!Facility(operation.Console, out _, out operation.Facility))
                 return ShuttleStorageResult.NoBerth;
             var row = operation.Row!;
-            if (!ValidStoredSnapshot(row) || HasLiveShip(row.Ship))
+            if (HasLiveShip(row.Ship))
                 return ShuttleStorageResult.Corrupt;
             operation.Staging = _maps.CreateMap(out var mapId);
             EnsureComp<ShuttleStorageStagingComponent>(operation.Staging.Value);

@@ -209,6 +209,12 @@ public sealed partial class KoronusPlanetSurfacePrototype : IPrototype
     [DataField]
     public ProtoId<PlanetPrototype>? Planet;
 
+    /// <summary>
+    /// Create the atmospheric and low-orbit Z-levels and expose low orbit in shuttle navigation.
+    /// </summary>
+    [DataField]
+    public bool LowOrbitEnabled = true;
+
     [DataField]
     public Vector2 PlayableSize = new(100f, 100f);
 

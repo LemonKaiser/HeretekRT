@@ -87,7 +87,7 @@ namespace Content.Shared.DeviceNetwork.Components
         public bool ExaminableAddress;
 
         /// <summary>
-        ///     Whether the device should attempt to join the network on map init.
+        ///     Whether the device should attempt to join the network when it starts.
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField("autoConnect")]

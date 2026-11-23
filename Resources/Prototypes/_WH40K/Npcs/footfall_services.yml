@@ -118,6 +118,11 @@
       price: 10000
       minStock: 5
       maxStock: 10
+    - product: KoronusParachute
+      price: 800
+      minStock: 5
+      maxStock: 10
+      weight: 5
     - product: WeaponGrapplingGun
       price: 3500
       minStock: 7

@@ -104,7 +104,7 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         SendMessage(new KoronusSectorJumpMessage(targetSystemId));
     }
 
-    private void OnPlanetaryLandingRequest(string bodyId, string siteId)
+    private void OnPlanetaryLandingRequest(string bodyId, string? siteId)
     {
         SendMessage(new ShuttleConsolePlanetaryLandingRequestMessage(bodyId, siteId));
     }

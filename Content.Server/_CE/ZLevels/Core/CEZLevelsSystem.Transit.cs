@@ -56,7 +56,14 @@ public sealed partial class CEZLevelsSystem
             return;
 
         var mapUid = Transform(grid).MapUid;
-        var onZLevels = HasComp<CEZMapComponent>(mapUid) || HasComp<CEZTransitMapComponent>(mapUid);
+        if (TryComp<CEZMapComponent>(mapUid, out var level) && level.ControlledGridAltitude)
+        {
+            RemComp<CEZGridFallerComponent>(grid);
+            RemComp<CEZPhysicsComponent>(grid);
+            return;
+        }
+
+        var onZLevels = level != null || HasComp<CEZTransitMapComponent>(mapUid);
 
         if (!onZLevels)
         {
@@ -187,7 +194,7 @@ public sealed partial class CEZLevelsSystem
         if (HasComp<CEZTransitMapComponent>(currentMap))
             return false; // Already in transit.
 
-        if (!HasComp<CEZMapComponent>(currentMap))
+        if (!TryComp<CEZMapComponent>(currentMap, out var level) || level.ControlledGridAltitude)
             return false;
 
         EntityUid lowerMap;

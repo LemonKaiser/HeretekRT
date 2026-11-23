@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Content.Client._WH40K.UserInterface;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -58,6 +59,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private readonly List<Entry> _sorted = new();
     private readonly List<Entry> _filtered = new();
     private readonly List<Entry> _shown = new();
+    private readonly Dictionary<string, ResultCard> _cards = new(StringComparer.Ordinal);
     private readonly Dictionary<string, int> _categoryCounts = new(StringComparer.Ordinal);
     private readonly Dictionary<string, (ContainerButton Button, Label Count)> _categoryButtons = new(StringComparer.Ordinal);
     private string[] _categoryList = [];
@@ -77,8 +79,22 @@ public sealed class Wh40kMappingPanel : BoxContainer
         string? EditorSuffix = null,
         EntProtoId? Prototype = null);
 
+    private sealed class ResultCard(string id, ContainerButton selection, Button favorite, Control preview) : BoxContainer
+    {
+        public readonly string Id = id;
+        public readonly ContainerButton Selection = selection;
+        public readonly Button Favorite = favorite;
+        public readonly Control Preview = preview;
+    }
+
+    private sealed class SlotButton(Control preview) : ContainerButton
+    {
+        public readonly Control Preview = preview;
+    }
+
     public BoxContainer Options { get; } = new() { Orientation = LayoutOrientation.Vertical, SeparationOverride = 5 };
     internal event Action<string>? EntrySelected;
+    internal event Action? EntryDeselected;
     internal string? Selected => _selected;
 
     internal static Vector2 InitialWindowSize(Vector2 available) =>
@@ -173,6 +189,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
             if (index >= 0 && _selected != null)
                 AssignSlot(index, _selected);
         };
+        _empty.Text = Loc.GetString("wh40k-mapping-empty");
         UpdateSelection();
     }
 
@@ -203,6 +220,8 @@ public sealed class Wh40kMappingPanel : BoxContainer
 
     internal void SetEntries(IEnumerable<Entry> entries)
     {
+        _grid.RemoveAllChildren();
+        _cards.Clear();
         _entries.Clear();
         _sorted.Clear();
         foreach (var entry in entries.OrderBy(entry => entry.Name, StringComparer.CurrentCultureIgnoreCase)
@@ -226,6 +245,9 @@ public sealed class Wh40kMappingPanel : BoxContainer
             AddCategory(category);
         _appliedQuery = null;
         ApplyQuery(_search.Text.Trim());
+        _slots.RemoveAllChildren();
+        for (var i = 0; i < SlotCount; i++)
+            _slots.AddChild(MakeSlot(i));
         UpdateSelection();
     }
 
@@ -235,24 +257,49 @@ public sealed class Wh40kMappingPanel : BoxContainer
     {
         if (!_entries.ContainsKey(id))
             return false;
-        _selected = id;
-        _recent.Remove(id);
-        _recent.Insert(0, id);
-        if (_recent.Count > RecentLimit)
-            _recent.RemoveAt(RecentLimit);
-        RefreshResults(resetScroll: false);
-        UpdateSelection();
+
+        if (_selected != id)
+        {
+            var previous = _selected;
+            _selected = id;
+            UpdateSelection(previous);
+        }
+
+        if (_recent.Count == 0 || _recent[0] != id)
+        {
+            _recent.Remove(id);
+            _recent.Insert(0, id);
+            if (_recent.Count > RecentLimit)
+                _recent.RemoveAt(RecentLimit);
+            if (_category == Recent)
+                RefreshResults(resetScroll: false);
+            else
+                UpdateCategoryCount(_categoryButtons[Recent].Count, _recent.Count(MatchesQuery));
+        }
+
         EntrySelected?.Invoke(id);
         return true;
+    }
+
+    private void ToggleSelection(string id)
+    {
+        if (_selected != id)
+        {
+            Select(id);
+            return;
+        }
+
+        ClearSelection();
+        EntryDeselected?.Invoke();
     }
 
     internal void ClearSelection()
     {
         if (_selected == null)
             return;
+        var previous = _selected;
         _selected = null;
-        _visible = (-1, -1, -1);
-        UpdateSelection();
+        UpdateSelection(previous);
     }
 
     internal void SetTint(Color tint)
@@ -262,8 +309,13 @@ public sealed class Wh40kMappingPanel : BoxContainer
         _tint = tint;
         if (_preview.ChildCount > 0)
             _preview.GetChild(0).Modulate = tint;
-        _visible = (-1, -1, -1);
-        RenderSlots();
+        foreach (var card in _cards.Values)
+            card.Preview.Modulate = tint;
+        for (var i = 0; i < _slots.ChildCount; i++)
+        {
+            if (_slotIds[i] is { } id && _entries.ContainsKey(id))
+                ((SlotButton) _slots.GetChild(i)).Preview.Modulate = tint;
+        }
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -273,20 +325,47 @@ public sealed class Wh40kMappingPanel : BoxContainer
             return;
         if (_searchDelay > 0 && (_searchDelay -= args.DeltaSeconds) <= 0)
             ApplyQuery(_search.Text.Trim());
+        UpdateVisibleCards();
+    }
+
+    private void UpdateVisibleCards()
+    {
         if (_resultsScroll.Height <= 0)
             return;
-        var firstRow = Math.Max(0, (int) (_resultsScroll.VScroll / Wh40kMappingGrid.RowHeight));
+        var maxScroll = Math.Max(0, _grid.ContentHeight - _resultsScroll.Height);
+        var scroll = Math.Min(_resultsScroll.GetScrollValue().Y, maxScroll);
+        var scrollRow = (int) (scroll / Wh40kMappingGrid.RowHeight);
+        var firstRow = Math.Max(0, scrollRow - 1);
         var first = Math.Min(_shown.Count, firstRow * _grid.Columns);
         var last = Math.Min(_shown.Count,
-            (firstRow + 2 + (int) MathF.Ceiling(_resultsScroll.Height / Wh40kMappingGrid.RowHeight)) * _grid.Columns);
+            (scrollRow + 2 + (int) MathF.Ceiling(_resultsScroll.Height / Wh40kMappingGrid.RowHeight)) * _grid.Columns);
         var range = (first, last, _grid.Columns);
         if (_visible == range)
             return;
         _visible = range;
         _grid.FirstRow = firstRow;
-        _grid.RemoveAllChildren();
         for (var i = first; i < last; i++)
-            _grid.AddChild(MakeCard(_shown[i]));
+        {
+            var entry = _shown[i];
+            if (!_cards.TryGetValue(entry.Id, out var card))
+            {
+                card = MakeCard(entry);
+                _cards.Add(entry.Id, card);
+                _grid.AddChild(card);
+            }
+
+            card.SetPositionInParent(i - first);
+        }
+
+        // Cards outside the new range are now after all retained cards.
+        while (_grid.ChildCount > last - first)
+        {
+            var card = (ResultCard) _grid.GetChild(_grid.ChildCount - 1);
+            _cards.Remove(card.Id);
+            _grid.RemoveChild(card);
+        }
+
+        _grid.InvalidateArrange();
     }
 
     private void LayoutPanel()
@@ -301,11 +380,6 @@ public sealed class Wh40kMappingPanel : BoxContainer
             return;
         if (_appliedQuery != null && query.StartsWith(_appliedQuery, StringComparison.OrdinalIgnoreCase))
         {
-            if (_filtered.Count == 0)
-            {
-                _appliedQuery = query;
-                return;
-            }
             _filtered.RemoveAll(entry => !Matches(entry, query));
         }
         else
@@ -328,8 +402,8 @@ public sealed class Wh40kMappingPanel : BoxContainer
     private void RefreshResults(bool resetScroll = true)
     {
         var query = _appliedQuery ?? string.Empty;
-        var recent = _recent.Where(id => _entries.TryGetValue(id, out var entry) && Matches(entry, query)).ToList();
-        var favorites = _favorites.Count(id => _entries.TryGetValue(id, out var entry) && Matches(entry, query));
+        var recent = _recent.Where(MatchesQuery).ToList();
+        var favorites = _favorites.Count(MatchesQuery);
         foreach (var (category, (button, countLabel)) in _categoryButtons)
         {
             var count = category switch
@@ -341,9 +415,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
             };
             button.Pressed = _category == category;
             button.Visible = count > 0 || query.Length == 0 || category is All or Favorites or Recent || _category == category;
-            var formattedCount = count.ToString("N0");
-            if (countLabel.Text != formattedCount)
-                countLabel.Text = formattedCount;
+            UpdateCategoryCount(countLabel, count);
         }
 
         _shown.Clear();
@@ -360,11 +432,17 @@ public sealed class Wh40kMappingPanel : BoxContainer
 
         _grid.Count = _shown.Count;
         _empty.Visible = _shown.Count == 0;
-        _empty.Text = Loc.GetString("wh40k-mapping-empty");
         _count.Text = Loc.GetString("wh40k-mapping-count", ("category", CategoryName(_category)), ("count", _shown.Count));
         _visible = (-1, -1, -1);
         if (resetScroll)
             _resultsScroll.VScroll = _resultsScroll.VScrollTarget = 0;
+    }
+
+    private static void UpdateCategoryCount(Label label, int count)
+    {
+        var text = count.ToString("N0");
+        if (label.Text != text)
+            label.Text = text;
     }
 
     private void AddCategory(string category)
@@ -394,13 +472,24 @@ public sealed class Wh40kMappingPanel : BoxContainer
         button.AddStyleClass(ContainerButton.StyleClassButton);
         button.AddStyleClass("Wh40kCompactButton");
         _categoryButtons.Add(category, (button, count));
-        button.OnPressed += _ => { _category = category; RefreshResults(); };
+        button.OnPressed += _ =>
+        {
+            if (_category == category)
+            {
+                button.Pressed = true;
+                return;
+            }
+
+            _category = category;
+            RefreshResults();
+        };
         _categories.AddChild(button);
     }
 
-    private Control MakeCard(Entry entry)
+    private ResultCard MakeCard(Entry entry)
     {
         var text = new Wh40kMappingLabel(2) { FullText = entry.Name };
+        var preview = MakePreview(entry, 54);
         var body = new ContainerButton
         {
             MouseFilter = MouseFilterMode.Stop, HorizontalExpand = true, VerticalExpand = true,
@@ -417,7 +506,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
                         new PanelContainer
                         {
                             MouseFilter = MouseFilterMode.Ignore, PanelOverride = new StyleBoxFlat(Wh40kInterfaceTheme.TableAlternateRow),
-                            Children = { MakePreview(entry, 54) },
+                            Children = { preview },
                         },
                         text,
                     },
@@ -426,20 +515,16 @@ public sealed class Wh40kMappingPanel : BoxContainer
         };
         body.AddStyleClass(ContainerButton.StyleClassButton);
         body.AddStyleClass("Wh40kCompactButton");
-        body.OnPressed += _ => Select(entry.Id);
-        var isFavorite = _favorites.Contains(entry.Id);
-        var favoritesFull = !isFavorite && _favorites.Count >= FavoriteLimit;
+        body.OnPressed += _ => ToggleSelection(entry.Id);
         var favorite = new Button
         {
-            Text = isFavorite ? "★" : "☆",
             HorizontalAlignment = HAlignment.Right, VerticalAlignment = VAlignment.Top,
-            Disabled = favoritesFull,
             MinSize = Vector2.Zero,
             SetSize = new Vector2(23, 23),
-            ToolTip = favoritesFull ? Loc.GetString("wh40k-mapping-favorites-limit", ("count", FavoriteLimit)) : CategoryName(Favorites),
             Margin = new Thickness(0, 2, 2, 0),
         };
         favorite.AddStyleClass("Wh40kCompactButton");
+        UpdateFavorite(entry.Id, favorite);
         favorite.OnPressed += _ =>
         {
             if (!_favorites.Remove(entry.Id))
@@ -449,10 +534,16 @@ public sealed class Wh40kMappingPanel : BoxContainer
                 _favorites.Add(entry.Id);
             }
             SaveKit();
-            RefreshResults(resetScroll: false);
+
+            foreach (var card in _cards.Values)
+                UpdateFavorite(card.Id, card.Favorite);
+            if (_category == Favorites)
+                RefreshResults(resetScroll: false);
+            else
+                UpdateCategoryCount(_categoryButtons[Favorites].Count, _favorites.Count(MatchesQuery));
         };
         var accent = CategoryColor(entry.Category);
-        return new BoxContainer
+        return new ResultCard(entry.Id, body, favorite, preview)
         {
             Children =
             {
@@ -462,9 +553,26 @@ public sealed class Wh40kMappingPanel : BoxContainer
         };
     }
 
-    private void UpdateSelection()
+    private void UpdateFavorite(string id, Button favorite)
+    {
+        var isFavorite = _favorites.Contains(id);
+        favorite.Text = isFavorite ? "★" : "☆";
+        favorite.Disabled = !isFavorite && _favorites.Count >= FavoriteLimit;
+        favorite.ToolTip = favorite.Disabled
+            ? Loc.GetString("wh40k-mapping-favorites-limit", ("count", FavoriteLimit))
+            : CategoryName(Favorites);
+    }
+
+    private void UpdateSelection(string? previous = null)
     {
         var entry = _selected != null && _entries.TryGetValue(_selected, out var selected) ? selected : (Entry?) null;
+        if (previous != null && _cards.TryGetValue(previous, out var oldCard))
+            oldCard.Selection.Pressed = false;
+        if (_selected != null && _cards.TryGetValue(_selected, out var newCard))
+            newCard.Selection.Pressed = true;
+        for (var i = 0; i < _slots.ChildCount; i++)
+            ((SlotButton) _slots.GetChild(i)).Pressed = _selected != null && _slotIds[i] == _selected;
+
         _preview.RemoveAllChildren();
         var preview = entry is { } previewEntry ? MakePreview(previewEntry, 43, showEmpty: false) : null;
         _preview.Visible = preview?.Visible == true;
@@ -476,59 +584,64 @@ public sealed class Wh40kMappingPanel : BoxContainer
         _previewId.FullText = entry?.Id ?? string.Empty;
         _previewId.ToolTip = entry?.Id;
         _copy.Disabled = entry == null;
-        _pin.Disabled = entry == null || _slotIds.Contains(entry.Value.Id) || Array.IndexOf(_slotIds, null) < 0;
-        RenderSlots();
+        UpdatePin();
     }
 
-    private void RenderSlots()
+    private SlotButton MakeSlot(int index)
     {
-        _slots.RemoveAllChildren();
-        for (var i = 0; i < SlotCount; i++)
+        var id = _slotIds[index];
+        var visual = id != null && _entries.TryGetValue(id, out var entry)
+            ? MakePreview(entry, 17)
+            : new Label { Text = "+", SetWidth = 17, Align = Label.AlignMode.Center };
+        var slot = new SlotButton(visual)
         {
-            var index = i;
-            var id = _slotIds[index];
-            var visual = id != null && _entries.TryGetValue(id, out var entry)
-                ? MakePreview(entry, 17)
-                : new Label { Text = "+", SetWidth = 17, Align = Label.AlignMode.Center };
-            var slot = new ContainerButton
+            SetWidth = 43, SetHeight = 30, EnableAllKeybinds = true, ToggleMode = true,
+            Pressed = id != null && id == _selected,
+            ToolTip = Loc.GetString("wh40k-mapping-slot-tip", ("name", id ?? "+")),
+            Children =
             {
-                SetWidth = 43, SetHeight = 30, EnableAllKeybinds = true, ToggleMode = true,
-                Pressed = id != null && id == _selected,
-                ToolTip = Loc.GetString("wh40k-mapping-slot-tip", ("name", id ?? "+")),
-                Children =
+                new BoxContainer
                 {
-                    new BoxContainer
+                    MouseFilter = MouseFilterMode.Ignore, SeparationOverride = 2, HorizontalAlignment = HAlignment.Center,
+                    Children =
                     {
-                        MouseFilter = MouseFilterMode.Ignore, SeparationOverride = 2, HorizontalAlignment = HAlignment.Center,
-                        Children =
-                        {
-                            new Label { Text = (index + 1).ToString(), FontColorOverride = Wh40kInterfaceTheme.Gold },
-                            visual,
-                        },
+                        new Label { Text = (index + 1).ToString(), FontColorOverride = Wh40kInterfaceTheme.Gold },
+                        visual,
                     },
                 },
-            };
-            slot.AddStyleClass(ContainerButton.StyleClassButton);
-            slot.AddStyleClass("Wh40kCompactButton");
-            slot.OnPressed += args =>
-            {
-                if (args.Event.Function == EngineKeyFunctions.UIRightClick)
-                    AssignSlot(index, null);
-                else if (args.Event.Function == EngineKeyFunctions.UIClick && id != null)
-                    Select(id);
-                else if (args.Event.Function == EngineKeyFunctions.UIClick && _selected != null)
-                    AssignSlot(index, _selected);
-            };
-            _slots.AddChild(slot);
-        }
+            },
+        };
+        slot.AddStyleClass(ContainerButton.StyleClassButton);
+        slot.AddStyleClass("Wh40kCompactButton");
+        slot.OnPressed += args =>
+        {
+            // A slot also receives right clicks, which toggle the button before this handler.
+            slot.Pressed = id != null && id == _selected;
+            if (args.Event.Function == EngineKeyFunctions.UIRightClick)
+                AssignSlot(index, null);
+            else if (args.Event.Function == EngineKeyFunctions.UIClick && id != null && _entries.ContainsKey(id))
+                ToggleSelection(id);
+            else if (args.Event.Function == EngineKeyFunctions.UIClick && _selected != null)
+                AssignSlot(index, _selected);
+        };
+        return slot;
     }
 
     private void AssignSlot(int index, string? id)
     {
+        if (_slotIds[index] == id)
+            return;
         _slotIds[index] = id;
         SaveKit();
-        UpdateSelection();
+        _slots.RemoveChild(index);
+        var slot = MakeSlot(index);
+        _slots.AddChild(slot);
+        slot.SetPositionInParent(index);
+        UpdatePin();
     }
+
+    private void UpdatePin() =>
+        _pin.Disabled = _selected == null || _slotIds.Contains(_selected) || Array.IndexOf(_slotIds, null) < 0;
 
     private void SaveKit()
     {
@@ -547,6 +660,9 @@ public sealed class Wh40kMappingPanel : BoxContainer
             Logger.Warning($"Could not save mapping kit: {e.Message}");
         }
     }
+
+    private bool MatchesQuery(string id) =>
+        _entries.TryGetValue(id, out var entry) && Matches(entry, _appliedQuery ?? string.Empty);
 
     private static bool Matches(Entry entry, string query) => query.Length == 0 ||
         entry.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
@@ -577,7 +693,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
         Control preview;
         if (entry.Prototype is { } prototype)
         {
-            var view = new EntityPrototypeView { Stretch = SpriteView.StretchMode.Fill };
+            var view = new MappingPrototypeView { Stretch = SpriteView.StretchMode.Fill };
             view.SetPrototype(prototype);
             preview = view;
         }
@@ -598,5 +714,16 @@ public sealed class Wh40kMappingPanel : BoxContainer
         preview.VerticalAlignment = VAlignment.Center;
         preview.Modulate = _tint;
         return preview;
+    }
+
+    private sealed class MappingPrototypeView : EntityPrototypeView
+    {
+        protected override void EnteredTree()
+        {
+            base.EnteredTree();
+            // UI can spawn the preview after AppearanceSystem has processed this frame's queue.
+            if (Entity is { } entity)
+                EntMan.System<AppearanceSystem>().OnChangeData(entity.Owner, entity.Comp1);
+        }
     }
 }

@@ -31,6 +31,7 @@ public sealed partial class CEZLevelsSystem : CESharedZLevelsSystem
 
         InitView();
         InitializeTransit();
+        SubscribeLocalEvent<CEZMapComponent, EntityTerminatingEvent>(OnLevelTerminating);
 
         SubscribeLocalEvent<CEStationZLevelsComponent, StationPostInitEvent>(OnStationPostInit);
     }

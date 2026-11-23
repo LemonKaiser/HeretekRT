@@ -24,4 +24,14 @@ public sealed partial class CEZMapComponent : Component
 
     [DataField, AutoNetworkedField]
     public int Depth;
+
+    /// <summary>Relative width of a distant layer per Z-level of separation.</summary>
+    [DataField, AutoNetworkedField]
+    public float ViewShrink = 1f;
+
+    /// <summary>
+    /// This layer delegates grid altitude changes to its map's shuttle transfer system.
+    /// </summary>
+    [DataField]
+    public bool ControlledGridAltitude;
 }

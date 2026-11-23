@@ -30,6 +30,7 @@ public abstract partial class CESharedZLevelsSystem
     private void OnMapInit(Entity<CEZPhysicsComponent> entity, ref MapInitEvent args)
     {
         RefreshBody(entity);
+        RequestCacheMovement(entity);
 
         var mapUid = Transform(entity).MapUid;
 

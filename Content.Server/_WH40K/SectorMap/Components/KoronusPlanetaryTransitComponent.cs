@@ -23,6 +23,7 @@ public sealed partial class KoronusPlanetaryTransitComponent : Component
     /// rather than a cached position prevents a moving planet from leaving the shuttle behind.
     /// </summary>
     public string? LaunchBodyId;
+    public string? LowOrbitBodyId;
     public MapId TransitMap;
     public Vector2 TransitOrigin;
     public TimeSpan TravelAt;

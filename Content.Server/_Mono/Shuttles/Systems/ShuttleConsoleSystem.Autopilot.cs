@@ -242,9 +242,13 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     private bool RejectPlanetaryAutopilot(Entity<ShuttleConsoleComponent> ent)
     {
         var shuttleGrid = Transform(ent).GridUid;
-        if (shuttleGrid == null ||
-            !HasComp<KoronusPlanetaryTransitComponent>(shuttleGrid.Value) &&
-            !HasComp<KoronusPlanetSurfaceMapComponent>(_maps.GetMapOrInvalid(Transform(shuttleGrid.Value).MapID)))
+        if (shuttleGrid == null)
+            return false;
+
+        var map = Transform(shuttleGrid.Value).MapUid;
+        if (!HasComp<KoronusPlanetaryTransitComponent>(shuttleGrid.Value) &&
+            !HasComp<KoronusPlanetSurfaceMapComponent>(map) &&
+            !HasComp<KoronusLowOrbitMapComponent>(map))
         {
             return false;
         }

@@ -87,6 +87,7 @@
   id: JanusSurface
   mapPath: /Maps/_WH40K/Planets/janus_surface.yml
   planet: JanusAgriWorld
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -349,6 +350,7 @@
   id: OmicronMinorisSurface
   mapPath: /Maps/_WH40K/Planets/omicron_minoris_surface.yml
   planet: OmicronMinorisWorld
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25

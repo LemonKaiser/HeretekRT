@@ -49,7 +49,7 @@ namespace Content.Server.DeviceNetwork.Systems
 
         public override void Initialize()
         {
-            SubscribeLocalEvent<DeviceNetworkComponent, MapInitEvent>(OnMapInit);
+            SubscribeLocalEvent<DeviceNetworkComponent, ComponentStartup>(OnNetworkStartup);
             SubscribeLocalEvent<DeviceNetworkComponent, ComponentShutdown>(OnNetworkShutdown);
             SubscribeLocalEvent<DeviceNetworkComponent, ExaminedEvent>(OnExamine);
             SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => ClearPacketQueues());
@@ -130,9 +130,9 @@ namespace Content.Server.DeviceNetwork.Systems
         }
 
         /// <summary>
-        /// Automatically attempt to connect some devices when a map starts.
+        /// Rebuild the runtime network registration whenever a device starts, including saved devices.
         /// </summary>
-        private void OnMapInit(EntityUid uid, DeviceNetworkComponent device, MapInitEvent args)
+        private void OnNetworkStartup(EntityUid uid, DeviceNetworkComponent device, ComponentStartup args)
         {
             if (device.ReceiveFrequency == null
                 && device.ReceiveFrequencyId != null

@@ -1,5 +1,6 @@
 // Mono - Refactored into smaller subsystems
 using System.Numerics;
+using Content.Shared._CE.ZLevels.Core.Components;
 using Content.Shared.Parallax.Biomes;
 using Content.Shared.Parallax.Biomes.Markers;
 using Robust.Shared.Player;
@@ -51,7 +52,12 @@ public sealed partial class BiomeSystem
                 }
 
                 var worldPos = _transform.GetWorldPosition(xform);
-                AddChunksInRange(xform.MapUid!.Value, biome, worldPos);
+                // The Z-level view subscription covers a larger area when viewing distant terrain.
+                var rangeScale = TryComp<CEZMapComponent>(xform.MapUid, out var zMap) && zMap.ViewShrink < 1f &&
+                    TryComp<EyeComponent>(viewer, out var eye)
+                    ? Math.Clamp(eye.PvsScale, 1f, 3f)
+                    : 1f;
+                AddChunksInRange(xform.MapUid!.Value, biome, worldPos, rangeScale);
 
                 foreach (var layer in biome.MarkerLayers)
                 {
@@ -67,10 +73,11 @@ public sealed partial class BiomeSystem
         return !_ghostQuery.HasComp(uid) || _tags.HasTag(uid, AllowBiomeLoadingTag);
     }
 
-    private void AddChunksInRange(EntityUid gridUid, BiomeComponent biome, Vector2 worldPos)
+    private void AddChunksInRange(EntityUid gridUid, BiomeComponent biome, Vector2 worldPos, float rangeScale = 1f)
     {
         var generationBounds = GetGenerationBounds(gridUid);
-        var enumerator = new ChunkIndicesEnumerator(_loadArea.Translated(worldPos), ChunkSize);
+        var loadArea = new Box2(_loadArea.BottomLeft * rangeScale, _loadArea.TopRight * rangeScale);
+        var enumerator = new ChunkIndicesEnumerator(loadArea.Translated(worldPos), ChunkSize);
 
         while (enumerator.MoveNext(out var chunkOrigin))
         {

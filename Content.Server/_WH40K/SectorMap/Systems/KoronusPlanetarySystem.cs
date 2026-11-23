@@ -10,6 +10,7 @@ using Content.Server._WH40K.Progression;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server._WH40K.Weather;
 using Content.Server.Shuttles.Components;
+using Content.Server.Shuttles.Events;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap;
@@ -132,6 +133,10 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         SubscribeLocalEvent<PhysicsComponent, EntParentChangedMessage>(OnPhysicsParentChanged);
         SubscribeLocalEvent<KoronusSurfaceBoundaryTrackedComponent, MoveEvent>(OnTrackedEntityMoved);
         SubscribeLocalEvent<KoronusPlanetSurfaceMapComponent, ComponentShutdown>(OnSurfaceMapShutdown);
+        SubscribeLocalEvent<KoronusLowOrbitMapComponent, ComponentShutdown>(OnLowOrbitMapShutdown);
+        SubscribeLocalEvent<ShuttleComponent, EntParentChangedMessage>(OnOrbitShuttleParentChanged);
+        SubscribeLocalEvent<ConsoleFTLAttemptEvent>(OnLowOrbitFtlAttempt);
+        InitializeOrbitDrops();
     }
 
     public override void Update(float frameTime)
@@ -139,6 +144,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         base.Update(frameTime);
 
         UpdatePlanetaryTransfers();
+        UpdateOrbitDrops();
+        UpdateLowOrbitTimeouts();
         ProcessSurfaceBoundaryCorrections();
         if (_timing.CurTime >= _nextParkingUpdate)
         {
@@ -264,18 +271,20 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     /// Returns a landed shuttle to the orbital map of the celestial body that owns its surface.
     /// Only the current reservation holder may launch.
     /// </summary>
-    public bool TryLaunch(EntityUid shuttleGrid, out KoronusPlanetaryTransferFailure failure)
+    public bool TryLaunch(EntityUid shuttleGrid, out KoronusPlanetaryTransferFailure failure, bool toLowOrbit = false)
     {
+        var source = Transform(shuttleGrid).MapID;
+        if (!toLowOrbit && TryGetLowOrbit(source, out var orbit))
+            return TryLeaveLowOrbit(shuttleGrid, orbit, out failure);
+
         failure = KoronusPlanetaryTransferFailure.NotLanded;
-        if (!TryGetSurfaceRuntime(Transform(shuttleGrid).MapID, out var surfaceMapUid, out var surfaceRuntime) ||
+        if (!TryGetSurfaceRuntime(source, out _, out var surfaceRuntime) ||
             !TryGetSectorRule(out var rule) ||
             !TryGetReservation(rule, shuttleGrid, out var reservationKey) ||
             !TryResolveBodyForSurface(surfaceRuntime.SurfaceId, out var body) ||
             body.Surface == null ||
             !_prototypes.TryIndex(body.Surface.Value, out KoronusPlanetSurfacePrototype? surface) ||
-            !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryEnsureSystemMapLoaded(system.ID, out var orbitalMap) ||
-            !_maps.TryGetMap(orbitalMap, out var orbitalMapUid))
+            !_sector.TryGetSystemPrototype(body.System, out var system))
         {
             return false;
         }
@@ -316,17 +325,36 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             return false;
         }
 
-        if (!TryGetOrbitalLaunchOrigin(shuttleGrid, system, body, surface, out var launchOrigin))
+        MapId targetMap;
+        EntityUid targetUid;
+        Vector2 launchOrigin;
+        failure = KoronusPlanetaryTransferFailure.InvalidLaunchPosition;
+        if (toLowOrbit)
         {
-            failure = KoronusPlanetaryTransferFailure.InvalidLaunchPosition;
-            return false;
+            if (surfaceRuntime.LowOrbit is not { } lowOrbit || !TryComp<MapComponent>(lowOrbit, out var lowOrbitMap))
+                return false;
+
+            targetUid = lowOrbit;
+            targetMap = lowOrbitMap.MapId;
+            if (!TryFindLowOrbitOrigin(shuttleGrid, targetMap, surfaceRuntime, _physics.GetWorldAABB(shuttleGrid).Center,
+                    out launchOrigin))
+                return false;
+        }
+        else
+        {
+            if (!_sector.TryEnsureSystemMapLoaded(system.ID, out targetMap) ||
+                !_maps.TryGetMap(targetMap, out var systemMap) ||
+                !TryGetOrbitalLaunchOrigin(shuttleGrid, system, body, surface, out launchOrigin))
+                return false;
+
+            targetUid = systemMap.Value;
         }
 
         // The surface can have been re-paused while an empty landed shuttle was parked there.
         // Its transit component must still tick through the startup phase before it moves away.
         CancelShuttleAutopilot(shuttleGrid);
-        _maps.SetPaused(Transform(shuttleGrid).MapID, false);
-        _maps.SetPaused(orbitalMap, false);
+        _maps.SetPaused(source, false);
+        _maps.SetPaused(targetMap, false);
         if (surface.LaunchTransitTime > 0f)
         {
             if (activeSession != null)
@@ -334,19 +362,20 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             BeginTransit(
                 shuttleGrid,
                 false,
-                orbitalMap,
+                targetMap,
                 launchOrigin,
                 reservationKey,
                 surface.TransitStartupTime,
                 surface.LaunchTransitTime,
                 surface.TransitArrivalTime,
-                body.ID);
+                launchBodyId: toLowOrbit ? null : body.ID,
+                lowOrbitBodyId: toLowOrbit ? body.ID : null);
         }
         else
         {
             if (activeSession != null)
                 ReleaseParkingSession(activeSession);
-            MoveGrid(shuttleGrid, orbitalMapUid.Value, launchOrigin);
+            MoveGrid(shuttleGrid, targetUid, launchOrigin);
             FinishDeparture(rule, shuttleGrid, body.ID, reservationKey);
         }
 
@@ -408,7 +437,11 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         }
 
         if (persistent)
+        {
             rule.Comp.SurfaceMaps[surfaceId] = mapId;
+            if (_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(surfaceId, out var orbitSurface))
+                RegisterLowOrbit(mapUid.Value, runtime, orbitSurface);
+        }
         ConfigureSurfaceLighting(mapUid.Value, runtime);
         _surfaceBoundaries[mapId] = new SurfaceBoundary(mapUid.Value, runtime.PlayableBounds, terrainGrid);
         SeedSurfaceBoundaryTracking(mapId);
@@ -438,6 +471,15 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             return BuildInterfaceState(rule, orbitalSystem, shuttleGrid, canLand, false, null);
         }
 
+        if (TryGetLowOrbit(shuttleMap, out var orbit) &&
+            TryComp<KoronusPlanetSurfaceMapComponent>(orbit.Surface, out var orbitSurface) &&
+            _sector.TryGetSystemPrototype(orbitSurface.SystemId, out var orbitSystem))
+        {
+            var canTransfer = CanTransfer(shuttleGrid, out _);
+            return BuildInterfaceState(rule, orbitSystem, shuttleGrid, canTransfer, canTransfer, null,
+                orbitBody: orbit.BodyId);
+        }
+
         if (!TryGetSurfaceRuntime(shuttleMap, out _, out var surfaceRuntime) ||
             !_sector.TryGetSystemPrototype(surfaceRuntime.SystemId, out var surfaceSystem) ||
             !TryResolveBodyForSurface(surfaceRuntime.SurfaceId, out var landedBody))
@@ -445,7 +487,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             return KoronusPlanetaryInterfaceState.Unavailable();
         }
 
-        var canLaunch = !HasComp<KoronusPlanetaryTransitComponent>(shuttleGrid) &&
+        var canLaunch = CanTransfer(shuttleGrid, out _) &&
                         TryGetReservation(rule, shuttleGrid, out _);
         return BuildInterfaceState(rule, surfaceSystem, shuttleGrid, false, canLaunch, landedBody.ID);
     }
@@ -520,11 +562,18 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             body.Surface == null ||
             !_prototypes.TryIndex(body.Surface.Value, out KoronusPlanetSurfacePrototype? surface) ||
             !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryGetSystemId(Transform(shuttleGrid).MapID, out var currentSystem) ||
-            currentSystem != system.ID ||
             !rule.Comp.SurfaceMaps.TryGetValue(surface.ID, out var surfaceMap) ||
             !_maps.TryGetMap(surfaceMap, out var surfaceMapUid) ||
             !TryComp<KoronusPlanetSurfaceMapComponent>(surfaceMapUid.Value, out var surfaceRuntime))
+        {
+            return false;
+        }
+
+        var source = Transform(shuttleGrid).MapID;
+        var inLowOrbit = TryGetLowOrbit(source, out var orbit);
+        if (inLowOrbit
+                ? orbit.Surface != surfaceMapUid.Value
+                : !_sector.TryGetSystemId(source, out var currentSystem) || currentSystem != system.ID)
         {
             return false;
         }
@@ -539,13 +588,13 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             return false;
         }
 
-        if (!IsWithinLandingApproach(shuttleGrid, system, body))
+        if (!inLowOrbit && !IsWithinLandingApproach(shuttleGrid, system, body))
         {
             failure = KoronusPlanetaryTransferFailure.OutsideLandingApproach;
             return false;
         }
 
-        if (TryComp<KoronusPlanetaryLandingCooldownComponent>(shuttleGrid, out var cooldown))
+        if (!inLowOrbit && TryComp<KoronusPlanetaryLandingCooldownComponent>(shuttleGrid, out var cooldown))
         {
             if (_timing.CurTime >= cooldown.Until)
                 RemCompDeferred<KoronusPlanetaryLandingCooldownComponent>(shuttleGrid);
@@ -601,7 +650,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         return false;
     }
 
-    private bool CanTransfer(EntityUid shuttleGrid, out KoronusPlanetaryTransferFailure failure)
+    private bool CanTransfer(EntityUid shuttleGrid, out KoronusPlanetaryTransferFailure failure, bool allowDocked = false)
     {
         failure = KoronusPlanetaryTransferFailure.None;
         if (HasComp<KoronusPlanetaryTransitComponent>(shuttleGrid))
@@ -624,6 +673,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             failure = KoronusPlanetaryTransferFailure.ShuttleInFtl;
             return false;
         }
+
+        if (allowDocked)
+            return true;
 
         foreach (var dock in _docking.GetDocks(shuttleGrid))
         {
@@ -721,7 +773,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         KoronusSystemPrototype system,
         KoronusCelestialBodyPrototype body,
         KoronusPlanetSurfacePrototype surface,
-        out Vector2 origin)
+        out Vector2 origin,
+        MapId? checkForGrids = null)
     {
         origin = Vector2.Zero;
         if (!TryComp<MapGridComponent>(shuttleGrid, out var grid))
@@ -743,6 +796,13 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         var fromNavigationCenter = center - system.NavigationCenter;
         if (fromNavigationCenter.LengthSquared() > safeRadius * safeRadius)
             center = system.NavigationCenter + Vector2.Normalize(fromNavigationCenter) * safeRadius;
+
+        if (checkForGrids is { } map)
+        {
+            return TryFindClearOrbitOrigin(map, grid.LocalAABB, center,
+                candidate => Vector2.DistanceSquared(candidate, system.NavigationCenter) <= safeRadius * safeRadius,
+                out origin);
+        }
 
         origin = center - grid.LocalAABB.Center;
         return true;
@@ -1228,7 +1288,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         float startupTime,
         float travelTime,
         float arrivalTime,
-        string? launchBodyId = null)
+        string? launchBodyId = null,
+        string? lowOrbitBodyId = null)
     {
         // Boarding roots must be repaired before startup stops a moving shuttle. Otherwise
         // their old map velocity can carry them off its floor before the actual map transfer.
@@ -1246,6 +1307,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         transit.TargetMap = targetMap;
         transit.TargetOrigin = targetOrigin;
         transit.LaunchBodyId = landing ? null : launchBodyId;
+        transit.LowOrbitBodyId = lowOrbitBodyId;
         transit.TransitMap = Comp<MapComponent>(transitMapUid).MapId;
         transit.TransitOrigin = AllocateAtmosphericTransitOrigin(shuttleGrid);
         transit.TravelAt = _timing.CurTime + TimeSpan.FromSeconds(MathF.Max(0f, startupTime));
@@ -1328,13 +1390,28 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                     launchBody.Surface == null ||
                     !_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(launchBody.Surface.Value, out var launchSurface) ||
                     !_sector.TryGetSystemPrototype(launchBody.System, out var launchSystem) ||
-                    !TryGetOrbitalLaunchOrigin(shuttleGrid, launchSystem, launchBody, launchSurface, out var currentOrigin))
+                    !TryGetOrbitalLaunchOrigin(shuttleGrid, launchSystem, launchBody, launchSurface, out var currentOrigin,
+                        TryGetLowOrbit(transit.SourceMap, out _) ? transit.TargetMap : null))
                 {
                     CancelTransit(shuttleGrid, transit);
                     continue;
                 }
 
                 transit.TargetOrigin = currentOrigin;
+            }
+
+            if (transit.LowOrbitBodyId != null)
+            {
+                // A grid can enter the planned arrival area while this shuttle is in transit.
+                if (!TryGetLowOrbit(transit.TargetMap, out var orbit) ||
+                    !TryComp<KoronusPlanetSurfaceMapComponent>(orbit.Surface, out var orbitSurface) ||
+                    !TryComp<MapGridComponent>(shuttleGrid, out var shuttle) ||
+                    !TryFindLowOrbitOrigin(shuttleGrid, transit.TargetMap, orbitSurface,
+                        transit.TargetOrigin + shuttle.LocalAABB.Center, out transit.TargetOrigin))
+                {
+                    CancelTransit(shuttleGrid, transit);
+                    continue;
+                }
             }
 
             HandleAtmosphericFallers(shuttleGrid, transit);
@@ -1373,7 +1450,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                 }
                 else if (!transit.Landing)
                 {
-                    FinishDeparture(rule, shuttleGrid, transit.LaunchBodyId ?? string.Empty, transit.ReservationKey);
+                    FinishDeparture(rule, shuttleGrid,
+                        transit.LaunchBodyId ?? transit.LowOrbitBodyId ?? string.Empty, transit.ReservationKey);
                 }
             }
 
@@ -1499,6 +1577,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             return;
 
         var surfaceMap = transit.Landing ? transit.TargetMap : transit.SourceMap;
+        if (TryGetLowOrbit(surfaceMap, out var orbit) && TryComp<MapComponent>(orbit.Surface, out var ground))
+            surfaceMap = ground.MapId;
+
         if (!TryGetSurfaceRuntime(surfaceMap, out _, out var runtime))
             return;
 
@@ -1893,7 +1974,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         bool canLand,
         bool canLaunch,
         string? landedBody,
-        bool navigationSuppressed = false)
+        bool navigationSuppressed = false,
+        string? orbitBody = null)
     {
         var transitState = TryComp<KoronusPlanetaryTransitComponent>(shuttleGrid, out var transit)
             ? new KoronusPlanetaryTransitState(
@@ -1907,12 +1989,17 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             if (body.System != system.ID)
                 continue;
 
+            if (orbitBody != null && body.ID != orbitBody)
+                continue;
+
             var sites = new List<KoronusLandingSiteState>();
+            var hasLowOrbit = false;
             if (body.Surface != null &&
                 _prototypes.TryIndex(body.Surface.Value, out KoronusPlanetSurfacePrototype? surface) &&
                 rule.Comp.SurfaceMaps.TryGetValue(surface.ID, out var surfaceMap) &&
                 TryGetSurfaceRuntime(surfaceMap, out _, out var surfaceRuntime))
             {
+                hasLowOrbit = surfaceRuntime.LowOrbit is { } lowOrbit && !TerminatingOrDeleted(lowOrbit);
                 foreach (var site in GetLandingSites(surfaceRuntime))
                 {
                     var key = GetReservationKey(body.ID, site.Id);
@@ -1941,8 +2028,9 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
                 body.OrbitAngularSpeed,
                 body.NavVisualRadius,
                 body.LandingApproachRadius,
-                landedBody == null && IsWithinLandingApproach(shuttleGrid, system, body),
-                sites));
+                orbitBody == body.ID || landedBody == null && IsWithinLandingApproach(shuttleGrid, system, body),
+                sites,
+                hasLowOrbit));
         }
 
         bodies.Sort((left, right) => string.Compare(left.Name, right.Name, StringComparison.Ordinal));
@@ -1955,7 +2043,8 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             landedBody,
             system.NavigationCenter,
             bodies,
-            transitState);
+            transitState,
+            orbitBody);
     }
 
     private bool TryBuildTransitInterfaceState(
@@ -1968,6 +2057,15 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             _sector.TryGetSystemPrototype(systemId, out var orbitalSystem))
         {
             state = BuildInterfaceState(rule, orbitalSystem, shuttleGrid, false, false, null, navigationSuppressed: true);
+            return true;
+        }
+
+        if (TryGetLowOrbit(transit.SourceMap, out var orbit) &&
+            TryComp<KoronusPlanetSurfaceMapComponent>(orbit.Surface, out var orbitSurface) &&
+            _sector.TryGetSystemPrototype(orbitSurface.SystemId, out var orbitSystem))
+        {
+            state = BuildInterfaceState(rule, orbitSystem, shuttleGrid, false, false, null,
+                navigationSuppressed: true, orbitBody: orbit.BodyId);
             return true;
         }
 
@@ -2159,6 +2257,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         _nextParkingUpdate = default;
         _nextReservationPrune = default;
         _nextApproachRefresh = default;
+        _nextLowOrbitCheck = default;
         _atmosphericTransitMap = EntityUid.Invalid;
         _nextAtmosphericTransitCoordinate = 0f;
         _landingApproachStates.Clear();

@@ -21,7 +21,6 @@ using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Map.Events;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
@@ -133,15 +132,13 @@ public sealed partial class ShuttleStorageSerializer : EntitySystem
             ? ShuttleStorageResult.Size : result;
     }
 
-    private EntitySerializer CreateSerializer(EntityUid grid, ShuttleStorageInspection info, Action markExternal, bool notify = true)
+    private EntitySerializer CreateSerializer(EntityUid grid, ShuttleStorageInspection info, Action markExternal)
     {
         var options = SerializationOptions.Default with
         {
             Category = FileCategory.Grid,
             MissingEntityBehaviour = MissingEntityBehaviour.AutoInclude,
         };
-        if (notify)
-            RaiseLocalEvent(new BeforeSerializationEvent([grid], [Transform(grid).MapID], FileCategory.Grid));
         var serializer = new EntitySerializer(_dependencies, options);
         var members = info.Entities;
         serializer.OnIsSerializeable += (Entity<MetaDataComponent> entity, ref bool serializable) =>
@@ -284,37 +281,43 @@ public sealed partial class ShuttleStorageSerializer : EntitySystem
     public bool TryLoad(MapId map, byte[] payload, out EntityUid grid)
     {
         grid = EntityUid.Invalid;
-        try { payload = ShuttleStoragePayloadCodec.Unpack(payload); }
-        catch (InvalidDataException) { return false; }
-        if (!Validate(payload))
-            return false;
-        using var reader = new StringReader(Encoding.UTF8.GetString(payload));
-        if (!_loader.TryLoadGrid(map, reader, "WH40K personal shuttle", out var loaded))
-            return false;
-        grid = loaded.Value.Owner;
-        return Inspect(grid, out _) == ShuttleStorageResult.Ready;
-    }
-
-    public bool Equivalent(byte[] first, byte[] second, out string difference)
-    {
+        MappingDataNode node;
         try
         {
-            MappingDataNode Read(byte[] bytes)
-            {
-                var node = ParseNode(bytes);
-                ((MappingDataNode) node["meta"]).Remove("time");
-                return node;
-            }
-            var before = Read(first);
-            var after = Read(second);
-            difference = SnapshotDifference(before, after, "snapshot") ?? "";
-            return difference.Length == 0;
+            node = ParseNode(payload);
         }
-        catch (Exception error)
+        catch (Exception)
         {
-            difference = $"Cannot compare native snapshots: {error.Message}";
             return false;
         }
+        if (!ValidateNode(node) ||
+            !_loader.TryLoadGeneric(node, "WH40K personal shuttle", out var loaded, new MapLoadOptions
+            {
+                MergeMap = map,
+                ExpectedCategory = FileCategory.Grid,
+            }))
+        {
+            return false;
+        }
+        if (loaded.Grids.Count == 1)
+        {
+            var loadedGrid = loaded.Grids.Single().Owner;
+            if (Inspect(loadedGrid, out _) == ShuttleStorageResult.Ready)
+            {
+                grid = loadedGrid;
+                return true;
+            }
+        }
+
+        _loader.Delete(loaded);
+        return false;
+    }
+
+    public static string? SnapshotDifference(MappingDataNode before, MappingDataNode after)
+    {
+        ((MappingDataNode) before["meta"]).Remove("time");
+        ((MappingDataNode) after["meta"]).Remove("time");
+        return SnapshotDifference(before, after, "snapshot");
     }
 
     private static string? SnapshotDifference(DataNode before, DataNode after, string path)

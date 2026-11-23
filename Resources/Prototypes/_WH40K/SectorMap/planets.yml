@@ -44,6 +44,7 @@
   # Its central 85 x 85 m clearing is reserved before the biome can place flora or other features.
   mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
   planet: FoulstoneForestWorld
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   preserveHostileNpcs: true
   # Leave 50 tiles of playable terrain beyond every edge of the authored base grids.
@@ -109,6 +110,7 @@
   id: TrinnitosDesertSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosDesertWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -173,6 +175,7 @@
   id: TrinnitosRockSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_rock_surface.yml
   planet: TrinnitosRockWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -237,6 +240,7 @@
   id: TrinnitosFlamingSurface
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosFlamingWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -304,6 +308,7 @@
   # Hokkaido's civilian facilities, without weapons, mobs or spawners, with an outdoor landing field.
   mapPath: /Maps/_WH40K/Planets/sottos_tomb_ice_surface.yml
   planet: SottosTombIceWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -369,6 +374,7 @@
   id: AivoriusBurningSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_chaos_surface.yml
   planet: AivoriusBurningWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -423,6 +429,7 @@
   id: AivoriusJungleSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusJungleWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -486,6 +493,7 @@
   id: AivoriusDesertSurface
   mapPath: /Maps/_WH40K/Planets/aivorius_desert_npz.yml
   planet: AivoriusDesertWorldSurface
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   authoredGridMargin: 50
   sceneryBuffer: 25
@@ -584,6 +592,7 @@
   id: FootfallDeadWorldSurface
   mapPath: /Maps/_WH40K/Planets/footfall_dead_world_surface.yml
   planet: FootfallDeadWorldProfile
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   # Leave 50 tiles of playable terrain beyond every edge of the authored base grids.
   authoredGridMargin: 50
@@ -637,6 +646,7 @@
   id: FootfallAsteroidSurface
   mapPath: /Maps/_WH40K/Planets/footfall_asteroid_surface.yml
   planet: FootfallAsteroidWorld
+  lowOrbitEnabled: true
   safetyProfile: KoronusPlanetProtection
   # Derive the playable boundary from the landing grid, with 50 tiles beyond every edge.
   authoredGridMargin: 50

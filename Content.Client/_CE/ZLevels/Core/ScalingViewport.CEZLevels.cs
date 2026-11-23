@@ -42,7 +42,7 @@ public sealed partial class ScalingViewport
         if (_xformQuery is null || !_xformQuery.Value.TryComp(mapUid, out var xform))
             return true;
 
-        var drawBox = GetDrawBox();
+        var drawBox = GetDrawBox().Translated(GlobalPixelPosition);
         var mapId = xform.MapID;
 
         var corners = new[]
@@ -96,12 +96,21 @@ public sealed partial class ScalingViewport
     private ShaderInstance? _transitBlitShader;
     private ShaderInstance? _cloudShader;
 
-    private void RenderZLevels(IRenderHandle renderHandle, IClydeViewport viewport)
+    private bool TryRenderZLevels(IRenderHandle renderHandle, IClydeViewport viewport)
     {
-        if (_eye is null)
-            return;
+        if (_eye is null || _player.LocalEntity is not { } player ||
+            !_entityManager.TryGetComponent<CEZLevelViewerComponent>(player, out var zLevelViewer) ||
+            !_entityManager.TryGetComponent<TransformComponent>(player, out var playerXform) ||
+            playerXform.MapID != _eye.Position.MapId ||
+            playerXform.MapUid is not { } playerMap ||
+            !_entityManager.HasComponent<CEZMapComponent>(playerMap) &&
+            !_entityManager.HasComponent<CEZTransitMapComponent>(playerMap))
+        {
+            return false;
+        }
 
         _fallbackEye = _eye;
+        var clearColor = viewport.ClearColor;
 
         // Cache frequently accessed components/systems
         _xformQuery ??= _entityManager.GetEntityQuery<TransformComponent>();
@@ -110,20 +119,6 @@ public sealed partial class ScalingViewport
         // Cache systems and components
         _zLevels ??= _entityManager.System<CEClientZLevelsSystem>();
         _mapSystem ??= _entityManager.System<SharedMapSystem>();
-
-        if (_player.LocalEntity is null)
-            return;
-
-        if (!_entityManager.TryGetComponent<CEZLevelViewerComponent>(_player.LocalEntity.Value, out var zLevelViewer))
-            return;
-
-        if (!_xformQuery.Value.TryComp(_player.LocalEntity, out var playerXform))
-            return;
-
-        if (playerXform.MapUid is null)
-            return;
-
-        var playerMap = playerXform.MapUid.Value;
 
         _zPasses.Clear();
 
@@ -144,7 +139,7 @@ public sealed partial class ScalingViewport
         }
         else
         {
-            frac = _zLevels.GetLocalAltitude(_player.LocalEntity.Value);
+            frac = _zLevels.GetLocalAltitude(player);
             ownDepth = -frac;
             belowChainStartDepth = -1f - frac;
             aboveDepth = 1f - frac;
@@ -257,7 +252,7 @@ public sealed partial class ScalingViewport
             if (depth <= 0.001f && !isTransit)
                 _entityManager.TryGetComponent(mapUid, out cloudDeck);
 
-            if (mapUid == playerMap && depth == 0f)
+            if (mapUid == playerMap && depth == 0f && _zPasses.Count == 1)
             {
                 viewport.Eye = _fallbackEye;
             }
@@ -269,7 +264,10 @@ public sealed partial class ScalingViewport
                 Angle rotation = _fallbackEye.Rotation * -1;
 
                 var offset = rotation.ToWorldVec() * CEClientZLevelsSystem.ZLevelOffset * (depth - ownDepth);
-                var zScale = MathF.Pow(CESharedZLevelsSystem.ZLevelViewShrink, -depth);
+                var viewShrink = _entityManager.TryGetComponent<CEZMapComponent>(mapUid, out var zMap)
+                    ? zMap.ViewShrink
+                    : CESharedZLevelsSystem.ZLevelViewShrink;
+                var zScale = MathF.Pow(viewShrink, -depth);
 
                 var zEye = new ZEye(lowestDepth, depth, highestDepth)
                 {
@@ -281,6 +279,7 @@ public sealed partial class ScalingViewport
                     // A pass with a cloud deck never wants the skybox: the deck IS
                     // the backdrop, and parallax would paint over it.
                     DrawParallax = !isTransit && depth == lowestDepth && cloudDeck == null,
+                    DrawRoofCover = mapUid != playerMap && depth < ownDepth,
                     Offset = _fallbackEye.Offset + offset,
                     Rotation = _fallbackEye.Rotation,
                     Scale = _fallbackEye.Scale * zScale,
@@ -334,9 +333,9 @@ public sealed partial class ScalingViewport
                 DrawCloudDeck(renderHandle, viewport, cloudAbove.CloudColor, coverage);
         }
 
-        // Restore the Eye
-        Eye = _fallbackEye;
-        viewport.Eye = Eye;
+        viewport.Eye = _fallbackEye;
+        viewport.ClearColor = clearColor;
+        return true;
     }
 
     private void RenderTransitOverhead(IRenderHandle renderHandle,
@@ -489,5 +488,6 @@ public sealed partial class ScalingViewport
         /// whether parallax draws (only used on the actual bottom layer of a z stack so transit doesnt explode time)
         /// </summary>
         public bool DrawParallax = true;
+        public bool DrawRoofCover;
     }
 }

@@ -14,12 +14,15 @@ internal sealed class Wh40kMappingGrid : Container
     private int _count;
     public int Columns { get; private set; } = 1;
     public int FirstRow { get; set; }
+    public float ContentHeight => Math.Max(0, ((_count + Columns - 1) / Columns) * RowHeight - Gap);
 
     public int Count
     {
         get => _count;
         set
         {
+            if (_count == value)
+                return;
             _count = value;
             InvalidateMeasure();
         }
@@ -32,7 +35,7 @@ internal sealed class Wh40kMappingGrid : Container
         var cell = new Vector2(CardWidth(width), CardHeight);
         foreach (var child in Children)
             child.Measure(cell);
-        return new Vector2(width, Math.Max(0, ((_count + Columns - 1) / Columns) * RowHeight - Gap));
+        return new Vector2(width, ContentHeight);
     }
 
     protected override Vector2 ArrangeOverride(Vector2 size)

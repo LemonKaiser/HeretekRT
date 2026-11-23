@@ -1,0 +1,32 @@
+- type: entity
+  parent: Clothing
+  id: KoronusParachute
+  name: orbital parachute
+  description: Wear it on your back. It opens automatically when you step off a shuttle in low orbit.
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Clothing/Back/Parachute/parachute.rsi
+    state: icon
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Objects/Clothing/Back/Parachute/parachute.rsi
+  - type: Clothing
+    slots:
+    - back
+  - type: KoronusParachute
+
+- type: entity
+  id: KoronusParachuteDeployed
+  name: deployed orbital parachute
+  categories: [ HideSpawnMenu ]
+  save: false
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Effects
+    sprite: _WH40K/Objects/Clothing/Back/Parachute/parachute_deployed.rsi
+    layers:
+    - state: cables
+      offset: 0, 0.3
+    - state: chute_animated
+      offset: 0, 0.9

@@ -10,12 +10,15 @@ namespace Content.Shared._WH40K.SectorMap.BUI;
 [Serializable, NetSerializable]
 public sealed class KoronusPlanetaryInterfaceState
 {
+    public const int LowOrbitDepth = 2;
+
     public bool Available;
     public bool CanLand;
     public bool CanLaunch;
     public bool NavigationSuppressed;
     public string? CurrentSystem;
     public string? LandedBody;
+    public string? OrbitBody;
     public Vector2 StellarCenter;
     public List<KoronusCelestialBodyState> Bodies;
     public KoronusPlanetaryTransitState? Transit;
@@ -29,7 +32,8 @@ public sealed class KoronusPlanetaryInterfaceState
         string? landedBody,
         Vector2 stellarCenter,
         List<KoronusCelestialBodyState> bodies,
-        KoronusPlanetaryTransitState? transit)
+        KoronusPlanetaryTransitState? transit,
+        string? orbitBody = null)
     {
         Available = available;
         CanLand = canLand;
@@ -37,6 +41,7 @@ public sealed class KoronusPlanetaryInterfaceState
         NavigationSuppressed = navigationSuppressed;
         CurrentSystem = currentSystem;
         LandedBody = landedBody;
+        OrbitBody = orbitBody;
         StellarCenter = stellarCenter;
         Bodies = bodies;
         Transit = transit;
@@ -59,6 +64,7 @@ public sealed class KoronusCelestialBodyState
     public float NavVisualRadius;
     public float LandingApproachRadius;
     public bool InLandingApproachRange;
+    public bool HasLowOrbit;
     public List<KoronusLandingSiteState> LandingSites;
 
     public KoronusCelestialBodyState(
@@ -73,7 +79,8 @@ public sealed class KoronusCelestialBodyState
         float navVisualRadius,
         float landingApproachRadius,
         bool inLandingApproachRange,
-        List<KoronusLandingSiteState> landingSites)
+        List<KoronusLandingSiteState> landingSites,
+        bool hasLowOrbit)
     {
         Id = id;
         Name = name;
@@ -86,6 +93,7 @@ public sealed class KoronusCelestialBodyState
         NavVisualRadius = navVisualRadius;
         LandingApproachRadius = landingApproachRadius;
         InLandingApproachRange = inLandingApproachRange;
+        HasLowOrbit = hasLowOrbit;
         LandingSites = landingSites;
     }
 }

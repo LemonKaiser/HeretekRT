@@ -3,7 +3,6 @@
  * https://github.com/space-wizards/space-station-14/blob/master/LICENSE.TXT
  */
 
-using System.Linq;
 using Content.Server._CE.ZLevels.PVS;
 using Content.Shared._CE.ZLevels.Core.Components;
 using JetBrains.Annotations;
@@ -36,51 +35,65 @@ public sealed partial class CEZLevelsSystem
     public bool TryAddMapsIntoNetwork(Entity<CEZMapNetworkComponent> network, Dictionary<EntityUid, int> maps)
     {
         var success = true;
+        var addedAny = false;
         foreach (var (mapUid, depth) in maps)
         {
             if (TryGetMapNetwork(mapUid, out var otherNetwork))
             {
                 Log.Error($"Failed attempt to add map {mapUid} to ZLevelNetwork {network}: This map is already in another network {otherNetwork}.");
                 success = false;
+                continue;
             }
 
             if (network.Comp.ZLevels.ContainsKey(depth))
             {
                 Log.Error($"Failed to add map {mapUid} to ZLevelNetwork {network}: This depth is already occupied.");
                 success = false;
+                continue;
             }
 
             if (network.Comp.ZLevels.ContainsValue(mapUid))
             {
                 Log.Error($"Failed attempt to add map {mapUid} to ZLevelNetwork {network} at depth {depth}: This map is already in this network.");
                 success = false;
+                continue;
             }
 
             network.Comp.ZLevels[depth] = mapUid;
             network.Comp.ZLevelByEntity[mapUid] = depth;
 
-            Dirty(network);
-
-            // Welcome to fast api code
-            QuickApiCache(network, mapUid, depth);
-
             var levelMapComponent = EnsureComp<CEZMapComponent>(mapUid);
             levelMapComponent.Depth = depth;
             levelMapComponent.NetworkUid = network;
 
-            if (network.Comp.ZLevels.TryGetValue(depth + 1, out var aboveMapUid))
-                levelMapComponent.MapAbove = aboveMapUid;
+            if (network.Comp.ZLevels.TryGetValue(depth + 1, out var aboveMapUid) &&
+                aboveMapUid is { } aboveUid && TryComp<CEZMapComponent>(aboveUid, out var above))
+            {
+                levelMapComponent.MapAbove = aboveUid;
+                above.MapBelow = mapUid;
+                Dirty(aboveUid, above);
+            }
 
-            if (network.Comp.ZLevels.TryGetValue(depth - 1, out var belowMapUid))
-                levelMapComponent.MapBelow = belowMapUid;
+            if (network.Comp.ZLevels.TryGetValue(depth - 1, out var belowMapUid) &&
+                belowMapUid is { } belowUid && TryComp<CEZMapComponent>(belowUid, out var below))
+            {
+                levelMapComponent.MapBelow = belowUid;
+                below.MapAbove = mapUid;
+                Dirty(belowUid, below);
+            }
 
             Dirty(mapUid, levelMapComponent);
+            addedAny = true;
 
             var ev = new CEMapAddedIntoZNetworkEvent(network, depth);
             RaiseLocalEvent(mapUid, ref ev);
         }
 
-        RaiseLocalEvent(network, new CEZLevelMapNetworkUpdatedEvent());
+        if (addedAny)
+        {
+            RebuildSortedCache(network);
+            RaiseLocalEvent(network, new CEZLevelMapNetworkUpdatedEvent());
+        }
 
         return success;
     }
@@ -123,62 +136,65 @@ public sealed partial class CEZLevelsSystem
         QueueDel(networkUid);
     }
 
-    private void QuickApiCache(Entity<CEZMapNetworkComponent> network, EntityUid value, int depth)
+    private void OnLevelTerminating(Entity<CEZMapComponent> level, ref EntityTerminatingEvent args)
+    {
+        var networkUid = level.Comp.NetworkUid;
+        if (TerminatingOrDeleted(networkUid) || !TryComp<CEZMapNetworkComponent>(networkUid, out var network))
+            return;
+
+        if (!network.ZLevelByEntity.Remove(level.Owner, out var depth))
+            return;
+
+        network.ZLevels.Remove(depth);
+        if (level.Comp.MapAbove is { } above && !TerminatingOrDeleted(above) &&
+            TryComp<CEZMapComponent>(above, out var upper))
+        {
+            upper.MapBelow = null;
+            Dirty(above, upper);
+        }
+
+        if (level.Comp.MapBelow is { } below && !TerminatingOrDeleted(below) &&
+            TryComp<CEZMapComponent>(below, out var lower))
+        {
+            lower.MapAbove = null;
+            Dirty(below, lower);
+        }
+
+        RebuildSortedCache((networkUid, network));
+        RaiseLocalEvent(networkUid, new CEZLevelMapNetworkUpdatedEvent());
+    }
+
+    private void RebuildSortedCache(Entity<CEZMapNetworkComponent> network)
     {
         var comp = network.Comp;
         var list = comp.SortedZLevels;
+        list.Clear();
+        var min = int.MaxValue;
+        var max = int.MinValue;
 
-        // Zero handling
-        if (comp.SortedMin == depth && comp.SortedMax == depth)
+        foreach (var (depth, mapUid) in comp.ZLevels)
         {
-            list.Add(value);
-            return;
+            if (mapUid is not { } uid || !uid.IsValid())
+                continue;
+
+            min = Math.Min(min, depth);
+            max = Math.Max(max, depth);
         }
 
-        var min = comp.SortedMin;
-        var max = comp.SortedMax;
-
-        if (depth < min)
+        if (min <= max)
         {
-            var delta = min - depth;
-            if (delta == 1)
-            {
-                list.Insert(0, value);
-
-                comp.SortedMin = depth;
-                Dirty(network);
-                return;
-            }
-
-            list.InsertRange(0, Enumerable.Repeat(EntityUid.Invalid, delta - 1));
-            list.Insert(0, value);
-
-            comp.SortedMin = depth;
-            Dirty(network);
-            return;
+            for (var depth = min; depth < max; depth++)
+                list.Add(comp.ZLevels.GetValueOrDefault(depth) ?? EntityUid.Invalid);
+            list.Add(comp.ZLevels.GetValueOrDefault(max) ?? EntityUid.Invalid);
+        }
+        else
+        {
+            min = max = 0;
         }
 
-        if (depth > max)
-        {
-            var delta = depth - max;
-            if (delta == 1)
-            {
-                list.Add(value);
-
-                comp.SortedMax = depth;
-                Dirty(network);
-                return;
-            }
-
-            list.AddRange(Enumerable.Repeat(EntityUid.Invalid, delta - 1));
-            list.Add(value);
-
-            comp.SortedMax = depth;
-            Dirty(network);
-            return;
-        }
-
-        list[depth - min] = value;
+        comp.SortedMin = min;
+        comp.SortedMax = max;
+        Dirty(network);
     }
 }
 

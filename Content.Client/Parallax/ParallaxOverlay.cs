@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Client.Parallax.Managers;
+using Content.Client.Viewport;
 using Content.Shared.CCVar;
 using Content.Shared.Parallax.Biomes;
 using Robust.Client.Graphics;
@@ -33,7 +34,7 @@ public sealed partial class ParallaxOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        if (args.MapId == MapId.Nullspace)
+        if (args.MapId == MapId.Nullspace || args.Viewport.Eye is ScalingViewport.ZEye { DrawParallax: false })
             return false;
 
         return true;

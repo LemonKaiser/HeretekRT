@@ -229,7 +229,7 @@ public sealed partial class CEZLevelsSystem
         if (levelsBelow <= 0)
             return baseScale;
 
-        return baseScale * MathF.Pow(1f / CESharedZLevelsSystem.ZLevelViewShrink, levelsBelow);
+        return baseScale * MathF.Pow(1f / eyeZ.ViewShrink, levelsBelow);
     }
 
     private void OnZLevelFall(Entity<CEZPhysicsComponent> ent, ref CEZLevelFallMapEvent args)

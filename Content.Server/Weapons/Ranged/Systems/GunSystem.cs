@@ -64,6 +64,7 @@ public sealed partial class GunSystem : SharedGunSystem
     public override void Initialize()
     {
         base.Initialize();
+        SubscribeLocalEvent<GunComponent, ComponentStartup>(OnGunStartup);
         SubscribeLocalEvent<BallisticAmmoProviderComponent, PriceCalculationEvent>(OnBallisticPrice);
         SubscribeLocalEvent<AutoShootGunComponent, ActivateInWorldEvent>(OnActivateGun); // Frontier
         SubscribeLocalEvent<AutoShootGunComponent, ComponentInit>(OnGunInit); // Frontier
@@ -75,6 +76,8 @@ public sealed partial class GunSystem : SharedGunSystem
         _autoShootGunQuery = GetEntityQuery<AutoShootGunComponent>(); // Mono
         _damageableQuery = GetEntityQuery<DamageableComponent>(); // Mono
     }
+
+    private void OnGunStartup(Entity<GunComponent> gun, ref ComponentStartup args) => RefreshModifiers((gun, gun));
 
     private void OnBallisticPrice(EntityUid uid, BallisticAmmoProviderComponent component, ref PriceCalculationEvent args)
     {

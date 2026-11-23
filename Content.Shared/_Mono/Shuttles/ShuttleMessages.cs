@@ -52,9 +52,9 @@ public sealed class ToggleAutoDockRequestMessage : BoundUserInterfaceMessage
 public sealed class ShuttleConsolePlanetaryLandingRequestMessage : BoundUserInterfaceMessage
 {
     public string CelestialBodyId;
-    public string LandingSiteId;
+    public string? LandingSiteId;
 
-    public ShuttleConsolePlanetaryLandingRequestMessage(string celestialBodyId, string landingSiteId)
+    public ShuttleConsolePlanetaryLandingRequestMessage(string celestialBodyId, string? landingSiteId)
     {
         CelestialBodyId = celestialBodyId;
         LandingSiteId = landingSiteId;

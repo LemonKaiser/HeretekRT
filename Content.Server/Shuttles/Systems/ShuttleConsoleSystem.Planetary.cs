@@ -19,15 +19,14 @@ public sealed partial class ShuttleConsoleSystem
         if (!TryGetConsoleShuttle(entity.Owner, out var shuttleGrid))
             return;
 
-        if (!_koronusPlanetary.TryLand(
-                shuttleGrid,
-                args.CelestialBodyId,
-                args.LandingSiteId,
-                out var failure,
-                args.Actor))
+        var transferred = args.LandingSiteId == null
+            ? _koronusPlanetary.TryEnterLowOrbit(shuttleGrid, args.CelestialBodyId, out var failure)
+            : _koronusPlanetary.TryLand(shuttleGrid, args.CelestialBodyId, args.LandingSiteId, out failure, args.Actor);
+        if (!transferred)
         {
             _popup.PopupEntity(
-                Loc.GetString("koronus-planetary-landing-denied", ("reason", GetPlanetaryFailureText(failure))),
+                Loc.GetString(args.LandingSiteId == null ? "koronus-planetary-orbit-denied" : "koronus-planetary-landing-denied",
+                    ("reason", GetPlanetaryFailureText(failure))),
                 entity.Owner,
                 PopupType.Medium);
             RefreshShuttleConsoles();

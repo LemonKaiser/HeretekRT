@@ -70,6 +70,12 @@
                                              TextAlign="Center"
                                              StyleClasses="ButtonSquare"
                                              MinHeight="32"/>
+                            <controls:Button Name="PlanetaryOrbitButton"
+                                             Visible="False"
+                                             Text="{controls:Loc 'koronus-planetary-nav-orbit'}"
+                                             TextAlign="Center"
+                                             StyleClasses="ButtonSquare"
+                                             MinHeight="32"/>
                             <controls:Button Name="PlanetaryLaunchButton"
                                              Visible="False"
                                              Text="{controls:Loc 'koronus-planetary-nav-launch'}"

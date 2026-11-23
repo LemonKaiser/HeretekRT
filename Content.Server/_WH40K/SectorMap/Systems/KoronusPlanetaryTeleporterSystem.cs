@@ -208,7 +208,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
 
         if (TryGetSurfaceRuntime(Transform(source).MapID, out var surfaceRuntime))
         {
-            var candidates = GetShuttleTeleporters(surfaceRuntime.SystemId, component.SelectedTarget, user)
+            var candidates = GetShuttleTeleporters(surfaceRuntime, component.SelectedTarget, user)
                 .Where(candidate => IsArrivalClear(candidate, user)).ToList();
             if (candidates.Count == 0)
                 return false;
@@ -242,7 +242,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
             return _shipAccess.HasShipAccess(grid, user);
 
         if (TryGetSurfaceRuntime(Transform(source).MapID, out var surface) && component.SelectedTarget != null)
-            return GetShuttleGrid(surface.SystemId, component.SelectedTarget, out var shuttle) &&
+            return GetShuttleGrid(surface, component.SelectedTarget, out var shuttle) &&
                    _shipAccess.HasShipAccess(shuttle, user);
 
         return false;
@@ -335,7 +335,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         if (TryGetSurfaceRuntime(Transform(source).MapID, out var surfaceRuntime))
         {
             var result = new List<KoronusPlanetaryTeleporterTargetState>();
-            foreach (var grid in GetShuttleGrids(surfaceRuntime.SystemId))
+            foreach (var grid in GetShuttleGrids(surfaceRuntime))
             {
                 var id = ShuttleId(grid);
                 var available = _shipAccess.HasShipAccess(grid, actor) &&
@@ -369,18 +369,22 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
     private List<SurfaceTeleporterTarget> GetSurfaceTeleporters(EntityUid shuttleGrid, EntityUid user)
     {
         var result = new List<SurfaceTeleporterTarget>();
-        if (!_sector.TryGetSystemId(Transform(shuttleGrid).MapID, out var systemId))
+        var shuttle = Transform(shuttleGrid);
+        var inLowOrbit = HasComp<KoronusLowOrbitMapComponent>(shuttle.MapUid);
+        if (!_sector.TryGetSystemId(shuttle.MapID, out var systemId) && !inLowOrbit)
             return result;
 
         // Destination surfaces are deliberately paused while empty. They must remain selectable
         // from orbit; Complete() unpauses the chosen surface immediately before moving the mob.
-        var query = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTeleporterComponent, TransformComponent>();
+        var query = AllEntityQuery<KoronusPlanetaryTeleporterComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var component, out var transform))
         {
             if (!TryGetSurfaceRuntime(transform.MapID, out var surfaceRuntime) ||
-                surfaceRuntime.SystemId != systemId ||
-                !TryResolveBodyForSurface(surfaceRuntime.SurfaceId, out var body) ||
-                !_planetary.IsWithinLandingApproach(shuttleGrid, body.ID) ||
+                (inLowOrbit
+                    ? surfaceRuntime.LowOrbit != shuttle.MapUid
+                    : surfaceRuntime.SystemId != systemId ||
+                      !TryResolveBodyForSurface(surfaceRuntime.SurfaceId, out var body) ||
+                      !_planetary.IsWithinLandingApproach(shuttleGrid, body.ID)) ||
                 !IsOperational(uid, transform))
             {
                 continue;
@@ -393,9 +397,9 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         return result;
     }
 
-    private List<EntityUid> GetShuttleTeleporters(string systemId, string shuttleId, EntityUid user)
+    private List<EntityUid> GetShuttleTeleporters(KoronusPlanetSurfaceMapComponent surface, string shuttleId, EntityUid user)
     {
-        if (!GetShuttleGrid(systemId, shuttleId, out var grid) || !_shipAccess.HasShipAccess(grid, user))
+        if (!GetShuttleGrid(surface, shuttleId, out var grid) || !_shipAccess.HasShipAccess(grid, user))
             return new List<EntityUid>();
 
         return GetOperationalTeleporters(grid);
@@ -404,7 +408,7 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
     private List<EntityUid> GetOperationalTeleporters(EntityUid grid)
     {
         var result = new List<EntityUid>();
-        var query = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTeleporterComponent, TransformComponent>();
+        var query = AllEntityQuery<KoronusPlanetaryTeleporterComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
             if (transform.GridUid == grid && IsOperational(uid, transform))
@@ -414,23 +418,23 @@ public sealed class KoronusPlanetaryTeleporterSystem : EntitySystem
         return result;
     }
 
-    private IEnumerable<EntityUid> GetShuttleGrids(string systemId)
+    private IEnumerable<EntityUid> GetShuttleGrids(KoronusPlanetSurfaceMapComponent surface)
     {
-        if (!_sector.TryGetSystemMap(systemId, out var orbitalMap))
-            yield break;
-
+        var hasSystemMap = _sector.TryGetSystemMap(surface.SystemId, out var orbitalMap);
         // Orbit may pause while the entire crew is exploring its surface.
-        var query = EntityManager.AllEntityQueryEnumerator<ShuttleComponent, TransformComponent>();
+        var query = AllEntityQuery<ShuttleComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
-            if (transform.MapID == orbitalMap && GetOperationalTeleporters(uid).Count > 0)
+            var inLowOrbit = surface.LowOrbit is { } lowOrbit && transform.MapUid == lowOrbit;
+            if ((inLowOrbit || hasSystemMap && transform.MapID == orbitalMap) &&
+                GetOperationalTeleporters(uid).Count > 0)
                 yield return uid;
         }
     }
 
-    private bool GetShuttleGrid(string systemId, string id, out EntityUid shuttle)
+    private bool GetShuttleGrid(KoronusPlanetSurfaceMapComponent surface, string id, out EntityUid shuttle)
     {
-        foreach (var candidate in GetShuttleGrids(systemId))
+        foreach (var candidate in GetShuttleGrids(surface))
         {
             if (ShuttleId(candidate) != id)
                 continue;

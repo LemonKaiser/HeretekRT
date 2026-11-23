@@ -190,12 +190,13 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         ShipyardSaleResult result = new ShipyardSaleResult();
         bill = 0;
 
-        if (EntityManager.IsQueuedForDeletion(shuttleUid)
+        if (!_enabled
+            || TerminatingOrDeleted(shuttleUid)
+            || EntityManager.IsQueuedForDeletion(shuttleUid)
             || EntityManager.System<Content.Server._WH40K.ShuttleStorage.ShuttleStorageSystem>().IsTransferring(shuttleUid)
             || !TryComp<StationDataComponent>(stationUid, out var stationGrid)
             || !HasComp<ShuttleComponent>(shuttleUid)
-            || !TryComp(shuttleUid, out TransformComponent? xform)
-            || ShipyardMap == null)
+            || !HasComp<TransformComponent>(shuttleUid))
         {
             result.Error = ShipyardSaleError.InvalidShip;
             return result;

@@ -27,6 +27,12 @@ public sealed partial class KoronusPlanetSurfaceMapComponent : Component
     [ViewVariables]
     public EntityUid TerrainGrid;
 
+    [ViewVariables]
+    public EntityUid? LowOrbit;
+
+    [ViewVariables]
+    public EntityUid? Atmosphere;
+
     /// <summary>
     /// Grids loaded from the authored surface map. Planet setup gives static grids a shuttle
     /// component too, so this explicit set is the authority for distinguishing the permanent base

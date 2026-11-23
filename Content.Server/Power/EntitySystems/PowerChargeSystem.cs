@@ -20,6 +20,7 @@ public sealed partial class PowerChargeSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        SubscribeLocalEvent<PowerChargeComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<PowerChargeComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<PowerChargeComponent, ComponentShutdown>(OnComponentShutdown);
         SubscribeLocalEvent<PowerChargeComponent, ActivatableUIOpenAttemptEvent>(OnUIOpenAttempt);
@@ -72,7 +73,19 @@ public sealed partial class PowerChargeSystem : EntitySystem
         RaiseLocalEvent(uid, ref eventArgs);
     }
 
-    private void OnMapInit(Entity<PowerChargeComponent> ent, ref MapInitEvent args)
+    private void OnComponentStartup(Entity<PowerChargeComponent> ent, ref ComponentStartup args)
+    {
+        RefreshMachineState(ent);
+        if (ent.Comp.Active)
+        {
+            var activated = new ChargedMachineActivatedEvent();
+            RaiseLocalEvent(ent, ref activated);
+        }
+    }
+
+    private void OnMapInit(Entity<PowerChargeComponent> ent, ref MapInitEvent args) => RefreshMachineState(ent);
+
+    private void RefreshMachineState(Entity<PowerChargeComponent> ent)
     {
         ApcPowerReceiverComponent? powerReceiver = null;
         if (!Resolve(ent, ref powerReceiver, false))

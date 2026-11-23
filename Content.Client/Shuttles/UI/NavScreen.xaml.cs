@@ -74,7 +74,7 @@ public sealed partial class NavScreen : BoxContainer
     public event Action<NetEntity, Angle>? RequestBeaconFTL;
     public event Action<MapCoordinates, Angle>? RequestAutopilot;
     public event Action<NetEntity>? RequestAutopilotGrid;
-    public event Action<string, string>? PlanetaryLandingRequest;
+    public event Action<string, string?>? PlanetaryLandingRequest;
     public event Action? PlanetaryLaunchRequest;
 
     public NavScreen()
@@ -108,6 +108,11 @@ public sealed partial class NavScreen : BoxContainer
         BssFTLButton.OnToggled += args => SetTargeting(args.Pressed, ShuttleNavTargetingMode.Bss);
         BssRebuildButton.OnPressed += _ => ScanBssObjects();
         PlanetaryLandingButton.OnPressed += _ => TryRequestPlanetaryLanding();
+        PlanetaryOrbitButton.OnPressed += _ =>
+        {
+            if (_selectedPlanetaryBody is { } body && !PlanetaryOrbitButton.Disabled)
+                PlanetaryLandingRequest?.Invoke(body, null);
+        };
         PlanetaryLaunchButton.OnPressed += _ => PlanetaryLaunchRequest?.Invoke();
         NavRadar.PlanetSelected += OnPlanetSelected;
         NavRadar.PlanetSelectionCleared += ClosePlanetaryDetails;
@@ -452,7 +457,7 @@ public sealed partial class NavScreen : BoxContainer
     public void UpdatePlanetaryState(KoronusPlanetaryInterfaceState state)
     {
         _planetaryState = state;
-        _navigationSuppressed = state.NavigationSuppressed;
+        _navigationSuppressed = state.NavigationSuppressed || state.OrbitBody != null;
         NavRadar.UpdatePlanetaryState(state);
 
         NavAutopilotButton.Disabled = _navigationSuppressed;
@@ -481,12 +486,19 @@ public sealed partial class NavScreen : BoxContainer
             PlanetaryDetailsPanel.Visible = false;
         }
 
-        if (state.LandedBody != null)
+        if ((state.LandedBody ?? state.OrbitBody) is { } localBody)
         {
-            _selectedPlanetaryBody = state.LandedBody;
-            var landedBody = state.Bodies.FirstOrDefault(body => body.Id == state.LandedBody);
-            _selectedLandingSite = landedBody?.LandingSites
-                .FirstOrDefault(site => site.ReservedByCurrentShuttle)?.Id;
+            if (_selectedPlanetaryBody != localBody)
+                _selectedLandingSite = null;
+
+            _selectedPlanetaryBody = localBody;
+            if (state.LandedBody != null)
+            {
+                var landedBody = state.Bodies.FirstOrDefault(body => body.Id == localBody);
+                _selectedLandingSite = landedBody?.LandingSites
+                    .FirstOrDefault(site => site.ReservedByCurrentShuttle)?.Id;
+            }
+
             PlanetaryDetailsPanel.Visible = true;
         }
 
@@ -539,7 +551,10 @@ public sealed partial class NavScreen : BoxContainer
         var climateText = Loc.GetString("koronus-planetary-popup-climate", ("climate", climate));
         PlanetaryBodyClimate.Text = Ellipsize(climateText, PlanetaryInfoCharacterLimit);
         PlanetaryBodyClimate.ToolTip = climateText;
-        PlanetaryBodySize.Text = Loc.GetString("koronus-planetary-popup-size", ("size", size));
+        var inLowOrbit = _planetaryState.OrbitBody == body.Id;
+        PlanetaryBodySize.Text = inLowOrbit
+            ? Loc.GetString("koronus-planetary-nav-orbit-status", ("depth", KoronusPlanetaryInterfaceState.LowOrbitDepth))
+            : Loc.GetString("koronus-planetary-popup-size", ("size", size));
 
         var isLandedHere = _planetaryState.LandedBody == body.Id;
         var selectedSite = body.LandingSites.FirstOrDefault(site => site.Id == _selectedLandingSite);
@@ -594,7 +609,13 @@ public sealed partial class NavScreen : BoxContainer
         var hasLandingSites = body.LandingSites.Count > 0;
         PlanetaryLandingSitesPanel.Visible = hasLandingSites;
         PlanetaryLandingButton.Visible = hasLandingSites && !isLandedHere;
-        PlanetaryLaunchButton.Visible = isLandedHere;
+        PlanetaryOrbitButton.Visible = body.HasLowOrbit && !inLowOrbit;
+        PlanetaryOrbitButton.Disabled = _planetaryState.Transit != null ||
+            (isLandedHere ? !_planetaryState.CanLaunch : !_planetaryState.CanLand || !body.InLandingApproachRange);
+        PlanetaryLaunchButton.Visible = isLandedHere || inLowOrbit;
+        PlanetaryLaunchButton.Text = Loc.GetString(body.HasLowOrbit
+            ? "koronus-planetary-nav-system"
+            : "koronus-planetary-nav-launch");
         PlanetaryLaunchButton.Disabled = !_planetaryState.CanLaunch || _planetaryState.Transit != null;
         PlanetaryLaunchButton.Label.FontColorOverride = PlanetaryLaunchButton.Disabled
             ? Color.FromHex("#686868")
@@ -730,7 +751,7 @@ public sealed partial class NavScreen : BoxContainer
 
     private void ClosePlanetaryDetails()
     {
-        if (_planetaryState.LandedBody != null || _planetaryState.Transit != null)
+        if (_planetaryState.LandedBody != null || _planetaryState.OrbitBody != null || _planetaryState.Transit != null)
             return;
 
         _selectedPlanetaryBody = null;

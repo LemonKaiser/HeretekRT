@@ -81,9 +81,10 @@ public sealed class DeviceNet
     /// </summary>
     public bool Remove(DeviceNetworkComponent device)
     {
-        if (device.Address == null || !Devices.Remove(device.Address))
+        if (device.Address == null || !Devices.TryGetValue(device.Address, out var registered) || registered != device)
             return false;
 
+        Devices.Remove(device.Address);
         if (device.ReceiveFrequency is not uint freq)
             return true;
 

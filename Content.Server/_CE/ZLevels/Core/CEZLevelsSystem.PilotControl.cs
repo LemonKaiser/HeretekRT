@@ -163,7 +163,7 @@ public sealed partial class CEZLevelsSystem
 
             // Transit maps are already in the air. If you're landed on a transit map you have much, MUCH bigger problems.
             var mapUid = Transform(gridUid).MapUid;
-            if (mapUid == null || !HasComp<CEZMapComponent>(mapUid))
+            if (!TryComp<CEZMapComponent>(mapUid, out var level) || level.ControlledGridAltitude)
                 continue;
 
             // No gravgen, dumbass.
@@ -208,7 +208,7 @@ public sealed partial class CEZLevelsSystem
                 if (grounded && !down)
                 {
                     faller.Velocity = -SpoolLiftoffVelocity;
-                    SpawnLiftoffDust(gridUid, mapUid.Value);
+                    SpawnLiftoffDust(gridUid, mapUid!.Value);
                 }
                 else
                 {

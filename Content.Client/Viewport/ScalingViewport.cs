@@ -158,7 +158,8 @@ namespace Content.Client.Viewport
 
             DebugTools.AssertNotNull(_viewport);
 
-            _viewport!.Render();
+            if (!TryRenderZLevels(handle, _viewport!))
+                _viewport!.Render();
 
             if (_queuedScreenshots.Count != 0)
             {

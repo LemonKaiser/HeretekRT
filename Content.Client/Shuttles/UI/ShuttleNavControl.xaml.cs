@@ -1672,6 +1672,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     {
         _planetHitTargets.Clear();
         if (!_planetaryState.Available ||
+            _planetaryState.OrbitBody != null ||
             _planetaryState.NavigationSuppressed ||
             _ftlState is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
             return;

@@ -81,8 +81,19 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
             if (!_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(runtime.SurfaceId, out var surface))
                 continue;
 
-            UpdateSurface(runtime, map.MapId, surface,
-                _playerMaps.Contains(map.MapId) || _planetaryTransitMaps.Contains(map.MapId));
+            var occupied = _playerMaps.Contains(map.MapId) || _planetaryTransitMaps.Contains(map.MapId);
+            if (TryComp<MapComponent>(runtime.LowOrbit, out var orbit))
+                occupied |= _playerMaps.Contains(orbit.MapId) || _planetaryTransitMaps.Contains(orbit.MapId);
+
+            if (TryComp<MapComponent>(runtime.Atmosphere, out var atmosphere))
+                occupied |= _playerMaps.Contains(atmosphere.MapId);
+
+            UpdateSurface(runtime, map.MapId, surface, occupied);
+            var paused = _maps.IsPaused(map.MapId);
+            if (orbit != null && _maps.IsPaused(orbit.MapId) != paused)
+                _maps.SetPaused(orbit.MapId, paused);
+            if (atmosphere != null && _maps.IsPaused(atmosphere.MapId) != paused)
+                _maps.SetPaused(atmosphere.MapId, paused);
         }
 
         // Deleting maps while an entity query is iterating over their map components can invalidate
