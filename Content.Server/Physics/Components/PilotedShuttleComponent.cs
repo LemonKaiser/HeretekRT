@@ -22,4 +22,6 @@ public sealed partial class PilotedShuttleComponent : Component
     /// </summary>
     [DataField]
     public int ActiveSources = 0;
+
+    public bool ManualInput;
 }

@@ -84,6 +84,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     // temporary buffers to avoid per-frame heap churn
     private readonly List<BlipData> _tempBlipDataList = new();
     private readonly HashSet<EntityUid> _visibleGridsSet = new();
+    private readonly HashSet<EntityUid> _targetableGridsSet = new();
     private readonly Vector2[] _koronusBoundaryOutlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
     private readonly Vector2[] _koronusBoundaryDangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
     private readonly Vector2[] _koronusSafetyZoneBandVertices = new Vector2[(KoronusSafetyZoneBandSegments + 1) * 2];
@@ -788,12 +789,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return false;
 
         var bodyQuery = EntManager.GetEntityQuery<PhysicsComponent>();
-        var captureRange = MathF.Max(1f, 18f * UIScale / MinimapScale);
+        var captureRange = MathF.Max(1f, 22f * UIScale / MinimapScale);
         var closestDistance = captureRange * captureRange;
+        var ourGridId = _shuttleEntity ?? (_coordinates != null && EntManager.TryGetComponent<TransformComponent>(_coordinates.Value.EntityId, out var ownXform) ? ownXform.GridUid : null);
 
-        foreach (var grid in _visibleGridsSet)
+        foreach (var grid in _targetableGridsSet)
         {
-            if (!bodyQuery.TryGetComponent(grid, out var body))
+            if (grid == ourGridId || !bodyQuery.TryGetComponent(grid, out var body))
                 continue;
 
             var gridCoordinates = _transform.ToMapCoordinates(new EntityCoordinates(grid, body.LocalCenter));
@@ -806,6 +808,48 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
             closestDistance = distance;
             targetGrid = grid;
+        }
+
+        // Also allow snapping to distant non-grid IFF beacons mounted on a station grid.
+        var iffQuery = EntManager.AllEntityQueryEnumerator<IFFComponent, TransformComponent>();
+        while (iffQuery.MoveNext(out var uid, out var iff, out var xform))
+        {
+            if (xform.MapID != mapCoordinates.MapId ||
+                xform.GridUid is not { } beaconGrid ||
+                beaconGrid == ourGridId ||
+                EntManager.HasComponent<MapGridComponent>(uid) ||
+                (iff.Flags & IFFFlags.Hide) != 0x0)
+            {
+                continue;
+            }
+
+            var beaconPos = _transform.GetWorldPosition(uid);
+            var distance = Vector2.DistanceSquared(beaconPos, mapCoordinates.Position);
+            if (distance > closestDistance)
+                continue;
+
+            closestDistance = distance;
+            targetGrid = beaconGrid;
+        }
+
+        // Also allow snapping to BSS beacons attached to a valid grid.
+        foreach (var beacon in _bssBeacons)
+        {
+            var beaconCoords = EntManager.GetCoordinates(beacon.Coordinates);
+            var beaconGrid = beaconCoords.EntityId;
+            if (!beaconGrid.IsValid() || beaconGrid == ourGridId || !EntManager.HasComponent<MapGridComponent>(beaconGrid))
+                continue;
+
+            var beaconMap = _clientShuttles.GetMapCoordinates(beacon);
+            if (beaconMap.MapId != mapCoordinates.MapId)
+                continue;
+
+            var distance = Vector2.DistanceSquared(beaconMap.Position, mapCoordinates.Position);
+            if (distance > closestDistance)
+                continue;
+
+            closestDistance = distance;
+            targetGrid = beaconGrid;
         }
 
         return targetGrid.IsValid();
@@ -960,6 +1004,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _tempBlipDataList.Clear();
 
         _visibleGridsSet.Clear();
+        _targetableGridsSet.Clear();
 
         // Draw other grids... differently
         foreach (var grid in _grids)
@@ -982,6 +1027,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             if (!detected)
                 continue;
 
+            _targetableGridsSet.Add(grid);
             if (!blipOnly)
                 _visibleGridsSet.Add(grid);
             var curGridToWorld = _transform.GetWorldMatrix(gUid);
@@ -1317,7 +1363,12 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             EntManager.TryGetComponent(targetGrid, out PhysicsComponent? targetBody))
         {
             targetCoordinates = new EntityCoordinates(targetGrid, targetBody.LocalCenter);
-            capturedName = EntManager.GetComponent<MetaDataComponent>(targetGrid).EntityName;
+            EntManager.TryGetComponent<IFFComponent>(targetGrid, out var targetIff);
+            var hideTargetLabel = targetIff != null && (targetIff.Flags & IFFFlags.HideLabel) != 0x0;
+            capturedName = hideTargetLabel
+                ? Loc.GetString("shuttle-console-unknown")
+                : _shuttles.GetIFFLabel(targetGrid, self: false, component: targetIff) ??
+                  EntManager.GetComponent<MetaDataComponent>(targetGrid).EntityName;
         }
         else if (TargetingMode == ShuttleNavTargetingMode.Bss &&
                  TryGetTargetBeacon(targetCoordinates, out var targetBeacon))

@@ -358,13 +358,17 @@ public sealed partial class ShipMoveToOperator : HTNOperator, IHtnConditionalShu
             return HTNOperatorStatus.Finished;
         }
 
-        if (RequireSolo && _entManager.TryGetComponent<PilotedShuttleComponent>(xform.GridUid, out var piloted) && piloted.ActiveSources > 1)
-            return HTNOperatorStatus.Finished;
+        if (RequireSolo && _entManager.TryGetComponent<PilotedShuttleComponent>(xform.GridUid, out var piloted) &&
+            (piloted.ManualInput || piloted.ActiveSources > 1))
+        {
+            return HTNOperatorStatus.Failed;
+        }
 
         return steerer.Status switch
         {
             ShipSteeringStatus.InRange => HTNOperatorStatus.Finished,
             ShipSteeringStatus.Moving => HTNOperatorStatus.Continuing,
+            ShipSteeringStatus.Failed => HTNOperatorStatus.Failed,
             _ => throw new ArgumentOutOfRangeException()
         };
     }

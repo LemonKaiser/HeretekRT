@@ -4,13 +4,13 @@ using Robust.Shared.Map;
 namespace Content.Server._Mono.Shuttles.Components;
 
 /// <summary>
-/// Stores the per-shuttle opt-in setting for automatic docking.
+/// Stores the per-shuttle setting for automatic docking (enabled by default).
 /// </summary>
 [RegisterComponent]
 public sealed partial class AutoDockComponent : Component
 {
     [DataField]
-    public bool Enabled;
+    public bool Enabled = true;
 }
 
 /// <summary>
@@ -28,6 +28,13 @@ public sealed partial class ShuttleConsoleAutoDockingComponent : Component
     public float TerminalElapsed;
     public byte StableTerminalTicks;
     public bool CollisionDetected;
+    public byte Retries;
+    public float NextClearanceCheck;
+    public float BestTerminalError;
+    public float SecondsWithoutProgress;
+    public Angle? LateralCorrectionAngle;
+    public bool RetreatingForLateralCorrection;
+    public bool LateralTurnStarted;
 }
 
 public enum AutoDockPhase : byte

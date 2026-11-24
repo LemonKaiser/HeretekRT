@@ -602,8 +602,8 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     {
         docks ??= GetAllDocks();
         var autoDockEnabled = shuttleGrid != null &&
-                              TryComp<AutoDockComponent>(shuttleGrid.Value, out var autoDock) &&
-                              autoDock.Enabled;
+                              (!TryComp<AutoDockComponent>(shuttleGrid.Value, out var autoDock) ||
+                               autoDock.Enabled);
         return new DockingInterfaceState(docks, autoDockEnabled);
     }
 

@@ -565,6 +565,8 @@ public sealed partial class MoverController : SharedMoverController
             var angularMul = 0f;
             var accelMul = 0f;
             var setMaxVel = (float?)0f;
+            GetShuttleInputsEvent? autonomousInput = null;
+            piloted.ManualInput = false;
             foreach (var pilot in piloted.InputSources)
             {
                 var inputsEv = new GetShuttleInputsEvent(frameTime, uid);
@@ -574,6 +576,13 @@ public sealed partial class MoverController : SharedMoverController
                     toRemove.Add(pilot);
                 else if (inputsEv.Input != null)
                 {
+                    if (inputsEv.Input.Value.ProportionalThrust)
+                    {
+                        autonomousInput ??= inputsEv;
+                        continue;
+                    }
+
+                    piloted.ManualInput |= HasComp<PilotComponent>(pilot);
                     inputs.Add(inputsEv.Input.Value);
                     angularMul += inputsEv.AngularMul;
                     accelMul += inputsEv.AccelMul;
@@ -587,6 +596,16 @@ public sealed partial class MoverController : SharedMoverController
             foreach (var remUid in toRemove)
             {
                 piloted.InputSources.Remove(remUid);
+            }
+
+            var proportionalThrust = !piloted.ManualInput && autonomousInput is { };
+            if (proportionalThrust && autonomousInput is { Input: { } flightInput } flight)
+            {
+                inputs.Clear();
+                inputs.Add(flightInput);
+                angularMul = flight.AngularMul;
+                accelMul = flight.AccelMul;
+                setMaxVel = null;
             }
 
             shuttle.LastThrust = Vector2.Zero;
@@ -608,7 +627,7 @@ public sealed partial class MoverController : SharedMoverController
             var brakeInput = 0f;
             foreach (var inp in inputs)
             {
-                linearInput += inp.Strafe.LengthSquared() > 1 ? inp.Strafe.Normalized() : inp.Strafe;
+                linearInput += !proportionalThrust && inp.Strafe.LengthSquared() > 1 ? inp.Strafe.Normalized() : inp.Strafe;
                 angularInput += MathHelper.Clamp(inp.Rotation, -1f, 1f);
                 brakeInput += MathF.Min(inp.Brakes, 1f);
             }
@@ -725,7 +744,11 @@ public sealed partial class MoverController : SharedMoverController
                 var linearDir = angle.GetDir();
                 var dockFlag = linearDir.AsFlag();
 
-                var totalForce = GetDirectionThrust(linearInput, shuttle, body, xform);
+                var totalForce = proportionalThrust
+                    ? new Vector2(
+                        linearInput.X * shuttle.LinearThrust[linearInput.X > 0f ? 1 : 3],
+                        linearInput.Y * shuttle.LinearThrust[linearInput.Y > 0f ? 2 : 0]) * shuttle.AccelerationMultiplier
+                    : GetDirectionThrust(linearInput, shuttle, body, xform);
 
                 // Won't just do cardinal directions.
                 foreach (DirectionFlag dir in Enum.GetValues(typeof(DirectionFlag)))
@@ -742,7 +765,10 @@ public sealed partial class MoverController : SharedMoverController
                             continue;
                     }
 
-                    if ((dir & dockFlag) == 0x0)
+                    var firing = proportionalThrust
+                        ? Vector2.Dot(totalForce, dir.AsDir().ToVec()) > 0f
+                        : (dir & dockFlag) != 0x0;
+                    if (!firing)
                         _thruster.DisableLinearThrustDirection(shuttle, dir);
                     else
                         _thruster.EnableLinearThrustDirection(shuttle, dir);
@@ -781,13 +807,16 @@ public sealed partial class MoverController : SharedMoverController
             {
                 var torque = GetTorque(shuttle) * -angularInput;
 
-                // Need to cap the velocity if 1 tick of input brings us over cap so we don't continuously
-                // edge onto the cap over and over.
+                // Limit acceleration at the speed cap. An impact may push the shuttle past that
+                // cap, so keep zero torque in the interval and let the working gyroscopes recover it.
                 var torqueMul = body.InvI * frameTime;
 
-                torque = Math.Clamp(torque,
-                    (-ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul,
-                    (ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul);
+                if (torqueMul > 0f)
+                {
+                    var minimum = (-ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul;
+                    var maximum = (ShuttleComponent.MaxAngularVelocity - body.AngularVelocity) / torqueMul;
+                    torque = Math.Clamp(torque, MathF.Min(minimum, 0f), MathF.Max(maximum, 0f));
+                }
 
                 if (!torque.Equals(0f))
                 {

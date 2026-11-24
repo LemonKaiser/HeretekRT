@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Content.Server.Physics.Controllers;
 
-public record struct ShuttleInput(Vector2 Strafe, float Rotation, float Brakes);
+public record struct ShuttleInput(Vector2 Strafe, float Rotation, float Brakes, bool ProportionalThrust = false);
 
 /// <summary>
 ///     Raised on pilots to get inputs given to a shuttle.

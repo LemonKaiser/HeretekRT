@@ -47,6 +47,7 @@ public sealed partial class DockingSystem
         FixturesComponent shuttleFixtures,
         Entity<MapGridComponent> gridEntity,
         bool isMap,
+        bool allowShuttleDeparture,
         out Matrix3x2 matty,
         out Box2 shuttleDockedAABB,
         out Angle gridRotation)
@@ -55,7 +56,7 @@ public sealed partial class DockingSystem
         gridRotation = Angle.Zero;
         matty = Matrix3x2.Identity;
 
-        if (shuttleDock.Docked ||
+        if (shuttleDock.Docked && !allowShuttleDeparture ||
             gridDock.Docked ||
             !shuttleDockXform.Anchored ||
             !gridDockXform.Anchored)
@@ -98,7 +99,8 @@ public sealed partial class DockingSystem
         EntityUid shuttleDockUid,
         DockingComponent shuttleDock,
         EntityUid gridDockUid,
-        DockingComponent gridDock)
+        DockingComponent gridDock,
+        bool allowShuttleDeparture = false)
     {
         var shuttleDocks = new List<Entity<DockingComponent>>(1)
        {
@@ -110,7 +112,8 @@ public sealed partial class DockingSystem
            (gridDockUid, gridDock)
        };
 
-        return GetDockingConfigPrivate(shuttleUid, targetGrid, shuttleDocks, gridDocks);
+        return GetDockingConfigPrivate(shuttleUid, targetGrid, shuttleDocks, gridDocks,
+            allowShuttleDeparture: allowShuttleDeparture);
     }
 
     /// <summary>
@@ -133,12 +136,13 @@ public sealed partial class DockingSystem
         EntityCoordinates coordinates,
         Angle angle,
         bool fallback = true,
-        DockType dockType = DockType.Airlock) // Frontier
+        DockType dockType = DockType.Airlock,
+        bool allowShuttleDeparture = false) // Frontier
     {
         var gridDocks = GetDocks(targetGrid);
         var shuttleDocks = GetDocks(shuttleUid);
 
-        var configs = GetDockingConfigs(shuttleUid, targetGrid, shuttleDocks, gridDocks, dockType); // Frontier: add dockType
+        var configs = GetDockingConfigs(shuttleUid, targetGrid, shuttleDocks, gridDocks, dockType, allowShuttleDeparture);
 
         foreach (var config in configs)
         {
@@ -164,7 +168,8 @@ public sealed partial class DockingSystem
         EntityUid targetGrid,
         List<Entity<DockingComponent>> shuttleDocks,
         List<Entity<DockingComponent>> gridDocks,
-        DockType dockType) // Frontier: add dockType
+        DockType dockType,
+        bool allowShuttleDeparture) // Frontier: add dockType
     {
         var validDockConfigs = new List<DockingConfig>();
 
@@ -209,6 +214,7 @@ public sealed partial class DockingSystem
                             shuttleFixturesComp,
                             (targetGrid, targetGridGrid),
                             isMap,
+                            allowShuttleDeparture,
                             out var matty,
                             out var dockedAABB,
                             out var targetAngle))
@@ -227,7 +233,8 @@ public sealed partial class DockingSystem
                     // Check if there's no intersecting grids (AKA oh god it's docking at cargo).
                     grids.Clear();
                     _mapManager.FindGridsIntersecting(targetGridXform.MapID, dockedBounds, ref grids, includeMap: false);
-                    if (grids.Any(o => o.Owner != targetGrid && o.Owner != targetGridXform.MapUid))
+                    if (grids.Any(o => o.Owner != targetGrid && o.Owner != targetGridXform.MapUid &&
+                        (!allowShuttleDeparture || o.Owner != shuttleUid)))
                     {
                         continue;
                     }
@@ -273,6 +280,7 @@ public sealed partial class DockingSystem
                                     shuttleFixturesComp,
                                     (targetGrid, targetGridGrid),
                                     isMap,
+                                    allowShuttleDeparture,
                                     out _,
                                     out var otherdockedAABB,
                                     out var otherTargetAngle))
@@ -313,9 +321,10 @@ public sealed partial class DockingSystem
         List<Entity<DockingComponent>> shuttleDocks,
         List<Entity<DockingComponent>> gridDocks,
         string? priorityTag = null,
-        DockType dockType = DockType.Airlock) // Frontier
+        DockType dockType = DockType.Airlock,
+        bool allowShuttleDeparture = false) // Frontier
     {
-        var validDockConfigs = GetDockingConfigs(shuttleUid, targetGrid, shuttleDocks, gridDocks, dockType); // Frontier: add dockType
+        var validDockConfigs = GetDockingConfigs(shuttleUid, targetGrid, shuttleDocks, gridDocks, dockType, allowShuttleDeparture);
 
         if (validDockConfigs.Count <= 0)
             return null;

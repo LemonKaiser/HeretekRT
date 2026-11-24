@@ -69,6 +69,11 @@ public sealed partial class ShipSteererComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     public MapCoordinates? AvoidanceWaypoint = null;
 
+    public Vector2 PreviousAvoidanceCourse;
+    public Angle? CruiseBrakingThrusterAngle;
+    public float BestDestinationDistance = float.PositiveInfinity;
+    public float SecondsWithoutProgress;
+
     /// <summary>
     /// Whether to avoid shipgun projectiles.
     /// </summary>
@@ -305,7 +310,8 @@ public enum ShipSteeringStatus : byte
     /// <summary>
     /// Meeting set end conditions
     /// </summary>
-    InRange
+    InRange,
+    Failed
 }
 
 public enum ShipSteeringMode

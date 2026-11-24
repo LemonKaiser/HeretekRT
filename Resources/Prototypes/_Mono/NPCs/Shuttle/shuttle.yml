@@ -376,7 +376,7 @@
         shutdownState: TaskFinished
         removeKeyOnFinish: true
         inRangeMaxSpeed: 0.1
-        maxLinearVelocity: 24
+        maxLinearVelocity: 120
         minLinearVelocity: 0.1
         slowdownDistance: 180
         range: 40
@@ -387,7 +387,7 @@
         requireSolo: true
         alwaysFaceTarget: true
         forwardFlight: true
-        autopilotAccelerationMultiplier: 0.5
+        autopilotAccelerationMultiplier: 1
         minimumObstacleScanDistance: 240
         evasionSectorCount: 36
         evasionSectorDepth: 3
@@ -404,7 +404,7 @@
         shutdownState: TaskFinished
         removeKeyOnFinish: true
         inRangeMaxSpeed: 0.1
-        maxLinearVelocity: 24
+        maxLinearVelocity: 120
         minLinearVelocity: 0.35
         slowdownDistance: 180
         range: 1
@@ -417,7 +417,7 @@
         requireSolo: true
         alwaysFaceTarget: true
         forwardFlight: true
-        autopilotAccelerationMultiplier: 0.5
+        autopilotAccelerationMultiplier: 1
         minimumObstacleScanDistance: 240
         evasionSectorCount: 36
         evasionSectorDepth: 3

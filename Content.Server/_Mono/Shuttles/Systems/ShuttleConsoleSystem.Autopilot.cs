@@ -5,14 +5,17 @@ using Content.Server._Mono.NPC.HTN.Operators;
 using Content.Server._Mono.Shuttles.Components;
 using Content.Server._WH40K.SectorMap.Components;
 using Content.Server.NPC.HTN;
+using Content.Server.Physics.Components;
 using Content.Server.Physics.Controllers;
+using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Shared._Mono.Shuttles;
 using Content.Shared._WH40K.SectorMap.Components;
-using Content.Shared.Physics;
 using Content.Shared.Popups;
+using Content.Shared.Shuttles.Components;
+using Content.Shared.Shuttles.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
@@ -33,13 +36,13 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private DockingSystem _docking = default!;
     [Dependency] private HTNSystem _htn = default!;
     [Dependency] private MoverController _mover = default!;
     [Dependency] private ShuttleConsoleSystem _console = default!;
     [Dependency] private ShuttleSystem _shuttle = default!;
     [Dependency] private ShipSteeringSystem _steering = default!;
+    [Dependency] private PowerReceiverSystem _power = default!;
 
     private readonly HashSet<Entity<ShuttleConsoleComponent>> _gridConsoles = new();
     private List<Entity<MapGridComponent>> _intersectingGrids = new();
@@ -47,28 +50,41 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     private const float AutoDockSearchRange = 300f;
     private const float AutoDockClearance = 12f;
     private const float AutopilotGridAnchorClearance = 16f;
-    private const float AutoDockCaptureRange = 5f;
-    private const float AutoDockCaptureMaxRelativeSpeed = 2.5f;
-    private const float AutoDockCaptureMaxRelativeAngularSpeed = 0.2f;
-    private const float TerminalMaxRelativeSpeed = 2.5f;
-    private const float TerminalMaxLateralSpeed = 1.25f;
-    private const float TerminalAlignmentClosingSpeed = 0.75f;
-    private const float TerminalMaxRelativeAngularSpeed = 0.25f;
-    private const float TerminalMaxLinearAcceleration = 2f;
-    private const float TerminalMaxAngularAcceleration = 0.75f;
+    private const float AutoDockCaptureRange = 1.85f;
+    private const float AutoDockCaptureMaxRelativeSpeed = 0.75f;
+    private const float AutoDockCaptureMaxRelativeAngularSpeed = 0.35f;
+    private const float AutoDockCorridorCaptureExtraAxial = 10f;
+    private const float AutoDockCorridorMaxLateral = 1.25f;
+    private const float AutoDockCorridorMaxLateralSpeed = 0.75f;
+    private const float AutoDockCorridorMaxRotationError = 0.16f;
+    private const float TerminalMaxRelativeSpeed = 5f;
+    private const float TerminalMaxLateralSpeed = 2.5f;
+    private const float TerminalContactSpeed = 0.75f;
+    private const float TerminalMaxRelativeAngularSpeed = 2.2f;
+    private const float TerminalContactAngularSpeed = 0.25f;
+    private const float TerminalMaxLinearAcceleration = 6f;
+    private const float TerminalMaxAngularAcceleration = 6f;
     private const float TerminalLateralAlignmentTolerance = 0.35f;
-    private const float TerminalAngularAlignmentTolerance = 0.1f;
-    private const float TerminalPositionTolerance = 0.075f;
-    private const float TerminalControlPositionTolerance = 0.015f;
+    private const float TerminalAngularAlignmentTolerance = 0.12f;
+    private const float TerminalPositionTolerance = 0.10f;
+    private const float TerminalControlPositionTolerance = 0.035f;
     private const float TerminalRotationTolerance = 0.00873f;
     private const float TerminalControlRotationTolerance = 0.0025f;
     private const float TerminalRelativeSpeedTolerance = 0.08f;
     private const float TerminalRelativeAngularSpeedTolerance = 0.02f;
     private const float TerminalMaximumDuration = 60f;
+    // Critically damped cascade: stopping response ≈ 4 * velocity response (ζ ≈ 1.0).
+    private const float TerminalVelocityResponseTime = 0.10f;
+    private const float TerminalStoppingResponseTime = 0.38f;
+    private const float TerminalAngularVelocityResponseTime = 0.08f;
+    private const float TerminalAngularStoppingResponseTime = 0.28f;
+    private const float TerminalClearanceInterval = 0.4f;
+    private const float TerminalLateralCorrectionClearance = 6f;
     private const byte TerminalRequiredStableTicks = 3;
     private const float AutoDockRotationClearanceStep = MathF.PI / 36f;
     private const float AutoDockTerminalClearanceStep = 0.5f;
-    private const float AutoDockContactTolerance = 0.02f;
+    // Keep the clearance probe outside both fixtures' collision margins at a flush port.
+    private const float AutoDockContactTolerance = 0.045f;
 
     private enum AutoDockTargetSearchResult : byte
     {
@@ -97,14 +113,31 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         var query = EntityQueryEnumerator<ShuttleConsoleComponent, ShuttleConsoleAutoDockingComponent>();
         while (query.MoveNext(out var uid, out var console, out var autoDock))
         {
+            var ent = new Entity<ShuttleConsoleComponent>(uid, console);
+            if (!CanControlShuttle(ent) || Transform(ent).GridUid is not { } shuttleGrid ||
+                TryComp<PilotedShuttleComponent>(shuttleGrid, out var piloted) && piloted.ManualInput)
+            {
+                AbortAutoDock(ent);
+                continue;
+            }
+
             switch (autoDock.Phase)
             {
                 case AutoDockPhase.Approach:
+                    if (!TryGetAutoDockConfiguration(shuttleGrid, autoDock, out var config) || config == null ||
+                        !AreAutoDockPortsValid(shuttleGrid, autoDock.TargetGrid, config))
+                    {
+                        if (!TryRestartAutoDock(ent, autoDock))
+                            AbortAutoDock(ent);
+                        break;
+                    }
+
                     if (autoDock.CollisionDetected)
                     {
-                        CancelAutoDock((uid, console));
-                        _steering.Stop(uid);
-                        PopupAutoDockError(uid, "shuttle-console-auto-dock-failed");
+                        // The cruise controller can steer away from contact. Recheck the actual
+                        // ports and hull before handing control to the close-range controller.
+                        autoDock.CollisionDetected = false;
+                        autoDock.StableTerminalTicks = 0;
                         break;
                     }
 
@@ -119,12 +152,12 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
     private void OnAutopilotMessage(Entity<ShuttleConsoleComponent> ent, ref ShuttleConsoleAutopilotPositionMessage args)
     {
-        if (RejectPlanetaryAutopilot(ent))
+        if (RejectPlanetaryAutopilot(ent) || !CanControlShuttle(ent))
             return;
 
-        CancelAutoDock(ent);
         if (SetAutopilotTarget(ent, args.Coordinates, args.Angle))
         {
+            CancelAutoDock(ent);
             var shuttleGrid = Transform(ent).GridUid;
             if (shuttleGrid != null)
                 CancelAutonomousControlOnGrid(shuttleGrid.Value, ent.Owner);
@@ -135,7 +168,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
     private void OnAutopilotGridMessage(Entity<ShuttleConsoleComponent> ent, ref ShuttleConsoleAutopilotGridMessage args)
     {
-        if (RejectPlanetaryAutopilot(ent))
+        if (RejectPlanetaryAutopilot(ent) || !CanControlShuttle(ent))
             return;
 
         if (!TryGetEntity(args.TargetGrid, out var targetGrid) ||
@@ -152,7 +185,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        if (TryComp<AutoDockComponent>(shuttleGrid.Value, out var setting) && setting.Enabled)
+        if (IsAutoDockEnabled(shuttleGrid.Value))
         {
             // Selecting a station explicitly must still choose a configuration whose approach
             // corridor and complete hull manoeuvre are clear. GetExpandedDockingConfiguration,
@@ -173,11 +206,11 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        CancelAutoDock(ent);
         if (!SetAutopilotGridTarget(ent, shuttleGrid.Value, targetGrid.Value))
             PopupAutoDockError(ent, "shuttle-console-auto-dock-no-target");
         else
         {
+            CancelAutoDock(ent);
             CancelAutonomousControlOnGrid(shuttleGrid.Value, ent.Owner);
             UndockForAutopilot(shuttleGrid.Value);
         }
@@ -185,7 +218,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
     private void OnAutoDockRequest(Entity<ShuttleConsoleComponent> ent, ref ShuttleConsoleAutoDockRequestMessage args)
     {
-        if (RejectPlanetaryAutopilot(ent))
+        if (RejectPlanetaryAutopilot(ent) || !CanControlShuttle(ent))
             return;
 
         var shuttleGrid = Transform(ent).GridUid;
@@ -195,16 +228,12 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        if (!TryComp<AutoDockComponent>(shuttleGrid.Value, out var setting) || !setting.Enabled)
+        if (!IsAutoDockEnabled(shuttleGrid.Value))
         {
             PopupAutoDockError(ent, "shuttle-console-auto-dock-off");
             return;
         }
 
-        // A new automatic docking order is also a departure order. Free our own ports before
-        // selecting a destination so an already docked shuttle does not make every candidate
-        // look occupied. UndockDocks intentionally handles all aligned ports as one group.
-        UndockForAutopilot(shuttleGrid.Value);
         var targetResult = FindNearestDockingTarget(shuttleGrid.Value, out var targetGrid, out var targetConfig);
         if (targetResult == AutoDockTargetSearchResult.NoTarget)
         {
@@ -219,6 +248,20 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         }
 
         BeginAutoDock(ent, shuttleGrid.Value, targetGrid!.Value, targetConfig);
+    }
+
+    private bool CanControlShuttle(Entity<ShuttleConsoleComponent> console)
+    {
+        var xform = Transform(console);
+        return xform.Anchored && _power.IsPowered(console) &&
+               TryComp<ShuttleComponent>(xform.GridUid, out var shuttle) && shuttle.Enabled &&
+               !HasComp<PreventPilotComponent>(xform.GridUid) &&
+               (!TryComp<FTLComponent>(xform.GridUid, out var ftl) || ftl.State == FTLState.Cooldown);
+    }
+
+    private bool IsAutoDockEnabled(EntityUid shuttleGrid)
+    {
+        return !TryComp<AutoDockComponent>(shuttleGrid, out var setting) || setting.Enabled;
     }
 
     private void OnToggleAutoDock(Entity<ShuttleConsoleComponent> ent, ref ToggleAutoDockRequestMessage args)
@@ -294,10 +337,13 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         targetGrid = null;
         targetConfig = null;
 
-        var grids = AllEntityQuery<MapGridComponent, TransformComponent>();
-        while (grids.MoveNext(out var gridUid, out _, out var gridXform))
+        var grids = new List<Entity<MapGridComponent>>();
+        var bounds = _physics.GetWorldAABB(shuttleGrid).Enlarged(AutoDockSearchRange);
+        _maps.FindGridsIntersecting(shuttleMap, bounds, ref grids, approx: true, includeMap: false);
+        foreach (var grid in grids)
         {
-            if (gridUid == shuttleGrid || gridXform.MapID != shuttleMap)
+            var gridUid = grid.Owner;
+            if (gridUid == shuttleGrid)
                 continue;
 
             if (!TryFindNearestDockingConfig(
@@ -369,13 +415,8 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
                     targetDock.Owner,
                     targetDock.Comp);
                 if (config == null ||
-                    !AreAutoDockPortsValid(shuttleGrid, targetGrid, config) ||
+                    !AreAutoDockPortsValid(shuttleGrid, targetGrid, config, allowDeparture: true) ||
                     !TryGetAutoDockApproachCoordinates(shuttleGrid, config, out var approachCoordinates) ||
-                    !IsAutoDockApproachCorridorClear(
-                        shuttleGrid,
-                        targetGrid,
-                        approachCoordinates,
-                        config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId)) ||
                     !IsAutoDockManeuverClear(shuttleGrid, targetGrid, approachCoordinates, config))
                 {
                     continue;
@@ -417,7 +458,8 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             shuttleDockUid,
             shuttleDock,
             targetDockUid,
-            targetDock);
+            targetDock,
+            allowShuttleDeparture: true);
         if (selectedConfig == null)
             return null;
 
@@ -436,7 +478,8 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             targetGrid,
             selectedConfig.Coordinates,
             selectedConfig.Angle,
-            fallback: false);
+            fallback: false,
+            allowShuttleDeparture: true);
         if (expandedConfiguration != null &&
             expandedConfiguration.Docks.Count > selectedConfig.Docks.Count)
         {
@@ -460,8 +503,6 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        UndockForAutopilot(shuttleGrid);
-
         if (config == null &&
             !TryFindNearestDockingConfig(
                 shuttleGrid,
@@ -475,7 +516,8 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        if (config == null || !AreAutoDockPortsValid(shuttleGrid, targetGrid, config))
+        if (config == null || !AreAutoDockPortsValid(shuttleGrid, targetGrid, config, allowDeparture: true) ||
+            !HasComp<HTNComponent>(ent) || !TryGetAutoDockApproachCoordinates(shuttleGrid, config, out var approachCoordinates))
         {
             PopupAutoDockError(ent, "shuttle-console-auto-dock-invalid-ports");
             return;
@@ -485,6 +527,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         // every previous autonomous source before installing this order, otherwise MoverController
         // averages the controllers and RequireSolo immediately terminates both of them.
         CancelAutonomousControlOnGrid(shuttleGrid);
+        UndockForAutopilot(shuttleGrid);
 
         var pair = config.Docks[0];
 
@@ -495,40 +538,21 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         autoDock.Configuration = config;
         autoDock.Phase = AutoDockPhase.Approach;
 
-        if (!SetAutoDockTarget(ent, shuttleGrid, config, approach: true, out var approachCoordinates))
-        {
-            RemComp<ShuttleConsoleAutoDockingComponent>(ent);
-            PopupAutoDockError(ent, "shuttle-console-auto-dock-invalid-ports");
-            return;
-        }
-
         autoDock.ApproachCoordinates = approachCoordinates;
+        SetAutoDockTarget(ent, config, approachCoordinates);
     }
 
-    private bool SetAutoDockTarget(
+    private void SetAutoDockTarget(
         Entity<ShuttleConsoleComponent> ent,
-        EntityUid shuttleGrid,
         DockingConfig config,
-        bool approach,
-        out EntityCoordinates target)
+        EntityCoordinates target)
     {
-        target = config.Coordinates;
-        if (!TryComp<HTNComponent>(ent, out var htn) || config.Docks.Count == 0)
-            return false;
-
-        var finalRotation = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
-
-        if (approach && !TryGetAutoDockApproachCoordinates(shuttleGrid, config, out target))
-            return false;
-
+        var htn = Comp<HTNComponent>(ent);
         var blackboard = htn.Blackboard;
-        // Keep the target on the docking grid. ShipSteeringSystem then deliberately ignores that
-        // grid in its collision evasion; targeting the map made it avoid the very station it had
-        // to approach and prevented the final docking manoeuvre.
+        // Keep both the staging point and the arrival angle relative to the docking grid.
         blackboard.SetValue(ent.Comp.AutoDockTargetKey, target);
-        blackboard.SetValue(ent.Comp.AutoDockRotationKey, finalRotation + MathF.PI);
+        blackboard.SetValue(ent.Comp.AutoDockRotationKey, config.Angle + MathF.PI);
         _htn.Replan(htn);
-        return true;
     }
 
     private bool TryGetAutoDockApproachCoordinates(
@@ -537,7 +561,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         out EntityCoordinates target)
     {
         target = config.Coordinates;
-        if (config.Docks.Count == 0 || !TryComp<MapGridComponent>(shuttleGrid, out _))
+        if (config.Docks.Count == 0 || !TryComp<MapGridComponent>(shuttleGrid, out var shuttleGridComp))
             return false;
 
         var finalPosition = _transform.ToMapCoordinates(config.Coordinates);
@@ -548,73 +572,56 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         var approachDirection = _transform.GetWorldRotation(config.Docks[0].DockBUid)
             .RotateVec(new Vector2(0f, -1f));
-        var clearance = GetAutoDockApproachClearance(
+        var baseClearance = GetAutoDockApproachClearance(
             shuttleGrid,
             finalPosition.Position,
             finalRotation,
             targetDockPosition.Position,
             approachDirection);
+        var clearance = baseClearance;
+
+        // If the dock sits inside a concave station bay or next to a protruding wall, step staging
+        // outward until an elongated shuttle can finish any arrival turn around COM without clipping.
+        if (TryComp<FixturesComponent>(shuttleGrid, out var fixtures) && fixtures.Fixtures.Count > 0 &&
+            TryComp<PhysicsComponent>(shuttleGrid, out var body))
+        {
+            var localCenter = body.LocalCenter;
+            var maxCornerRadius = ShuttleFlightControl.GetMaxCornerRadius(shuttleGridComp.LocalAABB, localCenter);
+            var maxClearance = baseClearance + maxCornerRadius + 24f;
+            var targetGrid = config.TargetGrid != EntityUid.Invalid ? config.TargetGrid : config.Coordinates.EntityId;
+            for (var testClearance = baseClearance; testClearance <= maxClearance + 0.01f; testClearance += 4f)
+            {
+                var testOrigin = finalPosition.Position + approachDirection * testClearance;
+                var testCenter = testOrigin + finalRotation.RotateVec(localCenter);
+                if (!IsFullRotationClear(shuttleGrid, targetGrid, fixtures, finalPosition.MapId, localCenter, testCenter))
+                    continue;
+
+                clearance = testClearance;
+                break;
+            }
+        }
+
         var targetGridRotation = _transform.GetWorldRotation(config.Coordinates.EntityId);
         var localOffset = (-targetGridRotation).RotateVec(approachDirection * clearance);
         target = new EntityCoordinates(config.Coordinates.EntityId, config.Coordinates.Position + localOffset);
         return true;
     }
 
-    /// <summary>
-    /// Checks the swept, final-orientation shuttle bounds between its current position and the
-    /// staging point. This rejects a geometrically nearer port when reaching it would require the
-    /// long-range pilot to cut through another wing of a concave station.
-    /// </summary>
-    private bool IsAutoDockApproachCorridorClear(
+    private bool IsFullRotationClear(
         EntityUid shuttleGrid,
         EntityUid targetGrid,
-        EntityCoordinates approachCoordinates,
-        Angle finalRotation)
+        FixturesComponent fixtures,
+        MapId mapId,
+        Vector2 localCenter,
+        Vector2 centerPosition)
     {
-        if (!TryComp<MapGridComponent>(shuttleGrid, out var shuttleGridComp))
-            return false;
-
-        var start = _transform.GetMapCoordinates(shuttleGrid);
-        var end = _transform.ToMapCoordinates(approachCoordinates);
-        if (start.MapId != end.MapId)
-            return false;
-
-        var travel = end.Position - start.Position;
-        var travelLength = travel.Length();
-        if (travelLength <= 0.01f)
-            return true;
-
-        var bounds = shuttleGridComp.LocalAABB;
-        var center = bounds.Center;
-        Span<Vector2> localSamples = stackalloc Vector2[]
+        const int steps = 24;
+        for (var i = 0; i < steps; i++)
         {
-            center,
-            new(bounds.Left, bounds.Bottom),
-            new(bounds.Left, center.Y),
-            new(bounds.Left, bounds.Top),
-            new(center.X, bounds.Bottom),
-            new(center.X, bounds.Top),
-            new(bounds.Right, bounds.Bottom),
-            new(bounds.Right, center.Y),
-            new(bounds.Right, bounds.Top),
-        };
-
-        var direction = travel / travelLength;
-        foreach (var localSample in localSamples)
-        {
-            var origin = start.Position + finalRotation.RotateVec(localSample);
-            var ray = new CollisionRay(origin, direction, (int) CollisionGroup.Impassable);
-            foreach (var hit in _physics.IntersectRay(
-                         start.MapId,
-                         ray,
-                         travelLength,
-                         shuttleGrid,
-                         returnOnFirstHit: false))
-            {
-                var hitGrid = Transform(hit.HitEntity).GridUid;
-                if (hit.HitEntity == targetGrid || hitGrid == targetGrid)
-                    return false;
-            }
+            var rotation = new Angle(i * MathF.Tau / steps);
+            var origin = centerPosition - rotation.RotateVec(localCenter);
+            if (!IsAutoDockPoseClear(shuttleGrid, targetGrid, fixtures, mapId, origin, rotation))
+                return false;
         }
 
         return true;
@@ -669,20 +676,23 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         var currentRotation = _transform.GetWorldRotation(shuttleGrid);
         var finalRotation = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
+        var localCenter = TryComp<PhysicsComponent>(shuttleGrid, out var body) ? body.LocalCenter : Vector2.Zero;
+        var approachCenter = approachPosition.Position + finalRotation.RotateVec(localCenter);
         var rotationDelta = (float) Angle.ShortestDistance(currentRotation, finalRotation).Theta;
         var rotationSteps = Math.Max(1, (int) MathF.Ceiling(MathF.Abs(rotationDelta) / AutoDockRotationClearanceStep));
 
-        // ShipMoveTo turns before committing travel thrust. Check the same in-place turn so a
-        // nearby station cannot be hit by the rotating ends of a long shuttle.
+        // The cruise controller finds a path to staging. Check that there is room to finish
+        // aligning around COM at staging even when a damaged shuttle arrives at a different heading.
         for (var step = 0; step <= rotationSteps; step++)
         {
             var rotation = currentRotation + rotationDelta * step / rotationSteps;
+            var testOrigin = approachCenter - rotation.RotateVec(localCenter);
             if (!IsAutoDockPoseClear(
                     shuttleGrid,
                     targetGrid,
                     fixtures,
                     currentPosition.MapId,
-                    currentPosition.Position,
+                    testOrigin,
                     rotation))
             {
                 return false;
@@ -741,7 +751,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
                 continue;
 
             _intersectingGrids.Clear();
-            _mapManager.FindGridsIntersecting(
+            _maps.FindGridsIntersecting(
                 mapId,
                 fixture.Shape,
                 pose,
@@ -764,7 +774,8 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
     private bool SetAutopilotTarget(Entity<ShuttleConsoleComponent> ent, MapCoordinates coordinates, Angle angle)
     {
-        if (!TryComp<HTNComponent>(ent, out var htn))
+        if (!TryComp<HTNComponent>(ent, out var htn) || !float.IsFinite(coordinates.Position.X) ||
+            !float.IsFinite(coordinates.Position.Y) || !double.IsFinite(angle.Theta))
             return false;
 
         var consoleMap = Transform(ent).MapID;
@@ -828,19 +839,18 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             targetLocalDirection.X >= 0f ? targetGridComp.LocalAABB.Right : targetGridComp.LocalAABB.Left,
             targetLocalDirection.Y >= 0f ? targetGridComp.LocalAABB.Top : targetGridComp.LocalAABB.Bottom);
 
-        var shuttleLocalDirection = (-_transform.GetWorldRotation(shuttleGrid)).RotateVec(worldDirection);
-        var shuttleHullPoint = new Vector2(
-            shuttleLocalDirection.X >= 0f ? shuttleGridComp.LocalAABB.Left : shuttleGridComp.LocalAABB.Right,
-            shuttleLocalDirection.Y >= 0f ? shuttleGridComp.LocalAABB.Bottom : shuttleGridComp.LocalAABB.Top);
-        var shuttleHullOffset = Vector2.Dot(shuttleHullPoint, shuttleLocalDirection);
-        var anchorOffset = MathF.Max(AutopilotGridAnchorClearance - shuttleHullOffset, 0f);
+        var shuttleLocalCenter = TryComp<PhysicsComponent>(shuttleGrid, out var shuttleBody)
+            ? shuttleBody.LocalCenter
+            : shuttleGridComp.LocalAABB.Center;
+        var shuttleSweepRadius = ShuttleFlightControl.GetMaxCornerRadius(shuttleGridComp.LocalAABB, shuttleLocalCenter);
+        var anchorOffset = MathF.Max(AutopilotGridAnchorClearance + shuttleSweepRadius, 24f);
         var target = new EntityCoordinates(
             targetGrid,
             targetHullPoint + targetLocalDirection * anchorOffset);
 
         var blackboard = htn.Blackboard;
         blackboard.SetValue(ent.Comp.AutopilotTargetKey, target);
-        blackboard.SetValue(ent.Comp.AutopilotRotationKey, targetRotation + MathF.PI);
+        blackboard.SetValue(ent.Comp.AutopilotRotationKey, (Angle) MathF.PI);
         _htn.Replan(htn);
         return true;
     }
@@ -924,10 +934,14 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return;
         }
 
-        if (args.TargetKey != ent.Comp.AutopilotTargetKey ||
-            HasComp<ShuttleConsoleAutoDockingComponent>(ent) ||
-            !args.Success)
+        if (args.TargetKey != ent.Comp.AutopilotTargetKey || HasComp<ShuttleConsoleAutoDockingComponent>(ent))
             return;
+
+        if (!args.Success)
+        {
+            PopupAutoDockError(ent, "shuttle-console-autopilot-failed");
+            return;
+        }
 
         _audio.PlayPvs(ent.Comp.AutopilotDoneSound, ent);
         _popup.PopupEntity(Loc.GetString("shuttle-console-autopilot-popup-done"), ent, PopupType.Medium);
@@ -943,9 +957,9 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         var shuttleGrid = Transform(ent).GridUid;
         if (shuttleGrid == null ||
             !TryComp<PhysicsComponent>(shuttleGrid.Value, out var shuttleBody) ||
-            !IsAtTerminalStart(shuttleGrid.Value, shuttleBody, autoDock) ||
             !TryGetAutoDockConfiguration(shuttleGrid.Value, autoDock, out var config) ||
             config == null ||
+            !IsAtTerminalStart(shuttleGrid.Value, shuttleBody, autoDock, config) ||
             !AreAutoDockPortsValid(shuttleGrid.Value, autoDock.TargetGrid, config) ||
             !IsFinalDockingAreaClear(shuttleGrid.Value, autoDock.TargetGrid, config))
         {
@@ -955,6 +969,11 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         autoDock.Configuration = config;
         autoDock.Phase = AutoDockPhase.TerminalApproach;
         autoDock.TerminalElapsed = 0f;
+        autoDock.NextClearanceCheck = 0f;
+        ResetTerminalProgress(autoDock);
+        autoDock.LateralCorrectionAngle = null;
+        autoDock.RetreatingForLateralCorrection = false;
+        autoDock.LateralTurnStarted = false;
         autoDock.StableTerminalTicks = 0;
         autoDock.CollisionDetected = false;
 
@@ -964,8 +983,9 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     }
 
     /// <summary>
-    /// Detects arrival at the long-range approach point. It deliberately does not dock here:
-    /// the terminal controller must physically close the remaining distance first.
+    /// Detects arrival at the long-range approach point or seamless alignment in the final approach
+    /// corridor. It deliberately does not dock here: the terminal controller must physically close
+    /// the remaining distance first.
     /// </summary>
     private void TryCaptureAutoDockApproach(
         Entity<ShuttleConsoleComponent> ent,
@@ -973,12 +993,14 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     {
         var shuttleGrid = Transform(ent).GridUid;
         if (shuttleGrid == null ||
-            !TryComp<PhysicsComponent>(shuttleGrid.Value, out var body))
+            !TryComp<PhysicsComponent>(shuttleGrid.Value, out var body) ||
+            !TryGetAutoDockConfiguration(shuttleGrid.Value, autoDock, out var config) ||
+            config == null)
         {
             return;
         }
 
-        if (!IsAtTerminalStart(shuttleGrid.Value, body, autoDock))
+        if (!IsAtTerminalStart(shuttleGrid.Value, body, autoDock, config))
             return;
 
         if (TryBeginTerminalAutoDock(ent, autoDock))
@@ -990,9 +1012,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     }
 
     /// <summary>
-    /// Applies a low-speed position/velocity servo through normal physics forces. The generic
-    /// shuttle mover remains active solely to retain its pilot/collision relay; its thrust model
-    /// normalizes the requested direction and is unsuitable for centimetre-accurate docking.
+    /// Tracks the docking pose with proportional input to the currently available thrusters.
     /// </summary>
     private void OnTerminalAutoDockGetInputs(
         Entity<ShuttleConsoleAutoDockingComponent> ent,
@@ -1003,53 +1023,200 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         args.GotInput = true;
         var shuttleGrid = Transform(ent).GridUid;
-        if (shuttleGrid == null ||
+        if (!TryComp<ShuttleConsoleComponent>(ent, out var console) || !CanControlShuttle((ent.Owner, console)) ||
+            shuttleGrid == null ||
             shuttleGrid.Value != args.ShuttleUid ||
+            !TryComp<ShuttleComponent>(shuttleGrid.Value, out var shuttle) ||
             !TryComp<PhysicsComponent>(shuttleGrid.Value, out var body) ||
             !TryGetAutoDockConfiguration(shuttleGrid.Value, ent.Comp, out var config) ||
             config == null ||
             !TryGetTerminalState(shuttleGrid.Value, body, ent.Comp, config, out var state))
         {
             ent.Comp.CollisionDetected = true;
-            args.Input = new ShuttleInput(Vector2.Zero, 0f, 1f);
             return;
         }
 
-        var desiredRelativeVelocity = GetTerminalDesiredRelativeVelocity(state);
+        var heading = _transform.GetWorldRotation(shuttleGrid.Value);
+        var control = new ShuttleFlightControl(shuttle, body, heading, 1f);
+        var portHeading = heading + state.RotationError;
+        var alignedControl = new ShuttleFlightControl(shuttle, body, portHeading, 1f);
+        var lateralAxis = new Vector2(-state.ClosingAxis.Y, state.ClosingAxis.X);
+        var canCorrectLaterally = Vector2.Dot(alignedControl.LimitAcceleration(lateralAxis), lateralAxis) >= 0.025f &&
+                                  Vector2.Dot(alignedControl.LimitAcceleration(-lateralAxis), -lateralAxis) >= 0.025f;
+        var desiredRelativeVelocity = GetTerminalDesiredRelativeVelocity(state, control, canCorrectLaterally);
+        var desiredRotationError = state.RotationError;
+        var maxRotationRate = TerminalMaxRelativeAngularSpeed;
+        var axialError = Vector2.Dot(state.CenterPositionError, state.ClosingAxis);
+        var lateralError = state.CenterPositionError - state.ClosingAxis * axialError;
+        var lateralSpeed = MathF.Abs(Vector2.Dot(state.RelativeCenterVelocity, lateralAxis));
+        var axialVelocity = Vector2.Dot(state.RelativeCenterVelocity, state.ClosingAxis);
+        var lateralClearance = GetLateralCorrectionClearance(shuttleGrid.Value);
 
-        var velocityError = state.TargetVelocity + desiredRelativeVelocity - body.LinearVelocity;
-        var linearAcceleration = args.FrameTime <= 0f
-            ? Vector2.Zero
-            : ClampMagnitude(velocityError / args.FrameTime, TerminalMaxLinearAcceleration);
-        _physics.ApplyForce(shuttleGrid.Value, linearAcceleration * body.Mass, body: body);
-
-        var desiredRelativeAngularVelocity = 0f;
-        // The controller dead-band is intentionally smaller than the capture tolerance. Using
-        // the same value for both makes a discrete controller settle just outside the latch
-        // envelope and wait until the terminal timeout.
-        var rotationDistance = MathF.Max(MathF.Abs(state.RotationError) - TerminalControlRotationTolerance, 0f);
-        if (rotationDistance > 0f)
+        if (ent.Comp.LateralCorrectionAngle != null)
         {
-            desiredRelativeAngularVelocity = MathF.Sign(state.RotationError) * MathF.Min(
-                TerminalMaxRelativeAngularSpeed,
-                MathF.Sqrt(2f * TerminalMaxAngularAcceleration * rotationDistance));
+            // Exit lateral correction only once both lateral offset and lateral drift are tiny
+            // (so residual drift doesn't immediately push the ship back outside tolerance once
+            // it turns back to port heading), without waiting on unbrakeable axial drift.
+            if (lateralError.LengthSquared() < 0.018f * 0.018f && lateralSpeed < 0.004f)
+            {
+                ent.Comp.LateralCorrectionAngle = null;
+                ent.Comp.RetreatingForLateralCorrection = false;
+                ent.Comp.LateralTurnStarted = false;
+                ResetTerminalProgress(ent.Comp);
+            }
+        }
+        else if (!canCorrectLaterally && lateralError.LengthSquared() > 0.065f * 0.065f && control.AngularAcceleration > 0f)
+        {
+            var direction = Vector2.Normalize(lateralError);
+            var correctionHeading = alignedControl.GetNearestThrustHeading(direction, requireReverse: alignedControl.HasReversibleThrust);
+            ent.Comp.LateralCorrectionAngle = Angle.ShortestDistance(portHeading, correctionHeading);
+            ent.Comp.RetreatingForLateralCorrection = axialError < lateralClearance;
+            ent.Comp.LateralTurnStarted = false;
+            ResetTerminalProgress(ent.Comp);
         }
 
-        var angularVelocityError = state.TargetAngularVelocity + desiredRelativeAngularVelocity - body.AngularVelocity;
-        var angularAcceleration = args.FrameTime <= 0f
-            ? 0f
-            : Math.Clamp(
-                angularVelocityError / args.FrameTime,
-                -TerminalMaxAngularAcceleration,
-                TerminalMaxAngularAcceleration);
-        if (body.InvI > 0f)
-            _physics.ApplyTorque(shuttleGrid.Value, angularAcceleration / body.InvI, body: body);
+        if (ent.Comp.LateralCorrectionAngle is { } correction)
+        {
+            // Correct the offset with a working thruster. Hold that attitude until lateral error
+            // and lateral drift are small, then rotate back to port heading where axial thrusters
+            // can cancel any residual axial motion.
+            if (ent.Comp.RetreatingForLateralCorrection && axialError >= lateralClearance)
+            {
+                ent.Comp.RetreatingForLateralCorrection = false;
+                ResetTerminalProgress(ent.Comp);
+            }
+            else if (!ent.Comp.RetreatingForLateralCorrection && axialError < MathF.Max(3f, lateralClearance * 0.5f))
+            {
+                ent.Comp.RetreatingForLateralCorrection = true;
+                ent.Comp.LateralTurnStarted = false;
+                ResetTerminalProgress(ent.Comp);
+            }
 
-        // Keep the input source alive for collision relays, but do not let MoverController add
-        // an uncontrolled normalized thrust vector on top of the bounded terminal forces.
-        args.Input = new ShuttleInput(Vector2.Zero, 0f, 0f);
-        args.AccelMul = 1f;
-        args.AngularMul = 1f;
+            if (ent.Comp.RetreatingForLateralCorrection)
+            {
+                // Hold portHeading while retreating so the working axial thrusters push away cleanly.
+                desiredRelativeVelocity = MathF.Abs(state.RotationError) < 0.25f
+                    ? -state.ClosingAxis * TerminalMaxLateralSpeed
+                    : Vector2.Zero;
+            }
+            else if (!ent.Comp.LateralTurnStarted &&
+                     (MathF.Abs(state.RotationError) > 0.2f || MathF.Abs(axialVelocity) > 0.06f))
+            {
+                // Stop along the docking axis at portHeading before turning, so axial drift is
+                // minimal once the damaged axis rotates onto the docking axis.
+                desiredRelativeVelocity = Vector2.Zero;
+            }
+            else
+            {
+                ent.Comp.LateralTurnStarted = true;
+                desiredRotationError = (float) Angle.ShortestDistance(heading, portHeading + correction).Theta;
+                maxRotationRate = 2.2f;
+                if (MathF.Abs(desiredRotationError) < 0.16f && MathF.Abs(state.RelativeAngularVelocity) < 0.25f)
+                {
+                    var lateralDist = lateralError.Length();
+                    if (lateralDist > 0.003f)
+                    {
+                        var latDir = lateralError / lateralDist;
+                        var latSpeed = ShuttleFlightControl.StoppingSpeed(
+                            lateralDist - 0.003f,
+                            GetTerminalBrake(control, latDir),
+                            TerminalMaxLateralSpeed,
+                            TerminalStoppingResponseTime,
+                            safetyFactor: 0.86f);
+                        desiredRelativeVelocity = latDir * latSpeed;
+                    }
+                    else
+                    {
+                        desiredRelativeVelocity = Vector2.Zero;
+                    }
+                }
+                else
+                {
+                    desiredRelativeVelocity = Vector2.Zero;
+                }
+            }
+        }
+
+        // Guard terminal turns against sweeping bow/stern into concave station bays or outcrops.
+        if (MathF.Abs(desiredRotationError) > 0.04f && axialError > 0.8f && control.AngularAcceleration > 0f &&
+            TryComp<FixturesComponent>(shuttleGrid.Value, out var terminalFixtures) && terminalFixtures.Fixtures.Count > 0)
+        {
+            var shipMap = _transform.GetMapCoordinates(shuttleGrid.Value);
+            var shipCenter = shipMap.Position + heading.RotateVec(body.LocalCenter);
+            if (!IsTerminalRotationArcClear(shuttleGrid.Value, ent.Comp.TargetGrid, terminalFixtures, shipMap.MapId,
+                    body.LocalCenter, shipCenter, heading, desiredRotationError))
+            {
+                var turnedOtherWay = false;
+                if (MathF.Abs(desiredRotationError) > 0.15f)
+                {
+                    var altDelta = desiredRotationError > 0f
+                        ? desiredRotationError - MathF.Tau
+                        : desiredRotationError + MathF.Tau;
+                    if (IsTerminalRotationArcClear(shuttleGrid.Value, ent.Comp.TargetGrid, terminalFixtures, shipMap.MapId,
+                            body.LocalCenter, shipCenter, heading, altDelta))
+                    {
+                        desiredRotationError = altDelta;
+                        turnedOtherWay = true;
+                    }
+                }
+
+                if (!turnedOtherWay)
+                {
+                    // Hold attitude and back out along the port normal until there is room to turn.
+                    desiredRotationError = 0f;
+                    desiredRelativeVelocity = -state.ClosingAxis * TerminalMaxLateralSpeed;
+                    if (ent.Comp.LateralCorrectionAngle != null)
+                    {
+                        ent.Comp.RetreatingForLateralCorrection = true;
+                        ent.Comp.LateralTurnStarted = false;
+                    }
+                }
+            }
+        }
+
+        var maxLinear = MathF.Min(control.MaximumAcceleration, TerminalMaxLinearAcceleration);
+        var linearAcceleration = ClampMagnitude(
+            (desiredRelativeVelocity - state.RelativeCenterVelocity) / TerminalVelocityResponseTime +
+            state.RotationFeedForward,
+            maxLinear);
+        if (!canCorrectLaterally && control.HasReversibleThrust)
+        {
+            // While a lateral thruster is missing, never fire the surviving unbalanced thruster
+            // (and do not fire linear thrusters mid-turn while returning to port heading), or it
+            // will inject sideways drift that cannot be cancelled at port heading.
+            linearAcceleration = ent.Comp.LateralCorrectionAngle == null && MathF.Abs(state.RotationError) > 0.05f
+                ? Vector2.Zero
+                : control.LimitToReversibleAxes(linearAcceleration);
+        }
+        // Without full lateral thrusters, hold port heading tightly so axial burns do not inject
+        // uncorrectable sideways drift over the closing distance.
+        var rotationDeadband = canCorrectLaterally ? TerminalControlRotationTolerance : 0.0004f;
+        var rotationError = MathF.CopySign(MathF.Max(MathF.Abs(desiredRotationError) - rotationDeadband, 0f),
+            desiredRotationError);
+        var maxAngular = MathF.Min(control.AngularAcceleration, TerminalMaxAngularAcceleration);
+        var angularAcceleration = Math.Clamp(ShuttleFlightControl.GetAngularCommand(
+            rotationError,
+            state.RelativeAngularVelocity,
+            maxAngular,
+            maxRotationRate,
+            TerminalAngularVelocityResponseTime,
+            TerminalAngularStoppingResponseTime), -maxAngular, maxAngular);
+        args.Input = control.GetInput(linearAcceleration, angularAcceleration);
+    }
+
+    private float GetLateralCorrectionClearance(EntityUid shuttleGrid)
+    {
+        if (!TryComp<MapGridComponent>(shuttleGrid, out var grid))
+            return TerminalLateralCorrectionClearance;
+
+        var halfDiagonal = grid.LocalAABB.Size.Length() * 0.5f;
+        return MathF.Max(TerminalLateralCorrectionClearance, halfDiagonal + 2.5f);
+    }
+
+    private static void ResetTerminalProgress(ShuttleConsoleAutoDockingComponent order)
+    {
+        order.BestTerminalError = float.PositiveInfinity;
+        order.SecondsWithoutProgress = 0f;
     }
 
     private static Vector2 ClampMagnitude(Vector2 value, float maximum)
@@ -1064,35 +1231,40 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     /// Terminal guidance in the target docking-port frame. Closing motion follows the port axis,
     /// while lateral error gets an independent bounded correction. If attitude or lateral error
     /// is still large, axial closing is gated until the docking corridor is acquired. Each channel
-    /// uses a bang-bang stopping envelope, so it stays fast at range and reaches the capture
-    /// tolerance with near-zero relative velocity.
+    /// uses a critically damped stopping envelope so it stays fast at range and settles cleanly
+    /// within latch tolerances without an exponential tail.
     /// </summary>
-    private static Vector2 GetTerminalDesiredRelativeVelocity(TerminalDockingState state)
+    private static Vector2 GetTerminalDesiredRelativeVelocity(TerminalDockingState state, ShuttleFlightControl control, bool canCorrectLaterally)
     {
-        var axialError = Vector2.Dot(state.PositionError, state.ClosingAxis);
-        var lateralError = state.PositionError - state.ClosingAxis * axialError;
+        var axialError = Vector2.Dot(state.CenterPositionError, state.ClosingAxis);
+        var lateralError = state.CenterPositionError - state.ClosingAxis * axialError;
         var lateralDistance = lateralError.Length();
 
-        var closingLimit = lateralDistance > TerminalLateralAlignmentTolerance ||
-                           MathF.Abs(state.RotationError) > TerminalAngularAlignmentTolerance
-            ? TerminalAlignmentClosingSpeed
-            : TerminalMaxRelativeSpeed;
-        var axialSpeed = GetTerminalStoppingSpeed(
-            MathF.Abs(axialError),
-            closingLimit,
-            TerminalMaxLinearAcceleration);
+        // With a missing lateral thruster, even a small heading error during a long axial
+        // burn can create drift that the shuttle cannot counteract at the docking attitude.
+        var headingTolerance = canCorrectLaterally ? TerminalAngularAlignmentTolerance : 0.003f;
+        var rateTolerance = canCorrectLaterally ? TerminalContactAngularSpeed : 0.012f;
+        var closingLimit = MathF.Abs(state.RotationError) <= headingTolerance &&
+                           MathF.Abs(state.RelativeAngularVelocity) <= rateTolerance && lateralDistance <= TerminalLateralAlignmentTolerance
+            ? canCorrectLaterally ? TerminalMaxRelativeSpeed : 2.6f
+            : 0f;
+        var axialDirection = state.ClosingAxis * MathF.Sign(axialError);
+        var axialBrake = GetTerminalBrake(control, axialDirection);
+        // Permit backing out while misaligned, even when forward closing is gated.
+        if (axialError < 0f)
+            closingLimit = TerminalMaxLateralSpeed;
+        var axialSpeed = GetTerminalStoppingSpeed(MathF.Abs(axialError), closingLimit, axialBrake);
         var axialVelocity = MathF.Abs(axialError) <= TerminalControlPositionTolerance
             ? Vector2.Zero
             : state.ClosingAxis * MathF.Sign(axialError) * axialSpeed;
 
         var lateralVelocity = Vector2.Zero;
-        if (lateralDistance > TerminalControlPositionTolerance)
+        if (canCorrectLaterally && lateralDistance > TerminalControlPositionTolerance)
         {
-            var lateralSpeed = GetTerminalStoppingSpeed(
-                lateralDistance,
-                TerminalMaxLateralSpeed,
-                TerminalMaxLinearAcceleration);
-            lateralVelocity = lateralError / lateralDistance * lateralSpeed;
+            var lateralDirection = lateralError / lateralDistance;
+            var lateralSpeed = GetTerminalStoppingSpeed(lateralDistance, TerminalMaxLateralSpeed,
+                GetTerminalBrake(control, lateralDirection));
+            lateralVelocity = lateralDirection * lateralSpeed;
         }
 
         return ClampMagnitude(axialVelocity + lateralVelocity, TerminalMaxRelativeSpeed);
@@ -1101,13 +1273,27 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
     private static float GetTerminalStoppingSpeed(float distance, float maximumSpeed, float acceleration)
     {
         var stoppingDistance = MathF.Max(distance - TerminalControlPositionTolerance, 0f);
-        return MathF.Min(maximumSpeed, MathF.Sqrt(2f * acceleration * stoppingDistance));
+        if (stoppingDistance <= 0f)
+            return 0f;
+
+        return ShuttleFlightControl.StoppingSpeed(
+            stoppingDistance,
+            acceleration,
+            maximumSpeed,
+            TerminalStoppingResponseTime,
+            safetyFactor: 0.86f);
     }
+
+    private static float GetTerminalBrake(ShuttleFlightControl control, Vector2 direction) =>
+        MathF.Max(0.015f, Vector2.Dot(control.LimitAcceleration(-direction * TerminalMaxLinearAcceleration), -direction));
 
     private void OnTerminalAutoDockCollision(
         Entity<ShuttleConsoleAutoDockingComponent> ent,
         ref PilotedShuttleRelayedEvent<StartCollideEvent> args)
     {
+        if (!args.Args.OurFixture.Hard || !args.Args.OtherFixture.Hard)
+            return;
+
         var other = args.Args.OtherEntity;
         var otherGrid = Transform(other).GridUid;
         if ((other == ent.Comp.TargetGrid || otherGrid == ent.Comp.TargetGrid) &&
@@ -1118,19 +1304,23 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
                 TryComp<PhysicsComponent>(shuttleGrid.Value, out var body) &&
                 TryGetAutoDockConfiguration(shuttleGrid.Value, ent.Comp, out var config) &&
                 config != null &&
-                TryGetTerminalState(shuttleGrid.Value, body, ent.Comp, config, out var state) &&
-                state.PositionError.LengthSquared() <= 1f &&
-                state.RelativeVelocity.LengthSquared() <=
-                    TerminalAlignmentClosingSpeed * TerminalAlignmentClosingSpeed &&
-                MathF.Abs(state.RelativeAngularVelocity) <= TerminalMaxRelativeAngularSpeed)
+                TryGetTerminalState(shuttleGrid.Value, body, ent.Comp, config, out var state))
             {
-                // A sub-metre, low-speed contact at the selected port is inside the capture
-                // corridor. Every earlier or faster station impact is a failed approach.
-                return;
+                var onFace = IsContactAtDock(config, args.Args);
+                if (state.PositionError.LengthSquared() <= 1f && onFace &&
+                    state.RelativeVelocity.LengthSquared() <= TerminalContactSpeed * TerminalContactSpeed &&
+                    MathF.Abs(state.RelativeAngularVelocity) <= TerminalContactAngularSpeed)
+                {
+                    return;
+                }
+
+                Log.Debug($"Auto-dock rejected target contact. On port face {onFace}. State {state}");
             }
         }
 
         ent.Comp.CollisionDetected = true;
+        if (ent.Comp.Phase == AutoDockPhase.TerminalApproach)
+            Log.Debug($"Auto-dock contact rejected for {ToPrettyString(ent)} with {ToPrettyString(other)}");
     }
 
     private void UpdateTerminalAutoDock(
@@ -1147,13 +1337,52 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             !TryGetAutoDockConfiguration(shuttleGrid.Value, autoDock, out var config) ||
             config == null ||
             !AreAutoDockPortsValid(shuttleGrid.Value, autoDock.TargetGrid, config) ||
-            !IsFinalDockingAreaClear(shuttleGrid.Value, autoDock.TargetGrid, config) ||
             !TryGetTerminalState(shuttleGrid.Value, body, autoDock, config, out var state))
         {
-            CancelAutoDock(ent);
-            _steering.Stop(ent.Owner);
-            PopupAutoDockError(ent, "shuttle-console-auto-dock-failed");
+            Log.Debug($"Auto-dock terminal validation failed for {ToPrettyString(ent)} after {autoDock.TerminalElapsed:F1}s. Collision {autoDock.CollisionDetected}");
+            if (!TryRestartAutoDock(ent, autoDock))
+                AbortAutoDock(ent);
             return;
+        }
+
+        if (!TryComp<ShuttleComponent>(shuttleGrid.Value, out var shuttle) ||
+            shuttle.AngularThrust * body.InvI <= 0f && (MathF.Abs(state.RotationError) > TerminalRotationTolerance ||
+                MathF.Abs(state.RelativeAngularVelocity) > TerminalRelativeAngularSpeedTolerance))
+        {
+            AbortAutoDock(ent);
+            return;
+        }
+
+        var error = state.CenterPositionError.Length() + MathF.Abs(state.RotationError) * 0.4f;
+        if (autoDock.LateralCorrectionAngle is { } correction)
+        {
+            var axialError = Vector2.Dot(state.CenterPositionError, state.ClosingAxis);
+            var lateralClearance = GetLateralCorrectionClearance(shuttleGrid.Value);
+            error = autoDock.RetreatingForLateralCorrection
+                ? MathF.Max(lateralClearance - axialError, 0f)
+                : (state.CenterPositionError - state.ClosingAxis * axialError).Length() +
+                  MathF.Abs((float) Angle.ShortestDistance(Angle.Zero, state.RotationError + correction).Theta) * 0.4f;
+        }
+        if (error + 0.02f < autoDock.BestTerminalError)
+        {
+            autoDock.BestTerminalError = error;
+            autoDock.SecondsWithoutProgress = 0f;
+        }
+
+        autoDock.SecondsWithoutProgress += frameTime;
+        autoDock.NextClearanceCheck -= frameTime;
+        if (autoDock.NextClearanceCheck <= 0f)
+        {
+            autoDock.NextClearanceCheck = TerminalClearanceInterval;
+            var finalClear = IsFinalDockingAreaClear(shuttleGrid.Value, autoDock.TargetGrid, config);
+            var lookaheadClear = IsTerminalLookaheadClear(shuttleGrid.Value, autoDock.TargetGrid, config, body, state);
+            if (autoDock.SecondsWithoutProgress > 12f || !finalClear || !lookaheadClear)
+            {
+                Log.Debug($"Auto-dock clearance or progress failed for {ToPrettyString(ent)}. Final clear {finalClear}. Lookahead clear {lookaheadClear}. No progress for {autoDock.SecondsWithoutProgress:F1}s. State {state}");
+                if (!TryRestartAutoDock(ent, autoDock))
+                    AbortAutoDock(ent);
+                return;
+            }
         }
 
         if (!IsTerminalCaptureReady(state))
@@ -1168,6 +1397,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
         if (!TryCompleteAutoDock(shuttleGrid.Value, autoDock, config, state))
         {
+            Log.Debug($"Auto-dock latch rejected for {ToPrettyString(ent)}. State {state}");
             CancelAutoDock(ent);
             PopupAutoDockError(ent, "shuttle-console-auto-dock-invalid-ports");
             return;
@@ -1178,25 +1408,203 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         _popup.PopupEntity(Loc.GetString("shuttle-console-auto-dock-complete"), ent, PopupType.Medium);
     }
 
+    private void AbortAutoDock(Entity<ShuttleConsoleComponent> console)
+    {
+        CancelAutoDock(console);
+        _steering.Stop(console.Owner);
+        PopupAutoDockError(console, "shuttle-console-auto-dock-failed");
+    }
+
+    private bool TryRestartAutoDock(Entity<ShuttleConsoleComponent> console, ShuttleConsoleAutoDockingComponent order)
+    {
+        if (order.Retries >= 2 || Transform(console).GridUid is not { } shuttle ||
+            !TryComp<HTNComponent>(console, out var htn) || !HasComp<MapGridComponent>(order.TargetGrid) ||
+            Transform(shuttle).MapID != Transform(order.TargetGrid).MapID ||
+            !TryFindNearestDockingConfig(shuttle, order.TargetGrid, float.PositiveInfinity, out var config, out _, out _) ||
+            config == null || !TryGetAutoDockApproachCoordinates(shuttle, config, out var approach))
+        {
+            return false;
+        }
+
+        // A stale approach task can clear the blackboard when it shuts down. Finish it before
+        // installing the replacement order and keep the old phase until that notification ends.
+        order.Phase = AutoDockPhase.TerminalApproach;
+        _htn.ShutdownPlan(htn);
+        order.Retries++;
+        order.Configuration = config;
+        order.ShuttleDock = config.Docks[0].DockAUid;
+        order.TargetDock = config.Docks[0].DockBUid;
+        order.ApproachCoordinates = approach;
+        order.Phase = AutoDockPhase.Approach;
+        order.CollisionDetected = false;
+        SetAutoDockTarget(console, config, approach);
+        return true;
+    }
+
+    private bool IsTerminalLookaheadClear(EntityUid shuttle, EntityUid target, DockingConfig config,
+        PhysicsComponent body, TerminalDockingState state)
+    {
+        if (!TryComp<FixturesComponent>(shuttle, out var fixtures))
+            return false;
+
+        const float lookahead = TerminalClearanceInterval;
+        if (state.PositionError.LengthSquared() <= 0.25f * 0.25f)
+            return true;
+
+        var relativeMotion = state.RelativeVelocity * lookahead;
+        var axialToFinal = Vector2.Dot(state.PositionError, state.ClosingAxis);
+        var axialMotion = Vector2.Dot(relativeMotion, state.ClosingAxis);
+        if (Vector2.Dot(relativeMotion, state.PositionError) > 0f &&
+            (relativeMotion.LengthSquared() >= state.PositionError.LengthSquared() ||
+             axialToFinal > 0f && axialToFinal - axialMotion <= AutoDockContactTolerance + 0.05f))
+        {
+            // Final footprint is checked separately with the dock-face skin contact allowance.
+            // Do not project constant-velocity motion into the 0.045 m fixture margin while braking.
+            return true;
+        }
+
+        var position = _transform.GetMapCoordinates(shuttle);
+        var currentRotation = _transform.GetWorldRotation(shuttle);
+        var currentCenter = position.Position + currentRotation.RotateVec(body.LocalCenter);
+        var futureRotation = currentRotation + body.AngularVelocity * lookahead;
+        var futureCenter = currentCenter + state.RelativeCenterVelocity * lookahead;
+        var futureOrigin = futureCenter - futureRotation.RotateVec(body.LocalCenter);
+        return IsAutoDockPoseClear(shuttle, target, fixtures, position.MapId, futureOrigin, futureRotation);
+    }
+
+    private bool IsTerminalRotationArcClear(
+        EntityUid shuttleGrid,
+        EntityUid targetGrid,
+        FixturesComponent fixtures,
+        MapId mapId,
+        Vector2 localCenter,
+        Vector2 centerPosition,
+        Angle startRotation,
+        float deltaRadians)
+    {
+        var absDelta = MathF.Abs(deltaRadians);
+        if (absDelta <= 0.01f)
+            return true;
+
+        var steps = Math.Clamp((int) MathF.Ceiling(absDelta / AutoDockRotationClearanceStep), 1, 72);
+        for (var i = 1; i <= steps; i++)
+        {
+            var rotation = startRotation + deltaRadians * (i / (float) steps);
+            var origin = centerPosition - rotation.RotateVec(localCenter);
+            if (!IsAutoDockPoseClear(shuttleGrid, targetGrid, fixtures, mapId, origin, rotation))
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool IsContactAtDock(DockingConfig config, StartCollideEvent collision)
+    {
+        var contactPoints = collision.WorldPoints;
+        foreach (var pair in config.Docks)
+        {
+            var normal = _transform.GetWorldRotation(pair.DockBUid).RotateVec(-Vector2.UnitY);
+            var targetFace = _transform.GetMapCoordinates(pair.DockBUid).Position + normal * 0.5f;
+            foreach (var point in contactPoints)
+            {
+                // Flush hulls usually report the corners of the contact face. The port can
+                // be in the middle of that face, several tiles away from those corners.
+                if (MathF.Abs(Vector2.Dot(point - targetFace, normal)) <= 0.15f)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     private bool IsAtTerminalStart(
         EntityUid shuttleGrid,
         PhysicsComponent shuttleBody,
-        ShuttleConsoleAutoDockingComponent autoDock)
+        ShuttleConsoleAutoDockingComponent autoDock,
+        DockingConfig config)
     {
         var shipPosition = _transform.GetMapCoordinates(shuttleGrid);
         var approachPosition = _transform.ToMapCoordinates(autoDock.ApproachCoordinates);
-        var targetVelocity = Vector2.Zero;
+        if (shipPosition.MapId != approachPosition.MapId)
+            return false;
+
+        var finalRotation = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
+        var shipRotation = _transform.GetWorldRotation(shuttleGrid);
+        var shipCenter = shipPosition.Position + shipRotation.RotateVec(shuttleBody.LocalCenter);
+        var approachCenter = approachPosition.Position + finalRotation.RotateVec(shuttleBody.LocalCenter);
+
+        var targetCenterVelocity = Vector2.Zero;
         var targetAngularVelocity = 0f;
         if (TryComp<PhysicsComponent>(autoDock.TargetGrid, out var targetBody))
         {
-            targetVelocity = targetBody.LinearVelocity;
+            var localApproachCenter = autoDock.ApproachCoordinates.Position + config.Angle.RotateVec(shuttleBody.LocalCenter);
+            targetCenterVelocity = _physics.GetLinearVelocity(autoDock.TargetGrid, localApproachCenter, targetBody);
             targetAngularVelocity = targetBody.AngularVelocity;
         }
 
-        return shipPosition.MapId == approachPosition.MapId &&
-               Vector2.DistanceSquared(shipPosition.Position, approachPosition.Position) <= AutoDockCaptureRange * AutoDockCaptureRange &&
-               (shuttleBody.LinearVelocity - targetVelocity).LengthSquared() <= AutoDockCaptureMaxRelativeSpeed * AutoDockCaptureMaxRelativeSpeed &&
-               MathF.Abs(shuttleBody.AngularVelocity - targetAngularVelocity) <= AutoDockCaptureMaxRelativeAngularSpeed;
+        var relativeCenterVelocity = shuttleBody.LinearVelocity - targetCenterVelocity;
+        var relativeAngularSpeed = MathF.Abs(shuttleBody.AngularVelocity - targetAngularVelocity);
+
+        if (!TryComp<ShuttleComponent>(shuttleGrid, out var shuttle) ||
+            !TryGetTerminalState(shuttleGrid, shuttleBody, autoDock, config, out var state))
+        {
+            return false;
+        }
+
+        var fullLinearThrust = Array.TrueForAll(shuttle.LinearThrust, static thrust => thrust > 0f);
+        var stagingRange = fullLinearThrust ? AutoDockCaptureRange : 0.65f;
+        var stagingSpeed = fullLinearThrust ? AutoDockCaptureMaxRelativeSpeed : 0.35f;
+        var stagingAligned = shuttle.AngularThrust <= 0f ||
+                             MathF.Abs(state.RotationError) <= (fullLinearThrust ? 0.25f : 0.2f);
+
+        // 1. Standard staging capture (handles damaged ships, side/far-side arrivals, or misaligned turns).
+        var atStaging =
+            stagingAligned &&
+            Vector2.DistanceSquared(shipCenter, approachCenter) <= stagingRange * stagingRange &&
+            relativeCenterVelocity.LengthSquared() <= stagingSpeed * stagingSpeed &&
+            relativeAngularSpeed <= AutoDockCaptureMaxRelativeAngularSpeed &&
+            IsTerminalLookaheadClear(shuttleGrid, autoDock.TargetGrid, config, shuttleBody, state);
+        if (atStaging)
+            return true;
+
+        // 2. Seamless rolling corridor handoff: when an intact shuttle is already aligned with the
+        // port axis and within the terminal stopping envelope, hand off in motion instead of coming
+        // to a dead stop at staging and accelerating all over again.
+        if (!fullLinearThrust)
+            return false;
+
+        var axialError = Vector2.Dot(state.CenterPositionError, state.ClosingAxis);
+        var approachAxialSpan = Vector2.Distance(
+            _transform.ToMapCoordinates(config.Coordinates).Position,
+            approachPosition.Position);
+        var maxCorridorAxial = MathF.Max(AutoDockClearance, approachAxialSpan) + AutoDockCorridorCaptureExtraAxial;
+        if (axialError < 3f || axialError > maxCorridorAxial)
+            return false;
+
+        var maxCornerRadius = TryComp<MapGridComponent>(shuttleGrid, out var shuttleGridComp)
+            ? ShuttleFlightControl.GetMaxCornerRadius(shuttleGridComp.LocalAABB, shuttleBody.LocalCenter)
+            : 6f;
+        var maxCorridorRotError = MathF.Min(AutoDockCorridorMaxRotationError, 1.4f / MathF.Max(6f, maxCornerRadius));
+
+        var lateralError = state.CenterPositionError - state.ClosingAxis * axialError;
+        if (lateralError.LengthSquared() > AutoDockCorridorMaxLateral * AutoDockCorridorMaxLateral ||
+            MathF.Abs(state.RotationError) > maxCorridorRotError ||
+            MathF.Abs(state.RelativeAngularVelocity) > AutoDockCaptureMaxRelativeAngularSpeed)
+        {
+            return false;
+        }
+
+        var axialSpeed = Vector2.Dot(state.RelativeCenterVelocity, state.ClosingAxis);
+        var lateralSpeedSq = (state.RelativeCenterVelocity - state.ClosingAxis * axialSpeed).LengthSquared();
+        if (lateralSpeedSq > AutoDockCorridorMaxLateralSpeed * AutoDockCorridorMaxLateralSpeed)
+            return false;
+
+        var control = new ShuttleFlightControl(shuttle, shuttleBody, shipRotation, 1f);
+        var axialBrake = GetTerminalBrake(control, state.ClosingAxis);
+        var maxSafeClosing = GetTerminalStoppingSpeed(axialError, TerminalMaxRelativeSpeed, axialBrake);
+        return axialSpeed >= -0.5f &&
+               axialSpeed <= maxSafeClosing &&
+               IsTerminalLookaheadClear(shuttleGrid, autoDock.TargetGrid, config, shuttleBody, state);
     }
 
     private bool TryGetAutoDockConfiguration(
@@ -1263,14 +1671,22 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             return false;
 
         var targetVelocity = Vector2.Zero;
+        var targetCenterVelocity = Vector2.Zero;
         var targetAngularVelocity = 0f;
+        var finalRotation = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
+        var shipRotation = _transform.GetWorldRotation(shuttleGrid);
+        var rotationFeedForward = Vector2.Zero;
         if (TryComp<PhysicsComponent>(autoDock.TargetGrid, out var targetBody))
         {
-            targetVelocity = targetBody.LinearVelocity;
             targetAngularVelocity = targetBody.AngularVelocity;
+            targetVelocity = _physics.GetLinearVelocity(autoDock.TargetGrid, config.Coordinates.Position, targetBody);
+            var center = config.Coordinates.Position + config.Angle.RotateVec(shuttleBody.LocalCenter);
+            targetCenterVelocity = _physics.GetLinearVelocity(autoDock.TargetGrid, center, targetBody);
+            var targetOffset = _transform.GetWorldRotation(autoDock.TargetGrid)
+                .RotateVec(center - targetBody.LocalCenter);
+            rotationFeedForward = -targetAngularVelocity * targetAngularVelocity * targetOffset;
         }
 
-        var finalRotation = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
         var approachPosition = _transform.ToMapCoordinates(autoDock.ApproachCoordinates);
         var closingVector = finalPosition.Position - approachPosition.Position;
         var closingAxis = closingVector.LengthSquared() > 0.0001f
@@ -1278,12 +1694,16 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
             : _transform.GetWorldRotation(autoDock.TargetDock).RotateVec(Vector2.UnitY);
         state = new TerminalDockingState(
             finalPosition.Position - shipPosition.Position,
-            (float) Angle.ShortestDistance(_transform.GetWorldRotation(shuttleGrid), finalRotation).Theta,
-            shuttleBody.LinearVelocity - targetVelocity,
+            finalPosition.Position + finalRotation.RotateVec(shuttleBody.LocalCenter) -
+                (shipPosition.Position + shipRotation.RotateVec(shuttleBody.LocalCenter)),
+            (float) Angle.ShortestDistance(shipRotation, finalRotation).Theta,
+            _physics.GetLinearVelocity(shuttleGrid, Vector2.Zero, shuttleBody) - targetVelocity,
+            shuttleBody.LinearVelocity - targetCenterVelocity,
             shuttleBody.AngularVelocity - targetAngularVelocity,
-            targetVelocity,
+            targetCenterVelocity,
             targetAngularVelocity,
-            closingAxis);
+            closingAxis,
+            rotationFeedForward);
         return true;
     }
 
@@ -1316,7 +1736,7 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         {
             // This removes at most TerminalRelativeSpeedTolerance of residual drift, analogous to
             // a docking latching mechanism. It is not used to move the shuttle into position.
-            _physics.SetLinearVelocity(shuttleGrid, state.TargetVelocity, body: body);
+            _physics.SetLinearVelocity(shuttleGrid, state.TargetCenterVelocity, body: body);
             _physics.SetAngularVelocity(shuttleGrid, state.TargetAngularVelocity, body: body);
         }
 
@@ -1326,18 +1746,21 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
 
     private readonly record struct TerminalDockingState(
         Vector2 PositionError,
+        Vector2 CenterPositionError,
         float RotationError,
         Vector2 RelativeVelocity,
+        Vector2 RelativeCenterVelocity,
         float RelativeAngularVelocity,
-        Vector2 TargetVelocity,
+        Vector2 TargetCenterVelocity,
         float TargetAngularVelocity,
-        Vector2 ClosingAxis);
+        Vector2 ClosingAxis,
+        Vector2 RotationFeedForward);
 
     /// <summary>
     /// A docking configuration can connect several aligned ports at once. Re-check every pair
     /// immediately before docking, as another shuttle may have occupied one while we approached.
     /// </summary>
-    private bool AreAutoDockPortsValid(EntityUid shuttleGrid, EntityUid targetGrid, DockingConfig config)
+    private bool AreAutoDockPortsValid(EntityUid shuttleGrid, EntityUid targetGrid, DockingConfig config, bool allowDeparture = false)
     {
         if (config.TargetGrid != targetGrid || config.Docks.Count == 0)
             return false;
@@ -1346,10 +1769,13 @@ public sealed partial class ShuttleConsoleAutopilotSystem : EntitySystem
         {
             if (!TryComp(pair.DockAUid, out DockingComponent? shuttleDock) ||
                 !TryComp(pair.DockBUid, out DockingComponent? targetDock) ||
+                !TryComp(pair.DockAUid, out TransformComponent? shuttleXform) || !shuttleXform.Anchored || shuttleXform.GridUid != shuttleGrid ||
+                !TryComp(pair.DockBUid, out TransformComponent? targetXform) || !targetXform.Anchored || targetXform.GridUid != targetGrid ||
+                (shuttleDock.DockType & targetDock.DockType) == DockType.None ||
                 shuttleDock.ReceiveOnly ||
                 !_docking.CanShuttleDock(shuttleGrid, shuttleDock) ||
                 !_docking.CanShuttleDock(targetGrid, targetDock) ||
-                shuttleDock.DockedWith != null ||
+                !allowDeparture && shuttleDock.DockedWith != null ||
                 targetDock.DockedWith != null)
             {
                 return false;

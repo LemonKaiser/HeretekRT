@@ -8,6 +8,8 @@ using Content.Server.Shuttles.Systems;
 using Content.Shared._Mono.SpaceArtillery;
 using Content.Shared._Mono.Weapons.Ranged.Components;
 using Content.Shared._NF.Shuttles.Events;
+using Content.Shared.Shuttles.Components;
+using Content.Shared.Shuttles.Systems;
 using Content.Shared.Explosion.Components;
 using Content.Shared.Projectiles;
 using Robust.Shared.Map;
@@ -63,8 +65,12 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
     private void OnSteererGetInputs(Entity<ShipSteererComponent> ent, ref GetShuttleInputsEvent args)
     {
+        var adaptive = ent.Comp.ForwardFlight && HasComp<ShuttleConsoleComponent>(ent);
         var pilotXform = Transform(ent);
         var shipUid = pilotXform.GridUid;
+
+        if (shipUid != args.ShuttleUid)
+            return;
 
         var target = ent.Comp.Coordinates;
         var targetUid = target.EntityId;
@@ -81,22 +87,36 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             || !_physQuery.TryComp(shipUid, out var shipBody)
             || !_gridQuery.TryComp(shipUid, out var shipGrid))
         {
-            ent.Comp.Status = ShipSteeringStatus.InRange;
+            ent.Comp.Status = adaptive ? ShipSteeringStatus.Failed : ShipSteeringStatus.InRange;
             return;
         }
+
+        if (adaptive && (!shuttle.Enabled || HasComp<PreventPilotComponent>(shipUid) ||
+            TryComp<FTLComponent>(shipUid, out var ftl) && ftl.State != FTLState.Cooldown))
+        {
+            ent.Comp.Status = ShipSteeringStatus.Failed;
+            return;
+        }
+
+        if (ent.Comp.Status == ShipSteeringStatus.Failed)
+            return;
         ent.Comp.Status = ShipSteeringStatus.Moving;
 
         var shipXform = Transform(shipUid.Value);
         args.GotInput = true;
 
         var targetXform = Transform(targetUid);
-        var targetGrid = targetXform.GridUid;
+        var targetGrid = _gridQuery.HasComp(targetUid) ? targetUid : targetXform.GridUid;
         var mapTarget = _transform.ToMapCoordinates(target);
         var shipPos = _transform.GetMapCoordinates(shipXform);
 
         // we or target might just be in FTL so don't count us as finished
         if (mapTarget.MapId != shipPos.MapId)
+        {
+            if (adaptive)
+                ent.Comp.Status = ShipSteeringStatus.Failed;
             return;
+        }
 
         // gather context
         var shipNorthAngle = _transform.GetWorldRotation(shipXform);
@@ -107,12 +127,22 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
         var targetVel = Vector2.Zero;
         // if target doesn't have physcomp it's likely the map so keep vector as zero
-        if (ent.Comp.LeadingEnabled && _physQuery.TryComp(targetGrid ?? targetUid, out var targetBody))
+        var targetRate = 0f;
+        if (_physQuery.TryComp(targetUid, out var pointBody) && adaptive && targetGrid != null)
+        {
+            targetVel = _physics.GetLinearVelocity(targetUid, target.Position, pointBody, targetXform);
+            targetRate = pointBody.AngularVelocity;
+        }
+        else if (ent.Comp.LeadingEnabled && _physQuery.TryComp(targetGrid ?? targetUid, out var targetBody))
+        {
             targetVel = targetBody.LinearVelocity;
+        }
         var relVel = linVel - targetVel;
 
         // get the actual destination we will move to
-        var (destMapPos, inRange) = ResolveDestination(ent.Comp, mapTarget, shipPos, shipNorthAngle, toTargetVec, distance, relVel, angVel);
+        var (destMapPos, inRange) = adaptive
+            ? (mapTarget, distance <= ent.Comp.Range + (ent.Comp.RangeTolerance ?? 0f))
+            : ResolveDestination(ent.Comp, mapTarget, shipPos, shipNorthAngle, toTargetVec, distance, relVel, angVel);
 
         // ResolveDestination says we're all good
         if (ent.Comp.Status == ShipSteeringStatus.InRange)
@@ -158,7 +188,8 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
             RotationCompensationGain = ent.Comp.RotationCompensationGain,
             TargetAngleOffset = Angle.FromDegrees(ent.Comp.TargetRotation),
-            AngleOverride = targetAngle
+            AngleOverride = targetAngle,
+            CheckTargetCorridor = adaptive,
         };
         var context = new SteeringContext
         {
@@ -175,6 +206,9 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             TargetUid = targetUid,
             TargetEntPos = mapTarget,
             TargetGridUid = targetGrid,
+            TargetApproachAngle = adaptive && ent.Comp.InRangeRotation is { } orientation && targetGrid != null
+                ? orientation - Math.PI + _transform.GetWorldRotation(targetGrid.Value)
+                : null,
 
             RotationCompensation = ref ent.Comp.RotationCompensation,
             ForwardFlightAligned = ref ent.Comp.ForwardFlightAligned,
@@ -182,6 +216,12 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
             FrameTime = args.FrameTime
         };
+
+        if (adaptive)
+        {
+            ProcessAutopilot(ent.Comp, ref context, config, inRange, targetRate, ref args);
+            return;
+        }
 
         var destinationDistance = Vector2.Distance(shipPos.Position, destMapPos.Position);
         var brakeContext = GetBrakeContext(
@@ -481,9 +521,8 @@ public sealed partial class ShipSteeringSystem : EntitySystem
                     primaryDirection.ToWorldAngle());
             }
 
-            if (navigationDirection.LengthSquared() > 0f &&
-                (velocityDirection.LengthSquared() == 0f ||
-                 Vector2.Dot(velocityDirection, navigationDirection) < 0.98f))
+            if (navigationDirection.LengthSquared() > 0f && velocityDirection.LengthSquared() > 0f &&
+                Vector2.Dot(velocityDirection, navigationDirection) < 0.98f)
             {
                 AddObstacleScan(
                     ctx.ShipPos.MapId,
@@ -514,8 +553,11 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         _avoidEnts.Clear();
         foreach (var (ent, isGrid) in _avoidPotentialEnts)
         {
-            // don't avoid ourselves or the target
-            if (ent == ctx.ShipUid || ent == ctx.TargetUid || ent == ctx.TargetGridUid || !_physQuery.TryComp(ent, out var obstacleBody))
+            if (ent == ctx.ShipUid || !_physQuery.TryComp(ent, out var obstacleBody))
+                continue;
+
+            if ((ent == ctx.TargetUid || ent == ctx.TargetGridUid) &&
+                (!config.CheckTargetCorridor || IsTargetCorridorClear(ref ctx, ent)))
                 continue;
 
             var otherXform = Transform(ent);
@@ -955,7 +997,8 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         var targetGrid = Transform(targetEnt).GridUid;
 
         // if we want to finish movement on collide with target, do so
-        if (ent.Comp.FinishOnCollide && (args.OtherEntity == targetGrid || args.OtherEntity == targetEnt))
+        if (ent.Comp.FinishOnCollide && !(ent.Comp.ForwardFlight && HasComp<ShuttleConsoleComponent>(ent)) &&
+            (args.OtherEntity == targetGrid || args.OtherEntity == targetEnt))
             ent.Comp.Status = ShipSteeringStatus.InRange;
     }
 
@@ -1016,7 +1059,15 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         if (!Resolve(ent, ref ent.Comp, false))
             ent.Comp = AddComp<ShipSteererComponent>(ent);
 
-        ent.Comp.Coordinates = coordinates;
+        if (ent.Comp.Coordinates != coordinates)
+        {
+            ent.Comp.PreviousAvoidanceCourse = Vector2.Zero;
+            ent.Comp.CruiseBrakingThrusterAngle = null;
+            ent.Comp.BestDestinationDistance = float.PositiveInfinity;
+            ent.Comp.SecondsWithoutProgress = 0f;
+            ent.Comp.Status = ShipSteeringStatus.Moving;
+            ent.Comp.Coordinates = coordinates;
+        }
 
         return ent.Comp;
     }
@@ -1048,6 +1099,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         public Vector2 TargetVel;
         public EntityUid TargetUid;
         public EntityUid? TargetGridUid;
+        public Angle? TargetApproachAngle;
         public MapCoordinates TargetEntPos;
         // navigation
         public ref float RotationCompensation;
@@ -1065,6 +1117,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         // avoidance
         public bool AvoidCollisions;
         public bool AvoidProjectiles;
+        public bool CheckTargetCorridor;
         public bool AvoidanceNoRotate;
         public int EvasionSectorCount;
         public int EvasionSectorDepth;
