@@ -49,6 +49,7 @@ namespace Content.Server.DeviceNetwork.Systems
 
         public override void Initialize()
         {
+            SubscribeLocalEvent<DeviceNetworkComponent, MapInitEvent>(OnMapInit);
             SubscribeLocalEvent<DeviceNetworkComponent, ComponentStartup>(OnNetworkStartup);
             SubscribeLocalEvent<DeviceNetworkComponent, ComponentShutdown>(OnNetworkShutdown);
             SubscribeLocalEvent<DeviceNetworkComponent, ExaminedEvent>(OnExamine);
@@ -130,15 +131,38 @@ namespace Content.Server.DeviceNetwork.Systems
         }
 
         /// <summary>
+        /// Automatically attempt to connect some devices when a map starts.
+        /// </summary>
+        private void OnMapInit(EntityUid uid, DeviceNetworkComponent device, MapInitEvent args)
+        {
+            InitializeDevice(uid, device);
+        }
+
+        /// <summary>
         /// Rebuild the runtime network registration whenever a device starts, including saved devices.
         /// </summary>
         private void OnNetworkStartup(EntityUid uid, DeviceNetworkComponent device, ComponentStartup args)
+        {
+            if (LifeStage(uid) >= EntityLifeStage.MapInitialized)
+            {
+                InitializeDevice(uid, device);
+                return;
+            }
+
+            if (device.AutoConnect && !string.IsNullOrWhiteSpace(device.Address) && !IsDeviceConnected(uid, device))
+                ConnectDevice(uid, device);
+        }
+
+        private void InitializeDevice(EntityUid uid, DeviceNetworkComponent device)
         {
             if (device.ReceiveFrequency == null
                 && device.ReceiveFrequencyId != null
                 && _protoMan.TryIndex<DeviceFrequencyPrototype>(device.ReceiveFrequencyId, out var receive))
             {
-                device.ReceiveFrequency = receive.Frequency;
+                if (IsDeviceConnected(uid, device))
+                    SetReceiveFrequency(uid, receive.Frequency, device);
+                else
+                    device.ReceiveFrequency = receive.Frequency;
             }
 
             if (device.TransmitFrequency == null
@@ -148,7 +172,7 @@ namespace Content.Server.DeviceNetwork.Systems
                 device.TransmitFrequency = xmit.Frequency;
             }
 
-            if (device.AutoConnect)
+            if (device.AutoConnect && !IsDeviceConnected(uid, device))
                 ConnectDevice(uid, device);
         }
 

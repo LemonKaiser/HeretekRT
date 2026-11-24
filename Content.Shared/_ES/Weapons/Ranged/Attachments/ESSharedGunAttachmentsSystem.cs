@@ -250,9 +250,9 @@ public abstract partial class ESSharedGunAttachmentsSystem : EntitySystem
     // Mono start
     private void OnCompAttachmentEquip(EntityUid uid, ESGunComponentAttachmentComponent component, GunRefreshModifiersEvent args)
     {
-        if (_timing.ApplyingState)
-            return;
         var target = args.Gun.Owner;
+        if (_timing.ApplyingState || target == uid)
+            return;
         EntityManager.AddComponents(target, component.Components, removeExisting: false);
     }
 
