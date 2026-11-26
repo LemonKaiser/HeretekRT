@@ -1,0 +1,57 @@
+- type: entity
+  id: WH40KFactionCapturePoint
+  parent: [BaseStructure, BaseStructureDisableToolUse]
+  name: vox relay capture point
+  description: A tall vox relay that broadcasts territorial control across the sector.
+  suffix: WH40K, Capture
+  components:
+  - type: FactionCapturePoint
+    radius: 9
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/data_conventer.rsi
+    offset: 0,0.5
+    drawdepth: Overdoors
+    noRot: true
+    layers:
+    - state: icon
+    - state: unshaded
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/data_conventer.rsi
+    state: icon
+  - type: ActivatableUI
+    key: enum.FactionCaptureUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FactionCaptureUiKey.Key:
+        type: FactionCaptureBoundUserInterface
+
+- type: entity
+  id: WH40KFactionCaptureTerminal
+  parent: [BaseStructure, BaseStructureDisableToolUse]
+  name: territorial command terminal
+  description: Displays the status, schedule and rewards of territorial vox relays across the sector.
+  suffix: WH40K, Capture
+  components:
+  - type: FactionCaptureTerminal
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: _WH40K/Structures/Machines/Computers/srtimperium.rsi
+    drawdepth: Objects
+    layers:
+    - state: computer
+    - state: computer_on
+      shader: unshaded
+  - type: Icon
+    sprite: _WH40K/Structures/Machines/Computers/srtimperium.rsi
+    state: computer
+  - type: ActivatableUI
+    key: enum.FactionCaptureUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.FactionCaptureUiKey.Key:
+        type: FactionCaptureBoundUserInterface

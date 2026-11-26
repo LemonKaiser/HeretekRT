@@ -1,0 +1,23 @@
+ent-WH40KFactionCapturePoint = vox relay capture point
+    .desc = A tall vox relay that broadcasts territorial control across the sector.
+ent-WH40KFactionCaptureTerminal = territorial command terminal
+    .desc = Displays the status, schedule and rewards of territorial vox relays across the sector.
+
+wh40k-capture-terminal-title = Territorial control
+wh40k-capture-window-open = Capture window closes in { $time }
+wh40k-capture-window-closed = Capture window closed
+wh40k-capture-next-activation = Next activation in { $time }
+wh40k-capture-no-points = No capture points are installed.
+wh40k-capture-point-number = Vox relay #{ $number }
+wh40k-capture-available = Available
+wh40k-capture-capturing = Capture in progress
+wh40k-capture-contested = Contested
+wh40k-capture-held = Held
+wh40k-capture-offline = Offline
+wh40k-capture-cooldown = Cooldown
+wh40k-capture-unclaimed = Unclaimed
+wh40k-capture-holder = Holder: { $faction }
+wh40k-capture-reward = Reward: { $amount }
+wh40k-capture-hold-remaining = { $faction } · { $time } to capture
+wh40k-capture-required-time = Uncontested time required: { $time }
+wh40k-faction-bank-capture-entry = { $time } · Capture reward for { $name } · { $amount }

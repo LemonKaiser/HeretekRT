@@ -17,6 +17,7 @@ public partial interface IServerDbManager
     Task<FactionBankData> GetFactionBankDataAsync();
     Task SaveFactionBankProfileAsync(NetUserId user, ICharacterProfile profile, int slot, FactionBankMutation mutation);
     Task QueueFactionBankPayoutAsync(FactionBankMutation mutation);
+    Task CreditFactionCaptureRewardAsync(FactionBankMutation mutation);
     Task<FactionBankDelivery?> DeliverFactionBankPayoutsAsync(NetUserId user);
     Task<FactionBankTransaction?> GetFactionBankEntryAsync(Guid id);
 }
@@ -41,6 +42,8 @@ public sealed partial class ServerDbManager
         => SerializeProfileWrite(() => RunDbCommand(() => _db.SaveCharacterSlotAsync(user, profile, slot, mutation)));
     public Task QueueFactionBankPayoutAsync(FactionBankMutation mutation)
         => SerializeProfileWrite(() => RunDbCommand(() => _db.QueueFactionBankPayoutAsync(mutation)));
+    public Task CreditFactionCaptureRewardAsync(FactionBankMutation mutation)
+        => SerializeProfileWrite(() => RunDbCommand(() => _db.CreditFactionCaptureRewardAsync(mutation)));
     public Task<FactionBankDelivery?> DeliverFactionBankPayoutsAsync(NetUserId user)
         => SerializeProfileWrite(() => RunDbCommand(() => _db.DeliverFactionBankPayoutsAsync(user)));
 }
@@ -88,14 +91,17 @@ public abstract partial class ServerDbBase
         else
         {
             account.Balance = checked(account.Balance + entry.Amount);
-            var counter = await db.FactionBankTaxCounters.AsTracking().SingleOrDefaultAsync(c =>
-                c.CompanyId == mutation.Faction && c.UserId == entry.Actor);
-            if (counter == null)
+            if (entry.Kind == FactionBankEntryKind.Income)
             {
-                counter = new FactionBankTaxCounter { CompanyId = mutation.Faction, UserId = entry.Actor };
-                db.FactionBankTaxCounters.Add(counter);
+                var counter = await db.FactionBankTaxCounters.AsTracking().SingleOrDefaultAsync(c =>
+                    c.CompanyId == mutation.Faction && c.UserId == entry.Actor);
+                if (counter == null)
+                {
+                    counter = new FactionBankTaxCounter { CompanyId = mutation.Faction, UserId = entry.Actor };
+                    db.FactionBankTaxCounters.Add(counter);
+                }
+                counter.Remainder = mutation.Remainder;
             }
-            counter.Remainder = mutation.Remainder;
         }
         db.FactionBankTransactions.Add(new FactionBankTransaction
         {
@@ -108,6 +114,26 @@ public abstract partial class ServerDbBase
     public async Task QueueFactionBankPayoutAsync(FactionBankMutation mutation)
     {
         await using var db = await GetDb();
+        await ApplyFactionBankMutation(db.DbContext, mutation);
+        await db.DbContext.SaveChangesAsync();
+    }
+
+    public async Task CreditFactionCaptureRewardAsync(FactionBankMutation mutation)
+    {
+        var entry = mutation.Entry;
+        if (entry.Id == Guid.Empty || entry.Kind != FactionBankEntryKind.CaptureReward ||
+            entry.Amount <= 0 || entry.Amount != entry.Gross || entry.Pending)
+            throw new InvalidOperationException("Invalid capture reward.");
+
+        await using var db = await GetDb();
+        if (await db.DbContext.FactionBankTransactions.SingleOrDefaultAsync(row => row.Id == entry.Id) is { } previous)
+        {
+            if (previous.CompanyId != mutation.Faction || previous.Amount != entry.Amount || previous.Kind != (byte) entry.Kind)
+                throw new InvalidOperationException("Capture reward ID is already in use.");
+
+            return;
+        }
+
         await ApplyFactionBankMutation(db.DbContext, mutation);
         await db.DbContext.SaveChangesAsync();
     }

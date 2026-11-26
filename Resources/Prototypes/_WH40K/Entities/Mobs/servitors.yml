@@ -217,7 +217,6 @@
 - type: entity
   id: MobWH40KServitorMedicae
   parent: MobSiliconBase
-  save: true
   suffix: WH40K, Servitors
   components:
   - type: Sprite
@@ -262,3 +261,17 @@
   - type: HTN
     rootTask:
       task: MedibotCompound
+
+- type: entity
+  id: SpawnMobWH40KServitorMedicae
+  parent: MarkerBase
+  name: medicae servitor spawner
+  suffix: WH40K, Mapping
+  components:
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: _WH40K/Mobs/NPCs/fizzo_servitor.rsi
+      state: base
+  - type: ConditionalSpawner
+    prototypes: [MobWH40KServitorMedicae]

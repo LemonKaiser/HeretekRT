@@ -105,7 +105,13 @@ public sealed partial class FactionTreasuryPanel : BoxContainer
             var row = new BoxContainer { Orientation = LayoutOrientation.Vertical, SeparationOverride = 4 };
             var text = new RichTextLabel();
             var time = entry.CreatedAt.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
-            text.SetMessage(Loc.GetString(entry.Kind == FactionBankEntryKind.Income ? "wh40k-faction-bank-income-entry" : "wh40k-faction-bank-payout-entry",
+            var key = entry.Kind switch
+            {
+                FactionBankEntryKind.Income => "wh40k-faction-bank-income-entry",
+                FactionBankEntryKind.CaptureReward => "wh40k-faction-bank-capture-entry",
+                _ => "wh40k-faction-bank-payout-entry",
+            };
+            text.SetMessage(Loc.GetString(key,
                 ("name", entry.Name), ("amount", BankSystemExtensions.ToSpesoString(entry.Amount)),
                 ("gross", BankSystemExtensions.ToSpesoString(entry.Gross)), ("time", time)), FactionUiPresentation.Text);
             text.AddStyleClass("Wh40kOnboardingBodyCompact");

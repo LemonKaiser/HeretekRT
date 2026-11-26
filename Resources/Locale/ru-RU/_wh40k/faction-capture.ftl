@@ -1,0 +1,23 @@
+ent-WH40KFactionCapturePoint = точка захвата «Вокс-ретранслятор»
+    .desc = Высокий вокс-ретранслятор, передающий сведения о контроле территории в секторе.
+ent-WH40KFactionCaptureTerminal = терминал контроля территории
+    .desc = Показывает состояние, расписание и награды вокс-ретрансляторов сектора.
+
+wh40k-capture-terminal-title = Контроль территории
+wh40k-capture-window-open = До закрытия окна захвата { $time }
+wh40k-capture-window-closed = Окно захвата закрыто
+wh40k-capture-next-activation = До следующей активации { $time }
+wh40k-capture-no-points = Точки захвата не установлены.
+wh40k-capture-point-number = Вокс-ретранслятор №{ $number }
+wh40k-capture-available = Доступна
+wh40k-capture-capturing = Идёт захват
+wh40k-capture-contested = Оспаривается
+wh40k-capture-held = Удерживается
+wh40k-capture-offline = Неактивна
+wh40k-capture-cooldown = Перезарядка
+wh40k-capture-unclaimed = Никто
+wh40k-capture-holder = Удерживает: { $faction }
+wh40k-capture-reward = Награда: { $amount }
+wh40k-capture-hold-remaining = { $faction } · до захвата { $time }
+wh40k-capture-required-time = Для захвата без противника: { $time }
+wh40k-faction-bank-capture-entry = { $time } · Награда за захват { $name } · { $amount }

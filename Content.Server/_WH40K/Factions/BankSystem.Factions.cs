@@ -23,6 +23,7 @@ public sealed partial class BankSystem
     private readonly HashSet<Task> _factionIncomeWrites = new();
     private readonly HashSet<NetUserId> _factionPayoutBusy = new();
     private readonly HashSet<Guid> _deliveredFactionPayouts = new();
+    private readonly HashSet<Guid> _creditedCaptureRewards = new();
     private bool _factionBankHealthy;
     public Task FactionBankReady { get; private set; } = Task.CompletedTask;
     public event Action<string>? FactionBankChanged;
@@ -102,6 +103,45 @@ public sealed partial class BankSystem
                 _log.Error($"Faction income {mutation.Entry.Id} could not be saved; treasury transfers are disabled: {e}");
             }
             finally { _factionIncomeWrites.Remove(write); }
+        }
+    }
+
+    internal async Task<bool> CreditCaptureRewardAsync(string faction, FactionBankEntry entry)
+    {
+        await FactionBankReady;
+        if (!_factionBankHealthy)
+            return false;
+
+        await _factions.FactionOperations.WaitAsync();
+        try
+        {
+            if (_creditedCaptureRewards.Contains(entry.Id))
+                return true;
+
+            var balance = _factionBalances.GetValueOrDefault(faction);
+            if (balance > long.MaxValue - entry.Amount)
+                return false;
+
+            _factionBalances[faction] = balance + entry.Amount;
+            try
+            {
+                await _db.CreditFactionCaptureRewardAsync(new FactionBankMutation(faction, entry));
+            }
+            catch (Exception e)
+            {
+                _factionBalances[faction] -= entry.Amount;
+                _log.Error($"Unable to credit faction capture reward {entry.Id}: {e}");
+                return false;
+            }
+
+            _creditedCaptureRewards.Add(entry.Id);
+            AddFactionHistory(faction, entry);
+            FactionBankChanged?.Invoke(faction);
+            return true;
+        }
+        finally
+        {
+            _factions.FactionOperations.Release();
         }
     }
 

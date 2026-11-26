@@ -15,7 +15,6 @@
   abstract: true
   parent: MobWH40KFootfallNpcBase
   id: MobWH40KPlanetMerchantBase
-  save: true
   components:
   - type: UserInterface
     interfaces:
@@ -89,3 +88,44 @@
     offers:
     - product: ClothingUniformJumpskirtBlackElegantDress
       price: 350
+
+- type: entity
+  id: MarkerWH40KPlanetMerchantBase
+  parent: MarkerBase
+  abstract: true
+  suffix: WH40K, Mapping
+  components:
+  - type: Sprite
+    state: green
+
+- type: entity
+  id: SpawnMobWH40KAgriWorldBotanyMerchant
+  parent: MarkerWH40KPlanetMerchantBase
+  name: botany merchant spawner
+  components:
+  - type: ConditionalSpawner
+    prototypes: [MobWH40KAgriWorldBotanyMerchant]
+
+- type: entity
+  id: SpawnMobWH40KResortLuxuryMerchant
+  parent: MarkerWH40KPlanetMerchantBase
+  name: luxury goods merchant spawner
+  components:
+  - type: ConditionalSpawner
+    prototypes: [MobWH40KResortLuxuryMerchant]
+
+- type: entity
+  id: SpawnMobWH40KResortFineFoodMerchant
+  parent: MarkerWH40KPlanetMerchantBase
+  name: fine food merchant spawner
+  components:
+  - type: ConditionalSpawner
+    prototypes: [MobWH40KResortFineFoodMerchant]
+
+- type: entity
+  id: SpawnMobWH40KResortLuxuryClothingMerchant
+  parent: MarkerWH40KPlanetMerchantBase
+  name: luxury clothing merchant spawner
+  components:
+  - type: ConditionalSpawner
+    prototypes: [MobWH40KResortLuxuryClothingMerchant]

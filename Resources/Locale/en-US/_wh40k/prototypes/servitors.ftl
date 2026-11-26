@@ -23,3 +23,6 @@ ent-MobWH40KServitorCleaner3 = deck-mop servitor
 ent-MobWH40KServitorMedicae = medicae servitor
     .desc = A servitor programmed to seek out the injured and administer medicine.
     .suffix = WH40K, Servitors
+
+ent-SpawnMobWH40KServitorMedicae = medicae servitor spawner
+    .desc = Spawns a medicae servitor when the map initializes.

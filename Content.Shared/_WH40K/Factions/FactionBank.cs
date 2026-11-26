@@ -22,7 +22,7 @@ public static class FactionBankRules
 }
 
 [Serializable, NetSerializable]
-public enum FactionBankEntryKind : byte { Income, Payout }
+public enum FactionBankEntryKind : byte { Income, Payout, CaptureReward }
 
 [Serializable, NetSerializable]
 public sealed record FactionBankEntry(Guid Id, FactionBankEntryKind Kind, Guid Actor, Guid Recipient,
