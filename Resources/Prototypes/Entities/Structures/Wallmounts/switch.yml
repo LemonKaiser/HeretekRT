@@ -323,6 +323,7 @@
   components:
   - type: AccessReader
     access: [["Captain"]]
+  #  access: [["Captain"]] # Mono
 
 - type: entity
   id: LockableButtonHeadOfPersonnel

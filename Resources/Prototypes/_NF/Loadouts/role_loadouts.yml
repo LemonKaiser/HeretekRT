@@ -235,7 +235,8 @@
   - HeadofSecurityHead
   - HeadofSecurityJumpsuit
   - HeadofSecurityNeck
-  - ColonialLiaisonFirearm # Mono
+  - SecurityGuardFirearm # Mono
+  - SecurityGuardPistol # Mono
   - ContractorBoxSurvival
   - StationRepPDA
   - ContractorWallet
@@ -303,6 +304,8 @@
   - ContractorFun
   - ContractorTrinkets
   - ContractorBureaucracy
+  - SecurityGuardFirearm # Mono
+  - SecurityGuardPistol # Mono
   - NFSpeciesSpecific
   - ContractorArmorPlates # Mono
 

@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Numerics;
+using Content.Client._Mono.PlanetMap; // Mono
 using Content.Client.Shuttles.Systems;
 using Content.Client._WH40K.SectorMap;
 using Content.Shared._Mono.Company;
@@ -51,6 +52,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
     [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IEntityManager _entManager = default!; // Frontier
     private readonly DetectionSystem _detection; // Mono
+    private readonly PlanetTerrainSystem _planetTerrain; // Mono
     private readonly ShuttleSystem _shuttles;
     private readonly SharedTransformSystem _xformSystem;
 
@@ -132,6 +134,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
         SetSize = new Vector2(float.NaN, float.NaN);
         MinSize = new Vector2(320f, 320f);
         _detection = EntManager.System<DetectionSystem>(); // Mono
+        _planetTerrain = EntManager.System<PlanetTerrainSystem>(); // Mono
         _shuttles = EntManager.System<ShuttleSystem>();
         _xformSystem = EntManager.System<SharedTransformSystem>();
         var cache = IoCManager.Resolve<IResourceCache>();
@@ -215,6 +218,43 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
 
         base.MouseWheel(args);
     }
+
+    // Mono draws the seeded surface gen of planet biome map
+    /// <summary>
+    /// Dimming is here because I thought the terrain would make beacons and labels unreadable. Turns out wasn't neccissary but leaving it just incase.
+    /// We draw coarser texels than handheld, since this usually zooms out much further.
+    /// </summary>
+    private static readonly PlanetDrawOptions MapPlanetOptions = new(
+        PixelsPerTexel: 4f,
+        TerrainModulate: new Color(1.0f, 1.0f, 1.0f),
+        DrawStructures: true,
+        StructureColor: IFFComponent.IFFColor,
+        BorderColor: Color.Red.WithAlpha(0.6f));
+
+    /// <summary>
+    /// Same transform as ScalePosition(matty * world with Y flipped), we do it matrix style.
+    /// </summary>
+    private Matrix3x2 GetPlanetWorldToView()
+    {
+        return Matrix3x2.CreateTranslation(-Offset)
+               * Matrix3x2.CreateScale(MinimapScale, -MinimapScale)
+               * Matrix3x2.CreateTranslation(MidPointVector);
+    }
+
+    private void DrawPlanetSurface(DrawingHandleScreen handle, EntityUid viewedMapUid)
+    {
+        var worldToView = GetPlanetWorldToView();
+        var viewBox = PlanetTerrainSystem.GetViewBox(worldToView, PixelSize);
+        _planetTerrain.DrawUnderlay(handle, viewedMapUid, worldToView, viewBox, Offset, MinimapScale, MapPlanetOptions, BackingColor);
+    }
+
+    private void DrawPlanetMarkers(DrawingHandleScreen handle)
+    {
+        var worldToView = GetPlanetWorldToView();
+        var viewBox = PlanetTerrainSystem.GetViewBox(worldToView, PixelSize);
+        _planetTerrain.DrawMarkers(handle, ViewingMap, viewBox, worldToView, _font, UIScale);
+    }
+    // End Mono
 
     private void DrawParallax(DrawingHandleScreen handle)
     {
@@ -412,6 +452,10 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
         var viewBox = new Box2(Offset - WorldRangeVector, Offset + WorldRangeVector);
         var viewportObjects = GetViewportMapObjects(matty, mapObjects);
         _viewportExclusions.Clear();
+
+        var drawPlanetTerrain = !EntManager.HasComponent<KoronusPlanetSurfaceBoundaryComponent>(viewedMapUid);
+        if (drawPlanetTerrain)
+            DrawPlanetSurface(handle, viewedMapUid);
 
         DrawStarSystem(handle, matty);
 
@@ -663,6 +707,9 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                 }
             }
         }
+
+        if (drawPlanetTerrain)
+            DrawPlanetMarkers(handle);
 
         var mousePos = _inputs.MouseScreenPosition;
         var mouseLocalPos = GetLocalPosition(mousePos);

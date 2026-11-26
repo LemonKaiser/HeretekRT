@@ -681,7 +681,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             (!CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en")
             || (CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en"));
         // The language-obfuscated message wrapped in a "x says y" string.
-        var wrappedObfuscated = WrapPublicMessage(source, name, obfuscated, language: language);
+        var wrappedObfuscated = WrapPublicMessage(source, name, obfuscated, language: language, obfuscated: true);
         // Einstein Engines - Language end
 
         SendInVoiceRange(ChatChannel.Local, name, message, wrappedMessage, obfuscated, wrappedObfuscated, source, range, languageOverride: language); // Einstein Engines - Language
@@ -774,19 +774,19 @@ public sealed partial class ChatSystem : SharedChatSystem
             {
                 // Scenario 1: the listener can clearly understand the message
                 result = perceivedMessage;
-                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, result, language);
+                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, result, language, !canUnderstandLanguage);
             }
             else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange)) // UNEDIT FROM Einstein Engines - Language // They are out of date, this has been reverted to current ChatSystem
             {
                 // Scenario 2: if the listener is too far, they only hear fragments of the message
                 result = ObfuscateMessageReadability(perceivedMessage);
-                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", nameIdentity, result, language);
+                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", nameIdentity, result, language, !canUnderstandLanguage);
             }
             else
             {
                 // Scenario 3: If listener is too far and has no line of sight, they can't identify the whisperer's identity
                 result = ObfuscateMessageReadability(perceivedMessage);
-                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-unknown-wrap-message", string.Empty, result, language);
+                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-unknown-wrap-message", string.Empty, result, language, !canUnderstandLanguage);
             }
 
             _chatManager.ChatMessageToOne(ChatChannel.Whisper, result, wrappedMessage, source, false, session.Channel);
@@ -864,7 +864,7 @@ public sealed partial class ChatSystem : SharedChatSystem
                 !HasComp<GhostComponent>(listener))
                 continue;
 
-            var wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, perceivedMessage, language);
+            var wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, perceivedMessage, language, !canUnderstandLanguage);
             _chatManager.ChatMessageToOne(ChatChannel.CollectiveMind, message, wrappedMessage, source, false, session.Channel);
         }
 
@@ -1194,24 +1194,24 @@ public sealed partial class ChatSystem : SharedChatSystem
     /// <summary>
     ///     Wraps a message sent by the specified entity into an "x says y" string.
     /// </summary>
-    public string WrapPublicMessage(EntityUid source, string name, string message, LanguagePrototype? language = null)
+    public string WrapPublicMessage(EntityUid source, string name, string message, LanguagePrototype? language = null, bool obfuscated = false)
     {
         var wrapId = GetSpeechVerb(source, message).Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message";
-        return WrapMessage(wrapId, InGameICChatType.Speak, source, name, message, language);
+        return WrapMessage(wrapId, InGameICChatType.Speak, source, name, message, language, obfuscated);
     }
 
     /// <summary>
     ///     Wraps a message whispered by the specified entity into an "x whispers y" string.
     /// </summary>
-    public string WrapWhisperMessage(EntityUid source, LocId defaultWrap, string entityName, string message, LanguagePrototype? language = null)
+    public string WrapWhisperMessage(EntityUid source, LocId defaultWrap, string entityName, string message, LanguagePrototype? language = null, bool obfuscated = false)
     {
-        return WrapMessage(defaultWrap, InGameICChatType.Whisper, source, entityName, message, language);
+        return WrapMessage(defaultWrap, InGameICChatType.Whisper, source, entityName, message, language, obfuscated);
     }
 
     /// <summary>
     ///     Wraps a message sent by the specified entity into the specified wrap string.
     /// </summary>
-    public string WrapMessage(LocId wrapId, InGameICChatType chatType, EntityUid source, string entityName, string message, LanguagePrototype? language)
+    public string WrapMessage(LocId wrapId, InGameICChatType chatType, EntityUid source, string entityName, string message, LanguagePrototype? language, bool obfuscated = false)
     {
         language ??= _language.GetLanguage(source);
         if (language.SpeechOverride.MessageWrapOverrides.TryGetValue(chatType, out var wrapOverride))
@@ -1224,11 +1224,11 @@ public sealed partial class ChatSystem : SharedChatSystem
         var color = DefaultSpeakColor;
         if (language.SpeechOverride.Color is { } colorOverride)
             color = Color.InterpolateBetween(color, colorOverride, colorOverride.A);
-        var languageDisplay = language.IsVisibleLanguage
-            ? Loc.GetString("chat-manager-language-prefix", ("language", language.ChatName))
-            : "";
 
-        var languageFont = language.SpeechOverride.FontId;
+        if (_language.GetLanguageIcon(language, obfuscated))
+            entityName = $"[icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {entityName}";
+
+        var languageFont = GetLanguageSpeechFont(language, obfuscated);
         var profileFont = languageFont == null
             ? GetProfileSpeechFont(source, speech.Bold, chatType == InGameICChatType.Whisper)
             : null;
@@ -1241,12 +1241,14 @@ public sealed partial class ChatSystem : SharedChatSystem
             ("verb", Loc.GetString(verbId)),
             ("fontType", languageFont ?? profileFont ?? speech.FontId),
             ("fontSize", language.SpeechOverride.FontSize ?? speech.FontSize),
-            ("message", message),
-            ("language", languageDisplay));
+            ("message", message));
     }
 
     internal string? GetProfileSpeechFont(EntityUid source, bool bold, bool italic = false) =>
         CompOrNull<Content.Shared.Humanoid.HumanoidAppearanceComponent>(source)?.SpeechStyle.GetFont(bold, italic);
+
+    internal static string? GetLanguageSpeechFont(LanguagePrototype language, bool obfuscated) =>
+        obfuscated || language.SpeechOverride.ObfuscationFont != true ? language.SpeechOverride.FontId : null;
     // Einstein Engines - Language end
 
 

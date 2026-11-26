@@ -239,6 +239,11 @@
       key_slots:
       - EncryptionKeyTraffic
   # End Frontier
+  - type: ConsoleRadarLockTone # Mono
+    lockAcquiredSound:
+      path: /Audio/_Mono/Effects/Alerts/rwr_beep.ogg
+      params:
+        volume: 5
   - type: TargetSeekerAlert # Mono
     targetGainSound:
       path: /Audio/_Mono/Effects/Alerts/rwr_beep.ogg
@@ -461,8 +466,8 @@
 - type: entity
   parent: [BaseStructureIndestructible, BaseComputerAiAccess] # Frontier: added BaseStructureIndestructible
   id: ComputerCriminalRecords
-  name: criminal records computer
-  description: This can be used to check criminal records. Only security can modify them.
+  name: TSFMC criminal records computer # Mono
+  description: This can be used to check criminal records, at least according to the Trans-Solarian Federation. # Mono
   components:
   - type: CriminalRecordsConsole
   - type: UserInterface
@@ -784,8 +789,8 @@
 - type: entity
   parent: BaseComputerAiAccess
   id: ComputerComms
-  name: communications computer
-  description: A computer used to make station wide announcements via keyboard, set the appropriate alert level, and call the emergency shuttle.
+  name: caelestinus communications computer # Mono
+  description: A computer used by Caelestinus to set the sector-wide DEFCON level and to make announcements. # Mono
   components:
   - type: Sprite
     layers:
@@ -804,6 +809,7 @@
   - type: CommunicationsConsole
     title: comms-console-announcement-title-station
     global: true #SR WILL NOT BE IGNORED
+    canShuttle: false # Mono: lol, lmao even
   - type: DeviceNetwork
     deviceNetId: Wireless # Frontier
     transmitFrequencyId: ShuttleTimer
@@ -1145,6 +1151,8 @@
   - type: AccessReader
     #access: [["Quartermaster"]] #Monolith Change: Allows Serzhants and Kommissars to skip bounties
     access: [["USSPHigh"]]
+    #access: [["Quartermaster"]] #Monolith Change: Allows Serzhants and Kommissars to skip bounties
+    #access: [["USSPHigh"]] # USSP no longer has the only bounty computer
   # - type: GuideHelp # Frontier
   #   guides: # Frontier
   #   - CargoBounties # Frontier

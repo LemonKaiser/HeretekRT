@@ -1,6 +1,7 @@
 ## Controls menu
 
 ui-options-function-toggle-standing = Лечь\Встать
+ui-options-function-toggle-underbarrel = Переключить подствольное оружие
 
 ui-options-function-target-left-hand = Таргет на левую кисть
 ui-options-function-target-right-hand = Таргет на правую кисть

@@ -32,6 +32,7 @@
     stateDoorClosed: mercenary_door
   - type: AccessReader
     access: [["Captain"], ["Mercenary"]]
+  # access: [["Captain"], ["Mercenary"]]
 
 # Janitor
 - type: entity

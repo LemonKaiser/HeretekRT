@@ -2,7 +2,7 @@
   id: TurbineUnaffiliated
   parent: Turbine
   suffix: Unaffiliated, Ship Captain Locked
-  description: A large turbine used for generating power using hot gas. Locked to the captain of the ship.
+  description: A large turbine used for generating power using hot gas.
   components:
   - type: AccessReader
     access: [["Captain"]]
@@ -40,7 +40,7 @@
   id: TurbineCC
   parent: Turbine
   suffix: Overseer Locked
-  description: A large turbine used for generating power using hot gas. Locked to the CC Overseer.
+  description: A large turbine used for generating power using hot gas. Locked to the Overseer or Director of Care.
   components:
   - type: AccessReader
     access: [["HeadOfPersonnel"]]
@@ -91,7 +91,7 @@
   id: TurbineCCSmall
   parent: TurbineSmall
   suffix: Overseer Locked
-  description: A large turbine used for generating power using hot gas. Locked to the CC Overseer.
+  description: A large turbine used for generating power using hot gas. Locked to the Overseer or Director of Care.
   components:
   - type: AccessReader
     access: [["HeadOfPersonnel"]]

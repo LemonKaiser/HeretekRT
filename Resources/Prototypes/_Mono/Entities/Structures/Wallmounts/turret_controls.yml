@@ -252,6 +252,49 @@
 
 - type: entity
   parent: WeaponEnergyTurretStationControlPanel
+  id: WeaponEnergyTurretCaelestinusControlPanel
+  name: caelestinus sentry turret control panel
+  suffix: Caelestinus Command access
+  description: A wall-mounted interface that allows a local artifical intelligence to adjust the operational parameters of linked sentry turrets.
+  components:
+  - type: AccessReader
+    access: [["CaelestinusCommand"]]
+  - type: TurretTargetSettings
+    exemptAccessLevels:
+    - Caelestinus
+    - CaelestinusCommand
+  - type: DeviceNetwork
+    receiveFrequencyId: TurretAICaelestinus
+    transmitFrequencyId: TurretControlAICaelestinus
+
+- type: entity
+  parent: BallisticTurretHeavyAIBase
+  id: BallisticTurretHeavyAICaelestinus
+  name: caelestinus heavy remote sentry turret
+  suffix: Caelestinus
+  components:
+  - type: AccessReader
+    access: [["Caelestinus"]]
+  - type: TurretTargetSettings
+    exemptAccessLevels:
+    - Caelestinus
+    - CaelestinusCommand
+  - type: DeviceNetwork
+    receiveFrequencyId: TurretControlAICaelestinus
+    transmitFrequencyId: TurretAICaelestinus
+
+- type: deviceFrequency
+  id: TurretControlAICaelestinus
+  name: device-frequency-prototype-name-turret-control
+  frequency: 1693
+
+- type: deviceFrequency
+  id: TurretAICaelestinus
+  name: device-frequency-prototype-name-turret
+  frequency: 1694
+
+- type: entity
+  parent: WeaponEnergyTurretStationControlPanel
   id: WeaponEnergyTurretViperControlPanel
   name: VG sentry turret control panel
   suffix: VG Command access

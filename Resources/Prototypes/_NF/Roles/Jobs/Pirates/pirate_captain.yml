@@ -17,7 +17,7 @@
   whitelisted: true
   startingGear: PirateCaptainNFGear
   alwaysUseSpawner: true
-  hideConsoleVisibility: true
+# hideConsoleVisibility: true
   canBeAntag: true
   icon: "JobIconPirateCaptain"
   supervisors: job-supervisors-nobody
@@ -30,6 +30,7 @@
   - GrandVizier
   - PDVCommand
   - Mercenary
+  - PDV
   accessGroups:
   - GeneralAccess
   guides:
@@ -48,7 +49,7 @@
     - type: RadioOnCryosleep
       radioChannel: Freelance # freelance = Vanguard
   - !type:AddImplantSpecial
-    implants: [ FreelanceTrackingImplant, RadioImplant ]
+    implants: [ FreelanceTrackingImplant ]
   - !type:AddLanguageSpecial # Monolith - Languages
     languagesSpoken:
     - Freespeak

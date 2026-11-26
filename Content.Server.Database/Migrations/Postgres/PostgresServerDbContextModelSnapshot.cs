@@ -1172,6 +1172,10 @@ namespace Content.Server.Database.Migrations.Postgres
                         .HasColumnType("text")
                         .HasColumnName("company");
 
+                    b.Property<string>("CustomSpeciesName")
+                        .HasColumnType("text")
+                        .HasColumnName("custom_species_name");
+
                     b.Property<string>("EyeColor")
                         .IsRequired()
                         .HasColumnType("text")

@@ -1,3 +1,4 @@
+using Content.Shared._Mono.Sensors;
 using Robust.Shared.Map;
 using Robust.Shared.Serialization;
 using Content.Shared._NF.Shuttles.Events; // Frontier - InertiaDampeningMode access
@@ -53,6 +54,11 @@ public sealed class NavInterfaceState
     public KoronusPlanetaryInterfaceState PlanetaryState = KoronusPlanetaryInterfaceState.Unavailable();
 
     public List<KoronusAsteroidClusterState> AsteroidFields = new();
+    // Mono
+    public SensorsBuiState? Sensors;
+
+    // Mono
+    public RadarLockStateDto? Lock;
 
     public NavInterfaceState(
         float maxRange,
@@ -60,13 +66,17 @@ public sealed class NavInterfaceState
         Angle? angle,
         Dictionary<NetEntity, List<DockingPortState>> docks,
         InertiaDampeningMode dampeningMode, // Frontier: add dampeningMode
-        Dictionary<string, string>? networkPortNames = null)
+        Dictionary<string, string>? networkPortNames = null,
+        SensorsBuiState? sensors = null, // Mono
+        RadarLockStateDto? lockState = null) // Mono
     {
         MaxRange = maxRange;
         Coordinates = coordinates;
         Angle = angle;
         Docks = docks;
         DampeningMode = dampeningMode; // Frontier
+        Sensors = sensors; // Mono
+        Lock = lockState; // Mono
         NetworkPortNames = networkPortNames ?? new Dictionary<string, string>();
     }
 }

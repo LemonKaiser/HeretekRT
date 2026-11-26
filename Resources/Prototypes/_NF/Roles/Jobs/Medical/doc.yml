@@ -26,6 +26,8 @@
   - AllAccessMono #Mono
   access:
   - ChiefMedicalOfficer #Mono
+  - Caelestinus
+  - CaelestinusCommand
   guides:
   - Caelestinus
   special:

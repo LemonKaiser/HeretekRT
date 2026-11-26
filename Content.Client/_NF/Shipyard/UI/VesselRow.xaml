@@ -47,6 +47,8 @@
             HorizontalExpand="True"
             MinHeight="32"
             TextAlign="Center" />
+        <Button Name="ReferenceButton" Access="Public" Text="{Loc 'vessel-reference-open'}"
+                StyleClasses="ButtonSquare" MinHeight="32" TextAlign="Center" />
         <Button Name="Preview"
                 Access="Public"
                 Text="{Loc 'shipyard-console-preview'}"

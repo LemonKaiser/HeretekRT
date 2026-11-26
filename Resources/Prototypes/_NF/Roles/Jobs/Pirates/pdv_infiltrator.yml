@@ -19,7 +19,7 @@
   whitelisted: true
   startingGear: PDVInfiltratorGear
   alwaysUseSpawner: true
-  hideConsoleVisibility: true
+# hideConsoleVisibility: true
   canBeAntag: true
   icon: "JobIconPDVInfiltrator"
   supervisors: job-supervisors-pirate
@@ -30,6 +30,7 @@
   access:
   - Pirate
   - Mercenary
+  - PDV
   accessGroups:
   - GeneralAccess
   guides:

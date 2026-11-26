@@ -158,3 +158,16 @@ SafetyDepositConsole: null
 SafetyDepositBoxSmall: null
 SafetyDepositBoxMedium: null
 SafetyDepositBoxLarge: null
+
+# Shipyard culling
+MiningCarrierComputer: null
+HiveCarrierComputer: null
+TSFCarrierComputer: null
+LedokolAttachmentComputer: null
+WindreignCarrierComputer: null
+RavagerCarrierComputer: null
+BalorCarrierComputer: null
+
+# 25/09/2026 - Bounty rework
+ComputerPirateBountyRedemption: BaseComputer # no longer has a purpose
+ComputerPirateBountyRedemptionTabletop: ComputerTabletopFrame # ditto

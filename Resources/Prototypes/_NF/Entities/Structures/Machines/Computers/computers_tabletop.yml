@@ -668,7 +668,7 @@
     account: Medical
   - type: CompanyAccessReader
     requiredCompanies:
-    - MD
+    - Colonial
   - type: AccessReader
     access: [["ChiefMedicalOfficer"]]
 

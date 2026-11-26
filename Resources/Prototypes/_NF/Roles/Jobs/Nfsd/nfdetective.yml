@@ -29,8 +29,6 @@
   assignedCompany: TSF
   canBeAntag: false
   setPreference: false # mono
-  access:
-  - Detective
   accessGroups:
   - GeneralNfsdAccess
   special:
@@ -51,6 +49,9 @@
   - !type:GiveItemOnHolidaySpecial
     holiday: FrontierBirthday
     prototype: FrontierBirthdayGift
+  access:
+  - Detective
+  - Tsfmc
 
 - type: startingGear
   id: NFDetectiveGear

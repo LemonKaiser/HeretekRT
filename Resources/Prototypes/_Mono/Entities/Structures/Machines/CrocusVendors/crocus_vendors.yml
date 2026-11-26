@@ -59,6 +59,16 @@
         name: crocus-vendor-entry-40mmgrenadebaton
       - id: 40mmGrenadeFlash
         name: crocus-vendor-entry-40mmgrenadeflash
+      - id: Cartridge35mmGrenadeHEDP
+        max: 2
+        recommended: true
+        name: crocus-vendor-entry-35mmgrenadehedp
+      - id: Cartridge35mmGrenadeFlash
+        name: crocus-vendor-entry-35mmgrenadeflash
+      - id: Cartridge35mmGrenadeBaton
+        name: crocus-vendor-entry-35mmgrenadebaton
+      - id: Cartridge35mmGrenadeEMP
+        name: crocus-vendor-entry-35mmgrenadeemp
     - name: crocus-vendor-section-sidearm
       choices: { Sidearm: 1 }
       entries:
@@ -110,6 +120,9 @@
       - id: SmokeGrenade
         name: crocus-vendor-entry-smokegrenade
         recommended: true
+      - id: FireExtinguisherBluespace
+        name: crocus-vendor-entry-fireextinguisherbluespace
+        points: 1
       - id: BreachingCharge
         name: crocus-vendor-entry-breachingcharge
       - id: Floodlight
@@ -240,6 +253,16 @@
         name: crocus-vendor-entry-40mmgrenadebaton
       - id: 40mmGrenadeFlash
         name: crocus-vendor-entry-40mmgrenadeflash
+      - id: Cartridge35mmGrenadeHEDP
+        max: 2
+        recommended: true
+        name: crocus-vendor-entry-35mmgrenadehedp
+      - id: Cartridge35mmGrenadeFlash
+        name: crocus-vendor-entry-35mmgrenadeflash
+      - id: Cartridge35mmGrenadeBaton
+        name: crocus-vendor-entry-35mmgrenadebaton
+      - id: Cartridge35mmGrenadeEMP
+        name: crocus-vendor-entry-35mmgrenadeemp
     - name: crocus-vendor-section-sidearm
       choices: { Sidearm: 1 }
       entries:
@@ -291,6 +314,9 @@
       - id: SmokeGrenade
         name: crocus-vendor-entry-smokegrenade
         recommended: true
+      - id: FireExtinguisherBluespace
+        name: crocus-vendor-entry-fireextinguisherbluespace
+        points: 1
       - id: BreachingCharge
         name: crocus-vendor-entry-breachingcharge
       - id: Floodlight

@@ -27,6 +27,8 @@
   - Medical
   - Chemistry
   - TsfmcEngineering
+  - TsfmcArmory
+  - Tsfmc
   accessGroups:
   - GeneralNfsdAccess
   guides:

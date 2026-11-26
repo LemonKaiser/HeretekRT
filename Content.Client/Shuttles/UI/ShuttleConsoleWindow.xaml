@@ -3,6 +3,7 @@
                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                       xmlns:sector="clr-namespace:Content.Client._WH40K.SectorMap.UI"
                       xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:ui1="clr-namespace:Content.Client._Mono.Sensors.UI"
                       Title="{Loc 'shuttle-console-window-title'}"
                       SetSize="1280 850"
                       MinSize="960 730">
@@ -48,6 +49,12 @@
                     VerticalExpand="True"
                     Text="SECTOR"
                     StyleClasses="ButtonSquare"/>
+            <Button Name="SensorsModeButton"
+                    ToggleMode="True"
+                    HorizontalExpand="True"
+                    VerticalExpand="True"
+                    Text="{Loc 'shuttle-console-sensors-tab'}"
+                    StyleClasses="ButtonSquare"/>
         </BoxContainer>
         </PanelContainer>
         <!-- Contents box -->
@@ -60,6 +67,7 @@
             <ui:NavScreen Name="NavContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
             <ui:DockingScreen Name="DockContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
             <sector:KoronusSectorMapControl Name="SectorContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
+            <ui1:SensorsControl Name="SensorsContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
         </BoxContainer>
         </BoxContainer>
             </PanelContainer>

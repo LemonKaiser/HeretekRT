@@ -370,38 +370,22 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 _idSystem.TryChangeJobTitle(targetId, component.NewJobTitle, idCard, player);
         }
 
-        // The following block of code is entirely to do with trying to sanely handle moving records from station to station.
-        // it is ass.
-        // This probably shouldnt be messed with further until station records themselves become more robust
-        // and not entirely dependent upon linking ID card entity to station records key lookups
-        // its just bad
-
-        var stationList = EntityQueryEnumerator<StationRecordsComponent>();
-
-        if (TryComp<StationRecordKeyStorageComponent>(targetId, out var keyStorage)
-                && shuttleStation != null
-                && keyStorage.Key != null)
+        if (shuttleStation is { } destination &&
+            TryComp<StationRecordKeyStorageComponent>(targetId, out var keyStorage) &&
+            keyStorage.Key is { } recordKey)
         {
-            bool recSuccess = false;
-            while (stationList.MoveNext(out var stationUid, out var stationRecComp))
+            if (_records.TryGetRecord<GeneralStationRecord>(recordKey, out var record))
             {
-                if (!_records.TryGetRecord<GeneralStationRecord>(keyStorage.Key.Value, out var record))
-                    continue;
-
-                //_records.RemoveRecord(keyStorage.Key.Value);
-                _records.AddRecordEntry(shuttleStation.Value, record);
-                recSuccess = true;
-                break;
+                _records.AddRecordEntry(destination, record);
             }
-
-            if (!recSuccess &&
-                _mind.TryGetMind(player, out var mindUid, out var mindComp)
-                && _prefManager.GetPreferencesOrNull(mindComp.UserId)?.SelectedCharacter is HumanoidCharacterProfile profile)
+            else if (_mind.TryGetMind(player, out _, out var mind) &&
+                     _prefManager.GetPreferencesOrNull(mind.UserId)?.SelectedCharacter is HumanoidCharacterProfile profile &&
+                     TryComp<FingerprintComponent>(player, out var fingerprint) &&
+                     TryComp<DnaComponent>(player, out var dna) &&
+                     TryComp<StationRecordsComponent>(destination, out var records))
             {
-                TryComp<FingerprintComponent>(player, out var fingerprintComponent);
-                TryComp<DnaComponent>(player, out var dnaComponent);
-                TryComp<StationRecordsComponent>(shuttleStation, out var stationRec);
-                _records.CreateGeneralRecord(shuttleStation.Value, targetId, profile.Name, profile.Age, profile.Species, profile.Gender, $"Captain", fingerprintComponent!.Fingerprint, dnaComponent!.DNA, profile, stationRec!);
+                _records.CreateGeneralRecord(destination, targetId, profile.Name, profile.Age, profile.Species,
+                    profile.Gender, "Captain", fingerprint.Fingerprint, dna.DNA, profile, records);
             }
         }
         if (shuttleStation is { } newStation)

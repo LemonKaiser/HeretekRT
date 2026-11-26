@@ -30,6 +30,9 @@
   - Medical
   - Chemistry
   - TsfmcEngineering # Mono
+  - TsfmcArmory
+  - TsfmcCaptain
+  - Tsfmc
   accessGroups:
   - GeneralNfsdAccess
   guides:

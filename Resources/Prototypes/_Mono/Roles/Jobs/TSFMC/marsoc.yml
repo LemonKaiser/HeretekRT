@@ -26,6 +26,8 @@
   - AllAccess
   access:
   - TsfmcEngineering
+  - TsfmcArmory
+  - Tsfmc
   guides:
   - TSFMC_Entry
   special:

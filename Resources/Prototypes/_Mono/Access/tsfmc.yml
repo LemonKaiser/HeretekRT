@@ -1,6 +1,22 @@
 - type: accessLevel
   id: TsfmcEngineering
-  name: id-card-access-level-tsf-engineer
+  name: id-card-access-level-tsfmc-engineer
+
+- type: accessLevel
+  id: Tsfmc
+  name: id-card-access-level-tsfmc
+
+- type: accessLevel
+  id: TsfmcArmory
+  name: id-card-access-level-tsfmc-armory
+
+- type: accessLevel
+  id: TsfmcCaptain
+  name: id-card-access-level-tsfmc-captain
+
+- type: accessLevel
+  id: TsfmcColonel
+  name: id-card-access-level-tsfmc-colonel
 
 - type: accessGroup
   id: TsfGeneralNoBrig
@@ -21,3 +37,15 @@
   - Sergeant
   - Security
   - TsfmcEngineering
+  - TsfmcColonel
+  - TsfmcArmory
+  - TsfmcCaptain
+  - Tsfmc
+
+- type: accessGroup
+  id: GeneralTsfmcAccess
+  tags:
+  - Maintenance
+  - External
+  - Tsfmc
+  - Brig

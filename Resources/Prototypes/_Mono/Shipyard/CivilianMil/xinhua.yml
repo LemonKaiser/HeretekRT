@@ -6,7 +6,6 @@
   price: 196000
   category: Large
   group: Shipyard
-  access: Mercenary
   shuttlePath: /SharedMaps/_Mono/Shuttles/CivilianMil/xinhua.yml
   guidebookPage: Null
   class:
@@ -16,6 +15,7 @@
   - Mercenary
   engine:
   - AME
+  access: Mercenary
 
 - type: gameMap
   id: Xinhua

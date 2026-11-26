@@ -27,6 +27,7 @@
   - GrandVizier
   - PDVCommand
   - Mercenary
+  - PDV
   accessGroups:
   - GeneralAccess
   guides:

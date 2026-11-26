@@ -225,6 +225,7 @@
         - id: ClothingShoesBootsMagMercenaryFilled
   - type: AccessReader
     access: [["Captain"], ["Mercenary"]]
+  # access: [["Captain"], ["Mercenary"]]
 
 - type: entity
   id: SuitStoragePrivateSecurity
@@ -241,6 +242,7 @@
         - id: ClothingShoesBootsMagSecurity
   - type: AccessReader
     access: [["Captain"], ["Mercenary"]]
+  # access: [["Captain"], ["Mercenary"]]
 
 #SCAF hardsuit
 - type: entity
@@ -258,6 +260,7 @@
         - id: ClothingShoesBootsMagMercenaryFilled
   - type: AccessReader
     access: [["Captain"], ["Mercenary"]]
+  # access: [["Captain"], ["Mercenary"]]
 
 #Pilot hardsuit
 - type: entity

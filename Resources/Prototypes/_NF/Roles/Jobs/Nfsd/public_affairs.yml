@@ -49,6 +49,8 @@
   - !type:GiveItemOnHolidaySpecial
     holiday: FrontierBirthday
     prototype: FrontierBirthdayGift
+  access:
+  - Tsfmc
 
 - type: startingGear
   id: PublicAffairGear

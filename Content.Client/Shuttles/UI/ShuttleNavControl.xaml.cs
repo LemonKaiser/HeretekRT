@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._Mono.PlanetMap; // Mono
 using Content.Client._Mono.Radar;
 using Content.Client._WH40K.SectorMap;
 using Content.Client.Shuttles.Systems;
+using Content.Client._Mono.Sensors.UI;
 using Content.Client.Station; // Frontier
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Mono.Company;
@@ -12,6 +14,7 @@ using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared._Mono.Sensors;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
@@ -57,6 +60,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private readonly IGameTiming _timing;
     private readonly KoronusPlanetVisualRenderer _planetRenderer;
     private readonly KoronusSunVisualRenderer _sunRenderer;
+    private readonly PlanetTerrainSystem _planetTerrain;
+    private RadarLockStateDto? _radarLockState;
 
     /// <summary>
     /// Used to transform all of the radar objects. Typically is a shuttle console parented to a grid.
@@ -108,10 +113,19 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     public bool ForcePannable { get; set; }
     public ShuttleNavTargetingMode TargetingMode { get; private set; }
     public Angle TargetAngle { get; private set; }
+    public bool ShowMarkers { get; set; } = true;
 
     public float MaximumIFFDistance { get; set; } = 3000f; // Frontier // Mono - 3000 by default to not gigaclutter
 
     private static Color _dockLabelColor = Color.White; // Frontier
+
+    // Mono - dimming again, left but unused
+    private static readonly PlanetDrawOptions RadarPlanetOptions = new(
+        PixelsPerTexel: 3f,
+        TerrainModulate: new Color(1.0f, 1.0f, 1.0f),
+        DrawStructures: true,
+        StructureColor: IFFComponent.IFFColor,
+        BorderColor: Color.Red.WithAlpha(0.6f));
 
     /// <summary>
     ///   If present, called for every IFF. Must determine if it should or should not be shown.
@@ -145,6 +159,10 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private bool _radarModeDefaultsApplied;
 
     private bool _wasPanned = false;
+
+    public bool LockMode;
+    public Action<NetEntity>? OnLockTarget;
+    public Action? OnClearLock;
     #endregion
 
     protected bool _isMouseDown;
@@ -193,6 +211,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _sunRenderer = new KoronusSunVisualRenderer(
             _prototypeManager,
             IoCManager.Resolve<IResourceCache>());
+        _planetTerrain = EntManager.System<PlanetTerrainSystem>();
 
         OnMouseEntered += HandleMouseEntered;
         OnMouseExited += HandleMouseExited;
@@ -604,6 +623,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         if (args.Function != EngineKeyFunctions.UIClick)
             return;
 
+        if (LockMode)
+        {
+            args.Handle();
+            _isMouseDown = false;
+            _lastMousePos = args.RelativePosition;
+            return;
+        }
+
         _isMouseDown = true;
         _lastMousePos = args.RelativePosition;
         TryFireAtPosition(args.RelativePosition);
@@ -640,6 +667,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
 
         _isMouseDown = false;
+
+        if (LockMode)
+        {
+            args.Handle();
+            TryLockAtPosition(args.RelativePosition);
+            return;
+        }
 
         var coords = GetMouseEntityCoordinates(args.RelativePosition);
         OnRadarClick?.Invoke(coords);
@@ -741,6 +775,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _docks = state.Docks;
         UpdateAsteroidFields(state.AsteroidFields);
         UpdatePlanetaryState(state.PlanetaryState);
+        _radarLockState = state.Lock; // Mono
 
         NfUpdateState(state); // Frontier Update State
     }
@@ -929,6 +964,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var viewAABB = viewBounds.CalcBoundingBox();
 
         DrawStarSystem(handle, worldToShuttle, shuttleToView, xform.MapUid); // Far Horizons
+
+        Box2? terrainView = null;
+        if (xform.MapUid is { } radarMapUid && !EntManager.HasComponent<KoronusPlanetSurfaceBoundaryComponent>(radarMapUid))
+        {
+            terrainView = PlanetTerrainSystem.GetViewBox(worldToView, PixelSize);
+            _planetTerrain.DrawUnderlay(handle, radarMapUid, worldToView, terrainView.Value, mapPos.Position, MinimapScale,
+                RadarPlanetOptions, BackingColor);
+        }
 
         _grids.Clear();
         _mapManager.FindGridsIntersecting(xform.MapID, new Box2(mapPos.Position - MaxRadarRangeVector, mapPos.Position + MaxRadarRangeVector), ref _grids, approx: true, includeMap: false);
@@ -1228,7 +1271,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
         // Draw the accumulated blips once. Drawing this inside the grid loop made the same growing
         // list render repeatedly, which was quadratic in the number of visible grids.
-        NfDrawBlips(handle, _tempBlipDataList);
+        if (ShowMarkers)
+            NfDrawBlips(handle, _tempBlipDataList);
 
         // If we've set the controlling console, and it's on a different grid
         // to the shuttle itself, then draw an additional marker to help the
@@ -1242,6 +1286,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 handle.DrawCircle(p, 5, Color.ToSrgb(Color.Cyan), true);
             }
         }
+
+        if (terrainView is { } terrainBox)
+            _planetTerrain.DrawMarkers(handle, xform.MapID, terrainBox, worldToView, Font, UIScale);
 
         #region Mono
         // Draw radar line
@@ -1341,6 +1388,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
         DrawBssNavigation(handle, xform.MapID, ourGridId, worldToView);
         DrawKoronusBoundary(handle, xform.MapID, observerPosition, worldToView);
+        RadarLockOverlay.Draw(handle, _radarLockState, worldToView, UIScale);
         #endregion
     }
 
@@ -1503,12 +1551,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                         : _detection.HandleUnknownMassLabel(grid.Owner)
                     : _shuttles.GetIFFLabel(grid, self: false, component: iff);
 
-                var shouldDrawIFF = ShowIFF && labelName != null;
-                var shouldDrawDetailedIFF = ShowIFFDetailed && shouldDrawIFF; // Mono
-                if (shouldDrawIFF)
+                var shouldDrawOutline = labelName != null; // Mono - replaced shouldDrawIFF
+                if (shouldDrawOutline)
                 {
                     if (IFFFilter != null)
-                        shouldDrawIFF &= IFFFilter(gUid, grid.Comp, iff, hideLabel, labelName!);
+                        shouldDrawOutline &= IFFFilter(gUid, grid.Comp, iff, hideLabel, labelName!);
                     //if (isPlayerShuttle) // Mono - comments this out, replaced elsewere
                     //    shouldDrawIFF &= ShowIFFShuttles;
                 }
@@ -1518,13 +1565,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 // Frontier: range checks // Mono
                 var gridMapPos = _transform.ToMapCoordinates(new EntityCoordinates(gUid, gridBody.LocalCenter)).Position;
                 if (!hideLabel) // Mono - show thermal signatures even at long range
-                    shouldDrawIFF = NfCheckShouldDrawIffRangeCondition(shouldDrawIFF, mapPos.Position - gridMapPos);
+                    shouldDrawOutline = NfCheckShouldDrawIffRangeCondition(shouldDrawOutline, mapPos.Position - gridMapPos);
                 // End Frontier
 
                 // Mono
                 var gridUiPosition = Vector2.Transform(gridBody.LocalCenter, curGridToView) / UIScale;
 
-                if (shouldDrawIFF)
+                if (shouldDrawOutline) //Mono
                 {
                     //var gridCentre = Vector2.Transform(gridBody.LocalCenter, curGridToView);
                     //gridCentre.Y = -gridCentre.Y;
@@ -1594,7 +1641,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                         labelPosition + new Vector2(labelDimensions.X, 0),
                         labelPosition + new Vector2(0, labelDimensions.Y),
                         labelPosition + labelDimensions
-                    };
+                        };
 
                         // The radius and squared radius of the radar, in virtual pixels.
                         var radius = Width * 0.5f;
@@ -1634,10 +1681,12 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                         var mainLabel = lines[0];
 
                         // Draw main ship label with company color if available
+                        if(ShowIFF){ // Mono - to make IFF and D. IFF render separately
                         handle.DrawString(Font, (uiPosition + labelOffset) * UIScale, mainLabel, UIScale * 0.9f, displayColor);
+                        }
 
                         // Mono start - draw main stack of info
-                        if (shouldDrawDetailedIFF)
+                        if (ShowIFFDetailed)
                         {
                             // Get company label & draw
                             var companyLabel = !hideLabel ? lines[1] : Loc.GetString("shuttle-console-company-unknown");
@@ -1666,12 +1715,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     }
 
                     NfAddBlipToList(_tempBlipDataList, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, labelColor, hideLabel ? default : gUid); // Frontier code
-                                                                                                                                                        // End Frontier: IFF drawing functions
                 }
-
-                // Frontier Don't skip drawing blips if they're out of range.
-                NfDrawBlips(handle, _tempBlipDataList);
-
+                if(ShowMarkers){ // Mono
+                    // Frontier Don't skip drawing blips if they're out of range.
+                    NfDrawBlips(handle, _tempBlipDataList);
+                }
                 // Detailed view
                 var gridAABB = curGridToWorld.TransformBox(grid.Comp.LocalAABB);
 
@@ -2212,5 +2260,20 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 handle.DrawLine(v1, v2, visuals.ShieldColor);
             }
         }
+    }
+
+    // Mono start
+    public void SetRadarLockState(RadarLockStateDto? state)
+    {
+        _radarLockState = state;
+    }
+
+    private void TryLockAtPosition(Vector2 relativePosition)
+    {
+        var coordinates = GetMouseEntityCoordinates(relativePosition);
+        if (TryGetTargetGrid(coordinates, out var target))
+            OnLockTarget?.Invoke(EntManager.GetNetEntity(target));
+        else
+            OnClearLock?.Invoke();
     }
 }

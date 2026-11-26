@@ -70,17 +70,23 @@
     - Brig
     - Mercenary
     - Captain
+    - Tsfmc
+    - TsfmcArmory
+    - TsfmcCaptain
+    - TsfmcColonel
   - type: AccessReader
     access: [["Security"], ["Armory"], ["Sergeant"], ["Bailiff"], ["TsfmcEngineering"], ["Brig"]]
   - type: IntrinsicRadioTransmitter
     channels:
     - Common
     - Nfsd
+    - Command
     - Traffic
   - type: ActiveRadio
     channels:
     - Common
     - Nfsd
+    - Command
     - Traffic
   - type: LanguageKnowledge
     speaks:
@@ -127,6 +133,7 @@
     - PDVCommand
     - GrandVizier
     - Mercenary
+    - PDV
   - type: AccessReader
     access: [["GrandVizier"]]
   - type: IntrinsicRadioTransmitter

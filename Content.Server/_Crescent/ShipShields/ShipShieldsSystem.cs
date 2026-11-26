@@ -80,7 +80,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 continue;
 
             var filter = _station.GetInOwningStation(uid);
-
             if (emitter.Damage > emitter.DamageLimit)
                 emitter.OverloadAccumulator = emitter.DamageOverloadTimePunishment;
 
@@ -104,7 +103,22 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             }
 
             if (emitter.Shield is { } activeShield)
+            {
+                if (TryComp<ShipShieldVisualsComponent>(activeShield, out var visuals))
+                {
+                    var damageFraction = emitter.DamageLimit > 0f ? emitter.Damage / emitter.DamageLimit : 0f;
+                    var loadFraction = emitter.MaxDraw > 0f ? CalculateLoadDamage(emitter) / emitter.MaxDraw : 0f;
+                    var health = Math.Clamp(1f - MathF.Max(damageFraction, loadFraction), 0f, 1f);
+                    var color = emitter.ShieldColor.WithAlpha(emitter.ShieldColor.A * health);
+                    if (visuals.ShieldColor != color)
+                    {
+                        visuals.ShieldColor = color;
+                        Dirty(activeShield, visuals);
+                    }
+                }
+
                 _bastion.UpdateVisuals(activeShield, parent.Value, uid);
+            }
         }
     }
     public override void Initialize()
@@ -220,7 +234,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
         _fixtureSystem.TryCreateFixture(shield, internalPoly, "internalShield",
             hard: true,
-            collisionLayer: (int)CollisionGroup.BulletImpassable, // Mono - Only try to block bullets
+            collisionLayer: (int)(CollisionGroup.BulletImpassable | CollisionGroup.LaserImpassable),
             body: shieldPhysics);
 
         _physicsSystem.WakeBody(shield, body: shieldPhysics);

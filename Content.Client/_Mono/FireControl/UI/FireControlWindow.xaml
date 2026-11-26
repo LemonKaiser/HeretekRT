@@ -4,6 +4,7 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
             xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
             xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+            xmlns:sensors="clr-namespace:Content.Client._Mono.Sensors.UI"
             xmlns:ui="clr-namespace:Content.Client._Mono.FireControl.UI"
             Title="{Loc 'gunnery-window-title'}"
             SetSize="1000 800"
@@ -35,6 +36,16 @@
             <Button Name="RefreshButton" Access="Public" Text="{Loc admin-logs-refresh}"
                     StyleClasses="ButtonSquare" Margin="2 2 2 2"/>
             </PanelContainer>
+
+            <BoxContainer SeparationOverride="4">
+                <Button Name="GunneryModeButton" Text="{Loc 'gunnery-window-title'}" ToggleMode="True" HorizontalExpand="True"/>
+                <Button Name="SensorsModeButton" Text="{Loc 'shuttle-console-sensors-tab'}" ToggleMode="True" HorizontalExpand="True"/>
+            </BoxContainer>
+            <BoxContainer SeparationOverride="4">
+                <Button Name="LockModeToggle" Text="{Loc 'gunnery-lock'}" ToggleMode="True" HorizontalExpand="True"/>
+                <Button Name="RadarTrackToggle" Text="{Loc 'gunnery-sarh'}" ToggleMode="True" HorizontalExpand="True"/>
+                <Button Name="MarkersToggle" Text="{Loc 'shuttle-console-markers-toggle-short'}" ToggleMode="True" HorizontalExpand="True"/>
+            </BoxContainer>
 
             <!-- Weapons Control Section -->
             <controls:StripeBack MinSize="48 48" Margin="0 0 0 0">
@@ -120,7 +131,7 @@
     </BoxContainer>
 
         <!-- Radar Display -->
-        <BoxContainer Name="RadarContainer"
+        <BoxContainer Name="GunneryContainer"
                       Orientation="Horizontal"
                       HorizontalExpand="True"
                       VerticalExpand="True"
@@ -131,5 +142,6 @@
                                           VerticalExpand="True" />
             </LayoutContainer>
         </BoxContainer>
+        <sensors:SensorsControl Name="SensorsTab" Access="Public" HorizontalExpand="True" VerticalExpand="True"/>
     </BoxContainer>
 </controls:FancyWindow>

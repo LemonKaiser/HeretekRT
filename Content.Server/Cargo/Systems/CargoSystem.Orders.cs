@@ -237,20 +237,22 @@ namespace Content.Server.Cargo.Systems
             order.Approved = true;
             _audio.PlayPvs(component.ConfirmSound, uid);
 
-            if (!_emag.CheckFlag(uid, EmagType.Interaction))
+            var alertOnPurchase = component.AlertOnPurchase.Contains(order.ProductId);
+            if (alertOnPurchase || !_emag.CheckFlag(uid, EmagType.Interaction))
             {
                 var tryGetIdentityShortInfoEvent = new TryGetIdentityShortInfoEvent(uid, player);
                 RaiseLocalEvent(tryGetIdentityShortInfoEvent);
                 order.SetApproverData(tryGetIdentityShortInfoEvent.Title);
+            }
 
-                // Frontier: silence cargo station
-                // var message = Loc.GetString("cargo-console-unlock-approved-order-broadcast",
-                //     ("productName", Loc.GetString(order.ProductName)),
-                //     ("orderAmount", order.OrderQuantity),
-                //     ("approver", order.Approver ?? string.Empty),
-                //     ("cost", cost));
-                // _radio.SendRadioMessage(uid, message, component.AnnouncementChannel, uid, escapeMarkup: false);
-                // End Frontier: silence cargo station
+            if (alertOnPurchase)
+            {
+                var message = Loc.GetString("cargo-console-unlock-approved-order-broadcast",
+                    ("productName", Loc.GetString(order.ProductName)),
+                    ("orderAmount", order.OrderQuantity),
+                    ("approver", order.Approver ?? string.Empty));
+                var speaker = Transform(uid).GridUid ?? uid; // Mono: make the GRID send the message
+                _radio.SendRadioMessage(speaker, message, component.AnnouncementChannel, speaker, escapeMarkup: false, jammable: false); // Mono: unjammable
             }
 
             ConsolePopup(args.Actor, Loc.GetString("cargo-console-trade-station", ("destination", MetaData(uid).EntityName))); // ev.FulfillmentEntity.Value<uid

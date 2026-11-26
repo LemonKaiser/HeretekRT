@@ -133,6 +133,9 @@ namespace Content.Shared.Preferences
         public int Age { get; set; } = 18;
 
         [DataField]
+        public string CustomSpeciesName { get; private set; } = string.Empty;
+
+        [DataField]
         public Sex Sex { get; private set; } = Sex.Male;
 
         [DataField]
@@ -238,11 +241,13 @@ namespace Content.Shared.Preferences
             Wh40kCharacterBuild? wh40kBuild = null,
             IEnumerable<string>? flags = null, // Mono
             IEnumerable<PersistentProfileComponent>? components = null, // Mono
-            IEnumerable<PersistentProfileItem>? items = null) // Mono
+            IEnumerable<PersistentProfileItem>? items = null,
+            string customSpeciesName = "") // Mono
         {
             Name = name;
             FlavorText = flavortext;
             Species = species;
+            CustomSpeciesName = customSpeciesName;
             Age = age;
             Sex = sex;
             Gender = gender;
@@ -272,7 +277,7 @@ namespace Content.Shared.Preferences
             Dictionary<string, RoleLoadout> loadouts)
             : this(other.Name, other.FlavorText, other.Species, other.Age, other.Sex, other.Gender, other.BankBalance, other.Appearance, other.SpawnPriority,
                 jobPriorities, other.PreferenceUnavailable, antagPreferences, traitPreferences, loadouts, other.Company, other.Wh40kBuild,
-                other.Flags, other.Components, other.Items) // Mono
+                other.Flags, other.Components, other.Items, other.CustomSpeciesName) // Mono
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
@@ -309,7 +314,8 @@ namespace Content.Shared.Preferences
                 other.Wh40kBuild,
                 other.Flags, // Mono
                 other.Components, // Mono
-                other.Items) // Mono
+                other.Items,
+                other.CustomSpeciesName) // Mono
         {
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
@@ -514,6 +520,10 @@ namespace Content.Shared.Preferences
             return new(this) { Species = species };
         }
 
+        public HumanoidCharacterProfile WithCustomSpeciesName(string name) // Starlight
+        {
+            return new(this) { CustomSpeciesName = name };
+        }
 
         public HumanoidCharacterProfile WithCharacterAppearance(HumanoidCharacterAppearance appearance)
         {
@@ -735,6 +745,7 @@ namespace Content.Shared.Preferences
             if (PreferenceUnavailable != other.PreferenceUnavailable) return false;
             if (SpawnPriority != other.SpawnPriority) return false;
             if (Species != other.Species) return false;
+            if (CustomSpeciesName != other.CustomSpeciesName) return false; // Starlight
             if (Company != other.Company) return false;
             if (!Flags.SequenceEqual(other.Flags)) return false; // Mono
             if (!Components.SequenceEqual(other.Components)) return false; // Mono
@@ -917,6 +928,8 @@ namespace Content.Shared.Preferences
                          .ToList();
 
             Name = name;
+            var speciesName = CustomSpeciesName?.Trim() ?? string.Empty;
+            CustomSpeciesName = new string(speciesName.Where(character => !char.IsControl(character)).Take(MaxNameLength).ToArray()).TrimEnd();
             FlavorText = flavortext;
             OocFlavorText = oocFlavorText;
             CharacterFlavorText = characterFlavorText;
@@ -1063,6 +1076,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(ShareLinksFlavorText);
             hashCode.Add(SharePreferencesFlavorText);
             hashCode.Add(Species);
+            hashCode.Add(CustomSpeciesName);
             hashCode.Add(Age);
             hashCode.Add((int)Sex);
             hashCode.Add((int)Gender);

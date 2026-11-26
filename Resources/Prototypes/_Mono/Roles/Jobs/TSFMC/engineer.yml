@@ -19,6 +19,7 @@
   canBeAntag: false
   access:
   - TsfmcEngineering
+  - Tsfmc
   accessGroups:
   - TsfGeneralNoBrig
   guides:

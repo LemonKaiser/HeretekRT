@@ -93,6 +93,13 @@ public sealed partial class IdCardConsoleComponent : Component
     "Mieyo", // Mono
     "MieyoSecurity", // Mono
     "MieyoLiason", // Mono
+    "Tsfmc",
+    "TsfmcArmory",
+    "TsfmcCaptain",
+    "TsfmcColonel",
+    "PDV",
+    "Caelestinus",
+    "CaelestinusCommand",
     };
 
     [Serializable, NetSerializable]

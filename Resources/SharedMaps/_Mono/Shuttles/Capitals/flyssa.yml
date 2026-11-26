@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 03/01/2026 01:38:58
-  entityCount: 3273
+  entityCount: 3280
 maps: []
 grids:
 - 1
@@ -16375,6 +16375,13 @@ entities:
       parent: 1
 - proto: WallPlastitanium
   entities:
+  - uid: 2311
+    components:
+    - type: Transform
+      pos: 4.5,39.5
+      parent: 1
+- proto: WallPlastitanium
+  entities:
   - uid: 1506
     components:
     - type: Transform
@@ -20714,13 +20721,6 @@ entities:
     - type: Transform
       pos: -10.5,24.5
       parent: 1
-- proto: WallPlastitanium
-  entities:
-  - uid: 2311
-    components:
-    - type: Transform
-      pos: 4.5,39.5
-      parent: 1
 - proto: WallReinforced
   entities:
   - uid: 2312
@@ -21048,5 +21048,61 @@ entities:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -0.5,26.5
+      parent: 1
+- proto: SensorInfraredTSF
+  entities:
+  - uid: 3274
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -21.5,16.5
+      parent: 1
+  - uid: 3275
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,16.5
+      parent: 1
+- proto: SensorPassiveRadarTSF
+  entities:
+  - uid: 3276
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 15.5,-1.5
+      parent: 1
+  - uid: 3277
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -16.5,-1.5
+      parent: 1
+- proto: SensorRadarTsfSanDian
+  entities:
+  - uid: 3278
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 5.5,42.5
+      parent: 1
+  - uid: 3279
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -6.5,42.5
+      parent: 1
+- proto: SensorRadarTsfXiaoDou
+  entities:
+  - uid: 3280
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 14.5,16.5
+      parent: 1
+  - uid: 3281
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -15.5,16.5
       parent: 1
 ...

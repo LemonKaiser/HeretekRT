@@ -70,6 +70,7 @@
     stateDoorClosed: cap_door
   - type: AccessReader
     access: [["Captain"]]
+  #  access: [["Captain"]] # Mono
 
 - type: entity
   id: LockerHeadOfPersonnel
@@ -268,7 +269,6 @@
     stateDoorOpen: cmo_open
     stateDoorClosed: cmo_door
   - type: AccessReader
-#    access: [ [ "ChiefMedicalOfficer" ] ] # Frontier
 
 # Science
 - type: entity
@@ -329,7 +329,7 @@
 - type: entity
   id: LockerBrigmedic
   parent: LockerBaseSecure
-  name: brigmedic's locker
+  name: corpsman's locker
   components:
   - type: Appearance
   - type: EntityStorageVisuals
@@ -343,7 +343,7 @@
 - type: entity
   id: LockerSecurity
   parent: LockerBaseSecure
-  name: security officer's locker
+  name: judge's locker
   components:
   - type: Appearance
   - type: EntityStorageVisuals

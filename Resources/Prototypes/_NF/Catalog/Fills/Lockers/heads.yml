@@ -51,6 +51,7 @@
       - id: WeaponCaseShortBombCollar # Mono
       - id: PaperCCTCMiningVesselPurchase
       - id: PaperCCTCTransportVesselPurchase
+      - id: RDServerCaelestinusFlatpack # Mono
 
 - type: entity
   id: LockerNfsdSheriffFilled

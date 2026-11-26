@@ -71,6 +71,7 @@
     layoutId: AirAlarm
   - type: AccessReader
     access: [["Atmospherics"], ["Captain"], ["USSPHigh"], ["USSPCommand"]] # Frontier: allowed ["Captain"] to access air alarms, Mono: added USSP access
+  # access: [["Atmospherics"], ["Captain"], ["USSPHigh"], ["USSPCommand"]] # Frontier: allowed ["Captain"] to access air alarms, Mono: added USSP access and then just removed it
   - type: ContainerFill
     containers:
       board: [ AirAlarmElectronics ]

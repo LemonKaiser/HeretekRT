@@ -31,9 +31,7 @@ public sealed partial class CargoSystem
         if (TryResolveCargoDomain(ent, out var domain))
         {
             domainOwner = domain.Owner;
-            atDestination = ent.Comp.DestinationStation != EntityUid.Invalid &&
-                            domainOwner == ent.Comp.DestinationStation ||
-                            HasComp<TradeCrateWildcardDestinationComponent>(domainOwner);
+            atDestination = IsTradeCrateDestination(ent.Comp, domainOwner);
         }
 
         ev.Price = atDestination ? ent.Comp.ValueAtDestination : ent.Comp.ValueElsewhere;
@@ -53,6 +51,12 @@ public sealed partial class CargoSystem
         ev.Price *= valueMultiplier;
         // Mono End
         ev.Price = double.Max(0.0, ev.Price); // Ensure non-negative values.
+    }
+
+    private bool IsTradeCrateDestination(TradeCrateComponent crate, EntityUid owner)
+    {
+        return (crate.DestinationStation != EntityUid.Invalid && owner == crate.DestinationStation) ||
+               HasComp<TradeCrateWildcardDestinationComponent>(owner);
     }
 
     private void OnTradeCrateInit(Entity<TradeCrateComponent> ent, ref ComponentInit ev)

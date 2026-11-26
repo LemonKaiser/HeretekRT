@@ -38,6 +38,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.GameObjects;
 using Content.Shared._Crescent.SpaceBiomes;
+using Content.Shared._Mono.PlanetMap; // Mono
 
 namespace Content.Server.Salvage;
 
@@ -200,6 +201,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
             biomeSystem.SetTemplate(mapUid, biome, _prototypeManager.Index<BiomeTemplatePrototype>(missionBiome.BiomePrototype));
             biomeSystem.SetSeed(mapUid, biome, mission.Seed);
             _entManager.Dirty(mapUid, biome);
+            _entManager.EnsureComponent<PlanetMapBorderComponent>(mapUid); // Mono
 
             // Gravity
             var gravity = _entManager.EnsureComponent<GravityComponent>(mapUid);

@@ -1,9 +1,12 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                      xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
+                      xmlns:sensors="clr-namespace:Content.Client._Mono.Sensors.UI"
+            xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                       Title="{Loc 'radar-console-window-title'}"
                       SetSize="648 672"
                       MinSize="256 256">
+    <TabContainer Name="MainTabs" HorizontalExpand="True" VerticalExpand="True">
+        <LayoutContainer HorizontalExpand="True" VerticalExpand="True">
     <LayoutContainer Margin="4"
                      HorizontalExpand="True"
                      VerticalExpand="True">
@@ -38,4 +41,7 @@
 
 
     </BoxContainer>
+        </LayoutContainer>
+        <sensors:SensorsControl Name="SensorsTab" Access="Public" HorizontalExpand="True" VerticalExpand="True"/>
+    </TabContainer>
 </controls:FancyWindow>

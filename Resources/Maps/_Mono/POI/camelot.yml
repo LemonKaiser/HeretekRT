@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 08/20/2026 22:43:13
-  entityCount: 11854
+  entityCount: 11858
 maps: []
 grids:
 - 1
@@ -25051,6 +25051,15 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
+  - uid: 3462
+    components:
+    - type: Transform
+      pos: -1.5,28.5
+      parent: 1
+    - type: ApcPowerReceiver
+      powerLoad: 5
+    - type: Battery
+      startingCharge: 0
 - proto: ComputerResearchAndDevelopment
   entities:
   - uid: 3452
@@ -25137,17 +25146,6 @@ entities:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 22.5,14.5
-      parent: 1
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: Battery
-      startingCharge: 0
-- proto: ComputerStationRadar
-  entities:
-  - uid: 3462
-    components:
-    - type: Transform
-      pos: -1.5,28.5
       parent: 1
     - type: ApcPowerReceiver
       powerLoad: 5
@@ -80380,5 +80378,30 @@ entities:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -31.5,49.5
+      parent: 1
+- proto: SensorRadarPdvKara
+  entities:
+  - uid: 11855
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -20.5,68.5
+      parent: 1
+  - uid: 11856
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 9.5,62.5
+      parent: 1
+  - uid: 11857
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 21.5,-15.5
+      parent: 1
+  - uid: 11858
+    components:
+    - type: Transform
+      pos: -33.5,-7.5
       parent: 1
 ...

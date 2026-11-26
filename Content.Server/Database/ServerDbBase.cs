@@ -334,7 +334,8 @@ namespace Content.Server.Database
                 traits.ToHashSet(),
                 loadouts,
                 company,
-                wh40kBuild)
+                wh40kBuild,
+                customSpeciesName: profile.CustomSpeciesName ?? string.Empty)
                 .WithVoice(voice)
                 .WithBarkVoice(barkVoice)
                 .WithSpeechStyle(speechStyle)
@@ -374,6 +375,7 @@ namespace Content.Server.Database
             profile.ShareLinksFlavorText = humanoid.ShareLinksFlavorText;
             profile.SharePreferencesFlavorText = humanoid.SharePreferencesFlavorText;
             profile.Species = humanoid.Species;
+            profile.CustomSpeciesName = humanoid.CustomSpeciesName;
             profile.Voice = humanoid.Voice;
             profile.BarkVoice = humanoid.BarkVoice;
             profile.Age = humanoid.Age;

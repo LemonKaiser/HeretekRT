@@ -963,7 +963,7 @@
   parent: VendingMachineCredit # Mono
   id: VendingMachineSec
   name: SecTech
-  description: A vending machine containing Security equipment. A label reads SECURITY PERSONNEL ONLY.
+  description: A vending machine containing Security equipment. A label reads CAELESTINUS PERSONNEL ONLY. # Mono
   components:
   - type: VendingMachine
     pack: SecTechInventory

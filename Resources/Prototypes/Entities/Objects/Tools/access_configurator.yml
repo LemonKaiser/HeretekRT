@@ -52,6 +52,13 @@
       - Service
       - StationTrafficController # Frontier
       - Theatre
+      - Tsfmc
+      - TsfmcArmory
+      - TsfmcCaptain
+      - TsfmcColonel
+      - PDV
+      - Caelestinus
+      - CaelestinusCommand
       privilegedIdSlot:
         name: id-card-console-privileged-id
         ejectSound: /Audio/Machines/id_swipe.ogg
@@ -82,7 +89,7 @@
   parent: AccessConfigurator
   id: AccessConfiguratorUniversal
   name: universal access configurator
-  suffix: Admin
+  suffix: Admin, HAS DEPRECATED ACCESSES # Mono
   description: A modified access configurator used only by the mythical Administrator.
   components:
   - type: Sprite
@@ -137,6 +144,14 @@
     - USSPCommand # Mono
     - USSPHigh # Mono
     - USSP # Mono
+    - Tsfmc
+    - TsfmcArmory
+    - TsfmcCaptain
+    - TsfmcColonel
+    - PDV
+    - Caelestinus
+    - CaelestinusCommand
+    # Mono end
     privilegedIdSlot:
       name: id-card-console-privileged-id
       ejectSound: /Audio/Machines/id_swipe.ogg

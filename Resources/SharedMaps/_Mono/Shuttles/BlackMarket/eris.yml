@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/16/2026 12:55:51
-  entityCount: 837
+  entityCount: 840
 maps: []
 grids:
 - 1
@@ -6167,4 +6167,28 @@ entities:
       parent: 1
     - type: DeltaPressure
       gridUid: 1
+- proto: SensorInfraredPDV
+  entities:
+  - uid: 838
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -0.5,16.5
+      parent: 1
+- proto: SensorPassiveRadarPDV
+  entities:
+  - uid: 839
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 6.5,18.5
+      parent: 1
+- proto: SensorRadarPdvOrekh
+  entities:
+  - uid: 840
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 6.5,17.5
+      parent: 1
 ...

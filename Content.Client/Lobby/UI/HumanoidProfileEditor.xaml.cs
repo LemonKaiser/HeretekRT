@@ -216,6 +216,8 @@ namespace Content.Client.Lobby.UI
 
             #endregion Name
 
+            CustomSpeciesNameEdit.OnTextChanged += args => SetCustomSpeciesName(args.Text);
+
             #region Appearance
 
             TabContainer.SetTabTitle(0, Loc.GetString("humanoid-profile-editor-appearance-tab"));
@@ -269,6 +271,7 @@ namespace Content.Client.Lobby.UI
                 SetSpecies(_species[args.Id].ID);
                 UpdateHairPickers();
                 OnSkinColorOnValueChanged();
+                UpdateCustomSpeciesNameEdit(); // Starlight
             };
 
             #region Skin
@@ -1227,6 +1230,7 @@ namespace Content.Client.Lobby.UI
             JobOverride = null;
 
             UpdateNameEdit();
+            UpdateCustomSpeciesNameEdit(); // Starlight
             UpdateFlavorTextEdit();
             UpdateSexControls();
             UpdateGenderControls();
@@ -1273,6 +1277,7 @@ namespace Content.Client.Lobby.UI
             var appearanceLocked = IsWh40kAppearanceEditingLocked;
 
             NameEdit.Editable = !appearanceLocked;
+            CustomSpeciesNameEdit.Editable = !appearanceLocked;
             NameRandomize.Disabled = appearanceLocked;
             RandomizeEverythingButton.Disabled = appearanceLocked;
             ImportButton.Disabled = appearanceLocked;
@@ -2016,6 +2021,12 @@ namespace Content.Client.Lobby.UI
             _entManager.System<MetaDataSystem>().SetEntityName(PreviewDummy, newName);
         }
 
+        private void SetCustomSpeciesName(string name)
+        {
+            Profile = Profile?.WithCustomSpeciesName(name);
+            SetDirty();
+        }
+
         private void SetSpawnPriority(SpawnPriorityPreference newSpawnPriority)
         {
             Profile = Profile?.WithSpawnPriorityPreference(newSpawnPriority);
@@ -2071,6 +2082,13 @@ namespace Content.Client.Lobby.UI
         {
             NameEdit.Text = Profile?.Name ?? "";
             UpdatePersonalizationStatus();
+        }
+
+        private void UpdateCustomSpeciesNameEdit()
+        {
+            var species = _species.Find(entry => entry.ID == Profile?.Species);
+            CustomSpeciesNameEdit.PlaceHolder = species == null ? null : Loc.GetString(species.Name);
+            CustomSpeciesNameEdit.Text = Profile?.CustomSpeciesName ?? string.Empty;
         }
 
         private void UpdateFlavorTextEdit()

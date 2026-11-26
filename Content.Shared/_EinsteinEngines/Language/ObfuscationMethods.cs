@@ -33,6 +33,33 @@ public abstract partial class ObfuscationMethod
 }
 
 /// <summary>
+///  Obfuscate the string letters/numbers to random, keeps special characters and spaces.
+/// </summary>
+public sealed partial class RandomObfuscation : ObfuscationMethod
+{
+    [DataField]
+    public string Chars = "abcdefghijklmnopqrstuvwxyz";
+
+    internal override void Obfuscate(StringBuilder builder, string message, SharedLanguageSystem context)
+    {
+        if (Chars.Length == 0)
+        {
+            builder.Append(message);
+            return;
+        }
+
+        var seed = message.GetHashCode();
+        for (var i = 0; i < message.Length; i++)
+        {
+            var character = message[i];
+            builder.Append(char.IsLetterOrDigit(character)
+                ? Chars[context.PseudoRandomNumber(seed + i, 0, Chars.Length - 1)]
+                : character);
+        }
+    }
+}
+
+/// <summary>
 ///     The most primitive method of obfuscation - replaces the entire message with one random replacement phrase.
 ///     Similar to ReplacementAccent. Base for all replacement-based obfuscation methods.
 /// </summary>

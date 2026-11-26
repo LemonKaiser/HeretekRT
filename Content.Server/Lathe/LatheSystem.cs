@@ -39,7 +39,11 @@ using Robust.Shared.Timing;
 using Content.Shared.Cargo.Components; // Frontier
 using Content.Server._NF.Contraband.Systems;
 using Content.Server.Storage.Components;
-using Content.Shared.Stacks; // Frontier
+using Content.Server.Storage.EntitySystems;
+using Content.Shared.Interaction;
+using Content.Shared.Stacks;
+using Content.Shared.Storage.Components;
+using Content.Shared.Tools.Components; // Frontier
 using Robust.Shared.Containers;
 using Robust.Shared.Utility; // Frontier
 
@@ -133,7 +137,7 @@ namespace Content.Server.Lathe
                     continue;
 
                 if (_timing.CurTime - comp.StartTime >= comp.ProductionLength)
-                    FinishProducing(uid, lathe);
+                    FinishProducing(uid, comp.BulkMaterialPrintMultiplier, lathe); // Mono
             }
 
             // Mono - now checks all and not only producing lathes in order to check air temperature
@@ -275,8 +279,18 @@ namespace Content.Server.Lathe
             var batch = component.Queue.First();
             var actor = batch.Actor; // Mono: Adds actor
             var recipe = batch.Recipe;
+            var multiplier = recipe.Result == null && recipe.ResultReagents == null
+                ? Math.Clamp(component.BulkMaterialPrintMultiplier, 1, Math.Max(1, batch.ItemsRequested - batch.ItemsPrinted))
+                : 1;
             // <Mono> - resources now consumed as the production goes
-            if (!CanProduce(uid, recipe, 1, component))
+            var canProduce = CanProduce(uid, recipe, multiplier, component);
+            if (!canProduce && multiplier > 1)
+            {
+                multiplier = 1;
+                canProduce = CanProduce(uid, recipe, multiplier, component);
+            }
+
+            if (!canProduce)
             {
                 if (component.SkipBad)
                 {
@@ -293,7 +307,7 @@ namespace Content.Server.Lathe
 
             foreach (var (mat, amount) in recipe.Materials)
             {
-                var adjustedAmount = -AdjustMaterial(amount, recipe.MaterialDiscountScale, component.FinalMaterialUseMultiplier);
+                var adjustedAmount = -AdjustMaterial(amount * multiplier, recipe.MaterialDiscountScale, component.FinalMaterialUseMultiplier);
 
                 _materialStorage.TryChangeMaterialAmount(uid, mat, adjustedAmount);
             }
@@ -337,7 +351,7 @@ namespace Content.Server.Lathe
 
             // </Mono>
 
-            batch.ItemsPrinted++;
+            batch.ItemsPrinted += multiplier;
             if (batch.ItemsPrinted >= batch.ItemsRequested || batch.ItemsPrinted < 0) // Rollover sanity check
                 component.Queue.RemoveAt(0);
             // End Frontier
@@ -346,25 +360,33 @@ namespace Content.Server.Lathe
 
             var lathe = EnsureComp<LatheProducingComponent>(uid);
             lathe.StartTime = _timing.CurTime;
-            lathe.ProductionLength = time * component.FinalTimeMultiplier; // Frontier: TimeMultiplier<FinalTimeMultiplier
+            lathe.ProductionLength = time * component.FinalTimeMultiplier * multiplier; // Frontier: TimeMultiplier<FinalTimeMultiplier. Mono: Multiplier
             lathe.Actor = GetEntity(actor);
+            lathe.BulkMaterialPrintMultiplier = multiplier; // Mono
             component.CurrentRecipe = recipe;
 
             var ev = new LatheStartPrintingEvent(recipe);
             RaiseLocalEvent(uid, ref ev);
 
-            _audio.PlayPvs(component.ProducingSound, uid);
+            // Mono - sound pitch on production
+            if (component.ProducingSound is { } sound)
+            {
+                var pitch = component.FinalTimeMultiplier * multiplier;
+                var audioParams = pitch > 0 ? sound.Params.WithPitchScale(1 / pitch) : sound.Params;
+                _audio.PlayPvs(sound, uid, audioParams);
+            }
+            // Mono end
             UpdateRunningAppearance(uid, true);
             UpdateUserInterfaceState(uid, component);
 
             if (time == TimeSpan.Zero)
             {
-                FinishProducing(uid, component, lathe);
+                FinishProducing(uid, multiplier, component, lathe); // Mono
             }
             return true;
         }
 
-        public void FinishProducing(EntityUid uid, LatheComponent? comp = null, LatheProducingComponent? prodComp = null)
+        public void FinishProducing(EntityUid uid, int multiplier, LatheComponent? comp = null, LatheProducingComponent? prodComp = null) // Mono
         {
             if (!Resolve(uid, ref comp, ref prodComp, false))
                 return;
@@ -399,7 +421,8 @@ namespace Content.Server.Lathe
                 }
 
                 // Mono
-                _materialStorage.TryChangeMaterialAmount(uid, comp.CurrentRecipe.MaterialResult.ToDictionary()); // copy
+                var materialResult = comp.CurrentRecipe.MaterialResult.ToDictionary(k => k.Key, v => v.Value*multiplier);
+                _materialStorage.TryChangeMaterialAmount(uid, materialResult); // copy
 
                 if (comp.CurrentRecipe.ResultReagents is { } resultReagents &&
                     comp.ReagentOutputSlotId is { } slotId)
@@ -424,7 +447,7 @@ namespace Content.Server.Lathe
                 // <Mono>
                 // Add the actor that previously queued to looped items
                 if (comp.Loop)
-                    TryAddToQueue(uid, comp.CurrentRecipe, 1, comp, prodComp.Actor, true);
+                    TryAddToQueue(uid, comp.CurrentRecipe, multiplier, comp, prodComp.Actor, true);
 
                 _deviceLink.SendSignal(uid, comp.ProducedPort, true);
                 // </Mono>
@@ -511,7 +534,7 @@ namespace Content.Server.Lathe
             component.FinalMaterialUseMultiplier = component.MaterialUseMultiplier;
             // End of modified code
             // <Mono>
-            _deviceLink.EnsureSinkPorts(uid, component.PausePort, component.ResumePort);
+            _deviceLink.EnsureSinkPorts(uid, component.PausePort, component.ResumePort, component.ToggleOpenPort);
             _deviceLink.EnsureSourcePorts(uid, component.ProducedPort);
             // </Mono>
         }
@@ -671,6 +694,23 @@ namespace Content.Server.Lathe
             {
                 TryUnpause((ent, ent.Comp));
             }
+            else if (args.Port == ent.Comp.ToggleOpenPort)
+            {
+                TryToggleOpen((ent, ent.Comp));
+            }
+        }
+
+        public void TryToggleOpen(Entity<LatheComponent?> ent)
+        {
+            SharedEntityStorageComponent? storage = null;
+
+            if (!_storage.ResolveStorage(ent, ref storage))
+                return;
+
+            if (_storage.IsOpen(ent, storage))
+                _storage.CloseStorage(ent, storage);
+            else
+                _storage.OpenStorage(ent, storage);
         }
 
         public void TryPause(Entity<LatheComponent?> ent)

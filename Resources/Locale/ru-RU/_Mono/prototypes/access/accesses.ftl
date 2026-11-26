@@ -1,0 +1,13 @@
+id-card-access-level-pdv = Династия Фаэтон
+id-card-access-level-pdv-vizier = Великий визирь Династии
+id-card-access-level-pdv-command = Командование Династии
+id-card-access-level-tsfmc = КМП ТСФ
+id-card-access-level-tsfmc-engineer = Инженерный отдел ТСФ
+id-card-access-level-tsfmc-armory = Оружейная ТСФ
+id-card-access-level-tsfmc-captain = Капитан КМП ТСФ
+id-card-access-level-tsfmc-colonel = Полковник КМП ТСФ
+id-card-access-level-caelestinus = Целестинус
+id-card-access-level-caelestinus-command = Командование Целестинуса
+id-card-access-level-underground = Подполье
+id-card-access-level-godfather = Крёстный отец
+id-card-access-level-basic-mothership = Корабль-матка

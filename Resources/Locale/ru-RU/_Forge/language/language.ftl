@@ -57,7 +57,7 @@ language-Marish-description = Язык, на котором говорят то�
 
 language-Azaziba-name = Азазиба
 language-Azaziba-description =
-    Родной язык асакимов, состоящий из сочетания устной речи и жестов.
+    Архаичная форма драконьего языка. Кто сейчас на нём говорит, точно неизвестно.
 
 language-Hydraspeak-name = Хидр'ах
 language-Hydraspeak-description =

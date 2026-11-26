@@ -1,9 +1,11 @@
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.ItemTax.Components;
+using Content.Shared._Mono.Store;
 using Content.Server._Mono.Store.Components;
 using Content.Server._WH40K.Economy;
 using Content.Shared._NF.Bank.Components;
 using Content.Shared._NF.Bank.BUI;
+using Content.Shared._NF.Trade;
 using Content.Shared.FixedPoint;
 using System.Linq;
 using Content.Shared._WH40K.Economy;
@@ -39,7 +41,7 @@ public sealed partial class CargoSystem
                     accounting.Taxes[account] = accounting.Taxes.GetValueOrDefault(account) + amount;
                 }
             }
-            if (!TryComp<CurrencyInjectionOnSellComponent>(entity, out var injection))
+            if (GetSaleCurrencyInjection(entity) is not { } injection)
                 continue;
             var legacy = _pricing.GetPrice(entity, includeContents: false);
             var scale = legacy > 0 ? Math.Clamp(basis / legacy, 0, 1) : 0;
@@ -52,6 +54,18 @@ public sealed partial class CargoSystem
             }
         }
         return accounting;
+    }
+
+    private CurrencyInjection? GetSaleCurrencyInjection(EntityUid entity)
+    {
+        if (!TryComp<CurrencyInjectionOnSellComponent>(entity, out var component))
+            return null;
+
+        if (component.RequireCorrectDestination && TryComp<TradeCrateComponent>(entity, out var crate) &&
+            (!TryResolveCargoDomain(entity, out var domain) || !IsTradeCrateDestination(crate, domain.Owner)))
+            return null;
+
+        return component.Injection;
     }
 
     private void ApplyMaterialSaleAccounting(MaterialSaleAccounting accounting)

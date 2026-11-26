@@ -1,6 +1,6 @@
+using Content.Shared._NF.Cloning;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
-using Content.Shared._NF.Cloning;
 
 namespace Content.Shared._Mono.Company;
 

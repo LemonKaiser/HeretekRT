@@ -1,6 +1,7 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Parallax;
 using Content.Shared._DV.Planet;
+using Content.Shared._Mono.PlanetMap;
 using Content.Shared.Light.Components;
 using Content.Shared.Parallax.Biomes;
 using Robust.Shared.EntitySerialization.Systems;
@@ -57,6 +58,15 @@ public sealed partial class PlanetSystem : EntitySystem
 
         if (planet.AddedComponents is {} added)
             EntityManager.AddComponents(map, added);
+
+        // Mono - world border
+        if (planet.BorderRadius is { } borderRadius)
+        {
+            var border = EnsureComp<PlanetMapBorderComponent>(map);
+            border.Radius = borderRadius;
+            border.Offset = planet.BorderOffset;
+            Dirty(map, border);
+        }
 
         _atmos.SetMapAtmosphere(map, false, planet.Atmosphere);
 

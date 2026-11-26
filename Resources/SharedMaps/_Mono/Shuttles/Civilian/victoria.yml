@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 05/13/2026 19:08:09
-  entityCount: 521
+  entityCount: 523
 maps: []
 grids:
 - 1
@@ -3671,5 +3671,21 @@ entities:
     components:
     - type: Transform
       pos: -0.6060772,-9.55229
+      parent: 1
+- proto: SensorPassiveRadarCiv
+  entities:
+  - uid: 522
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,-2.5
+      parent: 1
+- proto: SensorRadarCiv
+  entities:
+  - uid: 523
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -0.5,8.5
       parent: 1
 ...

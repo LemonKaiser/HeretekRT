@@ -30,7 +30,7 @@
       - Heretic
   startingGear: PDVDenasvarGear
   alwaysUseSpawner: true
-  hideConsoleVisibility: true
+# hideConsoleVisibility: true
   canBeAntag: true
   icon: "JobIconPDVDenasvar"
   supervisors: job-supervisors-pdv-denasvar
@@ -42,6 +42,7 @@
   - Pirate
   - PDVCommand
   - Mercenary
+  - PDV
   accessGroups:
   - GeneralAccess
   guides:

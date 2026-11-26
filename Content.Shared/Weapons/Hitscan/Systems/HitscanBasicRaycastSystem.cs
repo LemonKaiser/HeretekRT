@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Crescent.ShipShields;
 using Content.Shared.Administration.Logs;
 using Content.Shared._WH40K.Combat;
 using Content.Shared._WH40K.NPC;
@@ -37,18 +38,16 @@ public sealed partial class HitscanBasicRaycastSystem : EntitySystem
         var rayCastResults = _physics.IntersectRay(mapCords.MapId, ray, ent.Comp.MaxDistance, shooter, false);
 
         var target = args.Target;
+        var gunGrid = Transform(args.Gun).GridUid;
         var shotDirection = args.ShotDirection;
-        // If you are in a container, use the raycast result
-        // Otherwise:
-        //  1.) Hit the first entity that you targeted.
-        //  2.) Hit the first entity that doesn't require you to aim at it specifically to be hit.
-        var result = _container.IsEntityOrParentInContainer(shooter)
-            ? rayCastResults.FirstOrNull(hit => !_chaosFriendlyFire.ShouldPass(shooter, hit.HitEntity) &&
-                                               !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection))
-            : rayCastResults.FirstOrNull(hit => !_chaosFriendlyFire.ShouldPass(shooter, hit.HitEntity) &&
-                                               !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection) &&
-                                                (hit.HitEntity == target ||
-                                                 CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true));
+        var inContainer = _container.IsEntityOrParentInContainer(shooter);
+        var result = rayCastResults.FirstOrNull(hit =>
+            !_chaosFriendlyFire.ShouldPass(shooter, hit.HitEntity) &&
+            !_barricades.ShouldPassHitscan(hit.HitEntity, mapCords, shotDirection) &&
+            (inContainer || hit.HitEntity == target ||
+             CompOrNull<RequireProjectileTargetComponent>(hit.HitEntity)?.Active != true) &&
+            (!TryComp<ShipShieldComponent>(hit.HitEntity, out var shield) ||
+             (!ent.Comp.IgnoreShields && gunGrid != shield.Shielded)));
 
         var trace = new HitscanRaycastFiredEvent
         {

@@ -47,6 +47,8 @@
                                                 <OptionButton Name="PronounsButton" HorizontalExpand="True"/>
                                             </BoxContainer>
                                         </GridContainer>
+                                        <Label Text="{Loc 'humanoid-profile-editor-custom-species-label'}"/>
+                                        <LineEdit Name="CustomSpeciesNameEdit" HorizontalExpand="True"/>
                                         <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}"/>
                                         <OptionButton Name="SpawnPriorityButton" HorizontalExpand="True"/>
                                     </BoxContainer>

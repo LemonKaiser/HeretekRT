@@ -24,6 +24,8 @@
   - External
   - Frontier
   - StationTrafficController
+  - Caelestinus
+  - CaelestinusCommand
   special:
   - !type:AddComponentSpecial
     components:
