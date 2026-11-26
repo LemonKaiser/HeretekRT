@@ -21,12 +21,6 @@ public abstract partial class ESBaseSparkConfigurationComponent : Component
     public float Prob = 1f;
 
     /// <summary>
-    /// Chance a successful spark hit will also spawn a tile fire
-    /// </summary>
-    [DataField]
-    public float TileFireChance;
-
-    /// <summary>
     /// Spark prototypes
     /// </summary>
     [DataField]

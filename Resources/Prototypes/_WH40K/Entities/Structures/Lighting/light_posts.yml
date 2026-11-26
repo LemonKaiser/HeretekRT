@@ -26,7 +26,7 @@
         - LowImpassable
         - BulletImpassable
   - type: PointLight
-    radius: 8
+    radius: 16
     energy: 1.8
     softness: 0.9
     color: "#F2B1A0"

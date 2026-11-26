@@ -13,6 +13,7 @@ using Content.Shared.TTS;
 using Content.Shared.Radio.EntitySystems;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Content.Server._WH40K.Chat;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Configuration;
 
@@ -125,16 +126,16 @@ public sealed partial class HeadsetSystem : SharedHeadsetSystem
         {
             // Einstein Engines - Language begin
             var canUnderstand = _language.CanUnderstand(Transform(uid).ParentUid, args.Language.ID);
-            var msg = new MsgChatMessage
-            {
-                Message = canUnderstand ? args.OriginalChatMsg : args.LanguageObfuscatedChatMsg
-            };
-            _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
+            var recipient = actor.PlayerSession.Channel;
+            var msg = canUnderstand
+                ? EntityManager.System<Wh40kChatTranslationSystem>().CreatePacket(args.OriginalChatMsg, recipient, args.MessageSource)
+                : new MsgChatMessage { Message = args.LanguageObfuscatedChatMsg };
+            _netMan.ServerSendMessage(msg, recipient);
 
             // Einstein Engines - Language end
 
             // Mono - Borers begin
-            var ev = new RadioMessageHeardEvent(uid, msg, args.Channel);
+            var ev = new RadioMessageHeardEvent(uid, msg, args.Channel, args.MessageSource, canUnderstand);
             RaiseLocalEvent(Transform(uid).ParentUid, ref ev);
             // Mono - Borers end
 

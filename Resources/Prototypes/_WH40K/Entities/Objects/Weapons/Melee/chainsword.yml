@@ -67,4 +67,12 @@
           True: {state: on-icon}
           False: {state: off-icon}
 
+- type: entity
+  parent: Chainsword
+  id: WH40KChainswordChaosUndivided
+  name: Chaos Undivided chainsword
+  components:
+  - type: Sprite
+    sprite: _WH40K/Objects/Weapons/Melee/heresy_chainsword.rsi
+
 

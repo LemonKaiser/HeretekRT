@@ -45,8 +45,6 @@
     falloff: 6
     color: "#FAA019"
     netsync: false
-  - type: IgnitionSource
-    ignited: true
   - type: Tag
     tags:
     - HideContextMenu

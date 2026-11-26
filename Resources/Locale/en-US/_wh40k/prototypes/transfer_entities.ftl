@@ -171,6 +171,9 @@ ent-ChPointLathe = Chaos data cleaner
 ent-Chainsword = saw blade
     .desc = Vrrrrruuum
 
+ent-WH40KChainswordChaosUndivided = Chaos Undivided chainsword
+    .desc = A chainsword carried by warriors of Chaos Undivided.
+
 ent-ChainswordEvestiator = Evestiator
     .desc = Big Vrrrrruuum
 

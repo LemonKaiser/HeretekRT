@@ -21,7 +21,6 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Asynchronous;
 using Robust.Shared.Configuration;
-using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -77,11 +76,6 @@ public sealed partial class ShuttleStorageSystem : EntitySystem
     public bool Busy => _transfer != null;
     public bool IsTransferring(EntityUid grid) => _transfer?.Grid == grid ||
         TryComp<ShuttleStorageTransferComponent>(grid, out var marker) && marker.Active;
-
-    public bool HasActiveTransfer(MapId map) => _transfer is { } operation &&
-        (TryComp(operation.Grid, out TransformComponent? xform) && xform.MapID == map ||
-         TryComp(operation.Console, out TransformComponent? console) && console.MapID == map ||
-         TryComp(operation.Facility, out TransformComponent? facility) && facility.MapID == map);
 
     public override void Initialize()
     {

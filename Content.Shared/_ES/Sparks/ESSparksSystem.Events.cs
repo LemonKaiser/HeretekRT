@@ -27,19 +27,19 @@ public sealed partial class ESSparksSystem
         if (args.DamageDelta.GetTotal() < ent.Comp.Threshold)
             return;
 
-        DoSparks(ent, user: args.Origin);
+        DoSparks(ent);
     }
 
     private void OnItemToggled(Entity<ESSparkOnItemToggleComponent> ent, ref ItemToggledEvent args)
     {
         if (args.Activated != ent.Comp.ActivatedSpark)
             return;
-        DoSparks(ent, user: args.User);
+        DoSparks(ent);
     }
 
     private void OnProjectileHit(Entity<ESSparkOnProjectileHitComponent> ent, ref ProjectileHitEvent args)
     {
-        DoSparks(ent, args.Shooter);
+        DoSparks(ent);
     }
 
     private void OnDespawn(Entity<ESSparkOnDespawnComponent> ent, ref TimedDespawnEvent args)

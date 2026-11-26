@@ -19,3 +19,7 @@ ent-MobWH40KServitorCleaner2 = sanitation servitor
 ent-MobWH40KServitorCleaner3 = deck-mop servitor
     .desc = A yellow-booted custodial servitor endlessly patrolling the decks with a heavy mop rig.
     .suffix = WH40K, Servitors
+
+ent-MobWH40KServitorMedicae = medicae servitor
+    .desc = A servitor programmed to seek out the injured and administer medicine.
+    .suffix = WH40K, Servitors

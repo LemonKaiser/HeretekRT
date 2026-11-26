@@ -236,7 +236,8 @@ public sealed partial class KoronusPlanetarySystem
             body.Surface is not { } surfaceId ||
             !_prototypes.TryIndex(surfaceId, out KoronusPlanetSurfacePrototype? surface) ||
             !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryEnsureSystemMapLoaded(system.ID, out var target))
+            !_sector.TryGetSystemMap(system.ID, out var target) ||
+            !_maps.TryGetMap(target, out var targetMap))
         {
             return false;
         }
@@ -252,9 +253,6 @@ public sealed partial class KoronusPlanetarySystem
 
         if (automatic)
         {
-            if (!_maps.TryGetMap(target, out var targetMap))
-                return false;
-
             // Include anyone standing on a shuttle tile whose transform still belongs to the map.
             AttachShuttleOccupants(shuttleGrid);
             if (HasLowOrbitOccupants(shuttleGrid))

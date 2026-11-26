@@ -158,8 +158,6 @@ public sealed partial class KoronusArrivalSystem : EntitySystem
                 return false;
             normalized.Add(path);
         }
-        if (!_sector.TryEnsureSystemMapLoaded(systemId, out _))
-            return false;
 
         var leaseId = _nextLeaseId--;
         if (!_residency.BeginActivityLease(systemId, leaseId))

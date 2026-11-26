@@ -213,3 +213,52 @@
     - map: [ "enum.HumanoidVisualLayers.LArm" ]
     - map: [ "enum.HumanoidVisualLayers.RLeg" ]
     - map: [ "enum.HumanoidVisualLayers.LLeg" ]
+
+- type: entity
+  id: MobWH40KServitorMedicae
+  parent: MobSiliconBase
+  save: true
+  suffix: WH40K, Servitors
+  components:
+  - type: Sprite
+    sprite: _WH40K/Mobs/NPCs/fizzo_servitor.rsi
+    layers:
+    - state: base
+      map: ["enum.DamageStateVisualLayers.Base"]
+  - type: Appearance
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: base
+      Dead:
+        Base: dead
+  - type: DamageVisuals
+    thresholds: [30, 60, 90, 120]
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _WH40K/Mobs/NPCs/fizzo_servitor.rsi
+  - type: GenericVisualizer
+    visuals:
+      enum.MobStateVisuals.State:
+        DamageOverlay:
+          Dead: { visible: false }
+  - type: Destructible
+    thresholds:
+    - trigger: !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: Medibot
+    treatments:
+      Alive:
+        reagent: Tricordrazine
+        quantity: 10
+        minDamage: 0
+        maxDamage: 50
+      Critical:
+        reagent: Inaprovaline
+        quantity: 15
+  - type: HTN
+    rootTask:
+      task: MedibotCompound

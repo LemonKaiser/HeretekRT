@@ -1,19 +1,19 @@
 - type: entity
   parent: BaseMachinePowered
   id: WH40KAugmentationCapsule
-  name: augmentation capsule
-  description: A surgical couch that scans the patient's inventory and fits compatible implants and prostheses.
+  name: augmentation operating table
+  description: An operating table that scans the patient's inventory and fits compatible implants and prostheses.
   components:
   - type: Sprite
-    sprite: _WH40K/Structures/Machines/augmentation_capsule.rsi
+    sprite: _WH40K/Structures/Machines/augmentation_operating_table.rsi
     noRot: true
     enableOverrideDir: true
     overrideDir: South
     drawdepth: BelowMobs
-    state: closed
+    state: operating_table
   - type: Icon
-    sprite: _WH40K/Structures/Machines/augmentation_capsule.rsi
-    state: icon
+    sprite: _WH40K/Structures/Machines/augmentation_operating_table.rsi
+    state: operating_table
   - type: Appearance
   - type: Strap
     position: Down
@@ -43,37 +43,56 @@
 - type: entity
   parent: WH40KAugmentationCapsule
   id: WH40KAugmentationCapsuleImperium
-  name: Imperial augmentation capsule
-  description: An augmentation capsule bearing the golden Aquila of the Imperium.
+  name: Imperial augmentation operating table
+  description: An Imperial operating table for fitting implants and prostheses.
   components:
   - type: Sprite
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_imperium.rsi
-  - type: Icon
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_imperium.rsi
+    overrideDir: North
 
 - type: entity
   parent: WH40KAugmentationCapsule
   id: WH40KAugmentationCapsuleChaos
-  name: Chaos augmentation capsule
-  description: A working augmentation capsule defaced with Chaos markings.
+  name: Chaos augmentation operating table
+  description: A bloodied operating table for fitting implants and prostheses.
   components:
   - type: Sprite
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_chaos.rsi
+    overrideDir: North
+    state: operating_table_bloody
   - type: Icon
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_chaos.rsi
+    state: operating_table_bloody
 
 - type: entity
   parent: WH40KAugmentationCapsule
   id: WH40KAugmentationCapsuleDamaged
-  name: damaged augmentation capsule
-  description: The casing is damaged, but the restraints and surgical tools still work.
+  name: bloodied augmentation operating table
+  description: A bloodstained table fitted with restraints and surgical tools.
   components:
   - type: Sprite
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_damaged.rsi
+    state: operating_table_bloody
   - type: Icon
-    sprite: _WH40K/Structures/Machines/augmentation_capsule_damaged.rsi
+    state: operating_table_bloody
 
 - type: entity
   parent: WH40KAugmentationCapsule
   id: WH40KAugmentationBed
   categories: [ HideSpawnMenu ]
+
+- type: entity
+  parent: WH40KDecorPropBase
+  id: WH40KDecorChirurgeonServitor
+  name: surgical servitor
+  description: A stationary surgical servitor fitted with a set of mechanical instruments.
+  suffix: WH40K, Decor, Right
+  components:
+  - type: Sprite
+    sprite: _WH40K/Structures/Decorations/chirurgeon_servitor.rsi
+    drawdepth: Items
+    state: right
+
+- type: entity
+  parent: WH40KDecorChirurgeonServitor
+  id: WH40KDecorChirurgeonServitorLeft
+  suffix: WH40K, Decor, Left
+  components:
+  - type: Sprite
+    state: left

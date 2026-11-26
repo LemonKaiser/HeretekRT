@@ -45,7 +45,6 @@
     price: 200
   - type: ESSparkOnHit
     prob: 0.25
-    tileFireChance: 0.2
     count: 2
   - type: Flammable
     fireSpread: true

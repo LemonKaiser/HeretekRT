@@ -10,6 +10,8 @@ using Content.Server.Discord.DiscordLink;
 using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
 using Content.Server._WH40K.Administration.Mute;
+using Content.Server._WH40K.Chat;
+using Content.Shared._WH40K.Chat;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -63,6 +65,7 @@ internal sealed partial class ChatManager : IChatManager
     public void Initialize()
     {
         _netManager.RegisterNetMessage<MsgChatMessage>();
+        _netManager.RegisterNetMessage<MsgChatTranslation>();
         _netManager.RegisterNetMessage<MsgDeleteChatMessagesBy>();
 
         _configurationManager.OnValueChanged(CCVars.OocEnabled, OnOocEnabledChanged, true);
@@ -402,10 +405,13 @@ internal sealed partial class ChatManager : IChatManager
                 : null);
     }
 
-    public void ChatMessageToOne(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, INetChannel client, Color? colorOverride = null, bool recordReplay = false, string? audioPath = null, float audioVolume = 0, NetUserId? author = null)
+    public void ChatMessageToOne(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, INetChannel client, Color? colorOverride = null, bool recordReplay = false, string? audioPath = null, float audioVolume = 0, NetUserId? author = null, bool allowTranslation = false)
     {
         var msg = CreateChatMessage(channel, message, wrappedMessage, source, hideChat, colorOverride, audioPath, audioVolume, author);
-        _netManager.ServerSendMessage(new MsgChatMessage() { Message = msg }, client);
+        var packet = allowTranslation
+            ? _entityManager.System<Wh40kChatTranslationSystem>().CreatePacket(msg, client, source, author)
+            : new MsgChatMessage { Message = msg };
+        _netManager.ServerSendMessage(packet, client);
 
         if (!recordReplay)
             return;
@@ -423,7 +429,9 @@ internal sealed partial class ChatManager : IChatManager
     public void ChatMessageToMany(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, bool recordReplay, List<INetChannel> clients, Color? colorOverride = null, string? audioPath = null, float audioVolume = 0, NetUserId? author = null)
     {
         var msg = CreateChatMessage(channel, message, wrappedMessage, source, hideChat, colorOverride, audioPath, audioVolume, author);
-        _netManager.ServerSendToMany(new MsgChatMessage() { Message = msg }, clients);
+        if (author == null && channel != ChatChannel.CollectiveMind ||
+            !_entityManager.System<Wh40kChatTranslationSystem>().TrySendGroup(msg, clients, source, author))
+            _netManager.ServerSendToMany(new MsgChatMessage { Message = msg }, clients);
 
         if (!recordReplay)
             return;
@@ -453,7 +461,9 @@ internal sealed partial class ChatManager : IChatManager
     public void ChatMessageToAll(ChatChannel channel, string message, string wrappedMessage, EntityUid source, bool hideChat, bool recordReplay, Color? colorOverride = null, string? audioPath = null, float audioVolume = 0, NetUserId? author = null)
     {
         var msg = CreateChatMessage(channel, message, wrappedMessage, source, hideChat, colorOverride, audioPath, audioVolume, author);
-        _netManager.ServerSendToAll(new MsgChatMessage() { Message = msg });
+        if (author == null || !_entityManager.System<Wh40kChatTranslationSystem>().TrySendGroup(
+                msg, _netManager.Channels.Where(client => client.IsHandshakeComplete).ToList(), source, author))
+            _netManager.ServerSendToAll(new MsgChatMessage { Message = msg });
 
         if (!recordReplay)
             return;

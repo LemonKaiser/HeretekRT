@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Sprite by Fizzo",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "DamageOverlay_120"
+    },
+    {
+      "name": "DamageOverlay_30",
+      "directions": 4
+    },
+    {
+      "name": "DamageOverlay_60",
+      "directions": 4
+    },
+    {
+      "name": "DamageOverlay_90",
+      "directions": 4
+    },
+    {
+      "name": "base",
+      "directions": 4
+    },
+    {
+      "name": "dead"
+    }
+  ]
+}

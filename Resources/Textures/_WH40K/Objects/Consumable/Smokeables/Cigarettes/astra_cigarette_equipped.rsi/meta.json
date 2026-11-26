@@ -12,6 +12,10 @@
       "directions": 4
     },
     {
+      "name": "unlit-equipped-MASK-astartes",
+      "directions": 4
+    },
+    {
       "name": "lit-equipped-MASK",
       "directions": 4,
       "delays": [

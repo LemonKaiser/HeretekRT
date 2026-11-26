@@ -207,11 +207,10 @@ public sealed partial class ExplosionSystem
         DamageSpecifier damage,
         MapCoordinates epicenter,
         HashSet<EntityUid> processed,
-        string id,
-        float? fireStacks,
-        float? temperature,
+        ExplosionPrototype explosionType,
         float currentIntensity,
-        EntityUid? cause)
+        EntityUid? cause,
+        bool canIgnite)
     {
         var size = grid.Comp.TileSize;
         var gridBox = new Box2(tile * size, (tile + 1) * size);
@@ -230,7 +229,7 @@ public sealed partial class ExplosionSystem
         // process those entities
         foreach (var (uid, xform) in list)
         {
-            ProcessEntity(uid, epicenter, damage, throwForce, id, xform, fireStacks, cause);
+            ProcessEntity(uid, epicenter, damage, throwForce, explosionType.ID, xform, explosionType.FireStacks, cause);
         }
 
         // process anchored entities
@@ -240,14 +239,11 @@ public sealed partial class ExplosionSystem
         foreach (var entity in _anchored)
         {
             processed.Add(entity);
-            ProcessEntity(entity, epicenter, damage, throwForce, id, null, fireStacks, cause);
+            ProcessEntity(entity, epicenter, damage, throwForce, explosionType.ID, null, explosionType.FireStacks, cause);
         }
 
-        // heat the atmosphere
-        if (temperature != null)
-        {
-            _atmosphere.HotspotExpose(grid.Owner, tile, temperature.Value, currentIntensity, cause, true);
-        }
+        if (canIgnite && explosionType.Temperature is { } temperature)
+            _atmosphere.HotspotExpose(grid.Owner, tile, temperature, currentIntensity, cause, true);
 
         // Walls and reinforced walls will break into girders. These girders will also be considered turf-blocking for
         // the purposes of destroying floors. Again, ideally the process of damaging an entity should somehow return
@@ -262,17 +258,11 @@ public sealed partial class ExplosionSystem
                 tileBlocked |= IsBlockingTurf(entity);
             }
         }
-// ES START
-        if (!tileBlocked)
+        if (canIgnite && !tileBlocked && _robustRandom.Prob(explosionType.FireChance * TileFireChanceMultiplier))
         {
-            var explosionType = _prototypeManager.Index<ExplosionPrototype>(id);
-            if (_robustRandom.Prob(explosionType.FireChance))
-            {
-                _tileFire.TryDoTileFire(_map.ToCoordinates(grid, tile, grid),
-                    stage: _robustRandom.Next(explosionType.MinFireLevel, explosionType.MaxFireLevel + 1));
-            }
+            _tileFire.TryDoTileFire(_map.ToCoordinates(grid, tile, grid), cause,
+                _robustRandom.Next(explosionType.MinFireLevel, explosionType.MaxFireLevel + 1));
         }
-// ES END
 
         // Next, we get the intersecting entities AGAIN, but purely for throwing. This way, glass shards spawned from
         // windows will be flung outwards, and not stay where they spawned. This is however somewhat unnecessary, and a
@@ -293,7 +283,7 @@ public sealed partial class ExplosionSystem
         {
             // Here we only throw, no dealing damage. Containers n such might drop their entities after being destroyed, but
             // they should handle their own damage pass-through, with their own damage reduction calculation.
-            ProcessEntity(uid, epicenter, null, throwForce, id, xform, null, cause);
+            ProcessEntity(uid, epicenter, null, throwForce, explosionType.ID, xform, null, cause);
         }
 
         return !tileBlocked;
@@ -695,6 +685,7 @@ sealed class Explosion
     ///     Whether this explosion can turn non-vacuum tiles into vacuum-tiles.
     /// </summary>
     private readonly bool _canCreateVacuum;
+    private readonly bool _canIgnite;
 
     private readonly IEntityManager _entMan;
     private readonly ExplosionSystem _system;
@@ -721,6 +712,7 @@ sealed class Explosion
         float tileBreakScale,
         int maxTileBreak,
         bool canCreateVacuum,
+        bool canIgnite,
         IEntityManager entMan,
         EntityUid visualEnt,
         EntityUid? cause,
@@ -743,6 +735,7 @@ sealed class Explosion
         _tileBreakScale = tileBreakScale;
         _maxTileBreak = maxTileBreak;
         _canCreateVacuum = canCreateVacuum;
+        _canIgnite = canIgnite;
         _entMan = entMan;
         _damageable = damageable;
 
@@ -907,11 +900,10 @@ sealed class Explosion
                     _currentDamage,
                     Epicenter,
                     ProcessedEntities,
-                    ExplosionType.ID,
-                    ExplosionType.FireStacks,
-                    ExplosionType.Temperature,
+                    ExplosionType,
                     _currentIntensity,
-                    Cause);
+                    Cause,
+                    _canIgnite);
 
                 // If the floor is not blocked by some dense object, damage the floor tiles.
                 if (canDamageFloor)
@@ -972,6 +964,7 @@ public sealed class QueuedExplosion
     public float TotalIntensity, Slope, MaxTileIntensity, TileBreakScale;
     public int MaxTileBreak;
     public bool CanCreateVacuum;
+    public bool CanIgnite;
     public bool BlockSpaceBossDamage;
     public bool BossAttack;
     public EntityUid? Cause; // The entity that exploded, for logging purposes.

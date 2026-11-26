@@ -4,7 +4,7 @@ using Robust.Shared.Maths;
 
 namespace Content.Server._WH40K.SectorMap.Components;
 
-/// <summary>Finite mining sites retained by the native sector snapshot, including sites not yet loaded.</summary>
+/// <summary>Tracks finite mining sites, including sites whose grids have yet to load.</summary>
 [RegisterComponent]
 public sealed partial class KoronusAsteroidFieldComponent : Component
 {

@@ -228,6 +228,7 @@
     drawdepth: Mobs
   - type: PointLight
     enabled: true
+    radius: 14
 
 - type: entity
   parent: RMCStreetlight

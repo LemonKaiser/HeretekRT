@@ -45,7 +45,7 @@
   mapPath: /Maps/_WH40K/Planets/foulstone_surface.yml
   planet: FoulstoneForestWorld
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   preserveHostileNpcs: true
   # Leave 50 tiles of playable terrain beyond every edge of the authored base grids.
   authoredGridMargin: 50
@@ -111,7 +111,7 @@
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosDesertWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -176,7 +176,7 @@
   mapPath: /Maps/_WH40K/Planets/trinnitos_rock_surface.yml
   planet: TrinnitosRockWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -241,7 +241,7 @@
   mapPath: /Maps/_WH40K/Planets/trinnitos_stock_surface.yml
   planet: TrinnitosFlamingWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -309,7 +309,7 @@
   mapPath: /Maps/_WH40K/Planets/sottos_tomb_ice_surface.yml
   planet: SottosTombIceWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -375,7 +375,7 @@
   mapPath: /Maps/_WH40K/Planets/aivorius_chaos_surface.yml
   planet: AivoriusBurningWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -430,7 +430,7 @@
   mapPath: /Maps/_WH40K/Planets/aivorius_stock_surface.yml
   planet: AivoriusJungleWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -494,7 +494,7 @@
   mapPath: /Maps/_WH40K/Planets/aivorius_desert_npz.yml
   planet: AivoriusDesertWorldSurface
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true

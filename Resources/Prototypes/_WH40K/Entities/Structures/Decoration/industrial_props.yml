@@ -1,11 +1,27 @@
 - type: entity
-  id: WH40KDecorSmallFuelTankBase
+  id: WH40KDecorIndustrialPropBase
   parent: WH40KDecorPropBase
+  abstract: true
+  components:
+  - type: Physics
+    canCollide: true
+
+- type: entity
+  id: WH40KDecorSmallFuelTankBase
+  parent: WH40KDecorIndustrialPropBase
   abstract: true
   components:
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/fuel_tanks_32x64.rsi
     drawdepth: Mobs
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.4,-0.44,0.4,0.28"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable, BulletImpassable]
 
 - type: entity
   id: WH40KDecorFuelTank1
@@ -30,12 +46,20 @@
 
 - type: entity
   id: WH40KDecorLargeFuelTankBase
-  parent: WH40KDecorPropBase
+  parent: WH40KDecorIndustrialPropBase
   abstract: true
   components:
   - type: Sprite
     sprite: _WH40K/Structures/Decorations/fuel_tanks_64x64.rsi
     drawdepth: Mobs
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.94,-0.44,0.94,0.32"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable, BulletImpassable]
 
 - type: entity
   id: WH40KDecorFuelTank4
@@ -43,6 +67,14 @@
   components:
   - type: Sprite
     state: fuel_tank_4
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.46,-0.6,0.5,0.28"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable, BulletImpassable]
 
 - type: entity
   id: WH40KDecorFuelTank5
@@ -78,10 +110,19 @@
   components:
   - type: Sprite
     state: fuel_tank_9
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.72
+          position: "0,-0.07"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable, BulletImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipeBase
-  parent: WH40KDecorPropBase
+  parent: WH40KDecorIndustrialPropBase
   abstract: true
   components:
   - type: Sprite
@@ -94,6 +135,20 @@
   components:
   - type: Sprite
     state: pipe_1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,-0.5,0.19,0.18"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "0.19,-0.12,0.5,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe2
@@ -101,6 +156,20 @@
   components:
   - type: Sprite
     state: pipe_2
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,-0.5,0.19,0.5"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "0.19,-0.12,0.5,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe3
@@ -108,6 +177,20 @@
   components:
   - type: Sprite
     state: pipe_3
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.12,0.5,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,-0.5,0.19,-0.12"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe4
@@ -115,6 +198,20 @@
   components:
   - type: Sprite
     state: pipe_4
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.12,0.5,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,0.26,0.19,0.5"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe5
@@ -122,6 +219,20 @@
   components:
   - type: Sprite
     state: pipe_5
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.14,-0.5,0.22,0.18"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.12,-0.14,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe6
@@ -129,6 +240,20 @@
   components:
   - type: Sprite
     state: pipe_6
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.14,-0.5,0.22,0.5"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.12,-0.14,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe7
@@ -136,6 +261,14 @@
   components:
   - type: Sprite
     state: pipe_7
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.14,-0.14,0.22,0.5"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe8
@@ -143,6 +276,14 @@
   components:
   - type: Sprite
     state: pipe_8
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.26,-0.2,0.5,0.2"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe9
@@ -150,6 +291,26 @@
   components:
   - type: Sprite
     state: pipe_9
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.12,0.5,0.26"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix2:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,0.26,0.19,0.5"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
+      fix3:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,-0.5,0.19,-0.12"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe10
@@ -157,10 +318,18 @@
   components:
   - type: Sprite
     state: pipe_10
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.5,-0.2,0.28,0.2"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]
 
 - type: entity
   id: WH40KDecorIndustrialPipe11
-  parent: WH40KDecorIndustrialPipeBase
+  parent: WH40KDecorIndustrialPipe4
   components:
   - type: Sprite
     state: pipe_11
@@ -171,3 +340,11 @@
   components:
   - type: Sprite
     state: pipe_12
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.17,-0.5,0.2,0.09"
+        density: 60
+        mask: [MachineMask]
+        layer: [MidImpassable, LowImpassable]

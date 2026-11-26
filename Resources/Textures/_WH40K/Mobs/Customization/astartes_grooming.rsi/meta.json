@@ -20,7 +20,15 @@
       "directions": 4
     },
     {
+      "name": "longhair_flat",
+      "directions": 4
+    },
+    {
       "name": "mustaches",
+      "directions": 4
+    },
+    {
+      "name": "space_wolf",
       "directions": 4
     }
   ]

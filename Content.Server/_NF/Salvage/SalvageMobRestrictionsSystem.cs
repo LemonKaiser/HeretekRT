@@ -39,7 +39,7 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
             return;
 
         _nextCleanup = _timing.CurTime + TimeSpan.FromSeconds(10);
-        // Maps can already contain stale membership, including on paused grids awaiting a cold snapshot.
+        // Maps can already contain stale membership, including on paused grids.
         var grids = AllEntityQuery<SalvageMobRestrictionsGridComponent>();
         while (grids.MoveNext(out var grid))
             grid.MobsToKill.RemoveAll(Terminating);

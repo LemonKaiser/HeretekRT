@@ -1,7 +1,9 @@
 using Content.Server.Radio;
+using Content.Server._WH40K.Chat;
 using Content.Shared._Mono.CorticalBorer;
 using Content.Shared._Shitmed.Body.Events;
 using Content.Shared.Body.Part;
+using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
@@ -91,7 +93,11 @@ public sealed partial class CorticalBorerInfestedSystem : EntitySystem
     {
         if (TryComp(infected.Comp.Borer, out ActorComponent? borerActor))
         {
-            _netMan.ServerSendMessage(args.Msg, borerActor.PlayerSession.Channel);
+            var recipient = borerActor.PlayerSession.Channel;
+            var packet = args.ClearSpeech
+                ? EntityManager.System<Wh40kChatTranslationSystem>().CreatePacket(args.Msg.Message, recipient, args.MessageSource)
+                : new MsgChatMessage { Message = args.Msg.Message };
+            _netMan.ServerSendMessage(packet, recipient);
             var radioBorerNoiseEvent = new RadioNoiseEvent(GetNetEntity(args.Headset), args.Channel.ID);
             RaiseNetworkEvent(radioBorerNoiseEvent, borerActor.PlayerSession);
         }

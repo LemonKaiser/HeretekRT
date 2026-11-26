@@ -73,7 +73,6 @@ namespace Content.Server.GameTicking
                     ["paused_maps"] = health.PausedMapCount,
                     ["loaded_grids"] = health.LoadedGridCount,
                     ["paused_grids"] = health.PausedGridCount,
-                    ["cold_systems"] = health.ColdSystemCount,
                     ["known_systems"] = health.KnownSystemCount,
                     ["known_surfaces"] = health.KnownSurfaceCount,
                     ["landing_reservations"] = health.LandingReservationCount,

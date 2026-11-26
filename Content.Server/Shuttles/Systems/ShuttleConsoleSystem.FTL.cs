@@ -129,7 +129,7 @@ public sealed partial class ShuttleConsoleSystem
             !targetSystem.Enabled ||
             sourceSystem == targetSystem.ID ||
             !_koronusSector.HasWarpRoute(sourceSystem, targetSystem.ID) ||
-            !_koronusSector.TryEnsureSystemMapLoaded(targetSystem.ID, out var targetMap))
+            !_koronusSector.TryGetSystemMap(targetSystem.ID, out var targetMap))
         {
             _popup.PopupEntity(Loc.GetString("koronus-sector-jump-denied"), entity.Owner, PopupType.Medium);
             return;

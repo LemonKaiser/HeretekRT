@@ -10,7 +10,7 @@ public sealed partial class GridCleanupGridComponent : Component
     public TimeSpan CleanupAccumulator = TimeSpan.FromSeconds(0);
 
     /// <summary>
-    ///     Runtime-only timestamp. Keeping it out of snapshots freezes the timer while a map is cold-unloaded.
+    ///     Runtime timestamp of the last cleanup evaluation.
     /// </summary>
     [ViewVariables]
     public TimeSpan LastEvaluation = TimeSpan.Zero;

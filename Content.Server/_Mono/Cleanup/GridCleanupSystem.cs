@@ -88,7 +88,7 @@ public sealed partial class GridCleanupSystem : BaseCleanupSystem<MapGridCompone
             : now - state.LastEvaluation;
         state.LastEvaluation = now;
 
-        // A server stall or cold restore must not make a cleanup timer jump forward.
+        // Cap elapsed time after a server stall.
         elapsed = elapsed > _cleanupInterval * 2 ? _cleanupInterval : elapsed;
         if (elapsed < TimeSpan.Zero)
             elapsed = TimeSpan.Zero;

@@ -165,6 +165,9 @@ ent-ChPointLathe = очиститель данных Хаоса
 ent-Chainsword = пиломеч
     .desc = Врррррууум!
 
+ent-WH40KChainswordChaosUndivided = пиломеч Неделимого Хаоса
+    .desc = Пиломеч, который носят воины Неделимого Хаоса.
+
 ent-ChainswordEvestiator = Эвисцератор
     .desc = Большой Врррррууум!
 

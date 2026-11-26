@@ -789,7 +789,8 @@ public sealed partial class ChatSystem : SharedChatSystem
                 wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-unknown-wrap-message", string.Empty, result, language, !canUnderstandLanguage);
             }
 
-            _chatManager.ChatMessageToOne(ChatChannel.Whisper, result, wrappedMessage, source, false, session.Channel);
+            _chatManager.ChatMessageToOne(ChatChannel.Whisper, result, wrappedMessage, source, false, session.Channel,
+                allowTranslation: canUnderstandLanguage && data.Range <= WhisperClearRange);
         }
 
         var replayWrap = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language);
@@ -865,7 +866,8 @@ public sealed partial class ChatSystem : SharedChatSystem
                 continue;
 
             var wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, perceivedMessage, language, !canUnderstandLanguage);
-            _chatManager.ChatMessageToOne(ChatChannel.CollectiveMind, message, wrappedMessage, source, false, session.Channel);
+            _chatManager.ChatMessageToOne(ChatChannel.CollectiveMind, message, wrappedMessage, source, false, session.Channel,
+                allowTranslation: canUnderstandLanguage);
         }
 
         if (!hideLog)
@@ -1072,7 +1074,8 @@ public sealed partial class ChatSystem : SharedChatSystem
 
             // If the channel does not support languages, or the entity can understand the message, send the original message, otherwise send the obfuscated version
             if (channel == ChatChannel.LOOC || channel == ChatChannel.Emotes || _language.CanUnderstand(listener, language.ID))
-                _chatManager.ChatMessageToOne(channel, message, wrappedMessage, source, entHideChat, session.Channel, author: author);
+                _chatManager.ChatMessageToOne(channel, message, wrappedMessage, source, entHideChat, session.Channel,
+                    author: author, allowTranslation: true);
             else
                 _chatManager.ChatMessageToOne(channel, obfuscated, obfuscatedWrappedMessage, source, entHideChat, session.Channel, author: author);
             // Einstein Engines - Language end

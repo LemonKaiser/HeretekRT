@@ -22,19 +22,15 @@ using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Maps;
-using Content.Shared.Mind;
-using Content.Shared.Mobs.Components;
 using Content.Shared.Parallax;
 using Content.Shared.Tiles;
 using Robust.Server.GameObjects;
-using Robust.Shared.ContentPack;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Robust.Shared.Utility;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
@@ -45,7 +41,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 {
     private const int AngularPlacementAttempts = 360;
     private const float ObjectPlacementPadding = 300f;
-    private static readonly ResPath ColdSnapshotBase = new("/Koronus/ColdSnapshots");
 
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IMapManager _mapManager = default!;
@@ -61,7 +56,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
     [Dependency] private KoronusInfrastructureSystem _infrastructure = default!;
     [Dependency] private KoronusStationPropertySystem _stationProperty = default!;
     [Dependency] private IRobustRandom _random = default!;
-    [Dependency] private IResourceManager _resources = default!;
     [Dependency] private Wh40kBossSpawnSystem _bossSpawns = default!;
     [Dependency] private KoronusActivityDirectorSystem _activities = default!;
     [Dependency] private KoronusWarpEncounterSystem _warp = default!;
@@ -69,8 +63,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
     private readonly Dictionary<string, HashSet<string>> _warpAdjacency = new();
     private readonly List<KoronusRoutePrototype> _sectorRoutes = new();
-    private readonly HashSet<string> _coldOperations = new();
-    private ResPath _coldSnapshotRoot = CreateColdSnapshotRoot();
 
     public override void Initialize()
     {
@@ -117,166 +109,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
     public bool IsMapInSector(string sectorId, MapId mapId)
         => TryGetSectorRule(out var rule) && rule.Comp.Sector.Id == sectorId && rule.Comp.SystemMaps.Values.Contains(mapId);
-
-    /// <summary>
-    /// Ensures that a cold-unloaded system has a live map again before a shuttle or another
-    /// authoritative server operation attempts to use its retained <see cref="MapId"/>.
-    /// </summary>
-    public bool TryEnsureSystemMapLoaded(string systemId, out MapId mapId)
-    {
-        mapId = MapId.Nullspace;
-        if (!TryGetSectorRule(out var rule) ||
-            !rule.Comp.SystemMaps.TryGetValue(systemId, out mapId))
-        {
-            return false;
-        }
-
-        // A serialization callback must not be able to observe and use a map while its
-        // cold-unload or restore transaction is still changing the authoritative state.
-        if (_coldOperations.Contains(systemId))
-            return false;
-
-        if (_maps.TryGetMap(mapId, out _))
-        {
-            ReconcileLiveSystem(rule.Comp, systemId);
-            return true;
-        }
-
-        if (!rule.Comp.ColdUnloadedSystems.Contains(systemId) ||
-            !_prototypes.TryIndex<KoronusSystemPrototype>(systemId, out var system))
-        {
-            return false;
-        }
-
-        if (!_coldOperations.Add(systemId))
-            return false;
-
-        var snapshotPath = GetColdSnapshotPath(systemId);
-        var options = DeserializationOptions.Default with
-        {
-            InitializeMaps = true,
-            PauseMaps = true,
-        };
-
-        try
-        {
-            if (!_resources.UserData.Exists(snapshotPath) ||
-                !_mapLoader.TryReadFile(snapshotPath, out _))
-            {
-                Log.Error($"Cold snapshot for Koronus system {systemId} is missing or invalid: {snapshotPath}.");
-                return false;
-            }
-
-            if (!_mapLoader.TryLoadMapWithId(mapId, snapshotPath, out var loadedMap, out _, options))
-            {
-                Log.Error($"Failed to restore cold Koronus system {systemId} from {snapshotPath}.");
-                DeletePartialRestore(mapId, systemId);
-                return false;
-            }
-
-            _metaData.SetEntityName(loadedMap.Value.Owner, system.DisplayName);
-            ConfigureSystemMap(loadedMap.Value.Owner, system);
-            _asteroidFields.EnsureField(loadedMap.Value.Owner, system);
-            rule.Comp.ColdUnloadedSystems.Remove(systemId);
-            DeleteSnapshotBestEffort(snapshotPath, systemId);
-            DeleteSnapshotBestEffort(GetColdSnapshotTempPath(systemId), systemId);
-            Log.Info($"Restored cold Koronus system {systemId} on map {mapId}.");
-            return true;
-        }
-        catch (Exception exception)
-        {
-            Log.Error($"Exception while restoring cold Koronus system {systemId}: {exception}");
-            DeletePartialRestore(mapId, systemId);
-            return false;
-        }
-        finally
-        {
-            _coldOperations.Remove(systemId);
-        }
-    }
-
-    /// <summary>
-    /// Starts preparing a snapshot of a paused, empty remote system over several updates.
-    /// The live map remains authoritative until its complete snapshot has passed validation.
-    /// </summary>
-    public bool TryColdUnloadSystem(string systemId)
-    {
-        if (_coldUnload != null)
-            return _coldUnload.SystemId == systemId;
-
-        if (!TryGetSectorRule(out var rule) ||
-            !rule.Comp.SystemMaps.TryGetValue(systemId, out var mapId) ||
-            !_prototypes.TryIndex<KoronusSystemPrototype>(systemId, out var system) ||
-            !system.AllowColdUnload ||
-            system.ColdUnloadDelay <= 0f ||
-            _prototypes.Index(rule.Comp.Sector).StartSystem.Id == systemId ||
-            !_maps.TryGetMap(mapId, out var mapUid) ||
-            !_maps.IsPaused(mapId) ||
-            HasResidentMind(systemId, mapId) || HasUnsavableMob(mapId))
-        {
-            return false;
-        }
-
-        if (!_coldOperations.Add(systemId))
-            return false;
-
-        try
-        {
-            // A live map with a cold marker is a recoverable remnant of an interrupted
-            // previous operation. The live map is authoritative until it is deleted.
-            ReconcileLiveSystem(rule.Comp, systemId);
-
-            _coldUnload = new ColdUnloadOperation(systemId, mapId, mapUid.Value,
-                Timing.CurTime - _metaData.GetPauseTime(mapUid.Value));
-            return true;
-        }
-        finally
-        {
-            _coldOperations.Remove(systemId);
-        }
-    }
-
-    private bool HasUnsavableMob(MapId mapId)
-    {
-        // Native map saves omit save:false mobs. Keep their paused map rather than lose NPCs or corpses on restore.
-        var mobs = AllEntityQuery<MobStateComponent, TransformComponent, MetaDataComponent>();
-        while (mobs.MoveNext(out _, out _, out var transform, out var metadata))
-            if (transform.MapID == mapId && metadata.EntityPrototype?.MapSavable == false)
-                return true;
-        return false;
-    }
-
-    private bool HasResidentMind(string systemId, MapId mapId)
-    {
-        // A departed dungeon ship can be empty while survivors are still collecting loot.
-        // Keep that grid's identity valid until their extraction window has closed.
-        var returnShips = AllEntityQuery<Content.Server._WH40K.ChaosDungeon.ChaosDungeonShipComponent, TransformComponent>();
-        while (returnShips.MoveNext(out _, out var ship, out var transform))
-        {
-            if (ship.ReturnPending && transform.MapID == mapId)
-                return true;
-        }
-
-        // Deleting and restoring a map cannot preserve live mind references to its entities.
-        // Disconnected bodies and entities visited by a mind may sleep, but must stay in memory.
-        // Surface explorers also depend on orbital entity identities for their return ship and deed.
-        bool DependsOnSystem(EntityUid? entity)
-        {
-            return TryComp<TransformComponent>(entity, out var transform) &&
-                   (transform.MapID == mapId ||
-                    TryComp<KoronusPlanetSurfaceMapComponent>(transform.MapUid, out var surface) &&
-                    surface.SystemId == systemId);
-        }
-
-        var minds = EntityManager.AllEntityQueryEnumerator<MindComponent>();
-        while (minds.MoveNext(out _, out var mind))
-        {
-            if (DependsOnSystem(mind.OwnedEntity) || DependsOnSystem(mind.VisitingEntity))
-                return true;
-        }
-
-        return false;
-    }
 
     /// <summary>
     /// Registers a map created by the Koronus bootstrap. Keeping the mutation here makes the runtime
@@ -488,11 +320,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         if (!TryGetSectorRule(out var rule))
             return;
 
-        // The rule state is rebuilt below, so no snapshot from a previous or crashed round can
-        // still be referenced. Clearing the common base also prevents abandoned GUID roots from
-        // accumulating on disk across week-long server operation and later restarts.
-        ResetColdSnapshotStorage();
-
         var sector = _prototypes.Index(rule.Comp.Sector);
 
         // DefaultMap is deliberately only Footfall. Every other system receives its own MapId below.
@@ -501,7 +328,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
         rule.Comp.WaitingForStartMap = true;
         rule.Comp.SystemMaps.Clear();
-        rule.Comp.ColdUnloadedSystems.Clear();
         RebuildTopology(rule.Comp.Sector);
     }
 
@@ -851,8 +677,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         parallax.Parallax = system.Parallax;
         Dirty(mapUid, parallax);
 
-        // Reapply presentation settings after loading a cold snapshot as well as on first load.
-        // Existing snapshots may still contain the old visible facility boundary.
         if (!system.ShowSafetyBoundaries)
         {
             foreach (var grid in _mapManager.GetAllGrids(Comp<MapComponent>(mapUid).MapId))
@@ -994,100 +818,17 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
     private bool IsSystemAvailable(KoronusSectorRuleComponent rule, string systemId)
     {
         return rule.SystemMaps.TryGetValue(systemId, out var mapId) &&
-               (_maps.TryGetMap(mapId, out _) || rule.ColdUnloadedSystems.Contains(systemId));
-    }
-
-    private ResPath GetColdSnapshotPath(string systemId)
-    {
-        return _coldSnapshotRoot / $"{systemId}.yml";
-    }
-
-    private ResPath GetColdSnapshotTempPath(string systemId)
-    {
-        return _coldSnapshotRoot / $"{systemId}.tmp.yml";
-    }
-
-    /// <summary>
-    /// Resolves the only safe inconsistent state: a live map accompanied by a stale cold marker.
-    /// The live entity tree always wins because it may contain changes made after the snapshot.
-    /// </summary>
-    private void ReconcileLiveSystem(KoronusSectorRuleComponent rule, string systemId)
-    {
-        if (!rule.ColdUnloadedSystems.Remove(systemId))
-            return;
-
-        DeleteSnapshotBestEffort(GetColdSnapshotPath(systemId), systemId);
-        DeleteSnapshotBestEffort(GetColdSnapshotTempPath(systemId), systemId);
-        Log.Warning($"Removed a stale cold marker for live Koronus system {systemId}.");
-    }
-
-    private void DeletePartialRestore(MapId mapId, string systemId)
-    {
-        if (!_maps.TryGetMap(mapId, out _))
-            return;
-
-        try
-        {
-            _maps.DeleteMap(mapId);
-        }
-        catch (Exception exception)
-        {
-            Log.Error($"Failed to remove a partial cold restore of Koronus system {systemId} on map {mapId}: {exception}");
-        }
-    }
-
-    private bool TryDeleteSnapshot(ResPath path, string systemId)
-    {
-        try
-        {
-            _resources.UserData.Delete(path);
-            return !_resources.UserData.Exists(path);
-        }
-        catch (Exception exception)
-        {
-            Log.Error($"Failed to delete cold snapshot file {path} for Koronus system {systemId}: {exception}");
-            return false;
-        }
-    }
-
-    private void DeleteSnapshotBestEffort(ResPath path, string systemId)
-    {
-        TryDeleteSnapshot(path, systemId);
-    }
-
-    private void ResetColdSnapshotStorage()
-    {
-        CancelColdUnload();
-        _coldOperations.Clear();
-
-        try
-        {
-            _resources.UserData.Delete(ColdSnapshotBase);
-        }
-        catch (Exception exception)
-        {
-            Log.Warning($"Failed to clear obsolete Koronus cold snapshots under {ColdSnapshotBase}: {exception}");
-        }
-
-        _coldSnapshotRoot = CreateColdSnapshotRoot();
-    }
-
-    private static ResPath CreateColdSnapshotRoot()
-    {
-        return ColdSnapshotBase / $"{Guid.NewGuid():N}";
+               _maps.MapExists(mapId);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        ResetColdSnapshotStorage();
-
         if (!TryGetSectorRule(out var rule))
             return;
 
         rule.Comp.WaitingForStartMap = true;
         rule.Comp.SystemMaps.Clear();
         rule.Comp.SurfaceMaps.Clear();
-        rule.Comp.ColdUnloadedSystems.Clear();
         rule.Comp.LandingReservations.Clear();
         _warpAdjacency.Clear();
         _sectorRoutes.Clear();

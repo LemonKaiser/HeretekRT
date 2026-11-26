@@ -47,6 +47,15 @@ namespace Content.Shared.Chat
         [NonSerialized]
         public bool Read;
 
+        [NonSerialized]
+        public ulong TranslationId;
+
+        [NonSerialized]
+        public string? Translation;
+
+        [NonSerialized]
+        public string? TranslationCulture;
+
         public ChatMessage(ChatChannel channel, string message, string wrappedMessage, NetEntity source, int? senderKey, bool hideChat = false, Color? colorOverride = null, string? audioPath = null, float audioVolume = 0, string? senderJobIconId = null)
         {
             Channel = channel;
@@ -71,6 +80,7 @@ namespace Content.Shared.Chat
         public override MsgGroups MsgGroup => MsgGroups.Command;
 
         public ChatMessage Message = default!;
+        public ulong TranslationId;
 
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
@@ -79,6 +89,7 @@ namespace Content.Shared.Chat
             using var stream = new MemoryStream(length);
             buffer.ReadAlignedMemory(stream, length);
             serializer.DeserializeDirect(stream, out Message);
+            TranslationId = buffer.LengthBits - buffer.Position >= sizeof(ulong) * 8 ? buffer.ReadUInt64() : 0;
         }
 
         public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
@@ -87,6 +98,8 @@ namespace Content.Shared.Chat
             serializer.SerializeDirect(stream, Message);
             buffer.WriteVariableInt32((int) stream.Length);
             buffer.Write(stream.AsSpan());
+            if (TranslationId != 0)
+                buffer.Write(TranslationId);
         }
     }
 }

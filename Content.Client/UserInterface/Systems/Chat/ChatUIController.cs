@@ -189,6 +189,7 @@ public sealed partial class ChatUIController : UIController
         _player.LocalPlayerDetached += OnAttachedChanged;
         _state.OnStateChanged += StateChanged;
         _net.RegisterNetMessage<MsgChatMessage>(OnChatMessage);
+        InitializeChatTranslation();
         _net.RegisterNetMessage<MsgDeleteChatMessagesBy>(OnDeleteChatMessagesBy);
         SubscribeNetworkEvent<DamageForceSayEvent>(OnDamageForceSay);
         _config.OnValueChanged(CCVars.ChatEnableColorName, (value) => { _chatNameColorsEnabled = value; });
@@ -969,6 +970,7 @@ public sealed partial class ChatUIController : UIController
 
     private void OnChatMessage(MsgChatMessage message)
     {
+        TrackTranslation(message);
         var msg = message.Message;
         ProcessChatMessage(msg);
 
@@ -1079,6 +1081,7 @@ public sealed partial class ChatUIController : UIController
 
     public void OnDeleteChatMessagesBy(MsgDeleteChatMessagesBy msg)
     {
+        RemoveDeletedTranslations(msg);
         // This will delete messages from an entity even if different players were the author.
         // Usages of the erase admin verb should be rare enough that this does not matter.
         // Otherwise the client would need to know that one entity has multiple author players,

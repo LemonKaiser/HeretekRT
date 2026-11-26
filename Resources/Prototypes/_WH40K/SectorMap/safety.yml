@@ -1,4 +1,4 @@
-# Four protection policies. area applies to territory; station applies only to selected facility grids.
+# Protection policies. area applies to territory; station applies only to selected facility grids.
 # A map-wide profile never grants station safeguards to arriving ships or procedural terrain.
 
 # Footfall: protection across the entire space-system map.
@@ -81,7 +81,7 @@
     lockInfrastructureControls: true
     anchorGrid: true
 
-# Planets: area rules across the surface; station rules only on explicitly configured base grids.
+# The Footfall surfaces use the area rules. Explicitly configured planetary bases use the station rules.
 - type: koronusSafetyProfile
   id: KoronusPlanetProtection
   area:
@@ -125,3 +125,13 @@
     blockArtifactTriggers: true
     blockNpcAttacks: true
     blockInfrastructureDamage: true
+
+# Planetary surfaces outside Footfall allow PvP and keep protections for bystanders and ship maintenance.
+- type: koronusSafetyProfile
+  id: KoronusPlanetCombat
+  area:
+    autoCleanupHostileNpcs: true
+    protectPlayerShipWires: true
+    protectPlayerShipDeconstruction: true
+    protectNonHostileMobs: true
+    blockClassDeviceInteractions: true

@@ -342,7 +342,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         }
         else
         {
-            if (!_sector.TryEnsureSystemMapLoaded(system.ID, out targetMap) ||
+            if (!_sector.TryGetSystemMap(system.ID, out targetMap) ||
                 !_maps.TryGetMap(targetMap, out var systemMap) ||
                 !TryGetOrbitalLaunchOrigin(shuttleGrid, system, body, surface, out launchOrigin))
                 return false;
@@ -1220,7 +1220,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             body.Surface == null ||
             !_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(body.Surface.Value, out var surface) ||
             !_sector.TryGetSystemPrototype(body.System, out var system) ||
-            !_sector.TryEnsureSystemMapLoaded(system.ID, out var orbitalMap) ||
+            !_sector.TryGetSystemMap(system.ID, out var orbitalMap) ||
             !_maps.TryGetMap(orbitalMap, out var orbitalMapUid))
         {
             return;

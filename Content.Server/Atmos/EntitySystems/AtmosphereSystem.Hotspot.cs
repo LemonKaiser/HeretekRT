@@ -168,8 +168,9 @@ namespace Content.Server.Atmos.EntitySystems
             var plasma = tile.Air.GetMoles(Gas.Plasma);
             var tritium = tile.Air.GetMoles(Gas.Tritium);
 
+            // Extra fuel lowers the ignition threshold only as far as 300 C.
             if (tile.PuddleSolutionFlammability > 0 && oxygen >= 2f &&
-                exposedTemperature > 573.15f - 50f * tile.PuddleSolutionFlammability)
+                exposedTemperature > 673.15f - 25f * Math.Min(tile.PuddleSolutionFlammability, 4))
             {
                 _tileFires.TryDoTileFire(new EntityCoordinates(gridAtmosphere.Owner, tile.GridIndices + new System.Numerics.Vector2(0.5f)), sparkSourceUid);
             }

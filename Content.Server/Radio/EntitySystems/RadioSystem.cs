@@ -19,6 +19,7 @@ using Content.Shared.Ghost; // Nuclear-14
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Content.Server._WH40K.Chat;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
@@ -89,7 +90,11 @@ public sealed partial class RadioSystem : EntitySystem
             if (listener != null && !_language.CanUnderstand(listener, args.Language.ID))
                 msg = args.LanguageObfuscatedChatMsg;
 
-            _netMan.ServerSendMessage(new MsgChatMessage { Message = msg }, actor.PlayerSession.Channel);
+            var recipient = actor.PlayerSession.Channel;
+            var packet = ReferenceEquals(msg, args.OriginalChatMsg)
+                ? EntityManager.System<Wh40kChatTranslationSystem>().CreatePacket(msg, recipient, args.MessageSource)
+                : new MsgChatMessage { Message = msg };
+            _netMan.ServerSendMessage(packet, recipient);
             // Einstein Engines - Languages end
 
             if (uid != args.MessageSource &&

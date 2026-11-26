@@ -28,14 +28,6 @@ public sealed partial class KoronusSectorRuleComponent : Component
     public Dictionary<string, MapId> SurfaceMaps = new();
 
     /// <summary>
-    /// Systems whose runtime maps were replaced by a same-round user-data snapshot.
-    /// The snapshot itself is owned by <see cref="KoronusSectorRuleSystem"/> and is never
-    /// treated as persistent round data.
-    /// </summary>
-    [ViewVariables]
-    public HashSet<string> ColdUnloadedSystems = new();
-
-    /// <summary>
     /// Landing-site ownership keyed by celestial body and site id. Reservations never come from client data.
     /// </summary>
     [ViewVariables]

@@ -17,10 +17,4 @@ public sealed partial class KoronusSystemMapComponent : Component
 
     [ViewVariables]
     public TimeSpan? EmptySince;
-
-    /// <summary>
-    /// Prevents a failed serialization from being retried every residency tick.
-    /// </summary>
-    [ViewVariables]
-    public TimeSpan? ColdUnloadRetryAt;
 }

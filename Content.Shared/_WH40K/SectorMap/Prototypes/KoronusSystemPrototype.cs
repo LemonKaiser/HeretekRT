@@ -39,7 +39,7 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     public KoronusSpaceMode SpaceMode = KoronusSpaceMode.Standard;
 
     /// <summary>
-    /// Diffuse scenery beneath the system's actual celestial bodies, reapplied on cold restore.
+    /// Diffuse scenery beneath the system's actual celestial bodies.
     /// Parallax prototypes are client-only, so this uses the same string ID as ParallaxComponent.
     /// </summary>
     [DataField]
@@ -150,20 +150,6 @@ public sealed partial class KoronusSystemPrototype : IPrototype
 
     [DataField]
     public bool HoldAwakeOnIncomingSectorJump = true;
-
-    /// <summary>
-    /// Allows an empty, paused remote system to be serialized and removed from runtime memory.
-    /// The starting system is never cold-unloaded, even when this is enabled by mistake.
-    /// </summary>
-    [DataField]
-    public bool AllowColdUnload;
-
-    /// <summary>
-    /// Minimum time an empty system remains paused before its snapshot is written and the map is removed.
-    /// A non-positive value disables cold-unload for this system.
-    /// </summary>
-    [DataField]
-    public float ColdUnloadDelay = 120f;
 
     /// <summary>
     /// Restrictions applied everywhere on this system map.

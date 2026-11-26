@@ -88,7 +88,7 @@
   mapPath: /Maps/_WH40K/Planets/janus_surface.yml
   planet: JanusAgriWorld
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true
@@ -351,7 +351,7 @@
   mapPath: /Maps/_WH40K/Planets/omicron_minoris_surface.yml
   planet: OmicronMinorisWorld
   lowOrbitEnabled: true
-  safetyProfile: KoronusPlanetProtection
+  safetyProfile: KoronusPlanetCombat
   authoredGridMargin: 50
   sceneryBuffer: 25
   preloadOnRoundStart: true

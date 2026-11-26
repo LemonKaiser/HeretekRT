@@ -95,6 +95,15 @@ public partial class ChatBox : UIWidget
 
         var color = msg.MessageColorOverride ?? msg.Channel.TextColor();
 
+        // A pending translation belongs to this exact delivery, even if consecutive text is identical.
+        if (msg.TranslationId != 0 || msg.Translation != null)
+        {
+            _lastLine = null;
+            _lastLineRepeatCount = 0;
+            AppendTranslatableLine(msg, color);
+            return;
+        }
+
         // WD EDIT START
         (string, Color) tup = (msg.WrappedMessage, color);
 
@@ -124,6 +133,7 @@ public partial class ChatBox : UIWidget
 
     public void Repopulate()
     {
+        ResetTranslationRows();
         Contents.Clear();
         _lastLine = null;
         _lastLineRepeatCount = 0;
@@ -160,7 +170,12 @@ public partial class ChatBox : UIWidget
         ChatInput.FilterButton.Popup.UpdateAutoFill(autoFillKeywords);
     }
 
-    public void AddLine(string message, Color color, int repeat = 0, bool allowAliasMarkup = true) // WD EDIT
+    public void AddLine(string message, Color color, int repeat = 0, bool allowAliasMarkup = true)
+    {
+        Contents.AddMessage(FormatLine(message, color, repeat, allowAliasMarkup), tagsAllowed: null);
+    }
+
+    private FormattedMessage FormatLine(string message, Color color, int repeat, bool allowAliasMarkup)
     {
         var formatted = ChatEmojiRichText.BuildChatLine(
             message,
@@ -178,7 +193,7 @@ public partial class ChatBox : UIWidget
             ));
         } // WD EDIT END
 
-        Contents.AddMessage(formatted, tagsAllowed: null);
+        return formatted;
     }
 
     public void Focus(ChatSelectChannel? channel = null)

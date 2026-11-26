@@ -26,7 +26,6 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 
 /// <summary>
 /// Charts finite mining clusters, loads nearby sites and conservatively retains player changes.
-/// Uses native asteroid population and sector snapshots instead of infinite worldgen chunks.
 /// </summary>
 public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
 {
@@ -309,8 +308,7 @@ public sealed partial class KoronusAsteroidFieldSystem : EntitySystem
         // native debris grids. These asteroids are scenery, not player or NPC ships: remove the
         // implicit component before the fail-closed audit so they can never acquire FTL or docks.
         RemComp<ShuttleComponent>(asteroid);
-        // Finite fields own their lifecycle. Infinite-worldgen ownership and GC links are unset here
-        // and would leave invalid controller references in the sector's cold snapshot.
+        // Finite fields manage their own grids independently of infinite worldgen cleanup.
         RemComp<OwnedDebrisComponent>(asteroid);
         RemComp<GCAbleObjectComponent>(asteroid);
         // Mining grids may inherit facility safeguards from native salvage prototypes.

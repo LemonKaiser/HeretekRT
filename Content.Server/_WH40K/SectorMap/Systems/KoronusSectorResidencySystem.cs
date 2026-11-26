@@ -4,7 +4,6 @@ using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
-using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -23,7 +22,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IConfigurationManager _configuration = default!;
 
     private TimeSpan _nextUpdate;
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromMilliseconds(250);
@@ -31,8 +29,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     private readonly HashSet<MapId> _adminGhostMaps = new();
     private readonly HashSet<MapId> _planetaryTransitMaps = new();
     private readonly Dictionary<string, HashSet<long>> _activityLeases = new(StringComparer.Ordinal);
-    private readonly List<string> _coldUnloadCandidates = new();
-    internal static readonly TimeSpan ColdUnloadRetryDelay = TimeSpan.FromMinutes(1);
 
     public override void Initialize()
     {
@@ -47,7 +43,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         _adminGhostMaps.Clear();
         _planetaryTransitMaps.Clear();
         _activityLeases.Clear();
-        _coldUnloadCandidates.Clear();
     }
 
     public override void Update(float frameTime)
@@ -60,7 +55,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         _nextUpdate = _timing.CurTime + UpdateInterval;
         BuildWakeMapIndex();
         BuildPlanetaryTransitMapIndex();
-        _coldUnloadCandidates.Clear();
 
         // Residency must inspect paused maps too, otherwise a sleeping map can never wake up.
         var query = EntityManager.AllEntityQueryEnumerator<KoronusSystemMapComponent, MapComponent>();
@@ -95,22 +89,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
             if (atmosphere != null && _maps.IsPaused(atmosphere.MapId) != paused)
                 _maps.SetPaused(atmosphere.MapId, paused);
         }
-
-        // Deleting maps while an entity query is iterating over their map components can invalidate
-        // the query. Snapshot candidates are therefore processed only after both residency scans finish.
-        foreach (var systemId in _coldUnloadCandidates)
-        {
-            if (_sector.ColdUnloadPending)
-                break;
-
-            if (_sector.TryColdUnloadSystem(systemId) ||
-                !TryGetRuntime(systemId, out var runtime, out _))
-            {
-                continue;
-            }
-
-            runtime.ColdUnloadRetryAt = _timing.CurTime + ColdUnloadRetryDelay;
-        }
     }
 
     /// <summary>
@@ -118,16 +96,12 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     /// </summary>
     public bool BeginIncomingSectorJump(string systemId)
     {
-        if (!_sector.TryEnsureSystemMapLoaded(systemId, out _) ||
-            !TryGetRuntime(systemId, out var runtime, out var mapId))
-        {
+        if (!TryGetRuntime(systemId, out var runtime, out var mapId))
             return false;
-        }
 
         if (_sector.TryGetSystemPrototype(systemId, out var system) && system.HoldAwakeOnIncomingSectorJump)
             runtime.IncomingSectorJumps++;
         runtime.EmptySince = null;
-        runtime.ColdUnloadRetryAt = null;
         _maps.SetPaused(mapId, false);
         return true;
     }
@@ -160,7 +134,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
 
         leases.Add(instanceId);
         runtime.EmptySince = null;
-        runtime.ColdUnloadRetryAt = null;
         _maps.SetPaused(mapId, false);
         return true;
     }
@@ -183,7 +156,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         if (occupied || runtime.IncomingSectorJumps > 0 || HasActivityLease(system.ID) || !system.PauseWhenEmpty)
         {
             runtime.EmptySince = null;
-            runtime.ColdUnloadRetryAt = null;
             if (_maps.IsPaused(mapId))
                 _maps.SetPaused(mapId, false);
             return;
@@ -195,16 +167,6 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
 
         if (!_maps.IsPaused(mapId))
             _maps.SetPaused(mapId, true);
-
-        if (!_configuration.GetCVar(Wh40kSectorCVars.ColdUnloadEnabled) ||
-            !system.AllowColdUnload || system.ColdUnloadDelay <= 0f ||
-            _timing.CurTime - runtime.EmptySince.Value < TimeSpan.FromSeconds(system.ColdUnloadDelay) ||
-            runtime.ColdUnloadRetryAt is { } retryAt && _timing.CurTime < retryAt)
-        {
-            return;
-        }
-
-        _coldUnloadCandidates.Add(system.ID);
     }
 
     private void UpdateSurface(

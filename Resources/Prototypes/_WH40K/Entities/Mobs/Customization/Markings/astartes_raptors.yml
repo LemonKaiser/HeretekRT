@@ -33,3 +33,21 @@
   sprites:
   - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
     state: longhair
+
+- type: marking
+  id: AstartesHairLongFlat
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: longhair_flat
+
+- type: marking
+  id: AstartesHairSpaceWolf
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: [Astartes]
+  sprites:
+  - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi
+    state: space_wolf

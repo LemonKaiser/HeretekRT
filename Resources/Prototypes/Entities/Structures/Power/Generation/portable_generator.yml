@@ -122,7 +122,6 @@
       # Mono start
     - type: ESSparkOnHit
       prob: 0.4
-      tileFireChance: 0.4
       count: 3
     - type: Flammable
       fireSpread: true
@@ -430,7 +429,6 @@
       # Mono start
     - type: ESSparkOnHit
       prob: 0.4
-      tileFireChance: 0.4
       count: 3
     - type: Flammable
       fireSpread: true

@@ -104,6 +104,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
     public const int MaxExplosionAudioRange = 30;
 
+    // Evaluate each blast before merging neighboring explosions.
+    private const float MinIgnitingExplosionIntensity = 500f;
+    private const float TileFireChanceMultiplier = 0.8f;
+
     /// <summary>
     ///     The "default" explosion prototype.
     /// </summary>
@@ -397,6 +401,8 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         blockSpaceBossDamage |= _spaceBosses.IsProtectedDamageSource(cause);
         bossAttack |= HasComp<Content.Server._WH40K.Bosses.Wh40kBossMinionComponent>(cause);
 
+        var canIgnite = totalIntensity >= MinIgnitingExplosionIntensity;
+
         // try to combine explosions on the same tile if they are the same type
         foreach (var queued in _queuedExplosions)
         {
@@ -410,6 +416,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
             // they are close enough to combine so just add total intensity and prevent queuing another one
             queued.TotalIntensity += totalIntensity;
+            queued.CanIgnite |= canIgnite;
             return;
         }
 
@@ -423,6 +430,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             TileBreakScale = tileBreakScale,
             MaxTileBreak = maxTileBreak,
             CanCreateVacuum = canCreateVacuum,
+            CanIgnite = canIgnite,
             Cause = cause,
             BlockSpaceBossDamage = blockSpaceBossDamage,
             BossAttack = bossAttack
@@ -504,6 +512,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             queued.TileBreakScale,
             queued.MaxTileBreak,
             queued.CanCreateVacuum,
+            queued.CanIgnite,
             EntityManager,
             visualEnt,
             queued.Cause,

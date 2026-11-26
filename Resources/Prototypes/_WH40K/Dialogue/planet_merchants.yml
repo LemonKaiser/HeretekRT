@@ -1,0 +1,20 @@
+- type: wh40kDialogue
+  id: WH40KPlanetMerchant
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: service
+    type: Choice
+    speaker: npc
+    text: wh40k-planet-merchant-greeting
+    choices:
+    - text: wh40k-service-open-shop
+      actions:
+      - type: OpenMerchant
+    - text: wh40k-footfall-dialogue-leave
+      nextStep: end
+  - id: end
+    speaker: npc
+    text: wh40k-planet-merchant-farewell

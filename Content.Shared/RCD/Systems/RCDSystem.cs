@@ -113,7 +113,7 @@ public partial class RCDSystem : EntitySystem
         // Set the current RCD prototype to the one supplied
         component.ProtoId = args.ProtoId;
 // ES START
-        _esSparks.DoSparks(uid, 1, user: args.Actor);
+        _esSparks.DoSparks(uid, 1);
 // ES END
         UpdateCachedPrototype(uid, component);
         Dirty(uid, component);

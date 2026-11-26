@@ -55,8 +55,6 @@
   initialGridSafetyProfile: KoronusOutpostProtection
   initialGridSafetyRadius: 100
   showSafetyBoundaries: false
-  allowColdUnload: true
-  coldUnloadDelay: 120
 
 - type: koronusSystem
   id: SottosTomb
@@ -78,8 +76,6 @@
   initialGridSafetyProfile: KoronusOutpostProtection
   initialGridSafetyRadius: 100
   autoRestockInitialGrid: true
-  allowColdUnload: true
-  coldUnloadDelay: 120
 
 - type: koronusSystem
   id: Trinnitos
@@ -101,8 +97,6 @@
   initialGridSafetyProfile: KoronusOutpostProtection
   initialGridSafetyRadius: 100
   autoRestockInitialGrid: true
-  allowColdUnload: true
-  coldUnloadDelay: 120
 
 - type: koronusSystem
   id: SystemSpeculum
@@ -115,7 +109,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3000
-  allowColdUnload: true
 
 - type: koronusSystem
   id: Omicron
@@ -128,7 +121,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3000
-  allowColdUnload: true
 
 - type: koronusSystem
   id: SmaragdusMundos
@@ -318,7 +310,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3000
-  allowColdUnload: true
 
 - type: koronusSystem
   id: CradleOfKhepri
@@ -331,7 +322,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3000
-  allowColdUnload: true
   asteroidPool: KoronusMediumLargeMiningAsteroids
 
 - type: koronusSystem
@@ -345,7 +335,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3000
-  allowColdUnload: true
 
 - type: koronusSystem
   id: JagerensBelt
@@ -372,7 +361,6 @@
   enabled: true
   boundaryRadius: 24000
   arrivalDistance: 3500
-  allowColdUnload: true
 
 - type: koronusSystem
   id: JanxIV

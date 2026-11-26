@@ -43,8 +43,7 @@ public sealed partial class SalvageExpeditionComponent : SharedSalvageExpedition
     public EntityUid? ReturnMap;
 
     /// <summary>
-    /// Koronus system from which the owner entered the expedition. The system id survives a
-    /// cold-unload of its runtime map and is therefore preferred over <see cref="ReturnMap"/>.
+    /// Koronus system from which the owner entered the expedition, used to wake its return map.
     /// </summary>
     [DataField]
     public string? ReturnSystemId;

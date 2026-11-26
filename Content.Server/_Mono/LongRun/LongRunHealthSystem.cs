@@ -60,9 +60,6 @@ public sealed class LongRunHealthSystem : EntitySystem
     private static readonly Gauge PausedGridCount = Metrics.CreateGauge(
         "longrun_health_paused_grid_count",
         "Paused loaded grid count observed by the long-run health sampler.");
-    private static readonly Gauge ColdSystemCount = Metrics.CreateGauge(
-        "longrun_health_cold_system_count",
-        "Cold-unloaded Koronus system count observed by the long-run health sampler.");
     private static readonly Gauge BiomeModifiedChunkCount = Metrics.CreateGauge(
         "longrun_health_biome_modified_chunk_count",
         "Biome modified chunk count observed by the long-run health sampler.");
@@ -246,7 +243,6 @@ public sealed class LongRunHealthSystem : EntitySystem
             $"entities={snapshot.EntityCount}",
             $"maps={snapshot.LoadedMapCount}/{snapshot.PausedMapCount} paused",
             $"grids={snapshot.LoadedGridCount}/{snapshot.PausedGridCount} paused",
-            $"cold={snapshot.ColdSystemCount}",
             $"sector={snapshot.KnownSystemCount}/{snapshot.KnownSurfaceCount}",
             $"landing={snapshot.LandingReservationCount}/{snapshot.LandingSessionCount}/{snapshot.PlanetaryTransitCount}",
             $"boundary={snapshot.BoundaryCleanupCandidateCount}/{snapshot.BoundaryWarningHistoryCount}",
@@ -279,7 +275,7 @@ public sealed class LongRunHealthSystem : EntitySystem
         var entityCount = Count<MetaDataComponent>();
         var (loadedMaps, pausedMaps) = CountMaps();
         var (loadedGrids, pausedGrids) = CountGrids();
-        var (coldSystems, knownSystems, knownSurfaces, landingReservations, landingSessions) = CountSectorMaps();
+        var (knownSystems, knownSurfaces, landingReservations, landingSessions) = CountSectorMaps();
         var planetaryTransits = Count<KoronusPlanetaryTransitComponent>();
         var boundaryStatus = _sectorBoundaries.GetLongRunStatus();
         var activityStatus = _activities.GetLongRunStatus();
@@ -311,7 +307,6 @@ public sealed class LongRunHealthSystem : EntitySystem
             pausedMaps,
             loadedGrids,
             pausedGrids,
-            coldSystems,
             knownSystems,
             knownSurfaces,
             modifiedBiomeChunks,
@@ -372,7 +367,6 @@ public sealed class LongRunHealthSystem : EntitySystem
         PausedMapCount.Set(pausedMaps);
         LoadedGridCount.Set(loadedGrids);
         PausedGridCount.Set(pausedGrids);
-        ColdSystemCount.Set(coldSystems);
         BiomeModifiedChunkCount.Set(modifiedBiomeChunks);
         BiomeLoadedChunkCount.Set(loadedBiomeChunks);
         WorldgenChunkCount.Set(worldgenChunks);
@@ -442,9 +436,8 @@ public sealed class LongRunHealthSystem : EntitySystem
         return (loaded, paused);
     }
 
-    private (int Cold, int KnownSystems, int KnownSurfaces, int LandingReservations, int LandingSessions) CountSectorMaps()
+    private (int KnownSystems, int KnownSurfaces, int LandingReservations, int LandingSessions) CountSectorMaps()
     {
-        var cold = 0;
         var systems = 0;
         var surfaces = 0;
         var reservations = 0;
@@ -453,14 +446,13 @@ public sealed class LongRunHealthSystem : EntitySystem
 
         while (query.MoveNext(out _, out var sector))
         {
-            cold += sector.ColdUnloadedSystems.Count;
             systems += sector.SystemMaps.Count;
             surfaces += sector.SurfaceMaps.Count;
             reservations += sector.LandingReservations.Count;
             sessions += sector.LandingSessions.Count;
         }
 
-        return (cold, systems, surfaces, reservations, sessions);
+        return (systems, surfaces, reservations, sessions);
     }
 
     private (int Modified, int Loaded) CountBiomeChunks()
@@ -732,7 +724,6 @@ public sealed record LongRunHealthSnapshot(
     int PausedMapCount,
     int LoadedGridCount,
     int PausedGridCount,
-    int ColdSystemCount,
     int KnownSystemCount,
     int KnownSurfaceCount,
     int BiomeModifiedChunkCount,
@@ -785,7 +776,6 @@ public sealed record LongRunHealthSnapshot(
         DateTime.UtcNow,
         0,
         GameRunLevel.PreRoundLobby,
-        0,
         0,
         0,
         0,
