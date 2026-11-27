@@ -1,30 +1,9 @@
 - type: guideEntry
   id: MonolithRuleset
-  name: guide-entry-monolith-rules
-  text: "/ServerInfo/_Mono/Guidebook/Rules/MonolithRuleset.xml"
+  name: guide-entry-heretek-rules
+  text: "/ServerInfo/_WH40K/Guidebook/Rules/HeretekRuleset.xml"
   priority: -2
   ruleEntry: true
-  children:
-    - MonolithRuleCoreOneCommonSense
-    - MonolithRuleCoreTwoRespect
-    - MonolithRuleCoreThreeCheatingExploits
-    - MonolithRuleCoreFourAlternativeAccounts
-    - MonolithRuleCoreFiveLanguages
-    - MonolithRuleCoreSixAhelp
-    - MonolithRuleCoreSevenThreatenToReport
-    - MonolithRuleRoleplayOneBreakCharacter
-    - MonolithRuleRoleplayTwoTextChat
-    - MonolithRuleRoleplayThreeProperGrammar
-    - MonolithRuleRoleplayFourCharacterActions
-    - MonolithRuleRoleplayFiveEroticRoleplay
-    - MonolithRuleRoleplaySixMetagame
-    - MonolithRuleRoleplaySevenSafeZones
-    - MonolithRuleRoleplayEightFactionRoles
-    - MonolithRuleRoleplayNineCommandingRoles
-    - MonolithRuleConflictOneRandomDeathmatch
-    - MonolithRuleConflictTwoNewLife
-    - MonolithRuleConflictThreeFairPlay
-    - MonolithRuleConflictFourPortStriking
 
 #MARK: Core Rules
 
