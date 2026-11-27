@@ -27766,3 +27766,42 @@ Entries:
   id: 2974
   time: '2026-11-25T23:12:43.0000000+00:00'
   url: https://github.com/Monolith-Station/Monolith/pull/5108
+- author: pizzay30tyd
+  changes:
+    - type: Fix
+      message: Revolvers are reload-able without fiddling for 2 minutes now
+  id: 2975
+  time: '2026-11-26T13:39:42.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/5077
+- author: Mrrpip
+  changes:
+    - type: Add
+      message: Adds knockback and a disarm to activated stunbatons.
+    - type: Tweak
+      message: CSEC helmets now give different voicelines. Pick up that can.
+  id: 2976
+  time: '2026-11-26T14:01:01.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/5061
+- author: tonotom1
+  changes:
+    - type: Tweak
+      message: Tape recorder transcripts now use the new writing language system
+  id: 2977
+  time: '2026-11-26T14:13:25.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/5094
+- author: DoubleHypercube
+  changes:
+    - type: Fix
+      message: PVS scales no longer reset on zoom reset.
+  id: 2978
+  time: '2026-11-26T14:23:33.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/5101
+- author: Pologuys
+  changes:
+    - type: Remove
+      message: >-
+        Banned the allowance of discrimination of disabilities fully. This
+        covers saying "retard" and other slurs pertaining to disabilities.
+  id: 2979
+  time: '2026-11-26T19:17:51.0000000+00:00'
+  url: https://github.com/Monolith-Station/Monolith/pull/5114

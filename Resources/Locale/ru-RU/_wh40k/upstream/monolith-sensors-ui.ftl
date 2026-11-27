@@ -1,4 +1,3 @@
-tape-recorder-print-unintelligible = (Неразборчиво)
 guide-entry-emcon = Управление излучением
 gunnery-sarh = ПОЛУАКТИВНОЕ НАВЕДЕНИЕ
 gunnery-lock = РЕЖИМ ЗАХВАТА

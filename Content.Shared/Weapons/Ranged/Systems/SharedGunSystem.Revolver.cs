@@ -14,6 +14,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Wieldable;
 using Content.Shared.Wieldable.Components;
 using JetBrains.Annotations;
+using Robust.Shared.Spawners;
 
 namespace Content.Shared.Weapons.Ranged.Systems;
 
@@ -550,6 +551,7 @@ public partial class SharedGunSystem
 
                     // Mark cartridge as spent and if it's caseless delete from the chamber slot.
                     SetCartridgeSpent(ent.Value, cartridge, true);
+                    RemComp<TimedDespawnComponent>(ent.Value); // Mono: Keep the casing until it is ejected.
                     var spawned = Spawn(cartridge.Prototype, args.Coordinates);
                     args.Ammo.Add((spawned, EnsureComp<AmmoComponent>(spawned)));
 
