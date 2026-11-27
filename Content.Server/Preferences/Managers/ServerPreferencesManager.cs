@@ -275,7 +275,7 @@ namespace Content.Server.Preferences.Managers
                 return false;
             }
 
-            if (!ValidateWh40kOnboardingTraits(submitted.TraitPreferences, submitted.Species))
+            if (!ValidateWh40kOnboardingTraits(submitted.TraitPreferences, submitted))
             {
                 prepared = default!;
                 status = Wh40kOnboardingCompletionStatus.InvalidBuild;
@@ -304,7 +304,7 @@ namespace Content.Server.Preferences.Managers
         /// </summary>
         private bool ValidateWh40kOnboardingTraits(
             IReadOnlySet<ProtoId<TraitPrototype>> traits,
-            ProtoId<SpeciesPrototype> species)
+            HumanoidCharacterProfile profile)
         {
             const string physicalCategory = "Physical";
             var selected = new List<TraitPrototype>(traits.Count);
@@ -316,7 +316,8 @@ namespace Content.Server.Preferences.Managers
                     trait.Category is not { } traitCategoryId ||
                     traitCategoryId.Id != physicalCategory ||
                     trait.Cost == 0 ||
-                    trait.SpeciesBlacklist.Contains(species))
+                    trait.SpeciesBlacklist.Contains(profile.Species) ||
+                    Content.Shared._WH40K.Biotype.Wh40kBiotypeGates.TraitBlocked(trait, profile, _protos))
                 {
                     return false;
                 }
@@ -399,23 +400,27 @@ namespace Content.Server.Preferences.Managers
             // Mono
             if (!authoritative && profile is HumanoidCharacterProfile humanoid)
             {
+                var requestedBiotype = Content.Shared._WH40K.Biotype.Wh40kBiotypeRules.Sanitize(humanoid.Wh40kBuild.Biotype);
                 if (curPrefs.Characters.TryGetValue(slot, out var oldProfile) && oldProfile is HumanoidCharacterProfile oldHumanoid)
                 {
+                    var mergedBuild = oldHumanoid.Wh40kBuild.Clone();
+                    mergedBuild.Biotype = requestedBiotype;
                     profile = humanoid
                         .WithBankBalance(oldHumanoid.BankBalance)
-                        .WithWh40kCharacterBuild(oldHumanoid.Wh40kBuild);
+                        .WithWh40kCharacterBuild(mergedBuild);
                 }
                 else
                 {
                     profile = humanoid
                         .WithBankBalance(HumanoidCharacterProfile.DefaultBalance)
-                        .WithWh40kCharacterBuild(new Wh40kCharacterBuild());
+                        .WithWh40kCharacterBuild(new Wh40kCharacterBuild { Biotype = requestedBiotype });
                 }
             }
 
             if (profile is HumanoidCharacterProfile foundationProfile &&
                 _wh40kRpg.TryGetFoundationBuild(userId, out var foundationBuild))
             {
+                foundationBuild.Biotype = Content.Shared._WH40K.Biotype.Wh40kBiotypeRules.Sanitize(foundationProfile.Wh40kBuild.Biotype);
                 profile = foundationProfile.WithWh40kCharacterBuild(foundationBuild);
             }
 

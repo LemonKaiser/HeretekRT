@@ -1,0 +1,53 @@
+- type: entity
+  parent: [ BasePartInorganic, BaseHead ]
+  id: HeadWh40kCybernetic
+  name: cybernetic human head
+  components:
+  - type: Sprite
+    sprite: Mobs/Species/Human/parts.rsi
+    state: "head_m"
+  - type: Icon
+    sprite: Mobs/Species/Human/parts.rsi
+    state: "head_m"
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    organs:
+      brain:
+        id: "brain"
+      eyes:
+        id: "eyes"
+
+- type: entity
+  parent: [ BasePartInorganic, BaseTorsoInorganic ]
+  id: TorsoWh40kCybernetic
+  name: cybernetic mechanicus torso
+  components:
+  - type: Sprite
+    sprite: Mobs/Species/Human/parts.rsi
+    state: "torso_m"
+  - type: Icon
+    sprite: Mobs/Species/Human/parts.rsi
+    state: "torso_m"
+  - type: Damageable
+    damageContainer: Silicon
+  - type: BodyPart
+    organs:
+      pump:
+        id: "pump"
+      radcollector:
+        id: "radcollector"
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Slash
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }

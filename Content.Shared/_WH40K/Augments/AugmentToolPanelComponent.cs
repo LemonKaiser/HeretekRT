@@ -3,11 +3,17 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._WH40K.Augments;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class AugmentToolPanelComponent : Component
 {
     [DataField]
     public float SwitchCharge = 10f;
+
+    [DataField, AutoNetworkedField]
+    public NetEntity? ActiveTool;
+
+    [DataField, AutoNetworkedField]
+    public TimeSpan EmpDisabledUntil;
 }
 
 [RegisterComponent, NetworkedComponent]

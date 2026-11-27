@@ -29,7 +29,6 @@ public sealed partial class ShipSensorsSystem : EntitySystem
 
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(0.5);
     private TimeSpan _nextUpdate = TimeSpan.Zero;
-    private const int MaxDatalinkCodes = 8;
 
     private EntityQuery<ShipSensorComponent> _sensorQuery;
     private EntityQuery<ApcPowerReceiverComponent> _powerQuery;
@@ -506,7 +505,7 @@ public sealed partial class ShipSensorsSystem : EntitySystem
                 if (string.IsNullOrWhiteSpace(code))
                     continue;
 
-                var key = NormalizeCode(code);
+                var key = SensorsSetDatalinkMessage.NormalizeCode(code);
                 if (!byCode.TryGetValue(key, out var list))
                 {
                     list = new List<(EntityUid, GridSensorsComponent)>();
@@ -936,12 +935,7 @@ public sealed partial class ShipSensorsSystem : EntitySystem
         if (gridUid == null || !TryComp<GridSensorsComponent>(gridUid, out var sensors))
             return false;
 
-        sensors.DatalinkCodes = msg.Codes
-            .Select(NormalizeCode)
-            .Where(static c => c.Length > 0)
-            .Distinct()
-            .Take(MaxDatalinkCodes)
-            .ToHashSet();
+        sensors.DatalinkCodes = SensorsSetDatalinkMessage.NormalizeCodes(msg.Codes).ToHashSet();
 
         Dirty(gridUid.Value, sensors);
         return true;
@@ -966,10 +960,5 @@ public sealed partial class ShipSensorsSystem : EntitySystem
         }
 
         return arWatts;
-    }
-
-    private static string NormalizeCode(string code)
-    {
-        return code.Trim().ToUpperInvariant();
     }
 }

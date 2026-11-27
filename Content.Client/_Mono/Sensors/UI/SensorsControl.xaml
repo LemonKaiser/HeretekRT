@@ -11,22 +11,22 @@
         <Label Text="{Loc 'gunnery-emcon-sensors'}" HorizontalAlignment="Left" StyleClasses="StatusFieldTitle"/>
     </controls:StripeBack>
 
-    <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-    <PanelContainer VerticalExpand="False" MinHeight="140" HorizontalExpand="True">
-        <PanelContainer.PanelOverride>
-            <gfx:StyleBoxFlat BackgroundColor="#000000"/>
-        </PanelContainer.PanelOverride>
-        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-            <BoxContainer Name="HardwareBox" Orientation="Vertical" Margin="4"/>
-        </ScrollContainer>
-    </PanelContainer>
+    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+        <PanelContainer MinHeight="192" HorizontalExpand="True">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#000000"/>
+            </PanelContainer.PanelOverride>
+            <ScrollContainer HScrollEnabled="False">
+                <BoxContainer Name="HardwareBox" Orientation="Vertical" SeparationOverride="6" Margin="4"/>
+            </ScrollContainer>
+        </PanelContainer>
 
-    <PanelContainer MinSize="180 180" MaxSize="220 220" Margin="6 0 0 0">
-        <PanelContainer.PanelOverride>
-            <gfx:StyleBoxFlat BackgroundColor="#000000"/>
-        </PanelContainer.PanelOverride>
-        <ui:SensorsArcDisplay Name="ArcDisplay"/>
-    </PanelContainer>
+        <PanelContainer SetSize="160 160">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#000000"/>
+            </PanelContainer.PanelOverride>
+            <ui:SensorsArcDisplay Name="ArcDisplay"/>
+        </PanelContainer>
     </BoxContainer>
 
     <controls:StripeBack MinSize="36 36" Margin="0 8 0 0">
@@ -34,22 +34,15 @@
     </controls:StripeBack>
     <LineEdit Name="ContactSearch" PlaceHolder="{Loc 'gunnery-emcon-search-placeholder'}" Margin="2"/>
 
-    <BoxContainer Orientation="Horizontal" Margin="4 2">
-        <Label Text="{Loc 'gunnery-emcon-range'}" MinWidth="80" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-angle'}" MinWidth="80" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-source'}" MinWidth="130" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-cross-section'}" MinWidth="110" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-infrared'}" MinWidth="120" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-ars'}" MinWidth="110" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-        <Label Text="{Loc 'gunnery-emcon-track'}" HorizontalExpand="True" StyleClasses="LabelKeyText" HorizontalAlignment="Left"/>
-    </BoxContainer>
-
     <PanelContainer VerticalExpand="True">
         <PanelContainer.PanelOverride>
             <gfx:StyleBoxFlat BackgroundColor="#000000"/>
         </PanelContainer.PanelOverride>
-        <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-            <BoxContainer Name="ContactsBox" Orientation="Vertical" Margin="4"/>
+        <ScrollContainer>
+            <BoxContainer Orientation="Vertical" Margin="4">
+                <BoxContainer Name="ContactHeader" Orientation="Vertical"/>
+                <BoxContainer Name="ContactsBox" Orientation="Vertical"/>
+            </BoxContainer>
         </ScrollContainer>
     </PanelContainer>
 
@@ -58,6 +51,6 @@
     </controls:StripeBack>
     <BoxContainer Orientation="Horizontal" Margin="2">
         <LineEdit Name="DatalinkEdit" HorizontalExpand="True" PlaceHolder="{Loc 'gunnery-emcon-datalink-placeholder'}"/>
-        <Button Name="DatalinkApply" Text="Set" MinWidth="64"/>
+        <Button Name="DatalinkApply" Text="{Loc 'gunnery-emcon-datalink-apply'}" MinWidth="64"/>
     </BoxContainer>
 </BoxContainer>

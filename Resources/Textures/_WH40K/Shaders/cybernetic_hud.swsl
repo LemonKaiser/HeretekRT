@@ -1,0 +1,26 @@
+uniform sampler2D SCREEN_TEXTURE;
+uniform highp float tint;
+uniform highp float glitch;
+uniform highp float slice;
+uniform highp float standby;
+
+void fragment() {
+    highp vec2 coord = FRAGCOORD.xy * SCREEN_PIXEL_SIZE.xy;
+
+    highp float band = 1.0 - smoothstep(0.0, 0.03, abs(coord.y - slice));
+    coord.x += band * glitch * 0.035;
+    highp vec4 tex = zTextureSpec(SCREEN_TEXTURE, clamp(coord, vec2(0.001, 0.001), vec2(0.999, 0.999)));
+    highp vec3 colour = tex.rgb;
+
+    highp float dist = length((coord - vec2(0.5, 0.5)) * vec2(1.0, 0.85));
+    highp float edge = smoothstep(0.30, 0.74, dist) * clamp(tint, 0.0, 1.0);
+    colour = mix(colour, vec3(0.65, 0.06, 0.03), edge * 0.5);
+    colour += vec3(0.18, 0.015, 0.008) * edge;
+
+    colour += vec3(0.06, 0.008, 0.004) * edge * (0.5 + 0.5 * sin(coord.y * 420.0));
+
+    highp float grey = dot(colour, vec3(0.299, 0.587, 0.114));
+    colour = mix(colour, vec3(grey * 0.30, grey * 0.42, grey * 0.54), clamp(standby, 0.0, 1.0));
+
+    COLOR = vec4(colour, tex.a);
+}

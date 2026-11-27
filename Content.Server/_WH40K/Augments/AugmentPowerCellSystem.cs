@@ -33,6 +33,16 @@ public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
     {
         base.Initialize();
         SubscribeLocalEvent<HasAugmentPowerCellSlotComponent, AugmentBatteryAlertEvent>(OnBatteryAlert);
+        SubscribeLocalEvent<HasAugmentPowerCellSlotComponent, GetDrinkerBatteryEvent>(OnGetDrinkerBattery);
+    }
+
+    private void OnGetDrinkerBattery(Entity<HasAugmentPowerCellSlotComponent> ent, ref GetDrinkerBatteryEvent args)
+    {
+        if (args.Battery != null)
+            return;
+
+        if (GetBodyAugment(ent) is { } augment && GetAugmentCell(augment) is { } battery)
+            args.Battery = battery;
     }
 
     private void OnBatteryAlert(Entity<HasAugmentPowerCellSlotComponent> ent, ref AugmentBatteryAlertEvent args)
@@ -58,17 +68,18 @@ public sealed class AugmentPowerCellSystem : SharedAugmentPowerCellSystem
     }
 
     /// <summary>
-    /// Uses an internal cell charge, displaying a precise reason to the wearer if it cannot be used.
+    /// Uses an internal cell charge (from either an implanted augment cell slot or a cybernetic chassis battery),
+    /// displaying a precise reason to the wearer if it cannot be used.
     /// </summary>
     public bool TryUseChargeBody(EntityUid body, float amount)
     {
-        if (GetBodyAugment(body) is not { } slot)
+        if (GetPowerSource(body) is not { } source)
         {
             _popups.PopupEntity(_playerCulture.GetPlayerString(body, "augments-no-power-cell-slot"), body, body, PopupType.MediumCaution);
             return false;
         }
 
-        if (GetAugmentCell(slot) is not { } battery)
+        if (GetAugmentCell(source) is not { } battery)
         {
             _popups.PopupEntity(_playerCulture.GetPlayerString(body, "power-cell-no-battery"), body, body, PopupType.MediumCaution);
             return false;

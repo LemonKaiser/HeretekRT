@@ -1,4 +1,3 @@
-using Content.Shared._Mono.Sensors;
 using Content.Shared.Shuttles.BUIStates;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
@@ -25,8 +24,6 @@ public sealed class RadarConsoleBoundUserInterface : BoundUserInterface
         _window?.SensorsTab.OnEmcon += msg => SendMessage(msg); // Mono
         _window?.SensorsTab.OnArc += msg => SendMessage(msg); // Mono
         _window?.SensorsTab.OnDatalink += msg => SendMessage(msg); // Mono
-        _window?.SensorsTab.OnContactLock += net => // Mono
-            SendMessage(new SensorsSetLockMessage { Target = net });
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -36,6 +33,6 @@ public sealed class RadarConsoleBoundUserInterface : BoundUserInterface
             return;
 
         _window?.UpdateState(cState.State);
-        _window?.SensorsTab?.UpdateState(cState.Sensors); // Mono
+        _window?.SensorsTab.UpdateState(cState.Sensors);
     }
 }

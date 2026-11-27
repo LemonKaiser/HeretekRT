@@ -183,6 +183,19 @@ public partial class SharedBodySystem
                 var parentEntity = cameFromEntities[currentSlotId];
                 var parentPartComponent = Comp<BodyPartComponent>(parentEntity);
 
+                // If a parent cybernetic limb already generated its child part (GenerateChildPart)
+                // during insertion, adopt that child part instead of spawning a duplicate.
+                if (Containers.TryGetContainer(parentEntity, GetPartSlotContainerId(connection), out var existingCont) &&
+                    existingCont is ContainerSlot existingSlot &&
+                    existingSlot.ContainedEntity is { } existingChild &&
+                    TryComp(existingChild, out BodyPartComponent? existingChildPart))
+                {
+                    cameFromEntities[connection] = existingChild;
+                    SetupOrgans((existingChild, existingChildPart), connectionSlot.Organs);
+                    frontier.Enqueue(connection);
+                    continue;
+                }
+
                 // Spawn the entity on the target
                 // then get the body part type, create the slot, and finally
                 // we can insert it into the container.
@@ -458,8 +471,7 @@ public partial class SharedBodySystem
             || !Initialized(uid)) // We do this last one for urists on test envs.
             return;
 
-        foreach (var part in GetBodyChildren(uid, component))
-            EnsureComp<BodyPartAppearanceComponent>(part.Id);
+        RefreshBaseLayersFromParts(uid, component);
     }
 
     private void OnStandAttempt(Entity<BodyComponent> ent, ref StandAttemptEvent args)

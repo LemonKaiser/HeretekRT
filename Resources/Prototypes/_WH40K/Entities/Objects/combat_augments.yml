@@ -1,0 +1,823 @@
+# WH40K Stage 5 Combat, Tactical, Stealth, and Survival Augments
+# Integrated with WH40KAugmentationCapsule, Wh40kChassisPanelWindow, Wh40kAugmentCatalogue,
+# HealthAnalyzer cyberware scan, and Persistent Inventory.
+
+# ============================================================
+# 1. DEPLOYED ITEMS, PROJECTILES, ORBS, AND DECOYS (INTERNAL)
+# ============================================================
+
+- type: entity
+  categories: [ DoNotMap, HideSpawnMenu ]
+  parent: Lighter
+  id: WH40KAugmentFingerLighterFlame
+  name: finger piezo-igniter
+  description: A miniature piezo-igniter deployed from a fingertip implant.
+  components:
+  - type: NoPersistentInventory
+
+- type: entity
+  parent: RedLightLaser
+  id: WH40KArmLaserBeam
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 14
+
+- type: entity
+  categories: [ DoNotMap, HideSpawnMenu ]
+  parent: BaseItem
+  id: WH40KAugmentArmLaserGun
+  name: integrated forearm las-emitter
+  description: A compact Mechanicus las-emitter extended from a cybernetic forearm. Fires rapid pulses until its internal capacitor depletes.
+  components:
+  - type: NoPersistentInventory
+  - type: Sprite
+    sprite: _WH40K/Augments/arm_laser.rsi
+    state: icon
+  - type: Item
+    size: Huge
+    sprite: _WH40K/Augments/arm_laser.rsi
+  - type: Gun
+    fireRate: 5
+    projectileSpeed: 60
+    selectedMode: FullAuto
+    availableModes: [ FullAuto ]
+    minAngle: 1
+    maxAngle: 12
+    angleIncrease: 1.5
+    angleDecay: 12
+    cameraRecoilScalar: 0.3
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser.ogg
+  - type: Wh40kTwinLaser
+  - type: HitscanBatteryAmmoProvider
+    proto: WH40KArmLaserBeam
+    fireCost: 40
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 30
+    autoRechargePause: true
+    autoRechargePauseTime: 1.5
+  - type: AmmoCounter
+  - type: Appearance
+
+- type: entity
+  categories: [ DoNotMap, HideSpawnMenu ]
+  parent: BaseItem
+  id: WH40KAugmentHandShieldProjector
+  name: refractor palm shield
+  description: A projected hard-light refractor barrier emitted from a cybernetic palm. Blocks frontal attacks and deflects beams until depleted.
+  components:
+  - type: NoPersistentInventory
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/e_shield.rsi
+    layers:
+    - state: eshield-icon
+    - state: eshield-on
+      shader: unshaded
+  - type: Item
+    size: Huge
+    inhandVisuals:
+      left:
+      - sprite: Objects/Weapons/Melee/e_shield.rsi
+        state: inhand-left-shield
+        shader: unshaded
+      right:
+      - sprite: Objects/Weapons/Melee/e_shield.rsi
+        state: inhand-right-shield
+        shader: unshaded
+  - type: HeldSpeedModifier
+    walkModifier: 0.85
+    sprintModifier: 0.85
+  - type: PointLight
+    radius: 1.5
+    energy: 0.7
+    color: "#678AD9"
+
+- type: entity
+  categories: [ HideSpawnMenu ]
+  parent: BaseBullet
+  id: WH40KShoulderCannonBolt
+  name: servo-turret plasma bolt
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 80
+        Radiation: 10
+  - type: Reflective
+    reflective:
+    - Energy
+  - type: Sprite
+    sprite: _Mono/Objects/SpaceArtillery/plasmashot.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: plasmashot
+      shader: unshaded
+  - type: PointLight
+    color: "#FF00AA"
+    radius: 2
+    energy: 2
+  - type: TimedDespawn
+    lifetime: 2
+
+- type: entity
+  abstract: true
+  id: WH40KHaloOrbBase
+  name: corona charge
+  description: An unstable amber charge hovering in midair, seconds from detonation.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Augments/halo_orb.rsi
+    state: orb
+    drawdepth: Effects
+    shader: unshaded
+    noRot: true
+  - type: PointLight
+    color: "#ffa733"
+    radius: 1.5
+    energy: 1.5
+  - type: Physics
+    bodyType: Dynamic
+    fixedRotation: true
+  - type: Fixtures
+    fixtures:
+      orb:
+        shape: !type:PhysShapeCircle
+          radius: 0.1
+        density: 1
+        hard: true
+        mask:
+        - Impassable
+  - type: TimedDespawn
+    lifetime: 4
+
+- type: entity
+  parent: WH40KHaloOrbBase
+  id: WH40KHaloOrbLethal
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Wh40kHaloOrb
+    damage:
+      types:
+        Piercing: 15
+        Heat: 10
+
+- type: entity
+  parent: WH40KHaloOrbBase
+  id: WH40KHaloOrbStun
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Wh40kHaloOrb
+    staminaDamage: 40
+
+- type: entity
+  id: WH40KHaloShield
+  name: corona stasis shield
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _WH40K/Augments/halo_shield.rsi
+    state: shield
+    drawdepth: Effects
+    shader: unshaded
+    noRot: true
+  - type: PointLight
+    color: "#ffd84a"
+    radius: 2
+    energy: 1
+  - type: TimedDespawn
+    lifetime: 3
+
+- type: entity
+  id: WH40KHaloBlast
+  name: corona blast
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Effects/explosion.rsi
+    state: explosionfast
+    scale: 0.8, 0.8
+    drawdepth: Effects
+    noRot: true
+    shader: unshaded
+  - type: TimedDespawn
+    lifetime: 0.48
+  - type: PointLight
+    color: "#ffa733"
+    radius: 2.5
+    energy: 2
+
+- type: entity
+  id: WH40KHoloDecoy
+  name: holographic decoy
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    noRot: true
+    drawdepth: Mobs
+  - type: Wh40kHoloDecoy
+  - type: Clickable
+  - type: InteractionOutline
+  - type: MobCollision
+  - type: GravityAffected
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.35
+        density: 50
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: InputMover
+  - type: MobMover
+  - type: MovementSpeedModifier
+  - type: Damageable
+  - type: HTN
+    rootTask:
+      task: IdleCompound
+    blackboard:
+      IdleRange: !type:Single
+        6
+      MinimumIdleTime: !type:Single
+        0.3
+      MaximumIdleTime: !type:Single
+        1.5
+  - type: TimedDespawn
+    lifetime: 20
+  - type: SpawnOnDespawn
+    prototype: WH40KHoloDecoyPuff
+
+- type: entity
+  id: WH40KHoloDecoyPuff
+  name: holo-field distortion
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Effects/chempuff.rsi
+    state: chempuff
+    drawdepth: Effects
+    shader: unshaded
+    noRot: true
+    scale: 2, 2
+    color: "#a8f4ffcc"
+  - type: PointLight
+    color: "#7fe6ff"
+    radius: 1.5
+    energy: 1
+  - type: TimedDespawn
+    lifetime: 0.25
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/Effects/pop.ogg
+      params:
+        volume: -8
+
+# ============================================================
+# 2. ACTIONS
+# ============================================================
+
+- type: entity
+  id: WH40KActionIatricScan
+  name: Medicae Auspex Readout
+  description: Silently inspect your own vital signs via the internal medicae cogitator.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    checkCanInteract: false
+    icon: { sprite: _WH40K/Augments/implants.rsi, state: iatric_monitor }
+    itemIconStyle: NoItem
+    event: !type:Wh40kIatricScanEvent
+  - type: HealthAnalyzer
+    silent: true
+  - type: UserInterface
+    interfaces:
+      enum.HealthAnalyzerUiKey.Key:
+        type: HealthAnalyzerBoundUserInterface
+  - type: Wh40kIatricScanner
+
+- type: entity
+  id: WH40KActionCycleThermalTint
+  name: Cycle Multispectral Optics
+  description: Cycle Tapetum ocular implants through thermal, green, cyan, and white night vision, then off.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 0.5
+    checkCanInteract: false
+    icon: { sprite: _White/Clothing/Eyes/Goggles/thermal.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kCycleThermalTintEvent
+
+- type: entity
+  id: WH40KActionToggleLeftFingerLighter
+  name: Left Finger Igniter
+  description: Extend or retract the piezo-igniter in your left fingertip.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    icon: { sprite: Objects/Tools/lighters.rsi, state: lighter_flame }
+    itemIconStyle: NoItem
+    event: !type:Wh40kToggleDeployableImplantEvent
+
+- type: entity
+  parent: WH40KActionToggleLeftFingerLighter
+  id: WH40KActionToggleRightFingerLighter
+  name: Right Finger Igniter
+  description: Extend or retract the piezo-igniter in your right fingertip.
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: WH40KActionToggleLeftArmLaser
+  name: Left Forearm Las-Emitter
+  description: Deploy or retract the las-emitter housed in your left forearm.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    icon: { sprite: _WH40K/Augments/arm_laser.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kToggleDeployableImplantEvent
+
+- type: entity
+  parent: WH40KActionToggleLeftArmLaser
+  id: WH40KActionToggleRightArmLaser
+  name: Right Forearm Las-Emitter
+  description: Deploy or retract the las-emitter housed in your right forearm.
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: WH40KActionToggleLeftHandShield
+  name: Left Refractor Shield
+  description: Project or lower the hard-light refractor shield from your left palm.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    icon: { sprite: Objects/Weapons/Melee/e_shield.rsi, state: eshield-on }
+    itemIconStyle: NoItem
+    event: !type:Wh40kToggleDeployableImplantEvent
+
+- type: entity
+  parent: WH40KActionToggleLeftHandShield
+  id: WH40KActionToggleRightHandShield
+  name: Right Refractor Shield
+  description: Project or lower the hard-light refractor shield from your right palm.
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  id: WH40KActionDeployShoulderCannon
+  name: Plasma Servo-Turret
+  description: Deploy or stow your shoulder-mounted plasma turret. While deployed, middle-click to aim and fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    icon: { sprite: _WH40K/Augments/shoulder_cannon.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kToggleShoulderCannonEvent
+
+- type: entity
+  id: WH40KActionHaloBurst
+  name: Corona Frag Ring
+  description: Launch a ring of eight fragmentation charges around yourself while anchored in a brief shield. Holds 2 charges.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    charges: 2
+    icon: { sprite: Objects/Weapons/Grenades/shrapnelgrenade.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kFireBurstLauncherEvent
+
+- type: entity
+  parent: WH40KActionHaloBurst
+  id: WH40KActionHaloStun
+  name: Corona Concussion Ring
+  description: Launch a ring of eight concussion charges around yourself while anchored in a brief shield. Holds 2 charges.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    charges: 2
+    icon: { sprite: Objects/Weapons/Grenades/stingergrenade.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kFireBurstLauncherEvent
+
+- type: entity
+  id: WH40KActionOpticalCamo
+  name: Cameleoline Shroud
+  description: Activate subdermal optical camouflage for 20 seconds. Combat, taking damage, or EMP disrupts it early.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 1
+    icon: { sprite: Objects/Specific/Research/anomalyscanner.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kToggleOpticalCamoEvent
+
+- type: entity
+  id: WH40KActionHoloProject
+  name: Mirage Holo-Doubles
+  description: Project two holographic duplicates across the room and swap positions with one of them.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 90
+    icon: { sprite: _WH40K/Augments/holo_projector.rsi, state: icon }
+    itemIconStyle: NoItem
+    event: !type:Wh40kHoloProjectEvent
+
+# ============================================================
+# 3. INSTALLABLE AUGMENTS — PACKAGE 1: TACTICAL & HUD
+# ============================================================
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentSmartlink
+  name: Shojun targeter-link implant
+  description: A cybernetic palm interface that synchronizes with held firearms, taming recoil, accelerating rounds, and projecting an optical ammo/target-tracking overlay up to 12 tiles. Requires a cybernetic hand.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _Mono/Objects/Misc/cybernetics.rsi
+    state: circuit
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: handSmartlink
+  - type: Wh40kImplantSpec
+    zones: [ LeftHand, RightHand ]
+    requiresSyntheticHost: true
+  - type: Wh40kSmartlink
+
+- type: entity
+  parent: BaseCyberneticEyes
+  id: WH40KAugmentTapetumEyes
+  name: Tapetum multispectral augmetic eyes
+  description: Mechanicus scout optics that cycle with one command between thermal imaging and green, cyan, and white night-vision phosphors. Protects against welding glare, though flashes still blind.
+  components:
+  - type: Augment
+  - type: Wh40kImplantSpec
+    zones: [ Eyes ]
+  - type: Organ
+    slotId: eyes
+    onAdd:
+    - type: EyeProtection
+    - type: ThermalVision
+      toggleAction: null
+    - type: NightVision
+      lightingColor: "#FFFFFF32"
+      goggleEffect: true
+      viewCircleCount: 1
+      viewCircleRadius: 100000
+    - type: Wh40kThermalTints
+      tints:
+      - color: "#ff6a4d"
+        tint: 0.42, 0.12, 0.08
+      - nightVision: true
+        color: "#5cff6e"
+      - nightVision: true
+        color: "#41D7D9"
+      - nightVision: true
+        color: "#FFE4B3"
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentIatricMonitor
+  name: Kanshi internal medicae auspex
+  description: A cranial micro-auspex wired behind the optic nerve that silently displays your own medical telemetry on demand.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/implants.rsi
+    state: iatric_monitor
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: iatricMonitor
+    onAdd:
+    - type: Wh40kIatricMonitor
+  - type: Wh40kImplantSpec
+    zones: [ Head ]
+
+# ============================================================
+# 4. INSTALLABLE AUGMENTS — PACKAGE 2: WEAPONS & DEFENSE
+# ============================================================
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentArmLaser
+  name: Lux-VI forearm las-emitter implant
+  description: A rapid-fire las-emitter built into a cybernetic forearm. Retains charge while stowed and automatically fires in tandem with a second emitter in the opposite arm. Requires a cybernetic arm.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/arm_laser.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: Organ
+    slotId: armLaser
+  - type: Wh40kImplantSpec
+    zones: [ LeftArm, RightArm ]
+    requiresSyntheticHost: true
+  - type: Wh40kArmLaser
+    items: [ WH40KAugmentArmLaserGun ]
+    leftAction: WH40KActionToggleLeftArmLaser
+    rightAction: WH40KActionToggleRightArmLaser
+    keepCharge: true
+    deploySound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+    retractSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentHandShield
+  name: Zaslon refractor palm shield implant
+  description: A palm-mounted hard-light refractor generator projecting a 135-degree barrier (200 capacity) that stops bullets, melee blows, and stun strikes while deflecting lasers. Recharges only while lowered. Requires a cybernetic hand.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/e_shield.rsi
+    state: eshield-icon
+  - type: Item
+    size: Normal
+  - type: Organ
+    slotId: handShield
+  - type: Wh40kImplantSpec
+    zones: [ LeftHand, RightHand ]
+    requiresSyntheticHost: true
+  - type: Wh40kHandShield
+    items: [ WH40KAugmentHandShieldProjector ]
+    leftAction: WH40KActionToggleLeftHandShield
+    rightAction: WH40KActionToggleRightHandShield
+    deploySound: /Audio/Weapons/ebladeon.ogg
+    retractSound: /Audio/Weapons/ebladeoff.ogg
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentShoulderCannon
+  name: Grom plasma servo-turret implant
+  description: A folding shoulder-mounted plasma turret bolted to a cybernetic torso frame, leaving both hands free. Aim and fire with middle-click after a 0.8s charge. Requires a cybernetic chassis.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/shoulder_cannon.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: Organ
+    slotId: shoulderCannon
+    onAdd:
+    - type: Wh40kShoulderCannon
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+    requiresSyntheticHost: true
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentHaloBurst
+  name: Corona fragmentation ring implant
+  description: Sub-thoracic launchers that disperse eight amber fragmentation orbs around the wearer while anchoring them in a 2-second stasis shield. Holds 2 charges with a 3-minute recharge.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/halo_orb.rsi
+    state: orb
+  - type: Item
+    size: Normal
+  - type: Organ
+    slotId: haloBurst
+    onAdd:
+    - type: Wh40kHaloBurst
+      orb: WH40KHaloOrbLethal
+      action: WH40KActionHaloBurst
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentHaloStun
+  name: Corona concussion ring implant
+  description: Sub-thoracic launchers that disperse eight non-lethal concussion orbs dealing heavy stamina shock and knockback while shielding the wearer for 2 seconds. Holds 2 charges with a 3-minute recharge.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/halo_shield.rsi
+    state: shield
+  - type: Item
+    size: Normal
+  - type: Organ
+    slotId: haloStun
+    onAdd:
+    - type: Wh40kHaloStun
+      orb: WH40KHaloOrbStun
+      action: WH40KActionHaloStun
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+
+# ============================================================
+# 5. INSTALLABLE AUGMENTS — PACKAGE 3: STEALTH, HOLO & SURVIVAL
+# ============================================================
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentOpticalCamo
+  name: Kasumi cameleoline subdermal array
+  description: A mesh of light-bending cameleoline cells threaded beneath the skin. Renders the wearer nearly invisible for 20 seconds (60s cooldown; 120s EMP lockout). Broken by attacking, shooting, or taking hostile damage.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Objects/Specific/Research/anomalyscanner.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: opticalCamo
+    onAdd:
+    - type: Wh40kOpticalCamo
+      components:
+      - type: Stealth
+        enabledOnDeath: false
+        enabledOnCrit: false
+      - type: StealthOnMove
+        passiveVisibilityRate: -0.5
+        movementVisibilityRate: 0.6
+        maxInvisibilityPenalty: 0.4
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentHoloProjector
+  name: Mirage holo-decoy projector implant
+  description: Subdermal holo-emitters that project two wandering holographic doubles across the current room and swap you to a safe tile (90s cooldown). Doubles have no thermal signature and vanish on any hit.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/holo_projector.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: holoProjector
+    onAdd:
+    - type: Wh40kHoloProjector
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentAdrenalBooster
+  name: Ryvok adrenal combat injector
+  description: "Wired directly into organic adrenal glands: increases stamina pool and recovery, and triggers a 1.5-second second-wind surge to shake off stamina knockdowns (2-minute cooldown). Requires an organic body."
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _Mono/Objects/Misc/cybernetics.rsi
+    state: muscule
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: adrenalBooster
+    onAdd:
+    - type: Wh40kAdrenalBooster
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+    requiresOrganicHost: true
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentReflexBooster
+  name: Strizh synaptic reflex booster
+  description: "Accelerates spinal nerve pathways: improves piloted vessel thrust and turn rate by 15% and gives a 5% chance to evade incoming projectiles, at the cost of 5% higher damage sensitivity."
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/reflex_booster.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: headReflexBooster
+    onAdd:
+    - type: Wh40kReflexBooster
+  - type: Wh40kImplantSpec
+    zones: [ Head ]
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentThreatSole
+  name: Sapyor threat-sense sole implant
+  description: Sub-dermal pressure and magnetic sensors fitted into the sole of a foot that prevent mines, tripwires, and floor traps from triggering underfoot.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _Mono/Objects/Misc/cybernetics.rsi
+    state: circuit
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: footSensor
+    onAdd:
+    - type: TrapAvoider
+  - type: Wh40kImplantSpec
+    zones: [ LeftFoot, RightFoot ]
+
+- type: entity
+  parent: OrganHumanLiver
+  id: WH40KAugmentScrubberLiver
+  name: Mechanicus filtration liver implant
+  description: A synthetic bio-filtration liver that clears alcohol, poisons, and narcotics from the bloodstream four times faster than natural tissue. Requires an organic body.
+  components:
+  - type: Augment
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/implants.rsi
+    state: scrubber_liver
+  - type: Item
+    sprite: Mobs/Species/Human/organs.rsi
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+    requiresOrganicHost: true
+  - type: Metabolizer
+    maxReagents: 3
+    metabolizerTypes: [ Human ]
+    groups:
+    - id: Alcohol
+      rateModifier: 4
+    - id: Poison
+      rateModifier: 4
+    - id: Narcotic
+      rateModifier: 4
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentNutrimentPump
+  name: Paek nutrient micro-pump implant
+  description: A compact nutrient dispenser grafted beside the stomach that automatically feeds you when starving. Requires an organic body.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/implants.rsi
+    state: nutriment_pump
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: nutrimentPump
+    onAdd:
+    - type: Wh40kNutrimentPump
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+    requiresOrganicHost: true
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentFingerLighter
+  name: Iskra fingertip piezo-igniter implant
+  description: A miniature piezo-electric igniter embedded in a fingertip, deployable into your hand at will.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: Objects/Tools/lighters.rsi
+    state: lighter_flame
+  - type: Item
+    size: Tiny
+  - type: Organ
+    slotId: handLighter
+  - type: Wh40kImplantSpec
+    zones: [ LeftHand, RightHand ]
+  - type: Wh40kFingerLighter
+    items: [ WH40KAugmentFingerLighterFlame ]
+    leftAction: WH40KActionToggleLeftFingerLighter
+    rightAction: WH40KActionToggleRightFingerLighter
+
+- type: entity
+  parent: BaseHeretekAugment
+  id: WH40KAugmentReviver
+  name: Phoenix cardiac auto-reviver implant
+  description: An internal Mechanicus defibrillator wired directly to the heart. Upon death, arrests bleeding, infuses a 60u blood reserve, and delivers up to three revival shocks (10-minute recharge; 2-minute EMP lockout). Requires an organic body.
+  components:
+  - type: Cybernetics
+  - type: Sprite
+    sprite: _WH40K/Augments/implants.rsi
+    state: reviver
+  - type: Item
+    size: Small
+  - type: Organ
+    slotId: cardiacReviver
+    onAdd:
+    - type: Wh40kReviver
+  - type: Wh40kImplantSpec
+    zones: [ Core ]
+    requiresOrganicHost: true

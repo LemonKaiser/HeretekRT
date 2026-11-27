@@ -1,0 +1,21 @@
+- type: entity
+  id: WH40KBoxSurvivalCybernetic
+  parent: BoxCardboard
+  name: chassis emergency kit
+  description: A spare power cell and tools for basic field repairs.
+  components:
+  - type: StorageFill
+    contents:
+    - id: PowerCellMedium
+    - id: WelderMini
+    - id: CableApcStack10
+    - id: Flare
+
+- type: loadout
+  id: WH40KSurvivalCybernetic
+  effects:
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Cybernetic]
+  storage:
+    back:
+    - WH40KBoxSurvivalCybernetic

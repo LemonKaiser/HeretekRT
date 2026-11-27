@@ -30,6 +30,9 @@ public abstract partial class SharedAiRemoteControlSystem : EntitySystem
         if (!TryComp<AiRemoteControllerComponent>(entity, out var remoteComp))
             return;
 
+        if (remoteComp.AiHolder is { } holder && TerminatingOrDeleted(holder))
+            return;
+
         if (remoteComp?.AiHolder == null
             || !_stationAiSystem.TryGetCore(remoteComp.AiHolder.Value, out var stationAiCore)
             || stationAiCore.Comp?.RemoteEntity == null)

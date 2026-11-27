@@ -72,6 +72,7 @@ public sealed partial class GunSystem : SharedGunSystem
         SubscribeLocalEvent<AutoShootGunComponent, ExaminedEvent>(OnGunExamine); // Frontier
         SubscribeLocalEvent<AutoShootGunComponent, PowerChangedEvent>(OnPowerChange); // Frontier
         SubscribeLocalEvent<AutoShootGunComponent, AnchorStateChangedEvent>(OnAnchorChange); // Frontier
+        InitializeTargetAssign();
 
         _autoShootGunQuery = GetEntityQuery<AutoShootGunComponent>(); // Mono
         _damageableQuery = GetEntityQuery<DamageableComponent>(); // Mono

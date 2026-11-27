@@ -6,6 +6,10 @@ public enum PersistentInventoryRootKind
 {
     Hand = 0,
     InventorySlot = 1,
+    BodyPart = 2,
+    BodyOrgan = 3,
+    SubdermalImplant = 4,
+    ChassisCell = 5,
 }
 
 public sealed record PersistentInventoryRoot(
@@ -34,13 +38,19 @@ public sealed record PersistentInventoryEntityState(
     IReadOnlyList<PersistentInventoryComponentState> Components,
     IReadOnlyList<PersistentInventoryChild> Children);
 
+public sealed record PersistentInventoryChassisState(
+    bool CaptureCellSlot,
+    IReadOnlyList<string> EmptyLimbSlots,
+    bool CollectorRemoved);
+
 public sealed record PersistentInventoryPayload(
     int SchemaVersion,
     long CapturedAtUnixMilliseconds,
     string PolicyId,
     int PolicyVersion,
     IReadOnlyList<PersistentInventoryRoot> Roots,
-    IReadOnlyList<PersistentInventoryEntityState> Entities);
+    IReadOnlyList<PersistentInventoryEntityState> Entities,
+    PersistentInventoryChassisState? Chassis = null);
 
 public sealed record PersistentInventoryLimits(
     int MaxRoots = 64,

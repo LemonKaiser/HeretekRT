@@ -247,13 +247,13 @@ public sealed partial class BorgSystem : SharedBorgSystem
             Toggle.TryActivate(uid);
         }
 
-        UpdateUI(uid, component);
+        Wh40kUpdateChargeUi(uid, component);
     }
 
     private void OnPowerCellSlotEmpty(EntityUid uid, BorgChassisComponent component, ref PowerCellSlotEmptyEvent args)
     {
         Toggle.TryDeactivate(uid);
-        UpdateUI(uid, component);
+        Wh40kUpdateChargeUi(uid, component);
     }
 
     private void OnGetDeadIC(EntityUid uid, BorgChassisComponent component, ref GetCharactedDeadIcEvent args)

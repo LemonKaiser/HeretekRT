@@ -79,6 +79,10 @@
         type: BorgSelectTypeUserInterface
       enum.RadarConsoleUiKey.Key: # Mono
         type: RadarConsoleBoundUserInterface
+      enum.PdaUiKey.Key:
+        type: PdaBoundUserInterface
+      enum.RingerUiKey.Key:
+        type: RingerBoundUserInterface
   - type: ActivatableUI
     key: enum.BorgUiKey.Key
   - type: SiliconLawBound
@@ -108,6 +112,12 @@
     - Traffic
     - Common
     - Science
+  - type: EncryptionKeyHolder
+    keySlots: 8
+    examineWhileLocked: false
+    keysExtractionMethod: Cutting
+    keysUnlocked: false
+  - type: Wh40kBorgRadioKeys
   - type: CollectiveMind
     channels:
     - Binary
@@ -131,14 +141,79 @@
       cell_slot: !type:ContainerSlot { }
       borg_module: !type:Container { }
       part-container: !type:Container
+      program-container: !type:Container
   - type: PowerCellSlot
     cellSlotId: cell_slot
     fitsInCharger: true
+  - type: BatteryDrinker
+    drinkSpeed: 2
+  - type: BankAccount
+  - type: Strap
+    position: Stand
+    buckleOffset: "0, 0.25"
+    buckleOnInteractHand: false
+  - type: Pda
+    idSlot:
+      locked: true
+    penSlot:
+      locked: true
+    paiSlot:
+      locked: true
+  - type: Wh40kBorgPda
+  - type: Ringer
+  - type: CartridgeLoader
+    uiKey: enum.PdaUiKey.Key
+    preinstalled:
+    - Wh40kPlayerCartridge
+    - Wh40kPartyCartridge
+    - Wh40kFactionCartridge
+    - Wh40kClassCartridge
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NewsReaderCartridge
+    - BountyContractsCartridge
+    - AstroNavCartridge
+    cartridgeSlot:
+      locked: true
+      priority: -1
+      name: device-pda-slot-component-slot-name-cartridge
+      whitelist:
+        components:
+        - Cartridge
   - type: ItemToggle
     onActivate: false # You should not be able to turn off a borg temporarily.
     activated: false # gets activated when a mind is added
     onUse: false # no item-borg toggling sorry
-  #- type: ItemTogglePointLight # Mono - Light removal PR: Borg Adjustments
+  - type: ItemTogglePointLight
+  - type: HandheldLight
+    toggleOnInteract: false
+    wattage: 0.2
+    blinkingBehaviourId: blinking
+    radiatingBehaviourId: radiating
+  - type: LightBehaviour
+    behaviours:
+    - !type:FadeBehaviour
+      id: radiating
+      maxDuration: 2.0
+      startValue: 3.0
+      endValue: 2.0
+      isLooped: true
+      reverseWhenFinished: true
+    - !type:PulseBehaviour
+      id: blinking
+      interpolate: Nearest
+      maxDuration: 1.0
+      minValue: 0.1
+      maxValue: 2.0
+      isLooped: true
+  - type: ToggleableVisuals
+    spriteLayer: light
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 4
+    netsync: false
   - type: NightVision # Gen 3 wide-quadtube
     relayOverlay: false
     goggleEffect: true
@@ -175,6 +250,29 @@
     - Sigh
     - Crying
     - Whistle
+    - Meow
+    - Hiss
+    - Mew
+    - Purr
+    - Growl
+    - Bark
+    - Snarl
+    - Whine
+    - Howl
+    - Awoo
+    - BorgHarpyHonk
+    - HarpyRing
+    - HarpyPew
+    - HarpyBang
+    - BorgHarpyBeep
+    - HarpyRev
+    - HarpyCaw
+    - Squish
+    - Chitter
+    - Squeak
+    - Click
+    - Belch
+    - Bagawk
   - type: Vocal
     sounds:
       Unsexed: UnisexSilicon
@@ -220,6 +318,7 @@
         - borg_brain
         - borg_module
         - cell_slot
+        - key_slots
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
   #- type: HandheldLight # Mono - Light removal PR: Borg Adjustments
@@ -289,6 +388,8 @@
     uis:
       enum.RadarConsoleUiKey.Key:
         toggleAction: ActionObserverShowRadar
+      enum.PdaUiKey.Key:
+        toggleAction: Wh40kActionBorgOpenPda
   - type: RadarConsole
     followEntity: true
     noRotate: true
@@ -425,6 +526,29 @@
     - Crying
     - Whistle
     # end Goobstation - Cyborg emote sounds
+    - Meow
+    - Hiss
+    - Mew
+    - Purr
+    - Growl
+    - Bark
+    - Snarl
+    - Whine
+    - Howl
+    - Awoo
+    - BorgHarpyHonk
+    - HarpyRing
+    - HarpyPew
+    - HarpyBang
+    - BorgHarpyBeep
+    - HarpyRev
+    - HarpyCaw
+    - Squish
+    - Chitter
+    - Squeak
+    - Click
+    - Belch
+    - Bagawk
   - type: Vocal
     sounds:
       Unsexed: UnisexSiliconSyndicate

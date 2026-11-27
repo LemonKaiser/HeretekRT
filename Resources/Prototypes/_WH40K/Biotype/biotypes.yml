@@ -1,0 +1,105 @@
+- type: damageModifierSet
+  id: Wh40kCyberneticMechanicus
+  coefficients:
+    Blunt: 0.85
+    Slash: 0.9
+    Piercing: 0.95
+    Heat: 1.15
+    Shock: 1.6
+    Cold: 0.2
+    Poison: 0
+    Radiation: 0.5
+
+- type: wh40kBiotype
+  id: Wh40kBiotypeCybernetic
+  biotype: Cybernetic
+  bodyPrototype: WH40KCyberneticMechanicus
+  startingPowerCell: PowerCellMedium
+  removeComponents:
+  - Hunger
+  - Thirst
+  - Respirator
+  - Barotrauma
+  - Perishable
+  - Butcherable
+  - PassiveDamage
+  - ThermalRegulator
+  - EmitSoundOnInternalsActive
+  - Bloodstream
+  - TemperatureSpeed
+  ensureComponents:
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        locked: true
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+        whitelist:
+          components:
+          - PowerCell
+        blacklist:
+          tags:
+          - PowerCage
+  addComponents:
+  - type: Damageable
+    damageContainer: Silicon
+    damageModifierSet: Wh40kCyberneticMechanicus
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+    fitsInCharger: true
+  - type: PowerCellDraw
+    drawRate: 0
+    enabled: false
+  - type: Silicon
+    entityType: enum.SiliconType.Player
+    batteryPowered: true
+    drainPerSecond: 0.45
+    chargeThresholdMid: 0.80
+    chargeThresholdLow: 0.35
+    chargeThresholdCritical: 0.10
+    speedModifierThresholds:
+      4: 1
+      3: 1
+      2: 0.80
+      1: 0.45
+      0: 0.25
+  - type: SiliconEmitSoundOnDrained
+    sound: "/Audio/_Goobstation/Voice/IPC/energy_low.ogg"
+    minInterval: 8
+    maxInterval: 12
+    popUp: "silicon-power-low"
+  - type: SiliconDownOnDead
+  - type: BatteryDrinker
+  - type: DeadStartupButton
+    sound:
+      path: /Audio/_EinsteinEngines/Effects/Silicon/startup.ogg
+  - type: WeldingHealable
+  - type: ZombieImmune
+  - type: EmitBuzzWhileDamaged
+  - type: DamagedSiliconAccent
+  - type: TypingIndicator
+    proto: robot
+  - type: EncryptionKeyHolder
+    keySlots: 8
+    examineWhileLocked: false
+    keysExtractionMethod: Cutting
+    keysUnlocked: false
+  - type: ActiveRadio
+  - type: IntrinsicRadioReceiver
+  - type: IntrinsicRadioTransmitter
+  - type: Lock
+    locked: true
+    lockOnClick: false
+    unlockOnClick: false
+    lockTime: 5
+    unlockTime: 5
+  - type: BatterySlotRequiresLock
+    itemSlot: cell_slot
+  - type: EncryptionHolderRequiresLock
+  - type: RangedDamageSound
+    soundGroups:
+      Brute:
+        collection: MetalBulletImpact
+    soundTypes:
+      Heat:
+        collection: MetalLaserImpact

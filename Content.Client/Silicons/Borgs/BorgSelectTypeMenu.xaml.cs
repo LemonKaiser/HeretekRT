@@ -38,7 +38,11 @@ public sealed partial class BorgSelectTypeMenu : FancyWindow
         HelpGuidebookIds = GuidebookEntries;
 
         SubtypeSelection.SubtypeSelected += () =>
+        {
             ConfirmTypeButton.Disabled = false;
+            if (SubtypeSelection.SelectedBorgSubtype is { } selected)
+                ChassisView.SetPrototype(selected.DummyPrototype);
+        };
     }
 
     //  foreach (var borgType in _prototypeManager.EnumeratePrototypes<BorgTypePrototype>().OrderBy(PrototypeName))

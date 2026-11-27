@@ -15,13 +15,6 @@ public sealed class SensorsArcDisplay : Control
     private static readonly Color DatalinkColor = Color.FromHex("#FFAA33");
     private static readonly Color IlluminatorColor = Color.FromHex("#4488FF");
 
-    public SensorsArcDisplay()
-    {
-        MinSize = new Vector2(180, 180);
-        HorizontalExpand = false;
-        VerticalExpand = false;
-    }
-
     public void Update(
         IEnumerable<SensorHardwareDto> hardware,
         IEnumerable<SensorContactDto> contacts,

@@ -47,6 +47,7 @@
     slotId: powerCell
     onAdd:
     - type: HasAugmentPowerCellSlot
+    - type: BatteryDrinker
   - type: AugmentPowerCellSlot
   - type: ContainerContainer
     containers:

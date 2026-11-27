@@ -6,6 +6,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Server._WH40K.Cyborgs;
 using Content.Shared.Radio.Components;
 using Content.Server.Silicons.Laws;
 using Content.Shared._CorvaxNext.Silicons.Borgs;
@@ -33,6 +34,7 @@ public sealed partial class AiRemoteControlSystem : SharedAiRemoteControlSystem
     [Dependency] private SharedTransformSystem _xformSystem = default!;
 
     [Dependency] private IMapManager _map = default!; // Mono
+    [Dependency] private Wh40kAiRemoteLinkSystem _aiLink = default!;
 
     public override void Initialize()
     {
@@ -107,8 +109,8 @@ public sealed partial class AiRemoteControlSystem : SharedAiRemoteControlSystem
         if (!TryComp<AiRemoteControllerComponent>(entity, out var aiRemoteComp))
             return;
 
-        if (!_map.TryFindGridAt(Transform(ai).MapPosition, out var grid, out var _) || Transform(entity).GridUid != grid)
-            return; // Mono no controlling borgs outside the ai's grid.
+        if (!_aiLink.CanReach(ai, entity))
+            return;
 
         if (TryComp(entity, out IntrinsicRadioTransmitterComponent? transmitter))
         {
@@ -129,6 +131,7 @@ public sealed partial class AiRemoteControlSystem : SharedAiRemoteControlSystem
         _mind.ControlMob(ai, entity);
         aiRemoteComp.AiHolder = ai;
         aiRemoteComp.LinkedMind = mindId;
+        _aiLink.Link(ai, entity);
 
         stationAiHeldComp.CurrentConnectedEntity = entity;
 
@@ -154,7 +157,7 @@ public sealed partial class AiRemoteControlSystem : SharedAiRemoteControlSystem
 
         while (query.MoveNext(out var queryUid, out var comp))
         {
-            if (Transform(queryUid).GridUid != aiGrid)
+            if (!_aiLink.CanReach(uid, queryUid))
                 continue;
             var data = new RemoteDevicesData
             {

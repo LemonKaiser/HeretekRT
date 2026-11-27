@@ -1,3 +1,4 @@
+using Content.Shared.Actions;
 using Content.Shared.Gravity;
 using Content.Shared.Movement.Components;
 using Content.Shared.Throwing;
@@ -10,12 +11,26 @@ public sealed partial class SharedJumpAbilitySystem : EntitySystem
     [Dependency] private ThrowingSystem _throwing = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedGravitySystem _gravity = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<JumpAbilityComponent, GravityJumpEvent>(OnGravityJump);
+        SubscribeLocalEvent<JumpAbilityComponent, MapInitEvent>(OnInit);
+        SubscribeLocalEvent<JumpAbilityComponent, ComponentShutdown>(OnShutdown);
+    }
+
+    private void OnInit(Entity<JumpAbilityComponent> entity, ref MapInitEvent args)
+    {
+        if (entity.Comp.Action is { } action)
+            _actions.AddAction(entity, ref entity.Comp.ActionEntity, action);
+    }
+
+    private void OnShutdown(Entity<JumpAbilityComponent> entity, ref ComponentShutdown args)
+    {
+        _actions.RemoveAction(entity.Owner, entity.Comp.ActionEntity);
     }
 
     private void OnGravityJump(Entity<JumpAbilityComponent> entity, ref GravityJumpEvent args)

@@ -37,6 +37,7 @@ wh40k-augment-bed-zone-lefthand = Левая кисть
 wh40k-augment-bed-zone-righthand = Правая кисть
 wh40k-augment-bed-zone-leftfoot = Левая стопа
 wh40k-augment-bed-zone-rightfoot = Правая стопа
+wh40k-augment-bed-zone-head = Голова
 wh40k-augment-bed-installed = Установленные аугментации
 wh40k-augment-bed-compatible = Модели для этой зоны
 wh40k-augment-bed-no-catalogue = Для этой зоны пока нет совместимых моделей.

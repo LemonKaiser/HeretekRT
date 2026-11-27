@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._WH40K.Biotype;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
@@ -37,6 +38,13 @@ public sealed partial class DamageVisualsSystem : VisualizerSystem<DamageVisuals
 
     private void InitializeEntity(EntityUid entity, DamageVisualsComponent comp, ComponentInit args)
     {
+        if (TryComp<Wh40kBiotypeComponent>(entity, out var biotype) &&
+            biotype.Biotype == Wh40kBiotype.Cybernetic)
+        {
+            comp.Valid = false;
+            return;
+        }
+
         VerifyVisualizerSetup(entity, comp);
 
         if (!comp.Valid)

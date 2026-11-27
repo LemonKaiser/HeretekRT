@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Content.Server._WH40K.Augments.Combat;
 using Content.Server._WH40K.ItemRarity;
 using Content.Server._WH40K.Progression;
 using Content.Server.Charges.Systems;
@@ -19,6 +20,8 @@ using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared._Mono.Company;
 using Content.Shared._Mono.Fuel;
 using Content.Shared._FinalHorizon.Guns.AlternateGun;
+using Content.Shared._WH40K.Augments.Combat;
+using Content.Shared._WH40K.Synthetics;
 using Content.Shared._WH40K.ItemRarity.Components;
 using Content.Shared._WH40K.ItemRarity.Prototypes;
 using Content.Shared.Access;
@@ -711,6 +714,79 @@ public sealed class BatteryItemStateAdapter : IItemStateAdapter
         _batteries.SetCharge(uid, charge, battery);
         error = null;
         return true;
+    }
+}
+
+public sealed class ArmLaserItemStateAdapter(IEntityManager entities, Wh40kDeployableImplantSystem implants) : IItemStateAdapter
+{
+    public string ComponentId => "Wh40kArmLaser";
+
+    public bool Handles(IComponent component) => component is Wh40kArmLaserComponent;
+
+    public bool TryCapture(EntityUid uid, IComponent component, out PersistentInventoryComponentState state, out string? error)
+    {
+        state = implants.GetPersistentCharge((Wh40kArmLaserComponent) component) is { } charge
+            ? StackItemStateAdapter.State(ComponentId, ("chargeBits", BitConverter.SingleToInt32Bits(charge).ToString(CultureInfo.InvariantCulture)))
+            : StackItemStateAdapter.State(ComponentId);
+        error = null;
+        return true;
+    }
+
+    public bool TryRestore(EntityUid uid, PersistentInventoryComponentState state, out string? error)
+    {
+        error = null;
+        if (state.Fields.Count == 0)
+            return true;
+
+        if (StackItemStateAdapter.TrySingleInt(state, "chargeBits", out var bits) &&
+            entities.TryGetComponent(uid, out Wh40kArmLaserComponent? laser) &&
+            implants.TryRestorePersistentCharge(laser, BitConverter.Int32BitsToSingle(bits)))
+            return true;
+
+        error = "Forearm las-emitter charge is outside prototype limits.";
+        return false;
+    }
+}
+
+public sealed class RadCollectorItemStateAdapter(IEntityManager entities) : IItemStateAdapter
+{
+    public string ComponentId => "Wh40kRadCollector";
+
+    public bool Handles(IComponent component) => component is Wh40kRadCollectorComponent;
+
+    public bool TryCapture(EntityUid uid, IComponent component, out PersistentInventoryComponentState state, out string? error)
+    {
+        var collector = (Wh40kRadCollectorComponent) component;
+        state = StackItemStateAdapter.State(
+            ComponentId,
+            ("charge", collector.Charge.ToString("R", CultureInfo.InvariantCulture)),
+            ("integrity", collector.Integrity.ToString("R", CultureInfo.InvariantCulture)));
+        error = null;
+        return true;
+    }
+
+    public bool TryRestore(EntityUid uid, PersistentInventoryComponentState state, out string? error)
+    {
+        error = "Radiation collector state is outside prototype limits.";
+        if (!entities.TryGetComponent(uid, out Wh40kRadCollectorComponent? collector) ||
+            state.Fields.Count != 2 ||
+            !TryRead(state, "charge", collector.Capacity, out var charge) ||
+            !TryRead(state, "integrity", collector.MaxIntegrity, out var integrity))
+            return false;
+
+        collector.Charge = charge;
+        collector.Integrity = integrity;
+        entities.Dirty(uid, collector);
+        error = null;
+        return true;
+    }
+
+    private static bool TryRead(PersistentInventoryComponentState state, string key, float maximum, out float value)
+    {
+        value = default;
+        return state.Fields.TryGetValue(key, out var raw) &&
+            float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out value) &&
+            float.IsFinite(value) && value >= 0f && value <= maximum;
     }
 }
 

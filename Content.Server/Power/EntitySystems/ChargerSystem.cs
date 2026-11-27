@@ -14,6 +14,7 @@ using Robust.Server.Containers;
 using Content.Shared.Whitelist;
 using Content.Shared.Inventory;
 using Content.Shared._Goobstation.Clothing.Systems;
+using Content.Shared._WH40K.Augments;
 using Content.Server._NF.Power.Components; // Frontier
 
 namespace Content.Server.Power.EntitySystems;
@@ -350,6 +351,15 @@ public sealed partial class ChargerSystem : SharedChargerSystem
         // try get battery by checking for a power cell slot on the inserted entity
         if (_powerCell.TryGetBatteryFromSlot(uid, out batteryUid, out component))
             return true;
+
+        var drinkerEv = new GetDrinkerBatteryEvent();
+        RaiseLocalEvent(uid, ref drinkerEv);
+        if (drinkerEv.Battery is { } augmentBattery)
+        {
+            batteryUid = augmentBattery.Owner;
+            component = augmentBattery.Comp;
+            return true;
+        }
 
         if (TryComp<InventoryComponent>(uid, out var inventory))
         {

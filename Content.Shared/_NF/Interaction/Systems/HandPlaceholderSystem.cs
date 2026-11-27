@@ -8,6 +8,7 @@ using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Shared._NF.Interaction.Systems;
@@ -24,6 +25,7 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
     [Dependency] private MetaDataSystem _metadata = default!;
     [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public readonly EntProtoId<HandPlaceholderComponent> Placeholder = "HandPlaceholder";
 
@@ -108,11 +110,17 @@ public sealed partial class HandPlaceholderSystem : EntitySystem
 
     private void OnEntityRemovedFromContainer(Entity<HandPlaceholderRemoveableComponent> ent, ref EntGotRemovedFromContainerMessage args)
     {
+        if (_timing.ApplyingState)
+            return;
+
         SwapPlaceholder(ent, args.Container);
     }
 
     private void OnPlaceholderRemovedFromContainer(Entity<HandPlaceholderComponent> ent, ref EntGotRemovedFromContainerMessage args)
     {
+        if (_timing.ApplyingState)
+            return;
+
         if (TerminatingOrDeleted(ent))
             RemoveEmptyHand(args.Container);
     }

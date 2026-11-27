@@ -20,6 +20,7 @@ public abstract partial class SharedIdCardSystem : EntitySystem
     [Dependency] private InventorySystem _inventorySystem = default!;
     [Dependency] private MetaDataSystem _metaSystem = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private Content.Shared._WH40K.Cyborgs.Wh40kBorgIdCardSystem _wh40kBorgCards = default!;
 
     public override void Initialize()
     {
@@ -106,6 +107,13 @@ public abstract partial class SharedIdCardSystem : EntitySystem
         && TryComp(pda.ContainedId, out idCardComp))
         {
             idCard = (pda.ContainedId.Value, idCardComp);
+            return true;
+        }
+
+        if (_wh40kBorgCards.TryGetCard(uid, out var borgCard)
+            && TryComp(borgCard, out idCardComp))
+        {
+            idCard = (borgCard, idCardComp);
             return true;
         }
 

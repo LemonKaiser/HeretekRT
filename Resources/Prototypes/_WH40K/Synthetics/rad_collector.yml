@@ -1,0 +1,25 @@
+- type: entity
+  id: WH40KOrganRadCollector
+  parent: BaseIPCOrgan
+  name: radiation collector
+  description: A shielded Mechanicus capacitor stack installed inside a cybernetic torso. Absorbs ambient radiation up to 300 rads; remove via the chassis bay to vent or weld to restore integrity.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: super_capacitor
+  - type: Organ
+    slotId: radcollector
+  - type: Wh40kImplantSpec
+    zones: [Core]
+    requiresSyntheticHost: true
+  - type: Wh40kRadCollector
+
+- type: latheRecipe
+  parent: BaseRoboticsRecipe
+  id: WH40KOrganRadCollector
+  result: WH40KOrganRadCollector
+  completetime: 4
+  materials:
+    Steel: 400
+    Glass: 200
+    Gold: 100

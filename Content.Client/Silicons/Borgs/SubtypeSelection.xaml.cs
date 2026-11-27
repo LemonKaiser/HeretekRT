@@ -34,6 +34,8 @@ public partial class SubtypeSelection : Control
         {
             var button = new Button();
             button.Group = group;
+            if (_prototype.TryIndex(borgSubtype.DummyPrototype, out var dummyProto))
+                button.ToolTip = dummyProto.Name;
             button.OnPressed += _ =>
             {
                 SelectedBorgSubtype = borgSubtype;

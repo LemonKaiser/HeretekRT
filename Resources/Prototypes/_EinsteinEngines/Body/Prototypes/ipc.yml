@@ -19,6 +19,7 @@
       organs:
         posbrain: PositronicBrain
         pump: OrganIPCPump
+        radcollector: WH40KOrganRadCollector
     right arm:
       part: RightArmIPC
       connections:

@@ -23,6 +23,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Content.Shared.Sticky.Components;
 using Content.Server._Mono.Overwatch.Components;
+using Content.Server._WH40K.Cyborgs;
 using Content.Shared.Sticky;
 
 namespace Content.Server._Rat.Overwatch;
@@ -60,6 +61,7 @@ public sealed class OverwatchSystem : EntitySystem
     [Dependency] private IChatManager _chatManager = default!;
     [Dependency] private SharedTransformSystem _transformSystem = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private Wh40kAiOverwatchSystem _wh40kAiOverwatch = default!;
 
     /// <summary>
     /// Пары наблюдения: watcher -> target.
@@ -511,10 +513,12 @@ public sealed class OverwatchSystem : EntitySystem
         var watchingCompActor = EnsureComp<RatOverwatchWatchingComponent>(actor);
         watchingCompActor.Watching = target;
         watchingCompActor.Console = ent.Owner;
+        Dirty(actor, watchingCompActor);
 
         _watchingPairs[actor] = target;
 
         _eyeSystem.SetTarget(actor, target);
+        _wh40kAiOverwatch.LimitZoom(actor);
         _viewSubscriberSystem.AddViewSubscriber(target, actorComp.PlayerSession);
     }
 
@@ -556,10 +560,11 @@ public sealed class OverwatchSystem : EntitySystem
             _viewSubscriberSystem.RemoveViewSubscriber(target, actorComp.PlayerSession);
         }
 
-        _eyeSystem.SetTarget(watcher, null);
+        _eyeSystem.SetTarget(watcher, _wh40kAiOverwatch.ReleaseTarget(watcher));
         _watchingPairs.Remove(watcher);
         watchingComp.Watching = null;
         watchingComp.Console = null;
+        Dirty(watcher, watchingComp);
     }
 
     /// <summary>
@@ -588,7 +593,7 @@ public sealed class OverwatchSystem : EntitySystem
             _viewSubscriberSystem.RemoveViewSubscriber(target, actorComp.PlayerSession);
         }
 
-        _eyeSystem.SetTarget(ent.Owner, null);
+        _eyeSystem.SetTarget(ent.Owner, _wh40kAiOverwatch.ReleaseTarget(ent.Owner));
         _watchingPairs.Remove(ent.Owner);
         ent.Comp.Console = null;
     }

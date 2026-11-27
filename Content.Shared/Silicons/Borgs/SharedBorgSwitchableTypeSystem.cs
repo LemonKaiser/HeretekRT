@@ -96,6 +96,14 @@ public abstract partial class SharedBorgSwitchableTypeSystem : EntitySystem
     // Implementation
     //
 
+    public void SelectType(
+        Entity<BorgSwitchableTypeComponent> ent,
+        ProtoId<BorgTypePrototype> borgType,
+        ProtoId<BorgSubtypePrototype> borgSubtype)
+    {
+        SelectBorgModule(ent, borgType, borgSubtype);
+    }
+
     protected virtual void SelectBorgModule(
         Entity<BorgSwitchableTypeComponent> ent,
         ProtoId<BorgTypePrototype> borgType,
@@ -111,6 +119,9 @@ public abstract partial class SharedBorgSwitchableTypeSystem : EntitySystem
         Dirty(ent);
         if (subtype != null)
             Dirty(ent.Owner, subtype);
+
+        var selected = new Content.Shared._WH40K.Cyborgs.Wh40kBorgTypeSelectedEvent(borgType);
+        RaiseLocalEvent(ent, ref selected);
 
         UpdateEntityAppearance(ent);
     }

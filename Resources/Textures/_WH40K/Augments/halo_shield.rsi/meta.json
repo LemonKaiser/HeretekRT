@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Drawn for Wolfgate by Tools/_WG/Augments/build_halo_sprites.py",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "shield",
+      "delays": [
+        [
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.08,
+          0.08
+        ]
+      ]
+    }
+  ]
+}

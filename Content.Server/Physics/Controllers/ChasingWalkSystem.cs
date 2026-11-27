@@ -96,10 +96,41 @@ public sealed partial class ChasingWalkSystem : VirtualController
         var pos1 = _transform.GetWorldPosition(uid);
         var pos2 = _transform.GetWorldPosition(component.ChasingEntity.Value);
 
-        var delta = pos2 - pos1;
-        var speed = delta.Length() > 0 ? delta.Normalized() * component.Speed : Vector2.Zero;
+        var currentDirection = _physics.GetLinearVelocity(uid, Vector2.Zero);
+        var targetVector = pos2 - pos1;
+
+        Angle newDirection;
+        if (currentDirection.LengthSquared() < 0.0001f)
+        {
+            newDirection = targetVector.ToAngle();
+        }
+        else
+        {
+            var angleToChange = targetVector.ToAngle() - currentDirection.ToAngle();
+
+            if (angleToChange > Angle.FromDegrees(180))
+                angleToChange -= Angle.FromDegrees(360);
+            else if (angleToChange < Angle.FromDegrees(-180))
+                angleToChange += Angle.FromDegrees(360);
+
+            angleToChange = Math.Clamp(angleToChange,
+                -component.MaxAngleVectorChangePerImpulse,
+                component.MaxAngleVectorChangePerImpulse);
+
+            newDirection = currentDirection.ToAngle() + angleToChange;
+        }
+
+        var speed = !component.StopAtTarget || targetVector.Length() > 0
+            ? newDirection.ToVec() * component.Speed
+            : Vector2.Zero;
 
         _physics.SetLinearVelocity(uid, speed);
         _physics.SetBodyStatus(uid, physics, BodyStatus.InAir); //If this is not done, from the explosion up close, the tesla will "Fall" to the ground, and almost stop moving.
+
+        if (component.RotateWithImpulse && speed.LengthSquared() > 0.0001f)
+        {
+            var ang = speed.ToAngle() + Angle.FromDegrees(90);
+            _transform.SetWorldRotation(uid, ang + component.RotationAngleOffset);
+        }
     }
 }

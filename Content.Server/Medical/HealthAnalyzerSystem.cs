@@ -23,7 +23,10 @@ using Content.Server._NF.Traits.Assorted; // Frontier
 // Shitmed Change
 using Content.Shared.Body.Part;
 using Content.Shared.Body.Systems;
+using Content.Shared._Shitmed.BodyEffects.Subsystems;
 using Content.Shared._Shitmed.Targeting;
+using Content.Shared._WH40K.Augments;
+using Content.Shared.Implants.Components;
 using System.Linq;
 
 namespace Content.Server.Medical;
@@ -40,6 +43,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
 
     public override void Initialize()
     {
@@ -288,6 +292,8 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
         if (TryComp<UncloneableComponent>(target, out var uncloneableComp) && uncloneableComp.Analyzable) // Frontier
             uncloneable = true; // Frontier
 
+        var installedAugments = CollectInstalledAugments(target);
+
         _uiSystem.ServerSendUiMessage(healthAnalyzer, HealthAnalyzerUiKey.Key, new HealthAnalyzerScannedUserMessage(
             GetNetEntity(target),
             bodyTemperature,
@@ -301,7 +307,48 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             part != null ? GetNetEntity(part) : null,
             lastDamagedPart,
             selectedBodyPart,
-            partDamage
+            partDamage,
+            installedAugments
         ));
+    }
+
+    public List<Wh40kScannedAugment>? CollectInstalledAugments(EntityUid target)
+    {
+        var results = new List<Wh40kScannedAugment>();
+        foreach (var (partUid, partComp) in _bodySystem.GetBodyChildren(target))
+        {
+            if (Prototype(partUid) is { } partProto &&
+                !(TryComp(_bodySystem.GetParentPartOrNull(partUid), out GenerateChildPartComponent? generated) &&
+                  generated.ChildPart == partUid))
+            {
+                foreach (var zone in Wh40kAugmentCatalog.Zones(partProto, _componentFactory))
+                    results.Add(new Wh40kScannedAugment(partProto.ID, zone));
+            }
+
+            foreach (var (organUid, _) in _bodySystem.GetPartOrgans(partUid, partComp))
+            {
+                if (Prototype(organUid) is not { } organProto)
+                    continue;
+
+                foreach (var zone in Wh40kAugmentCatalog.Zones(organProto, _componentFactory))
+                {
+                    if (!Wh40kAugmentCatalog.MatchesPartSymmetry(zone, partComp.Symmetry))
+                        continue;
+
+                    results.Add(new Wh40kScannedAugment(organProto.ID, zone));
+                }
+            }
+        }
+
+        if (TryComp<ImplantedComponent>(target, out var implants))
+        {
+            foreach (var implantUid in implants.ImplantContainer.ContainedEntities)
+            {
+                if (Prototype(implantUid) is { } implantProto)
+                    results.Add(new Wh40kScannedAugment(implantProto.ID, Wh40kAugmentBedZone.Core));
+            }
+        }
+
+        return results.Count > 0 ? results : null;
     }
 }

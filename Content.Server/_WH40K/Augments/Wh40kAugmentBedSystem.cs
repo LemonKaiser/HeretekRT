@@ -1,10 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Server._WH40K.Synthetics;
 using Content.Server.Body.Components;
 using Content.Server.Particles;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._Shitmed.Cybernetics;
+using Content.Shared._Shitmed.Body.Events;
 using Content.Shared._WH40K.Augments;
+using Content.Shared._WH40K.Synthetics;
 using Content.Shared.Alert;
 using Content.Shared.Body.Organ;
 using Content.Shared.Body.Part;
@@ -47,6 +51,7 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private Wh40kChassisPanelSystem _chassisPanel = default!;
 
     private const string PendingSlot = "augment-bed-pending";
     private const Wh40kAugmentBedKey UiKey = Wh40kAugmentBedKey.Key;
@@ -79,6 +84,9 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
             bed.Comp.ReopenFor = null;
         if (bed.Comp.Procedure?.Patient == args.Buckle.Owner)
             Interrupt(bed);
+
+        if (HasComp<Wh40kChassisComponent>(args.Buckle.Owner))
+            _chassisPanel.PushState(args.Buckle.Owner);
     }
 
     private void OnUnstrapAttempt(Entity<Wh40kAugmentBedComponent> bed, ref UnstrapAttemptEvent args)
@@ -113,17 +121,39 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
 
         foreach (var patient in _ui.GetActors(bed.Owner, UiKey))
             Publish(bed, patient);
+
+        if (bed.Comp.Patient is { } occupant && HasComp<Wh40kChassisComponent>(occupant))
+            _chassisPanel.PushState(occupant);
     }
 
     private void OnGetVerbs(Entity<Wh40kAugmentBedComponent> bed, ref GetVerbsEvent<AlternativeVerb> args)
     {
-        if (IsPatient(bed, args.User) && bed.Comp.Procedure == null && bed.Comp.ReopenFor == null)
+        if (bed.Comp.Procedure != null || bed.Comp.ReopenFor != null)
+            return;
+
+        if (IsPatient(bed, args.User))
         {
             var user = args.User;
             args.Verbs.Add(new AlternativeVerb
             {
-                Text = Loc.GetString("wh40k-augment-bed-open"),
+                Text = Loc.GetString(HasComp<Wh40kChassisComponent>(user)
+                    ? "wh40k-chassis-table-open-panel"
+                    : "wh40k-augment-bed-open"),
                 Act = () => Open(bed, user),
+            });
+            return;
+        }
+
+        if (args.CanAccess && args.CanInteract &&
+            bed.Comp.Patient is { } occupant &&
+            IsPatient(bed, occupant) &&
+            HasComp<Wh40kChassisComponent>(occupant))
+        {
+            var operatorUser = args.User;
+            args.Verbs.Add(new AlternativeVerb
+            {
+                Text = Loc.GetString("wh40k-chassis-table-open-panel"),
+                Act = () => _chassisPanel.OpenFromAugmentTable(occupant, bed, operatorUser),
             });
         }
     }
@@ -133,8 +163,69 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         if (bed.Comp.Procedure != null || bed.Comp.ReopenFor != null || !IsPatient(bed, patient) || !_mobState.IsAlive(patient))
             return;
 
+        if (HasComp<Wh40kChassisComponent>(patient))
+        {
+            _chassisPanel.OpenFromAugmentTable(patient, bed, patient);
+            return;
+        }
+
         Publish(bed, patient);
         _ui.TryOpenUi(bed.Owner, UiKey, patient);
+    }
+
+    /// <summary>
+    /// Returns true if <paramref name="patient"/> is buckled to an augmentation operating table,
+    /// along with whether that table is anchored and powered.
+    /// </summary>
+    public bool TryGetDockedTable(
+        EntityUid patient,
+        [NotNullWhen(true)] out Entity<Wh40kAugmentBedComponent>? bed,
+        out bool powered)
+    {
+        bed = null;
+        powered = false;
+
+        if (!TryComp<BuckleComponent>(patient, out var buckle) ||
+            buckle.BuckledTo is not { } strap ||
+            !TryComp<Wh40kAugmentBedComponent>(strap, out var comp))
+        {
+            return false;
+        }
+
+        bed = (strap, comp);
+        powered = CanOperate(strap);
+        return true;
+    }
+
+    /// <summary>
+    /// Returns true only when <paramref name="patient"/> is buckled to an anchored, powered augmentation operating table.
+    /// </summary>
+    public bool IsOnPoweredTable(EntityUid patient)
+        => TryGetDockedTable(patient, out _, out var powered) && powered;
+
+    /// <summary>
+    /// Scans a cybernetic patient for compatible equipment in inventory (when docked on a table) and installed augments.
+    /// </summary>
+    public (List<Wh40kAugmentBedOption> Options, List<Wh40kInstalledAugment> Installed) ScanForChassisPanel(
+        EntityUid patient,
+        bool includeInventoryOptions)
+    {
+        return (includeInventoryOptions ? ImplantOptions(patient).ToList() : [], InstalledAugments(patient).ToList());
+    }
+
+    /// <summary>
+    /// Starts an augmentation operating table installation directly from a docked cybernetic patient's chassis panel.
+    /// </summary>
+    public bool TryStartFromChassisPanel(EntityUid patient, EntityUid item, Wh40kAugmentBedZone zone)
+    {
+        if (!TryGetDockedTable(patient, out var bed, out var powered) || !powered)
+            return false;
+
+        if (!TryStart(bed.Value, patient, item, zone))
+            return false;
+
+        _ui.CloseUi(patient, Wh40kChassisPanelUiKey.Key);
+        return true;
     }
 
     private bool IsPatient(EntityUid bed, EntityUid patient)
@@ -194,7 +285,16 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
                 }
 
                 if (component.Patient is { } occupant && IsPatient(uid, occupant) && _timing.CurTime >= component.NextScan)
-                    Publish(bed, occupant);
+                {
+                    if (HasComp<Wh40kChassisComponent>(occupant))
+                    {
+                        component.NextScan = _timing.CurTime + TimeSpan.FromSeconds(1);
+                    }
+                    else
+                    {
+                        Publish(bed, occupant);
+                    }
+                }
 
                 continue;
             }
@@ -226,7 +326,7 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         {
             // The normal detach APIs update anatomy and appearance without the wound from amputation.
             var removed = target.Kind == TargetKind.Part
-                ? RemovePart(target, old)
+                ? RemovePart(target.Parent, target.Slot, old)
                 : _body.RemoveOrgan(old);
             if (!removed)
             {
@@ -261,12 +361,12 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         bed.Comp.Deadline = _timing.CurTime + CompletionEffectTime;
     }
 
-    private bool RemovePart(Target target, EntityUid old)
+    internal bool RemovePart(EntityUid parent, string slot, EntityUid old)
     {
         // Detaching an arm or leg also drops its child parts as separate entities.
         var removedParts = _body.GetBodyPartChildren(old)
             .Select(part => (part.Id, part.Component, ParentSlot: _body.GetParentPartAndSlotOrNull(part.Id))).ToArray();
-        if (!_body.DetachPart(target.Parent, target.Slot, old))
+        if (!_body.DetachPart(parent, slot, old))
             return false;
 
         var keepRoot = KeepRemovedPart(old);
@@ -341,7 +441,19 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
     private void Publish(Entity<Wh40kAugmentBedComponent> bed, EntityUid patient)
     {
         bed.Comp.NextScan = _timing.CurTime + TimeSpan.FromSeconds(1);
-        var options = new List<Wh40kAugmentBedOption>();
+        var options = ImplantOptions(patient).ToArray();
+        var installed = InstalledAugments(patient).ToArray();
+        var powered = CanOperate(bed);
+        if (bed.Comp.LastScan is { } previous && previous.Powered == powered
+            && previous.Options.SequenceEqual(options) && previous.Installed.SequenceEqual(installed))
+            return;
+
+        bed.Comp.LastScan = new Wh40kAugmentBedState(powered, options, installed);
+        _ui.SetUiState(bed.Owner, UiKey, bed.Comp.LastScan);
+    }
+
+    private IEnumerable<Wh40kAugmentBedOption> ImplantOptions(EntityUid patient)
+    {
         foreach (var item in CarriedItems(patient))
         {
             if (InstallPrototype(item) is not { } prototype)
@@ -353,18 +465,9 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
                     continue;
 
                 var existing = target.Existing is { } old ? Prototype(old)?.ID : null;
-                options.Add(new Wh40kAugmentBedOption(GetNetEntity(item), prototype.ID, zone, existing, target.RemoveInAdvance));
+                yield return new Wh40kAugmentBedOption(GetNetEntity(item), prototype.ID, zone, existing, target.RemoveInAdvance);
             }
         }
-
-        var installed = InstalledAugments(patient).ToArray();
-        var powered = CanOperate(bed);
-        if (bed.Comp.LastScan is { } previous && previous.Powered == powered
-            && previous.Options.SequenceEqual(options) && previous.Installed.SequenceEqual(installed))
-            return;
-
-        bed.Comp.LastScan = new Wh40kAugmentBedState(powered, options.ToArray(), installed);
-        _ui.SetUiState(bed.Owner, UiKey, bed.Comp.LastScan);
     }
 
     private IEnumerable<Wh40kInstalledAugment> InstalledAugments(EntityUid patient)
@@ -384,8 +487,7 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
 
                 foreach (var zone in Wh40kAugmentCatalog.Zones(organPrototype, _componentFactory))
                 {
-                    if (zone == Wh40kAugmentBedZone.LeftArm && component.Symmetry != BodyPartSymmetry.Left
-                        || zone == Wh40kAugmentBedZone.RightArm && component.Symmetry != BodyPartSymmetry.Right)
+                    if (!Wh40kAugmentCatalog.MatchesPartSymmetry(zone, component.Symmetry))
                         continue;
 
                     yield return new Wh40kInstalledAugment(organPrototype.ID, zone);
@@ -460,14 +562,24 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         {
             var (type, side) = zone switch
             {
-                Wh40kAugmentBedZone.Eyes or Wh40kAugmentBedZone.LeftEye or Wh40kAugmentBedZone.RightEye
+                Wh40kAugmentBedZone.Head or Wh40kAugmentBedZone.Eyes or Wh40kAugmentBedZone.LeftEye or Wh40kAugmentBedZone.RightEye
                     => (BodyPartType.Head, BodyPartSymmetry.None),
                 Wh40kAugmentBedZone.LeftArm => (BodyPartType.Arm, BodyPartSymmetry.Left),
                 Wh40kAugmentBedZone.RightArm => (BodyPartType.Arm, BodyPartSymmetry.Right),
+                Wh40kAugmentBedZone.LeftHand => (BodyPartType.Hand, BodyPartSymmetry.Left),
+                Wh40kAugmentBedZone.RightHand => (BodyPartType.Hand, BodyPartSymmetry.Right),
+                Wh40kAugmentBedZone.LeftLeg => (BodyPartType.Leg, BodyPartSymmetry.Left),
+                Wh40kAugmentBedZone.RightLeg => (BodyPartType.Leg, BodyPartSymmetry.Right),
+                Wh40kAugmentBedZone.LeftFoot => (BodyPartType.Foot, BodyPartSymmetry.Left),
+                Wh40kAugmentBedZone.RightFoot => (BodyPartType.Foot, BodyPartSymmetry.Right),
                 _ => (BodyPartType.Torso, BodyPartSymmetry.None),
             };
             var parent = _body.GetBodyChildrenOfType(patient, type, symmetry: side).FirstOrDefault();
             if (organ.Body != null || parent.Component == null)
+                return false;
+
+            if (TryComp<Wh40kImplantSpecComponent>(item, out var spec) &&
+                !Wh40kAugmentCatalog.CanHost(EntityManager, patient, parent.Id, spec))
                 return false;
 
             var vital = organ.SlotId is "heart" or "lungs";
@@ -516,7 +628,7 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         switch (target.Kind)
         {
             case TargetKind.Part:
-                return FitPart(item, target);
+                return FitPart(target.Parent, target.Slot, item);
             case TargetKind.Organ:
                 return _body.TryCreateOrganSlot(target.Parent, target.Slot, out _)
                     && _body.InsertOrgan(target.Parent, item, target.Slot);
@@ -557,9 +669,9 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         }
     }
 
-    private bool FitPart(EntityUid item, Target target)
+    internal bool FitPart(EntityUid parent, string slot, EntityUid item)
     {
-        if (!_body.CanAttachPart(target.Parent, target.Slot, item))
+        if (!_body.CanAttachPart(parent, slot, item))
             return false;
 
         // Refit recovered hands and feet after the parent is attached so normal body events run.
@@ -570,14 +682,20 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         var removed = new List<(EntityUid Id, string Slot)>(children.Length);
         foreach (var (child, connection) in children)
         {
-            if (connection is not { } slot || !_body.DetachPart(item, slot.Slot, child))
+            if (connection is not { } childSlot || !_body.DetachPart(item, childSlot.Slot, child))
                 break;
-            removed.Add((child, slot.Slot));
+            removed.Add((child, childSlot.Slot));
         }
 
-        var attached = removed.Count == children.Length && _body.AttachPart(target.Parent, target.Slot, item);
-        foreach (var (child, slot) in removed)
-            _body.AttachPart(item, slot, child);
+        var attached = removed.Count == children.Length && _body.AttachPart(parent, slot, item);
+        foreach (var (child, childSlot) in removed)
+        {
+            if (_body.AttachPart(item, childSlot, child) && attached)
+            {
+                var enable = new BodyPartEnableChangedEvent(true);
+                RaiseLocalEvent(child, ref enable);
+            }
+        }
 
         return attached;
     }

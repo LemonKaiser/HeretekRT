@@ -1,12 +1,13 @@
 using Robust.Shared.GameStates;
 using Robust.Shared.Audio;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared.Electrocution;
 
 /// <summary>
 ///     Component for things that shock users on touch.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
 public sealed partial class ElectrifiedComponent : Component
 {
     [DataField, AutoNetworkedField]
@@ -128,4 +129,16 @@ public sealed partial class ElectrifiedComponent : Component
 
     [DataField, AutoNetworkedField]
     public bool IsWireCut = false;
+
+    /// <summary>
+    /// Delay between consecutive shocks.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan? ShockDelay;
+
+    /// <summary>
+    /// When the entity will be able to shock again.
+    /// </summary>
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
+    public TimeSpan? NextShock;
 }

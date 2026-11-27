@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Taken from SS13 Baystation (adaptive_binoculars in _Mono/Objects/Misc/cybernetics.rsi), recoloured for Wolfgate",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "icon"
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+using System.Linq;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Mono.Sensors;
@@ -69,7 +70,20 @@ public sealed class SensorsSetArcMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SensorsSetDatalinkMessage : BoundUserInterfaceMessage
 {
+    private const int MaxCodes = 8;
+
     public List<string> Codes = new();
+
+    public static string NormalizeCode(string code) => code.Trim().ToUpperInvariant();
+
+    public static List<string> NormalizeCodes(IEnumerable<string> codes)
+    {
+        return codes.Select(NormalizeCode)
+            .Where(static code => code.Length > 0)
+            .Distinct()
+            .Take(MaxCodes)
+            .ToList();
+    }
 }
 
 [Serializable, NetSerializable]

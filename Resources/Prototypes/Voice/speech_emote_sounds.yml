@@ -515,6 +515,52 @@
       path: /Audio/_EinsteinEngines/Voice/IPC/pai_whistle.ogg
       params:
         variation: 0.125
+    Hiss:
+      collection: HarpyHisses
+    Meow:
+      collection: HarpyMeows
+    Mew:
+      collection: HarpyMews
+    Purr:
+      collection: HarpyPurrs
+    Growl:
+      collection: HarpyGrowls
+    Bark:
+      collection: VulpkaninBarks
+    Snarl:
+      collection: VulpkaninSnarls
+    Whine:
+      collection: VulpkaninWhines
+    Howl:
+      collection: VulpkaninHowls
+    Awoo:
+      collection: VulpkaninHowls
+    BorgHarpyHonk:
+      collection: HarpyHonks
+    HarpyRing:
+      collection: HarpyRings
+    HarpyPew:
+      collection: HarpyPews
+    HarpyBang:
+      collection: HarpyBangs
+    BorgHarpyBeep:
+      collection: HarpyBeeps
+    HarpyRev:
+      collection: HarpyRevs
+    HarpyCaw:
+      collection: HarpyCaws
+    Squish:
+      collection: HarpySquishes
+    Chitter:
+      collection: HarpyChitter
+    Squeak:
+      collection: HarpySqueak
+    Click:
+      collection: HarpyClicks
+    Belch:
+      collection: Belch
+    Bagawk:
+      collection: Bagawk
 
 - type: emoteSounds
   id: UnisexSiliconSyndicate
@@ -549,6 +595,52 @@
       path: /Audio/_EinsteinEngines/Voice/IPC/pai_whistle.ogg
       params:
         variation: 0.125
+    Hiss:
+      collection: HarpyHisses
+    Meow:
+      collection: HarpyMeows
+    Mew:
+      collection: HarpyMews
+    Purr:
+      collection: HarpyPurrs
+    Growl:
+      collection: HarpyGrowls
+    Bark:
+      collection: VulpkaninBarks
+    Snarl:
+      collection: VulpkaninSnarls
+    Whine:
+      collection: VulpkaninWhines
+    Howl:
+      collection: VulpkaninHowls
+    Awoo:
+      collection: VulpkaninHowls
+    BorgHarpyHonk:
+      collection: HarpyHonks
+    HarpyRing:
+      collection: HarpyRings
+    HarpyPew:
+      collection: HarpyPews
+    HarpyBang:
+      collection: HarpyBangs
+    BorgHarpyBeep:
+      collection: HarpyBeeps
+    HarpyRev:
+      collection: HarpyRevs
+    HarpyCaw:
+      collection: HarpyCaws
+    Squish:
+      collection: HarpySquishes
+    Chitter:
+      collection: HarpyChitter
+    Squeak:
+      collection: HarpySqueak
+    Click:
+      collection: HarpyClicks
+    Belch:
+      collection: Belch
+    Bagawk:
+      collection: Bagawk
 
 # body emotes
 - type: emoteSounds

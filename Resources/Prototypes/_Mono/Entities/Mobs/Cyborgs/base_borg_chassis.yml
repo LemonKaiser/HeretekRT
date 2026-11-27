@@ -55,6 +55,8 @@
   - type: NpcFactionMember
     factions:
     - TSFMC
+  - type: Company
+    companyName: TSF
   - type: Access
     tags:
     - Security
@@ -107,6 +109,29 @@
     speechSounds: SyndieBorg
     allowedEmotes:
     - Laugh
+    - Meow
+    - Hiss
+    - Mew
+    - Purr
+    - Growl
+    - Bark
+    - Snarl
+    - Whine
+    - Howl
+    - Awoo
+    - BorgHarpyHonk
+    - HarpyRing
+    - HarpyPew
+    - HarpyBang
+    - BorgHarpyBeep
+    - HarpyRev
+    - HarpyCaw
+    - Squish
+    - Chitter
+    - Squeak
+    - Click
+    - Belch
+    - Bagawk
   - type: Vocal
     sounds:
       Unsexed: UnisexSiliconSyndicate
@@ -127,6 +152,8 @@
   - type: NpcFactionMember
     factions:
     - PirateNF
+  - type: Company
+    companyName: PDV
   - type: Access
     tags:
     - Pirate
@@ -165,6 +192,29 @@
     speechSounds: SyndieBorg
     allowedEmotes:
     - Laugh
+    - Meow
+    - Hiss
+    - Mew
+    - Purr
+    - Growl
+    - Bark
+    - Snarl
+    - Whine
+    - Howl
+    - Awoo
+    - BorgHarpyHonk
+    - HarpyRing
+    - HarpyPew
+    - HarpyBang
+    - BorgHarpyBeep
+    - HarpyRev
+    - HarpyCaw
+    - Squish
+    - Chitter
+    - Squeak
+    - Click
+    - Belch
+    - Bagawk
   - type: Vocal
     sounds:
       Unsexed: UnisexSiliconSyndicate
@@ -264,6 +314,29 @@
     speechSounds: Xenoborg
     allowedEmotes:
     - Laugh
+    - Meow
+    - Hiss
+    - Mew
+    - Purr
+    - Growl
+    - Bark
+    - Snarl
+    - Whine
+    - Howl
+    - Awoo
+    - BorgHarpyHonk
+    - HarpyRing
+    - HarpyPew
+    - HarpyBang
+    - BorgHarpyBeep
+    - HarpyRev
+    - HarpyCaw
+    - Squish
+    - Chitter
+    - Squeak
+    - Click
+    - Belch
+    - Bagawk
   - type: Vocal
     sounds:
       Unsexed: UnisexSiliconSyndicate

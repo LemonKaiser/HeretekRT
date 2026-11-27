@@ -240,7 +240,7 @@
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
       visible: false
   - type: Charger
-    chargeRate: 75 # Frontier: 30 Mono
+    chargeRate: 1000
     slotId: entity_storage
     whitelist:
       components:

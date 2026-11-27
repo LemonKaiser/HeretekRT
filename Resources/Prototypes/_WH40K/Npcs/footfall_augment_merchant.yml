@@ -40,7 +40,7 @@
     title: wh40k-footfall-solex-seven-shop-title
     greeting: wh40k-footfall-solex-seven-greeting
     refreshInterval: 900
-    displayCount: 4
+    displayCount: 6
     offers:
     - product: WH40KProstheticCheapLeftArm
       price: 5000
@@ -195,6 +195,92 @@
       maxStock: 1
       weight: 5
     - product: WH40KProstheticReinforcedRightFoot
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+
+    - product: WH40KAugmentSmartlink
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentTapetumEyes
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentIatricMonitor
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentReflexBooster
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentThreatSole
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentScrubberLiver
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentNutrimentPump
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentFingerLighter
+      price: 25000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentArmLaser
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentHandShield
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentShoulderCannon
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentHaloBurst
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentHaloStun
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentOpticalCamo
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentHoloProjector
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentAdrenalBooster
+      price: 100000
+      minStock: 1
+      maxStock: 1
+      weight: 5
+    - product: WH40KAugmentReviver
       price: 100000
       minStock: 1
       maxStock: 1

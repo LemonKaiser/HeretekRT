@@ -93,6 +93,11 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             if (!_loadingControls)
                 SetSex(sex);
         };
+        BiotypePicker.OnSelected += biotype =>
+        {
+            if (!_loadingControls)
+                SetBiotype(biotype);
+        };
         SpeechStylePicker.StyleSelected += style => UpdateProfile(profile => profile.WithSpeechStyle(style));
 
         PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-male-text"), (int) Gender.Male);
@@ -219,6 +224,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
         RefreshSpecies();
         UpdateSexControls();
+        UpdateBiotypeControls();
         PronounsButton.SelectId((int) _draft.Profile.Gender);
         SpawnPriorityButton.SelectId((int) _draft.Profile.SpawnPriority);
         ShowClothesButton.Pressed = _draft.ShowClothes;
@@ -264,6 +270,30 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
             ? species.Sexes
             : new[] { Sex.Unsexed };
         SexButton.SetOptions(sexes, _draft.Profile.Sex);
+    }
+
+    private void UpdateBiotypeControls()
+    {
+        if (_draft is null)
+            return;
+
+        var canChoose = !_prototypeManager.TryIndex<SpeciesPrototype>(_draft.Profile.Species, out var species) ||
+                        Content.Shared._WH40K.Biotype.Wh40kBiotypeRules.CanChoose(species);
+        var effective = Content.Shared._WH40K.Biotype.Wh40kBiotypeGates.Effective(_draft.Profile, _prototypeManager);
+        BiotypePicker.SetSelected(effective, canChoose);
+    }
+
+    private void SetBiotype(Content.Shared._WH40K.Biotype.Wh40kBiotype biotype)
+    {
+        UpdateProfile(profile =>
+        {
+            var build = profile.Wh40kBuild.Clone();
+            build.Biotype = biotype;
+            return profile.WithWh40kCharacterBuild(build);
+        });
+        _loadingControls = true;
+        UpdateBiotypeControls();
+        _loadingControls = false;
     }
 
     private void UpdateSkinColorControls()

@@ -114,6 +114,9 @@ public abstract partial class SharedGunSystem : EntitySystem
         InitializeContainer();
         InitializeSolution();
         InitializeGunExamine(); // Emberfall
+        InitializeSelfRefiller();
+        InitializeInteractLoader();
+        InitializeTargetFinder();
 
         // Interactions
         SubscribeLocalEvent<GunComponent, GetVerbsEvent<AlternativeVerb>>(OnAltVerb);
@@ -1002,4 +1005,5 @@ public enum AmmoVisuals : byte
     HasAmmo, // used for generic visualizers. c# stuff can just check ammocount != 0
     MagLoaded,
     BoltClosed,
+    IsFull,
 }

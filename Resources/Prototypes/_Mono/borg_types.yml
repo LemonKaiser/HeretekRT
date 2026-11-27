@@ -24,7 +24,7 @@
 - type: borgType
   id: pdvengineer
   dummyPrototype: PDVBorgChassisEngineer
-  extraModuleCount: 2
+  extraModuleCount: 4
   moduleWhitelist:
     tags:
     - BorgModuleGeneric
@@ -54,7 +54,7 @@
 - type: borgType
   id: pdvmedical
   dummyPrototype: PDVBorgChassisMedical
-  extraModuleCount: 2
+  extraModuleCount: 4
   moduleWhitelist:
     tags:
     - BorgModuleGeneric
@@ -67,11 +67,11 @@
   - BorgModuleTool
   - BorgModuleTreatment
   - BorgModuleSurgery
-  - BorgModuleDefibrillator
   addComponents:
   - type: ShowHealthBars
     damageContainers:
     - Biological
+    - Silicon
   inventoryTemplateId: borgShort
   spriteBodyState: medical
   spriteHasMindState: medical_l
@@ -106,7 +106,7 @@
 - type: borgType
   id: tsfengineer
   dummyPrototype: TSFBorgChassisEngineer
-  extraModuleCount: 2
+  extraModuleCount: 4
   moduleWhitelist:
     tags:
     - BorgModuleGeneric
@@ -136,7 +136,7 @@
 - type: borgType
   id: tsfmedical
   dummyPrototype: TSFBorgChassisMedical
-  extraModuleCount: 2
+  extraModuleCount: 4
   moduleWhitelist:
     tags:
     - BorgModuleGeneric
@@ -149,11 +149,11 @@
   - BorgModuleTool
   - BorgModuleTreatment
   - BorgModuleSurgery
-  - BorgModuleDefibrillator
   addComponents:
   - type: ShowHealthBars
     damageContainers:
     - Biological
+    - Silicon
   radioChannels:
   - Medical
   inventoryTemplateId: borgShort

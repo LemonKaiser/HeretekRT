@@ -1,5 +1,6 @@
 - type: trait
   id: PrybarProsthetics
+  biotypeBlacklist: [Cybernetic]
   name: trait-prybar-prosthetics-name
   description: trait-prybar-prosthetics-desc
   category: Physical
@@ -38,6 +39,7 @@
 
 - type: trait
   id: GlassJaw
+  biotypeBlacklist: [Cybernetic]
   name: trait-glass-jaw-name
   description: trait-glass-jaw-desc
   category: Physical
@@ -110,6 +112,7 @@
 
 - type: trait
   id: BionicLegs
+  biotypeBlacklist: [Cybernetic]
   name: trait-bionic-legs-name
   description: trait-bionic-legs-desc
   category: Physical
@@ -119,6 +122,7 @@
 
 - type: trait
   id: OsteogenesisImperfecta
+  biotypeBlacklist: [Cybernetic]
   name: trait-osteogenesis-imperfecta-name
   description: trait-osteogenesis-imperfecta-desc
   category: Physical
@@ -134,6 +138,7 @@
 
 - type: trait
   id: Hemophilia
+  biotypeBlacklist: [Cybernetic]
   name: trait-hemophilia-name
   description: trait-hemophilia-desc
   category: Physical
@@ -148,6 +153,7 @@
 
 - type: trait
   id: Voracious
+  biotypeBlacklist: [Cybernetic]
   name: trait-voracious-name
   description: trait-voracious-desc
   category: Physical
@@ -163,6 +169,7 @@
 
 - type: trait
   id: BionicSpinarette
+  biotypeBlacklist: [Cybernetic]
   name: trait-bionic-spinarette-name
   description: trait-bionic-spinarette-desc
   category: Physical
@@ -221,6 +228,7 @@
 
 - type: trait
   id: LiquorLifeline
+  biotypeBlacklist: [Cybernetic]
   name: trait-liquor-lifeline-name
   description: trait-liquor-lifeline-desc
   category: Physical

@@ -571,6 +571,8 @@
   - type: GhostTakeoverAvailable
   - type: RandomMetadata
     nameSegments: [ TSFMCCoreNameset ]
+  - type: Company
+    companyName: TSF
   - type: LanguageKnowledge
     speaks:
     - TauCetiBasic
@@ -664,6 +666,8 @@
   - type: GhostTakeoverAvailable
   - type: RandomMetadata
     nameSegments: [ PDVCoreNameset ]
+  - type: Company
+    companyName: PDV
   - type: LanguageKnowledge
     speaks:
     - TauCetiBasic

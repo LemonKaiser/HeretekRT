@@ -35,6 +35,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxSurvival
@@ -54,6 +56,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxHug
@@ -73,6 +77,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxMime
@@ -93,6 +99,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxSurvivalEngineering
@@ -112,6 +120,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxSurvivalMedical
@@ -131,6 +141,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxSurvivalSecurity
@@ -150,6 +162,8 @@
   effects:
   - !type:GroupLoadoutEffect
     proto: OxygenBreatherNF
+  - !type:Wh40kBiotypeLoadoutEffect
+    biotypes: [Organic]
   storage:
     back:
     - BoxSurvivalSyndicate

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from Meridian Rift (https://github.com/AphelionDevelopment/Meridian-Rift), tgstation-derived: icons/obj/medical/organs/organs.dmi at commit 96baace94d70621c07e80ef4ba0e4a56f9cbee71 (nutriment_implant, reviver_implant, eye_implant_medical, liver-c-u2 as scrubber_liver)",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "nutriment_pump"
+    },
+    {
+      "name": "reviver",
+      "delays": [
+        [
+          0.1,
+          0.1
+        ]
+      ]
+    },
+    {
+      "name": "iatric_monitor"
+    },
+    {
+      "name": "scrubber_liver"
+    }
+  ]
+}

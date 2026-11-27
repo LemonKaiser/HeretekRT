@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._WH40K.Biotype;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
@@ -127,6 +128,15 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         var customBaseLayers = new Dictionary<HumanoidVisualLayers, CustomBaseLayerInfo>();
 
         var speciesPrototype = _prototypeManager.Index<SpeciesPrototype>(profile.Species);
+        if (Wh40kBiotypeRules.Resolve(profile.Wh40kBuild.Biotype, speciesPrototype) == Wh40kBiotype.Cybernetic &&
+            profile.Species != "IPC")
+        {
+            foreach (var (layer, spriteId) in Wh40kBiotypeRules.CheapProstheticPreviewLayers)
+            {
+                if (_prototypeManager.HasIndex<HumanoidSpeciesSpriteLayer>(spriteId))
+                    customBaseLayers[layer] = new CustomBaseLayerInfo(spriteId, Color.White);
+            }
+        }
         var markings = new MarkingSet(speciesPrototype.MarkingPoints, _markingManager, _prototypeManager);
 
         // Add markings that doesn't need coloring. We store them until we add all other markings that doesn't need it.

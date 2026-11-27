@@ -1,0 +1,90 @@
+# Construction module stacks: start stocked; basic materials restock from the cyborg's power cell (20 J/unit).
+
+- type: entity
+  parent: SheetSteel
+  id: Wh40kSheetSteelBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: SheetGlass
+  id: Wh40kSheetGlassBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: SheetPlastic
+  id: Wh40kSheetPlasticBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: PartRodMetal
+  id: Wh40kPartRodMetalBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: FloorTileItemSteel
+  id: Wh40kFloorTileItemSteelBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: FloorTileItemDark
+  id: Wh40kFloorTileItemDarkBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+- type: entity
+  parent: FloorTileItemWhite
+  id: Wh40kFloorTileItemWhiteBorg
+  suffix: Borg, Refilling
+  components:
+  - type: Stack
+    lingering: true
+    count: 15
+  - type: Wh40kBorgStackRefill
+
+# Premium construction materials: issued once, restocked by picking up more.
+- type: entity
+  parent: SheetPlasteel
+  id: Wh40kSheetPlasteelBorg
+  suffix: Borg
+  components:
+  - type: Stack
+    lingering: true
+    count: 10
+
+- type: entity
+  parent: SheetRGlass
+  id: Wh40kSheetRGlassBorg
+  suffix: Borg
+  components:
+  - type: Stack
+    lingering: true
+    count: 10

@@ -148,6 +148,17 @@ public static class PersistentInventoryPayloadCodec
             writer.WriteNumber("capturedAtUnixMilliseconds", payload.CapturedAtUnixMilliseconds);
             writer.WriteString("policyId", payload.PolicyId);
             writer.WriteNumber("policyVersion", payload.PolicyVersion);
+            if (payload.Chassis is { } chassis)
+            {
+                writer.WriteStartObject("chassis");
+                writer.WriteBoolean("captureCellSlot", chassis.CaptureCellSlot);
+                writer.WriteBoolean("collectorRemoved", chassis.CollectorRemoved);
+                writer.WriteStartArray("emptyLimbSlots");
+                foreach (var slot in chassis.EmptyLimbSlots.Order(StringComparer.Ordinal))
+                    writer.WriteStringValue(slot);
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
 
             writer.WritePropertyName("roots");
             writer.WriteStartArray();
@@ -234,6 +245,16 @@ public static class PersistentInventoryPayloadCodec
 
         if (payload.Roots.Count > limits.MaxRoots)
             throw new InvalidDataException("Persistent inventory payload has too many roots.");
+
+        var cellRoots = payload.Roots.Count(root => root.Kind == PersistentInventoryRootKind.ChassisCell);
+        if (cellRoots > 1 || cellRoots > 0 && payload.Chassis?.CaptureCellSlot != true)
+            throw new InvalidDataException("Persistent inventory payload has invalid chassis cell placement.");
+
+        if (payload.Chassis is { } chassis &&
+            (chassis.EmptyLimbSlots == null || chassis.EmptyLimbSlots.Count > limits.MaxRoots ||
+             chassis.EmptyLimbSlots.Any(string.IsNullOrWhiteSpace) ||
+             chassis.EmptyLimbSlots.Distinct(StringComparer.Ordinal).Count() != chassis.EmptyLimbSlots.Count))
+            throw new InvalidDataException("Persistent inventory payload has invalid chassis limb placements.");
 
         if (payload.Entities.Count > limits.MaxEntities)
             throw new InvalidDataException("Persistent inventory payload has too many entities.");

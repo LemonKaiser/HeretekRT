@@ -35,6 +35,7 @@ using Content.Server.Preferences.Managers; // Frontier
 using System.Linq;
 using Content.Shared.NameIdentifier; // Frontier
 using Content.Server._EinsteinEngines.Silicon.IPC;
+using Content.Server._WH40K.Biotype;
 using Content.Shared.Radio.Components; // Goobstation
 
 namespace Content.Server.Station.Systems;
@@ -190,6 +191,11 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         if (_randomizeCharacters)
         {
             profile = HumanoidCharacterProfile.RandomWithSpecies(speciesId);
+        }
+
+        if (profile != null)
+        {
+            EntityManager.System<Wh40kBiotypeSystem>().Apply(entity.Value, profile);
         }
 
 

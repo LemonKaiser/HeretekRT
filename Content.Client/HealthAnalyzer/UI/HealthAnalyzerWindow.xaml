@@ -212,6 +212,12 @@
                                VerticalAlignment="Top"
                                StyleClasses="LabelSubText"
                                HorizontalAlignment="Left"/>
+                        <Label Name="BiotypeLabel"
+                               VerticalAlignment="Top"
+                               StyleClasses="LabelSubText"
+                               FontColorOverride="#E1C17E"
+                               HorizontalAlignment="Left"
+                               Visible="False"/>
                         <Label Name="PartNameLabel"
                                VerticalAlignment="Bottom"
                                StyleClasses="LabelSubText"
@@ -308,6 +314,7 @@
             <ScrollContainer
                 Margin="5 5 5 5"
                 ReturnMeasure="True"
+                HScrollEnabled="False"
                 VerticalExpand="True">
             <BoxContainer
                 Name="GroupsContainer"

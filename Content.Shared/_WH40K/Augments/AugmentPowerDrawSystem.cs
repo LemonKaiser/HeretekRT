@@ -36,8 +36,8 @@ public sealed class AugmentPowerDrawSystem : EntitySystem
     private void OnActivateAttempt(Entity<AugmentPowerDrawComponent> ent, ref ItemToggleActivateAttemptEvent args)
     {
         if (_augment.GetBody(ent) is not { } body ||
-            _power.GetBodyAugment(body) is not { } slot ||
-            !_powerCell.HasActivatableCharge(slot.Owner))
+            _power.GetPowerSource(body) is not { } source ||
+            !_powerCell.HasActivatableCharge(source))
         {
             args.Cancelled = true;
         }
@@ -45,8 +45,8 @@ public sealed class AugmentPowerDrawSystem : EntitySystem
 
     private void OnToggled(Entity<AugmentPowerDrawComponent> ent, ref ItemToggledEvent args)
     {
-        if (_augment.GetBody(ent) is { } body && _power.GetBodyAugment(body) is { } slot)
-            _power.UpdateDrawRate(slot.Owner);
+        if (_augment.GetBody(ent) is { } body && _power.GetPowerSource(body) is { } source)
+            _power.UpdateDrawRate(source);
     }
 
     private void OnLostPower(Entity<AugmentPowerDrawComponent> ent, ref AugmentLostPowerEvent args)

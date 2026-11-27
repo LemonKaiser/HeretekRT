@@ -225,6 +225,7 @@ namespace Content.Client.Lobby.UI
             #region Sex
 
             SexButton.OnSelected += SetSex;
+            BiotypePicker.OnSelected += SetBiotype;
             SpeechStylePicker.StyleSelected += style =>
             {
                 if (IsWh40kAppearanceEditingLocked || Profile is null)
@@ -1233,6 +1234,7 @@ namespace Content.Client.Lobby.UI
             UpdateCustomSpeciesNameEdit(); // Starlight
             UpdateFlavorTextEdit();
             UpdateSexControls();
+            UpdateBiotypeControls();
             UpdateGenderControls();
             UpdateSkinColor();
             UpdateSpawnPriorityControls();
@@ -1284,6 +1286,7 @@ namespace Content.Client.Lobby.UI
             SpeciesButton.Disabled = appearanceLocked;
             AgeEdit.Editable = !appearanceLocked;
             SexButton.Disabled = appearanceLocked;
+            BiotypePicker.Disabled = appearanceLocked;
             SpeechStylePicker.Disabled = appearanceLocked;
             PronounsButton.Disabled = appearanceLocked;
             Skin.Disabled = appearanceLocked;
@@ -2121,6 +2124,30 @@ namespace Content.Client.Lobby.UI
             IEnumerable<Sex> sexes = _prototypeManager.TryIndex<SpeciesPrototype>(Profile.Species, out var species)
                 ? species.Sexes : new[] { Sex.Unsexed };
             SexButton.SetOptions(sexes, Profile.Sex);
+        }
+
+        private void UpdateBiotypeControls()
+        {
+            if (Profile == null)
+                return;
+
+            var canChoose = !_prototypeManager.TryIndex<SpeciesPrototype>(Profile.Species, out var species) ||
+                            Content.Shared._WH40K.Biotype.Wh40kBiotypeRules.CanChoose(species);
+            var effective = Content.Shared._WH40K.Biotype.Wh40kBiotypeGates.Effective(Profile, _prototypeManager);
+            BiotypePicker.SetSelected(effective, canChoose);
+        }
+
+        private void SetBiotype(Content.Shared._WH40K.Biotype.Wh40kBiotype biotype)
+        {
+            if (IsWh40kAppearanceEditingLocked || Profile == null)
+                return;
+
+            var build = Profile.Wh40kBuild.Clone();
+            build.Biotype = biotype;
+            Profile = Profile.WithWh40kCharacterBuild(build);
+            UpdateBiotypeControls();
+            ReloadProfilePreview();
+            SetDirty();
         }
 
         private void UpdateSkinColor()

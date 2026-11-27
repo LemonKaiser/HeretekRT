@@ -1,0 +1,13 @@
+- type: entity
+  id: ActionWh40kChassisPanel
+  name: Chassis diagnostics panel
+  description: Open your internal cogitator chassis panel to inspect limbs, components, bay access, overclock, and reboot controls.
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    checkCanInteract: false
+    checkConsciousness: false
+    icon:
+      sprite: Interface/Actions/actions_borg.rsi
+      state: diagnosis-module
+    event: !type:Wh40kOpenChassisPanelActionEvent

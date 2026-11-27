@@ -1,6 +1,7 @@
 using Content.Shared.Emp;
 using Content.Shared.Examine;
 using Content.Shared.Power.Components;
+using Content.Shared.Power.EntitySystems;
 using Content.Shared.Verbs;
 using Robust.Shared.Utility;
 
@@ -12,7 +13,7 @@ public sealed partial class EmpResistanceSystem : EntitySystem
 
     public override void Initialize()
     {
-        SubscribeLocalEvent<EmpResistanceComponent, EmpPulseEvent>(OnPulse);
+        SubscribeLocalEvent<EmpResistanceComponent, EmpPulseEvent>(OnPulse, before: [typeof(SharedBatterySystem)]);
         SubscribeLocalEvent<EmpResistanceComponent, GetVerbsEvent<ExamineVerb>>(OnExamine);
     }
 

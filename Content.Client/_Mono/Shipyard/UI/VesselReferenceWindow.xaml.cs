@@ -86,9 +86,11 @@ public sealed partial class VesselReferenceWindow : DefaultWindow
                     vesselNode.Label.Text = vessel.Name;
                     vesselNode.Metadata = vessel.Id;
                 }
+
+                classNode.SetExpanded(filter.Length > 0);
             }
 
-            groupNode.SetExpanded(false);
+            groupNode.SetExpanded(filter.Length > 0);
         }
     }
 

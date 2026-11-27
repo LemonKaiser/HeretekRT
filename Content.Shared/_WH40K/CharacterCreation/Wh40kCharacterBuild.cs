@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Content.Shared._WH40K.Biotype;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._WH40K.CharacterCreation;
@@ -79,6 +80,9 @@ public sealed partial class Wh40kCharacterBuild : IEquatable<Wh40kCharacterBuild
     public string? PortraitId { get; set; }
 
     [DataField]
+    public Wh40kBiotype Biotype { get; set; } = Wh40kBiotype.Organic;
+
+    [DataField]
     public Dictionary<Wh40kCharacteristic, int> CharacteristicPoints { get; set; } = new();
 
     public long AllocatedCharacteristicPoints => CharacteristicPoints.Values.Sum(value => (long) value);
@@ -99,6 +103,7 @@ public sealed partial class Wh40kCharacterBuild : IEquatable<Wh40kCharacterBuild
             OriginId = OriginId,
             ClassId = ClassId,
             PortraitId = PortraitId,
+            Biotype = Biotype,
             CharacteristicPoints = new Dictionary<Wh40kCharacteristic, int>(CharacteristicPoints),
         };
     }
@@ -127,6 +132,7 @@ public sealed partial class Wh40kCharacterBuild : IEquatable<Wh40kCharacterBuild
             OriginId = ValidateId(OriginId),
             ClassId = ValidateId(ClassId),
             PortraitId = ValidateId(PortraitId),
+            Biotype = Wh40kBiotypeRules.Sanitize(Biotype),
         };
 
         var remainingPoints = MaximumAttributePoints;
@@ -155,6 +161,7 @@ public sealed partial class Wh40kCharacterBuild : IEquatable<Wh40kCharacterBuild
                && OriginId == other.OriginId
                && ClassId == other.ClassId
                && PortraitId == other.PortraitId
+               && Biotype == other.Biotype
                && CharacteristicPoints.OrderBy(pair => pair.Key).SequenceEqual(other.CharacteristicPoints.OrderBy(pair => pair.Key));
     }
 
@@ -170,6 +177,7 @@ public sealed partial class Wh40kCharacterBuild : IEquatable<Wh40kCharacterBuild
         hash.Add(OriginId);
         hash.Add(ClassId);
         hash.Add(PortraitId);
+        hash.Add(Biotype);
 
         foreach (var pair in CharacteristicPoints.OrderBy(pair => pair.Key))
         {

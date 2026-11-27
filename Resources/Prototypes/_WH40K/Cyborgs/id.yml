@@ -1,0 +1,14 @@
+# Held in the tool module's ID gripper hand so a cyborg can purchase ships and unlock ship consoles.
+- type: entity
+  id: Wh40kBorgIdCard
+  parent: IDCardStandard
+  components:
+  - type: Wh40kBorgIdCard
+  - type: IdCard
+    jobTitle: job-name-borg
+  - type: Sprite
+    layers:
+    - state: silver
+    - state: idroboticist
+  - type: Item
+    heldPrefix: silver

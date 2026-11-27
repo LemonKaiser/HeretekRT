@@ -1,0 +1,47 @@
+- type: body
+  id: WH40KCyberneticMechanicus
+  name: "cybernetic mechanicus"
+  root: torso
+  slots:
+    head:
+      part: HeadWh40kCybernetic
+      connections:
+      - torso
+      organs:
+        brain: OrganHumanBrain
+        eyes: OrganHumanEyes
+    torso:
+      part: TorsoWh40kCybernetic
+      connections:
+      - right arm
+      - left arm
+      - right leg
+      - left leg
+      - head
+      organs:
+        pump: OrganIPCPump
+        radcollector: WH40KOrganRadCollector
+    right arm:
+      part: WH40KProstheticCheapRightArm
+      connections:
+      - right hand
+    left arm:
+      part: WH40KProstheticCheapLeftArm
+      connections:
+      - left hand
+    right hand:
+      part: WH40KProstheticCheapRightHand
+    left hand:
+      part: WH40KProstheticCheapLeftHand
+    right leg:
+      part: WH40KProstheticCheapRightLeg
+      connections:
+      - right foot
+    left leg:
+      part: WH40KProstheticCheapLeftLeg
+      connections:
+      - left foot
+    right foot:
+      part: WH40KProstheticCheapRightFoot
+    left foot:
+      part: WH40KProstheticCheapLeftFoot

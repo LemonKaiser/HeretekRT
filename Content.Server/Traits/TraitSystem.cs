@@ -1,4 +1,5 @@
 using Content.Server._EinsteinEngines.Language;
+using Content.Shared._WH40K.Biotype;
 using Content.Shared.GameTicking;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -15,6 +16,7 @@ public sealed partial class TraitSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private SharedHandsSystem _sharedHandsSystem = default!;
     [Dependency] private EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private SharedWh40kBiotypeSystem _biotype = default!;
 
     public override void Initialize()
     {
@@ -42,7 +44,8 @@ public sealed partial class TraitSystem : EntitySystem
                 return;
             }
 
-            if (_whitelistSystem.IsWhitelistFail(traitPrototype.Whitelist, args.Mob) ||
+            if (traitPrototype.BiotypeBlacklist.Contains(_biotype.GetBiotype(args.Mob)) ||
+                _whitelistSystem.IsWhitelistFail(traitPrototype.Whitelist, args.Mob) ||
                 _whitelistSystem.IsBlacklistPass(traitPrototype.Blacklist, args.Mob))
                 continue;
 

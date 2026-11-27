@@ -8,14 +8,25 @@ using Content.Server.Database;
 using Content.Server.PDA;
 using Content.Server._WH40K.PersistentInventory.Serialization;
 using Content.Shared.Access.Components;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Organ;
+using Content.Shared.Body.Part;
+using Content.Shared.Body.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Implants;
+using Content.Shared.Implants.Components;
 using Content.Shared.Inventory;
 using Content.Shared.PDA;
+using Content.Shared._WH40K.Augments;
+using Content.Shared._WH40K.Synthetics;
+using Content.Shared.PowerCell;
+using Content.Shared.PowerCell.Components;
 using Prometheus;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
+using Robust.Shared.Containers;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -70,7 +81,10 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
     [Dependency] private readonly PersistentInventoryLifecycleSystem _lifecycle = default!;
     [Dependency] private readonly PersistentInventorySnapshotSerializer _serializer = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly SharedBodySystem _body = default!;
+    [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly SharedSubdermalImplantSystem _subdermal = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly PdaSystem _pda = default!;
 
@@ -485,13 +499,19 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
         }
 
         var roots = restored.Roots.ToArray();
+        if (restored.Chassis != null && !HasComp<Wh40kChassisComponent>(body))
+        {
+            error = "Сохранённые компоненты шасси требуют кибернетического тела.";
+            return false;
+        }
+
         if (roots.Select(root => (root.Root.Kind, root.Root.Name)).Distinct().Count() != roots.Length)
         {
             error = "Снимок содержит повторяющиеся точки размещения.";
             return false;
         }
 
-        foreach (var (root, _) in roots)
+        foreach (var (root, entity) in roots)
         {
             switch (root.Kind)
             {
@@ -505,9 +525,37 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
 
                     break;
                 case PersistentInventoryRootKind.Hand:
-                    if (!_hands.TryGetHand(body, root.Name, out var hand) || !hand.IsEmpty)
+                    break;
+                case PersistentInventoryRootKind.ChassisCell:
+                    if (restored.Chassis?.CaptureCellSlot != true || !HasComp<PowerCellComponent>(entity))
                     {
-                        error = $"Рука {root.Name} отсутствует или занята.";
+                        error = "Сохранённая батарея несовместима с шасси.";
+                        return false;
+                    }
+
+                    break;
+                case PersistentInventoryRootKind.BodyPart:
+                    if (!HasComp<BodyComponent>(body) || !HasComp<BodyPartComponent>(entity))
+                    {
+                        error = $"Тело не поддерживает установку кибернетической части {root.Name}.";
+                        return false;
+                    }
+
+                    break;
+                case PersistentInventoryRootKind.BodyOrgan:
+                    if (!HasComp<BodyComponent>(body) ||
+                        !HasComp<OrganComponent>(entity) ||
+                        root.Name.LastIndexOf(':') <= 0)
+                    {
+                        error = $"Тело не поддерживает установку кибернетического органа {root.Name}.";
+                        return false;
+                    }
+
+                    break;
+                case PersistentInventoryRootKind.SubdermalImplant:
+                    if (!HasComp<SubdermalImplantComponent>(entity))
+                    {
+                        error = $"Объект {root.Name} не является подкожным имплантом.";
                         return false;
                     }
 
@@ -515,6 +563,23 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
                 default:
                     error = "Снимок содержит неизвестный тип точки размещения.";
                     return false;
+            }
+        }
+
+        if (!TryPlaceBodyParts(body, roots, out error) ||
+            !TryPlaceBodyOrgans(body, roots, out error) ||
+            !TryPlaceChassisState(body, restored.Chassis, roots, out error) ||
+            !TryPlaceSubdermalImplants(body, roots, out error))
+        {
+            return false;
+        }
+
+        foreach (var (root, _) in roots.Where(r => r.Root.Kind == PersistentInventoryRootKind.Hand))
+        {
+            if (!_hands.TryGetHand(body, root.Name, out var hand) || !hand.IsEmpty)
+            {
+                error = $"Рука {root.Name} отсутствует или занята.";
+                return false;
             }
         }
 
@@ -566,6 +631,350 @@ public sealed class PersistentInventoryRestoreSystem : EntitySystem
                 return false;
             }
         }
+
+        return true;
+    }
+
+    private bool TryPlaceChassisState(
+        EntityUid body,
+        PersistentInventoryChassisState? chassis,
+        (PersistentInventoryRoot Root, EntityUid Entity)[] roots,
+        out string? error)
+    {
+        error = null;
+        if (chassis == null)
+            return true;
+
+        foreach (var path in chassis.EmptyLimbSlots)
+        {
+            var separator = path.LastIndexOf('/');
+            var parentPath = separator < 0 ? string.Empty : path[..separator];
+            var slotName = path[(separator + 1)..];
+            if (!TryResolveBodyPartByPath(body, parentPath, out var parent, out _) ||
+                !_containers.TryGetContainer(parent, SharedBodySystem.GetPartSlotContainerId(slotName), out var container) ||
+                container is not ContainerSlot { ContainedEntity: { } part })
+                continue;
+
+            if (!TryComp<BodyPartComponent>(part, out var limb) ||
+                limb.PartType is not (BodyPartType.Arm or BodyPartType.Hand or BodyPartType.Leg or BodyPartType.Foot) ||
+                !DetachAndDiscardPartSubtree(parent, slotName, part))
+            {
+                error = $"Не удалось восстановить пустое место для конечности {path}.";
+                return false;
+            }
+        }
+
+        if (chassis.CollectorRemoved)
+        {
+            foreach (var (uid, organ) in _body.GetBodyOrgans(body).ToArray())
+            {
+                if (HasComp<Wh40kRadCollectorComponent>(uid) && _body.RemoveOrgan(uid, organ))
+                    Del(uid);
+            }
+        }
+
+        if (!chassis.CaptureCellSlot)
+            return true;
+
+        var saved = roots.FirstOrDefault(root => root.Root.Kind == PersistentInventoryRootKind.ChassisCell);
+        if (!TryComp<PowerCellSlotComponent>(body, out var slot) ||
+            saved.Root != null && saved.Root.Name != slot.CellSlotId ||
+            !_containers.TryGetContainer(body, slot.CellSlotId, out var batteryContainer) ||
+            batteryContainer is not ContainerSlot batterySlot)
+        {
+            error = "У тела отсутствует подходящий слот батареи шасси.";
+            return false;
+        }
+
+        if (batterySlot.ContainedEntity is { } starter)
+        {
+            if (!_containers.Remove(starter, batterySlot, force: true))
+            {
+                error = "Не удалось извлечь стартовую батарею шасси.";
+                return false;
+            }
+
+            Del(starter);
+        }
+
+        if (saved.Root == null || _containers.Insert(saved.Entity, batterySlot, force: true))
+            return true;
+
+        error = "Не удалось установить сохранённую батарею шасси.";
+        return false;
+    }
+
+    private bool TryPlaceBodyParts(
+        EntityUid body,
+        (PersistentInventoryRoot Root, EntityUid Entity)[] roots,
+        out string? error)
+    {
+        error = null;
+        var partRoots = roots
+            .Where(r => r.Root.Kind == PersistentInventoryRootKind.BodyPart)
+            .OrderBy(r => r.Root.Name.Count(c => c == '/'))
+            .ThenBy(r => r.Root.Name, StringComparer.Ordinal)
+            .ToArray();
+
+        if (partRoots.Length == 0)
+            return true;
+
+        var attachedAny = false;
+        foreach (var (root, partUid) in partRoots)
+        {
+            var segments = root.Name.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length == 0)
+            {
+                error = $"Некорректный путь кибернетической конечности: {root.Name}.";
+                return false;
+            }
+
+            var parentPath = segments.Length > 1
+                ? string.Join('/', segments[..^1])
+                : "torso";
+            var slotName = segments[^1];
+
+            if (!TryResolveBodyPartByPath(body, parentPath, out var parentUid, out var parentComp) ||
+                !TryComp<BodyPartComponent>(partUid, out var newPartComp))
+            {
+                error = $"Не удалось найти родительскую часть {parentPath} для {root.Name}.";
+                return false;
+            }
+
+            if (!_body.TryCreatePartSlot(parentUid, slotName, newPartComp.PartType, out _, parentComp))
+            {
+                error = $"Не удалось подготовить слот {slotName} для {root.Name}.";
+                return false;
+            }
+
+            if (_containers.TryGetContainer(parentUid, SharedBodySystem.GetPartSlotContainerId(slotName), out var slotContainer) &&
+                slotContainer is ContainerSlot existingSlot &&
+                existingSlot.ContainedEntity is { } existingPart)
+            {
+                if (!DetachAndDiscardPartSubtree(parentUid, slotName, existingPart))
+                {
+                    error = $"Не удалось освободить место для конечности {root.Name}.";
+                    return false;
+                }
+            }
+
+            _transform.SetCoordinates(partUid, Transform(body).Coordinates);
+            if (!_body.AttachPart(parentUid, slotName, partUid, parentComp, newPartComp))
+            {
+                error = $"Не удалось установить сохранённую конечность {root.Name}.";
+                return false;
+            }
+
+            attachedAny = true;
+        }
+
+        if (attachedAny)
+            _body.RefreshBaseLayersFromParts(body);
+
+        return true;
+    }
+
+    private bool TryPlaceBodyOrgans(
+        EntityUid body,
+        (PersistentInventoryRoot Root, EntityUid Entity)[] roots,
+        out string? error)
+    {
+        error = null;
+        var organRoots = roots
+            .Where(r => r.Root.Kind == PersistentInventoryRootKind.BodyOrgan)
+            .OrderBy(r => r.Root.Name, StringComparer.Ordinal)
+            .ToArray();
+
+        if (organRoots.Length == 0)
+            return true;
+
+        EntityUid? headWithCustomOptics = null;
+        var installedLeftEye = false;
+        var installedRightEye = false;
+
+        foreach (var (root, organUid) in organRoots)
+        {
+            var separator = root.Name.LastIndexOf(':');
+            if (separator <= 0 || separator >= root.Name.Length - 1)
+            {
+                error = $"Некорректный путь импланта органа: {root.Name}.";
+                return false;
+            }
+
+            var partPath = root.Name[..separator];
+            var organSlotId = root.Name[(separator + 1)..];
+            if (!TryResolveBodyPartByPath(body, partPath, out var partUid, out var partComp))
+            {
+                error = $"Не удалось найти часть тела {partPath} для органа {organSlotId}.";
+                return false;
+            }
+
+            if (TryComp<Wh40kImplantSpecComponent>(organUid, out var spec) &&
+                !Wh40kAugmentCatalog.CanHost(EntityManager, body, partUid, spec))
+            {
+                error = $"Имплант {root.Name} несовместим с телом персонажа.";
+                return false;
+            }
+
+            if (Wh40kAugmentCatalog.IsOpticalSlot(organSlotId))
+            {
+                headWithCustomOptics = partUid;
+                if (organSlotId == Wh40kAugmentCatalog.LeftEye)
+                    installedLeftEye = true;
+                else if (organSlotId == Wh40kAugmentCatalog.RightEye)
+                    installedRightEye = true;
+
+                foreach (var (existingOrgan, existingComp) in _body.GetPartOrgans(partUid, partComp).ToArray())
+                {
+                    if (existingComp.SlotId == organSlotId ||
+                        (organSlotId == Wh40kAugmentCatalog.Eyes && Wh40kAugmentCatalog.IsOpticalSlot(existingComp.SlotId)))
+                    {
+                        if (_body.RemoveOrgan(existingOrgan, existingComp))
+                            Del(existingOrgan);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var (existingOrgan, existingComp) in _body.GetPartOrgans(partUid, partComp).ToArray())
+                {
+                    if (existingComp.SlotId == organSlotId && _body.RemoveOrgan(existingOrgan, existingComp))
+                        Del(existingOrgan);
+                }
+            }
+
+            if (!_body.TryCreateOrganSlot(partUid, organSlotId, out _, partComp))
+            {
+                error = $"Не удалось создать слот органа {organSlotId} в {partPath}.";
+                return false;
+            }
+
+            _transform.SetCoordinates(organUid, Transform(body).Coordinates);
+            if (!_body.InsertOrgan(partUid, organUid, organSlotId, partComp))
+            {
+                error = $"Не удалось установить сохранённый орган {root.Name}.";
+                return false;
+            }
+        }
+
+        // Remove the default paired organic eyes when both left and right cybernetic eyes were restored.
+        if (headWithCustomOptics is { } headUid &&
+            installedLeftEye &&
+            installedRightEye &&
+            TryComp<BodyPartComponent>(headUid, out var headComp))
+        {
+            foreach (var (existingOrgan, existingComp) in _body.GetPartOrgans(headUid, headComp).ToArray())
+            {
+                if (existingComp.SlotId == Wh40kAugmentCatalog.Eyes && _body.RemoveOrgan(existingOrgan, existingComp))
+                    Del(existingOrgan);
+            }
+        }
+
+        return true;
+    }
+
+    private bool TryPlaceSubdermalImplants(
+        EntityUid body,
+        (PersistentInventoryRoot Root, EntityUid Entity)[] roots,
+        out string? error)
+    {
+        error = null;
+        var implantRoots = roots
+            .Where(r => r.Root.Kind == PersistentInventoryRootKind.SubdermalImplant)
+            .OrderBy(r => r.Root.Name, StringComparer.Ordinal)
+            .ToArray();
+
+        if (implantRoots.Length == 0)
+            return true;
+
+        var defaults = TryComp<ImplantedComponent>(body, out var implanted)
+            ? implanted.ImplantContainer.ContainedEntities.ToList()
+            : new List<EntityUid>();
+
+        foreach (var (_, implantUid) in implantRoots)
+        {
+            if (!TryComp<SubdermalImplantComponent>(implantUid, out var implantComp))
+            {
+                error = "Сохранённая сущность не содержит SubdermalImplantComponent.";
+                return false;
+            }
+
+            var original = defaults.FindIndex(uid => Prototype(uid) == Prototype(implantUid));
+            if (original >= 0)
+            {
+                _subdermal.ForceRemove(body, defaults[original]);
+                defaults.RemoveAt(original);
+            }
+
+            _transform.SetCoordinates(implantUid, Transform(body).Coordinates);
+            _subdermal.ForceImplant(body, implantUid, implantComp);
+            if (!TryComp<ImplantedComponent>(body, out var restored) || !restored.ImplantContainer.Contains(implantUid))
+            {
+                error = $"Не удалось восстановить подкожный имплант {ToPrettyString(implantUid)}.";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool TryResolveBodyPartByPath(
+        EntityUid body,
+        string path,
+        out EntityUid partUid,
+        out BodyPartComponent partComp)
+    {
+        partUid = default;
+        partComp = default!;
+
+        if (!TryComp<BodyComponent>(body, out var bodyComp) ||
+            bodyComp.RootContainer.ContainedEntity is not { } rootUid ||
+            !TryComp<BodyPartComponent>(rootUid, out var rootComp))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(path) || string.Equals(path, "torso", StringComparison.Ordinal))
+        {
+            partUid = rootUid;
+            partComp = rootComp;
+            return true;
+        }
+
+        var currentUid = rootUid;
+        var currentComp = rootComp;
+        foreach (var segment in path.Split('/', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (!_containers.TryGetContainer(currentUid, SharedBodySystem.GetPartSlotContainerId(segment), out var container) ||
+                container is not ContainerSlot slot ||
+                slot.ContainedEntity is not { } nextUid ||
+                !TryComp<BodyPartComponent>(nextUid, out var nextComp))
+            {
+                return false;
+            }
+
+            currentUid = nextUid;
+            currentComp = nextComp;
+        }
+
+        partUid = currentUid;
+        partComp = currentComp;
+        return true;
+    }
+
+    private bool DetachAndDiscardPartSubtree(EntityUid parentUid, string slotName, EntityUid partUid)
+    {
+        var subtree = _body.GetBodyPartChildren(partUid).Select(entry => entry.Id).ToArray();
+        if (!_body.DetachPart(parentUid, slotName, partUid))
+            return false;
+        foreach (var child in subtree)
+        {
+            if (Exists(child) && !TerminatingOrDeleted(child))
+                Del(child);
+        }
+
+        if (Exists(partUid) && !TerminatingOrDeleted(partUid))
+            Del(partUid);
 
         return true;
     }

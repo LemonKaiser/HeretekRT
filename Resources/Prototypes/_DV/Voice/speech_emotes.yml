@@ -11,6 +11,26 @@
     components:
     - BorgChassis
   chatMessages: [honks.]
+  chatTriggers:
+    - honk
+    - honks
+    - honking
+    - honked
+
+- type: emote
+  id: BorgHarpyHonk
+  name: delta-chat-emote-name-honk
+  category: Vocal
+  available: false
+  whitelist:
+    components:
+    - BorgChassis
+  chatMessages: [honks.]
+  chatTriggers:
+    - harpyhonk
+    - harpyhonks
+    - harpyhonking
+    - harpyhonked
 
 - type: emote
   id: HarpyRing
@@ -78,6 +98,26 @@
     components:
     - BorgChassis
   chatMessages: [beeps.]
+  chatTriggers:
+    - beep
+    - beeps
+    - beeping
+    - beeped
+
+- type: emote
+  id: BorgHarpyBeep
+  name: delta-chat-emote-name-beep
+  category: Vocal
+  available: false
+  whitelist:
+    components:
+    - BorgChassis
+  chatMessages: [beeps.]
+  chatTriggers:
+    - harpybeep
+    - harpybeeps
+    - harpybeeping
+    - harpybeeped
 
 - type: emote
   id: HarpyRev

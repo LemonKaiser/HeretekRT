@@ -43,6 +43,7 @@ namespace Content.Server.PDA
         [Dependency] private UnpoweredFlashlightSystem _unpoweredFlashlight = default!;
         [Dependency] private ContainerSystem _containerSystem = default!;
         [Dependency] private IdCardSystem _idCard = default!;
+        [Dependency] private Content.Shared._WH40K.Cyborgs.Wh40kBorgIdCardSystem _wh40kBorgCards = default!;
         [Dependency] private IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IConfigurationManager _config = default!; // DeltaV
 
@@ -224,12 +225,15 @@ namespace Content.Server.PDA
                 return;
 
             var programs = _cartridgeLoader.GetAvailablePrograms(uid, loader);
-            var id = CompOrNull<IdCardComponent>(pda.ContainedId);
+            var idEnt = pda.ContainedId;
+            if (idEnt == null && _wh40kBorgCards.TryGetCard(uid, out var borgCard))
+                idEnt = borgCard;
+            var id = CompOrNull<IdCardComponent>(idEnt);
             var balance = 0; // frontier
             if (actor_uid != null && TryComp<BankAccountComponent>(actor_uid, out var account)) // frontier
                 balance = account.Balance; // frontier
             var ownedShipName = ""; // Frontier
-            if (TryComp<ShuttleDeedComponent>(pda.ContainedId, out var shuttleDeedComp)) // Frontier
+            if (TryComp<ShuttleDeedComponent>(idEnt, out var shuttleDeedComp)) // Frontier
                 ownedShipName = ShipyardSystem.GetFullName(shuttleDeedComp); // Frontier
 
             // Get company information from ID card

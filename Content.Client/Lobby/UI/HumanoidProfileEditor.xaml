@@ -1,4 +1,4 @@
-<BoxContainer xmlns="https://spacestation14.io" xmlns:humanoid="clr-namespace:Content.Client.Humanoid" xmlns:ui="clr-namespace:Content.Client.Lobby.UI" xmlns:creation="clr-namespace:Content.Client._WH40K.CharacterCreation" xmlns:factions="clr-namespace:Content.Client._WH40K.Factions" xmlns:aug="clr-namespace:Content.Client._WH40K.Augments" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
+<BoxContainer xmlns="https://spacestation14.io" xmlns:humanoid="clr-namespace:Content.Client.Humanoid" xmlns:ui="clr-namespace:Content.Client.Lobby.UI" xmlns:creation="clr-namespace:Content.Client._WH40K.CharacterCreation" xmlns:biotype="clr-namespace:Content.Client._WH40K.Biotype" xmlns:factions="clr-namespace:Content.Client._WH40K.Factions" xmlns:aug="clr-namespace:Content.Client._WH40K.Augments" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
     <PanelContainer Name="ProfileHighlight">
         <BoxContainer Orientation="Vertical" SeparationOverride="6">
             <BoxContainer Name="NameRow" SeparationOverride="8">
@@ -57,6 +57,10 @@
                                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
                                         <Label Text="{Loc 'wh40k-personalization-body'}" StyleClasses="Wh40kOnboardingSectionTitle" FontColorOverride="#E1C17E"/>
                                         <creation:Wh40kSectionRule/>
+                                        <BoxContainer Name="BiotypeRow" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4">
+                                            <Label Text="{Loc 'wh40k-biotype-label'}"/>
+                                            <biotype:Wh40kBiotypePicker Name="BiotypePicker" HorizontalExpand="True"/>
+                                        </BoxContainer>
                                         <GridContainer Columns="2" HorizontalExpand="True">
                                             <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" Margin="0 0 8 8">
                                                 <Label Text="{Loc 'humanoid-profile-editor-height-label'}"/>

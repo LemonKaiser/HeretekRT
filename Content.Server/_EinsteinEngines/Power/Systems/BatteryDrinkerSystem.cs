@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.DoAfter;
 using Content.Shared.Power.Components;
 using Content.Shared.PowerCell.Components;
 using Content.Shared._EinsteinEngines.Silicon;
+using Content.Shared._WH40K.Augments;
 using Content.Shared.Verbs;
 using Robust.Shared.Utility;
 using Content.Server._EinsteinEngines.Silicon.Charge;
@@ -45,7 +47,7 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
 
         if (!TryComp<BatteryDrinkerComponent>(args.User, out var drinkerComp) ||
             !TestDrinkableBattery(uid, drinkerComp) ||
-            !_silicon.TryGetSiliconBattery(args.User, out var drinkerBattery))
+            !TryGetDrinkerBattery(args.User, out _))
             return;
 
         AlternativeVerb verb = new()
@@ -98,25 +100,18 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
         var drinker = uid;
         var sourceBattery = Comp<BatteryComponent>(source);
 
-        _silicon.TryGetSiliconBattery(drinker, out var drinkerBatteryComponent);
-
-        if (!TryComp(uid, out PowerCellSlotComponent? batterySlot))
+        if (!TryGetDrinkerBattery(drinker, out var drinkerBatteryEnt))
             return;
 
-        var container = _container.GetContainer(uid, batterySlot.CellSlotId);
-        var drinkerBattery = container.ContainedEntities.First();
+        var drinkerBattery = drinkerBatteryEnt.Owner;
+        var drinkerBatteryComponent = drinkerBatteryEnt.Comp;
 
         TryComp<BatteryDrinkerSourceComponent>(source, out var sourceComp);
-
-        DebugTools.AssertNotNull(drinkerBattery);
-
-        if (drinkerBattery == null)
-            return;
 
         var amountToDrink = drinkerComp.DrinkMultiplier * 1000;
 
         amountToDrink = MathF.Min(amountToDrink, sourceBattery.CurrentCharge);
-        amountToDrink = MathF.Min(amountToDrink, drinkerBatteryComponent!.MaxCharge - drinkerBatteryComponent.CurrentCharge);
+        amountToDrink = MathF.Min(amountToDrink, drinkerBatteryComponent.MaxCharge - drinkerBatteryComponent.CurrentCharge);
 
         if (sourceComp != null && sourceComp.MaxAmount > 0)
             amountToDrink = MathF.Min(amountToDrink, (float) sourceComp.MaxAmount);
@@ -140,5 +135,32 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
             _audio.PlayPvs(sourceComp.DrinkSound, source);
             Spawn("EffectSparks", Transform(source).Coordinates);
         }
+    }
+
+    public bool TryGetDrinkerBattery(EntityUid drinker, out Entity<BatteryComponent> battery)
+    {
+        var ev = new GetDrinkerBatteryEvent();
+        RaiseLocalEvent(drinker, ref ev);
+        if (ev.Battery is { } found)
+        {
+            battery = found;
+            return true;
+        }
+
+        if (_powerCell.TryGetBatteryFromSlot(drinker, out var batteryUid, out var batteryComp) &&
+            batteryUid is { } resolvedUid)
+        {
+            battery = (resolvedUid, batteryComp);
+            return true;
+        }
+
+        if (TryComp<BatteryComponent>(drinker, out var directBattery))
+        {
+            battery = (drinker, directBattery);
+            return true;
+        }
+
+        battery = default;
+        return false;
     }
 }

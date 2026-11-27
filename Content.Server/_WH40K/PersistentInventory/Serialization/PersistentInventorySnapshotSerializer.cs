@@ -1,5 +1,7 @@
 using System.IO;
 using System.Linq;
+using Content.Server._WH40K.Augments;
+using Content.Server._WH40K.Augments.Combat;
 using Content.Server._WH40K.ItemRarity;
 using Content.Server.Charges.Systems;
 using Content.Server.DeviceNetwork.Systems;
@@ -14,11 +16,16 @@ using Content.Server.Stack;
 using Content.Server.Weapons.Ranged.Systems;
 using Content.Shared.Access.Systems;
 using Content.Shared.Actions;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Organ;
+using Content.Shared.Body.Part;
+using Content.Shared.Body.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Durability.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Implants.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Item;
 using Content.Shared.Item.ItemToggle;
@@ -28,6 +35,12 @@ using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Paper;
 using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
+using Content.Shared._Goobstation.MantisBlades;
+using Content.Shared._Shitmed.BodyEffects.Subsystems;
+using Content.Shared._Shitmed.Cybernetics;
+using Content.Shared._WH40K.Augments;
+using Content.Shared._WH40K.Synthetics;
+using Content.Shared.PowerCell.Components;
 using Content.Shared._WH40K.PersistentInventory;
 using Content.Shared._Mono.Fuel;
 using Robust.Shared.Configuration;
@@ -69,7 +82,8 @@ public sealed record PersistentInventoryRestoreResult(
     IReadOnlyDictionary<int, EntityUid> Entities,
     IReadOnlyList<(PersistentInventoryRoot Root, EntityUid Entity)> Roots,
     string? Error,
-    IReadOnlyList<string>? MigrationActions = null);
+    IReadOnlyList<string>? MigrationActions = null,
+    PersistentInventoryChassisState? Chassis = null);
 
 public sealed record PersistentInventoryRestorePreparation(
     PersistentInventoryPayload Payload,
@@ -134,11 +148,13 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
     [Dependency] private readonly SharedStorageSystem _storage = default!;
     [Dependency] private readonly SharedItemSystem _items = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly SharedBodySystem _body = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly ComponentTogglerSystem _componentTogglers = default!;
     [Dependency] private readonly SharedAccessSystem _access = default!;
     [Dependency] private readonly SharedIdCardSystem _idCards = default!;
     [Dependency] private readonly BatterySystem _batteries = default!;
+    [Dependency] private readonly Wh40kDeployableImplantSystem _deployableImplants = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly ItemDurabilitySystem _durability = default!;
     [Dependency] private readonly PowerCellSystem _powerCells = default!;
@@ -179,6 +195,8 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         _adapters.Add(new IdCardItemStateAdapter(EntityManager, _prototypes, _idCards));
         _adapters.Add(new AccessItemStateAdapter(EntityManager, _prototypes, _access));
         _adapters.Add(new BatteryItemStateAdapter(EntityManager, _batteries));
+        _adapters.Add(new ArmLaserItemStateAdapter(EntityManager, _deployableImplants));
+        _adapters.Add(new RadCollectorItemStateAdapter(EntityManager));
         _adapters.Add(new ItemDurabilityStateAdapter(EntityManager, _durability));
         _adapters.Add(new PowerCellDrawItemStateAdapter(EntityManager, _powerCells));
         _adapters.Add(new LabelItemStateAdapter(EntityManager, _labels));
@@ -271,10 +289,14 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         PersistentInventoryLimits? limits = null)
     {
         var roots = new List<CaptureRoot>();
+        var ephemeralMantisBlades = CollectDeployedMantisBlades(owner);
         foreach (var hand in _hands.EnumerateHands(owner)
                      .Where(hand => hand.HeldEntity != null)
                      .OrderBy(hand => hand.Name, StringComparer.Ordinal))
         {
+            if (ephemeralMantisBlades.Contains(hand.HeldEntity!.Value))
+                continue;
+
             roots.Add(new CaptureRoot(
                 PersistentInventoryRootKind.Hand,
                 hand.Name,
@@ -290,18 +312,175 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                 item));
         }
 
+        var emptyLimbSlots = HasComp<Wh40kChassisComponent>(owner) ? new List<string>() : null;
+        CollectBodyAugmentRoots(owner, roots, emptyLimbSlots);
+
+        PersistentInventoryChassisState? chassis = null;
+        if (emptyLimbSlots != null)
+        {
+            var captureCell = TryComp<PowerCellSlotComponent>(owner, out var slot);
+            if (slot != null && _powerCells.TryGetBatteryFromSlot(owner, out var cell, out _))
+                roots.Add(new CaptureRoot(PersistentInventoryRootKind.ChassisCell, slot.CellSlotId, cell.Value));
+
+            var collectorRemoved = _body.GetBodyChildrenOfType(owner, BodyPartType.Torso).Any(part =>
+                part.Component.Organs.ContainsKey("radcollector") &&
+                !_body.GetPartOrgans(part.Id, part.Component).Any(organ => organ.Component.SlotId == "radcollector"));
+            chassis = new PersistentInventoryChassisState(captureCell, emptyLimbSlots, collectorRemoved);
+        }
+
         return CaptureRoots(
             roots,
             policyId,
             capturedAtUnixMilliseconds ?? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-            limits ?? GetConfiguredLimits());
+            limits ?? GetConfiguredLimits(),
+            chassis);
+    }
+
+    private HashSet<EntityUid> CollectDeployedMantisBlades(EntityUid owner)
+    {
+        var result = new HashSet<EntityUid>();
+        if (!TryComp<BodyComponent>(owner, out var body))
+            return result;
+
+        foreach (var (part, _) in _body.GetBodyChildren(owner, body))
+        {
+            if (TryComp<MantisBladeArmComponent>(part, out var mantis) && mantis.BladeUid is { } blade)
+                result.Add(blade);
+        }
+
+        return result;
+    }
+
+    private void CollectBodyAugmentRoots(EntityUid owner, List<CaptureRoot> roots, List<string>? emptyLimbSlots)
+    {
+        if (TryComp<BodyComponent>(owner, out var body) &&
+            body.RootContainer.ContainedEntity is { } rootPart &&
+            TryComp<BodyPartComponent>(rootPart, out var rootPartComp))
+        {
+            var persistedParts = new HashSet<EntityUid>();
+            var queue = new Queue<(EntityUid PartUid, BodyPartComponent PartComp, string Path)>();
+            queue.Enqueue((rootPart, rootPartComp, string.Empty));
+
+            while (queue.TryDequeue(out var current))
+            {
+                var organPartPath = string.IsNullOrEmpty(current.Path) ? "torso" : current.Path;
+                foreach (var (organUid, organComp) in _body.GetPartOrgans(current.PartUid, current.PartComp)
+                             .OrderBy(entry => entry.Component.SlotId, StringComparer.Ordinal))
+                {
+                    if (!IsPersistedBodyOrgan(organUid, organComp))
+                        continue;
+
+                    roots.Add(new CaptureRoot(
+                        PersistentInventoryRootKind.BodyOrgan,
+                        $"{organPartPath}:{organComp.SlotId}",
+                        organUid));
+                }
+
+                foreach (var slotId in current.PartComp.Children.Keys.Order(StringComparer.Ordinal))
+                {
+                    var childPath = string.IsNullOrEmpty(current.Path)
+                        ? slotId
+                        : $"{current.Path}/{slotId}";
+                    if (!_containers.TryGetContainer(
+                            current.PartUid,
+                            SharedBodySystem.GetPartSlotContainerId(slotId),
+                            out var container) || container.ContainedEntities.Count == 0)
+                    {
+                        if (emptyLimbSlots != null &&
+                            current.PartComp.Children[slotId].Type is BodyPartType.Arm or BodyPartType.Hand or BodyPartType.Leg or BodyPartType.Foot)
+                            emptyLimbSlots.Add(childPath);
+
+                        continue;
+                    }
+
+                    foreach (var childUid in container.ContainedEntities)
+                    {
+                        if (!TryComp<BodyPartComponent>(childUid, out var childPartComp))
+                            continue;
+
+                        if (IsPersistedBodyPart(childUid, current.PartUid, persistedParts))
+                        {
+                            persistedParts.Add(childUid);
+                            roots.Add(new CaptureRoot(
+                                PersistentInventoryRootKind.BodyPart,
+                                childPath,
+                                childUid));
+                        }
+
+                        queue.Enqueue((childUid, childPartComp, childPath));
+                    }
+                }
+            }
+        }
+
+        if (TryComp<ImplantedComponent>(owner, out var implanted))
+        {
+            var orderedImplants = implanted.ImplantContainer.ContainedEntities
+                .Where(uid => !HasComp<NoPersistentInventoryComponent>(uid) && HasComp<SubdermalImplantComponent>(uid))
+                .Select(uid => (Uid: uid, ProtoId: Prototype(uid)?.ID ?? string.Empty))
+                .Where(entry => !string.IsNullOrEmpty(entry.ProtoId))
+                .OrderBy(entry => entry.ProtoId, StringComparer.Ordinal)
+                .ThenBy(entry => entry.Uid.ToString(), StringComparer.Ordinal)
+                .ToArray();
+
+            for (var index = 0; index < orderedImplants.Length; index++)
+            {
+                roots.Add(new CaptureRoot(
+                    PersistentInventoryRootKind.SubdermalImplant,
+                    $"{index}:{orderedImplants[index].ProtoId}",
+                    orderedImplants[index].Uid));
+            }
+        }
+    }
+
+    private bool IsPersistedBodyPart(EntityUid partUid, EntityUid parentUid, HashSet<EntityUid> persistedParents)
+    {
+        if (HasComp<NoPersistentInventoryComponent>(partUid))
+            return false;
+
+        if (!HasComp<Wh40kProstheticComponent>(partUid) &&
+            !HasComp<CyberneticsComponent>(partUid) &&
+            !HasComp<MantisBladeArmComponent>(partUid))
+        {
+            return false;
+        }
+
+        // Skip default hands/feet auto-generated by an already-persisted parent prosthetic limb;
+        // reattaching the parent prosthetic recreates the matching child automatically.
+        if (persistedParents.Contains(parentUid) &&
+            TryComp<GenerateChildPartComponent>(parentUid, out var generated) &&
+            generated.ChildPart == partUid &&
+            Prototype(partUid) is { } childProto &&
+            string.Equals(childProto.ID, generated.Id.Id, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool IsPersistedBodyOrgan(EntityUid organUid, OrganComponent organComp)
+    {
+        if (HasComp<NoPersistentInventoryComponent>(organUid) ||
+            string.IsNullOrWhiteSpace(organComp.SlotId))
+        {
+            return false;
+        }
+
+        return HasComp<AugmentComponent>(organUid) ||
+               HasComp<Wh40kImplantSpecComponent>(organUid) ||
+               HasComp<CyberneticsComponent>(organUid) ||
+               HasComp<Wh40kCyberneticEyeComponent>(organUid) ||
+               HasComp<AugmentPowerCellSlotComponent>(organUid) ||
+               HasComp<AugmentArmComponent>(organUid);
     }
 
     public PersistentInventoryCaptureResult CaptureRoots(
         IReadOnlyList<CaptureRoot> sourceRoots,
         string policyId,
         long capturedAtUnixMilliseconds,
-        PersistentInventoryLimits limits)
+        PersistentInventoryLimits limits,
+        PersistentInventoryChassisState? chassis = null)
     {
         if (!_prototypes.TryIndex<PersistentInventoryPolicyPrototype>(policyId, out var policy))
             return Rejected($"Unknown persistent inventory policy {policyId}.");
@@ -328,7 +507,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             if (safetyError != null)
                 return Rejected(safetyError, state.DeniedPrototypeIds);
 
-            var result = CaptureEntity(root.Entity, depth: 1, state);
+            var result = CaptureEntity(root.Entity, depth: 1, state, root.Kind);
             if (result.Status == CaptureEntityStatus.Rejected)
                 return Rejected(result.Error!, state.DeniedPrototypeIds);
 
@@ -344,7 +523,8 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             policy.ID,
             policy.Version,
             payloadRoots,
-            state.Entities);
+            state.Entities,
+            chassis);
 
         try
         {
@@ -402,12 +582,16 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             return RestoreFailed("Persistent inventory policy version is unavailable.");
         }
 
+        var rootKindByEntityId = payload.Roots.ToDictionary(root => root.EntityId, root => root.Kind);
         foreach (var entityState in payload.Entities)
         {
             if (!_prototypes.TryIndex<EntityPrototype>(entityState.PrototypeId, out var prototype))
                 return RestoreFailed($"Persistent inventory prototype {entityState.PrototypeId} is unavailable.");
 
-            var policyError = ValidatePrototypePolicy(prototype, policy);
+            PersistentInventoryRootKind? rootKind = rootKindByEntityId.TryGetValue(entityState.EntityId, out var foundKind)
+                ? foundKind
+                : null;
+            var policyError = ValidatePrototypePolicy(prototype, policy, rootKind);
             if (policyError != null)
                 return RestoreFailed(policyError);
         }
@@ -499,7 +683,8 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                 rootSources,
                 payload.PolicyId,
                 payload.CapturedAtUnixMilliseconds,
-                activeLimits);
+                activeLimits,
+                payload.Chassis);
 
             if (!verification.IsSuccess || verification.Payload == null)
                 return CleanupAndFail(spawned, verification.Error ?? "Cannot verify restored persistent inventory.");
@@ -524,7 +709,8 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                 spawned,
                 roots,
                 null,
-                migrationActions);
+                migrationActions,
+                payload.Chassis);
         }
         catch (Exception exception)
         {
@@ -543,7 +729,11 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         }
     }
 
-    private CaptureEntityResult CaptureEntity(EntityUid uid, int depth, CaptureState state)
+    private CaptureEntityResult CaptureEntity(
+        EntityUid uid,
+        int depth,
+        CaptureState state,
+        PersistentInventoryRootKind? rootKind = null)
     {
         if (depth > state.Limits.MaxDepth)
             return CaptureEntityResult.Rejected("Persistent inventory depth limit exceeded.");
@@ -554,7 +744,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         if (!TryComp(uid, out MetaDataComponent? metadata) || metadata.EntityPrototype is not { } prototype)
             return CaptureEntityResult.Rejected("Persistent inventory contains an entity without a prototype.");
 
-        var policyError = ValidateEntityPolicy(uid, prototype, state.Policy, out var explicitlyDenied);
+        var policyError = ValidateEntityPolicy(uid, prototype, state.Policy, rootKind, out var explicitlyDenied);
         if (policyError != null)
         {
             if (explicitlyDenied)
@@ -658,6 +848,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         EntityUid uid,
         EntityPrototype prototype,
         PersistentInventoryPolicyPrototype policy,
+        PersistentInventoryRootKind? rootKind,
         out bool explicitlyDenied)
     {
         explicitlyDenied = HasComp<NoPersistentInventoryComponent>(uid);
@@ -672,17 +863,53 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             return $"Prototype {prototype.ID} requires policy {overridePolicy}.";
         }
 
-        var error = ValidatePrototypePolicy(prototype, policy);
+        var error = ValidatePrototypePolicy(prototype, policy, rootKind);
         explicitlyDenied = error != null;
         return error;
     }
 
     private string? ValidatePrototypePolicy(
         EntityPrototype prototype,
-        PersistentInventoryPolicyPrototype policy)
+        PersistentInventoryPolicyPrototype policy,
+        PersistentInventoryRootKind? rootKind = null)
     {
-        if (!prototype.Components.ContainsKey("Item"))
+        var isSubdermal = rootKind == PersistentInventoryRootKind.SubdermalImplant;
+        var isBodyPart = rootKind == PersistentInventoryRootKind.BodyPart;
+        var isBodyOrgan = rootKind == PersistentInventoryRootKind.BodyOrgan;
+
+        if (rootKind == PersistentInventoryRootKind.ChassisCell && !prototype.Components.ContainsKey("PowerCell"))
+            return $"Prototype {prototype.ID} is not a power cell.";
+
+        if (isSubdermal)
+        {
+            if (!prototype.Components.ContainsKey("SubdermalImplant"))
+                return $"Prototype {prototype.ID} is not a subdermal implant.";
+        }
+        else if (!prototype.Components.ContainsKey("Item"))
+        {
             return $"Prototype {prototype.ID} is not an item.";
+        }
+
+        if (isBodyPart &&
+            (!prototype.Components.ContainsKey("BodyPart") ||
+             (!prototype.Components.ContainsKey("Wh40kProsthetic") &&
+              !prototype.Components.ContainsKey("Cybernetics") &&
+              !prototype.Components.ContainsKey("MantisBladeArm"))))
+        {
+            return $"Prototype {prototype.ID} is not a persistable cybernetic body part.";
+        }
+
+        if (isBodyOrgan &&
+            (!prototype.Components.ContainsKey("Organ") ||
+             (!prototype.Components.ContainsKey("Augment") &&
+              !prototype.Components.ContainsKey("Wh40kImplantSpec") &&
+              !prototype.Components.ContainsKey("Cybernetics") &&
+              !prototype.Components.ContainsKey("Wh40kCyberneticEye") &&
+              !prototype.Components.ContainsKey("AugmentPowerCellSlot") &&
+              !prototype.Components.ContainsKey("AugmentArm"))))
+        {
+            return $"Prototype {prototype.ID} is not a persistable cybernetic organ.";
+        }
 
         if (prototype.Components.ContainsKey("NoPersistentInventory"))
             return $"Prototype {prototype.ID} has NoPersistentInventory.";
@@ -707,6 +934,11 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
 
         foreach (var componentId in prototype.Components.Keys)
         {
+            if (isBodyPart && string.Equals(componentId, "BodyPart", StringComparison.Ordinal))
+                continue;
+            if (isBodyOrgan && string.Equals(componentId, "Organ", StringComparison.Ordinal))
+                continue;
+
             if (IsDeniedPolicyComponent(componentId))
                 return $"Prototype {prototype.ID} has denied component {componentId}.";
         }
@@ -1020,7 +1252,9 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
     private static bool ShouldPersistContainer(string containerId)
     {
         return !containerId.StartsWith("solution@", StringComparison.Ordinal) &&
-               !string.Equals(containerId, ActionsContainerComponent.ContainerId, StringComparison.Ordinal);
+               !string.Equals(containerId, ActionsContainerComponent.ContainerId, StringComparison.Ordinal) &&
+               !containerId.StartsWith(SharedBodySystem.PartSlotContainerIdPrefix, StringComparison.Ordinal) &&
+               !containerId.StartsWith(SharedBodySystem.OrganSlotContainerIdPrefix, StringComparison.Ordinal);
     }
 
     private static string DescribeRoundTripDifference(

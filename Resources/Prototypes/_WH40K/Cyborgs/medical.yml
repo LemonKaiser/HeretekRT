@@ -1,0 +1,46 @@
+# Treatment module medical stacks: restock from the cyborg's power cell (40 J/unit).
+
+- type: entity
+  id: Wh40kBrutepackBorg
+  parent: Brutepack10Lingering
+  suffix: Borg, Refilling
+  components:
+  - type: Wh40kBorgStackRefill
+    target: 10
+    chargePerUnit: 40
+
+- type: entity
+  id: Wh40kOintmentBorg
+  parent: Ointment10Lingering
+  suffix: Borg, Refilling
+  components:
+  - type: Wh40kBorgStackRefill
+    target: 10
+    chargePerUnit: 40
+
+- type: entity
+  id: Wh40kGauzeBorg
+  parent: Gauze10Lingering
+  suffix: Borg, Refilling
+  components:
+  - type: Wh40kBorgStackRefill
+    target: 10
+    chargePerUnit: 40
+
+- type: entity
+  id: Wh40kBloodpackBorg
+  parent: Bloodpack10Lingering
+  suffix: Borg, Refilling
+  components:
+  - type: Wh40kBorgStackRefill
+    target: 10
+    chargePerUnit: 40
+
+- type: entity
+  id: Wh40kSutureBorg
+  parent: Suture10Lingering
+  suffix: Borg, Refilling
+  components:
+  - type: Wh40kBorgStackRefill
+    target: 10
+    chargePerUnit: 40

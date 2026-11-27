@@ -4,6 +4,8 @@ using Content.Client.Message;
 using Content.Shared.Atmos;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Shitmed.Targeting; // Shitmed
+using Content.Shared._WH40K.Augments;
+using Content.Shared._WH40K.Biotype;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
@@ -172,6 +174,13 @@ namespace Content.Client.HealthAnalyzer.UI
                     ? Loc.GetString(_prototypes.Index<SpeciesPrototype>(humanoidAppearanceComponent.Species).Name)
                     : Loc.GetString("health-analyzer-window-entity-unknown-species-text");
 
+            var showCyberneticBiotype =
+                _entityManager.TryGetComponent<Wh40kBiotypeComponent>(_target.Value, out var biotypeComp) &&
+                biotypeComp.Biotype == Wh40kBiotype.Cybernetic;
+            BiotypeLabel.Visible = showCyberneticBiotype;
+            if (showCyberneticBiotype)
+                BiotypeLabel.Text = Loc.GetString(Wh40kBiotypeGates.NameKey(biotypeComp!.Biotype));
+
             // Basic Diagnostic
 
             TemperatureLabel.Text = !float.IsNaN(msg.Temperature)
@@ -247,6 +256,7 @@ namespace Content.Client.HealthAnalyzer.UI
             IReadOnlyDictionary<string, FixedPoint2> damagePerType = displayedDamage.DamageDict;
 
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
+            DrawInstalledCybernetics(msg.InstalledAugments);
         }
         // Shitmed Change End
         private static string GetStatus(MobState mobState)
@@ -367,6 +377,75 @@ namespace Content.Client.HealthAnalyzer.UI
                     groupContainer.AddChild(CreateDiagnosticItemLabel(damageString.Insert(0, " · ")));
                 }
             }
+        }
+
+        private void DrawInstalledCybernetics(IReadOnlyList<Wh40kScannedAugment>? augments)
+        {
+            if (augments == null || augments.Count == 0)
+                return;
+
+            var section = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                Margin = new Thickness(0, 8, 0, 0),
+                SeparationOverride = 2,
+            };
+
+            section.AddChild(new PanelContainer
+            {
+                StyleClasses = { "LowDivider" },
+                Margin = new Thickness(0, 0, 0, 4),
+            });
+
+            section.AddChild(new Label
+            {
+                Text = Loc.GetString("wh40k-analyzer-cybernetics-heading"),
+                FontColorOverride = Color.FromHex("#E1C17E"),
+            });
+
+            foreach (var entry in augments)
+            {
+                var augmentName = _prototypes.TryIndex<EntityPrototype>(entry.PrototypeId, out var proto)
+                    ? proto.Name
+                    : entry.PrototypeId;
+                var msg = new FormattedMessage();
+                msg.PushColor(Color.FromHex("#B7AD9B"));
+                msg.AddText($"{GetAugmentZoneLabel(entry.Zone)}: ");
+                msg.Pop();
+                msg.PushColor(Color.FromHex("#ff9100"));
+                msg.AddText(augmentName);
+                msg.Pop();
+
+                var row = new RichTextLabel
+                {
+                    HorizontalExpand = true,
+                    MaxWidth = 285,
+                    Margin = new Thickness(0, 1, 12, 1),
+                };
+                row.SetMessage(msg);
+                section.AddChild(row);
+            }
+
+            GroupsContainer.AddChild(section);
+        }
+
+        private static string GetAugmentZoneLabel(Wh40kAugmentBedZone zone)
+        {
+            return zone switch
+            {
+                Wh40kAugmentBedZone.LeftEye => Loc.GetString("wh40k-analyzer-zone-left-eye"),
+                Wh40kAugmentBedZone.RightEye => Loc.GetString("wh40k-analyzer-zone-right-eye"),
+                Wh40kAugmentBedZone.Eyes => Loc.GetString("wh40k-analyzer-zone-eyes"),
+                Wh40kAugmentBedZone.LeftArm => Loc.GetString("wh40k-analyzer-zone-left-arm"),
+                Wh40kAugmentBedZone.RightArm => Loc.GetString("wh40k-analyzer-zone-right-arm"),
+                Wh40kAugmentBedZone.LeftHand => Loc.GetString("wh40k-analyzer-zone-left-hand"),
+                Wh40kAugmentBedZone.RightHand => Loc.GetString("wh40k-analyzer-zone-right-hand"),
+                Wh40kAugmentBedZone.LeftLeg => Loc.GetString("wh40k-analyzer-zone-left-leg"),
+                Wh40kAugmentBedZone.RightLeg => Loc.GetString("wh40k-analyzer-zone-right-leg"),
+                Wh40kAugmentBedZone.LeftFoot => Loc.GetString("wh40k-analyzer-zone-left-foot"),
+                Wh40kAugmentBedZone.RightFoot => Loc.GetString("wh40k-analyzer-zone-right-foot"),
+                _ => Loc.GetString("wh40k-analyzer-zone-core"),
+            };
         }
 
         private Texture GetTexture(string texture)

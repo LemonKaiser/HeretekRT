@@ -1,6 +1,7 @@
 using Content.Shared.Body.Part;
 using Content.Shared.Body.Systems;
 using Content.Shared._Shitmed.Body.Events;
+using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Robust.Shared.Network;
@@ -11,6 +12,7 @@ namespace Content.Shared._Shitmed.BodyEffects.Subsystems;
 public sealed partial class GenerateChildPartSystem : EntitySystem
 {
     [Dependency] private SharedBodySystem _bodySystem = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
     public override void Initialize()
@@ -38,6 +40,19 @@ public sealed partial class GenerateChildPartSystem : EntitySystem
         // I pinky swear to also move this to the server side properly next update :)
         if (_net.IsServer)
         {
+            // Reuse an already-attached child part if the body or restore system populated the slot first.
+            foreach (var childSlotId in partComp.Children.Keys)
+            {
+                if (_containers.TryGetContainer(uid, SharedBodySystem.GetPartSlotContainerId(childSlotId), out var existingCont) &&
+                    existingCont is ContainerSlot existingSlot &&
+                    existingSlot.ContainedEntity is { } existingChild)
+                {
+                    component.ChildPart = existingChild;
+                    component.Active = true;
+                    return;
+                }
+            }
+
             var childPart = Spawn(component.Id, new EntityCoordinates(partComp.Body.Value, Vector2.Zero));
 
             if (!TryComp(childPart, out BodyPartComponent? childPartComp))

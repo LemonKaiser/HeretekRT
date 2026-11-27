@@ -127,7 +127,8 @@ public sealed partial class Wh40kTraitsPage : BoxContainer
             return TraitSelectionState.Selected;
 
         var profile = _draft.Profile;
-        if (trait.SpeciesBlacklist.Contains(profile.Species))
+        if (trait.SpeciesBlacklist.Contains(profile.Species) ||
+            Content.Shared._WH40K.Biotype.Wh40kBiotypeGates.TraitBlocked(trait, profile, _prototypeManager))
             return TraitSelectionState.Incompatible;
 
         foreach (var selectedId in profile.TraitPreferences)
@@ -274,7 +275,9 @@ public sealed partial class Wh40kTraitsPage : BoxContainer
 
         var profile = _draft.Profile;
         var restricted = profile.TraitPreferences
-            .Where(id => _prototypeManager.TryIndex<TraitPrototype>(id, out var trait) && trait.SpeciesBlacklist.Contains(profile.Species))
+            .Where(id => _prototypeManager.TryIndex<TraitPrototype>(id, out var trait) &&
+                         (trait.SpeciesBlacklist.Contains(profile.Species) ||
+                          Content.Shared._WH40K.Biotype.Wh40kBiotypeGates.TraitBlocked(trait, profile, _prototypeManager)))
             .ToList();
         if (restricted.Count == 0)
             return false;

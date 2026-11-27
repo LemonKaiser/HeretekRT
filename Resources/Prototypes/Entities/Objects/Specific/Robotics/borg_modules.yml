@@ -203,6 +203,26 @@
     - WelderIndustrial # Frontier
     - MaintenanceJack # Frontier
     - NaniteApplicator # Monolith
+  - type: DroppableBorgModule
+    moduleId: Tools
+    items:
+    - id: PowerCellSmallPrinted
+      whitelist:
+        components:
+        - PowerCell
+        - GasTank
+        - AmeFuelContainer
+        - Flatpack
+        - ReagentTank
+        - NFShipyardVoucher
+    - id: SheetSteel1
+      whitelist:
+        components:
+        - Stack
+    - id: Wh40kBorgIdCard
+      whitelist:
+        components:
+        - IdCard
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: tool-module }
 
@@ -346,14 +366,15 @@
   - type: ItemBorgModule
     moduleId: Construction # Frontier
     items:
-    - SheetSteelLingering0
-    - SheetGlassLingering0
-    - SheetPlasticLingering0
-    - SheetPlasteelLingering0
-    - PartRodMetalLingering0
-    - FloorTileItemSteelLingering0
-    - FloorTileItemDarkLingering0
-    - FloorTileItemWhiteLingering0
+    - Wh40kSheetSteelBorg
+    - Wh40kSheetGlassBorg
+    - Wh40kSheetRGlassBorg
+    - Wh40kSheetPlasticBorg
+    - Wh40kSheetPlasteelBorg
+    - Wh40kPartRodMetalBorg
+    - Wh40kFloorTileItemSteelBorg
+    - Wh40kFloorTileItemDarkBorg
+    - Wh40kFloorTileItemWhiteBorg
   # Frontier: droppable borg items
   - type: DroppableBorgModule
     moduleId: Construction
@@ -395,6 +416,9 @@
     - RCDRecharging
     - RPDRecharging # Goob
     - ShipRepairDeviceRecharging # Mono
+    - GasAnalyzer
+    - GeigerCounter
+    - trayScanner
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: rcd-module }
 
@@ -495,11 +519,14 @@
     moduleId: Treatment # Frontier
     items:
     - HandheldHealthAnalyzerUnpowered
-    - Brutepack10Lingering
-    - Ointment10Lingering
-    - Gauze10Lingering
-    - Bloodpack10Lingering
+    - Wh40kBrutepackBorg
+    - Wh40kOintmentBorg
+    - Wh40kGauzeBorg
+    - Wh40kBloodpackBorg
+    - Wh40kSutureBorg
+    - DefibrillatorOneHandedUnpowered
     - Syringe
+    - CableApcStackLingering10
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: treatment-module }
 
@@ -536,10 +563,19 @@
     # - Beaker # Frontier
     - BorgDropper
     - BorgHypo
+    - HandLabeler
   # Frontier: droppable borg items
   - type: DroppableBorgModule
     moduleId: AdvancedTreatment
     items:
+    - id: Beaker
+      whitelist:
+        tags:
+        - GlassBeaker
+    - id: Beaker
+      whitelist:
+        tags:
+        - GlassBeaker
     - id: Beaker
       whitelist:
         tags:

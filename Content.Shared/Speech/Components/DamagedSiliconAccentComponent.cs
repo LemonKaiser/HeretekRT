@@ -26,6 +26,12 @@ public sealed partial class DamagedSiliconAccentComponent : Component
     public float MaxDamageCorruption = 0.5f;
 
     /// <summary>
+    ///     Total damage below this deadzone produces no speech corruption.
+    /// </summary>
+    [DataField]
+    public FixedPoint2 DamageAtStartCorruption = 40;
+
+    /// <summary>
     ///     Probability of character corruption will increase linearly to <see cref="MaxDamageCorruption" /> once until
     ///     total damage is at or above this value.
     /// </summary>

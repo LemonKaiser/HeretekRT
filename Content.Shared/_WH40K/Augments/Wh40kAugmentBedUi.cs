@@ -23,6 +23,7 @@ public enum Wh40kAugmentBedZone : byte
     RightFoot,
     LeftEye,
     RightEye,
+    Head,
 }
 
 [Serializable, NetSerializable]

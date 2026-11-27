@@ -37,6 +37,7 @@ wh40k-augment-bed-zone-lefthand = Left hand
 wh40k-augment-bed-zone-righthand = Right hand
 wh40k-augment-bed-zone-leftfoot = Left foot
 wh40k-augment-bed-zone-rightfoot = Right foot
+wh40k-augment-bed-zone-head = Head
 wh40k-augment-bed-installed = Installed augmentations
 wh40k-augment-bed-compatible = Catalogue for this zone
 wh40k-augment-bed-no-catalogue = No supported models for this zone.

@@ -35,7 +35,7 @@ public sealed class VesselReferenceCatalog
                 Description = vessel.Description,
                 Price = vessel.Price,
                 Shipyard = LocalizeShipyardGroup(vessel.Group.ToString()),
-                SizeClass = vessel.Category.ToString(),
+                SizeClass = _loc.GetString($"shipyard-console-category-{vessel.Category}"),
                 EquipmentLoaded = false,
             };
 

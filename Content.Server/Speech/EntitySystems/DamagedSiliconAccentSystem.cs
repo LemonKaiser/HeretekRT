@@ -106,9 +106,13 @@ public sealed class DamagedSiliconAccentSystem : EntitySystem
 
     private string CorruptDamage(string message, FixedPoint2 totalDamage, ref DamagedSiliconAccentComponent comp)
     {
+        if (totalDamage <= comp.DamageAtStartCorruption)
+            return message;
+
         var outMsg = new StringBuilder();
-        // Linear interpolation of character damage probability
-        var damagePercent = Math.Clamp((float)totalDamage / (float)comp.DamageAtMaxCorruption, 0, 1);
+        // Linear interpolation of character damage probability above the deadzone
+        var span = MathF.Max(1f, (float) (comp.DamageAtMaxCorruption - comp.DamageAtStartCorruption));
+        var damagePercent = Math.Clamp((float) (totalDamage - comp.DamageAtStartCorruption) / span, 0, 1);
         var chanceToCorruptLetter = damagePercent * comp.MaxDamageCorruption;
         foreach (var letter in message)
         {

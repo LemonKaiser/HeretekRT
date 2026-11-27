@@ -1,0 +1,21 @@
+# Universal cyborg / servitor module category tags and targeting link ports.
+
+- type: Tag
+  id: BorgModulePrimaryWeapon
+
+- type: Tag
+  id: BorgModuleSecondaryWeapon
+
+- type: Tag
+  id: BorgModuleWithSimpleOverlay
+
+- type: sourcePort
+  id: TargetSource
+  name: signal-port-name-target-source
+  description: signal-port-description-target-source
+  defaultLinks: [ TargetReceiver ]
+
+- type: sinkPort
+  id: TargetReceiver
+  name: signal-port-name-target-receiver
+  description: signal-port-description-target-receiver

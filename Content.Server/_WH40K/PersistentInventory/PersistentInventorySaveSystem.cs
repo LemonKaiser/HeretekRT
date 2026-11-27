@@ -898,6 +898,11 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
         else
             _cryo.CompletePersistentCryoWorldRetirement(request.Body, null, request.UserId);
 
+        // Delete the body first so attached prosthetic parts/organs are terminated cleanly
+        // with the body instead of firing live detach/drop handlers onto the cryopod tile.
+        if (Exists(request.Body) && !TerminatingOrDeleted(request.Body))
+            EntityManager.DeleteEntity(request.Body);
+
         foreach (var entity in capture.CapturedEntities
                      .Concat(capture.DeniedEntities)
                      .Distinct()
@@ -906,9 +911,6 @@ public sealed class PersistentInventorySaveSystem : EntitySystem
             if (Exists(entity) && !TerminatingOrDeleted(entity))
                 EntityManager.DeleteEntity(entity);
         }
-
-        if (Exists(request.Body) && !TerminatingOrDeleted(request.Body))
-            EntityManager.DeleteEntity(request.Body);
     }
 
     private async Task<PersistentInventoryMutationResult> PromoteWithRetryAsync(

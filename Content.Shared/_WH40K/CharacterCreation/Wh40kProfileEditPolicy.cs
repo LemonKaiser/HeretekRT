@@ -32,6 +32,9 @@ public static class Wh40kProfileEditPolicy
         HumanoidCharacterProfile original,
         HumanoidCharacterProfile changed)
     {
+        var preservedBuild = changed.Wh40kBuild.Clone();
+        preservedBuild.Biotype = original.Wh40kBuild.Biotype;
+
         return changed
             .WithName(original.Name)
             .WithAge(original.Age)
@@ -39,6 +42,7 @@ public static class Wh40kProfileEditPolicy
             .WithGender(original.Gender)
             .WithSpecies(original.Species)
             .WithSpeechStyle(original.SpeechStyle)
-            .WithCharacterAppearance(new HumanoidCharacterAppearance(original.Appearance));
+            .WithCharacterAppearance(new HumanoidCharacterAppearance(original.Appearance))
+            .WithWh40kCharacterBuild(preservedBuild);
     }
 }
