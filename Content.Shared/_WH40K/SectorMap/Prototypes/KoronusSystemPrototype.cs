@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Shared.Random;
+using Content.Shared.Station;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -66,6 +67,12 @@ public sealed partial class KoronusSystemPrototype : IPrototype
     /// </summary>
     [DataField]
     public ResPath? InitialGridPath;
+
+    /// <summary>
+    /// Station setup for an authored initial grid outside the start system.
+    /// </summary>
+    [DataField]
+    public StationConfig? InitialStation;
 
     /// <summary>
     /// When positive, places the loaded initial grid at this exact distance from the system's

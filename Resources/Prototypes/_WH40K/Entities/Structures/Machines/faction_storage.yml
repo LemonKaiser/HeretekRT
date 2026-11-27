@@ -41,3 +41,12 @@
   components:
   - type: FactionStorage
     faction: ChartistFleet
+
+- type: entity
+  parent: WH40KBaseFactionStorage
+  id: WH40KChaosFactionStorage
+  name: Chaos warband storage
+  description: A persistent communal store for the officers of the Chaos warband.
+  components:
+  - type: FactionStorage
+    faction: ChaosWarband

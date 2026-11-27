@@ -1,0 +1,6 @@
+- type: vessel
+  id: ChaosArvusWh40k
+  parent: Arvus
+  name: Defiled Arvus
+  description: A captured Arvus lighter refitted as the Red Sanctum's provisional transport.
+  group: Custom

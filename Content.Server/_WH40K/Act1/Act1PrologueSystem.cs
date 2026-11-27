@@ -2,6 +2,7 @@ using System.Numerics;
 using System.Linq;
 using Content.Server._WH40K.CharacterCreation;
 using Content.Server._WH40K.Dialogue;
+using Content.Server._WH40K.Roles;
 using Content.Server._NF.CryoSleep;
 using Content.Server.GameTicking;
 using Content.Server.Hands.Systems;
@@ -71,6 +72,7 @@ public sealed class Act1PrologueSystem : EntitySystem
     [Dependency] private Wh40kPlayerProgressManager _progress = default!;
     [Dependency] private SharedRoleSystem _roles = default!;
     [Dependency] private StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private FactionJobSystem _factionJobs = default!;
     [Dependency] private TransformSystem _transform = default!;
     [Dependency] private IGameTiming _timing = default!;
 
@@ -648,8 +650,23 @@ public sealed class Act1PrologueSystem : EntitySystem
         Act1PrologueInstanceComponent instance,
         bool sendFadeFromBlack)
     {
-        if (!TryFindFootfallArrival(out var destination))
+        EntityUid? station = null;
+        EntityCoordinates destination;
+        var job = instance.PostPrologueJob;
+        if (instance.PostPrologueProfile != null &&
+            _factionJobs.TryGetHereticArrival(session.UserId, out destination, out var chaosStation))
+        {
+            station = chaosStation;
+            job = FactionJobSystem.HereticJob;
+        }
+        else if (!TryFindFootfallArrival(out destination))
+        {
             return false;
+        }
+        else if (job == FactionJobSystem.HereticJob)
+        {
+            job = SharedGameTicker.FallbackOverflowJob;
+        }
 
         ClearCurrentVision(instance);
         if (HasComp<Act1ProloguePersonalLightComponent>(mob))
@@ -664,15 +681,18 @@ public sealed class Act1PrologueSystem : EntitySystem
         {
             _stationSpawning.SpawnPlayerMob(
                 destination,
-                instance.PostPrologueJob,
+                job,
                 profile,
-                station: null,
+                station,
                 entity: mob,
                 session: session);
 
-            EnsureComp<PlayerJobComponent>(mob).JobPrototype = instance.PostPrologueJob;
+            if (station is { } arrivalStation)
+                _factionJobs.AssignHereticArrival(session.UserId, mob, arrivalStation);
+
+            EnsureComp<PlayerJobComponent>(mob).JobPrototype = job;
             if (_mind.GetMind(session.UserId) is { } mind)
-                _roles.MindAddJobRole(mind, silent: true, jobPrototype: instance.PostPrologueJob);
+                _roles.MindAddJobRole(mind, silent: true, jobPrototype: job);
         }
         else
         {

@@ -49,3 +49,36 @@
     state: pda-wh40k-fleet
   - type: PdaBorderColor
     borderColor: "#4B8FC9"
+
+- type: entity
+  parent: BasePDA
+  id: WH40KChaosPDA
+  name: heretic PDA
+  description: A scarlet data slate issued by the Chaos warband.
+  suffix: WH40K, Chaos
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Pda
+    id: WH40KChaosIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-syndi
+  - type: Icon
+    state: pda-syndi
+  - type: PdaBorderColor
+    borderColor: "#AD4C4A"
+
+- type: entity
+  parent: StandardDogTag
+  id: WH40KChaosIDCard
+  name: Chaos warband dog tag
+  description: A defaced dog tag re-etched with the eight-pointed star.
+  suffix: WH40K, Chaos
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: IdCard
+    jobTitle: job-name-wh40k-heretic
+    jobIcon: JobIconWH40KHeretic
+    companyName: ChaosWarband

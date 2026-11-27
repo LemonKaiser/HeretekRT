@@ -1,0 +1,138 @@
+- type: wh40kNpcFaction
+  id: RedSanctumWarband
+  name: wh40k-company-chaos-name
+
+- type: wh40kNpcProfile
+  id: RedSanctumQuartermaster
+  name: wh40k-chaos-quartermaster-name
+  description: wh40k-chaos-quartermaster-desc
+  role: Quartermaster
+  department: chaos
+  kind: Special
+  exclusivity: VenueUnique
+  faction: RedSanctumWarband
+  gear: WH40KChaosQuartermasterGear
+  services: [Trade]
+
+- type: wh40kNpcAnchor
+  id: RedSanctumQuartermaster
+  profile: RedSanctumQuartermaster
+
+- type: startingGear
+  parent: WH40KHereticGear
+  id: WH40KChaosQuartermasterGear
+  equipment:
+    back: ClothingBackpackCULT2
+    neck: ClothingNeckCloakRainChs
+
+- type: entity
+  parent: MobWH40KFootfallNpcBase
+  id: MobWH40KChaosQuartermaster
+  name: wh40k-chaos-quartermaster-name
+  description: wh40k-chaos-quartermaster-desc
+  suffix: WH40K, Chaos, Merchant
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: RedSanctumQuartermaster
+  - type: Loadout
+    prototypes: [WH40KChaosQuartermasterGear]
+  - type: UserInterface
+    interfaces:
+      enum.MerchantUiKey.Key:
+        type: MerchantBoundUserInterface
+        interactionRange: 3
+  - type: Merchant
+    title: wh40k-chaos-merchant-title
+    greeting: wh40k-chaos-merchant-greeting
+    refreshInterval: 900
+    displayCount: 8
+    interactionRange: 3
+    offers:
+    - product: WeaponHereticLaserLasgun
+      price: 3400
+      minStock: 3
+      maxStock: 3
+    - product: WeaponMeleeChaosNailBoard
+      price: 500
+      minStock: 3
+      maxStock: 3
+    - product: ClothingOuterArmorChaosVest
+      price: 1800
+      minStock: 4
+      maxStock: 4
+    - product: ClothingHeadHelmetFlakCHAOS
+      price: 850
+      minStock: 4
+      maxStock: 4
+    - product: LasgunPowerCell
+      price: 350
+      minStock: 8
+      maxStock: 8
+    - product: EmergencyMedipen
+      price: 450
+      minStock: 6
+      maxStock: 6
+    - product: FoodSnackImperialHardtack
+      price: 40
+      minStock: 10
+      maxStock: 10
+    - product: DrinkWaterBottleFull
+      price: 40
+      minStock: 10
+      maxStock: 10
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KChaosQuartermaster
+  name: Chaos quartermaster spawn point
+  suffix: WH40K, Chaos, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: RedSanctumQuartermaster
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KChaosQuartermaster
+
+- type: wh40kNpcProfile
+  id: RedSanctumDockmaster
+  name: wh40k-chaos-dockmaster-name
+  description: wh40k-chaos-dockmaster-desc
+  role: Dockmaster
+  department: chaos
+  kind: Special
+  exclusivity: VenueUnique
+  faction: RedSanctumWarband
+  gear: WH40KHereticGear
+  services: [Navigation, Social]
+  dialogue: WH40KChaosDockmaster
+
+- type: wh40kNpcAnchor
+  id: RedSanctumDockmaster
+  profile: RedSanctumDockmaster
+
+- type: entity
+  parent: MobWH40KFootfallNpcBase
+  id: MobWH40KChaosDockmaster
+  name: wh40k-chaos-dockmaster-name
+  description: wh40k-chaos-dockmaster-desc
+  suffix: WH40K, Chaos
+  components:
+  - type: Wh40kNpcIdentity
+    anchor: RedSanctumDockmaster
+  - type: Loadout
+    prototypes: [WH40KHereticGear]
+  - type: DialogueInteractable
+    dialogue: WH40KChaosDockmaster
+    interactionRange: 3
+    maxDialogueRange: 3
+    requireLineOfSight: true
+
+- type: entity
+  parent: MarkerWH40KFootfallNpcBase
+  id: MarkerWH40KChaosDockmaster
+  name: Chaos dockmaster spawn point
+  suffix: WH40K, Chaos, Mapping
+  components:
+  - type: Wh40kNpcAnchor
+    anchor: RedSanctumDockmaster
+  - type: Wh40kNpcSpawn
+    prototype: MobWH40KChaosDockmaster

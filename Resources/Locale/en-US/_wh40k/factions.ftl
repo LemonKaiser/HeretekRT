@@ -1,6 +1,6 @@
-wh40k-faction-catalog-title = FACTIONS OF FOOTFALL
+wh40k-faction-catalog-title = FACTIONS OF THE KORONUS EXPANSE
 wh40k-faction-lobby-caption = Membership requires approval. Read about the faction and its requirements in its profile.
-wh40k-faction-profile-label = FACTION OF FOOTFALL
+wh40k-faction-profile-label = FACTION OF THE KORONUS EXPANSE
 wh40k-faction-window-title = Factions
 wh40k-faction-management-title = FACTION MANAGEMENT
 wh40k-faction-your-faction = YOUR FACTION

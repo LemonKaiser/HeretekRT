@@ -1,0 +1,68 @@
+- type: job
+  id: WH40KHeretic
+  name: job-name-wh40k-heretic
+  description: job-description-wh40k-heretic
+  playTimeTracker: JobWH40KHeretic
+  startingGear: WH40KHereticGear
+  icon: JobIconWH40KHeretic
+  supervisors: job-supervisors-wh40k-heretic
+  displayWeight: 40
+  assignedCompany: ChaosWarband
+  requiredCompany: ChaosWarband
+  alwaysUseSpawner: true
+  canBeAntag: false
+  access: [ Maintenance, External ]
+
+- type: playTimeTracker
+  id: JobWH40KHeretic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconWH40KHeretic
+  icon:
+    sprite: /Textures/_WH40K/Interface/Misc/chaos_job_icons.rsi
+    state: heretic
+  jobName: job-name-wh40k-heretic
+  allowSelection: false
+
+- type: startingGear
+  id: WH40KHereticGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCultist1
+    back: ClothingBackpackCULT1
+    shoes: ClothingShoesChaosBoots1
+    belt: chaosbelt2
+    head: ClothingHeadHelmetFlakCHAOS
+    outerClothing: ClothingOuterArmorChaosVest
+    ears: ClothingHeadsetWanderer
+    id: WH40KChaosPDA
+  storage:
+    back:
+    - DoubleEmergencyOxygenTankFilled
+    - ClothingMaskBreath
+    - EmergencyMedipen
+    - FoodSnackImperialHardtack
+    - DrinkWaterBottleFull
+
+- type: department
+  id: WH40KChaos
+  name: department-wh40k-chaos
+  description: department-wh40k-chaos-description
+  color: "#AD4C4A"
+  roles:
+  - WH40KHeretic
+
+- type: entity
+  id: SpawnPointWH40KHeretic
+  parent: SpawnPointJobBase
+  name: heretic spawn point
+  suffix: WH40K, Job Spawn
+  categories: [Spawner]
+  components:
+  - type: SpawnPoint
+    job_id: WH40KHeretic
+  - type: Sprite
+    layers:
+    - state: green
+    - sprite: /Textures/_WH40K/Interface/Misc/chaos_job_icons.rsi
+      state: heretic

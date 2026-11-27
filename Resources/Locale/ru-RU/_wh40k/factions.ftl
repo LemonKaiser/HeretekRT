@@ -1,6 +1,6 @@
-wh40k-faction-catalog-title = ФРАКЦИИ ФУТФОЛА
+wh40k-faction-catalog-title = ФРАКЦИИ ПРОСТРАНСТВА КОРОНУСА
 wh40k-faction-lobby-caption = Вступление после одобрения заявки. Описание и условия — в профиле фракции.
-wh40k-faction-profile-label = ФРАКЦИЯ ФУТФОЛА
+wh40k-faction-profile-label = ФРАКЦИЯ ПРОСТРАНСТВА КОРОНУСА
 wh40k-faction-window-title = Фракции
 wh40k-faction-management-title = УПРАВЛЕНИЕ ФРАКЦИЕЙ
 wh40k-faction-your-faction = ВАША ФРАКЦИЯ

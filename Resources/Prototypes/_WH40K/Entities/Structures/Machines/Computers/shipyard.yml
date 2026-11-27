@@ -26,3 +26,19 @@
       state: shipyard_nfsd
     - map: ["computerLayerKeys"]
       state: telesci_key
+
+- type: entity
+  id: WH40KChaosShipyardComputer
+  parent: ComputerShipyardBase
+  name: Chaos shipyard console
+  description: The Red Sanctum's provisional shipyard terminal.
+  suffix: WH40K, Chaos
+  components:
+  - type: ShipyardListing
+    groups: []
+    shuttles: [ ChaosArvusWh40k ]
+  - type: ShipyardConsole
+    canTransferDeed: false
+  - type: CompanyAccessReader
+    requiredCompanies: [ ChaosWarband ]
+    popupMessage: wh40k-chaos-shipyard-access-denied

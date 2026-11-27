@@ -463,20 +463,41 @@
 - type: koronusSystem
   id: SanctumOfTaaphetus
   sector: KoronusExpanse
-  displayName: Sanctum of Taaphetus
+  displayName: koronus-system-taaphetus-name
   uiPosition: 0.153, 0.288
-  initialGridPath: /Maps/Test/empty.yml
+  parallax: WH40KKoronusAbyss
+  spaceDescription: koronus-space-abyss-description
+  enabled: true
+  pauseWhenEmpty: false
+  initialGridPath: /Maps/_WH40K/Chaos/red-sanctum.yml
+  initialGridDisplayName: wh40k-chaos-outpost-name
+  initialGridSpawnDistance: 2600
+  initialStation:
+    stationProto: RecordsFrontierOutpost
+    components:
+    - type: ExtraStationInformation
+      icon: /Textures/_WH40K/Companies/chaos.svg.192dpi.png
+      stationSubtext: wh40k-chaos-outpost-subtext
+      stationDescription: wh40k-chaos-outpost-description
+      lobbySortOrder: 2
+    - type: StationJobs
+      availableJobs:
+        WH40KHeretic: [ -1, -1 ]
 
 - type: koronusSystem
   id: NeosCharoitus
   sector: KoronusExpanse
-  displayName: Neos Charoitus
+  displayName: koronus-system-neos-charoitus-name
   uiPosition: 0.206, 0.257
-  initialGridPath: /Maps/Test/empty.yml
+  parallax: WH40KKoronusAbyss
+  spaceDescription: koronus-space-abyss-description
+  enabled: true
 
 - type: koronusSystem
   id: DebrisOfBattaida
   sector: KoronusExpanse
-  displayName: Debris of Battaida
+  displayName: koronus-system-battaida-name
   uiPosition: 0.255, 0.253
-  initialGridPath: /Maps/Test/empty.yml
+  parallax: WH40KKoronusAbyss
+  spaceDescription: koronus-space-abyss-description
+  enabled: true

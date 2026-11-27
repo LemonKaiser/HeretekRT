@@ -1,5 +1,4 @@
 # Fixed Koronus warp topology reconstructed from tochkimap.png. Routes are data, never generated at runtime.
-# The small Sanctum / Neos / Debris cluster is deliberately isolated until its missing bridge is authored.
 
 - type: koronusRoute
   id: FootfallToAivorius
@@ -448,6 +447,13 @@
   sector: KoronusExpanse
   from: Grace
   to: Damaris
+
+- type: koronusRoute
+  id: SystemSpeculumToDebrisOfBattaida
+  sector: KoronusExpanse
+  from: SystemSpeculum
+  to: DebrisOfBattaida
+  routeClass: Dangerous
 
 - type: koronusRoute
   id: SanctumOfTaaphetusToNeosCharoitus

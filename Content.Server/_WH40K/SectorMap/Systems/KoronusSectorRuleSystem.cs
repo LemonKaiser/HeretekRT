@@ -360,7 +360,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
             if (!system.Enabled || system.Sector != rule.Comp.Sector || system.ID == startSystem.ID)
                 continue;
 
-            LoadPausedSystem(rule, system);
+            LoadSystem(rule, system);
         }
 
         _planetary.PreloadSurfaces(rule);
@@ -389,7 +389,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         }
     }
 
-    private void LoadPausedSystem(Entity<KoronusSectorRuleComponent> rule, KoronusSystemPrototype system)
+    private void LoadSystem(Entity<KoronusSectorRuleComponent> rule, KoronusSystemPrototype system)
     {
         var mapUid = _maps.CreateMap(out var mapId);
         var options = DeserializationOptions.Default with
@@ -420,8 +420,14 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
         }
 
         _metaData.SetEntityName(mapUid, system.DisplayName);
-        if (grid != null)
-            _metaData.SetEntityName(grid.Value.Owner, GetInitialGridDisplayName(system));
+        if (grid is { } initialGrid)
+        {
+            var name = GetInitialGridDisplayName(system);
+            if (system.InitialStation is { } station)
+                _stations.InitializeNewStation(station, [initialGrid.Owner], name);
+            else
+                _metaData.SetEntityName(initialGrid.Owner, name);
+        }
 
         foreach (var additionalGrid in system.AdditionalGrids)
         {
@@ -443,7 +449,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
             ConfigureAdditionalGrid(loadedGrid.Value.Owner, additionalGrid);
         }
         ConfigureSystemMap(mapUid, system);
-        _maps.SetPaused(mapId, true);
+        _maps.SetPaused(mapId, system.PauseWhenEmpty);
         RegisterSystemMap(rule, system.ID, mapId);
         _asteroidFields.EnsureField(mapUid, system);
     }

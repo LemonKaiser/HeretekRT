@@ -15,3 +15,12 @@
   joinRequired: true
   color: "#4B8FC9"
   image: /Textures/_WH40K/Companies/chartist_fleet.svg.192dpi.png
+
+- type: company
+  id: ChaosWarband
+  name: wh40k-company-chaos-name
+  description: wh40k-company-chaos-description
+  summary: wh40k-faction-chaos-summary
+  joinRequired: true
+  color: "#AD4C4A"
+  image: /Textures/_WH40K/Companies/chaos.svg.192dpi.png

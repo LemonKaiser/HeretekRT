@@ -1,0 +1,13 @@
+- type: wh40kDialogue
+  id: WH40KChaosDockmaster
+  interactionMode: Personal
+  repeatable: true
+  scene:
+    resumeMode: Restart
+  steps:
+  - id: introduction
+    speaker: npc
+    text: wh40k-chaos-dockmaster-intro
+  - id: directions
+    speaker: npc
+    text: wh40k-chaos-dockmaster-directions
