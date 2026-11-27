@@ -106,7 +106,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
             if (step.Charges >= step.MaxCharges)
                 step.NextRecharge = TimeSpan.Zero;
 
-            Dirty(uid, step);
             SyncAction(step, uid);
         }
     }
@@ -186,7 +185,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
                 step.NextRecharge = _timing.CurTime + step.Cooldown;
         }
 
-        Dirty(uid, step);
         SyncAction(step, uid);
     }
 
@@ -213,7 +211,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         ent.Comp.Enabled = !ent.Comp.Enabled;
         if (!ent.Comp.Enabled)
             ent.Comp.PendingMeleeSource = null;
-        Dirty(ent.Owner, ent.Comp);
         SyncAction(ent.Comp, ent.Owner);
         args.Handled = true;
     }
@@ -236,8 +233,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         ent.Comp.DodgedProjectile = null;
         if (ent.Comp.Dashing)
             StopDash(ent.Owner, ent.Comp, Transform(ent.Owner), snapToEnd: false);
-        else
-            Dirty(ent.Owner, ent.Comp);
     }
 
     private void OnBasicHitscanFired(Entity<HitscanBasicRaycastComponent> ent, ref HitscanRaycastFiredEvent args)
@@ -387,7 +382,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
                 (float) step.TrailLifetime.TotalSeconds,
                 step.TrailCopies),
             Filter.Pvs(uid));
-        Dirty(uid, step);
     }
 
     private void UpdateDash(
@@ -448,7 +442,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         step.DashStart = MapCoordinates.Nullspace;
         step.DashEnd = MapCoordinates.Nullspace;
         step.DashEndCoordinates = EntityCoordinates.Invalid;
-        Dirty(uid, step);
     }
 
     private void SyncAction(WH40KPhantomStepComponent step, EntityUid owner)

@@ -105,6 +105,7 @@
 
 - type: wolfWeather
   id: RainLight
+  groundWetness: 0.5
   wind: 0.4, 0
   sounds:
   - files:
@@ -129,6 +130,7 @@
 
 - type: wolfWeather
   id: RainModerate
+  groundWetness: 0.8
   wind: 0.6, 0
   sounds:
   - files:
@@ -163,6 +165,7 @@
 
 - type: wolfWeather
   id: RainHeavy
+  groundWetness: 1
   wind: 1, 0
   sounds:
   - collection: Wh40kWeatherRainHeavy
@@ -209,6 +212,7 @@
 
 - type: wolfWeather
   id: Storm
+  groundWetness: 1
   wind: 2.5, 0
   gust: 0.25
   gustPeriod: 15
@@ -284,6 +288,7 @@
 
 - type: wolfWeather
   id: Snow
+  snowfall: 0.5
   wind: 0.4, 0
   sounds:
   - files:
@@ -311,6 +316,7 @@
 
 - type: wolfWeather
   id: Blizzard
+  snowfall: 1.5
   wind: 6, -0.5
   gust: 0.3
   gustPeriod: 12

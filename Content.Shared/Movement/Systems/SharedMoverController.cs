@@ -650,6 +650,14 @@ public abstract partial class SharedMoverController : VirtualController
         // End Delta V NoShoesSilentFootsteps
 
         // Walking on a tile.
+        var snowStep = new Content.Shared._WH40K.GroundCover.Wh40kSnowFootstepEvent(uid, xform.GridUid.Value, position);
+        RaiseLocalEvent(ref snowStep);
+        if (snowStep.Sound != null)
+        {
+            sound = snowStep.Sound;
+            return true;
+        }
+
         // Tile def might have been passed in already from previous methods, so use that
         // if we have it
         if (tileDef == null && _mapSystem.TryGetTileRef(xform.GridUid.Value, grid, position, out var tileRef))

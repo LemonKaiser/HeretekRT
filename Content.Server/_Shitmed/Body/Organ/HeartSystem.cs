@@ -3,6 +3,8 @@ using Content.Server.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared._Shitmed.Body.Organ;
 using Content.Server._Shitmed.DelayedDeath;
+using Content.Shared._WH40K.Augments;
+using Content.Shared.Body.Organ;
 
 namespace Content.Server._Shitmed.Body.Organ;
 
@@ -22,6 +24,9 @@ public sealed partial class HeartSystem : EntitySystem
         if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(args.OldBody))
             return;
 
+        if (Wh40kAugmentCatalog.IsAuxiliaryHeart(EntityManager, args.OldBody, CompOrNull<OrganComponent>(uid)?.SlotId))
+            return;
+
         // TODO: Add some form of very violent bleeding effect.
         EnsureComp<DelayedDeathComponent>(args.OldBody);
     }
@@ -30,6 +35,10 @@ public sealed partial class HeartSystem : EntitySystem
     {
         if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(args.Body))
             return;
+
+        if (Wh40kAugmentCatalog.IsAuxiliaryHeart(EntityManager, args.Body, CompOrNull<OrganComponent>(uid)?.SlotId))
+            return;
+
 
         if (_bodySystem.TryGetBodyOrganEntityComps<BrainComponent>(args.Body, out var _))
             RemComp<DelayedDeathComponent>(args.Body);

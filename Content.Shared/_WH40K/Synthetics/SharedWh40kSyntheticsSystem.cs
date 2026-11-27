@@ -1,6 +1,7 @@
 using Content.Shared._WH40K.Biotype;
 using Content.Shared.Body.Components;
 using Content.Shared.Humanoid;
+using Content.Shared.PowerCell;
 
 namespace Content.Shared._WH40K.Synthetics;
 
@@ -21,5 +22,11 @@ public abstract class SharedWh40kSyntheticsSystem : EntitySystem
     public bool IsMechanicalPart(EntityUid part)
     {
         return _biotype.IsSyntheticPart(part);
+    }
+
+    /// <summary>Whether the component can be installed or removed through the service bay without an operating table.</summary>
+    protected bool CanServiceInField(EntityUid item)
+    {
+        return HasComp<PowerCellComponent>(item) || HasComp<Wh40kRadCollectorComponent>(item);
     }
 }

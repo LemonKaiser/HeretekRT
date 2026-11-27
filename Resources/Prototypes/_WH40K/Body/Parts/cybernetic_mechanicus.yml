@@ -37,6 +37,10 @@
         id: "pump"
       radcollector:
         id: "radcollector"
+      heart:
+        id: "heart"
+      lungs:
+        id: "lungs"
   - type: Destructible
     thresholds:
     - trigger:

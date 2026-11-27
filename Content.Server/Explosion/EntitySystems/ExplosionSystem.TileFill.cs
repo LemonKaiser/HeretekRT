@@ -354,6 +354,7 @@ public sealed partial class ExplosionSystem
             request.Epicenter,
             request.TypeId,
             iterationIntensity,
+            request.TotalIntensity,
             spaceData?.TileLists,
             tileLists, spaceMatrix,
             spaceData?.TileSize ?? DefaultTileSize

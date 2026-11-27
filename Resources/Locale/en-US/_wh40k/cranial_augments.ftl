@@ -1,0 +1,11 @@
+ent-WH40KAugmentIronJaw = { wh40k-augments-variant-jaw }
+    .desc = A mechanical jaw fitted over the lower face.
+    .suffix = Cranial implant
+ent-WH40KAugmentIronSkull = { wh40k-augments-variant-iron-skull }
+    .desc = A metal cranial shell that encloses the head and leaves the internal organs in place.
+    .suffix = Cranial implant
+ent-WH40KAugmentSkitariiSkull = { wh40k-augments-variant-skitarii }
+    .desc = A cranial shell patterned after the augmetic heads of the Skitarii.
+    .suffix = Cranial implant
+marking-WH40KAugmentIronJawMarking = { wh40k-augments-variant-jaw }
+wh40k-chassis-slot-cranialAugment = CRANIAL AUGMENT

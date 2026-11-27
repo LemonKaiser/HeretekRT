@@ -220,6 +220,21 @@
       minStock: 1
       maxStock: 1
       weight: 25
+    - product: WH40KAugmentIronJaw
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentIronSkull
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 25
+    - product: WH40KAugmentSkitariiSkull
+      price: 5000
+      minStock: 1
+      maxStock: 1
+      weight: 25
     - product: WH40KAugmentThreatSole
       price: 25000
       minStock: 1

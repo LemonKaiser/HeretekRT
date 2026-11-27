@@ -74,7 +74,6 @@
   - type: Tag
     tags:
     - SubdermalImplant
-    - HideContextMenu
     - DeathAcidifier
 
 - type: entity
@@ -95,7 +94,6 @@
   - type: Tag
     tags:
     - SubdermalImplant
-    - HideContextMenu
     - DeathAcidifier
 
 - type: entity
@@ -141,7 +139,6 @@
   - type: Tag
     tags:
     - SubdermalImplant
-    - HideContextMenu
     - Flashlight
 
 - type: entity

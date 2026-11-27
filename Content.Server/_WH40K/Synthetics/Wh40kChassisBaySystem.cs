@@ -213,7 +213,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
             return false;
         }
 
-        if (RequiresOperatingTable(item) && !_augmentBed.IsOnPoweredTable(body))
+        if (!CanServiceInField(item) && !_augmentBed.IsOnPoweredTable(body))
         {
             _popup.PopupEntity(Loc.GetString("wh40k-chassis-table-required-organ"), body, user);
             return false;
@@ -265,7 +265,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
         if (!body.Comp.BayOpen || !IsSyntheticChassis(body))
             return false;
 
-        if (RequiresOperatingTable(item) && !_augmentBed.IsOnPoweredTable(body))
+        if (!CanServiceInField(item) && !_augmentBed.IsOnPoweredTable(body))
             return false;
 
         if (TryComp<OrganComponent>(item, out var organ))
@@ -316,7 +316,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
             return false;
         }
 
-        if (RequiresOperatingTable(item) && !_augmentBed.IsOnPoweredTable(body))
+        if (!CanServiceInField(item) && !_augmentBed.IsOnPoweredTable(body))
         {
             _popup.PopupEntity(Loc.GetString("wh40k-chassis-table-required-install"), body, user);
             return false;
@@ -361,7 +361,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
         if (!body.Comp.BayOpen || !IsSyntheticChassis(body))
             return false;
 
-        if (RequiresOperatingTable(item) && !_augmentBed.IsOnPoweredTable(body))
+        if (!CanServiceInField(item) && !_augmentBed.IsOnPoweredTable(body))
             return false;
 
         if (FindSlot(body, item, out var part, out var slot) != null)
@@ -519,7 +519,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
         var tableReady = _augmentBed.IsOnPoweredTable(ent);
         foreach (var item in GetComponents(ent))
         {
-            if (!IsInstalled(ent, item) || RequiresOperatingTable(item) && !tableReady)
+            if (!IsInstalled(ent, item) || !tableReady && !CanServiceInField(item))
                 continue;
 
             var captured = item;
@@ -531,8 +531,6 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
             });
         }
     }
-
-    private bool RequiresOperatingTable(EntityUid item) => !HasComp<PowerCellComponent>(item);
 
     private void OnExamined(Entity<Wh40kChassisComponent> ent, ref ExaminedEvent args)
     {

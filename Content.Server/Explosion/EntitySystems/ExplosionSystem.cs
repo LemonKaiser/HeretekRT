@@ -467,7 +467,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             return null;
         // Frontier - Block explosions on safe zone
 
-        var visualEnt = CreateExplosionVisualEntity(pos, queued.Proto.ID, spaceMatrix, spaceData, gridData.Values, iterationIntensity);
+        var visualEnt = CreateExplosionVisualEntity(pos, queued.Proto.ID, spaceMatrix, spaceData, gridData.Values, iterationIntensity, queued.TotalIntensity);
 
         // camera shake
         CameraShake(iterationIntensity.Count * 4f, pos, queued.TotalIntensity);

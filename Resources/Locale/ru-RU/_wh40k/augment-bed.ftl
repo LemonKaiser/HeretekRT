@@ -51,6 +51,13 @@ wh40k-augment-info-no-description = В игровых данных для это
 wh40k-augment-info-more-models = Другие совместимые модели
 wh40k-augment-info-bed-install = Эту модель можно поставить на операционном столе аугментаций.
 
+ent-HeretekSurgeryOpenPowerCellSlot = Подготовить место для гнезда энергоячейки
+ent-HeretekSurgeryInsertPowerCellSlot = Установить гнездо для энергоячейки
+ent-HeretekSurgeryRemovePowerCellSlot = Удалить гнездо энергоячейки
+ent-HeretekSurgeryOpenArmAugment = Подготовить место для аугмента руки
+ent-HeretekSurgeryInsertArmAugment = Установить аугмент руки
+ent-HeretekSurgeryRemoveArmAugment = Удалить аугмент руки
+
 ent-WH40KDecorChirurgeonServitor = хирургический сервитор
     .desc = Стационарный хирургический сервитор с набором механических инструментов.
     .suffix = WH40K, Декор, Справа

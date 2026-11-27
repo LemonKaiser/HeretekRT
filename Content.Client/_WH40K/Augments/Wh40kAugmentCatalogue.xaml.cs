@@ -46,9 +46,9 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         {
             ["head"] =
             [
-                new("ironjaw", "jaw", "prosthetic", null),
-                new("ironscull", "iron-skull", "mechanicus", null),
-                new("sikariiscull", "skitarii", "mechanicus", null),
+                new("ironjaw", "jaw", "prosthetic", "WH40KAugmentIronJaw"),
+                new("ironscull", "iron-skull", "mechanicus", "WH40KAugmentIronSkull"),
+                new("sikariiscull", "skitarii", "mechanicus", "WH40KAugmentSkitariiSkull"),
             ],
             ["core"] =
             [
@@ -148,10 +148,10 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         Effects.DisposeAllChildren();
         var playable = specimen.Entity is not null;
         var isEye = zone.EndsWith("-eye", StringComparison.Ordinal);
-        var isExtra = specimen.State.Length == 0;
+        var usesOperatingTable = specimen.State.Length == 0 || zone == "head";
         var installation = !playable
             ? Loc.GetString("wh40k-augments-in-development")
-            : isExtra
+            : usesOperatingTable
                 ? Loc.GetString("wh40k-augment-info-bed-install")
             : isEye
                 ? Loc.GetString("wh40k-augments-install-eye")
@@ -159,7 +159,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         Installation.SetMessage(installation, Wh40kAugmentStyle.SecondaryText);
         EffectsTitle.Visible = playable;
         var isLeg = zone.EndsWith("-leg", StringComparison.Ordinal);
-        if (isExtra && specimen.Entity != null && _prototypes.TryIndex<EntityPrototype>(specimen.Entity, out var prototype))
+        if (usesOperatingTable && specimen.Entity != null && _prototypes.TryIndex<EntityPrototype>(specimen.Entity, out var prototype))
         {
             var details = new RichTextLabel { HorizontalExpand = true };
             details.SetMessage(Wh40kAugmentInfo.Describe(prototype), Wh40kAugmentStyle.Text);

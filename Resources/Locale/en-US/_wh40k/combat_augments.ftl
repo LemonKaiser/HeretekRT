@@ -94,6 +94,7 @@ ent-WH40KAugmentTapetumEyes = Tapetum multispectral augmetic eyes
     .desc = Mechanicus scout optics that cycle with one command between thermal imaging and green, cyan, and white night-vision phosphors. Protects against welding glare, though flashes still blind.
 
 ent-WH40KAugmentIatricMonitor = Kanshi internal medicae auspex
+    .suffix = Cranial implant
     .desc = A cranial micro-auspex wired behind the optic nerve that silently displays your own medical telemetry on demand.
 
 ent-WH40KAugmentArmLaser = Lux-VI forearm las-emitter implant
@@ -121,6 +122,7 @@ ent-WH40KAugmentAdrenalBooster = Ryvok adrenal combat injector
     .desc = Wired directly into organic adrenal glands: increases stamina pool and recovery, and triggers a 1.5-second second-wind surge to shake off stamina knockdowns (2-minute cooldown). Requires an organic body.
 
 ent-WH40KAugmentReflexBooster = Strizh synaptic reflex booster
+    .suffix = Cranial implant
     .desc = Accelerates spinal nerve pathways: improves piloted vessel thrust and turn rate by 15% and gives a 5% chance to evade incoming projectiles, at the cost of 5% higher damage sensitivity.
 
 ent-WH40KAugmentThreatSole = Sapyor threat-sense sole implant

@@ -15,6 +15,7 @@ public sealed partial class ExplosionVisualsComponent : Component
     public Dictionary<int, List<Vector2i>>? SpaceTiles;
     public Dictionary<EntityUid, Dictionary<int, List<Vector2i>>> Tiles = new();
     public List<float> Intensity = new();
+    public float TotalIntensity;
     public string ExplosionType = string.Empty;
     public Matrix3x2 SpaceMatrix;
     public ushort SpaceTileSize;
@@ -27,6 +28,7 @@ public sealed class ExplosionVisualsState : ComponentState
     public Dictionary<int, List<Vector2i>>? SpaceTiles;
     public Dictionary<NetEntity, Dictionary<int, List<Vector2i>>> Tiles;
     public List<float> Intensity;
+    public float TotalIntensity;
     public string ExplosionType = string.Empty;
     public Matrix3x2 SpaceMatrix;
     public ushort SpaceTileSize;
@@ -35,6 +37,7 @@ public sealed class ExplosionVisualsState : ComponentState
         MapCoordinates epicenter,
         string typeID,
         List<float> intensity,
+        float totalIntensity,
         Dictionary<int, List<Vector2i>>? spaceTiles,
         Dictionary<NetEntity, Dictionary<int, List<Vector2i>>> tiles,
         Matrix3x2 spaceMatrix,
@@ -44,6 +47,7 @@ public sealed class ExplosionVisualsState : ComponentState
         SpaceTiles = spaceTiles;
         Tiles = tiles;
         Intensity = intensity;
+        TotalIntensity = totalIntensity;
         ExplosionType = typeID;
         SpaceMatrix = spaceMatrix;
         SpaceTileSize = spaceTileSize;

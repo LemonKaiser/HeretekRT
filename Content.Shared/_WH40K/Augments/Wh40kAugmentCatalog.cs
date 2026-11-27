@@ -1,8 +1,10 @@
 using System.Linq;
 using Content.Shared._Shitmed.Cybernetics;
 using Content.Shared._WH40K.Synthetics;
+using Content.Shared.Body.Components;
 using Content.Shared.Body.Organ;
 using Content.Shared.Body.Part;
+using Content.Shared.Body.Prototypes;
 using Content.Shared.Implants.Components;
 using Content.Shared.Silicons.Borgs.Components;
 using Robust.Shared.Prototypes;
@@ -15,7 +17,13 @@ public static class Wh40kAugmentCatalog
     public const string LeftEye = "leftEye";
     public const string RightEye = "rightEye";
 
+    private static readonly ProtoId<BodyPrototype> MechanicusBody = "WH40KCyberneticMechanicus";
+
     public static bool IsOpticalSlot(string slot) => slot is Eyes or LeftEye or RightEye;
+
+    /// <summary>The Mechanicus chassis relies on its coolant pump for circulation.</summary>
+    public static bool IsAuxiliaryHeart(IEntityManager entities, EntityUid body, string? slot) =>
+        slot == "heart" && entities.TryGetComponent<BodyComponent>(body, out var anatomy) && anatomy.Prototype == MechanicusBody;
 
     public static bool IsNativeMechanicalOrgan(EntityPrototype prototype)
         => prototype.Parents?.Contains("BaseIPCOrgan") == true;

@@ -15,7 +15,3 @@
   - type: DeleteParentOnTrigger
   - type: SpawnOnTrigger
     proto: BluespaceLifeline
-  - type: Tag
-    tags:
-    - SubdermalImplant
-    - HideContextMenu

@@ -17,6 +17,8 @@ public sealed partial class Wh40kExplosionShockwaveSystem : EntitySystem
     [Dependency] private IOverlayManager _overlayMan = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
 
+    private const float MinExplosionIntensity = 100f;
+
     /// <summary>Tiles per second the front leaves the epicentre at. It decelerates from there.</summary>
     private const float FrontSpeed = 45f;
 
@@ -65,7 +67,7 @@ public sealed partial class Wh40kExplosionShockwaveSystem : EntitySystem
 
     private void OnVisualsStartup(Entity<ExplosionVisualsComponent> ent, ref ComponentStartup args)
     {
-        if (!_cfg.GetCVar(Wh40kShockwaveCVars.Enabled))
+        if (ent.Comp.TotalIntensity < MinExplosionIntensity || !_cfg.GetCVar(Wh40kShockwaveCVars.Enabled))
             return;
 
         var epicenter = ent.Comp.Epicenter;

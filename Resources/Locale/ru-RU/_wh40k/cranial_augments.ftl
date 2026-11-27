@@ -1,0 +1,11 @@
+ent-WH40KAugmentIronJaw = { wh40k-augments-variant-jaw }
+    .desc = Механическая челюсть, накладываемая на нижнюю часть лица.
+    .suffix = Головной имплант
+ent-WH40KAugmentIronSkull = { wh40k-augments-variant-iron-skull }
+    .desc = Металлическая оболочка, которая закрывает голову и сохраняет внутренние органы.
+    .suffix = Головной имплант
+ent-WH40KAugmentSkitariiSkull = { wh40k-augments-variant-skitarii }
+    .desc = Черепная оболочка по образцу аугметических голов скитариев.
+    .suffix = Головной имплант
+marking-WH40KAugmentIronJawMarking = { wh40k-augments-variant-jaw }
+wh40k-chassis-slot-cranialAugment = ГОЛОВНОЙ ИМПЛАНТ

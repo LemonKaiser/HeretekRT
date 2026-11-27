@@ -142,4 +142,4 @@ wh40k-augments-effect-health-bars = Дополнительно показыва�
 wh40k-augments-hud-value = МЕД
 wh40k-augments-servo-step = Сервошаг
 wh40k-augments-servo-step-value = +2 заряда
-wh40k-augments-servo-step-effect = Требуются две исправные адамантиевые ноги. Заряды Phantom Step восстанавливаются со временем.
+wh40k-augments-servo-step-effect = Требуются две исправные адамантиевые ноги. Заряды «Фантомного шага» восстанавливаются со временем.

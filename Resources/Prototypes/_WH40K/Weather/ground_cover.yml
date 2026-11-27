@@ -1,0 +1,4 @@
+- type: shader
+  id: Wh40kGroundCover
+  kind: source
+  path: "/Textures/_WH40K/GroundCover/ground_cover.swsl"

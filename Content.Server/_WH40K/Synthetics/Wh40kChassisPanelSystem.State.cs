@@ -4,6 +4,7 @@ using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
 using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared._Shitmed.Targeting;
+using Content.Shared._WH40K.Augments;
 using Content.Shared._WH40K.Synthetics;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Organ;
@@ -340,7 +341,8 @@ public sealed partial class Wh40kChassisPanelSystem
         {
             Slot = slot,
             Holder = holder,
-            Vital = VitalSlots.Contains(slot),
+            Vital = VitalSlots.Contains(slot)
+                && !(part.Comp.Body is { } body && Wh40kAugmentCatalog.IsAuxiliaryHeart(EntityManager, body, slot)),
         };
 
         if (!_containers.TryGetContainer(part, SharedBodySystem.GetOrganContainerId(slot), out var container) ||
@@ -368,7 +370,8 @@ public sealed partial class Wh40kChassisPanelSystem
         entry.Name = Name(installed);
         entry.IsBattery = HasComp<PowerCellComponent>(installed);
         entry.CanDisconnect = chassis?.BayOpen == true &&
-            (entry.IsBattery || tableReady && CompOrNull<OrganComponent>(installed)?.Removable == true);
+            (entry.IsBattery || CompOrNull<OrganComponent>(installed)?.Removable == true) &&
+            (tableReady || CanServiceInField(installed));
 
         if (TryComp<BatteryComponent>(installed, out var battery))
         {

@@ -47,6 +47,7 @@ public sealed partial class ExplosionOverlaySystem : EntitySystem
         }
 
         component.Intensity = state.Intensity;
+        component.TotalIntensity = state.TotalIntensity;
         component.ExplosionType = state.ExplosionType;
         component.SpaceMatrix = state.SpaceMatrix;
         component.SpaceTileSize = state.SpaceTileSize;

@@ -29,6 +29,7 @@ public sealed partial class ExplosionSystem
             component.Epicenter,
             component.ExplosionType,
             component.Intensity,
+            component.TotalIntensity,
             component.SpaceTiles,
             tileLists,
             component.SpaceMatrix,
@@ -38,7 +39,7 @@ public sealed partial class ExplosionSystem
     /// <summary>
     ///     Constructor for the shared <see cref="ExplosionEvent"/> using the server-exclusive explosion classes.
     /// </summary>
-    private EntityUid CreateExplosionVisualEntity(MapCoordinates epicenter, string prototype, Matrix3x2 spaceMatrix, ExplosionSpaceTileFlood? spaceData, IEnumerable<ExplosionGridTileFlood> gridData, List<float> iterationIntensity)
+    private EntityUid CreateExplosionVisualEntity(MapCoordinates epicenter, string prototype, Matrix3x2 spaceMatrix, ExplosionSpaceTileFlood? spaceData, IEnumerable<ExplosionGridTileFlood> gridData, List<float> iterationIntensity, float totalIntensity)
     {
         var explosionEntity = Spawn(null, MapCoordinates.Nullspace);
         var comp = AddComp<ExplosionVisualsComponent>(explosionEntity);
@@ -52,6 +53,7 @@ public sealed partial class ExplosionSystem
         comp.Epicenter = epicenter;
         comp.ExplosionType = prototype;
         comp.Intensity = iterationIntensity;
+        comp.TotalIntensity = totalIntensity;
         comp.SpaceMatrix = spaceMatrix;
         comp.SpaceTileSize = spaceData?.TileSize ?? DefaultTileSize;
         Dirty(explosionEntity, comp);
