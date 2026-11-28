@@ -26,6 +26,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
     private readonly Dictionary<string, Specimen[]> _zones;
     private readonly Dictionary<string, Specimen> _lastViewed = new();
     private readonly IPrototypeManager _prototypes;
+    private readonly IComponentFactory _componentFactory;
     private readonly SpriteSystem _spriteSystem;
     private readonly Dictionary<string, Specimen[]> _extraModels = new();
     private string _selectedZone = string.Empty;
@@ -36,6 +37,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         RobustXamlLoader.Load(this);
         var cache = IoCManager.Resolve<IResourceCache>();
         _prototypes = IoCManager.Resolve<IPrototypeManager>();
+        _componentFactory = IoCManager.Resolve<IComponentFactory>();
         _spriteSystem = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>();
         _sprites = cache.GetResource<RSIResource>(new ResPath(SpritePath)).RSI;
         Insignia.Texture = LoadInsignia(cache);
@@ -115,7 +117,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         Tier.Text = Loc.GetString("wh40k-augments-tier-" + specimen.Tier);
         var name = GetName(specimen);
         Title.SetMessage(FormattedMessage.FromMarkupPermissive($"[font size=19]{FormattedMessage.EscapeText(TitleCase(name))}[/font]"), Wh40kAugmentStyle.Text);
-        Variants.DisposeAllChildren();
+        Variants.RemoveAllChildren();
         foreach (var option in _zones[zone])
         {
             Variants.AddChild(Tile(
@@ -145,7 +147,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
             OtherModels.ToolTip = modelIndex >= 0 ? name : null;
         }
 
-        Effects.DisposeAllChildren();
+        Effects.RemoveAllChildren();
         var playable = specimen.Entity is not null;
         var isEye = zone.EndsWith("-eye", StringComparison.Ordinal);
         var usesOperatingTable = specimen.State.Length == 0 || zone == "head";
@@ -162,7 +164,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         if (usesOperatingTable && specimen.Entity != null && _prototypes.TryIndex<EntityPrototype>(specimen.Entity, out var prototype))
         {
             var details = new RichTextLabel { HorizontalExpand = true };
-            details.SetMessage(Wh40kAugmentInfo.Describe(prototype), Wh40kAugmentStyle.Text);
+            details.SetMessage(Wh40kAugmentInfo.Describe(prototype, _componentFactory), Wh40kAugmentStyle.Text);
             Effects.AddChild(details);
         }
         else if (specimen.Percent > 0)
@@ -179,7 +181,7 @@ public sealed partial class Wh40kAugmentCatalogue : ScrollContainer
         }
 
         PairPanel.Visible = isLeg && specimen.Percent == 10;
-        PairModules.DisposeAllChildren();
+        PairModules.RemoveAllChildren();
         if (!PairPanel.Visible)
             return;
 

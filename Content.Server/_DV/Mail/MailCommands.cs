@@ -117,7 +117,7 @@ public sealed partial class MailToCommand : LocalizedCommands // Frontier: ICons
             return;
         }
 
-        var mailUid = _entityManager.SpawnEntity(mailPrototype, _entityManager.GetComponent<TransformComponent>(containerUid).Coordinates); // Frontier: _blankMailPrototype<mailPrototype
+        var mailUid = _entityManager.SpawnAttachedTo(mailPrototype, _entityManager.GetComponent<TransformComponent>(containerUid).Coordinates); // Frontier: _blankMailPrototype<mailPrototype
         var mailContents = containerSystem.EnsureContainer<Container>(mailUid, MailContainer);
 
         if (!_entityManager.TryGetComponent<MailComponent>(mailUid, out var mailComponent))

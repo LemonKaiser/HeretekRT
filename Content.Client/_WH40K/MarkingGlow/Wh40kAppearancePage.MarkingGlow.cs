@@ -23,16 +23,19 @@ public sealed partial class Wh40kAppearancePage
         };
         HairStylePicker.OnGlowChanged += on => SetMarkingGlow(Wh40kMarkingGlowRules.Hair, on);
         FacialHairPicker.OnGlowChanged += on => SetMarkingGlow(Wh40kMarkingGlowRules.FacialHair, on);
-
-        _cfg.OnValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        if (disposing)
-            _cfg.UnsubValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
+        base.EnteredTree();
+        _cfg.OnValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
+        UpdateMarkingGlow();
+    }
 
-        base.Dispose(disposing);
+    protected override void ExitedTree()
+    {
+        _cfg.UnsubValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
+        base.ExitedTree();
     }
 
     private void OnMarkingGlowEnabledChanged(bool _)

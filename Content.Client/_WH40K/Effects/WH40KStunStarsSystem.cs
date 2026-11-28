@@ -9,10 +9,12 @@ namespace Content.Client._WH40K.Effects;
 /// <summary>
 /// Shows Arcane's animated stars above entities that are stunned or knocked down.
 /// </summary>
-public sealed class WH40KStunStarsSystem : EntitySystem
+public sealed partial class WH40KStunStarsSystem : EntitySystem
 {
     private const string LayerKey = "WH40KStunStars";
     private static readonly ResPath StarsRsi = new("/Textures/_WH40K/Effects/stunned.rsi");
+
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {
@@ -51,17 +53,17 @@ public sealed class WH40KStunStarsSystem : EntitySystem
             return;
 
         var visible = HasComp<StunnedComponent>(uid) || HasComp<KnockedDownComponent>(uid);
-        if (!sprite.LayerMapTryGet(LayerKey, out var layer))
+        if (!_sprite.LayerMapTryGet((uid, sprite), LayerKey, out var layer, false))
         {
             if (!visible)
                 return;
 
-            layer = sprite.LayerMapReserveBlank(LayerKey);
-            sprite.LayerSetRSI(layer, StarsRsi);
-            sprite.LayerSetState(layer, "stunned");
-            sprite.LayerSetOffset(layer, new Vector2(0f, 0.3125f));
+            layer = _sprite.LayerMapReserve((uid, sprite), LayerKey);
+            _sprite.LayerSetRsi((uid, sprite), layer, StarsRsi);
+            _sprite.LayerSetRsiState((uid, sprite), layer, "stunned");
+            _sprite.LayerSetOffset((uid, sprite), layer, new Vector2(0f, 0.3125f));
         }
 
-        sprite.LayerSetVisible(layer, visible);
+        _sprite.LayerSetVisible((uid, sprite), layer, visible);
     }
 }

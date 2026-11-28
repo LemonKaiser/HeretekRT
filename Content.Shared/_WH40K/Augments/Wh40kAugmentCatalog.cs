@@ -62,22 +62,22 @@ public static class Wh40kAugmentCatalog
 
     public static IEnumerable<Wh40kAugmentBedZone> Zones(EntityPrototype prototype, IComponentFactory factory)
     {
-        if (prototype.TryGetComponent<Wh40kImplantSpecComponent>(out var spec, factory))
+        if (prototype.TryComp<Wh40kImplantSpecComponent>(out var spec, factory))
         {
             foreach (var zone in spec.Zones)
                 yield return zone;
             yield break;
         }
 
-        var cybernetic = prototype.TryGetComponent<CyberneticsComponent>(out _, factory);
-        if ((cybernetic || prototype.TryGetComponent<Wh40kProstheticComponent>(out _, factory))
-            && prototype.TryGetComponent<BodyPartComponent>(out var part, factory))
+        var cybernetic = prototype.TryComp<CyberneticsComponent>(out _, factory);
+        if ((cybernetic || prototype.TryComp<Wh40kProstheticComponent>(out _, factory))
+            && prototype.TryComp<BodyPartComponent>(out var part, factory))
         {
             if (LimbZone(part) is { } zone)
                 yield return zone;
         }
         else if ((cybernetic || IsNativeMechanicalOrgan(prototype))
-                 && prototype.TryGetComponent<OrganComponent>(out var organ, factory))
+                 && prototype.TryComp<OrganComponent>(out var organ, factory))
         {
             switch (organ.SlotId)
             {
@@ -87,13 +87,13 @@ public static class Wh40kAugmentCatalog
                 case "heart" or "lungs" or "liver": yield return Wh40kAugmentBedZone.Core; break;
             }
         }
-        else if (prototype.TryGetComponent<AugmentArmComponent>(out _, factory))
+        else if (prototype.TryComp<AugmentArmComponent>(out _, factory))
         {
             yield return Wh40kAugmentBedZone.LeftArm;
             yield return Wh40kAugmentBedZone.RightArm;
         }
-        else if (prototype.TryGetComponent<AugmentPowerCellSlotComponent>(out _, factory)
-                 || prototype.TryGetComponent<SubdermalImplantComponent>(out _, factory))
+        else if (prototype.TryComp<AugmentPowerCellSlotComponent>(out _, factory)
+                 || prototype.TryComp<SubdermalImplantComponent>(out _, factory))
         {
             yield return Wh40kAugmentBedZone.Core;
         }

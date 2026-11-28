@@ -24,14 +24,13 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
-using Robust.Shared.Prototypes;
 
 namespace Content.Server.Particles;
 
 /// <summary>
 /// Turns confirmed contacts and destruction into local, material-aware effects.
 /// </summary>
-public sealed class MaterialParticleSystem : EntitySystem
+public sealed partial class MaterialParticleSystem : EntitySystem
 {
     private static readonly ProtoId<TagPrototype> WallTag = "Wall";
     private static readonly TimeSpan ContactCooldown = TimeSpan.FromMilliseconds(125);
@@ -43,11 +42,11 @@ public sealed class MaterialParticleSystem : EntitySystem
         "Structural",
     };
 
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     public override void Initialize()
     {

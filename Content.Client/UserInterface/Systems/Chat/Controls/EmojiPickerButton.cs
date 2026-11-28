@@ -10,10 +10,10 @@ namespace Content.Client.UserInterface.Systems.Chat.Controls;
 
 public sealed partial class EmojiPickerButton : ChatPopupButton<EmojiPickerPopup>
 {
-    [Dependency] private readonly IResourceCache _resources = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
-    [Dependency] private readonly ChatEmojiCatalog _emojiCatalog = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private IUserInterfaceManager _ui = default!;
+    [Dependency] private ChatEmojiCatalog _emojiCatalog = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public event Action<string>? OnEmojiPicked;
     private static readonly TimeSpan IconRefreshCooldown = TimeSpan.FromSeconds(0.5);
@@ -21,13 +21,12 @@ public sealed partial class EmojiPickerButton : ChatPopupButton<EmojiPickerPopup
     private ChatEmojiDefinition? _iconEmoji;
     private TimeSpan _nextIconRefresh;
 
-    public EmojiPickerButton()
+    public EmojiPickerButton() : base(new EmojiPickerPopup())
     {
         IoCManager.InjectDependencies(this);
         MinWidth = 34f;
         ToolTip = Loc.GetString("hud-chatbox-emoji-button-tooltip");
         RefreshIcon(force: true);
-        _emojiCatalog.Changed += OnEmojiCatalogChanged;
         OnMouseEntered += _ => RefreshIcon();
         Popup.OnEmojiPicked += HandleEmojiPicked;
     }
@@ -89,14 +88,16 @@ public sealed partial class EmojiPickerButton : ChatPopupButton<EmojiPickerPopup
         AddChild(_icon);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        if (disposing)
-        {
-            _emojiCatalog.Changed -= OnEmojiCatalogChanged;
-            Popup.OnEmojiPicked -= HandleEmojiPicked;
-        }
+        base.EnteredTree();
+        _emojiCatalog.Changed += OnEmojiCatalogChanged;
+        RefreshIcon(force: true);
+    }
 
-        base.Dispose(disposing);
+    protected override void ExitedTree()
+    {
+        _emojiCatalog.Changed -= OnEmojiCatalogChanged;
+        base.ExitedTree();
     }
 }

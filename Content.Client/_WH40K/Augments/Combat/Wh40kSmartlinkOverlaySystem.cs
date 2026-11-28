@@ -2,7 +2,7 @@ using Robust.Client.Graphics;
 
 namespace Content.Client._WH40K.Augments.Combat;
 
-public sealed class Wh40kSmartlinkOverlaySystem : EntitySystem
+public sealed partial class Wh40kSmartlinkOverlaySystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlays = default!;
 

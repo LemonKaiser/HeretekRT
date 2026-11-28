@@ -45,15 +45,6 @@ public sealed partial class PlayerTab : Control
         RobustXamlLoader.Load(this);
 
         _adminSystem = _entManager.System<AdminSystem>();
-        _adminSystem.PlayerListChanged += RefreshPlayerList;
-        _adminSystem.OverlayEnabled += OverlayEnabled;
-        _adminSystem.OverlayDisabled += OverlayDisabled;
-
-        _config.OnValueChanged(CCVars.AdminPlayerTabRoleSetting, RoleSettingChanged, true);
-        _config.OnValueChanged(CCVars.AdminPlayerTabColorSetting, ColorSettingChanged, true);
-        _config.OnValueChanged(CCVars.AdminPlayerTabSymbolSetting, SymbolSettingChanged, true);
-
-
         OverlayButton.OnPressed += OverlayButtonPressed;
         ShowDisconnectedButton.OnPressed += ShowDisconnectedPressed;
 
@@ -64,8 +55,6 @@ public sealed partial class PlayerTab : Control
         SearchList.GenerateItem += GenerateButton;
         SearchList.DataFilterCondition += DataFilterCondition;
         SearchList.ItemKeyBindDown += (args, data) => OnEntryKeyBindDown?.Invoke(args, data);
-
-        RefreshPlayerList(_adminSystem.PlayerList);
     }
 
     #region Antag Overlay
@@ -100,20 +89,29 @@ public sealed partial class PlayerTab : Control
         RefreshPlayerList(_players);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        base.Dispose(disposing);
+        base.EnteredTree();
+        _adminSystem.PlayerListChanged += RefreshPlayerList;
+        _adminSystem.OverlayEnabled += OverlayEnabled;
+        _adminSystem.OverlayDisabled += OverlayDisabled;
+        OverlayButton.Pressed = _adminSystem.IsOverlayEnabled;
 
-        if (disposing)
-        {
-            _adminSystem.PlayerListChanged -= RefreshPlayerList;
-            _adminSystem.OverlayEnabled -= OverlayEnabled;
-            _adminSystem.OverlayDisabled -= OverlayDisabled;
+        _config.OnValueChanged(CCVars.AdminPlayerTabRoleSetting, RoleSettingChanged, true);
+        _config.OnValueChanged(CCVars.AdminPlayerTabColorSetting, ColorSettingChanged, true);
+        _config.OnValueChanged(CCVars.AdminPlayerTabSymbolSetting, SymbolSettingChanged, true);
+        RefreshPlayerList(_adminSystem.PlayerList);
+    }
 
-            OverlayButton.OnPressed -= OverlayButtonPressed;
-
-            ListHeader.OnHeaderClicked -= HeaderClicked;
-        }
+    protected override void ExitedTree()
+    {
+        _adminSystem.PlayerListChanged -= RefreshPlayerList;
+        _adminSystem.OverlayEnabled -= OverlayEnabled;
+        _adminSystem.OverlayDisabled -= OverlayDisabled;
+        _config.UnsubValueChanged(CCVars.AdminPlayerTabRoleSetting, RoleSettingChanged);
+        _config.UnsubValueChanged(CCVars.AdminPlayerTabColorSetting, ColorSettingChanged);
+        _config.UnsubValueChanged(CCVars.AdminPlayerTabSymbolSetting, SymbolSettingChanged);
+        base.ExitedTree();
     }
 
     #region ListContainer

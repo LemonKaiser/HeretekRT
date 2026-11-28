@@ -8,7 +8,7 @@ using Robust.Shared.Player;
 namespace Content.Server._WH40K.Merchant;
 
 /// <summary>Read-only view of the existing authoritative sector graph. No jump/payment/booking handlers.</summary>
-public sealed class Wh40kTransitInfoSystem : EntitySystem
+public sealed partial class Wh40kTransitInfoSystem : EntitySystem
 {
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;

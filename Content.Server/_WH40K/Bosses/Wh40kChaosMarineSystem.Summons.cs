@@ -128,7 +128,7 @@ public sealed partial class Wh40kChaosMarineSystem
             var point = candidates[0];
             placed.Add(point);
             brain.Summons.RemoveAt(i);
-            var entity = Spawn(summon.Prototype, Coordinates(state, point));
+            var entity = SpawnAttachedTo(summon.Prototype, Coordinates(state, point));
             var minion = AddComp<Wh40kMarineMinionComponent>(entity);
             minion.Boss = uid;
             minion.ReadyAt = Now + TimeSpan.FromSeconds(.6);

@@ -6,7 +6,7 @@ using Robust.Shared.Console;
 namespace Content.Server._WH40K.Factions;
 
 [AdminCommand(AdminFlags.Admin)]
-public sealed class FactionPanelCommand : LocalizedCommands
+public sealed partial class FactionPanelCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _euis = default!;
     public override string Command => "faction_panel";

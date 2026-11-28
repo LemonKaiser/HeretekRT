@@ -9,9 +9,12 @@ namespace Content.Shared.Random.Helpers
 {
     public static class SharedRandomExtensions
     {
-        public static ProtoId<T> Pick<T>(this IWeightedRandomPrototype<T> prototype, System.Random random)
-            where T : class, IPrototype
-            => Pick(prototype.Weights, random);
+        public static IRobustRandom CreateSeeded(int seed)
+        {
+            var random = new RobustRandom();
+            random.SetSeed(seed);
+            return random;
+        }
 
         public static ProtoId<T> Pick<T>(this IWeightedRandomPrototype<T> prototype, IRobustRandom? random = null)
             where T : class, IPrototype
@@ -32,28 +35,6 @@ namespace Content.Shared.Random.Helpers
         {
             var index = random.Next(prototype.Values.Count);
             return Loc.GetString(prototype.Values[index]);
-        }
-
-        public static string Pick(this IWeightedRandomPrototype prototype, System.Random random)
-        {
-            var picks = prototype.Weights;
-            var sum = picks.Values.Sum();
-            var accumulated = 0f;
-
-            var rand = random.NextFloat() * sum;
-
-            foreach (var (key, weight) in picks)
-            {
-                accumulated += weight;
-
-                if (accumulated >= rand)
-                {
-                    return key;
-                }
-            }
-
-            // Shouldn't happen
-            throw new InvalidOperationException($"Invalid weighted pick for {prototype.ID}!");
         }
 
         public static string Pick(this IWeightedRandomPrototype prototype, IRobustRandom? random = null)
@@ -118,27 +99,6 @@ namespace Content.Shared.Random.Helpers
             }
             pick = PickAndTake(random, weights);
             return true;
-        }
-
-        public static T Pick<T>(Dictionary<T, float> weights, System.Random random)
-            where T : notnull
-        {
-            var sum = weights.Values.Sum();
-            var accumulated = 0f;
-
-            var rand = random.NextFloat() * sum;
-
-            foreach (var (key, weight) in weights)
-            {
-                accumulated += weight;
-
-                if (accumulated >= rand)
-                {
-                    return key;
-                }
-            }
-
-            throw new InvalidOperationException("Invalid weighted pick");
         }
 
         public static (string reagent, FixedPoint2 quantity) Pick(this WeightedRandomFillSolutionPrototype prototype, IRobustRandom? random = null)

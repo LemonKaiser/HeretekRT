@@ -13,10 +13,11 @@ public interface IFactionCatalogCard
     void UpdateOverview(string overview);
 }
 
-public interface IFactionProfileWindow : IDisposable
+public interface IFactionProfileWindow
 {
     event Action? ActionPressed;
     void Show();
+    void Close();
     void UpdateAction(string membership, string action, string hint, bool disabled);
     void UpdateOverview(string overview);
     void UpdateProfile(FactionProfile profile);

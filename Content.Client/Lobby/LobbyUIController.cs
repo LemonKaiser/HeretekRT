@@ -198,8 +198,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     public void OnStateExited(LobbyState state)
     {
         PreviewPanel?.SetLoaded(false);
-        _profileEditor?.Dispose();
-        _characterSetup?.Dispose();
+        _characterSetup?.Orphan();
 
         _characterSetup = null;
         _profileEditor = null;
@@ -494,7 +493,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
 
                             if (itemType != string.Empty)
                             {
-                                var item = EntityManager.SpawnEntity(itemType, MapCoordinates.Nullspace);
+                                var item = EntityManager.Spawn(itemType, MapCoordinates.Nullspace);
                                 _inventory.TryEquip(dummy, item, slot.Name, true, true);
                             }
                         }
@@ -509,7 +508,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
 
                             if (itemType != string.Empty)
                             {
-                                var item = EntityManager.SpawnEntity(itemType, MapCoordinates.Nullspace);
+                                var item = EntityManager.Spawn(itemType, MapCoordinates.Nullspace);
                                 _inventory.TryEquip(dummy, item, slot.Name, true, true);
                             }
                         }
@@ -532,7 +531,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
 
             if (itemType != string.Empty)
             {
-                var item = EntityManager.SpawnEntity(itemType, MapCoordinates.Nullspace);
+                var item = EntityManager.Spawn(itemType, MapCoordinates.Nullspace);
                 _inventory.TryEquip(dummy, item, slot.Name, true, true);
             }
         }
@@ -556,17 +555,17 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         if (previewEntity != null)
         {
             // Special type like borg or AI, do not spawn a human just spawn the entity.
-            dummyEnt = EntityManager.SpawnEntity(previewEntity, MapCoordinates.Nullspace);
+            dummyEnt = EntityManager.Spawn(previewEntity, MapCoordinates.Nullspace);
             return dummyEnt;
         }
         else if (humanoid is not null)
         {
             var dummy = _prototypeManager.Index<SpeciesPrototype>(humanoid.Species).DollPrototype;
-            dummyEnt = EntityManager.SpawnEntity(dummy, MapCoordinates.Nullspace);
+            dummyEnt = EntityManager.Spawn(dummy, MapCoordinates.Nullspace);
         }
         else
         {
-            dummyEnt = EntityManager.SpawnEntity(_prototypeManager.Index<SpeciesPrototype>(SharedHumanoidAppearanceSystem.DefaultSpecies).DollPrototype, MapCoordinates.Nullspace);
+            dummyEnt = EntityManager.Spawn(_prototypeManager.Index<SpeciesPrototype>(SharedHumanoidAppearanceSystem.DefaultSpecies).DollPrototype, MapCoordinates.Nullspace);
         }
 
         _humanoid.LoadProfile(dummyEnt, humanoid);

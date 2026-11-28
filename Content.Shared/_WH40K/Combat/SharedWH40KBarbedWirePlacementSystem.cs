@@ -68,7 +68,7 @@ public sealed partial class SharedWH40KBarbedWirePlacementSystem : EntitySystem
         if (!_stack.Use(ent.Owner, ent.Comp.StackCost, stack))
             return;
 
-        var wire = Spawn(placement.EntityType, snappedCoords);
+        var wire = SpawnAttachedTo(placement.EntityType, snappedCoords);
         _transform.SetLocalRotation(wire, placementDirection.ToAngle());
 
         args.Handled = true;

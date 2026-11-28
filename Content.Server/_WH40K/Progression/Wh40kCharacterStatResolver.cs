@@ -39,7 +39,7 @@ public sealed record Wh40kResolvedStats(
 /// Pure permanent-stat resolver over an immutable account foundation, purchases and prototype modifiers.
 /// Entity mutation and round-only modifiers belong to the runtime adapter.
 /// </summary>
-public sealed class Wh40kCharacterStatResolver
+public sealed partial class Wh40kCharacterStatResolver
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
 

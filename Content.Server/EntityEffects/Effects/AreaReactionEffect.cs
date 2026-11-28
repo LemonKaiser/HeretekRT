@@ -78,7 +78,7 @@ public sealed partial class AreaReactionEffect : EntityEffect
                 return;
 
             var coords = mapSys.MapToGrid(gridUid, mapCoords);
-            var ent = reagentArgs.EntityManager.SpawnEntity(_prototypeId, coords.SnapToGrid());
+            var ent = reagentArgs.EntityManager.SpawnAttachedTo(_prototypeId, coords.SnapToGrid());
 
             var smoke = reagentArgs.EntityManager.System<SmokeSystem>();
             smoke.StartSmoke(ent, splitSolution, _duration, spreadAmount);

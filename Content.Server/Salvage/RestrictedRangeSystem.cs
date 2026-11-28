@@ -29,7 +29,7 @@ public sealed partial class RestrictedRangeSystem : SharedRestrictedRangeSystem
 
     public EntityUid CreateBoundary(EntityCoordinates coordinates, float range)
     {
-        var boundaryUid = Spawn(null, coordinates);
+        var boundaryUid = SpawnAttachedTo(null, coordinates);
         var boundaryPhysics = AddComp<PhysicsComponent>(boundaryUid);
         var radius = range + 0.25f;
         var vertices = new Vector2[BoundarySegments];

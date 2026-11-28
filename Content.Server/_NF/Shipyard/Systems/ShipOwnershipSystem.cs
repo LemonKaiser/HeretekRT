@@ -42,7 +42,7 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
     public void RegisterShipOwnership(EntityUid gridUid, ICommonSession owningPlayer)
     {
         // Don't register ownership if the entity isn't valid
-        if (!EntityManager.EntityExists(gridUid))
+        if (!Exists(gridUid))
             return;
 
         // Add ownership component to the ship
@@ -58,7 +58,7 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
         Dirty(gridUid, comp);
 
         // Log ship registration
-        Logger.InfoS("shipOwnership", $"Registered ship {ToPrettyString(gridUid)} to player {owningPlayer.Name} ({owningPlayer.UserId})");
+        LogManager.GetSawmill("shipOwnership").Info($"Registered ship {ToPrettyString(gridUid)} to player {owningPlayer.Name} ({owningPlayer.UserId})");
     }
 
     private void OnShipOwnershipStartup(EntityUid uid, ShipOwnershipComponent component, ComponentStartup args)
@@ -96,7 +96,7 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
                     // Player has connected, update ownership
                     ownership.IsOwnerOnline = true;
                     ownership.LastStatusChangeTime = _gameTiming.CurTime;
-                    Logger.DebugS("shipOwnership", $"Owner of ship {ToPrettyString(shipUid)} has connected");
+                    LogManager.GetSawmill("shipOwnership").Debug($"Owner of ship {ToPrettyString(shipUid)} has connected");
                     break;
 
                 case SessionStatus.Disconnected:
@@ -105,7 +105,7 @@ public sealed partial class ShipOwnershipSystem : EntitySystem
                     // Player has disconnected, update ownership
                     ownership.IsOwnerOnline = false;
                     ownership.LastStatusChangeTime = _gameTiming.CurTime;
-                    Logger.DebugS("shipOwnership", $"Owner of ship {ToPrettyString(shipUid)} has disconnected");
+                    LogManager.GetSawmill("shipOwnership").Debug($"Owner of ship {ToPrettyString(shipUid)} has disconnected");
                     break;
             }
 

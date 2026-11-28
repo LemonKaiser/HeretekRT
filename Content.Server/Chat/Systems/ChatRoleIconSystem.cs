@@ -8,7 +8,7 @@ namespace Content.Server.Chat.Systems;
 /// <summary>
 ///     Resolves the public ID-card icon snapshot attached to a chat message.
 /// </summary>
-public sealed class ChatRoleIconSystem : EntitySystem
+public sealed partial class ChatRoleIconSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private InventorySystem _inventory = default!;

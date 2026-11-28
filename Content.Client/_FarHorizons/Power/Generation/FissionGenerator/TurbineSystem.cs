@@ -37,7 +37,7 @@ public sealed partial class TurbineSystem : SharedTurbineSystem
         _popupSystem.PopupClient(Loc.GetString("turbine-repair", ("target", ent.Owner), ("tool", args.Used!)), ent.Owner, args.User);
     }
 
-    private void TurbineExamined(EntityUid uid, TurbineComponent comp, ClientExaminedEvent args) => Spawn(comp.ArrowPrototype, new EntityCoordinates(uid, 0, 0));
+    private void TurbineExamined(EntityUid uid, TurbineComponent comp, ClientExaminedEvent args) => SpawnAttachedTo(comp.ArrowPrototype, new EntityCoordinates(uid, 0, 0));
 
     private void OnAnimationCompleted(Entity<TurbineComponent> ent, ref AnimationCompletedEvent args) => PlayAnimation(ent);
 

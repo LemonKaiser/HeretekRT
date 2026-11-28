@@ -233,7 +233,7 @@ public sealed partial class DebrisFeaturePlacerSystem : BaseWorldSystem
                 }
             }
 
-            var ent = Spawn(debrisFeatureEv.DebrisProto, coords);
+            var ent = SpawnAttachedTo(debrisFeatureEv.DebrisProto, coords);
             RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
             component.OwnedDebris.Add(point, ent);
 

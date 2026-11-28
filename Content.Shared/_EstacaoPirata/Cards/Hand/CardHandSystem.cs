@@ -225,7 +225,7 @@ public sealed partial class CardHandSystem : EntitySystem
                 Log.Error($"Failed to spawn {prototype} in container {container.ID}");
             return entity;
         }
-        var worldEntity = Spawn(prototype, Transform(uid).Coordinates);
+        var worldEntity = SpawnAttachedTo(prototype, Transform(uid).Coordinates);
         if (!Exists(worldEntity))
             Log.Error($"Failed to spawn {prototype} at coordinates {Transform(uid).Coordinates}");
         return worldEntity;

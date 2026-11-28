@@ -70,7 +70,7 @@ public sealed partial class ItemMinerSystem : EntitySystem
                 continue;
 
             // mine
-            var minedUid = Spawn(proto, xform.Coordinates);
+            var minedUid = SpawnAttachedTo(proto, xform.Coordinates);
             var ev = new ItemMinedEvent(minedUid);
             RaiseLocalEvent(uid, ref ev);
 

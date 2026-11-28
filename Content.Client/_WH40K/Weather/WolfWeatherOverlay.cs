@@ -425,7 +425,7 @@ public sealed partial class WolfWeatherOverlay : Overlay
             var ne = sw + new Vector2(size, size);
             var nw = sw + new Vector2(0, size);
 
-            var anchored = _map.GetAnchoredEntitiesEnumerator(grid.Owner, grid.Comp, indices);
+            var anchored = _map.GetAnchoredEntities(grid.Owner, grid.Comp, indices);
             while (anchored.MoveNext(out var ent))
             {
                 if (!_blockQuery.HasComp(ent.Value) || !_tag.HasTag(ent.Value, SharedWolfWeatherSystem.DiagonalTag))

@@ -15,7 +15,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Keeps populated systems running and pauses empty remote systems after their configured grace period.
 /// </summary>
-public sealed class KoronusSectorResidencySystem : EntitySystem
+public sealed partial class KoronusSectorResidencySystem : EntitySystem
 {
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -57,7 +57,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         BuildPlanetaryTransitMapIndex();
 
         // Residency must inspect paused maps too, otherwise a sleeping map can never wake up.
-        var query = EntityManager.AllEntityQueryEnumerator<KoronusSystemMapComponent, MapComponent>();
+        var query = AllEntityQuery<KoronusSystemMapComponent, MapComponent>();
         while (query.MoveNext(out _, out var runtime, out var map))
         {
             if (!_sector.TryGetSystemPrototype(runtime.SystemId, out var system))
@@ -69,7 +69,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
             UpdateSystem(runtime, map.MapId, system, occupied);
         }
 
-        var surfaces = EntityManager.AllEntityQueryEnumerator<KoronusPlanetSurfaceMapComponent, MapComponent>();
+        var surfaces = AllEntityQuery<KoronusPlanetSurfaceMapComponent, MapComponent>();
         while (surfaces.MoveNext(out _, out var runtime, out var map))
         {
             if (!_prototypes.TryIndex<KoronusPlanetSurfacePrototype>(runtime.SurfaceId, out var surface))
@@ -199,7 +199,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { Valid: true } entity ||
-                !TryComp<TransformComponent>(entity, out var transform))
+                !TryComp(entity, out TransformComponent? transform))
             {
                 continue;
             }
@@ -219,7 +219,7 @@ public sealed class KoronusSectorResidencySystem : EntitySystem
     {
         _planetaryTransitMaps.Clear();
 
-        var transfers = EntityManager.AllEntityQueryEnumerator<KoronusPlanetaryTransitComponent>();
+        var transfers = AllEntityQuery<KoronusPlanetaryTransitComponent>();
         while (transfers.MoveNext(out _, out var transfer))
         {
             _planetaryTransitMaps.Add(transfer.SourceMap);

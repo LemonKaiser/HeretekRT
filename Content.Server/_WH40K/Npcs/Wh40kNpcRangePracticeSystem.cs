@@ -17,16 +17,16 @@ using Robust.Shared.Timing;
 namespace Content.Server._WH40K.Npcs;
 
 /// <summary>Request native shots from the authored training gun; never modify ammunition or firing limits.</summary>
-public sealed class Wh40kNpcRangePracticeSystem : EntitySystem
+public sealed partial class Wh40kNpcRangePracticeSystem : EntitySystem
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedGunSystem _gun = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly DialogueSystem _dialogue = default!;
-    [Dependency] private readonly GameTicker _ticker = default!;
-    [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedGunSystem _gun = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private DialogueSystem _dialogue = default!;
+    [Dependency] private GameTicker _ticker = default!;
+    [Dependency] private IConfigurationManager _config = default!;
     private static readonly EntProtoId TrainingGun = "WeaponHeavyStubPistolArbitesPractice";
     private static readonly EntProtoId TrainingBullet = "BulletArbitesPractice";
     private float _scanTime;

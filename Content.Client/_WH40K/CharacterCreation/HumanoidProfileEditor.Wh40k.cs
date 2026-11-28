@@ -71,7 +71,7 @@ public sealed partial class HumanoidProfileEditor
     {
         if (Profile == null || !_entManager.TryGetComponent<SpriteComponent>(PreviewDummy, out var sprite))
             return;
-        sprite.Scale = new Vector2(Profile.Appearance.Width, Profile.Appearance.Height);
+        _entManager.System<SpriteSystem>().SetScale((PreviewDummy, sprite), new Vector2(Profile.Appearance.Width, Profile.Appearance.Height));
     }
 
     private void InitializeWh40kLayout()

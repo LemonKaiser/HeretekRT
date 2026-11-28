@@ -254,7 +254,7 @@ public sealed partial class Wh40kChaosCombatOperator : HTNOperator
             return;
         }
 
-        var item = _entities.SpawnEntity(thrower.Prototype, _entities.GetComponent<TransformComponent>(owner).Coordinates);
+        var item = _entities.SpawnAttachedTo(thrower.Prototype, _entities.GetComponent<TransformComponent>(owner).Coordinates);
         if (!_entities.System<ActionBlockerSystem>().CanThrow(owner, item))
         {
             _entities.DeleteEntity(item);

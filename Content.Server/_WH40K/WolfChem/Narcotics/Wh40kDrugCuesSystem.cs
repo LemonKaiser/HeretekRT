@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// <summary>
 /// What a high, a crash, a drink or withdrawal looks like from outside, on examine.
 /// </summary>
-public sealed class Wh40kDrugCuesSystem : EntitySystem
+public sealed partial class Wh40kDrugCuesSystem : EntitySystem
 {
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private Wh40kAlcoholSystem _alcohol = default!;

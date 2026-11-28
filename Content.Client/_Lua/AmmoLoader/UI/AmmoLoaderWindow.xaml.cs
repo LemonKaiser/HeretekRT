@@ -48,8 +48,8 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
     private const int QuickUnloadSlotCount = 8;
     private const int StorageColumns = 5;
     private const int DefaultTurretColumns = 16;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IInputManager _input = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IInputManager _input = default!;
     private readonly List<AmmoLoaderInventoryGroup> _groups = new();
     private readonly List<AmmoLoaderLinkedTurret> _linkedTurrets = new();
     private readonly Dictionary<string, PanelContainer> _slotPanels = new();
@@ -196,8 +196,8 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
         _slotPanels.Clear();
         _slotTitles.Clear();
         _turretPanels.Clear();
-        AmmoGrid.DisposeAllChildren();
-        TurretGrid.DisposeAllChildren();
+        AmmoGrid.RemoveAllChildren();
+        TurretGrid.RemoveAllChildren();
         if (_selectedAmmo is { } selectedAmmo && !_groups.Exists(g => g.PrototypeId.Id == selectedAmmo.Id && g.IsEmpty == _selectedEmpty))
         {
             _selectedAmmo = null;
@@ -261,7 +261,7 @@ public sealed partial class AmmoLoaderWindow : FancyWindow
 
     private void BuildQuickUnloadSlots()
     {
-        QuickUnloadSlots.DisposeAllChildren();
+        QuickUnloadSlots.RemoveAllChildren();
         _quickSlots.Clear();
         _quickIcons.Clear();
         for (var i = 0; i < QuickUnloadSlotCount; i++)

@@ -2046,7 +2046,7 @@ public sealed partial class DialogueSystem : EntitySystem
                 if (action.Prototype == null || Deleted(initiator))
                     return false;
 
-                var item = Spawn(action.Prototype.Value, Transform(initiator).Coordinates);
+                var item = SpawnAttachedTo(action.Prototype.Value, Transform(initiator).Coordinates);
                 // The entity is spawned at the initiator's feet. If all hands are occupied,
                 // it remains there instead of cancelling the reward.
                 _hands.TryPickupAnyHand(initiator, item, checkActionBlocker: false);

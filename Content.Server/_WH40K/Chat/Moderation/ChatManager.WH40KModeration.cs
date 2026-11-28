@@ -167,7 +167,8 @@ internal sealed partial class ChatManager
         }
         catch (Exception e)
         {
-            Logger.ErrorS("chat.moderation", $"Failed to apply automatic chat mute to {player}: {e}");
+            IoCManager.Resolve<ILogManager>().GetSawmill("chat.moderation")
+                .Error($"Failed to apply automatic chat mute to {player}: {e}");
         }
     }
 

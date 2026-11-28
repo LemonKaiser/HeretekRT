@@ -66,7 +66,9 @@ public sealed partial class HealthAnalyzerWindow
             AddConditionHeading(section, "wh40k-analyzer-held-title", first: section.ChildCount <= 1);
             foreach (var held in conditions.Held.OrderByDescending(held => held.SecondsLeft))
             {
-                var name = Loc.TryGetString($"reagent-effect-status-effect-{held.Key}", out var effect) ? effect : held.Key;
+                var name = IoCManager.Resolve<ILocalizationManager>().TryGetString($"reagent-effect-status-effect-{held.Key}", out var effect)
+                    ? effect
+                    : held.Key;
                 AddConditionLine(section, Loc.GetString("wh40k-analyzer-held",
                     ("effect", CapitalizeFirst(name)),
                     ("time", ConditionTime(held.SecondsLeft))), ConditionBodyColor);

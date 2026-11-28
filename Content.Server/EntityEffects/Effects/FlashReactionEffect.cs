@@ -70,7 +70,7 @@ public sealed partial class FlashReactionEffect : EntityEffect
         if (FlashEffectPrototype == null)
             return;
 
-        var uid = args.EntityManager.SpawnEntity(FlashEffectPrototype, transformSystem.GetMapCoordinates(transform));
+        var uid = args.EntityManager.Spawn(FlashEffectPrototype, transformSystem.GetMapCoordinates(transform));
         transformSystem.AttachToGridOrMap(uid);
 
         if (!args.EntityManager.TryGetComponent<PointLightComponent>(uid, out var pointLightComp))

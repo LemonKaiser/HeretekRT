@@ -16,7 +16,9 @@ public sealed partial class LoadoutContainer : BoxContainer
     [Dependency] private IEntityManager _entManager = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
 
-    private readonly EntityUid? _entity;
+    private readonly EntProtoId? _previewPrototype;
+    private readonly string? _previewDescription;
+    private EntityUid? _entity;
 
     public Button Select => SelectButton;
 
@@ -46,29 +48,35 @@ public sealed partial class LoadoutContainer : BoxContainer
             if (!hasEntity || !hasDescription) {
                 ent = _entManager.System<LoadoutSystem>().GetFirstOrNull(loadProto);
             }
-            var finalEnt = hasEntity ? loadProto.PreviewEntity : ent;
-            if (finalEnt != null)
-            {
-                _entity = _entManager.SpawnEntity(finalEnt, MapCoordinates.Nullspace);
-                Sprite.SetEntity(_entity);
-
-                var spriteTooltip = new Tooltip();
-                var description = hasDescription ? loadProto.Description : _entManager.GetComponent<MetaDataComponent>(_entity.Value).EntityDescription; 
-                spriteTooltip.SetMessage(FormattedMessage.FromUnformatted(description));
-                Sprite.TooltipSupplier = _ => spriteTooltip; // Frontier: TooltipSupplier<Sprite.TooltipSupplier?
-            }
+            _previewPrototype = hasEntity ? loadProto.PreviewEntity : ent;
+            _previewDescription = hasDescription ? loadProto.Description : null;
             // End Frontier
         }
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        base.Dispose(disposing);
+        base.EnteredTree();
 
-        if (!disposing)
+        if (_previewPrototype == null)
             return;
 
+        var entity = _entManager.Spawn(_previewPrototype, MapCoordinates.Nullspace);
+        _entity = entity;
+        Sprite.SetEntity(entity);
+
+        var description = _previewDescription ?? _entManager.GetComponent<MetaDataComponent>(entity).EntityDescription;
+        var tooltip = new Tooltip();
+        tooltip.SetMessage(FormattedMessage.FromUnformatted(description));
+        Sprite.TooltipSupplier = _ => tooltip;
+    }
+
+    protected override void ExitedTree()
+    {
+        Sprite.SetEntity(null);
         _entManager.DeleteEntity(_entity);
+        _entity = null;
+        base.ExitedTree();
     }
 
     public bool Pressed

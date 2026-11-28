@@ -22,7 +22,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kReviverSystem : EntitySystem
+public sealed partial class Wh40kReviverSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private BloodstreamSystem _bloodstream = default!;

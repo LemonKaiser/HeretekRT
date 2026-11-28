@@ -12,9 +12,9 @@ namespace Content.Shared._WH40K.Combat;
 /// </summary>
 public sealed partial class SharedWH40KDirectionalBarricadeSystem : EntitySystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, (EntityUid? Shooter, MapCoordinates? Origin, Dictionary<EntityUid, bool> Results)> _projectileResults = new();
 

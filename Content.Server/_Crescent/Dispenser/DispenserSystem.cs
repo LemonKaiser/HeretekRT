@@ -102,7 +102,7 @@ public sealed partial class DispenserSystem : SharedDispenserSystem
 
     public void Dispense(EntityUid uid, DispenserComponent component, string itemId)
     {
-        var entity = Spawn(itemId, Transform(uid).Coordinates);
+        var entity = SpawnAttachedTo(itemId, Transform(uid).Coordinates);
     }
 
     public override void Update(float frameTime)

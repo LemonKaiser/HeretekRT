@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.Localizations;
 /// <summary>
 /// Caches localized entity prototype data per culture without reaching into the engine's private cache.
 /// </summary>
-public sealed class WH40KEntityLocalizationCache : EntitySystem
+public sealed partial class WH40KEntityLocalizationCache : EntitySystem
 {
     [Dependency] private ILocalizationManager _localization = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;

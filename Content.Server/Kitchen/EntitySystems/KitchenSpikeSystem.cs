@@ -12,7 +12,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Kitchen;
-using Content.Shared.Kitchen.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Nutrition.Components;
@@ -183,7 +182,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
             var item = _random.PickAndTake(component.PrototypesToSpawn);
 
-            var ent = Spawn(item, Transform(uid).Coordinates);
+            var ent = SpawnAttachedTo(item, Transform(uid).Coordinates);
             _metaData.SetEntityName(ent,
                 Loc.GetString("comp-kitchen-spike-meat-name", ("name", Name(ent)), ("victim", component.Victim)));
 

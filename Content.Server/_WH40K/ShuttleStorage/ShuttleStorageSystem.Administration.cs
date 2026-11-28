@@ -41,7 +41,7 @@ public sealed partial class ShuttleStorageSystem
             {
                 CheckEpoch(operation);
                 EntityUid? live = null;
-                var ships = EntityManager.AllEntityQueryEnumerator<ShuttleStorageTransferComponent>();
+                var ships = AllEntityQuery<ShuttleStorageTransferComponent>();
                 while (ships.MoveNext(out var entity, out var marker))
                     if (marker.Id == row.Ship) { live = entity; break; }
                 if (mode == "restore")

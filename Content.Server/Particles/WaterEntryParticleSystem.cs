@@ -10,12 +10,12 @@ namespace Content.Server.Particles;
 /// <summary>
 /// Emits a water splash when an entity crosses into a water tile, rather than once per footstep.
 /// </summary>
-public sealed class WaterEntryParticleSystem : EntitySystem
+public sealed partial class WaterEntryParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     private readonly HashSet<EntityUid> _inWater = [];
     private readonly Dictionary<EntityUid, GameTick> _pendingWaterExits = [];

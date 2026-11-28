@@ -71,7 +71,7 @@ public sealed partial class BiomeSystem
 
     private bool HasAnchoredEntity(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
     {
-        var anchored = _mapSystem.GetAnchoredEntitiesEnumerator(gridUid, grid, indices);
+        var anchored = _mapSystem.GetAnchoredEntities(gridUid, grid, indices);
         return anchored.MoveNext(out _);
     }
 
@@ -150,7 +150,7 @@ public sealed partial class BiomeSystem
 
             if (TryGetEntity(indices, component, (gridUid, grid), out var entPrototype))
             {
-                var ent = Spawn(entPrototype, _mapSystem.GridTileToLocal(gridUid, grid, indices));
+                var ent = SpawnAttachedTo(entPrototype, _mapSystem.GridTileToLocal(gridUid, grid, indices));
 
                 if (_xformQuery.TryGetComponent(ent, out var xform) && !xform.Anchored)
                 {

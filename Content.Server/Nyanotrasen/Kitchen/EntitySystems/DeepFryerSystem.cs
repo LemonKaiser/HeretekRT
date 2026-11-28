@@ -74,7 +74,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
     [Dependency] private SharedContainerSystem _containerSystem = default!;
     [Dependency] private SharedHandsSystem _handsSystem = default!;
     [Dependency] private MobStateSystem _mobStateSystem = default!;
-    [Dependency] private SolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private SolutionTransferSystem _solutionTransferSystem = default!;
     [Dependency] private PuddleSystem _puddleSystem = default!;
     [Dependency] private TemperatureSystem _temperature = default!;
@@ -132,7 +132,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
             GetOilLevel(uid, component),
             GetOilPurity(uid, component),
             component.FryingOilThreshold,
-            EntityManager.GetNetEntityArray(component.Storage.ContainedEntities.ToArray()));
+            GetNetEntityArray(component.Storage.ContainedEntities.ToArray()));
 
         _uiSystem.SetUiState(uid, DeepFryerUiKey.Key, state);
     }
@@ -247,7 +247,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
             !HasComp<MobStateComponent>(item) &&
             MetaData(item).EntityPrototype?.ID != component.CharredPrototype)
         {
-            var charred = Spawn(component.CharredPrototype, Transform(uid).Coordinates);
+            var charred = SpawnAttachedTo(component.CharredPrototype, Transform(uid).Coordinates);
             _containerSystem.Insert(charred, component.Storage);
             Del(item);
         }
@@ -298,7 +298,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
                 // Get oil volume to spawn before deleting item.
                 var friableVolume = GetOilAndWasteVolumeForItem(uid, component, item);
 
-                var spawn = Spawn(deepFriable.Output, Transform(uid).Coordinates);
+                var spawn = SpawnAttachedTo(deepFriable.Output, Transform(uid).Coordinates);
                 EnsureComp<PreventCrispingComponent>(spawn);
                 _containerSystem.Insert(spawn, component.Storage);
                 Del(item);
@@ -433,8 +433,8 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
             _sawmill.Warning(
                 $"{ToPrettyString(uid)} did not have a {component.StorageName} container. It has been created.");
 
-        component.Solution =
-            _solutionContainerSystem.EnsureSolution(uid, component.SolutionName, out var solutionExisted);
+        if (_solutionContainerSystem.EnsureSolution(uid, component.SolutionName, out var solutionExisted, out var solution))
+            component.Solution = solution;
 
         if (!solutionExisted)
             _sawmill.Warning(
@@ -586,7 +586,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
     private void OnRemoveItem(EntityUid uid, DeepFryerComponent component, DeepFryerRemoveItemMessage args)
     {
-        var removedItem = EntityManager.GetEntity(args.Item);
+        var removedItem = GetEntity(args.Item);
         if (removedItem.Valid)
         {
             //JJ Comment - This line should be unnecessary. Some issue is keeping the UI from updating when converting straight to a Burned Mess while the UI is still open. To replicate, put a Raw Meat in the fryer with no oil in it. Wait until it sputters with no effect. It should transform to Burned Mess, but doesn't.
@@ -602,7 +602,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
             _audioSystem.PlayPvs(component.SoundRemoveItem, uid, AudioParamsInsertRemove);
 
-            UpdateUserInterface(component.Owner, component);
+            UpdateUserInterface(uid, component);
         }
     }
 
@@ -653,7 +653,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
                 out var transferAmount))
             return;
 
-        if (!_solutionContainerSystem.TryGetSolution(component.Owner, component.Solution.Name, out var solution))
+        if (!_solutionContainerSystem.TryGetSolution(uid, component.Solution.Name, out var solution))
             return;
 
         _solutionTransferSystem.Transfer(user,
@@ -716,7 +716,7 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
 
         _audioSystem.PlayPvs(component.SoundRemoveItem, uid, AudioParamsInsertRemove);
 
-        UpdateUserInterface(component.Owner, component);
+        UpdateUserInterface(uid, component);
     }
 
     private void OnClearSlag(EntityUid uid, DeepFryerComponent component, ClearSlagDoAfterEvent args)

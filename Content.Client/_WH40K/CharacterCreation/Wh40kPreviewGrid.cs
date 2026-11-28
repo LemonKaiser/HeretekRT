@@ -33,7 +33,7 @@ public sealed class Wh40kPreviewGrid : GridContainer
 
     public void ClearTiles()
     {
-        DisposeAllChildren();
+        RemoveAllChildren();
         _markingIcons.Clear();
         _group = new ButtonGroup();
     }

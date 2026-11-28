@@ -20,8 +20,8 @@ namespace Content.Client._WH40K.DetailExaminable;
 [GenerateTypedNameReferences]
 public sealed partial class Wh40kDetailExaminableWindow : DefaultWindow
 {
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     private readonly Direction[] _directions = [Direction.South, Direction.West, Direction.North, Direction.East];
     private int _directionIndex;

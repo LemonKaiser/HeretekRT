@@ -19,7 +19,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._WH40K.Factions;
 
-public sealed class FactionAdminEui : BaseEui
+public sealed partial class FactionAdminEui : BaseEui
 {
     [Dependency] private IAdminManager _admins = default!;
     [Dependency] private IPlayerLocator _locator = default!;

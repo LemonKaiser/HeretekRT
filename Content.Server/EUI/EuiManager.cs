@@ -99,7 +99,7 @@ namespace Content.Server.EUI
 
             if (!dat.OpenUIs.TryGetValue(message.Id, out var eui))
             {
-                Logger.WarningS("eui", $"Got EUI message from player {ply} for non-existing UI {message.Id}");
+                IoCManager.Resolve<ILogManager>().GetSawmill("eui").Warning($"Got EUI message from player {ply} for non-existing UI {message.Id}");
                 return;
             }
 

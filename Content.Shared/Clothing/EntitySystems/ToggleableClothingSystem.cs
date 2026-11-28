@@ -495,7 +495,7 @@ public sealed partial class ToggleableClothingSystem : EntitySystem
 
         foreach (var prototype in prototypes)
         {
-            var spawned = Spawn(prototype.Value, xform.Coordinates);
+            var spawned = SpawnAttachedTo(prototype.Value, xform.Coordinates);
             var attachedClothing = EnsureComp<AttachedClothingComponent>(spawned);
             attachedClothing.AttachedUid = toggleable;
             EnsureComp<ContainerManagerComponent>(spawned);

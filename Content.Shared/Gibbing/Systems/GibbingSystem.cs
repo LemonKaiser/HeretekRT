@@ -344,7 +344,7 @@ public sealed partial class GibbingSystem : EntitySystem
         gibletEntity = null;
         if (gibbable.GibPrototypes.Count == 0)
             return false;
-        gibletEntity = Spawn(gibbable.GibPrototypes[_random.Next(0, gibbable.GibPrototypes.Count)],
+        gibletEntity = SpawnAttachedTo(gibbable.GibPrototypes[_random.Next(0, gibbable.GibPrototypes.Count)],
             randomSpreadModifier == null
                 ? coords
                 : coords.Offset(_random.NextVector2(gibbable.GibScatterRange * randomSpreadModifier.Value)));

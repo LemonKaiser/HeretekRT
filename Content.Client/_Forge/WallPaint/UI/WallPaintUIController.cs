@@ -8,7 +8,7 @@ namespace Content.Client._Forge.WallPaint.UI;
 
 public sealed partial class WallPaintUIController : UIController, IOnStateExited<GameplayState>, IOnSystemChanged<SandboxSystem>
 {
-    [Dependency] private readonly IEntitySystemManager _systems = default!;
+    [Dependency] private IEntitySystemManager _systems = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
 
     private WallPaintWindow? _window;
@@ -30,7 +30,7 @@ public sealed partial class WallPaintUIController : UIController, IOnStateExited
         if (_window == null)
             return;
 
-        _window.Dispose();
+        _window.Close();
         _window = null;
     }
 
@@ -47,7 +47,7 @@ public sealed partial class WallPaintUIController : UIController, IOnStateExited
 
     private void EnsureWindow()
     {
-        if (_window is { Disposed: false })
+        if (_window != null)
             return;
 
         DeactivatePaint();
@@ -57,7 +57,7 @@ public sealed partial class WallPaintUIController : UIController, IOnStateExited
 
     public void CloseWindow()
     {
-        if (_window == null || _window.Disposed)
+        if (_window == null)
             return;
 
         _window.Close();

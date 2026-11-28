@@ -16,7 +16,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kHandShieldSystem : SharedWh40kHandShieldSystem
+public sealed partial class Wh40kHandShieldSystem : SharedWh40kHandShieldSystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

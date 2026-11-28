@@ -9,13 +9,13 @@ namespace Content.Client._WH40K.Synthetics;
 /// World-space shader pass beneath <see cref="Wh40kCyberneticHudOverlay"/>: red phosphor vignette rim,
 /// horizontal glitch slice tear under heavy strain, and desaturated blue-grey standby drain.
 /// </summary>
-public sealed class Wh40kCyberneticScreenOverlay : Overlay
+public sealed partial class Wh40kCyberneticScreenOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> ShaderId = "Wh40kCyberneticShader";
 
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
     public override bool RequestScreenTexture => true;

@@ -37,7 +37,7 @@ public sealed partial class ContainerFillSystem : EntitySystem
 
             foreach (var proto in prototypes)
             {
-                var ent = Spawn(proto, coords);
+                var ent = SpawnAttachedTo(proto, coords);
                 if (!_containerSystem.Insert(ent, container, containerXform: xform))
                 {
                     Log.Error($"Entity {ToPrettyString(uid)} with a {nameof(ContainerFillComponent)} failed to insert an entity: {ToPrettyString(ent)}.");
@@ -70,7 +70,7 @@ public sealed partial class ContainerFillSystem : EntitySystem
             var spawns = _entityTable.GetSpawns(table);
             foreach (var proto in spawns)
             {
-                var spawn = Spawn(proto, coords);
+                var spawn = SpawnAttachedTo(proto, coords);
                 RaiseLocalEvent(spawn, new RandomLootSpawnedEvent());
                 if (!_containerSystem.Insert(spawn, container, containerXform: xform))
                 {

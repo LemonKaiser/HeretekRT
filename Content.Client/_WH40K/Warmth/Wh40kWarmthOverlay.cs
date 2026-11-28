@@ -24,6 +24,8 @@ public sealed partial class Wh40kWarmthOverlay : Overlay
     private const float BaseStrength = 0.35f;
     private const float FadeRate = 0.25f;
 
+    private static readonly ProtoId<ShaderPrototype> WarmthShader = "Wh40kWarmthScreen";
+
     private readonly ShaderInstance _shader;
     private float _frost;
     private float _heat;
@@ -31,7 +33,7 @@ public sealed partial class Wh40kWarmthOverlay : Overlay
     public Wh40kWarmthOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _proto.Index<ShaderPrototype>("Wh40kWarmthScreen").InstanceUnique();
+        _shader = _proto.Index(WarmthShader).InstanceUnique();
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

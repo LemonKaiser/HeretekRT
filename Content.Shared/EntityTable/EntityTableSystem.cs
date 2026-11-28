@@ -9,12 +9,12 @@ public sealed partial class EntityTableSystem : EntitySystem
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IRobustRandom _random = default!;
 
-    public IEnumerable<EntProtoId> GetSpawns(EntityTableSelector? table, System.Random? rand = null)
+    public IEnumerable<EntProtoId> GetSpawns(EntityTableSelector? table, IRobustRandom? rand = null)
     {
         if (table == null)
             return new List<EntProtoId>();
 
-        rand ??= _random.GetRandom();
+        rand ??= _random;
         return table.GetSpawns(rand, EntityManager, _prototypeManager);
     }
 }

@@ -9,7 +9,7 @@ using Robust.Shared.Player;
 
 namespace Content.Shared._WH40K.SectorMap;
 
-public sealed class KoronusHuntingTargetSystem : EntitySystem
+public sealed partial class KoronusHuntingTargetSystem : EntitySystem
 {
     [Dependency] private NpcFactionSystem _factions = default!;
 

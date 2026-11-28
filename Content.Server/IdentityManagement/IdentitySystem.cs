@@ -66,7 +66,7 @@ public sealed partial class IdentitySystem : SharedIdentitySystem
     // This is where the magic happens
     private void OnMapInit(EntityUid uid, IdentityComponent component, MapInitEvent args)
     {
-        var ident = Spawn(null, Transform(uid).Coordinates);
+        var ident = SpawnAttachedTo(null, Transform(uid).Coordinates);
 
         _metaData.SetEntityName(ident, "identity");
         QueueIdentityUpdate(uid);

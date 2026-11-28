@@ -9,7 +9,7 @@ namespace Content.Shared.Durability.Systems;
 /// </summary>
 public abstract partial class SharedItemDurabilitySystem : EntitySystem
 {
-    [Dependency] protected readonly SharedPopupSystem Popup = default!;
+    [Dependency] protected SharedPopupSystem Popup = default!;
 
     public override void Initialize()
     {

@@ -16,8 +16,6 @@ namespace Content.Client.Administration.UI.Tabs
             RobustXamlLoader.Load(this);
             IoCManager.InjectDependencies(this);
 
-            _config.OnValueChanged(CCVars.OocEnabled, OocEnabledChanged, true);
-            _config.OnValueChanged(CCVars.LoocEnabled, LoocEnabledChanged, true);
         }
 
         private void OocEnabledChanged(bool value)
@@ -30,15 +28,18 @@ namespace Content.Client.Administration.UI.Tabs
             SetLoocButton.Pressed = value;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void EnteredTree()
         {
-            base.Dispose(disposing);
+            base.EnteredTree();
+            _config.OnValueChanged(CCVars.OocEnabled, OocEnabledChanged, true);
+            _config.OnValueChanged(CCVars.LoocEnabled, LoocEnabledChanged, true);
+        }
 
-            if (disposing)
-            {
-                _config.UnsubValueChanged(CCVars.OocEnabled, OocEnabledChanged);
-                _config.UnsubValueChanged(CCVars.LoocEnabled, LoocEnabledChanged);
-            }
+        protected override void ExitedTree()
+        {
+            _config.UnsubValueChanged(CCVars.OocEnabled, OocEnabledChanged);
+            _config.UnsubValueChanged(CCVars.LoocEnabled, LoocEnabledChanged);
+            base.ExitedTree();
         }
     }
 }

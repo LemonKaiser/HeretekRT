@@ -19,19 +19,19 @@ namespace Content.Server._WH40K.Synthetics;
 /// Overflow degrades collector integrity (0.03 HP/rad) and leaks half into radiation damage; burns out at 0 HP.
 /// Pulled out via the chassis bay, the collector vents 5 rad/s and repairs +10 HP per 3s weld.
 /// </summary>
-public sealed class Wh40kRadCollectorSystem : EntitySystem
+public sealed partial class Wh40kRadCollectorSystem : EntitySystem
 {
     private static readonly ProtoId<DamageTypePrototype> RadiationType = "Radiation";
     private static readonly TimeSpan WarningCooldown = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan VentInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan ExposureHold = TimeSpan.FromSeconds(2.5);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedToolSystem _tools = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedToolSystem _tools = default!;
 
     private readonly Dictionary<EntityUid, TimeSpan> _nextWarning = new();
     private readonly Dictionary<EntityUid, (float Rate, TimeSpan At)> _exposure = new();

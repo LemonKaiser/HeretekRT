@@ -9,10 +9,10 @@ namespace Content.Server.Anomaly;
 /// No emitter is retained between pulses: the anomaly's normal appearance remains its
 /// persistent presentation.
 /// </summary>
-public sealed class AnomalyParticleSystem : EntitySystem
+public sealed partial class AnomalyParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

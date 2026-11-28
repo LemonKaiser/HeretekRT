@@ -363,7 +363,7 @@ namespace Content.Server.Lathe
                 {
                     for (var i = 0; i < comp.CurrentRecipe.ResultCount; i++) // mono
                     {
-                        var result = Spawn(resultProto, Transform(uid).Coordinates);
+                        var result = SpawnAttachedTo(resultProto, Transform(uid).Coordinates);
 
                         // Frontier: adjust price before merge (stack prices changed once)
                         if (result.Valid)

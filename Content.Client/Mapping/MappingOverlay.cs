@@ -11,6 +11,8 @@ namespace Content.Client.Mapping;
 
 public sealed partial class MappingOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> UnshadedShaderId = "unshaded";
+
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -23,6 +25,7 @@ public sealed partial class MappingOverlay : Overlay
 
     private readonly MappingState _state;
     private readonly ShaderInstance _shader;
+    private readonly SpriteSystem _sprite;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -31,7 +34,8 @@ public sealed partial class MappingOverlay : Overlay
         IoCManager.InjectDependencies(this);
 
         _state = state;
-        _shader = _prototypes.Index<ShaderPrototype>("unshaded").Instance();
+        _shader = _prototypes.Index(UnshadedShaderId).Instance();
+        _sprite = _entities.System<SpriteSystem>();
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -42,7 +46,7 @@ public sealed partial class MappingOverlay : Overlay
                 continue;
 
             if (sprite.Color == DeleteColor || sprite.Color == PickColor)
-                sprite.Color = color;
+                _sprite.SetColor((id, sprite), color);
         }
 
         _oldColors.Clear();
@@ -61,7 +65,7 @@ public sealed partial class MappingOverlay : Overlay
                     _entities.TryGetComponent(entity, out SpriteComponent? sprite))
                 {
                     _oldColors[entity] = sprite.Color;
-                    sprite.Color = PickColor;
+                    _sprite.SetColor((entity, sprite), PickColor);
                 }
 
                 break;
@@ -72,7 +76,7 @@ public sealed partial class MappingOverlay : Overlay
                     _entities.TryGetComponent(entity, out SpriteComponent? sprite))
                 {
                     _oldColors[entity] = sprite.Color;
-                    sprite.Color = DeleteColor;
+                    _sprite.SetColor((entity, sprite), DeleteColor);
                 }
 
                 break;

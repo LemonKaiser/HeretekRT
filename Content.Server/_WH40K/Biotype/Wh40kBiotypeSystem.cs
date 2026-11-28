@@ -32,16 +32,16 @@ public sealed partial class Wh40kBiotypeSystem : SharedWh40kBiotypeSystem
 
     private static readonly ProtoId<AlertPrototype> BleedAlert = "Bleed";
 
-    [Dependency] private readonly IComponentFactory _factory = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly ISerializationManager _serialization = default!;
-    [Dependency] private readonly AlertsSystem _alerts = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
+    [Dependency] private IComponentFactory _factory = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private ISerializationManager _serialization = default!;
+    [Dependency] private AlertsSystem _alerts = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     private readonly Dictionary<Wh40kBiotype, Wh40kBiotypePrototype> _biotypes = new();
 
@@ -137,7 +137,7 @@ public sealed partial class Wh40kBiotypeSystem : SharedWh40kBiotypeSystem
             cellSlot.ContainerSlot is { } container &&
             !cellSlot.HasItem)
         {
-            var cell = Spawn(startingCell, Transform(mob).Coordinates);
+            var cell = SpawnAttachedTo(startingCell, Transform(mob).Coordinates);
             if (!_containers.Insert(cell, container, force: true))
                 Del(cell);
         }
@@ -179,7 +179,7 @@ public sealed partial class Wh40kBiotypeSystem : SharedWh40kBiotypeSystem
                 continue;
             }
 
-            var item = Spawn(starting, Transform(mob).Coordinates);
+            var item = SpawnAttachedTo(starting, Transform(mob).Coordinates);
             if (!_containers.Insert(item, container, force: true))
                 Del(item);
         }

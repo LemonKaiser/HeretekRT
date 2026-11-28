@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.Activities.Prototypes;
 /// executor may additionally name one audited objective root. Maps and salvage manifests are
 /// selected by closed execution profiles; templates cannot select ghost roles or player spawns.
 /// </summary>
-[Prototype("koronusActivityTemplate")]
+[Prototype]
 public sealed partial class KoronusActivityTemplatePrototype : IPrototype
 {
     [IdDataField]

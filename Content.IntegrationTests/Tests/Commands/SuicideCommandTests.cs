@@ -268,7 +268,7 @@ public sealed class SuicideCommandTests
         // Spawn the weapon of choice and put it in the player's hands
         await server.WaitPost(() =>
         {
-            var item = entManager.SpawnEntity("SharpTestObject", transformSystem.GetMapCoordinates(player));
+            var item = entManager.Spawn("SharpTestObject", transformSystem.GetMapCoordinates(player));
             Assert.That(handsSystem.TryPickup(player, item, handsComponent.ActiveHand!));
             entManager.TryGetComponent<ExecutionComponent>(item, out var executionComponent);
             Assert.That(executionComponent, Is.Not.EqualTo(null));
@@ -343,7 +343,7 @@ public sealed class SuicideCommandTests
         // Spawn the weapon of choice and put it in the player's hands
         await server.WaitPost(() =>
         {
-            var item = entManager.SpawnEntity("MixedDamageTestObject", transformSystem.GetMapCoordinates(player));
+            var item = entManager.Spawn("MixedDamageTestObject", transformSystem.GetMapCoordinates(player));
             Assert.That(handsSystem.TryPickup(player, item, handsComponent.ActiveHand!));
             entManager.TryGetComponent<ExecutionComponent>(item, out var executionComponent);
             Assert.That(executionComponent, Is.Not.EqualTo(null));

@@ -13,13 +13,13 @@ namespace Content.Server._WH40K.VendingMachines.Systems;
 /// The actual machine updates are spread over several ticks so a large station does not
 /// receive one burst of inventory and network updates.
 /// </summary>
-public sealed class AutoVendingRestockSystem : EntitySystem
+public sealed partial class AutoVendingRestockSystem : EntitySystem
 {
     private static readonly TimeSpan RestockInterval = TimeSpan.FromHours(3);
     private const int MachinesPerTick = 4;
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly VendingMachineSystem _vendingMachines = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private VendingMachineSystem _vendingMachines = default!;
 
     private readonly Queue<EntityUid> _pending = new();
     private readonly HashSet<EntityUid> _pendingSet = new();
@@ -48,7 +48,7 @@ public sealed class AutoVendingRestockSystem : EntitySystem
 
             if (TerminatingOrDeleted(machine) ||
                 !TryComp<VendingMachineComponent>(machine, out var vending) ||
-                !TryComp<TransformComponent>(machine, out var transform) ||
+                !TryComp(machine, out TransformComponent? transform) ||
                 transform.GridUid is not { } grid ||
                 !HasComp<AutoVendingRestockComponent>(grid))
             {

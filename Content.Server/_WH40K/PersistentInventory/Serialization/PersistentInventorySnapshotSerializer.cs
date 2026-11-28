@@ -141,39 +141,39 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         "Test",
     };
 
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly SharedStorageSystem _storage = default!;
-    [Dependency] private readonly SharedItemSystem _items = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
-    [Dependency] private readonly ComponentTogglerSystem _componentTogglers = default!;
-    [Dependency] private readonly SharedAccessSystem _access = default!;
-    [Dependency] private readonly SharedIdCardSystem _idCards = default!;
-    [Dependency] private readonly BatterySystem _batteries = default!;
-    [Dependency] private readonly Wh40kDeployableImplantSystem _deployableImplants = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly ItemDurabilitySystem _durability = default!;
-    [Dependency] private readonly PowerCellSystem _powerCells = default!;
-    [Dependency] private readonly LabelSystem _labels = default!;
-    [Dependency] private readonly GunSystem _guns = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
-    [Dependency] private readonly StackSystem _stacks = default!;
-    [Dependency] private readonly MaterialFuelSystem _fuel = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly PressurizedSolutionSystem _pressurized = default!;
-    [Dependency] private readonly DeviceNetworkSystem _deviceNetwork = default!;
-    [Dependency] private readonly RingerSystem _ringers = default!;
-    [Dependency] private readonly UnpoweredFlashlightSystem _flashlights = default!;
-    [Dependency] private readonly SuitSensorSystem _suitSensors = default!;
-    [Dependency] private readonly OpenableSystem _openable = default!;
-    [Dependency] private readonly PaperSystem _paper = default!;
-    [Dependency] private readonly ExpendableLightSystem _expendableLights = default!;
-    [Dependency] private readonly ItemRarityRandomizationSystem _itemRarity = default!;
-    [Dependency] private readonly ChargesSystem _charges = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedStorageSystem _storage = default!;
+    [Dependency] private SharedItemSystem _items = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private ComponentTogglerSystem _componentTogglers = default!;
+    [Dependency] private SharedAccessSystem _access = default!;
+    [Dependency] private SharedIdCardSystem _idCards = default!;
+    [Dependency] private BatterySystem _batteries = default!;
+    [Dependency] private Wh40kDeployableImplantSystem _deployableImplants = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private ItemDurabilitySystem _durability = default!;
+    [Dependency] private PowerCellSystem _powerCells = default!;
+    [Dependency] private LabelSystem _labels = default!;
+    [Dependency] private GunSystem _guns = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
+    [Dependency] private StackSystem _stacks = default!;
+    [Dependency] private MaterialFuelSystem _fuel = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private PressurizedSolutionSystem _pressurized = default!;
+    [Dependency] private DeviceNetworkSystem _deviceNetwork = default!;
+    [Dependency] private RingerSystem _ringers = default!;
+    [Dependency] private UnpoweredFlashlightSystem _flashlights = default!;
+    [Dependency] private SuitSensorSystem _suitSensors = default!;
+    [Dependency] private OpenableSystem _openable = default!;
+    [Dependency] private PaperSystem _paper = default!;
+    [Dependency] private ExpendableLightSystem _expendableLights = default!;
+    [Dependency] private ItemRarityRandomizationSystem _itemRarity = default!;
+    [Dependency] private ChargesSystem _charges = default!;
 
     private readonly PersistentInventoryMigrationRegistry _migrations = new();
     private readonly List<IItemStateAdapter> _adapters = new();
@@ -601,7 +601,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         {
             foreach (var entityState in payload.Entities.OrderBy(entity => entity.EntityId))
             {
-                var uid = EntityManager.SpawnEntity(entityState.PrototypeId, MapCoordinates.Nullspace);
+                var uid = Spawn(entityState.PrototypeId, MapCoordinates.Nullspace);
                 spawned.Add(entityState.EntityId, uid);
             }
 
@@ -632,7 +632,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
             foreach (var savedState in payload.Entities)
             {
                 var entityState = savedState;
-                foreach (var component in EntityManager.GetComponents(spawned[entityState.EntityId]))
+                foreach (var component in AllComps(spawned[entityState.EntityId]))
                 {
                     if (!_adaptersByType.TryGetValue(component.GetType(), out var adapter) ||
                         !adapter.CaptureDefaultOnRestore ||
@@ -725,7 +725,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                      .Select(pair => pair.Value))
         {
             if (!TerminatingOrDeleted(uid))
-                EntityManager.DeleteEntity(uid);
+                Del(uid);
         }
     }
 
@@ -764,7 +764,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         state.EntityIds.Add(uid, entityId);
 
         var componentStates = new List<PersistentInventoryComponentState>();
-        foreach (var component in EntityManager.GetComponents(uid)
+        foreach (var component in AllComps(uid)
                      .OrderBy(component => _componentFactory.GetComponentName(component.GetType()), StringComparer.Ordinal))
         {
             var componentId = _componentFactory.GetComponentName(component.GetType());
@@ -792,7 +792,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
 
         var children = new List<PersistentInventoryChild>();
         var persistedContainers = new List<(string Id, BaseContainer Container)>();
-        if (EntityManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager))
+        if (TryComp(uid, out ContainerManagerComponent? containerManager))
         {
             foreach (var container in _containers.GetAllContainers(uid, containerManager))
             {
@@ -969,7 +969,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         var protectedComponent =
             TryComp(uid, out MindContainerComponent? mindContainer) && mindContainer.HasMind
                 ? "MindContainer"
-                : EntityManager.GetComponents(uid)
+                : AllComps(uid)
                     .Select(component => _componentFactory.GetComponentName(component.GetType()))
                     .Order(StringComparer.Ordinal)
                     .FirstOrDefault(IsProtectedGraphComponent);
@@ -1028,7 +1028,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                      .OrderBy(pair => pair.Key)
                      .Select(pair => pair.Value))
         {
-            if (!EntityManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager))
+            if (!TryComp(uid, out ContainerManagerComponent? containerManager))
                 continue;
 
             foreach (var container in _containers.GetAllContainers(uid, containerManager).ToArray())
@@ -1038,7 +1038,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
                     continue;
 
                 foreach (var child in container.ContainedEntities.ToArray())
-                    EntityManager.DeleteEntity(child);
+                    Del(child);
             }
         }
     }
@@ -1348,7 +1348,7 @@ public sealed partial class PersistentInventorySnapshotSerializer : EntitySystem
         foreach (var uid in spawned.OrderByDescending(pair => pair.Key).Select(pair => pair.Value))
         {
             if (!TerminatingOrDeleted(uid))
-                EntityManager.DeleteEntity(uid);
+                Del(uid);
         }
 
         return RestoreFailed(error);

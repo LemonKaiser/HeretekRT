@@ -511,7 +511,7 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
             if (uid == target)
                 return true;
 
-            entity = TryComp<TransformComponent>(uid, out var xform) && xform.ParentUid.IsValid()
+            entity = TryComp(uid, out TransformComponent? xform) && xform.ParentUid.IsValid()
                 ? xform.ParentUid
                 : null;
         }

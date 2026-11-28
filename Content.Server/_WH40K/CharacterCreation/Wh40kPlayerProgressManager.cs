@@ -10,7 +10,7 @@ namespace Content.Server._WH40K.CharacterCreation;
 /// Keeps the account-level onboarding state available for the lifetime of a connection.
 /// The preferences manager owns load ordering; this manager owns the WH40K-specific cache.
 /// </summary>
-public sealed class Wh40kPlayerProgressManager
+public sealed partial class Wh40kPlayerProgressManager
 {
     [Dependency] private IServerDbManager _db = default!;
 

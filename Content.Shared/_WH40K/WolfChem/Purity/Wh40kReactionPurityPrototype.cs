@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.WolfChem.Purity;
 /// How well a reaction keeps its product's grade, keyed by the reaction's ID. A reaction with none passes its input
 /// grade through.
 /// </summary>
-[Prototype("wh40kReactionPurity")]
+[Prototype]
 public sealed partial class Wh40kReactionPurityPrototype : IPrototype
 {
     /// <summary>The reaction's ID.</summary>

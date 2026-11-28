@@ -7,8 +7,10 @@ namespace Content.Client._WH40K.DeathTransition;
 /// <summary>
 /// Applies the world-space part of the death transition over the last frame of gameplay.
 /// </summary>
-public sealed class DeathTransitionOverlay : Overlay
+public sealed partial class DeathTransitionOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> TransitionShader = "HeretekDeathTransition";
+
     [Dependency] private IPrototypeManager _prototypes = default!;
 
     private readonly ShaderInstance _shader;
@@ -18,7 +20,7 @@ public sealed class DeathTransitionOverlay : Overlay
     public DeathTransitionOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _prototypes.Index<ShaderPrototype>("HeretekDeathTransition").Instance().Duplicate();
+        _shader = _prototypes.Index(TransitionShader).Instance().Duplicate();
     }
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;

@@ -89,9 +89,9 @@ public sealed class AbsorbentTest
         AbsorbentComponent component = null;
         await server.WaitAssertion(() =>
         {
-            user = entityManager.SpawnEntity(UserDummyId, coordinates);
-            absorbent = entityManager.SpawnEntity(AbsorbentDummyId, coordinates);
-            refillable = entityManager.SpawnEntity(RefillableDummyId, coordinates);
+            user = entityManager.SpawnAttachedTo(UserDummyId, coordinates);
+            absorbent = entityManager.SpawnAttachedTo(AbsorbentDummyId, coordinates);
+            refillable = entityManager.SpawnAttachedTo(RefillableDummyId, coordinates);
 
             entityManager.TryGetComponent(absorbent, out component);
             solutionContainerSystem.TryGetSolution(absorbent, AbsorbentComponent.SolutionName, out var absorbentSoln, out var absorbentSolution);
@@ -147,9 +147,9 @@ public sealed class AbsorbentTest
         AbsorbentComponent component = null;
         await server.WaitAssertion(() =>
         {
-            user = entityManager.SpawnEntity(UserDummyId, coordinates);
-            absorbent = entityManager.SpawnEntity(AbsorbentDummyId, coordinates);
-            refillable = entityManager.SpawnEntity(SmallRefillableDummyId, coordinates);
+            user = entityManager.SpawnAttachedTo(UserDummyId, coordinates);
+            absorbent = entityManager.SpawnAttachedTo(AbsorbentDummyId, coordinates);
+            refillable = entityManager.SpawnAttachedTo(SmallRefillableDummyId, coordinates);
 
             entityManager.TryGetComponent(absorbent, out component);
             solutionContainerSystem.TryGetSolution(absorbent, AbsorbentComponent.SolutionName, out var absorbentSoln, out var absorbentSolution);

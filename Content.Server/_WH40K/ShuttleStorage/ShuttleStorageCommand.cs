@@ -9,7 +9,7 @@ using Robust.Shared.Network;
 namespace Content.Server._WH40K.ShuttleStorage;
 
 [AdminCommand(AdminFlags.Server)]
-public sealed class ShuttleStorageCommand : IConsoleCommand
+public sealed partial class ShuttleStorageCommand : IConsoleCommand
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private ITaskManager _tasks = default!;

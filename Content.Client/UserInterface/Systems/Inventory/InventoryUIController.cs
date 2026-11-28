@@ -35,6 +35,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
     [UISystemDependency] private readonly ClientInventorySystem _inventorySystem = default!;
     [UISystemDependency] private readonly HandsSystem _handsSystem = default!;
     [UISystemDependency] private readonly ContainerSystem _container = default!;
+    [UISystemDependency] private readonly SpriteSystem _sprite = default!;
 
     private EntityUid? _playerUid;
     private InventorySlotsComponent? _playerInventory;
@@ -79,7 +80,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
     {
         if (_strippingWindow != null)
         {
-            _strippingWindow.Dispose();
+            _strippingWindow.Orphan();
             _strippingWindow = null;
         }
 
@@ -244,7 +245,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
     {
         if (_inventoryHotbar == null)
         {
-            Logger.Warning("Tried to toggle inventory bar when none are assigned");
+            LogManager.RootSawmill.Warning("Tried to toggle inventory bar when none are assigned");
             return;
         }
 
@@ -344,7 +345,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
         }
 
         // Set green / red overlay at 50% transparency
-        var hoverEntity = _entities.SpawnEntity("hoverentity", MapCoordinates.Nullspace);
+        var hoverEntity = _entities.Spawn("hoverentity", MapCoordinates.Nullspace);
         var hoverSprite = _entities.GetComponent<SpriteComponent>(hoverEntity);
         var fits = _inventorySystem.CanEquip(player.Value, held, control.SlotName, out _, slotDef) &&
                    _container.CanInsert(held, container);
@@ -368,8 +369,8 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
             }
         }
 
-        hoverSprite.CopyFrom(sprite);
-        hoverSprite.Color = fits ? new Color(0, 255, 0, 127) : new Color(255, 0, 0, 127);
+        _sprite.CopySprite((held, sprite), (hoverEntity, hoverSprite));
+        _sprite.SetColor((hoverEntity, hoverSprite), fits ? new Color(0, 255, 0, 127) : new Color(255, 0, 0, 127));
 
         control.HoverSpriteView.SetEntity(hoverEntity);
     }

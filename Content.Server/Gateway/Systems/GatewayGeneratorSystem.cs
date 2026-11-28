@@ -15,6 +15,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Server.Gateway.Systems;
 
@@ -23,6 +24,9 @@ namespace Content.Server.Gateway.Systems;
 /// </summary>
 public sealed partial class GatewayGeneratorSystem : EntitySystem
 {
+    private static readonly ProtoId<BiomeTemplatePrototype> ContinentalId = "Continental";
+    private static readonly ProtoId<DungeonConfigPrototype> ExperimentId = "Experiment";
+
     [Dependency] private IConfigurationManager _cfgManager = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _protoManager = default!;
@@ -97,7 +101,7 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
         const int MaxOffset = 256;
         var tiles = new List<(Vector2i Index, Tile Tile)>();
         var seed = _random.Next();
-        var random = new Random(seed);
+        var random = SharedRandomExtensions.CreateSeeded(seed);
         var mapUid = _maps.CreateMap(out var mapId);
 
         var gatewayName = _salvage.GetFTLName(_protoManager.Index<LocalizedDatasetPrototype>(PlanetNames), seed);
@@ -110,7 +114,7 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
         };
         AddComp(mapUid, restricted);
 
-        _biome.EnsurePlanet(mapUid, _protoManager.Index<BiomeTemplatePrototype>("Continental"), seed);
+        _biome.EnsurePlanet(mapUid, _protoManager.Index(ContinentalId), seed);
 
         var grid = Comp<MapGridComponent>(mapUid);
 
@@ -177,12 +181,12 @@ public sealed partial class GatewayGeneratorSystem : EntitySystem
         // Do dungeon
         var seed = ent.Comp.Seed;
         var origin = ent.Comp.Origin;
-        var random = new Random(seed);
+        var random = SharedRandomExtensions.CreateSeeded(seed);
         var dungeonDistance = random.Next(3, 6);
         var dungeonRotation = _dungeon.GetDungeonRotation(seed);
         var dungeonPosition = (origin + dungeonRotation.RotateVec(new Vector2i(0, dungeonDistance))).Floored();
 
-        _dungeon.GenerateDungeon(_protoManager.Index<DungeonConfigPrototype>("Experiment"), "Experiment", args.MapUid, grid, dungeonPosition, seed); // Frontier: added "Experiment"
+        _dungeon.GenerateDungeon(_protoManager.Index(ExperimentId), "Experiment", args.MapUid, grid, dungeonPosition, seed); // Frontier: added "Experiment"
 
         // TODO: Dungeon mobs + loot.
 

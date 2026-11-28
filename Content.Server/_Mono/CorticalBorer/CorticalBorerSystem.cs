@@ -84,7 +84,8 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
     {
         base.Update(frameTime);
 
-        foreach (var comp in EntityManager.EntityQuery<CorticalBorerComponent>())
+        var query = EntityQueryEnumerator<CorticalBorerComponent>();
+        while (query.MoveNext(out var uid, out var comp))
         {
             if (_timing.CurTime < comp.UpdateTimer)
                 continue;
@@ -92,10 +93,10 @@ public sealed partial class CorticalBorerSystem : SharedCorticalBorerSystem
             comp.UpdateTimer = _timing.CurTime + TimeSpan.FromSeconds(comp.UpdateCooldown);
 
             if (comp.Host != null)
-                UpdateChems((comp.Owner, comp), comp.ChemicalGenerationRate);
+                UpdateChems((uid, comp), comp.ChemicalGenerationRate);
         }
 
-        foreach (var comp in EntityManager.EntityQuery<CorticalBorerInfestedComponent>())
+        foreach (var comp in EntityQuery<CorticalBorerInfestedComponent>())
         {
             if (_timing.CurTime >= comp.ControlTimeEnd)
                 EndControl(comp.Borer);

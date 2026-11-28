@@ -213,7 +213,7 @@ public abstract partial class SharedWolfWeatherSystem : EntitySystem
         var coveredPastDiagonals = covered;
         var result = WolfWeatherTile.None;
 
-        var anchored = _map.GetAnchoredEntitiesEnumerator(grid.Owner, grid.Comp1, tile.GridIndices);
+        var anchored = _map.GetAnchoredEntities(grid.Owner, grid.Comp1, tile.GridIndices);
         while (anchored.MoveNext(out var ent))
         {
             var blocker = _blockQuery.HasComponent(ent.Value);

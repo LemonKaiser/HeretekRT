@@ -20,6 +20,7 @@ namespace Content.Client._WH40K.UserInterface;
 /// <summary>One reduced-resolution blur shared by all windows; never renders the game world again.</summary>
 internal sealed class Wh40kGlassPass : Control
 {
+    private static readonly ProtoId<ShaderPrototype> FrostedGlassShader = "Wh40kUiFrostedGlass";
     private readonly IUserInterfaceManager _ui = IoCManager.Resolve<IUserInterfaceManager>();
     private readonly IStateManager _states = IoCManager.Resolve<IStateManager>();
     private readonly IConfigurationManager _cfg = IoCManager.Resolve<IConfigurationManager>();
@@ -94,7 +95,7 @@ internal sealed class Wh40kGlassPass : Control
         }
         if (_blurX == null)
         {
-            var prototype = IoCManager.Resolve<IPrototypeManager>().Index<ShaderPrototype>("Wh40kUiFrostedGlass");
+            var prototype = IoCManager.Resolve<IPrototypeManager>().Index(FrostedGlassShader);
             _blurX = prototype.Instance().Duplicate(); _blurY = prototype.Instance().Duplicate();
             _blurX.SetParameter("BlurDirection", new Vector2(1.2f, 0));
             _blurY.SetParameter("BlurDirection", new Vector2(0, 1.2f));

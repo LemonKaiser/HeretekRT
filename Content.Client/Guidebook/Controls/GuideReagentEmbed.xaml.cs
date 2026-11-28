@@ -62,13 +62,13 @@ public sealed partial class GuideReagentEmbed : BoxContainer, IDocumentTag, ISea
         control = null;
         if (!args.TryGetValue("Reagent", out var id))
         {
-            Logger.Error("Reagent embed tag is missing reagent prototype argument");
+            IoCManager.Resolve<ILogManager>().RootSawmill.Error("Reagent embed tag is missing reagent prototype argument");
             return false;
         }
 
         if (!_prototype.TryIndex<ReagentPrototype>(id, out var reagent))
         {
-            Logger.Error($"Specified reagent prototype \"{id}\" is not a valid reagent prototype");
+            IoCManager.Resolve<ILogManager>().RootSawmill.Error($"Specified reagent prototype \"{id}\" is not a valid reagent prototype");
             return false;
         }
 

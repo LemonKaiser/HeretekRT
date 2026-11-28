@@ -14,11 +14,11 @@ namespace Content.Client._WH40K.DirectionalEmote;
 
 public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
 {
-    [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly ExamineSystem _examine = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private IUserInterfaceManager _userInterfaceManager = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private ExamineSystem _examine = default!;
+    [Dependency] private PopupSystem _popupSystem = default!;
+    [Dependency] private IGameTiming _gameTiming = default!;
 
     private int _maxEmoteLength = 256;
     private float _maxEmoteDistance = 2.3f;

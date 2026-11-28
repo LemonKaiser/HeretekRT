@@ -43,13 +43,13 @@ public sealed partial class PointDiskConsoleSystem : EntitySystem
 
             RemComp(uid, printing);
             if (printing.Disk1K)
-                Spawn(console.Disk1KPrototype, xform.Coordinates);
+                SpawnAttachedTo(console.Disk1KPrototype, xform.Coordinates);
 
             if (printing.Disk5K)
-                Spawn(console.Disk5KPrototype, xform.Coordinates);
+                SpawnAttachedTo(console.Disk5KPrototype, xform.Coordinates);
 
             if (printing.Disk10K)
-                Spawn(console.Disk10KPrototype, xform.Coordinates);
+                SpawnAttachedTo(console.Disk10KPrototype, xform.Coordinates);
         }
     }
 

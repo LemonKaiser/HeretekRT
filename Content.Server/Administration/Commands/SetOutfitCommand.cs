@@ -124,7 +124,7 @@ namespace Content.Server.Administration.Commands
                         continue;
                     }
 
-                    var equipmentEntity = entityManager.SpawnEntity(gearStr, entityManager.GetComponent<TransformComponent>(target).Coordinates);
+                    var equipmentEntity = entityManager.SpawnAttachedTo(gearStr, entityManager.GetComponent<TransformComponent>(target).Coordinates);
                     if (slot.Name == "id" &&
                         entityManager.TryGetComponent(equipmentEntity, out PdaComponent? pdaComponent) &&
                         entityManager.TryGetComponent<IdCardComponent>(pdaComponent.ContainedId, out var id))
@@ -144,7 +144,7 @@ namespace Content.Server.Administration.Commands
                 var coords = entityManager.GetComponent<TransformComponent>(target).Coordinates;
                 foreach (var prototype in startingGear.Inhand)
                 {
-                    var inhandEntity = entityManager.SpawnEntity(prototype, coords);
+                    var inhandEntity = entityManager.SpawnAttachedTo(prototype, coords);
                     handsSystem.TryPickup(target, inhandEntity, checkActionBlocker: false, handsComp: handsComponent);
                 }
             }

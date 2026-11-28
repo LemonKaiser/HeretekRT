@@ -87,7 +87,7 @@ public sealed partial class MaterialMarketPanel : BoxContainer
 
         if (_rows.Count != state.MarketEntries.Count)
         {
-            Entries.DisposeAllChildren();
+            Entries.RemoveAllChildren();
             _rows.Clear();
             foreach (var _ in state.MarketEntries)
             {

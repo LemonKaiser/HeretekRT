@@ -8,7 +8,7 @@ namespace Content.Server._WH40K.Administration.Commands;
 
 [AdminCommand(AdminFlags.Admin)]
 [AdminCommand(AdminFlags.Moderator)]
-public sealed class WH40KMutePanelCommand : LocalizedCommands
+public sealed partial class WH40KMutePanelCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _euis = default!;
     [Dependency] private IPlayerLocator _locator = default!;

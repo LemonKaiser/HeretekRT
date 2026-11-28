@@ -60,18 +60,18 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
 
         // Remove all sprite layers
         for (int i = hologramSprite.AllLayers.Count() - 1; i >= 0; i--)
-            hologramSprite.RemoveLayer(i);
+            _sprite.RemoveLayer((hologram, hologramSprite), i);
 
-        if (TryComp<SpriteComponent>(target, out var targetSprite))
+        if (target is { } targetUid && TryComp<SpriteComponent>(targetUid, out var targetSprite))
         {
             // Use the target's holographic avatar (if available)
-            if (TryComp<HolographicAvatarComponent>(target, out var targetAvatar) &&
+            if (TryComp<HolographicAvatarComponent>(targetUid, out var targetAvatar) &&
                 targetAvatar.LayerData != null)
             {
                 for (int i = 0; i < targetAvatar.LayerData.Length; i++)
                 {
                     var layer = targetAvatar.LayerData[i];
-                    hologramSprite.AddLayer(targetAvatar.LayerData[i], i);
+                    _sprite.AddLayer((hologram, hologramSprite), targetAvatar.LayerData[i], i);
                 }
             }
 
@@ -80,7 +80,7 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
             {
                 // Copy the appearance, not the target's post-processing effects.
                 var effects = _sprite.GetPostShaders(hologramSprite).ToArray();
-                hologramSprite.CopyFrom(targetSprite);
+                _sprite.CopySprite((targetUid, targetSprite), (hologram, hologramSprite));
                 _sprite.ClearPostShaders(hologramSprite);
                 foreach (var effect in effects)
                 {
@@ -105,13 +105,13 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
             layer.RsiPath = holopadhologram.RsiPath;
             layer.State = holopadhologram.RsiState;
 
-            hologramSprite.AddLayer(layer);
+            _sprite.AddLayer((hologram, hologramSprite), layer, null);
         }
 
         // Override specific values
-        hologramSprite.Color = Color.White;
-        hologramSprite.Offset = holopadhologram.Offset;
-        hologramSprite.DrawDepth = (int)DrawDepth.Mobs;
+        _sprite.SetColor((hologram, hologramSprite), Color.White);
+        _sprite.SetOffset((hologram, hologramSprite), holopadhologram.Offset);
+        _sprite.SetDrawDepth((hologram, hologramSprite), (int)DrawDepth.Mobs);
         hologramSprite.NoRotation = true;
         hologramSprite.DirectionOverride = Direction.South;
         hologramSprite.EnableDirectionOverride = true;
@@ -119,7 +119,7 @@ public sealed partial class HolopadSystem : SharedHolopadSystem
         // Remove shading from all layers (except displacement maps)
         for (int i = 0; i < hologramSprite.AllLayers.Count(); i++)
         {
-            if (hologramSprite.TryGetLayer(i, out var layer) && layer.ShaderPrototype != "DisplacedStencilDraw")
+            if (_sprite.TryGetLayer((hologram, hologramSprite), i, out var layer, false) && layer.ShaderPrototype != "DisplacedStencilDraw")
                 hologramSprite.LayerSetShader(i, "unshaded");
         }
 

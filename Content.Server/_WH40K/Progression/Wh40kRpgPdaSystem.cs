@@ -16,7 +16,7 @@ namespace Content.Server._WH40K.Progression;
 /// Adapts the account RPG and party managers to private, actor-addressed GadOS BUI messages.
 /// The PDA entity never owns or replicates an account progression snapshot.
 /// </summary>
-public sealed class Wh40kRpgPdaSystem : EntitySystem
+public sealed partial class Wh40kRpgPdaSystem : EntitySystem
 {
     [Dependency] private EuiManager _eui = default!;
     [Dependency] private IPlayerManager _players = default!;

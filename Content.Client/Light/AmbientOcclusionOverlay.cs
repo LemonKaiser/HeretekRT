@@ -17,6 +17,11 @@ namespace Content.Client.Light;
 /// </summary>
 public sealed partial class AmbientOcclusionOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> UnshadedShaderId = "unshaded";
+    private static readonly ProtoId<ShaderPrototype> StencilMaskShaderId = "StencilMask";
+    private static readonly ProtoId<ShaderPrototype> StencilEqualDrawShaderId = "StencilEqualDraw";
+    private static readonly ProtoId<ShaderPrototype> StencilClearShaderId = "StencilClear";
+
     [Dependency] private IClyde _clyde = default!;
     [Dependency] private IConfigurationManager _cfgManager = default!;
     [Dependency] private IEntityManager _entManager = default!;
@@ -84,7 +89,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
         args.WorldHandle.RenderInRenderTarget(_aoTarget,
             () =>
             {
-                worldHandle.UseShader(_proto.Index<ShaderPrototype>("unshaded").Instance());
+                worldHandle.UseShader(_proto.Index(UnshadedShaderId).Instance());
                 worldHandle.SetTransform(Matrix3x2.Identity);
                 var invMatrix = _aoTarget.GetWorldToLocalMatrix(viewport.Eye!, scale);
                 var triangleVertexCount = 0;
@@ -135,7 +140,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
             () =>
             {
                 // Don't want lighting affecting it.
-                worldHandle.UseShader(_proto.Index<ShaderPrototype>("unshaded").Instance());
+                worldHandle.UseShader(_proto.Index(UnshadedShaderId).Instance());
 
                 _grids.Clear();
                 maps.FindGridsIntersecting(mapId, worldBounds, ref _grids);
@@ -143,7 +148,7 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
                 {
                     var transform = xformSystem.GetWorldMatrix(grid.Owner);
                     var worldToTextureMatrix = Matrix3x2.Multiply(transform, invMatrix);
-                    var tiles = maps.GetTilesEnumerator(grid.Owner, grid, worldBounds);
+                    var tiles = maps.GetTilesIntersecting(grid.Owner, grid, worldBounds);
                     worldHandle.SetTransform(worldToTextureMatrix);
                     while (tiles.MoveNext(out var tileRef))
                     {
@@ -158,14 +163,14 @@ public sealed partial class AmbientOcclusionOverlay : Overlay
             }, Color.Transparent);
 
         // Draw the stencil texture to depth buffer.
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilMask").Instance());
+        worldHandle.UseShader(_proto.Index(StencilMaskShaderId).Instance());
         worldHandle.DrawTextureRect(_aoStencilTarget!.Texture, worldBounds);
 
         // Draw the Blurred AO texture finally.
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilEqualDraw").Instance());
+        worldHandle.UseShader(_proto.Index(StencilEqualDrawShaderId).Instance());
         worldHandle.DrawTextureRect(_aoTarget!.Texture, worldBounds, color);
 
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilClear").Instance());
+        worldHandle.UseShader(_proto.Index(StencilClearShaderId).Instance());
         worldHandle.DrawRect(worldBounds, Color.White);
 
         args.WorldHandle.SetTransform(Matrix3x2.Identity);

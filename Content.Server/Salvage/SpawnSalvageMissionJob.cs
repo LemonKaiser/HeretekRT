@@ -38,12 +38,15 @@ using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.GameObjects;
 using Content.Shared._Crescent.SpaceBiomes;
-using Content.Shared._Mono.PlanetMap; // Mono
+using Content.Shared._Mono.PlanetMap;
+using Content.Shared.Random.Helpers; // Mono
 
 namespace Content.Server.Salvage;
 
 public sealed class SpawnSalvageMissionJob : Job<bool>
 {
+    private static readonly ProtoId<LocalizedDatasetPrototype> NamesBorerId = "NamesBorer";
+
     private readonly IEntityManager _entManager;
     private readonly IGameTiming _timing;
     private readonly IPrototypeManager _prototypeManager;
@@ -133,7 +136,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         }
         catch (Exception e)
         {
-            Logger.ErrorS("salvage", $"Expedition generation failed with exception: {e}");
+            IoCManager.Resolve<ILogManager>().GetSawmill("salvage").Error($"Expedition generation failed with exception: {e}");
         }
         finally
         {
@@ -158,19 +161,19 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
 
     private async Task<bool> InternalProcess() // Frontier: make process an internal function (for a try block indenting an entire), add "out EntityUid mapUid" param
     {
-        Logger.DebugS("salvage", $"Spawning salvage mission with seed {_missionParams.Seed}");
+        IoCManager.Resolve<ILogManager>().GetSawmill("salvage").Debug($"Spawning salvage mission with seed {_missionParams.Seed}");
         var config = _missionParams.MissionType;
         mapUid = _map.CreateMap(out var mapId, runMapInit: false); // Frontier: remove "var"
         MetaDataComponent? metadata = null;
         var grid = _entManager.EnsureComponent<MapGridComponent>(mapUid);
-        var random = new Random(_missionParams.Seed);
+        var random = SharedRandomExtensions.CreateSeeded(_missionParams.Seed);
         var destComp = _entManager.AddComponent<FTLDestinationComponent>(mapUid);
         destComp.BeaconsOnly = true;
         destComp.RequireCoordinateDisk = true;
         destComp.Enabled = true;
         _metaData.SetEntityName(
             mapUid,
-            _entManager.System<SharedSalvageSystem>().GetFTLName(_prototypeManager.Index<LocalizedDatasetPrototype>("NamesBorer"), _missionParams.Seed));
+            _entManager.System<SharedSalvageSystem>().GetFTLName(_prototypeManager.Index(NamesBorerId), _missionParams.Seed));
         _entManager.AddComponent<FTLBeaconComponent>(mapUid);
 
         // Saving the mission mapUid to a CD is made optional, in case one is somehow made in a process without a CD entity
@@ -403,7 +406,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         massStartupTime = StartupTime * massMultiplier;
     }
 
-    private async Task SpawnDungeonLoot(Dungeon? dungeon, SalvageBiomeModPrototype biomeMod, SalvageLootPrototype loot, EntityUid gridUid, MapGridComponent grid, Random random, List<Vector2i> reservedTiles)
+    private async Task SpawnDungeonLoot(Dungeon? dungeon, SalvageBiomeModPrototype biomeMod, SalvageLootPrototype loot, EntityUid gridUid, MapGridComponent grid, IRobustRandom random, List<Vector2i> reservedTiles)
     {
         for (var i = 0; i < loot.LootRules.Count; i++)
         {
@@ -455,7 +458,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         Dungeon dungeon,
         EntityUid gridUid,
         MapGridComponent grid,
-        Random random)
+        IRobustRandom random)
     {
         var structureComp = _entManager.EnsureComponent<SalvageStructureExpeditionComponent>(gridUid);
         var availableRooms = dungeon.Rooms.ToList();
@@ -486,7 +489,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                 }
 
                 var spawnPosition = _map.GridTileToLocal(mapUid, grid, spawnTile);
-                var uid = _entManager.SpawnEntity(shaggy, spawnPosition);
+                var uid = _entManager.SpawnAttachedTo(shaggy, spawnPosition);
                 _entManager.AddComponent<SalvageStructureComponent>(uid);
                 structureComp.Structures.Add(uid);
                 break;
@@ -499,7 +502,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         Dungeon dungeon,
         EntityUid gridUid,
         MapGridComponent grid,
-        Random random)
+        IRobustRandom random)
     {
         // spawn megafauna in a random place
         var roomIndex = random.Next(dungeon.Rooms.Count);
@@ -509,7 +512,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
 
         var faction = _prototypeManager.Index<SalvageFactionPrototype>(mission.Faction);
         var prototype = faction.Configs["Megafauna"];
-        var uid = _entManager.SpawnEntity(prototype, position);
+        var uid = _entManager.SpawnAttachedTo(prototype, position);
         // not removing ghost role since its 1 megafauna, expect that you won't be able to cheese it.
         var eliminationComp = _entManager.EnsureComponent<SalvageEliminationExpeditionComponent>(gridUid);
         eliminationComp.Megafauna.Add(uid);
@@ -518,7 +521,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
         await SpawnMobsRandomRooms(mission, dungeon, faction, grid, random, 0.5f);
     }
 
-    private async Task SpawnMobsRandomRooms(SalvageMission mission, Dungeon dungeon, SalvageFactionPrototype faction, MapGridComponent grid, Random random, float scale = 1f)
+    private async Task SpawnMobsRandomRooms(SalvageMission mission, Dungeon dungeon, SalvageFactionPrototype faction, MapGridComponent grid, IRobustRandom random, float scale = 1f)
     {
         // scale affects how many groups are spawned, not the size of the groups themselves
         var groupSpawns = _salvage.GetSpawnCount(mission.Difficulty) * scale;
@@ -545,7 +548,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
                 validSpawns.AddRange(spawnRoom.Tiles);
                 random.Shuffle(validSpawns);
 
-                foreach (var entry in EntitySpawnCollection.GetSpawns(mobGroup.Entries, random))
+                foreach (var entry in EntitySpawnCollection.GetSpawnsIncludingEmptyEntries(mobGroup.Entries, random))
                 {
                     while (validSpawns.Count > 0)
                     {

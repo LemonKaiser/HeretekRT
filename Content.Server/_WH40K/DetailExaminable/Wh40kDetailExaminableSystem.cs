@@ -16,12 +16,12 @@ using Robust.Shared.Utility;
 
 namespace Content.Server._WH40K.DetailExaminable;
 
-public sealed class Wh40kDetailExaminableSystem : EntitySystem
+public sealed partial class Wh40kDetailExaminableSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
-    [Dependency] private readonly EuiManager _eui = default!;
-    [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private ExamineSystemShared _examine = default!;
+    [Dependency] private EuiManager _eui = default!;
+    [Dependency] private IConfigurationManager _config = default!;
 
     private readonly HashSet<Wh40kDetailExaminableEui> _openDetails = new();
 

@@ -81,7 +81,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Infrastructure protection is deliberately separate: only authored facility grids are
 /// made immune, so generated asteroids and procedural terrain remain destructible.
 /// </summary>
-public sealed class KoronusSafetyPolicySystem : EntitySystem
+public sealed partial class KoronusSafetyPolicySystem : EntitySystem
 {
     private static readonly TimeSpan EnvironmentalSafetySweepInterval = TimeSpan.FromMilliseconds(250);
 
@@ -618,7 +618,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
     {
         if (HasRule(uid, KoronusSafetyRule.RadiationMunitions) &&
             _guns.TryNextShootPrototype((uid, component), out var ammoPrototype) &&
-            _guns.GetBulletPrototype(ammoPrototype).TryGetComponent<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
+            _guns.GetBulletPrototype(ammoPrototype).TryComp<RadiationSourceComponent>(out _, EntityManager.ComponentFactory))
         {
             args.Cancel();
             _popup.PopupCursor(_playerCulture.GetPlayerString(args.User, "koronus-safety-radiation-ammo-blocked"), args.User);
@@ -984,7 +984,7 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
             return true;
         }
 
-        if (TryComp<TransformComponent>(entity, out var transform) && transform.GridUid is { } gridUid)
+        if (TryComp(entity, out TransformComponent? transform) && transform.GridUid is { } gridUid)
         {
             grid = gridUid;
             return true;

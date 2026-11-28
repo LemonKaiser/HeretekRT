@@ -137,7 +137,7 @@ public sealed partial class Wh40kQuestProgressSystem
             {
                 if (generation != _sessions.Generation || !TryOwner(actor, out var current) || current != user ||
                     TerminatingOrDeleted(station) || !_interaction.InRangeUnobstructed(actor, station)) return;
-                var item = Spawn(component.Evidence!.Value, Transform(actor).Coordinates);
+                var item = SpawnAttachedTo(component.Evidence!.Value, Transform(actor).Coordinates);
                 var provenance = EnsureComp<Wh40kQuestItemComponent>(item);
                 provenance.QuestId = sub.Quest; provenance.ObjectiveId = sub.Objective.Id;
                 _hands.TryPickupAnyHand(actor, item);

@@ -3,7 +3,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._WH40K.SectorMap.Prototypes;
 
-[Prototype("koronusArrival")]
+[Prototype]
 public sealed partial class KoronusArrivalPrototype : IPrototype
 {
     [IdDataField]

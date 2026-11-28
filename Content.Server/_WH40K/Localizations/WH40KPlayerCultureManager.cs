@@ -16,7 +16,7 @@ namespace Content.Server._WH40K.Localizations;
 /// Stores each connected client's interface culture and formats personal server responses.
 /// Automatic chat translation is intentionally not part of this manager.
 /// </summary>
-public sealed class WH40KPlayerCultureManager : EntitySystem
+public sealed partial class WH40KPlayerCultureManager : EntitySystem
 {
     private static readonly object RegistrationSync = new();
     // Keep registration across entity-system reloads without rooting discarded test servers.

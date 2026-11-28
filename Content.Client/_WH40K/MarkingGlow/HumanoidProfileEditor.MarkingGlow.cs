@@ -24,10 +24,14 @@ public sealed partial class HumanoidProfileEditor
         HairStylePicker.OnGlowChanged += on => SetMarkingGlow(Wh40kMarkingGlowRules.Hair, on);
         FacialHairPicker.OnGlowChanged += on => SetMarkingGlow(Wh40kMarkingGlowRules.FacialHair, on);
 
+    }
+
+    private void SubscribeMarkingGlow()
+    {
         _cfgManager.OnValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
     }
 
-    private void DisposeMarkingGlow()
+    private void UnsubscribeMarkingGlow()
     {
         _cfgManager.UnsubValueChanged(Wh40kMarkingGlowCVars.Enabled, OnMarkingGlowEnabledChanged);
     }

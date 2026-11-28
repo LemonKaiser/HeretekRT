@@ -23,7 +23,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// Enforces the authored system radius independently of physics collisions, including for ghosts.
 /// </summary>
-public sealed class KoronusSectorBoundarySystem : EntitySystem
+public sealed partial class KoronusSectorBoundarySystem : EntitySystem
 {
     private const float GridSafetyMargin = 5f;
     private const float EmergencyDeletionMargin = 1f;
@@ -113,7 +113,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         foreach (var boundary in _boundaries.Values)
         {
             if (!ShouldProcessMap(boundary.MapId) ||
-                !TryComp<TransformComponent>(boundary.MapUid, out var mapTransform))
+                !TryComp(boundary.MapUid, out TransformComponent? mapTransform))
             {
                 continue;
             }
@@ -121,7 +121,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
             var children = mapTransform.ChildEnumerator;
             while (children.MoveNext(out var uid))
             {
-                if (!TryComp<TransformComponent>(uid, out var transform))
+                if (!TryComp(uid, out TransformComponent? transform))
                     continue;
 
                 if (HasComp<MapGridComponent>(uid))
@@ -176,7 +176,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { Valid: true } entity ||
-                !TryComp<TransformComponent>(entity, out var transform) ||
+                !TryComp(entity, out TransformComponent? transform) ||
                 !_boundaries.TryGetValue(transform.MapID, out var boundary))
             {
                 continue;
@@ -216,7 +216,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is { Valid: true } entity &&
-                TryComp<TransformComponent>(entity, out var transform))
+                TryComp(entity, out TransformComponent? transform))
             {
                 // Ordinary ghosts do not wake a sector, but their movement still needs the hard boundary.
                 _observedMaps.Add(transform.MapID);
@@ -243,7 +243,7 @@ public sealed class KoronusSectorBoundarySystem : EntitySystem
         foreach (var (uid, candidate) in _cleanupCandidates)
         {
             if (TerminatingOrDeleted(uid) ||
-                !TryComp<TransformComponent>(uid, out var transform) ||
+                !TryComp(uid, out TransformComponent? transform) ||
                 !_boundaries.TryGetValue(candidate.MapId, out var boundary))
             {
                 _cleanupCandidateRemovals.Add(uid);

@@ -15,7 +15,7 @@ using Robust.Shared.Enums;
 
 namespace Content.Client._WH40K.Bosses;
 
-public sealed class Wh40kChaosMarineSystem : EntitySystem
+public sealed partial class Wh40kChaosMarineSystem : EntitySystem
 {
     private const string PostShaderId = "wh40k-chaos-marine";
 
@@ -38,6 +38,8 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
     private static readonly ProtoId<ShaderPrototype> ImpactShaderId = "Wh40kMarineImpact";
     private static readonly ProtoId<ShaderPrototype> RocketMarkShaderId = "Wh40kMarineRocketMark";
     private static readonly ProtoId<ShaderPrototype> ExhaustShaderId = "Wh40kMarineExhaust";
+    private static readonly ProtoId<ShaderPrototype> DeathShaderId = "Wh40kMarineDeath";
+    private static readonly ProtoId<ShaderPrototype> RageShaderId = "Wh40kMarineRage";
     private Wh40kChaosMarineOverlay? _below;
     private Wh40kChaosMarineOverlay? _above;
     private Wh40kChaosMarineWaveOverlay? _waves;
@@ -157,11 +159,11 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
             var swinging = state.Mace != null || state.Attack == MarineAttack.Punch;
             var prefix = swinging || dead ? "body" : state.Stance == MarineStance.Ranged ? "ranged" : "melee";
             var frame = (int) (now.TotalSeconds * 8) % (facing is "east" or "west" ? 16 : 17);
-            sprite.LayerSetTexture(0, prefix == "melee" ? IdleFrame(facing, frame) : Texture(prefix + "_" + facing));
+            _sprites.LayerSetTexture((uid, sprite), 0, prefix == "melee" ? IdleFrame(facing, frame) : Texture(prefix + "_" + facing));
             var deathDuration = Math.Max(.01, (state.DeathEndsAt - state.DeathDissolveAt).TotalSeconds);
             var deathProgress = state.Dying
                 ? (float) Math.Clamp((now - state.DeathDissolveAt).TotalSeconds / deathDuration, 0, 1) : 0;
-            if (sprite.LayerMapTryGet(FireVisualLayers.Fire, out var fireLayer))
+            if (_sprites.LayerMapTryGet((uid, sprite), FireVisualLayers.Fire, out var fireLayer, false))
             {
                 var heat = state.PhaseTwo && !dead ? Math.Clamp(state.HeatStep, 0, 9) : 0;
                 // The 23-pixel flame fits inside all four 44-46-pixel body silhouettes at this scale.
@@ -172,19 +174,19 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
                 var feet = facing is "east" or "west" ? -22 / 32f : -24 / 32f;
                 var bodyCenter = facing switch { "east" => -4 / 32f, "west" => 4 / 32f, "south" => -1 / 32f, _ => 0 };
                 var flameCenter = facing switch { "east" or "south" => -1 / 32f, "west" => 1 / 32f, _ => 0 };
-                sprite.LayerSetScale(fireLayer, scale);
-                sprite.LayerSetOffset(fireLayer, new Vector2(bodyCenter - flameCenter * scale.X, feet + 15 / 32f * scale.Y));
-                sprite.LayerSetColor(fireLayer, Color.White.WithAlpha(1 - Wh40kChaosMarineCombat.Smooth(deathProgress)));
+                _sprites.LayerSetScale((uid, sprite), fireLayer, scale);
+                _sprites.LayerSetOffset((uid, sprite), fireLayer, new Vector2(bodyCenter - flameCenter * scale.X, feet + 15 / 32f * scale.Y));
+                _sprites.LayerSetColor((uid, sprite), fireLayer, Color.White.WithAlpha(1 - Wh40kChaosMarineCombat.Smooth(deathProgress)));
             }
             var elapsed = (float) (now - state.StartedAt).TotalSeconds;
             var pulse = state.Attack == MarineAttack.Transition
                 ? MathF.Sin(elapsed * 23) * .012f * Wh40kChaosMarineCombat.Smooth((elapsed - 1) / 3) : 0;
-            sprite.Offset = new Vector2(pulse, .45f + MathF.Abs(pulse)) +
-                            Wh40kChaosMarineWeaponAnimation.BodyOffset(state, now, direction);
+            _sprites.SetOffset((uid, sprite), new Vector2(pulse, .45f + MathF.Abs(pulse)) +
+                            Wh40kChaosMarineWeaponAnimation.BodyOffset(state, now, direction));
             if (state.Dying)
             {
                 if (!_deathShaders.TryGetValue(uid, out var deathShader))
-                    _deathShaders[uid] = deathShader = _prototypes.Index<ShaderPrototype>("Wh40kMarineDeath").InstanceUnique();
+                    _deathShaders[uid] = deathShader = _prototypes.Index(DeathShaderId).InstanceUnique();
                 deathShader.SetParameter("BurnProgress", deathProgress);
                 // Keep the native flame independent of the armour's dissolve shader.
                 _sprites.RemovePostShader(sprite, PostShaderId);
@@ -200,7 +202,7 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
             {
                 if (!_shaders.TryGetValue(uid, out var shader))
                 {
-                    shader = _prototypes.Index<ShaderPrototype>("Wh40kMarineRage").InstanceUnique();
+                    shader = _prototypes.Index(RageShaderId).InstanceUnique();
                     _shaders[uid] = shader;
                 }
                 shader.SetParameter("Rage", state.HeatStep / 9f);

@@ -5,9 +5,9 @@ using Robust.Shared.GameObjects;
 
 namespace Content.Server._WH40K.CWIS;
 
-public sealed class WH40KCWISDamageSystem : EntitySystem
+public sealed partial class WH40KCWISDamageSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
 
     public override void Initialize()
     {

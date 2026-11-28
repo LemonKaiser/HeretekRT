@@ -18,6 +18,8 @@ namespace Content.Client.UserInterface.Controls;
 [Virtual]
 public partial class MapGridControl : LayoutContainer
 {
+    private static readonly ProtoId<ShaderPrototype> CircleAlphaMaskShaderId = "CircleAlphaMask";
+
     [Dependency] protected IEntityManager EntManager = default!;
     [Dependency] protected IGameTiming Timing = default!;
     [Dependency] protected IPrototypeManager PrototypeManager = default!; // Mono
@@ -110,7 +112,7 @@ public partial class MapGridControl : LayoutContainer
         var cache = IoCManager.Resolve<IResourceCache>();
         _largerFont = new VectorFont(cache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 16);
 
-        _circleMaskShader = PrototypeManager.Index<ShaderPrototype>("CircleAlphaMask").InstanceUnique(); // Mono
+        _circleMaskShader = PrototypeManager.Index(CircleAlphaMaskShaderId).InstanceUnique(); // Mono
     }
 
     public void ForceRecenter()

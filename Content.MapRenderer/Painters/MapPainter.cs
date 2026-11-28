@@ -12,6 +12,7 @@ using Robust.Server.Player;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -91,7 +92,7 @@ namespace Content.MapRenderer.Painters
                 }
                 catch (Exception e) // we probably tried to load a map
                 {
-                    Logger.Info($"Failed to load as grid, rendering as map...");
+                    IoCManager.Resolve<ILogManager>().RootSawmill.Info($"Failed to load as grid, rendering as map...");
                     sMapManager.DeleteMap(mapId);
                     var opts = new DeserializationOptions();
                     opts.InitializeMaps = true;
@@ -118,9 +119,10 @@ namespace Content.MapRenderer.Painters
 
             await client.WaitPost(() =>
             {
-                if (cEntityManager.TryGetComponent(cPlayerManager.LocalEntity, out SpriteComponent? sprite))
+                if (cPlayerManager.LocalEntity is { } player &&
+                    cEntityManager.TryGetComponent(player, out SpriteComponent? sprite))
                 {
-                    sprite.Visible = false;
+                    cEntityManager.System<SpriteSystem>().SetVisible((player, sprite), false);
                 }
             });
 

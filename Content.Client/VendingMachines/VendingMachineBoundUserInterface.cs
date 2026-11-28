@@ -13,7 +13,7 @@ using Robust.Client.UserInterface;
 
 namespace Content.Client.VendingMachines;
 
-public sealed class VendingMachineBoundUserInterface : BoundUserInterface
+public sealed partial class VendingMachineBoundUserInterface : BoundUserInterface
 {
     [Dependency] private CreditReceiverSystem _credit = default!;
     [Dependency] private IPlayerManager _players = default!;
@@ -98,6 +98,6 @@ public sealed class VendingMachineBoundUserInterface : BoundUserInterface
             return;
         _menu.OnCodeEntered -= OnCodeEntered;
         _menu.OnAudioPlayed -= OnAudioPlayed;
-        _menu.Dispose();
+        _menu = null;
     }
 }

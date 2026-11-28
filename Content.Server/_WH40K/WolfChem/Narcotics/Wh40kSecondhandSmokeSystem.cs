@@ -5,6 +5,7 @@ using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Nutrition.Components;
@@ -17,7 +18,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Second-hand smoke. Lit smokables and bong hits put smoke gas into the air and keep a share of what was smoked in a
 /// reservoir at the source. Anyone breathing smoky air nearby draws from the reservoirs.
 /// </summary>
-public sealed class Wh40kSecondhandSmokeSystem : EntitySystem
+public sealed partial class Wh40kSecondhandSmokeSystem : EntitySystem
 {
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private BloodstreamSystem _bloodstream = default!;
@@ -26,7 +27,7 @@ public sealed class Wh40kSecondhandSmokeSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private ReactiveSystem _reactive = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
-    [Dependency] private SolutionContainerSystem _solutions = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
     public const float CarryFraction = 0.15f;
     public const float MolesPerUnit = 0.3f;

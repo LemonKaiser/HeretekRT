@@ -18,7 +18,7 @@ namespace Content.Server._WH40K.Progression;
 /// The only trusted entry point for persistent and guest-session XP awards.
 /// Stage 3 validates prototype sources, participation, anti-farm and active party splits here.
 /// </summary>
-public sealed class Wh40kExperienceService
+public sealed partial class Wh40kExperienceService
 {
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IEntityManager _entities = default!;

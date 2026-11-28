@@ -317,7 +317,7 @@ public abstract partial class SharedGunSystem
                     component.UnspawnedCount--;
                     DirtyField(uid, component, nameof(BallisticAmmoProviderComponent.UnspawnedCount));
                 }
-                entity = Spawn(component.Proto, args.Coordinates);
+                entity = SpawnAttachedTo(component.Proto, args.Coordinates);
                 args.Ammo.Add((entity, EnsureShootable(entity)));
 
                 // Goobstation - put spent ammo back in the gun if it doesn't autocycle

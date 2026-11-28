@@ -13,8 +13,8 @@ namespace Content.Shared.Chat;
 /// </summary>
 public sealed partial class ChatEmojiCatalog
 {
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IRobustRandom _random = default!;
 
     private static readonly ChatEmojiCategory[] CategoryOrder =
     [
@@ -170,14 +170,14 @@ public sealed partial class ChatEmojiCatalog
                 var separator = token.IndexOf('=');
                 if (separator <= 0 || separator == token.Length - 1)
                 {
-                    Logger.ErrorS("chat.emoji", $"Malformed emoji entry '{token}' in pack '{pack.ID}'.");
+                    IoCManager.Resolve<ILogManager>().GetSawmill("chat.emoji").Error($"Malformed emoji entry '{token}' in pack '{pack.ID}'.");
                     continue;
                 }
 
                 var alias = token[..separator].ToLowerInvariant();
                 if (!ChatEmoji.IsValidAlias(alias))
                 {
-                    Logger.ErrorS("chat.emoji", $"Invalid emoji alias '{alias}' in pack '{pack.ID}'.");
+                    IoCManager.Resolve<ILogManager>().GetSawmill("chat.emoji").Error($"Invalid emoji alias '{alias}' in pack '{pack.ID}'.");
                     continue;
                 }
 
@@ -188,7 +188,7 @@ public sealed partial class ChatEmojiCatalog
                 }
                 catch (Exception error)
                 {
-                    Logger.ErrorS("chat.emoji", $"Invalid Unicode value for emoji '{alias}' in pack '{pack.ID}': {error.Message}");
+                    IoCManager.Resolve<ILogManager>().GetSawmill("chat.emoji").Error($"Invalid Unicode value for emoji '{alias}' in pack '{pack.ID}': {error.Message}");
                     continue;
                 }
 
@@ -231,13 +231,13 @@ public sealed partial class ChatEmojiCatalog
                 var alias = suppliedAlias.ToLowerInvariant();
                 if (!ChatEmoji.IsValidAlias(alias))
                 {
-                    Logger.ErrorS("chat.emoji", $"Invalid emoji alias '{suppliedAlias}' for '{definition.Alias}'.");
+                    IoCManager.Resolve<ILogManager>().GetSawmill("chat.emoji").Error($"Invalid emoji alias '{suppliedAlias}' for '{definition.Alias}'.");
                     continue;
                 }
 
                 if (!aliases.TryAdd(alias, definition))
                 {
-                    Logger.ErrorS("chat.emoji", $"Duplicate emoji alias '{alias}'. The first definition is kept.");
+                    IoCManager.Resolve<ILogManager>().GetSawmill("chat.emoji").Error($"Duplicate emoji alias '{alias}'. The first definition is kept.");
                     continue;
                 }
 

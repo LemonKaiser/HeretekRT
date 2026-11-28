@@ -56,7 +56,7 @@ namespace Content.Client.MainMenu
         {
             _client.RunLevelChanged -= RunLevelChanged;
 
-            _mainMenuControl.Dispose();
+            _mainMenuControl.Orphan();
         }
 
         private void ChangelogButtonPressed(BaseButton.ButtonEventArgs args)

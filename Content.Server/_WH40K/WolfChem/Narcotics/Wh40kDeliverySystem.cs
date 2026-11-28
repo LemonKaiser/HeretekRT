@@ -6,6 +6,7 @@ using Content.Server.Stack;
 using Content.Shared._WH40K.WolfChem.Narcotics.Delivery;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.DoAfter;
@@ -30,7 +31,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Snorting and bongs: baggies lay powder lines on tables, a line goes up the nose after a short do-after, and a lit
 /// bong takes one hit at a time from its bowl.
 /// </summary>
-public sealed class Wh40kDeliverySystem : EntitySystem
+public sealed partial class Wh40kDeliverySystem : EntitySystem
 {
     [Dependency] private BloodstreamSystem _bloodstream = default!;
     [Dependency] private FoodSystem _food = default!;
@@ -45,7 +46,7 @@ public sealed class Wh40kDeliverySystem : EntitySystem
     [Dependency] private SharedStorageSystem _storage = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SmokeSystem _smoke = default!;
-    [Dependency] private SolutionContainerSystem _solutions = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private StackSystem _stack = default!;
     [Dependency] private Wh40kBaggieSystem _baggie = default!;
     [Dependency] private Wh40kSecondhandSmokeSystem _secondhand = default!;
@@ -113,7 +114,7 @@ public sealed class Wh40kDeliverySystem : EntitySystem
         }
 
         var portion = _solutions.SplitSolution(soln.Value, FixedPoint2.Min(baggie.Comp.LineAmount, solution.Volume));
-        var line = Spawn(baggie.Comp.Line, coords);
+        var line = SpawnAttachedTo(baggie.Comp.Line, coords);
         if (!TryComp<Wh40kPowderLineComponent>(line, out var lineComp)
             || !_solutions.TryGetSolution(line, lineComp.Solution, out var lineSoln, out _))
         {
@@ -339,7 +340,7 @@ public sealed class Wh40kDeliverySystem : EntitySystem
             return;
 
         var coords = _map.MapToGrid(grid, _transform.GetMapCoordinates(ent)).SnapToGrid(EntityManager);
-        var cloud = Spawn(ent.Comp.Puff, coords);
+        var cloud = SpawnAttachedTo(ent.Comp.Puff, coords);
         if (!TryComp<SmokeComponent>(cloud, out var smoke))
         {
             Del(cloud);

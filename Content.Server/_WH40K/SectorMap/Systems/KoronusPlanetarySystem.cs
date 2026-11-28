@@ -854,7 +854,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         foreach (var occupant in occupants)
         {
             if (TerminatingOrDeleted(occupant) || HasComp<MapGridComponent>(occupant) ||
-                HasComp<MapComponent>(occupant) || !TryComp<TransformComponent>(occupant, out var transform) ||
+                HasComp<MapComponent>(occupant) || !TryComp(occupant, out TransformComponent? transform) ||
                 transform.Anchored || transform.GridUid == shuttleGrid ||
                 transform.ParentUid != (transform.GridUid ?? transform.MapUid))
                 continue;
@@ -925,7 +925,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     private void AnchorPlanetaryInfrastructure<T>(MapId mapId)
         where T : IComponent
     {
-        var query = EntityManager.AllEntityQueryEnumerator<T, TransformComponent>();
+        var query = AllEntityQuery<T, TransformComponent>();
         while (query.MoveNext(out var uid, out _, out var transform))
         {
             if (transform.Anchored ||
@@ -1076,7 +1076,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         }
 
         session.CoveredPadTiles.Clear();
-        var tiles = _mapSystem.GetAllTilesEnumerator(shuttleGrid, shuttle);
+        var tiles = _mapSystem.GetAllTiles(shuttleGrid, shuttle);
         while (tiles.MoveNext(out var tileRef))
         {
             if (tileRef == null)
@@ -1589,7 +1589,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         _atmosphericTransitMobRemovals.Clear();
         foreach (var mob in transit.TransitMobs)
         {
-            if (TerminatingOrDeleted(mob) || !TryComp<TransformComponent>(mob, out var transform))
+            if (TerminatingOrDeleted(mob) || !TryComp(mob, out TransformComponent? transform))
             {
                 _atmosphericTransitMobRemovals.Add(mob);
                 continue;
@@ -1642,7 +1642,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             }
 
             coordinates = candidate;
-            return coordinates.GetMapId(EntityManager) == surfaceMap;
+            return _transform.GetMapId(coordinates) == surfaceMap;
         }
 
         return false;
@@ -1696,7 +1696,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         foreach (var (mapId, boundary) in _surfaceBoundaries)
         {
             if (_maps.IsPaused(mapId) ||
-                !TryComp<TransformComponent>(boundary.MapUid, out var mapTransform))
+                !TryComp(boundary.MapUid, out TransformComponent? mapTransform))
             {
                 continue;
             }
@@ -1706,7 +1706,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
             {
                 if (gridUid == boundary.TerrainGrid ||
                     !TryComp<MapGridComponent>(gridUid, out _) ||
-                    !TryComp<TransformComponent>(gridUid, out var transform))
+                    !TryComp(gridUid, out TransformComponent? transform))
                 {
                     continue;
                 }
@@ -1725,7 +1725,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     private void SeedSurfaceBoundaryTracking(MapId mapId)
     {
         if (!_surfaceBoundaries.TryGetValue(mapId, out var boundary) ||
-            !TryComp<TransformComponent>(boundary.TerrainGrid, out var terrainTransform))
+            !TryComp(boundary.TerrainGrid, out TransformComponent? terrainTransform))
         {
             return;
         }
@@ -1733,14 +1733,14 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         var children = terrainTransform.ChildEnumerator;
         while (children.MoveNext(out var uid))
         {
-            if (!TryComp<TransformComponent>(uid, out var transform))
+            if (!TryComp(uid, out TransformComponent? transform))
                 continue;
 
             UpdateSurfaceBoundaryTracking(uid, transform);
         }
 
         if (boundary.MapUid == boundary.TerrainGrid ||
-            !TryComp<TransformComponent>(boundary.MapUid, out var mapTransform))
+            !TryComp(boundary.MapUid, out TransformComponent? mapTransform))
         {
             return;
         }
@@ -1750,20 +1750,20 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         var mapChildren = mapTransform.ChildEnumerator;
         while (mapChildren.MoveNext(out var uid))
         {
-            if (TryComp<TransformComponent>(uid, out var transform))
+            if (TryComp(uid, out TransformComponent? transform))
                 UpdateSurfaceBoundaryTracking(uid, transform);
         }
     }
 
     private void OnPhysicsParentChanged(Entity<PhysicsComponent> entity, ref EntParentChangedMessage args)
     {
-        if (TryComp<TransformComponent>(entity.Owner, out var transform))
+        if (TryComp(entity.Owner, out TransformComponent? transform))
             UpdateSurfaceBoundaryTracking(entity.Owner, transform);
     }
 
     private void OnTrackedEntityMoved(Entity<KoronusSurfaceBoundaryTrackedComponent> entity, ref MoveEvent args)
     {
-        if (!TryComp<TransformComponent>(entity.Owner, out var transform) ||
+        if (!TryComp(entity.Owner, out TransformComponent? transform) ||
             !_surfaceBoundaries.TryGetValue(transform.MapID, out var boundary) ||
             !IsSurfaceBoundaryRoot(transform, boundary))
         {
@@ -1807,7 +1807,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         foreach (var uid in _surfaceBoundaryCorrectionSnapshot)
         {
             if (TerminatingOrDeleted(uid) ||
-                !TryComp<TransformComponent>(uid, out var transform) ||
+                !TryComp(uid, out TransformComponent? transform) ||
                 transform.Anchored ||
                 !_surfaceBoundaries.TryGetValue(transform.MapID, out var boundary) ||
                 !IsSurfaceBoundaryRoot(transform, boundary))

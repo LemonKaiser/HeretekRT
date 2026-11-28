@@ -10,6 +10,8 @@ namespace Content.Client.Drowsiness;
 
 public sealed partial class DrowsinessOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> DrowsinessShaderId = "Drowsiness";
+
     [Dependency] private IEntityManager _entityManager = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IPlayerManager _playerManager = default!;
@@ -29,7 +31,7 @@ public sealed partial class DrowsinessOverlay : Overlay
     public DrowsinessOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _drowsinessShader = _prototypeManager.Index<ShaderPrototype>("Drowsiness").InstanceUnique();
+        _drowsinessShader = _prototypeManager.Index(DrowsinessShaderId).InstanceUnique();
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

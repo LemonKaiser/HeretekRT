@@ -71,7 +71,7 @@ public abstract partial class SharedStasisSystem : EntitySystem
 
         _blocker.UpdateCanMove(stasised);
         _audio.PlayPredicted(comp.StasisSound, stasised, null);
-        comp.Effect = Spawn(comp.EffectEntityProto, Transform(stasised.Owner).Coordinates);
+        comp.Effect = SpawnAttachedTo(comp.EffectEntityProto, Transform(stasised.Owner).Coordinates);
         _transformSystem.SetParent(comp.Effect, stasised);
     }
 
@@ -185,7 +185,7 @@ public abstract partial class SharedStasisSystem : EntitySystem
         }
 
         if (HasComp<StasisImmunityComponent>(args.Equipee) )
-            EntityManager.RemoveComponent<StasisImmunityComponent>(args.Equipee);
+            RemComp<StasisImmunityComponent>(args.Equipee);
     }
 
     #endregion

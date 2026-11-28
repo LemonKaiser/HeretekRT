@@ -19,6 +19,9 @@ namespace Content.Client.Viewport;
 
 public sealed partial class ScalingViewport
 {
+    private static readonly ProtoId<ShaderPrototype> CEZBlurBlitShaderId = "CEZBlurBlit";
+    private static readonly ProtoId<ShaderPrototype> CEZCloudsShaderId = "CEZClouds";
+
     [Dependency] private IEyeManager _eyeManager = default!;
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private ITileDefinitionManager _tile = default!;
@@ -350,7 +353,7 @@ public sealed partial class ScalingViewport
             _transitViewport.RenderScale = viewport.RenderScale;
         }
 
-        _transitBlitShader ??= _prototypeManager.Index<ShaderPrototype>("CEZBlurBlit").InstanceUnique();
+        _transitBlitShader ??= _prototypeManager.Index(CEZBlurBlitShaderId).InstanceUnique();
 
         zEye.DrawParallax = false;
 
@@ -434,7 +437,7 @@ public sealed partial class ScalingViewport
     /// </summary>
     private void DrawCloudDeck(IRenderHandle renderHandle, IClydeViewport viewport, Color color, float coverage)
     {
-        _cloudShader ??= _prototypeManager.Index<ShaderPrototype>("CEZClouds").InstanceUnique();
+        _cloudShader ??= _prototypeManager.Index(CEZCloudsShaderId).InstanceUnique();
 
         var screenHandle = renderHandle.DrawingHandleScreen;
         screenHandle.RenderInRenderTarget(viewport.RenderTarget, () =>
@@ -451,7 +454,7 @@ public sealed partial class ScalingViewport
 
     private void DrawCloudWisps(IRenderHandle renderHandle, IClydeViewport viewport, Color color)
     {
-        _cloudShader ??= _prototypeManager.Index<ShaderPrototype>("CEZClouds").InstanceUnique();
+        _cloudShader ??= _prototypeManager.Index(CEZCloudsShaderId).InstanceUnique();
 
         var screenHandle = renderHandle.DrawingHandleScreen;
         screenHandle.RenderInRenderTarget(viewport.RenderTarget, () =>

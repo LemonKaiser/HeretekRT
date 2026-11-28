@@ -2,6 +2,7 @@ using Content.Client.Particles;
 using Content.Shared._WH40K.SectorMap.Teleporters;
 using Content.Shared.Particles;
 using Robust.Client.GameObjects;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.SectorMap.Teleporters;
@@ -10,10 +11,12 @@ namespace Content.Client._WH40K.SectorMap.Teleporters;
 /// Owns short client-side teleporter charge emitters. They are bounded by the server-authoritative spin-up duration
 /// so a missed stop notification cannot leave a permanent effect behind.
 /// </summary>
-public sealed class KoronusPlanetaryTeleporterParticleSystem : EntitySystem
+public sealed partial class KoronusPlanetaryTeleporterParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    private static readonly ProtoId<ParticleEffectPrototype> ChargeEffect = "HrtTeleporterCharge";
+
+    [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private sealed class ChargeState
     {
@@ -80,7 +83,7 @@ public sealed class KoronusPlanetaryTeleporterParticleSystem : EntitySystem
             return;
 
         var emitter = _particles.SpawnEffect(
-            "HrtTeleporterCharge",
+            ChargeEffect,
             _transform.GetMapCoordinates(teleporter),
             new ParticleSpawnParameters(Intensity: 0.8f),
             teleporter);

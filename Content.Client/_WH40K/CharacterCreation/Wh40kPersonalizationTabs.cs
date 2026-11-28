@@ -5,7 +5,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.CharacterCreation;
 
-public class Wh40kPersonalizationTabs : GridContainer
+public sealed class Wh40kPersonalizationTabs : GridContainer
 {
     private TabContainer? _tabs;
     private readonly List<Button> _buttons = [];

@@ -162,7 +162,7 @@ public sealed partial class KoronusSurfaceRefreshSystem : EntitySystem
         {
             if (TerminatingOrDeleted(uid) || !TryComp<MapGridComponent>(uid, out var grid))
                 continue;
-            var tiles = _maps.GetAllTilesEnumerator(uid, grid);
+            var tiles = _maps.GetAllTiles(uid, grid);
             while (tiles.MoveNext(out var tile))
             {
                 if (tile is not { } candidate || candidate.Tile.IsEmpty || _turf.IsSpace(candidate) ||

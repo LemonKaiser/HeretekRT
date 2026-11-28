@@ -47,7 +47,7 @@ public record struct Wh40kPalletAppraisalEvent(
 /// Heat on narcotics sellers. Each seller accumulates heat from narcotics sold at cargo pallets, which cools over time.
 /// Hot sellers earn a smaller share of street value and generate progressively more detailed tips on security radio.
 /// </summary>
-public sealed class Wh40kNarcoticHeatSystem : EntitySystem
+public sealed partial class Wh40kNarcoticHeatSystem : EntitySystem
 {
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IGameTiming _timing = default!;

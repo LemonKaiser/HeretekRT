@@ -31,18 +31,18 @@ public sealed partial class Wh40kChassisPanelSystem : SharedWh40kSyntheticsSyste
     private static readonly TimeSpan LinkDelay = TimeSpan.FromSeconds(2);
     private const string LinkQuality = "Pulsing";
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly PopupSystem _popup = default!;
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
-    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
-    [Dependency] private readonly SharedToolSystem _tools = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly Wh40kAugmentBedSystem _augmentBed = default!;
-    [Dependency] private readonly Wh40kChassisIsolationSystem _isolation = default!;
-    [Dependency] private readonly Wh40kSyntheticLimbSystem _limbs = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
+    [Dependency] private SharedToolSystem _tools = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
+    [Dependency] private Wh40kAugmentBedSystem _augmentBed = default!;
+    [Dependency] private Wh40kChassisIsolationSystem _isolation = default!;
+    [Dependency] private Wh40kSyntheticLimbSystem _limbs = default!;
 
     private TimeSpan _nextState;
 

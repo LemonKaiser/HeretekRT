@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Flying a ship while high. Stimulants sharpen the turn and thrust and twitch the stick in an overdose; opioids add
 /// input lag and hold the stick through a nod; cannabis softens brakes and turn; alcohol makes the heading wander.
 /// </summary>
-public sealed class Wh40kDrugPilotingSystem : EntitySystem
+public sealed partial class Wh40kDrugPilotingSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;

@@ -7,7 +7,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kNutrimentPumpSystem : EntitySystem
+public sealed partial class Wh40kNutrimentPumpSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private HungerSystem _hunger = default!;

@@ -15,7 +15,7 @@ using Content.Shared.Weapons.Ranged.Events;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
-public sealed class KoronusHuntingTurretSystem : EntitySystem
+public sealed partial class KoronusHuntingTurretSystem : EntitySystem
 {
     [Dependency] private KoronusHuntingTargetSystem _targets = default!;
     [Dependency] private NPCUtilitySystem _utility = default!;

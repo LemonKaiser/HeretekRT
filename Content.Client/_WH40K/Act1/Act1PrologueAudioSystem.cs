@@ -11,7 +11,7 @@ namespace Content.Client._WH40K.Act1;
 /// <summary>
 /// Suppresses ambient music and owns the one looping Act I track for the local participant.
 /// </summary>
-public sealed class Act1PrologueAudioSystem : EntitySystem
+public sealed partial class Act1PrologueAudioSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

@@ -56,7 +56,7 @@ namespace Content.Server.Stack
                 : Prototype(uid)?.ID;
 
             // Set the output parameter in the event instance to the newly split stack.
-            var entity = Spawn(prototype, spawnPosition);
+            var entity = SpawnAttachedTo(prototype, spawnPosition);
 
             if (TryComp(entity, out StackComponent? stackComp))
             {
@@ -87,7 +87,7 @@ namespace Content.Server.Stack
         public EntityUid Spawn(int amount, StackPrototype prototype, EntityCoordinates spawnPosition)
         {
             // Set the output result parameter to the new stack entity...
-            var entity = Spawn(prototype.Spawn, spawnPosition);
+            var entity = SpawnAttachedTo(prototype.Spawn, spawnPosition);
             var stack = Comp<StackComponent>(entity);
 
             // And finally, set the correct amount!
@@ -153,7 +153,7 @@ namespace Content.Server.Stack
         private List<int> CalculateSpawns(string entityPrototype, int amount)
         {
             var proto = _prototypeManager.Index<EntityPrototype>(entityPrototype);
-            proto.TryGetComponent<StackComponent>(out var stack, EntityManager.ComponentFactory);
+            proto.TryComp<StackComponent>(out var stack, EntityManager.ComponentFactory);
             var maxCountPerStack = GetMaxCount(stack);
             var amounts = new List<int>();
             while (amount > 0)

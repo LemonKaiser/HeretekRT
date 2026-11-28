@@ -82,7 +82,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
 
     public string GetFTLName(LocalizedDatasetPrototype dataset, int seed)
     {
-        var random = new System.Random(seed);
+        var random = SharedRandomExtensions.CreateSeeded(seed);
         return $"{Loc.GetString(dataset.Values[random.Next(dataset.Values.Count)])}-{random.Next(10, 100)}-{(char) (65 + random.Next(26))}";
     }
 
@@ -93,7 +93,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
         // Don't want easy missions to have any negative modifiers but also want
         // easy to be a 1 for difficulty.
         rating -= 1f;
-        var rand = new System.Random(seed);
+        var rand = SharedRandomExtensions.CreateSeeded(seed);
 
         // Run budget in order of priority
         // - Biome
@@ -146,7 +146,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
         return new SalvageMission(seed, difficulty, dungeon.ID, faction.ID, config, biome.ID, weather.ID, air.ID, temp.Temperature, light.Color, duration, rewards, mods);
     }
 
-    public T GetBiomeMod<T>(string biome, System.Random rand, ref float rating) where T : class, IPrototype, IBiomeSpecificMod
+    public T GetBiomeMod<T>(string biome, IRobustRandom rand, ref float rating) where T : class, IPrototype, IBiomeSpecificMod
     {
         var mods = _proto.EnumeratePrototypes<T>().ToList();
         mods.Sort((x, y) => string.Compare(x.ID, y.ID, StringComparison.Ordinal));
@@ -165,7 +165,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
         throw new InvalidOperationException();
     }
 
-    public T GetMod<T>(System.Random rand, ref float rating) where T : class, IPrototype, ISalvageMod
+    public T GetMod<T>(IRobustRandom rand, ref float rating) where T : class, IPrototype, ISalvageMod
     {
         var mods = _proto.EnumeratePrototypes<T>().ToList();
         mods.Sort((x, y) => string.Compare(x.ID, y.ID, StringComparison.Ordinal));
@@ -184,7 +184,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
         throw new InvalidOperationException();
     }
 
-    private List<string> GetRewards(DifficultyRating difficulty, System.Random rand)
+    private List<string> GetRewards(DifficultyRating difficulty, IRobustRandom rand)
     {
         var rewards = new List<string>(3);
         var ids = RewardsForDifficulty(difficulty);

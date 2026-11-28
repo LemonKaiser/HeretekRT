@@ -16,7 +16,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Cleans up temporary high-risk entities only on grids with the corresponding local safety rule.
 /// Footfall refuges remove hostile NPCs on the next sweep; the damage policy protects players immediately.
 /// </summary>
-public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
+public sealed partial class KoronusSafetyHazardCleanupSystem : EntitySystem
 {
     private static readonly TimeSpan CleanupDelay = TimeSpan.FromMinutes(1);
     private static readonly TimeSpan ScanInterval = TimeSpan.FromSeconds(1);
@@ -88,7 +88,7 @@ public sealed class KoronusSafetyHazardCleanupSystem : EntitySystem
     private bool IsAllowedSurfaceWildlife(EntityUid uid)
     {
         if (!TryComp<KoronusSurfaceWildlifeComponent>(uid, out var wildlife) ||
-            !TryComp<TransformComponent>(uid, out var transform) ||
+            !TryComp(uid, out TransformComponent? transform) ||
             !_maps.TryGetMap(transform.MapID, out var map) ||
             !TryComp<KoronusPlanetSurfaceMapComponent>(map, out var surface) ||
             surface.SurfaceId != wildlife.Surface.Id || surface.AuthoredBaseGrids.Count == 0)

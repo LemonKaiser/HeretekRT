@@ -133,7 +133,7 @@ public sealed partial class ShuttleStorageBayControl : Control
                 continue;
             var color = (value & ShuttleStorageCell.Door) != 0 ? 4 : (value & ShuttleStorageCell.Window) != 0 ? 3 :
                 (value & ShuttleStorageCell.Wall) != 0 ? 2 : (value & ShuttleStorageCell.Grating) != 0 ? 1 : 0;
-            Rect(_fills[color], Math.Max(px, left), Math.Max(py, top),
+            AddRect(_fills[color], Math.Max(px, left), Math.Max(py, top),
                 Math.Min(px + cell, right), Math.Min(py + cell, bottom));
             if (cell > 5 * scale)
             {
@@ -165,7 +165,7 @@ public sealed partial class ShuttleStorageBayControl : Control
         vertices.Add(new(x, y)); vertices.Add(new(endX, endY));
     }
 
-    private static void Rect(List<Vector2> vertices, float x, float y, float right, float bottom)
+    private static void AddRect(List<Vector2> vertices, float x, float y, float right, float bottom)
     {
         vertices.Add(new(x, y)); vertices.Add(new(right, y)); vertices.Add(new(right, bottom));
         vertices.Add(new(x, y)); vertices.Add(new(right, bottom)); vertices.Add(new(x, bottom));

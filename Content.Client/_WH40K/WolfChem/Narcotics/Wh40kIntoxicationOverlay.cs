@@ -14,7 +14,7 @@ namespace Content.Client._WH40K.WolfChem.Narcotics;
 /// Draws the local player's strongest high and any crash with one shader. Static and trail-free under reduced motion.
 /// A neuroware host sees its programs through a digital shader of its own.
 /// </summary>
-public sealed class Wh40kIntoxicationOverlay : Overlay
+public sealed partial class Wh40kIntoxicationOverlay : Overlay
 {
     [Dependency] private IClyde _clyde = default!;
     [Dependency] private IConfigurationManager _config = default!;
@@ -37,6 +37,10 @@ public sealed class Wh40kIntoxicationOverlay : Overlay
         [Wh40kDrugFamily.Empathogen] = (0.55f, 0.8f),
         [Wh40kDrugFamily.Stimulant] = (0f, 0.65f),
     };
+
+    private static readonly ProtoId<ShaderPrototype> IntoxicationShader = "Wh40kIntoxication";
+    private static readonly ProtoId<ShaderPrototype> NeurowareShader = "Wh40kNeuroware";
+    private static readonly ProtoId<ShaderPrototype> IntoxicationTrailShader = "Wh40kIntoxicationTrail";
 
     private const float TrailSpread = 0.0015f;
     private const float PsychedelicSpread = 0.004f;
@@ -67,9 +71,9 @@ public sealed class Wh40kIntoxicationOverlay : Overlay
     {
         IoCManager.InjectDependencies(this);
         _system = system;
-        _shader = _proto.Index<ShaderPrototype>("Wh40kIntoxication").InstanceUnique();
-        _neurowareShader = _proto.Index<ShaderPrototype>("Wh40kNeuroware").InstanceUnique();
-        _trailShader = _proto.Index<ShaderPrototype>("Wh40kIntoxicationTrail").InstanceUnique();
+        _shader = _proto.Index(IntoxicationShader).InstanceUnique();
+        _neurowareShader = _proto.Index(NeurowareShader).InstanceUnique();
+        _trailShader = _proto.Index(IntoxicationTrailShader).InstanceUnique();
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

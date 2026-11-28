@@ -10,7 +10,7 @@ namespace Content.Server._WH40K.Cyborgs;
 /// Enables Station AIs to watch Overwatch camera feeds cleanly: caps feed zoom, cancels feed when the AI's
 /// remote eye moves, and restores the AI's eye target to its remote eye afterwards.
 /// </summary>
-public sealed class Wh40kAiOverwatchSystem : EntitySystem
+public sealed partial class Wh40kAiOverwatchSystem : EntitySystem
 {
     [Dependency] private SharedContentEyeSystem _contentEye = default!;
     [Dependency] private SharedStationAiSystem _stationAi = default!;

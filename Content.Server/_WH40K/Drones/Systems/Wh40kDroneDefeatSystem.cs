@@ -16,12 +16,12 @@ namespace Content.Server._WH40K.Drones.Systems;
 /// </summary>
 public sealed partial class Wh40kDroneDefeatSystem : EntitySystem
 {
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
-    [Dependency] private readonly ShuttleSystem _shuttle = default!;
-    [Dependency] private readonly PowerReceiverSystem _power = default!;
-    [Dependency] private readonly HTNSystem _htn = default!;
-    [Dependency] private readonly ShipSteeringSystem _steering = default!;
-    [Dependency] private readonly ShipTargetingSystem _targeting = default!;
+    [Dependency] private MetaDataSystem _metaData = default!;
+    [Dependency] private ShuttleSystem _shuttle = default!;
+    [Dependency] private PowerReceiverSystem _power = default!;
+    [Dependency] private HTNSystem _htn = default!;
+    [Dependency] private ShipSteeringSystem _steering = default!;
+    [Dependency] private ShipTargetingSystem _targeting = default!;
 
     public const string WreckageNameLoc = "wh40k-drone-wreckage-name";
 

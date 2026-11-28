@@ -16,12 +16,12 @@ namespace Content.Server._WH40K.Augments;
 /// a deployed augment tool, deployable combat implant (arm laser, hand shield, finger lighter), or mantis blade,
 /// retracting it back into the limb instead of failing to drop.
 /// </summary>
-public sealed class Wh40kAugmentDropRetractSystem : EntitySystem
+public sealed partial class Wh40kAugmentDropRetractSystem : EntitySystem
 {
-    [Dependency] private readonly AugmentToolPanelSystem _toolPanel = default!;
-    [Dependency] private readonly Wh40kDeployableImplantSystem _deployables = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private AugmentToolPanelSystem _toolPanel = default!;
+    [Dependency] private Wh40kDeployableImplantSystem _deployables = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
 
     public override void Initialize()
     {

@@ -9,7 +9,7 @@ namespace Content.Server._Mono.LongRun;
 /// Displays the latest bounded long-run health snapshot without mutating the world.
 /// </summary>
 [AdminCommand(AdminFlags.Debug)]
-public sealed class LongRunStatusCommand : IConsoleCommand
+public sealed partial class LongRunStatusCommand : IConsoleCommand
 {
     [Dependency] private IEntityManager _entities = default!;
 

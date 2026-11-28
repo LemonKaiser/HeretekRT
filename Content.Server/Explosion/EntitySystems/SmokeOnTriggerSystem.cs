@@ -39,7 +39,7 @@ public sealed partial class SmokeOnTriggerSystem : SharedSmokeOnTriggerSystem
             return;
 
         var coords = _map.MapToGrid(xform.GridUid!.Value, mapCoords);
-        var ent = Spawn(comp.SmokePrototype, coords.SnapToGrid());
+        var ent = SpawnAttachedTo(comp.SmokePrototype, coords.SnapToGrid());
         if (!TryComp<SmokeComponent>(ent, out var smoke))
         {
             Log.Error($"Smoke prototype {comp.SmokePrototype} was missing SmokeComponent");

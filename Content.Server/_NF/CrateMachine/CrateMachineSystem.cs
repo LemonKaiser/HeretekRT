@@ -95,7 +95,7 @@ public sealed partial class CrateMachineSystem : SharedCrateMachineSystem
     /// <returns>The Uid of the spawned crate</returns>
     public EntityUid SpawnCrate(EntityUid uid, CrateMachineComponent component)
     {
-        return Spawn(component.CratePrototype, Transform(uid).Coordinates);
+        return SpawnAttachedTo(component.CratePrototype, Transform(uid).Coordinates);
     }
 
     /// <summary>

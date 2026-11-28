@@ -88,7 +88,7 @@ public sealed partial class Wh40kChaosMarineSystem
         }
         state.Aim = point;
         Face(uid, state);
-        var rocket = Spawn("Wh40kMarineRocket", Transform(uid).Coordinates);
+        var rocket = SpawnAttachedTo("Wh40kMarineRocket", Transform(uid).Coordinates);
         ConfigureShot(rocket, uid, state, point, rocket: true);
         var shot = Comp<Wh40kMarineShotComponent>(rocket);
         shot.GroundRocket = barrage;

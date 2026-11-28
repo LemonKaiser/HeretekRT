@@ -157,7 +157,7 @@ public sealed partial class Wh40kInteractionParticleSystem : EntitySystem
         var startPos = _xform.ToCoordinates(frame, _xform.GetMapCoordinates(performer, performerXform)).Position;
         var endPos = _xform.ToCoordinates(frame, _xform.GetMapCoordinates(target, targetXform)).Position;
         var inHandDelta = new Vector2(0, 0.85f);
-        var particle = Spawn(InteractionParticleIds[type], new EntityCoordinates(frame, startPos));
+        var particle = SpawnAttachedTo(InteractionParticleIds[type], new EntityCoordinates(frame, startPos));
 
         if (type == Wh40kInteractionParticleType.InHand)
         {

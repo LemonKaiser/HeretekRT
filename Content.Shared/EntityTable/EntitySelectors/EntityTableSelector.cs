@@ -26,14 +26,14 @@ public abstract partial class EntityTableSelector
     [DataField]
     public double Prob = 1;
 
-    public IEnumerable<EntProtoId> GetSpawns(System.Random rand,
+    public IEnumerable<EntProtoId> GetSpawns(IRobustRandom rand,
         IEntityManager entMan,
         IPrototypeManager proto)
     {
         var rolls = Math.Floor(Rolls.Get(rand, entMan, proto)); // Frontier: add Math.Floor
         for (var i = 0; i < rolls; i++)
         {
-            if (!rand.Prob(Prob))
+            if (!(rand.NextDouble() < Prob))
                 continue;
 
             foreach (var spawn in GetSpawnsImplementation(rand, entMan, proto))
@@ -43,7 +43,7 @@ public abstract partial class EntityTableSelector
         }
     }
 
-    protected abstract IEnumerable<EntProtoId> GetSpawnsImplementation(System.Random rand,
+    protected abstract IEnumerable<EntProtoId> GetSpawnsImplementation(IRobustRandom rand,
         IEntityManager entMan,
         IPrototypeManager proto);
 }

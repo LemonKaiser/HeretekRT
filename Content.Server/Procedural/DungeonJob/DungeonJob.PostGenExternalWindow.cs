@@ -24,7 +24,7 @@ public sealed partial class DungeonJob
     /// <summary>
     /// <see cref="ExternalWindowDunGen"/>
     /// </summary>
-    private async Task PostGen(ExternalWindowDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, Random random)
+    private async Task PostGen(ExternalWindowDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, IRobustRandom random)
     {
         if (!data.Tiles.TryGetValue(DungeonDataKey.FallbackTile, out var tileProto) ||
             !data.SpawnGroups.TryGetValue(DungeonDataKey.Window, out var windowGroup))
@@ -128,7 +128,7 @@ public sealed partial class DungeonJob
             var gridPos = _maps.GridTileToLocal(_gridUid, _grid, tile.Item1);
 
             index += spawnEntry.Entries.Count;
-            _entManager.SpawnEntities(gridPos, EntitySpawnCollection.GetSpawns(spawnEntry.Entries, random));
+            _entManager.SpawnEntitiesAttachedTo(gridPos, EntitySpawnCollection.GetSpawnsIncludingEmptyEntries(spawnEntry.Entries, random));
             await SuspendDungeon();
 
             if (!ValidateResume())

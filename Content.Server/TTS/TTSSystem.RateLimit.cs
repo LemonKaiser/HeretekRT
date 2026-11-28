@@ -10,8 +10,8 @@ public sealed partial class TTSSystem
 {
     private const string RateLimitKey = "TTS";
 
-    [Dependency] private readonly PlayerRateLimitManager _rateLimitManager = default!;
-    [Dependency] private readonly IChatManager _chat = default!;
+    [Dependency] private PlayerRateLimitManager _rateLimitManager = default!;
+    [Dependency] private IChatManager _chat = default!;
 
     private void RegisterRateLimits()
     {

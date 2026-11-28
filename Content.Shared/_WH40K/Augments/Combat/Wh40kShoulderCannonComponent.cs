@@ -74,7 +74,7 @@ public sealed partial class Wh40kToggleShoulderCannonEvent : InstantActionEvent;
 [Serializable, NetSerializable]
 public sealed partial class Wh40kShoulderCannonDoAfterEvent : DoAfterEvent
 {
-    public NetCoordinates Target;
+    public new NetCoordinates Target;
 
     private Wh40kShoulderCannonDoAfterEvent()
     {

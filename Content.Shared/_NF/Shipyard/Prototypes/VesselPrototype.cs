@@ -25,7 +25,7 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     /// </summary>
     [DataField("name")] private string _name = string.Empty;
 
-    public string Name => Loc.TryGetString($"vessel-{ID.ToLowerInvariant()}-name", out var name) ? name : _name;
+    public string Name => IoCManager.Resolve<ILocalizationManager>().TryGetString($"vessel-{ID.ToLowerInvariant()}-name", out var name) ? name : _name;
 
     /// <summary>
     ///     The amount of this ship that can active at any given time.
@@ -50,7 +50,7 @@ public sealed partial class VesselPrototype : IPrototype, IInheritingPrototype
     /// </summary>
     [DataField("description")] private string _description = string.Empty;
 
-    public string Description => Loc.TryGetString($"vessel-{ID.ToLowerInvariant()}-desc", out var description) ? description : _description;
+    public string Description => IoCManager.Resolve<ILocalizationManager>().TryGetString($"vessel-{ID.ToLowerInvariant()}-desc", out var description) ? description : _description;
 
     /// <summary>
     ///     Minimum purchase price. The shipyard raises this to cover the starting equipment.

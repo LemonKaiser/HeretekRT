@@ -28,7 +28,7 @@ public sealed partial class VentClogRule : StationEventSystem<VentClogRuleCompon
             .Where(x => !x.Abstract)
             .Select(x => x.ID).ToList();
 
-        foreach (var (_, transform) in EntityManager.EntityQuery<GasVentPumpComponent, TransformComponent>())
+        foreach (var (_, transform) in EntityQuery<GasVentPumpComponent, TransformComponent>())
         {
             var station = CompOrNull<StationMemberComponent>(transform.GridUid)?.Station;
             if (!station.HasValue || !stations.Contains(station.Value))
@@ -47,7 +47,7 @@ public sealed partial class VentClogRule : StationEventSystem<VentClogRuleCompon
             var quantity = weak ? component.WeakReagentQuantity : component.ReagentQuantity;
             solution.AddReagent(reagent, quantity);
 
-            var foamEnt = Spawn("Foam", transform.Coordinates);
+            var foamEnt = SpawnAttachedTo("Foam", transform.Coordinates);
             var spreadAmount = weak ? component.WeakSpread : component.Spread;
             _smoke.StartSmoke(foamEnt, solution, component.Time, spreadAmount);
             Audio.PlayPvs(component.Sound, transform.Coordinates);

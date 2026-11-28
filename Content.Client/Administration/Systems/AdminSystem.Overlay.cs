@@ -20,6 +20,8 @@ namespace Content.Client.Administration.Systems
 
         private AdminNameOverlay _adminNameOverlay = default!;
 
+        internal bool IsOverlayEnabled => _overlayManager.HasOverlay<AdminNameOverlay>();
+
         public event Action? OverlayEnabled;
         public event Action? OverlayDisabled;
 
@@ -49,7 +51,7 @@ namespace Content.Client.Administration.Systems
 
         public void AdminOverlayOn()
         {
-            if (_overlayManager.HasOverlay<AdminNameOverlay>())
+            if (IsOverlayEnabled)
                 return;
             _overlayManager.AddOverlay(_adminNameOverlay);
             OverlayEnabled?.Invoke();

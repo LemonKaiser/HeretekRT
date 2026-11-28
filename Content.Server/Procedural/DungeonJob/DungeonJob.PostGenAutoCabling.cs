@@ -13,7 +13,7 @@ public sealed partial class DungeonJob
     /// <summary>
     /// <see cref="AutoCablingDunGen"/>
     /// </summary>
-    private async Task PostGen(AutoCablingDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, Random random)
+    private async Task PostGen(AutoCablingDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, IRobustRandom random)
     {
         if (!data.Entities.TryGetValue(DungeonDataKey.Cabling, out var ent))
         {
@@ -33,7 +33,7 @@ public sealed partial class DungeonJob
         // Gather existing nodes
         foreach (var tile in allTiles)
         {
-            var anchored = _maps.GetAnchoredEntitiesEnumerator(_gridUid, _grid, tile);
+            var anchored = _maps.GetAnchoredEntities(_gridUid, _grid, tile);
 
             while (anchored.MoveNext(out var anc))
             {
@@ -142,7 +142,7 @@ public sealed partial class DungeonJob
             if (reservedTiles.Contains(tile))
                 continue;
 
-            var anchored = _maps.GetAnchoredEntitiesEnumerator(_gridUid, _grid, tile);
+            var anchored = _maps.GetAnchoredEntities(_gridUid, _grid, tile);
             var found = false;
 
             while (anchored.MoveNext(out var anc))
@@ -160,7 +160,7 @@ public sealed partial class DungeonJob
             if (found)
                 continue;
 
-            _entManager.SpawnEntity(ent, _maps.GridTileToLocal(_gridUid, _grid, tile));
+            _entManager.SpawnAttachedTo(ent, _maps.GridTileToLocal(_gridUid, _grid, tile));
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Dialogue;
 /// Counts and consumes dialogue payment items from hands or equipped slots. Storage contents, such as
 /// backpacks and pockets, are intentionally outside of its scope.
 /// </summary>
-public sealed class DialogueItemSystem : EntitySystem
+public sealed partial class DialogueItemSystem : EntitySystem
 {
     [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedHandsSystem _hands = default!;

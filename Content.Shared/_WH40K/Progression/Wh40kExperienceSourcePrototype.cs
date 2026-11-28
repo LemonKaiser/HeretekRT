@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.Progression;
 /// Network-safe prototype shape for one server-authoritative XP source.
 /// Clients load the data definition but never choose or submit a source or amount.
 /// </summary>
-[Prototype("wh40kExperienceSource")]
+[Prototype]
 public sealed partial class Wh40kExperienceSourcePrototype : IPrototype
 {
     [IdDataField]

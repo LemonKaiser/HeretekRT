@@ -201,7 +201,7 @@ public sealed partial class DungeonSystem
             var protoId = _metaQuery.GetComponent(templateEnt).EntityPrototype?.ID;
 
             // TODO: Copy the templated entity as is with serv
-            var ent = Spawn(protoId, new EntityCoordinates(gridUid, childPos));
+            var ent = SpawnAttachedTo(protoId, new EntityCoordinates(gridUid, childPos));
 
             // Some prototypes can delete or detach themselves during initialization. Do not
             // try to anchor an entity whose transform has already entered teardown.
@@ -281,7 +281,7 @@ public sealed partial class DungeonSystem
                 // but place 1 nanometre off grid and fail the add.
                 if (!_maps.TryGetTileRef(gridUid, grid, tilePos, out var tileRef) || tileRef.Tile.IsEmpty)
                 {
-                    _maps.SetTile(gridUid, grid, tilePos, _tile.GetVariantTile((ContentTileDefinition) _tileDefManager[FallbackTileId], _random.GetRandom()));
+                    _maps.SetTile(gridUid, grid, tilePos, _tile.GetVariantTile((ContentTileDefinition) _tileDefManager[FallbackTileId], _random));
                 }
 
                 var result = _decals.TryAddDecal(

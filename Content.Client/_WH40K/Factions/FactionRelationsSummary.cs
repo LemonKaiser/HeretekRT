@@ -7,7 +7,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._WH40K.Factions;
 
-public sealed class FactionRelationsSummary : BoxContainer
+public sealed partial class FactionRelationsSummary : BoxContainer
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
 

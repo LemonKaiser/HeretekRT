@@ -96,9 +96,6 @@ namespace Content.Client.Lobby.UI
                     OpenOrFocus(ref _decorationsWindow, () => new PlayerDecorationsWindow());
             };
 
-            _cfg.OnValueChanged(CCVars.SeeOwnNotes, p => AdminRemarksButton.Visible = p, true);
-            _cfg.OnValueChanged(CCVars.Wh40kDecorationsMode, OnDecorationsModeChanged, true);
-            _adminManager.AdminStatusUpdated += RefreshDecorationsButton;
         }
 
         internal void TogglePersonalizationHelp() => Wh40kPersonalizationTheme.ToggleMenu(HelpPopup, HelpButton);
@@ -118,17 +115,29 @@ namespace Content.Client.Lobby.UI
             HeaderActions.HorizontalAlignment = stacked ? HAlignment.Right : HAlignment.Stretch;
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void EnteredTree()
         {
-            base.Dispose(disposing);
-            if (!disposing)
-                return;
+            base.EnteredTree();
+            _cfg.OnValueChanged(CCVars.SeeOwnNotes, OnSeeOwnNotesChanged, true);
+            _cfg.OnValueChanged(CCVars.Wh40kDecorationsMode, OnDecorationsModeChanged, true);
+            _adminManager.AdminStatusUpdated += RefreshDecorationsButton;
+        }
 
+        protected override void ExitedTree()
+        {
+            _cfg.UnsubValueChanged(CCVars.SeeOwnNotes, OnSeeOwnNotesChanged);
             _cfg.UnsubValueChanged(CCVars.Wh40kDecorationsMode, OnDecorationsModeChanged);
             _adminManager.AdminStatusUpdated -= RefreshDecorationsButton;
-            _decorationsWindow?.Dispose();
+            _decorationsWindow?.Orphan();
             _decorationsWindow = null;
-            HelpPopup.Dispose();
+            HelpPopup.Close();
+            HelpPopup.Orphan();
+            base.ExitedTree();
+        }
+
+        private void OnSeeOwnNotesChanged(bool visible)
+        {
+            AdminRemarksButton.Visible = visible;
         }
 
         private static void OpenOrFocus(ref BaseWindow? window, Func<BaseWindow> factory)
@@ -144,12 +153,12 @@ namespace Content.Client.Lobby.UI
         }
 
         /// <summary>
-        /// Disposes and reloads all character picker buttons from the preferences data.
+        /// Replaces all character picker buttons from the preferences data.
         /// </summary>
         public void ReloadCharacterPickers()
         {
             _createNewCharacterButton.Orphan();
-            Characters.DisposeAllChildren();
+            Characters.RemoveAllChildren();
 
             var numberOfFullSlots = 0;
             var characterButtonsGroup = new ButtonGroup();

@@ -298,7 +298,7 @@ public sealed partial class ArtifactAnalyzerSystem : EntitySystem
         }
         analyzer.ReadyToPrint = false;
 
-        var report = Spawn(component.ReportEntityId, Transform(uid).Coordinates);
+        var report = SpawnAttachedTo(component.ReportEntityId, Transform(uid).Coordinates);
         _metaSystem.SetEntityName(report, Loc.GetString("analysis-report-title", ("id", analyzer.LastAnalyzedNode.Id)));
 
         var msg = GetArtifactScanMessage(analyzer);

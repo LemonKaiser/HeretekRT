@@ -19,7 +19,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kBurstLauncherSystem : EntitySystem
+public sealed partial class Wh40kBurstLauncherSystem : EntitySystem
 {
     [Dependency] private IAdminLogManager _adminLog = default!;
     [Dependency] private SharedActionsSystem _actions = default!;

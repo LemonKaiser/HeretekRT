@@ -10,11 +10,11 @@ namespace Content.Shared._WH40K.Augments;
 /// <see cref="AugmentPowerCellSlotComponent"/> organ on organic bodies and the native chassis
 /// <see cref="PowerCellSlotComponent"/> on Cybernetic (Mechanicus) or IPC bodies.
 /// </summary>
-public abstract class SharedAugmentPowerCellSystem : EntitySystem
+public abstract partial class SharedAugmentPowerCellSystem : EntitySystem
 {
-    [Dependency] protected readonly AugmentSystem Augment = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] protected readonly SharedPowerCellSystem PowerCell = default!;
+    [Dependency] protected AugmentSystem Augment = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] protected SharedPowerCellSystem PowerCell = default!;
 
     private EntityQuery<PowerCellDrawComponent> _drawQuery;
     private EntityQuery<PowerCellSlotComponent> _slotQuery;

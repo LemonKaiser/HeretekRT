@@ -17,7 +17,7 @@ namespace Content.Server.TTS;
 /// <summary>
 /// Requests generated speech from the configured TTS service and keeps a bounded in-memory LRU cache.
 /// </summary>
-public sealed class TTSManager
+public sealed partial class TTSManager
 {
     private static readonly Histogram RequestTimings = Metrics.CreateHistogram(
         "tts_request_duration_seconds",
@@ -36,7 +36,7 @@ public sealed class TTSManager
         "tts_reused_lines_total",
         "Number of TTS lines reused from cache or an in-flight request.");
 
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
 
     private readonly HttpClient _httpClient = new();
     private readonly Dictionary<string, CacheEntry> _cache = new();

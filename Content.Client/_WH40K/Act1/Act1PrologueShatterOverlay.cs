@@ -8,8 +8,10 @@ namespace Content.Client._WH40K.Act1;
 /// Breaks the last frame of the white room before the map transfer. It deliberately remains black until the server
 /// acknowledges the transfer with the fade-from-black cue, preventing a one-frame Footfall flash.
 /// </summary>
-public sealed class Act1PrologueShatterOverlay : Overlay
+public sealed partial class Act1PrologueShatterOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> ShatterShader = "HeretekAct1Shatter";
+
     [Dependency] private IPrototypeManager _prototypes = default!;
 
     private readonly ShaderInstance _shader;
@@ -20,7 +22,7 @@ public sealed class Act1PrologueShatterOverlay : Overlay
     public Act1PrologueShatterOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _prototypes.Index<ShaderPrototype>("HeretekAct1Shatter").Instance().Duplicate();
+        _shader = _prototypes.Index(ShatterShader).Instance().Duplicate();
     }
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;

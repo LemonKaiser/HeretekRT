@@ -60,24 +60,24 @@ public abstract partial class SharedWh40kFabricationSiloSystem
         foreach (var proto in _prototype.EnumeratePrototypes<EntityPrototype>())
         {
             if (proto.Abstract ||
-                !proto.TryGetComponent<Wh40kFabricationSiloClientComponent>(out var client, _factory))
+                !proto.TryComp<Wh40kFabricationSiloClientComponent>(out var client, _factory))
                 continue;
 
             if (client.Parts != null)
                 partWhitelists.Add(client.Parts);
 
-            if (!proto.TryGetComponent<LatheComponent>(out var lathe, _factory))
+            if (!proto.TryComp<LatheComponent>(out var lathe, _factory))
                 continue;
 
             AddPackRecipes(recipes, lathe.StaticPacks);
             AddPackRecipes(recipes, lathe.DynamicPacks);
-            if (proto.TryGetComponent<EmagLatheRecipesComponent>(out var emag, _factory))
+            if (proto.TryComp<EmagLatheRecipesComponent>(out var emag, _factory))
             {
                 AddPackRecipes(recipes, emag.EmagStaticPacks);
                 AddPackRecipes(recipes, emag.EmagDynamicPacks);
             }
 
-            if (proto.TryGetComponent<BlueprintReceiverComponent>(out var receiver, _factory))
+            if (proto.TryComp<BlueprintReceiverComponent>(out var receiver, _factory))
                 blueprintWhitelists.Add(receiver.Whitelist);
         }
 
@@ -88,7 +88,7 @@ public abstract partial class SharedWh40kFabricationSiloSystem
                 if (proto.Abstract)
                     continue;
 
-                if (proto.TryGetComponent<BlueprintComponent>(out var blueprint, _factory) &&
+                if (proto.TryComp<BlueprintComponent>(out var blueprint, _factory) &&
                     blueprintWhitelists.Any(whitelist => PassesWhitelist(proto, whitelist)))
                     recipes.UnionWith(blueprint.ProvidedRecipes);
 
@@ -128,7 +128,7 @@ public abstract partial class SharedWh40kFabricationSiloSystem
 
         if (whitelist.Tags != null)
         {
-            proto.TryGetComponent<TagComponent>(out var tags, _factory);
+            proto.TryComp<TagComponent>(out var tags, _factory);
             foreach (var tag in whitelist.Tags)
                 checks.Add(tags != null && _tag.HasTag(tags, tag));
         }

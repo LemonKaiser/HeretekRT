@@ -7,6 +7,8 @@ public static class KoronusLocalization
 {
     public static string GetString(string text)
     {
-        return !string.IsNullOrEmpty(text) && Loc.TryGetString(text, out var localized) ? localized : text;
+        return !string.IsNullOrEmpty(text) && IoCManager.Resolve<ILocalizationManager>().TryGetString(text, out var localized)
+            ? localized
+            : text;
     }
 }

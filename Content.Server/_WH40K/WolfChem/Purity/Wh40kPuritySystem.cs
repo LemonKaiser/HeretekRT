@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.WolfChem.Purity;
 /// <summary>
 /// Applies what a reagent's grade does to the body that metabolises it.
 /// </summary>
-public sealed class Wh40kPuritySystem : EntitySystem
+public sealed partial class Wh40kPuritySystem : EntitySystem
 {
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private IConfigurationManager _cfg = default!;

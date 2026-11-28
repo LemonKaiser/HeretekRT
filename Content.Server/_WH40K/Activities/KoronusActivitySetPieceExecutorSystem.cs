@@ -43,7 +43,7 @@ namespace Content.Server._WH40K.Activities;
 /// Layouts, objectives and guardians are audited before reaching a live sector map. Only the
 /// fixed survey-cutter profile may retain one receive-only docking port.
 /// </summary>
-public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
+public sealed partial class KoronusActivitySetPieceExecutorSystem : EntitySystem
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(0.5);
     private const int SpawnAttempts = 24;
@@ -292,7 +292,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             return;
         }
 
-        var objective = Spawn(template.ObjectivePrototype!.Value,
+        var objective = SpawnAttachedTo(template.ObjectivePrototype!.Value,
             new EntityCoordinates(grid, objectivePosition));
         if (!_contentAudit.TryValidateSetPieceEntity(objective, out _) ||
             !TryValidateOwnedEntity(objective, instance.SystemId, context.MapId, grid, context.Center,
@@ -345,7 +345,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
             if (!TryFindFreeFloorPosition(grid, gridComponent, preferEdge: true, out var position, positions))
                 return false;
             positions.Add(position);
-            var hostile = Spawn(prototype, new EntityCoordinates(grid, position));
+            var hostile = SpawnAttachedTo(prototype, new EntityCoordinates(grid, position));
             AssignOwned(hostile, instance.Id, KoronusActivityOwnedKind.Npc);
             if (!_contentAudit.TryPrepareHostile(hostile, out _))
                 return false;
@@ -450,7 +450,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         // This is intentionally a code-selected prototype rather than map-authored content.
         // It is the only exception to the static-map audit, and it is placed only after a floor
         // tile exists below it so normal anchoring and docking rules still apply.
-        var port = Spawn("KoronusAivoriusSurveyCutterDockingPort", new EntityCoordinates(grid, position));
+        var port = SpawnAttachedTo("KoronusAivoriusSurveyCutterDockingPort", new EntityCoordinates(grid, position));
         if (!_contentAudit.TryValidateDockableSetPieceEntity(port, out _))
         {
             QueueDel(port);
@@ -471,7 +471,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         position = default;
         var candidateIndex = default(Vector2i);
         var bestScore = float.MaxValue;
-        var tiles = _maps.GetAllTilesEnumerator(grid, gridComponent);
+        var tiles = _maps.GetAllTiles(grid, gridComponent);
         while (tiles.MoveNext(out var tileRef))
         {
             if (tileRef == null || tileRef.Value.Tile.IsEmpty || _turf.IsSpace(tileRef.Value))
@@ -533,7 +533,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         position = default;
         var bestScore = float.MaxValue;
         var found = false;
-        var tiles = _maps.GetAllTilesEnumerator(grid, gridComponent);
+        var tiles = _maps.GetAllTiles(grid, gridComponent);
         while (tiles.MoveNext(out var tileRef))
         {
             if (tileRef == null || tileRef.Value.Tile.IsEmpty || _turf.IsSpace(tileRef.Value) ||
@@ -663,7 +663,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform))
+                !TryComp(player, out TransformComponent? transform))
             {
                 continue;
             }
@@ -741,7 +741,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         in SetPieceSpawnContext context,
         bool requireSpawnClearance = false)
     {
-        if (!TryComp<TransformComponent>(grid, out var transform) ||
+        if (!TryComp(grid, out TransformComponent? transform) ||
             transform.MapID != context.MapId ||
             !TryComp<MapGridComponent>(grid, out var gridComponent) ||
             !TryComp<PhysicsComponent>(grid, out var physics) ||
@@ -769,7 +769,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         Vector2 center,
         float leashRadius)
     {
-        if (!TryComp<TransformComponent>(uid, out var transform) ||
+        if (!TryComp(uid, out TransformComponent? transform) ||
             transform.MapID != mapId ||
             transform.GridUid != grid)
         {
@@ -864,7 +864,7 @@ public sealed class KoronusActivitySetPieceExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform) ||
+                !TryComp(player, out TransformComponent? transform) ||
                 transform.MapID != mapId)
             {
                 continue;

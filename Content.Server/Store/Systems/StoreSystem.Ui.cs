@@ -179,7 +179,7 @@ public sealed partial class StoreSystem
         //spawn entity
         if (listing.ProductEntity != null)
         {
-            var product = Spawn(listing.ProductEntity, Transform(buyer).Coordinates);
+            var product = SpawnAttachedTo(listing.ProductEntity, Transform(buyer).Coordinates);
             _hands.PickupOrDrop(buyer, product);
 
             HandleRefundComp(uid, component, product);
@@ -355,7 +355,7 @@ public sealed partial class StoreSystem
                 _actionContainer.RemoveAction(purchase, actionComponent);
             }
 
-            EntityManager.DeleteEntity(purchase);
+            Del(purchase);
         }
 
         component.BoughtEntities.Clear();

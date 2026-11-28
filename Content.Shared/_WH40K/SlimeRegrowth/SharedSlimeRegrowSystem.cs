@@ -16,19 +16,19 @@ using Robust.Shared.Random;
 
 namespace Content.Shared._WH40K.SlimeRegrowth;
 
-public abstract class SharedSlimeRegrowSystem : EntitySystem
+public abstract partial class SharedSlimeRegrowSystem : EntitySystem
 {
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly HungerSystem _hunger = default!;
-    [Dependency] private readonly INetManager _net = default!;
-    [Dependency] private readonly SharedPopupSystem _popups = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly ThirstSystem _thirst = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private HungerSystem _hunger = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedPopupSystem _popups = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ThirstSystem _thirst = default!;
 
     public override void Initialize()
     {
@@ -126,7 +126,7 @@ public abstract class SharedSlimeRegrowSystem : EntitySystem
 
                 if (childSlot.Part is not { } partId ||
                     !_prototypes.TryIndex<EntityPrototype>(partId, out var partPrototype) ||
-                    !partPrototype.TryGetComponent<BodyPartComponent>(out var part, _componentFactory) ||
+                    !partPrototype.TryComp<BodyPartComponent>(out var part, _componentFactory) ||
                     part.IsVital)
                 {
                     continue;
@@ -144,7 +144,7 @@ public abstract class SharedSlimeRegrowSystem : EntitySystem
         if (missing.Slot.Part is not { } partId)
             return false;
 
-        var part = Spawn(partId, new EntityCoordinates(missing.Parent, Vector2.Zero));
+        var part = SpawnAttachedTo(partId, new EntityCoordinates(missing.Parent, Vector2.Zero));
         var partComponent = Comp<BodyPartComponent>(part);
         if (!_body.TryCreatePartSlotAndAttach(missing.Parent, missing.SlotId, part, partComponent.PartType, child: partComponent))
         {

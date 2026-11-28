@@ -47,13 +47,6 @@ namespace Content.Client.ContextMenu.UI
             UpdateEntity();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            Entity = null;
-            Count = 0;
-        }
-
         private string? SearchPlayerName(EntityUid entity)
         {
             var netEntity = _entityManager.GetNetEntity(entity);

@@ -11,12 +11,12 @@ using Robust.Shared.Audio.Systems;
 
 namespace Content.Server._Forge.Features;
 
-public sealed class RemnantConsoleSystem : SharedRemnantConsoleSystem
+public sealed partial class RemnantConsoleSystem : SharedRemnantConsoleSystem
 {
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedDeviceLinkSystem _deviceLink = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private UserInterfaceSystem _ui = default!;
 
     public override void Initialize()
     {
@@ -39,7 +39,7 @@ public sealed class RemnantConsoleSystem : SharedRemnantConsoleSystem
 
         var button = component.Buttons[args.Index];
         _deviceLink.InvokePort(uid, button.Port);
-        _audio.PlayPvs("/Audio/Machines/machine_switch.ogg", uid, AudioParams.Default.WithVolume(-2f));
+        _audio.PlayPvs(new ResolvedPathSpecifier("/Audio/Machines/machine_switch.ogg"), uid, AudioParams.Default.WithVolume(-2f));
         UpdateUi(uid, component);
     }
 

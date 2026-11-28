@@ -18,7 +18,7 @@ namespace Content.Server._WH40K.CharacterCreation;
 /// <summary>
 /// Applies the account-owned resolved stats to spawned and already living player mobs.
 /// </summary>
-public sealed class Wh40kCharacterStatsSpawnSystem : EntitySystem
+public sealed partial class Wh40kCharacterStatsSpawnSystem : EntitySystem
 {
     [Dependency] private MobThresholdSystem _mobThresholds = default!;
     [Dependency] private MovementSpeedModifierSystem _movementSpeed = default!;

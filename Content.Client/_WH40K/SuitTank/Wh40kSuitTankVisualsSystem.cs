@@ -12,6 +12,7 @@ namespace Content.Client._WH40K.SuitTank;
 public sealed partial class Wh40kSuitTankVisualsSystem : EntitySystem
 {
     [Dependency] private ISerializationManager _serialization = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
     [Dependency] private Wh40kSuitTankStorageSystem _suitTank = default!;
 
     private const string TankSlot = "suitstorage";
@@ -48,8 +49,8 @@ public sealed partial class Wh40kSuitTankVisualsSystem : EntitySystem
             if (layer.RsiPath == null && layer.TexturePath == null && tankRsi != null)
                 layer.RsiPath = tankRsi.Path.ToString();
 
-            var index = sprite.LayerMapReserveBlank(key);
-            sprite.LayerSetData(index, layer);
+            var index = _sprite.LayerMapReserve((args.Equipee, sprite), key);
+            _sprite.LayerSetData((args.Equipee, sprite), index, layer);
         }
     }
 }

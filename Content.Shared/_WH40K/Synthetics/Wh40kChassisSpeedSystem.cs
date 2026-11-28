@@ -11,9 +11,9 @@ namespace Content.Shared._WH40K.Synthetics;
 /// overclock (+25%), open bay (-20%), low power (flat 25% folding out silicon's own threshold slowdown),
 /// cold seizure slowdown, and hand-reattached loose couplings (legs ×0.7 speed, arms ×1.5 DoAfter).
 /// </summary>
-public sealed class Wh40kChassisSpeedSystem : EntitySystem
+public sealed partial class Wh40kChassisSpeedSystem : EntitySystem
 {
-    [Dependency] private readonly SharedBodySystem _body = default!;
+    [Dependency] private SharedBodySystem _body = default!;
 
     public override void Initialize()
     {

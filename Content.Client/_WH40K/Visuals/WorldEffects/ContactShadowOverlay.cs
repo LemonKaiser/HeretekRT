@@ -107,13 +107,13 @@ public sealed partial class ContactShadowOverlay : Overlay
             var bodyBounds = new ContactShadowProjectedBounds();
             foreach (var key in BodyLayers)
             {
-                if (sprite.LayerMapTryGet(key, out var index) && sprite[index] is SpriteComponent.Layer layer)
+                if (_sprites.LayerMapTryGet((uid, sprite), key, out var index, false) && sprite[index] is SpriteComponent.Layer layer)
                     IncludeLayer(sprite, layer, position, worldRotation, screenAngle, eye.Rotation,
                         bodyAxis, crossAxis, ref bodyBounds, allowHidden: true);
             }
 
             // Simple mobs have one base layer instead of humanoid body-part layers.
-            if (!bodyBounds.Valid && sprite.LayerMapTryGet(DamageStateVisualLayers.Base, out var baseIndex) &&
+            if (!bodyBounds.Valid && _sprites.LayerMapTryGet((uid, sprite), DamageStateVisualLayers.Base, out var baseIndex, false) &&
                 sprite[baseIndex] is SpriteComponent.Layer baseLayer)
             {
                 IncludeLayer(sprite, baseLayer, position, worldRotation, screenAngle, eye.Rotation,

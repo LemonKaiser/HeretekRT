@@ -8,10 +8,10 @@ namespace Content.Client.Particles.Visuals;
 /// Runs particle samples placed through the ordinary entity spawn menu.
 /// The marker is deliberately cosmetic-only and is not a generic replicated emitter component.
 /// </summary>
-public sealed class ParticleEffectSpawnerSystem : EntitySystem
+public sealed partial class ParticleEffectSpawnerSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, ActiveEmitter> _emitters = new();
     private readonly HashSet<EntityUid> _started = new();

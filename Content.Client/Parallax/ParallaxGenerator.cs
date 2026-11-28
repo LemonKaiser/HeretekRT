@@ -12,6 +12,7 @@ using Robust.Shared.Random;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = Robust.Shared.Maths.Color;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Client.Parallax
 {
@@ -411,7 +412,7 @@ namespace Content.Client.Parallax
             private void GenPoints(Image<Rgba32> buffer)
             {
                 var o = PointSize - 1;
-                var random = new Random(Seed);
+                var random = SharedRandomExtensions.CreateSeeded(Seed);
                 var span = buffer.GetPixelSpan();
 
                 for (var i = 0; i < PointCount; i++)
@@ -438,7 +439,7 @@ namespace Content.Client.Parallax
             private void GenPointsMasked(Image<Rgba32> buffer)
             {
                 var o = PointSize - 1;
-                var random = new Random(Seed);
+                var random = SharedRandomExtensions.CreateSeeded(Seed);
                 var noise = new NoiseGenerator(MaskNoiseType);
                 noise.SetSeed(MaskSeed);
                 noise.SetFrequency(MaskFrequency);

@@ -182,7 +182,7 @@ namespace Content.Server.NPC.Systems
             {
                 if (session.AttachedEntity is not { Valid: true } player || HasComp<GhostComponent>(player) ||
                     TryComp<MobStateComponent>(player, out var state) && state.CurrentState != MobState.Alive ||
-                    !TryComp<TransformComponent>(player, out var playerTransform) ||
+                    !TryComp(player, out TransformComponent? playerTransform) ||
                     playerTransform.MapID == MapId.Nullspace)
                     continue;
                 _nearbyPlayers.Add(_transform.GetMapCoordinates(player, playerTransform));

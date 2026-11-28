@@ -22,7 +22,7 @@ namespace Content.Client._WH40K.Augments.Combat;
 /// Tactical smartlink sight overlay: displays active weapon round count next to the cursor
 /// and brackets + distance in meters around the nearest living uncloaked mob within 12 tiles in line of sight.
 /// </summary>
-public sealed class Wh40kSmartlinkOverlay : Overlay
+public sealed partial class Wh40kSmartlinkOverlay : Overlay
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IEyeManager _eye = default!;

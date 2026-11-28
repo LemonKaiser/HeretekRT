@@ -8,7 +8,7 @@ namespace Content.Shared._WH40K.Augments.Combat;
 /// <summary>
 /// Shared arc-coverage check so both server and predicting clients stop blocked projectiles cleanly.
 /// </summary>
-public abstract class SharedWh40kHandShieldSystem : EntitySystem
+public abstract partial class SharedWh40kHandShieldSystem : EntitySystem
 {
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedTransformSystem _transform = default!;

@@ -45,7 +45,7 @@ public sealed partial class InternalEncryptionKeySpawner : EntitySystem
                 Log.Error($"Entity {ToPrettyString(key)} has no prototype ID in MetaDataComponent, cannot clone for encryption key copy.");
                 continue;
             }
-            var clonedKey = Spawn(prototypeId, Comp<TransformComponent>(target).Coordinates);
+            var clonedKey = SpawnAttachedTo(prototypeId, Comp<TransformComponent>(target).Coordinates);
 
             if (!_container.Insert(clonedKey, targetKeyHolder.KeyContainer))
             {
@@ -80,7 +80,7 @@ public sealed partial class InternalEncryptionKeySpawner : EntitySystem
             return;
         }
 
-        var earEntity = Spawn(earPrototypeId, Comp<TransformComponent>(target).Coordinates);
+        var earEntity = SpawnAttachedTo(earPrototypeId, Comp<TransformComponent>(target).Coordinates);
 
         if (!HasComp<EncryptionKeyHolderComponent>(earEntity)
             || !TryComp<ContainerFillComponent>(earEntity, out var fillComp)

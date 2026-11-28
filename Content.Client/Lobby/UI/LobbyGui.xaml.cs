@@ -3268,7 +3268,7 @@ public sealed partial class LobbyGui : UIScreen
         }
     }
 
-    private class OnboardingNavigationCardPresentation
+    private abstract class OnboardingNavigationCardPresentation
     {
         public Button Button { get; }
         public Label IndexLabel { get; }

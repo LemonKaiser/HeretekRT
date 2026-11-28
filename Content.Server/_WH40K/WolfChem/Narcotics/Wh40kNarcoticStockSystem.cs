@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// A ship carrying a narcotics stockpile above <c>wh40k.narcotics.stock_signature</c> broadcasts a radar signature
 /// from its largest lot until unloaded.
 /// </summary>
-public sealed class Wh40kNarcoticStockSystem : EntitySystem
+public sealed partial class Wh40kNarcoticStockSystem : EntitySystem
 {
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IGameTiming _timing = default!;

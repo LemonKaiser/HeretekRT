@@ -282,7 +282,7 @@ namespace Content.Server.Chemistry.EntitySystems
                 {
                     if (component.StorageSlots[i].ContainerSlot == null)
                         continue;
-                    var item = Spawn(packPrototype.Inventory[i], Transform(uid).Coordinates);
+                    var item = SpawnAttachedTo(packPrototype.Inventory[i], Transform(uid).Coordinates);
                     if (!_containers.Insert(item, component.StorageSlots[i].ContainerSlot!)) // ContainerSystem.Insert is silent.
                         QueueDel(item);
                 }

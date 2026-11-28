@@ -71,7 +71,7 @@ public sealed partial class KoronusPlanetarySystem
             return;
         }
 
-        entity.Comp.Canopy ??= Spawn(ParachuteCanopy, new EntityCoordinates(entity, Vector2.Zero));
+        entity.Comp.Canopy ??= SpawnAttachedTo(ParachuteCanopy, new EntityCoordinates(entity, Vector2.Zero));
         args.Target.Comp.Velocity = MathF.Max(args.Target.Comp.Velocity, -ParachuteFallSpeed);
     }
 

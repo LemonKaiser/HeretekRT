@@ -252,6 +252,6 @@ public sealed partial class CEZLevelsSystem
 
     private void SpawnDustPuff(EntityUid map, Vector2 pos)
     {
-        Spawn(LiftoffDustProto, new EntityCoordinates(map, pos + _random.NextVector2(0.5f)));
+        SpawnAttachedTo(LiftoffDustProto, new EntityCoordinates(map, pos + _random.NextVector2(0.5f)));
     }
 }

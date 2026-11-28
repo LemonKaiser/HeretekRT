@@ -320,7 +320,7 @@ public partial class AtmosphereSystem
 
     public void SetPuddleFlammabilityAtTile(EntityUid puddle, int flammability)
     {
-        if (!TryComp<TransformComponent>(puddle, out var xform) ||
+        if (!TryComp(puddle, out TransformComponent? xform) ||
             !TryComp<GridAtmosphereComponent>(xform.GridUid, out var grid))
             return;
         var position = _transformSystem.GetGridTilePositionOrDefault((puddle, xform));

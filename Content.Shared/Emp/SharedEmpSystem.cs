@@ -73,7 +73,7 @@ public abstract partial class SharedEmpSystem : EntitySystem
         }
         // TODO: replace with PredictedSpawn once it works with animated sprites
         if (_net.IsServer)
-            Spawn(EmpPulseEffectPrototype, coordinates);
+            SpawnAttachedTo(EmpPulseEffectPrototype, coordinates);
 
         _audio.PlayPredicted(EmpSound, coordinates, user);
     }
@@ -119,7 +119,7 @@ public abstract partial class SharedEmpSystem : EntitySystem
 
         // TODO: replace with PredictedSpawn once it works with animated sprites
         if (ev.Affected && _net.IsServer)
-            Spawn(EmpDisabledEffectPrototype, Transform(uid).Coordinates);
+            SpawnAttachedTo(EmpDisabledEffectPrototype, Transform(uid).Coordinates);
 
         if (!ev.Disabled)
             return ev.Affected;
@@ -132,7 +132,7 @@ public abstract partial class SharedEmpSystem : EntitySystem
     }
 
     private bool IsEmpProtected(EntityUid uid)
-        => TryComp<TransformComponent>(uid, out var transform) && transform.GridUid is { } grid &&
+        => TryComp(uid, out TransformComponent? transform) && transform.GridUid is { } grid &&
            TryComp<ProtectedGridComponent>(grid, out var protection) && protection.PreventEmpEvents;
 
     public override void Update(float frameTime)

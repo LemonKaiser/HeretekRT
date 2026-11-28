@@ -29,7 +29,7 @@ public sealed partial class MuteListControl : Control
 
         for (var i = Mutes.ChildCount - 1; i >= 1; i--)
         {
-            Mutes.GetChild(i).Dispose();
+            Mutes.GetChild(i).Orphan();
         }
 
         foreach (var mute in mutes)

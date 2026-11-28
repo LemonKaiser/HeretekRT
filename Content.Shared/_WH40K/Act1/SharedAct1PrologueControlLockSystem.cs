@@ -16,7 +16,7 @@ namespace Content.Shared._WH40K.Act1;
 /// <summary>
 /// Unlike dialogue locking, this deliberately leaves movement and facing available during exploration.
 /// </summary>
-public abstract class SharedAct1PrologueControlLockSystem : EntitySystem
+public abstract partial class SharedAct1PrologueControlLockSystem : EntitySystem
 {
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private PullingSystem _pulling = default!;

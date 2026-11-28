@@ -263,7 +263,7 @@ public sealed partial class SingleMarkingPicker : BoxContainer
 
     private void PopulateColors()
     {
-        (UseTiles ? PaletteContainer : ColorSelectorContainer).DisposeAllChildren();
+        (UseTiles ? PaletteContainer : ColorSelectorContainer).RemoveAllChildren();
         PaletteContainer.Visible = false;
         if (_markings == null
             || _markings.Count == 0

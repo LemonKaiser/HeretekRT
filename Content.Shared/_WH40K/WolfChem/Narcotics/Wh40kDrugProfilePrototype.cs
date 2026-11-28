@@ -48,7 +48,7 @@ public enum Wh40kHallucinationKind : byte
 /// One drug's effect profile. Reagent doses and neuroware programs both raise its level, and
 /// <c>Wh40kIntoxicationSystem</c> applies the tier that level reaches.
 /// </summary>
-[Prototype("wh40kDrugProfile")]
+[Prototype]
 public sealed partial class Wh40kDrugProfilePrototype : IPrototype
 {
     [IdDataField]

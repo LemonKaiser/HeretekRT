@@ -9,17 +9,18 @@ namespace Content.Client.DisplacementMap;
 public sealed partial class DisplacementMapSystem : EntitySystem
 {
     [Dependency] private ISerializationManager _serialization = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
-    public bool TryAddDisplacement(DisplacementData data, SpriteComponent sprite, int index, string key, HashSet<string> revealedLayers)
+    public bool TryAddDisplacement(DisplacementData data, Entity<SpriteComponent> sprite, int index, string key, HashSet<string> revealedLayers)
     {
         if (data.ShaderOverride != null)
         {
             var shader = data.ShaderOverride;
             if (shader == "DisplacedStencilDraw" &&
-                !sprite.LayerMapTryGet(HumanoidVisualLayers.StencilMask, out _))
+                !_sprite.LayerMapTryGet(sprite.AsNullable(), HumanoidVisualLayers.StencilMask, out _, false))
                 shader = "DisplacedDraw";
 
-            sprite.LayerSetShader(index, shader);
+            sprite.Comp.LayerSetShader(index, shader);
         }
 
         var displacementKey = $"{key}-displacement";
@@ -49,7 +50,7 @@ public sealed partial class DisplacementMapSystem : EntitySystem
         // We choose a displacement map from the possible ones, matching the size with the original layer size.
         // If there is no such a map, we use a standard 32 by 32 one
         var displacementDataLayer = data.SizeMaps[EyeManager.PixelsPerMeter];
-        var actualRSI = sprite.LayerGetActualRSI(index);
+        var actualRSI = _sprite.LayerGetEffectiveRsi(sprite.AsNullable(), index);
         if (actualRSI is not null)
         {
             if (actualRSI.Size.X != actualRSI.Size.Y)
@@ -63,8 +64,8 @@ public sealed partial class DisplacementMapSystem : EntitySystem
         var displacementLayer = _serialization.CreateCopy(displacementDataLayer, notNullableOverride: true);
         displacementLayer.CopyToShaderParameters!.LayerKey = key;
 
-        sprite.AddLayer(displacementLayer, index);
-        sprite.LayerMapSet(displacementKey, index);
+        _sprite.AddLayer(sprite.AsNullable(), displacementLayer, index);
+        _sprite.LayerMapSet(sprite.AsNullable(), displacementKey, index);
 
         revealedLayers.Add(displacementKey);
 

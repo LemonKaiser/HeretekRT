@@ -14,7 +14,7 @@ using Content.Client._WH40K.UserInterface.WindowPopout;
 
 namespace Content.Client._WH40K.UserInterface;
 
-public sealed class Wh40kInterfaceUIController : UIController
+public sealed partial class Wh40kInterfaceUIController : UIController
 {
     private const string Applied = "Wh40kHeritageWindow";
     [Dependency] private IResourceCache _resources = default!;

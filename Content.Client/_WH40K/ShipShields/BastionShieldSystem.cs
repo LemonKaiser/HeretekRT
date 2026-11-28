@@ -5,7 +5,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.ShipShields;
 
-public sealed class BastionShieldSystem : EntitySystem
+public sealed partial class BastionShieldSystem : EntitySystem
 {
     public const int MaxImpacts = 4;
     private static readonly TimeSpan ImpactLifetime = TimeSpan.FromSeconds(2.8);

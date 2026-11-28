@@ -20,8 +20,8 @@ public sealed partial class AugmentToolPanelMenu : RadialMenu
     private static readonly Color RetractTileBackground = Color.FromHex("#1A140ED8");
     private static readonly ResPath RetractIconPath = new("/Textures/Interface/VerbIcons/eject.svg.192dpi.png");
 
-    [Dependency] private readonly EntityManager _entities = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
+    [Dependency] private EntityManager _entities = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
 
     public event Action<EntityUid?>? SendSwitchMessage;
 

@@ -63,7 +63,7 @@ public sealed partial class WolfThunderboltSystem : EntitySystem
             if (tile.Tile.IsEmpty || !_wolfWeather.IsExposed((gridUid, grid, roof), tile))
                 continue;
 
-            return Spawn(FarBolt, _map.GridTileToLocal(gridUid, grid, tile.GridIndices));
+            return SpawnAttachedTo(FarBolt, _map.GridTileToLocal(gridUid, grid, tile.GridIndices));
         }
 
         return null;

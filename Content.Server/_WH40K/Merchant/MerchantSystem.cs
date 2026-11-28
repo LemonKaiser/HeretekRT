@@ -287,7 +287,7 @@ public sealed partial class MerchantSystem : EntitySystem
             try
             {
                 // Prepare before charging. Delivery to a hand is optional; the buyer owns the product on the floor too.
-                product = Spawn(stock.Offer.Product, Transform(buyer).Coordinates);
+                product = SpawnAttachedTo(stock.Offer.Product, Transform(buyer).Coordinates);
                 PurchasePrepared?.Invoke();
                 if (!CanTrade(buyer) || !ValidViewer(uid, component, buyer) || TerminatingOrDeleted(product.Value))
                     outcome = "wh40k-service-failed";

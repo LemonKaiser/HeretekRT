@@ -11,7 +11,8 @@ public static class Wh40kNavMapBeaconText
 
     public static string GetText(string? text, string? textEnglish, LocId? defaultText, string? culture = null)
     {
-        culture ??= IoCManager.Resolve<ILocalizationManager>().DefaultCulture?.Name;
+        var loc = IoCManager.Resolve<ILocalizationManager>();
+        culture ??= loc.DefaultCulture?.Name;
         if (culture?.StartsWith("en", StringComparison.OrdinalIgnoreCase) == true &&
             !string.IsNullOrWhiteSpace(textEnglish))
             return textEnglish;
@@ -22,7 +23,7 @@ public static class Wh40kNavMapBeaconText
         if (!string.IsNullOrWhiteSpace(textEnglish))
             return textEnglish;
 
-        if (defaultText is { } locId && Loc.TryGetString(locId, out var localized))
+        if (defaultText is { } locId && loc.TryGetString(locId, out var localized))
             return localized;
 
         return string.Empty;

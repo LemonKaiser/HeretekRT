@@ -14,7 +14,7 @@ using Robust.Shared.Timing;
 namespace Content.Server._WH40K.Chat;
 
 /// <summary>Queues optional translations of already-authorized visible chat deliveries.</summary>
-public sealed class Wh40kChatTranslationSystem : EntitySystem
+public sealed partial class Wh40kChatTranslationSystem : EntitySystem
 {
     [Dependency] private IConfigurationManager _config = default!;
     [Dependency] private IGameTiming _timing = default!;

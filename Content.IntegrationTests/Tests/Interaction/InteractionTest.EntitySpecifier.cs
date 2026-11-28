@@ -77,7 +77,7 @@ public abstract partial class InteractionTest
             StackComponent? stack = null;
             await server.WaitPost(() =>
             {
-                entProto.TryGetComponent(factory.GetComponentName<StackComponent>(), out stack);
+                entProto.TryComp(out stack, factory);
             });
 
             if (stack != null)
@@ -92,7 +92,7 @@ public abstract partial class InteractionTest
         {
             await Server.WaitPost(() =>
             {
-                uid = SEntMan.SpawnEntity(stackProto.Spawn, coords);
+                uid = SEntMan.SpawnAttachedTo(stackProto.Spawn, coords);
                 Stack.SetCount(uid, spec.Quantity);
             });
             return uid;
@@ -107,7 +107,7 @@ public abstract partial class InteractionTest
         StackComponent? stack = null;
         await Server.WaitPost(() =>
         {
-            entProto.TryGetComponent(Factory.GetComponentName<StackComponent>(), out stack);
+            entProto.TryComp(out stack, Factory);
         });
 
         if (stack != null)

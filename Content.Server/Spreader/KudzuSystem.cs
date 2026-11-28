@@ -47,7 +47,7 @@ public sealed partial class KudzuSystem : EntitySystem
                 component.GrowthLevel = 3;
 
             component.GrowthLevel = Math.Max(1, component.GrowthLevel - growthDamage);
-            if (EntityManager.TryGetComponent<AppearanceComponent>(uid, out var appearance))
+            if (TryComp<AppearanceComponent>(uid, out var appearance))
             {
                 _appearance.SetData(uid, KudzuVisuals.GrowthLevel, component.GrowthLevel, appearance);
             }
@@ -80,7 +80,7 @@ public sealed partial class KudzuSystem : EntitySystem
 
         foreach (var neighbor in args.NeighborFreeTiles)
         {
-            var neighborUid = Spawn(prototype, _map.GridTileToLocal(neighbor.Tile.GridUid, neighbor.Grid, neighbor.Tile.GridIndices));
+            var neighborUid = SpawnAttachedTo(prototype, _map.GridTileToLocal(neighbor.Tile.GridUid, neighbor.Grid, neighbor.Tile.GridIndices));
             DebugTools.Assert(HasComp<EdgeSpreaderComponent>(neighborUid));
             DebugTools.Assert(HasComp<ActiveEdgeSpreaderComponent>(neighborUid));
             DebugTools.Assert(Comp<EdgeSpreaderComponent>(neighborUid).Id == KudzuGroup);
@@ -93,7 +93,7 @@ public sealed partial class KudzuSystem : EntitySystem
     private bool IsWallAtTileCenter((MapGridComponent Grid, TileRef Tile) neighbor)
     {
         var (grid, tile) = neighbor;
-        var anchored = _map.GetAnchoredEntitiesEnumerator(tile.GridUid, grid, tile.GridIndices);
+        var anchored = _map.GetAnchoredEntities(tile.GridUid, grid, tile.GridIndices);
         var center = _transform.ToWorldPosition(_map.GridTileToLocal(tile.GridUid, grid, tile.GridIndices));
 
         while (anchored.MoveNext(out var wall))
@@ -117,7 +117,7 @@ public sealed partial class KudzuSystem : EntitySystem
 
     private void SetupKudzu(EntityUid uid, KudzuComponent component, ComponentStartup args)
     {
-        if (!EntityManager.TryGetComponent<AppearanceComponent>(uid, out var appearance))
+        if (!TryComp<AppearanceComponent>(uid, out var appearance))
         {
             return;
         }

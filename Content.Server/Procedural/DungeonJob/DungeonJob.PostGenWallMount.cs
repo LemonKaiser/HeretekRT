@@ -12,7 +12,7 @@ public sealed partial class DungeonJob
     /// <summary>
     /// <see cref="WallMountDunGen"/>
     /// </summary>
-    private async Task PostGen(WallMountDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, Random random)
+    private async Task PostGen(WallMountDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, IRobustRandom random)
     {
         if (!data.Tiles.TryGetValue(DungeonDataKey.FallbackTile, out var tileProto))
         {
@@ -71,7 +71,7 @@ public sealed partial class DungeonJob
                 continue;
             }
 
-            if (!random.Prob(gen.Prob) || !checkedTiles.Add(neighbor))
+            if (!(random.NextDouble() < gen.Prob) || !checkedTiles.Add(neighbor))
                 continue;
 
             if (!gen.MountInside)
@@ -81,7 +81,7 @@ public sealed partial class DungeonJob
 
             if (!validProto) // Frontier: error handling
                 continue; // Frontier: error handling
-            var protoNames = EntitySpawnCollection.GetSpawns(_prototype.Index(spawnProto).Entries, random);
+            var protoNames = EntitySpawnCollection.GetSpawnsIncludingEmptyEntries(_prototype.Index(spawnProto).Entries, random);
 
             if (gen.MountInside)
             {
@@ -90,7 +90,7 @@ public sealed partial class DungeonJob
                     if (proto == null)
                         continue;
 
-                    var entity = _entManager.SpawnEntity(proto, gridPos);
+                    var entity = _entManager.SpawnAttachedTo(proto, gridPos);
                     _transform.SetLocalRotation(entity, rotation);
                 }
 
@@ -98,7 +98,7 @@ public sealed partial class DungeonJob
             }
             else
             {
-                _entManager.SpawnEntities(gridPos, protoNames);
+                _entManager.SpawnEntitiesAttachedTo(gridPos, protoNames);
             }
             count += protoNames.Count;
 

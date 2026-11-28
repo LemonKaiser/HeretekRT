@@ -180,7 +180,7 @@ public sealed partial class FatExtractorSystem : EntitySystem
             if (fat.NutrientAccumulator >= fat.NutrientPerMeat)
             {
                 fat.NutrientAccumulator -= fat.NutrientPerMeat;
-                Spawn(fat.MeatPrototype, Transform(uid).Coordinates);
+                SpawnAttachedTo(fat.MeatPrototype, Transform(uid).Coordinates);
             }
         }
     }

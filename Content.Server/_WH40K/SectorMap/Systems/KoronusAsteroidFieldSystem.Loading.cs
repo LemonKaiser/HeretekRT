@@ -71,7 +71,7 @@ public sealed partial class KoronusAsteroidFieldSystem
         foreach (var session in _players.Sessions)
         {
             if (session.AttachedEntity is not { } uid || HasComp<GhostComponent>(uid) ||
-                !TryComp<TransformComponent>(uid, out var xform) ||
+                !TryComp(uid, out TransformComponent? xform) ||
                 !HasComp<KoronusAsteroidFieldComponent>(xform.MapUid))
                 continue;
             if (!_observers.TryGetValue(xform.MapID, out var positions))
@@ -188,7 +188,7 @@ public sealed partial class KoronusAsteroidFieldSystem
                 break;
             var site = field.Sites[index];
 
-            var uid = Spawn(site.Prototype, new EntityCoordinates(mapUid, site.Position));
+            var uid = SpawnAttachedTo(site.Prototype, new EntityCoordinates(mapUid, site.Position));
             if (!TryConfigureAsteroid(uid))
             {
                 QueueDel(uid);
@@ -213,7 +213,7 @@ public sealed partial class KoronusAsteroidFieldSystem
                     asteroid.OriginalChildren.Add(child);
             }
             asteroid.OriginalTiles = new Dictionary<Vector2i, KoronusAsteroidTile>();
-            var tiles = _maps.GetAllTilesEnumerator(uid, Comp<MapGridComponent>(uid));
+            var tiles = _maps.GetAllTiles(uid, Comp<MapGridComponent>(uid));
             while (tiles.MoveNext(out var tile))
             {
                 var original = tile.Value.Tile;
@@ -307,7 +307,7 @@ public sealed partial class KoronusAsteroidFieldSystem
     private bool HasOriginalTiles(EntityUid uid, MapGridComponent grid, Dictionary<Vector2i, KoronusAsteroidTile> original)
     {
         var count = 0;
-        var tiles = _maps.GetAllTilesEnumerator(uid, grid);
+        var tiles = _maps.GetAllTiles(uid, grid);
         while (tiles.MoveNext(out var tile))
         {
             var current = tile.Value.Tile;

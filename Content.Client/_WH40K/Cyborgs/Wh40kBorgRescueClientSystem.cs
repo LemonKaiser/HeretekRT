@@ -10,7 +10,7 @@ namespace Content.Client._WH40K.Cyborgs;
 /// Dynamically adjusts draw depth and vertical offset of patients buckled onto a cyborg chassis
 /// according to the cyborg's facing direction, and restores visuals cleanly on unbuckle.
 /// </summary>
-public sealed class Wh40kBorgRescueClientSystem : EntitySystem
+public sealed partial class Wh40kBorgRescueClientSystem : EntitySystem
 {
     private const float BackViewPatientLift = 0.4f;
     private const float SideViewPatientLift = 0.2f;

@@ -7,7 +7,7 @@ using Content.Shared.Weapons.Ranged.Systems;
 
 namespace Content.Shared._WH40K.Augments.Combat;
 
-public sealed class Wh40kTwinLaserSystem : EntitySystem
+public sealed partial class Wh40kTwinLaserSystem : EntitySystem
 {
     [Dependency] private SharedGunSystem _gun = default!;
     [Dependency] private SharedHandsSystem _hands = default!;

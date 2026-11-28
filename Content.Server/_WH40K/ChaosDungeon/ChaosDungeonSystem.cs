@@ -399,7 +399,7 @@ public sealed partial class ChaosDungeonSystem : EntitySystem
         destination = default;
         if (!TryComp<MapGridComponent>(ship, out var grid))
             return false;
-        var tiles = _maps.GetAllTilesEnumerator(ship, grid);
+        var tiles = _maps.GetAllTiles(ship, grid);
         while (tiles.MoveNext(out var tile))
         {
             if (tile is not { } candidate || candidate.Tile.IsEmpty || _turf.IsSpace(candidate) ||

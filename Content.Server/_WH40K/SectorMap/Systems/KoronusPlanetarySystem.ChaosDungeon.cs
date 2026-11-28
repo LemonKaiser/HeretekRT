@@ -10,12 +10,14 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
 public sealed partial class KoronusPlanetarySystem
 {
+    private static readonly ProtoId<KoronusPlanetSurfacePrototype> AivoriusBurningSurfaceId = "AivoriusBurningSurface";
     private bool TryResolveDungeonLanding(
         EntityUid ship,
         ref LandingResolution landing,
@@ -47,7 +49,7 @@ public sealed partial class KoronusPlanetarySystem
     public EntityUid? CreateDungeonSurface()
     {
         if (!TryGetSectorRule(out var rule) ||
-            !_prototypes.TryIndex<KoronusPlanetSurfacePrototype>("AivoriusBurningSurface", out var surface))
+            !_prototypes.TryIndex(AivoriusBurningSurfaceId, out var surface))
             return null;
 
         var map = _planetMaps.LoadPlanet("AivoriusBurningWorldSurface", surface.MapPath);

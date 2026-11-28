@@ -232,7 +232,7 @@ namespace Content.Client.Verbs
                 // is this a client exclusive (gui) verb?
                 ExecuteVerb(verb, user, GetEntity(target));
             else if (_cultureHandshake.IsCultureConfirmed)
-                EntityManager.RaisePredictiveEvent(new ExecuteVerbEvent(target, verb,
+                RaisePredictiveEvent(new ExecuteVerbEvent(target, verb,
                     ContentLocalizationManager.ValidateCultureName(_localization.DefaultCulture?.Name)));
         }
 

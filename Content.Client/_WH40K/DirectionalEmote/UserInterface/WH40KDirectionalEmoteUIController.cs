@@ -6,10 +6,10 @@ using Robust.Client.UserInterface.Controllers;
 namespace Content.Client._WH40K.DirectionalEmote.UserInterface;
 
 [UsedImplicitly]
-public sealed class WH40KDirectionalEmoteUIController : UIController
+public sealed partial class WH40KDirectionalEmoteUIController : UIController
 {
     [UISystemDependency] private readonly WH40KDirectionalEmoteSystem _directionalEmoteSystem = default!;
-    [Dependency] private readonly EntityManager _entityManager = default!;
+    [Dependency] private EntityManager _entityManager = default!;
 
     private WH40KDirectionalEmoteWindow _emoteWindow = default!;
 

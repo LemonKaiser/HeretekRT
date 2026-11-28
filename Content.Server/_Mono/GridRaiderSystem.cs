@@ -114,7 +114,7 @@ public sealed partial class GridRaiderSystem : EntitySystem
                 continue;
             }
 
-            if (TryComp<TransformComponent>(entity, out var transform) && transform.GridUid == grid)
+            if (TryComp(entity, out TransformComponent? transform) && transform.GridUid == grid)
                 continue;
 
             _staleProtectedEntities.Add(entity);
@@ -140,7 +140,7 @@ public sealed partial class GridRaiderSystem : EntitySystem
     {
         if (entity == gridUid ||
             _container.IsEntityInContainer(entity) ||
-            !TryComp<TransformComponent>(entity, out var transform) ||
+            !TryComp(entity, out TransformComponent? transform) ||
             transform.GridUid != gridUid)
             return;
 

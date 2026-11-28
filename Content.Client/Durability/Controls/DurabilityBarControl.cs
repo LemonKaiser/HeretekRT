@@ -10,7 +10,7 @@ namespace Content.Client.Durability.Controls;
 /// <summary>
 /// Draws the durability of an entity over an item UI slot.
 /// </summary>
-public sealed class DurabilityBarControl : Control
+public sealed partial class DurabilityBarControl : Control
 {
     private const float HorizontalMargin = 6f;
     private const float BottomMargin = 4f;
@@ -24,8 +24,8 @@ public sealed class DurabilityBarControl : Control
     private static readonly Color MiddleFillColor = Color.FromHex("#D9A441");
     private static readonly Color HighFillColor = Color.FromHex("#55B96B");
 
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
 
     private EntityUid? _entity;
     private float _progress;

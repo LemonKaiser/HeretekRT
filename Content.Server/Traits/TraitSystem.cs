@@ -83,7 +83,7 @@ public sealed partial class TraitSystem : EntitySystem
                 continue;
 
             var coords = Transform(args.Mob).Coordinates;
-            var inhandEntity = EntityManager.SpawnEntity(traitPrototype.TraitGear, coords);
+            var inhandEntity = SpawnAttachedTo(traitPrototype.TraitGear, coords);
             _sharedHandsSystem.TryPickup(args.Mob,
                 inhandEntity,
                 checkActionBlocker: false,

@@ -58,7 +58,7 @@ namespace Content.Client.Changelog
             var changelogs = await _changelog.LoadChangelog();
             if (Disposed) return;
 
-            Tabs.DisposeAllChildren();
+            Tabs.RemoveAllChildren();
 
             var i = 0;
             foreach (var changelog in changelogs)
@@ -122,9 +122,9 @@ namespace Content.Client.Changelog
     }
 
     [UsedImplicitly, AnyCommand]
-    public sealed class ChangelogCommand : LocalizedCommands
+    public sealed partial class ChangelogCommand : LocalizedCommands
     {
-        [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+        [Dependency] private IUserInterfaceManager _uiManager = default!;
 
         public override string Command => "changelog";
 

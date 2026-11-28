@@ -19,6 +19,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
         [RsiDirection.South, RsiDirection.East, RsiDirection.North, RsiDirection.West];
 
     private readonly IPrototypeManager _prototypes;
+    private readonly IComponentFactory _componentFactory;
     private readonly SpriteSystem _sprites;
     private readonly (EntityPrototype Prototype, Wh40kAugmentBedZone Zone)[] _catalogue;
     private readonly Dictionary<Wh40kAugmentBedOption, ContainerButton> _deviceRows = new();
@@ -34,7 +35,8 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
     {
         RobustXamlLoader.Load(this);
         _prototypes = IoCManager.Resolve<IPrototypeManager>();
-        _catalogue = Wh40kAugmentInfo.Catalogue(_prototypes, IoCManager.Resolve<IComponentFactory>()).ToArray();
+        _componentFactory = IoCManager.Resolve<IComponentFactory>();
+        _catalogue = Wh40kAugmentInfo.Catalogue(_prototypes, _componentFactory).ToArray();
         _sprites = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>();
         HeaderPanel.PanelOverride = Wh40kAugmentStyle.Panel(8);
         Scanner.PanelOverride = Wh40kAugmentStyle.Panel(8);
@@ -106,7 +108,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
 
     private void UpdateInventory()
     {
-        Items.DisposeAllChildren();
+        Items.RemoveAllChildren();
         _deviceRows.Clear();
 
         if (_state is { } state)
@@ -143,7 +145,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
                     ("part", NameOf(target.ExistingPart)))
             : Loc.GetString("wh40k-augment-bed-select-detail");
         if (_selected is { } selected && _prototypes.TryIndex<EntityPrototype>(selected.Prototype, out var prototype))
-            details = Wh40kAugmentInfo.Describe(prototype) + "\n\n" + details;
+            details = Wh40kAugmentInfo.Describe(prototype, _componentFactory) + "\n\n" + details;
         Details.SetMessage(details, Wh40kAugmentStyle.Text);
     }
 
@@ -152,7 +154,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
 
     private void UpdateZoneContents()
     {
-        ZoneContents.DisposeAllChildren();
+        ZoneContents.RemoveAllChildren();
         if (_zone is not { } zone)
             return;
 
@@ -179,7 +181,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
                 _catalogueSelection = choices[args.Id].ID;
                 picker.SelectId(args.Id);
                 picker.ToolTip = choices[args.Id].Name;
-                card.DisposeAllChildren();
+                card.RemoveAllChildren();
                 card.AddChild(BuildInfoCard(choices[args.Id]));
             };
             ZoneContents.AddChild(picker);
@@ -201,7 +203,7 @@ public sealed partial class Wh40kAugmentBedWindow : DefaultWindow
             HorizontalExpand = true,
             PanelOverride = Wh40kAugmentStyle.Card(6),
         };
-        panel.AddChild(BuildRow(prototype.ID, prototype.Name, Wh40kAugmentInfo.Describe(prototype)));
+        panel.AddChild(BuildRow(prototype.ID, prototype.Name, Wh40kAugmentInfo.Describe(prototype, _componentFactory)));
         return panel;
     }
 

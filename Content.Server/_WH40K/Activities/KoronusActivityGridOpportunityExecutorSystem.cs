@@ -28,7 +28,7 @@ namespace Content.Server._WH40K.Activities;
 /// loaded: the executor builds one static grid on the system map a living crew has already reached.
 /// A grid never becomes a shuttle, FTL target, dock, player ship, or source of ghost roles.
 /// </summary>
-public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
+public sealed partial class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(0.5);
     private const int SpawnAttempts = 24;
@@ -108,7 +108,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         var objectiveCoordinates = new EntityCoordinates(
             grid,
             new Vector2(profile.Size.X / 2f + 0.5f, profile.Size.Y / 2f + 0.5f));
-        var objective = Spawn(template.ObjectivePrototype!.Value, objectiveCoordinates);
+        var objective = SpawnAttachedTo(template.ObjectivePrototype!.Value, objectiveCoordinates);
         _metadata.SetEntityName(grid, Loc.GetString(template.TitleLocId));
         EnsureComp<FTLBeaconComponent>(grid);
         spawned.Add(objective);
@@ -186,7 +186,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
                 if (!border || evaOpening)
                     continue;
 
-                var wall = Spawn("WallSolid", new EntityCoordinates(grid, new Vector2(x + 0.5f, y + 0.5f)));
+                var wall = SpawnAttachedTo("WallSolid", new EntityCoordinates(grid, new Vector2(x + 0.5f, y + 0.5f)));
                 spawned.Add(wall);
                 AssignOwned(wall, instance.Id, KoronusActivityOwnedKind.Entity);
             }
@@ -212,7 +212,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         for (var index = 0; index < profile.RaiderCount; index++)
         {
             var local = new Vector2(2.5f + index * 2f, profile.Size.Y - 2.5f);
-            var raider = Spawn(hostilePrototype, new EntityCoordinates(grid, local));
+            var raider = SpawnAttachedTo(hostilePrototype, new EntityCoordinates(grid, local));
             spawned.Add(raider);
             if (!_contentAudit.TryPrepareHostile(raider, out _))
                 return false;
@@ -267,7 +267,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform) ||
+                !TryComp(player, out TransformComponent? transform) ||
                 transform.MapID != mapId)
             {
                 continue;
@@ -365,7 +365,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         float leashRadius,
         bool requireSpawnClearance = false)
     {
-        if (!TryComp<TransformComponent>(grid, out var transform) ||
+        if (!TryComp(grid, out TransformComponent? transform) ||
             transform.MapID != mapId ||
             !TryComp<PhysicsComponent>(grid, out var physics) ||
             physics.BodyType != BodyType.Static ||
@@ -390,7 +390,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         EntityUid grid,
         float leashRadius)
     {
-        if (!TryComp<TransformComponent>(uid, out var transform) ||
+        if (!TryComp(uid, out TransformComponent? transform) ||
             transform.MapID != mapId ||
             transform.GridUid != grid)
         {
@@ -421,7 +421,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform) ||
+                !TryComp(player, out TransformComponent? transform) ||
                 transform.MapID != mapId)
             {
                 continue;

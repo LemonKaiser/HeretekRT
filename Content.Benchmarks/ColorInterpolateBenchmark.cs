@@ -9,6 +9,7 @@ using Robust.Shared.Analyzers;
 using Robust.Shared.Maths;
 using Robust.Shared.Random;
 using SysVector4 = System.Numerics.Vector4;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Benchmarks
 {
@@ -30,7 +31,7 @@ namespace Content.Benchmarks
         [GlobalSetup]
         public void Setup()
         {
-            var random = new Random(3005);
+            var random = SharedRandomExtensions.CreateSeeded(3005);
 
             _colors = new (Color, Color)[N];
             _output = new Color[N];

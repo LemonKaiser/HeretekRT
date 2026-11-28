@@ -31,7 +31,7 @@ public sealed class VentCrittersRule : StationEventSystem<VentCrittersRuleCompon
                 validLocations.Add(transform.Coordinates);
                 foreach (var spawn in EntitySpawnCollection.GetSpawns(component.Entries, RobustRandom))
                 {
-                    Spawn(spawn, transform.Coordinates);
+                    SpawnAttachedTo(spawn, transform.Coordinates);
                 }
             }
         }
@@ -44,13 +44,13 @@ public sealed class VentCrittersRule : StationEventSystem<VentCrittersRuleCompon
         // guaranteed spawn
         var specialEntry = RobustRandom.Pick(component.SpecialEntries);
         var specialSpawn = RobustRandom.Pick(validLocations);
-        Spawn(specialEntry.PrototypeId, specialSpawn);
+        SpawnAttachedTo(specialEntry.PrototypeId, specialSpawn);
 
         foreach (var location in validLocations)
         {
             foreach (var spawn in EntitySpawnCollection.GetSpawns(component.SpecialEntries, RobustRandom))
             {
-                Spawn(spawn, location);
+                SpawnAttachedTo(spawn, location);
             }
         }
     }

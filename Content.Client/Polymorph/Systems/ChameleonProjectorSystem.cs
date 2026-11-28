@@ -32,8 +32,8 @@ public sealed partial class ChameleonProjectorSystem : SharedChameleonProjectorS
 
     private void OnHandleState(Entity<ChameleonDisguiseComponent> ent, ref AfterAutoHandleStateEvent args)
     {
-        if (GetSrcComp<SpriteComponent>(ent.Comp, out var source))
-            _sprite.CopySprite((source.Owner, source), (ent.Owner, EnsureComp<SpriteComponent>(ent)));
+        if (GetSrcEntity<SpriteComponent>(ent.Comp, out var source))
+            _sprite.CopySprite((source.Owner, source.Comp), (ent.Owner, EnsureComp<SpriteComponent>(ent)));
         CopyComp<GenericVisualizerComponent>(ent);
         CopyComp<SolutionContainerVisualsComponent>(ent);
         CopyComp<BurnStateVisualsComponent>(ent);
@@ -49,13 +49,13 @@ public sealed partial class ChameleonProjectorSystem : SharedChameleonProjectorS
             return;
 
         ent.Comp.WasVisible = sprite.Visible;
-        sprite.Visible = false;
+        _sprite.SetVisible((ent.Owner, sprite), false);
     }
 
     private void OnShutdown(Entity<ChameleonDisguisedComponent> ent, ref ComponentShutdown args)
     {
         if (_spriteQuery.TryComp(ent, out var sprite))
-            sprite.Visible = ent.Comp.WasVisible;
+            _sprite.SetVisible((ent.Owner, sprite), ent.Comp.WasVisible);
     }
 
     private void OnGetFlashEffectTargetEvent(Entity<ChameleonDisguisedComponent> ent, ref GetFlashEffectTargetEvent args)

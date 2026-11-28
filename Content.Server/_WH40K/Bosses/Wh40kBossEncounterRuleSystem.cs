@@ -15,7 +15,7 @@ using Robust.Shared.Random;
 
 namespace Content.Server._WH40K.Bosses;
 
-public sealed class Wh40kBossEncounterRuleSystem : StationEventSystem<Wh40kBossEncounterRuleComponent>
+public sealed partial class Wh40kBossEncounterRuleSystem : StationEventSystem<Wh40kBossEncounterRuleComponent>
 {
     private const int SpawnAttempts = 24;
     private const float SpawnClearance = 40f;

@@ -8,11 +8,11 @@ namespace Content.Client.Particles;
 /// <summary>
 /// Creates cosmetic particle effects requested by the server through <see cref="SpawnParticlesEvent"/>.
 /// </summary>
-public sealed class ParticleSpawnSystem : EntitySystem
+public sealed partial class ParticleSpawnSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSystem _particles = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSystem _particles = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

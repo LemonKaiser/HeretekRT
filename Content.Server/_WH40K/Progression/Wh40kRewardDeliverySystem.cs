@@ -28,7 +28,7 @@ namespace Content.Server._WH40K.Progression;
 /// entity carries a delivery/index marker and remains non-interactable until the DB
 /// acknowledges the delivery, allowing retries to reconcile instead of spawning twice.
 /// </summary>
-public sealed class Wh40kRewardDeliverySystem : EntitySystem
+public sealed partial class Wh40kRewardDeliverySystem : EntitySystem
 {
     private static readonly EntProtoId CashPrototype = "SpaceCash";
 
@@ -351,7 +351,7 @@ public sealed class Wh40kRewardDeliverySystem : EntitySystem
         var prototype = claim.RewardType == Wh40kLevelRewardCatalog.CurrencyRewardType
             ? CashPrototype.Id
             : claim.PrototypeId!;
-        var entity = Spawn(prototype, Transform(mob).Coordinates);
+        var entity = SpawnAttachedTo(prototype, Transform(mob).Coordinates);
         var marker = EnsureComp<Wh40kRewardDeliveryClaimComponent>(entity);
         marker.UserId = claim.UserId.UserId;
         marker.DeliveryId = claim.Id;

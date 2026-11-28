@@ -123,7 +123,7 @@ public sealed partial class WallMountVisibilitySystem : EntitySystem
 
     private bool HasWall(Entity<MapGridComponent> grid, Vector2i tile)
     {
-        var enumerator = _map.GetAnchoredEntitiesEnumerator(grid.Owner, grid.Comp, tile);
+        var enumerator = _map.GetAnchoredEntities(grid.Owner, grid.Comp, tile);
         while (enumerator.MoveNext(out var anchored))
         {
             if (!_tag.HasTag(anchored.Value, "Wall"))

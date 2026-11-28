@@ -61,7 +61,7 @@ public sealed partial class GoliathTentacleSystem : EntitySystem
             }
 
             if (_net.IsServer)
-                Spawn(args.EntityId, pos);
+                SpawnAttachedTo(args.EntityId, pos);
         }
 
         args.Handled = true;

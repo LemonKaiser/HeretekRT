@@ -60,7 +60,7 @@ public sealed class HandTests
         await server.WaitPost(() =>
         {
             var xform = entMan.GetComponent<TransformComponent>(player);
-            item = entMan.SpawnEntity("Crowbar", tSys.GetMapCoordinates(player, xform: xform));
+            item = entMan.Spawn("Crowbar", tSys.GetMapCoordinates(player, xform: xform));
             hands = entMan.GetComponent<HandsComponent>(player);
             sys.TryPickup(player, item, hands.ActiveHand!);
         });
@@ -106,8 +106,8 @@ public sealed class HandTests
         HandsComponent hands = default!;
 
         // spawn the elusive box and crowbar at the coordinates
-        await server.WaitPost(() => box = server.EntMan.SpawnEntity("TestPickUpThenDropInContainerTestBox", map.GridCoords));
-        await server.WaitPost(() => item = server.EntMan.SpawnEntity("Crowbar", map.GridCoords));
+        await server.WaitPost(() => box = server.EntMan.SpawnAttachedTo("TestPickUpThenDropInContainerTestBox", map.GridCoords));
+        await server.WaitPost(() => item = server.EntMan.SpawnAttachedTo("Crowbar", map.GridCoords));
 
         // Mono: wait until entity is setup.
         await server.WaitAssertion(() =>

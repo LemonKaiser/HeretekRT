@@ -33,6 +33,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
 
     private readonly IResourceManager _resources = IoCManager.Resolve<IResourceManager>();
     private readonly IClipboardManager _clipboard = IoCManager.Resolve<IClipboardManager>();
+    private readonly ISawmill _sawmill = IoCManager.Resolve<ILogManager>().GetSawmill("wh40k.mapping");
     private readonly LineEdit _search = new() { HorizontalExpand = true };
     private readonly WrapContainer _categories = new() { SeparationOverride = 4, CrossSeparationOverride = 3 };
     private readonly ScrollContainer _categoryScroll = new()
@@ -214,7 +215,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
         }
         catch (IOException e)
         {
-            Logger.Warning($"Could not load mapping kit {kind}: {e.Message}");
+            _sawmill.Warning($"Could not load mapping kit {kind}: {e.Message}");
         }
     }
 
@@ -657,7 +658,7 @@ public sealed class Wh40kMappingPanel : BoxContainer
         }
         catch (IOException e)
         {
-            Logger.Warning($"Could not save mapping kit: {e.Message}");
+            _sawmill.Warning($"Could not save mapping kit: {e.Message}");
         }
     }
 

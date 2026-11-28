@@ -12,10 +12,10 @@ namespace Content.Server.Roles
     [AdminCommand(AdminFlags.Admin)]
     public sealed partial class AddRoleCommand : LocalizedEntityCommands
     {
-        [Dependency] private readonly IPlayerManager _playerManager = default!;
-        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-        [Dependency] private readonly JobSystem _jobSystem = default!;
-        [Dependency] private readonly Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
+        [Dependency] private IPlayerManager _playerManager = default!;
+        [Dependency] private IPrototypeManager _prototypeManager = default!;
+        [Dependency] private JobSystem _jobSystem = default!;
+        [Dependency] private Content.Server.Administration.Managers.IAdminAuthorizationManager _authorization = default!;
 
         public override string Command => "addrole";
 

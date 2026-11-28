@@ -73,11 +73,11 @@ namespace Content.IntegrationTests.Tests
             {
                 invSystem = entityMan.System<InventorySystem>();
 
-                human = entityMan.SpawnEntity("HumanUniformDummy", coordinates);
-                uniform = entityMan.SpawnEntity("UniformDummy", coordinates);
-                idCard = entityMan.SpawnEntity("IDCardDummy", coordinates);
-                pocketItem = entityMan.SpawnEntity("FlashlightDummy", coordinates);
-                var tooBigItem = entityMan.SpawnEntity("ToolboxDummy", coordinates);
+                human = entityMan.SpawnAttachedTo("HumanUniformDummy", coordinates);
+                uniform = entityMan.SpawnAttachedTo("UniformDummy", coordinates);
+                idCard = entityMan.SpawnAttachedTo("IDCardDummy", coordinates);
+                pocketItem = entityMan.SpawnAttachedTo("FlashlightDummy", coordinates);
+                var tooBigItem = entityMan.SpawnAttachedTo("ToolboxDummy", coordinates);
 
 
                 Assert.Multiple(() =>

@@ -50,7 +50,7 @@ public sealed partial class EmitBuzzWhileDamagedSystem : EntitySystem
             // Start buzzing
             emitBuzzOnCritComponent.LastBuzzPopupTime = _gameTiming.CurTime;
             _popupSystem.PopupEntity(Loc.GetString("silicon-behavior-buzz"), uid);
-            Spawn("EffectSparks", Transform(uid).Coordinates);
+            SpawnAttachedTo("EffectSparks", Transform(uid).Coordinates);
             _audio.PlayPvs(emitBuzzOnCritComponent.Sound, uid, AudioHelpers.WithVariation(0.05f, _robustRandom));
         }
     }

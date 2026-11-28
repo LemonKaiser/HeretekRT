@@ -17,6 +17,8 @@ namespace Content.Client._Crescent.ShipShields;
 
 public sealed class ShipShieldOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> UnshadedShaderId = "unshaded";
+
     private readonly FixtureSystem _fixture;
     private readonly SharedPhysicsSystem _physics;
     private readonly IResourceCache _resourceCache;
@@ -35,7 +37,7 @@ public sealed class ShipShieldOverlay : Overlay
         _physics = _entManager.EntitySysManager.GetEntitySystem<Robust.Client.Physics.PhysicsSystem>();
         _shieldTexture = _resourceCache.GetTexture("/Textures/_Crescent/ShipShields/shieldtex.png");
 
-        _unshadedShader = prototypeManager.Index<ShaderPrototype>("unshaded").Instance();
+        _unshadedShader = prototypeManager.Index(UnshadedShaderId).Instance();
 
         ZIndex = 8;
     }

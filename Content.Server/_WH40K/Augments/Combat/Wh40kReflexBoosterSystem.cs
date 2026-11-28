@@ -8,7 +8,7 @@ using Robust.Shared.Random;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kReflexBoosterSystem : EntitySystem
+public sealed partial class Wh40kReflexBoosterSystem : EntitySystem
 {
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedPopupSystem _popup = default!;

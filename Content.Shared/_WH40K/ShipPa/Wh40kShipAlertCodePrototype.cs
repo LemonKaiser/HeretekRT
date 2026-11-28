@@ -6,7 +6,7 @@ namespace Content.Shared._WH40K.ShipPa;
 /// <summary>
 /// One alert condition code a ship can broadcast over its Vox-PA network.
 /// </summary>
-[Prototype("wh40kShipAlertCode")]
+[Prototype]
 public sealed partial class Wh40kShipAlertCodePrototype : IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;

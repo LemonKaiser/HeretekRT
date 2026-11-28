@@ -21,7 +21,7 @@ namespace Content.Client._WH40K.Visuals.WorldEffects;
 /// </summary>
 public sealed partial class RsiVisualGeometryCache : IPostInjectInit
 {
-    [Dependency] private readonly IResourceCache _resources = default!;
+    [Dependency] private IResourceCache _resources = default!;
 
     private readonly Dictionary<RSI, Dictionary<RSI.StateId, Dictionary<RsiDirection, FrameGeometry[]>>> _geometry =
         new();

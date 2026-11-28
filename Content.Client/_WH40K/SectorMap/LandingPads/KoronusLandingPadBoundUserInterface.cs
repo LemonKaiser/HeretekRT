@@ -33,7 +33,11 @@ public sealed class KoronusLandingPadBoundUserInterface : BoundUserInterface
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        if (disposing)
-            _window?.Dispose();
+        if (disposing && _window != null)
+        {
+            _window.OnClose -= Close;
+            _window.Close();
+            _window = null;
+        }
     }
 }

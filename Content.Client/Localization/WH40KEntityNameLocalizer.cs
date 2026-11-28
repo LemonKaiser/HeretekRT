@@ -17,7 +17,7 @@ namespace Content.Client.Localization;
 /// Resolves entity names for the local player without trusting a name that was
 /// serialized by the server in a different interface culture.
 /// </summary>
-public sealed class WH40KEntityNameLocalizer : EntitySystem
+public sealed partial class WH40KEntityNameLocalizer : EntitySystem
 {
     [Dependency] private ILocalizationManager _localization = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -182,7 +182,7 @@ public sealed class WH40KEntityNameLocalizer : EntitySystem
                 }
             }
 
-            if (!hasMetadataChange || !EntityManager.TryGetEntity(entityState.NetEntity, out var uid) || uid is not { } entity)
+            if (!hasMetadataChange || !TryGetEntity(entityState.NetEntity, out var uid) || uid is not { } entity)
                 continue;
 
             if (TryComp(entity, out MetaDataComponent? metadata))

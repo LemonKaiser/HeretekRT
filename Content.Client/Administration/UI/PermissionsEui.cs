@@ -230,7 +230,7 @@ namespace Content.Client.Administration.UI
 
         private void RefreshAdminList()
         {
-            _window.AdminList.DisposeAllChildren();
+            _window.AdminList.RemoveAllChildren();
 
             if (_state.IsLoading)
                 return;
@@ -261,7 +261,7 @@ namespace Content.Client.Administration.UI
 
         private void RefreshRankList()
         {
-            _window.RankList.DisposeAllChildren();
+            _window.RankList.RemoveAllChildren();
 
             if (_state.IsLoading)
                 return;
@@ -1692,7 +1692,7 @@ namespace Content.Client.Administration.UI
                     : GetAdminName(sourceData!.Value);
                 _subjectLabel.ToolTip = _subjectLabel.Text;
 
-                _badgeRow.DisposeAllChildren();
+                _badgeRow.RemoveAllChildren();
                 if (sourceData != null)
                 {
                     foreach (var badge in owner.GetAdminBadges(sourceData.Value))
@@ -1702,7 +1702,7 @@ namespace Content.Client.Administration.UI
                 }
                 _badgeRow.Visible = _badgeRow.ChildCount > 0;
 
-                _statusBadgeRow.DisposeAllChildren();
+                _statusBadgeRow.RemoveAllChildren();
                 if (sourceData != null)
                 {
                     foreach (var badge in owner.GetAdminSecondaryBadges(sourceData.Value))

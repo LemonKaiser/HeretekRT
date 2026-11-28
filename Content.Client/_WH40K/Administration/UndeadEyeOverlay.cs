@@ -18,6 +18,7 @@ using DrawDepth = Content.Shared.DrawDepth.DrawDepth;
 
 namespace Content.Client._WH40K.Administration;
 
+[Virtual]
 public partial class UndeadEyeOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> Shader = "WH40KUndeadEye";

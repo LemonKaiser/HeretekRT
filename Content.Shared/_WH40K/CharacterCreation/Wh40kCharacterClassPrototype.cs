@@ -8,7 +8,7 @@ using Content.Shared._WH40K.ClassProgression;
 ///     A starting class in the introductory character creator.
 ///     Its characteristic modifiers affect onboarding totals; abilities remain descriptive until their gameplay systems exist.
 /// </summary>
-[Prototype("wh40kCharacterClass")]
+[Prototype]
 public sealed partial class Wh40kCharacterClassPrototype : IPrototype
 {
     [IdDataField]

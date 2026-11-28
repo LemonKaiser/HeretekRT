@@ -5,7 +5,7 @@ using Robust.Client.Player;
 
 namespace Content.Client._WH40K.Augments.Combat;
 
-public sealed class Wh40kThermalTintsVisualsSystem : EntitySystem
+public sealed partial class Wh40kThermalTintsVisualsSystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlays = default!;
     [Dependency] private IPlayerManager _player = default!;

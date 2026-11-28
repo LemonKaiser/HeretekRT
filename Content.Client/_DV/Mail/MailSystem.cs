@@ -25,6 +25,8 @@ namespace Content.Client._DV.Mail;
 /// </remarks>
 public sealed partial class MailJobVisualizerSystem : VisualizerSystem<MailComponent>
 {
+    private static readonly ProtoId<JobIconPrototype> UnknownJobIcon = "JobIconUnknown";
+
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private SpriteSystem _spriteSystem = default!;
@@ -36,16 +38,10 @@ public sealed partial class MailJobVisualizerSystem : VisualizerSystem<MailCompo
 
         _appearance.TryGetData(uid, MailVisuals.JobIcon, out string job, args.Component);
 
-        if (string.IsNullOrEmpty(job))
-            job = "JobIconUnknown";
+        if (string.IsNullOrEmpty(job) || !_prototypeManager.TryIndex<JobIconPrototype>(job, out var icon))
+            icon = _prototypeManager.Index(UnknownJobIcon);
 
-        if (!_prototypeManager.TryIndex<JobIconPrototype>(job, out var icon))
-        {
-            args.Sprite.LayerSetTexture(MailVisualLayers.JobStamp, _spriteSystem.Frame0(_prototypeManager.Index("JobIconUnknown")));
-            return;
-        }
-
-        args.Sprite.LayerSetTexture(MailVisualLayers.JobStamp, _spriteSystem.Frame0(icon.Icon));
+        _spriteSystem.LayerSetTexture((uid, args.Sprite), MailVisualLayers.JobStamp, _spriteSystem.Frame0(icon.Icon));
     }
 }
 

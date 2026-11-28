@@ -96,29 +96,29 @@ public sealed partial class DockingScreen : BoxContainer
     {
         if (ToggleFTLLockRequest == null)
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but ToggleFTLLockRequest is null");
+            IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock button pressed but ToggleFTLLockRequest is null");
             return;
         }
 
         if (DockingControl.GridEntity == null)
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but GridEntity is null");
+            IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock button pressed but GridEntity is null");
             return;
         }
 
         // Find all docks that belong to the current shuttle
         var currentGrid = DockingControl.GridEntity.Value;
         var netEntity = _entManager.GetNetEntity(currentGrid);
-        Logger.DebugS("shuttle", $"FTL Lock button pressed with enabled={enabled}, GridEntity={currentGrid}, NetEntity={netEntity}");
+        IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock button pressed with enabled={enabled}, GridEntity={currentGrid}, NetEntity={netEntity}");
 
         if (!Docks.TryGetValue(netEntity, out var shuttleDocks))
         {
-            Logger.DebugS("shuttle", $"FTL Lock button pressed but no docks found for NetEntity={netEntity}");
+            IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock button pressed but no docks found for NetEntity={netEntity}");
 
             // Even if there are no docks, we still want to toggle FTL for the main grid
             var emptyList = new List<NetEntity> { netEntity };
             ToggleFTLLockRequest.Invoke(emptyList, enabled);
-            Logger.DebugS("shuttle", $"FTL Lock request sent with enabled={enabled} for main grid only");
+            IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock request sent with enabled={enabled} for main grid only");
             return;
         }
 
@@ -134,12 +134,12 @@ public sealed partial class DockingScreen : BoxContainer
             dockedShuttles.Add(netEntity);
         }
 
-        Logger.DebugS("shuttle", $"FTL Lock button pressed, found {dockedShuttles.Count} total grids (including main grid)");
+        IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock button pressed, found {dockedShuttles.Count} total grids (including main grid)");
 
         // Pass the enabled parameter to the event handler
         // The server-side will handle setting this state on the current entity and any docked shuttles
         ToggleFTLLockRequest.Invoke(dockedShuttles, enabled);
-        Logger.DebugS("shuttle", $"FTL Lock request sent with enabled={enabled}");
+        IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"FTL Lock request sent with enabled={enabled}");
 
         UpdateDockLockIndicators(enabled);
     }
@@ -268,7 +268,7 @@ public sealed partial class DockingScreen : BoxContainer
     {
         DockingControl.BuildDocks(shuttle);
         var currentDock = DockingControl.ViewedDock;
-        DockPorts.DisposeAllChildren();
+        DockPorts.RemoveAllChildren();
         _ourDockButtons.Clear();
 
         if (shuttle == null ||

@@ -6,7 +6,7 @@ using Robust.Shared.Console;
 namespace Content.Server._WH40K.Administration.Events;
 
 [AdminCommand(AdminFlags.Fun)]
-public sealed class EventPanelCommand : LocalizedCommands
+public sealed partial class EventPanelCommand : LocalizedCommands
 {
     [Dependency] private EuiManager _euis = default!;
     public override string Command => "event_panel";

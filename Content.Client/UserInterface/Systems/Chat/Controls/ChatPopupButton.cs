@@ -11,7 +11,7 @@ namespace Content.Client.UserInterface.Systems.Chat.Controls;
 /// Base type of <see cref="ChannelFilterButton"/> and <see cref="ChannelSelectorButton"/>.
 /// </summary>
 public abstract class ChatPopupButton<TPopup> : Button
-    where TPopup : Popup, new()
+    where TPopup : Popup
 {
     private readonly IGameTiming _gameTiming;
 
@@ -19,15 +19,28 @@ public abstract class ChatPopupButton<TPopup> : Button
 
     private uint _frameLastPopupChanged;
 
-    protected ChatPopupButton()
+    protected ChatPopupButton(TPopup popup)
     {
         _gameTiming = IoCManager.Resolve<IGameTiming>();
 
         ToggleMode = true;
         OnToggled += OnButtonToggled;
 
-        Popup = UserInterfaceManager.CreatePopup<TPopup>();
+        Popup = popup;
         Popup.OnVisibilityChanged += OnPopupVisibilityChanged;
+    }
+
+    protected override void EnteredTree()
+    {
+        base.EnteredTree();
+        UserInterfaceManager.ModalRoot.AddChild(Popup);
+    }
+
+    protected override void ExitedTree()
+    {
+        Popup.Close();
+        Popup.Orphan();
+        base.ExitedTree();
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)

@@ -17,13 +17,13 @@ public sealed partial class DungeonJob
     private async Task PostGen(
         OreDunGen gen,
         Dungeon dungeon,
-        Random random)
+        IRobustRandom random)
     {
         // Doesn't use dungeon data because layers and we don't need top-down support at the moment.
 
         var replaceEntities = new Dictionary<Vector2i, EntityUid>();
         var availableTiles = new List<Vector2i>();
-        var tiles = _maps.GetAllTilesEnumerator(_gridUid, _grid);
+        var tiles = _maps.GetAllTiles(_gridUid, _grid);
 
         while (tiles.MoveNext(out var tileRef))
         {
@@ -40,7 +40,7 @@ public sealed partial class DungeonJob
             if (gen.EntityMask is not null)
             {
                 var found = false;
-                var enumerator2 = _maps.GetAnchoredEntitiesEnumerator(_gridUid, _grid, tile);
+                var enumerator2 = _maps.GetAnchoredEntities(_gridUid, _grid, tile);
                 while (enumerator2.MoveNext(out var uid))
                 {
                     var prototype = _entManager.GetComponent<MetaDataComponent>(uid.Value).EntityPrototype;

@@ -18,7 +18,7 @@ public abstract partial class SharedWh40kFabricationSiloSystem
             return false;
 
         if (_stackQuery.TryComp(item, out var stack) &&
-            partProto.TryGetComponent<StackComponent>(out var partStack, _factory))
+            partProto.TryComp<StackComponent>(out var partStack, _factory))
             return stack.StackTypeId == partStack.StackTypeId;
 
         if (proto.Name == partProto.Name && proto.Parents is { } parents && partProto.Parents is { } partParents &&

@@ -311,7 +311,7 @@ public sealed partial class ContainmentFieldGeneratorSystem : EntitySystem
         while (currentOffset.Length() < stopDist)
         {
             var currentCoords = gen1Coords.Offset(currentOffset);
-            var newField = Spawn(firstGen.Comp.CreatedField, currentCoords);
+            var newField = SpawnAttachedTo(firstGen.Comp.CreatedField, currentCoords);
 
             var fieldXForm = Transform(newField);
             _transformSystem.SetParent(newField, fieldXForm, firstGen);
@@ -321,7 +321,7 @@ public sealed partial class ContainmentFieldGeneratorSystem : EntitySystem
                 var rotateBy90 = angle.Degrees + 90;
                 var rotatedAngle = Angle.FromDegrees(rotateBy90);
 
-                fieldXForm.LocalRotation = rotatedAngle;
+                _transformSystem.SetLocalRotation(newField, rotatedAngle, fieldXForm);
             }
 
             fieldList.Add(newField);

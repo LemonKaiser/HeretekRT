@@ -45,7 +45,7 @@ namespace Content.Server.PDA
         [Dependency] private IdCardSystem _idCard = default!;
         [Dependency] private Content.Shared._WH40K.Cyborgs.Wh40kBorgIdCardSystem _wh40kBorgCards = default!;
         [Dependency] private IPrototypeManager _prototypeManager = default!;
-        [Dependency] private readonly IConfigurationManager _config = default!; // DeltaV
+        [Dependency] private IConfigurationManager _config = default!; // DeltaV
 
         private static DateTime ServerDate; // DeltaV - PDA
 

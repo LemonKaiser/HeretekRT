@@ -12,10 +12,10 @@ namespace Content.Server._WH40K.Weapons.Melee;
 /// Emits restrained contact effects for WH40K melee weapons only after their
 /// authoritative melee damage has been accepted.
 /// </summary>
-public sealed class WH40KMeleeParticleSystem : EntitySystem
+public sealed partial class WH40KMeleeParticleSystem : EntitySystem
 {
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {

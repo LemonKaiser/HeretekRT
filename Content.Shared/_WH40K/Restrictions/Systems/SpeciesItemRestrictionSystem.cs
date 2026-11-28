@@ -10,7 +10,7 @@ using Content.Shared.Weapons.Ranged.Events;
 
 namespace Content.Shared._WH40K.Restrictions.Systems;
 
-public sealed class SpeciesItemRestrictionSystem : EntitySystem
+public sealed partial class SpeciesItemRestrictionSystem : EntitySystem
 {
     [Dependency] private SharedPopupSystem _popup = default!;
 

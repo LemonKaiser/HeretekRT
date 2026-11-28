@@ -153,7 +153,7 @@ public sealed partial class GunSystem : SharedGunSystem
                 case CartridgeAmmoComponent cartridge:
                     if (!cartridge.Spent)
                     {
-                        var uid = Spawn(cartridge.Prototype, fromEnt);
+                        var uid = SpawnAttachedTo(cartridge.Prototype, fromEnt);
                         // Mono - check for muzzle flash of gun
                         var muzzleFlash = cartridge.MuzzleFlash;
                         if (gun.MuzzleFlash != null)
@@ -231,7 +231,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
                 for (var i = 1; i < ammoSpreadComp.Count; i++)
                 {
-                    var newuid = Spawn(ammoSpreadComp.Proto, fromEnt);
+                    var newuid = SpawnAttachedTo(ammoSpreadComp.Proto, fromEnt);
                     var pelletVisual = i == ammoSpreadComp.Count / 2 || i == ammoSpreadComp.Count - 1
                         ? WH40KPelletVisual.Tracer : WH40KPelletVisual.Plain;
                     ShootOrThrow(newuid, angles[i].ToVec(), gunVelocity, gun, gunUid, user, offset, fromCoordinates,

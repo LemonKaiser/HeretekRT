@@ -9,7 +9,7 @@ namespace Content.Shared._WH40K.WolfChem.Narcotics;
 /// <summary>
 /// Drug levels, tiers and the speed they give. The server ticks levels and runs effects; the client draws overlays.
 /// </summary>
-public abstract class SharedWh40kIntoxicationSystem : EntitySystem
+public abstract partial class SharedWh40kIntoxicationSystem : EntitySystem
 {
     [Dependency] protected IPrototypeManager Proto = default!;
     [Dependency] private SharedBodySystem _body = default!;

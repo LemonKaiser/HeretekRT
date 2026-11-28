@@ -17,14 +17,14 @@ using static Robust.Client.UserInterface.Controls.LineEdit;
 namespace Content.Client._RMC14.Vendors;
 
 [UsedImplicitly]
-public sealed class CMAutomatedVendorBui : BoundUserInterface
+public sealed partial class CMAutomatedVendorBui : BoundUserInterface
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IResourceCache _resource = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
 
     private readonly SharedJobSystem _job;
     private readonly SharedMindSystem _mind;
+    private readonly SpriteSystem _sprite;
 
     private CMAutomatedVendorWindow? _window;
 
@@ -32,6 +32,7 @@ public sealed class CMAutomatedVendorBui : BoundUserInterface
     {
         _job = EntMan.System<SharedJobSystem>();
         _mind = EntMan.System<SharedMindSystem>();
+        _sprite = EntMan.System<SpriteSystem>();
     }
 
     protected override void Open()
@@ -56,13 +57,13 @@ public sealed class CMAutomatedVendorBui : BoundUserInterface
 
                     if (_prototype.TryIndex(entry.Id, out var entity))
                     {
-                        uiEntry.Texture.Textures = SpriteComponent.GetPrototypeTextures(entity, _resource)
+                        uiEntry.Texture.Textures = _sprite.GetPrototypeTextures(entity)
                             .Select(o => o.Default)
                             .ToList();
-                        if (entity.TryGetComponent<SpriteComponent>("Sprite", out var entitySprites))
+                        if (entity.TryComp<SpriteComponent>(out var entitySprites, EntMan.ComponentFactory))
                             uiEntry.Texture.Modulate = entitySprites.AllLayers.First().Color;
 
-                        uiEntry.Panel.Button.Label.Text = entry.Name is { } entryName
+                        uiEntry.Panel.Button.ItemLabel.Text = entry.Name is { } entryName
                             ? LocalizeVendorText(entryName).Replace("\\n", "\n")
                             : entity.Name;
 
@@ -79,7 +80,7 @@ public sealed class CMAutomatedVendorBui : BoundUserInterface
                         }
                         else if (entry.Recommended)
                         {
-                            uiEntry.Panel.Button.Label.Text = $"★ {uiEntry.Panel.Button.Label.Text}";
+                            uiEntry.Panel.Button.ItemLabel.Text = $"★ {uiEntry.Panel.Button.ItemLabel.Text}";
                             name = $"Recommended: {name}";
                             color = Color.FromHex("#102919");
                             borderColor = Color.FromHex("#3A9B52");
@@ -159,7 +160,7 @@ public sealed class CMAutomatedVendorBui : BoundUserInterface
                 if (string.IsNullOrWhiteSpace(args.Text))
                     entry.Visible = true;
                 else
-                    entry.Visible = entry.Panel.Button.Label.Text?.Contains(args.Text, OrdinalIgnoreCase) ?? false;
+                    entry.Visible = entry.Panel.Button.ItemLabel.Text?.Contains(args.Text, OrdinalIgnoreCase) ?? false;
 
                 if (entry.Visible)
                     any = true;
@@ -304,6 +305,6 @@ public sealed class CMAutomatedVendorBui : BoundUserInterface
 
     private static string LocalizeVendorText(string value)
     {
-        return Loc.TryGetString(value, out var localized) ? localized : value;
+        return IoCManager.Resolve<ILocalizationManager>().TryGetString(value, out var localized) ? localized : value;
     }
 }

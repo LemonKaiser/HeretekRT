@@ -40,9 +40,9 @@ public sealed partial class DiskConsoleSystem : EntitySystem
 
             RemComp(uid, printing);
             if (!console.DiskRare)
-                Spawn(console.DiskPrototype, xform.Coordinates);
+                SpawnAttachedTo(console.DiskPrototype, xform.Coordinates);
             else
-                Spawn(console.DiskPrototypeRare, xform.Coordinates);
+                SpawnAttachedTo(console.DiskPrototypeRare, xform.Coordinates);
         }
     }
 

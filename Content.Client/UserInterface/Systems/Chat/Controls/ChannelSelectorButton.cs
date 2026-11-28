@@ -13,7 +13,7 @@ public sealed class ChannelSelectorButton : ChatPopupButton<ChannelSelectorPopup
 
     private const int SelectorDropdownOffset = 38;
 
-    public ChannelSelectorButton()
+    public ChannelSelectorButton() : base(new ChannelSelectorPopup())
     {
         Name = "ChannelSelector";
 

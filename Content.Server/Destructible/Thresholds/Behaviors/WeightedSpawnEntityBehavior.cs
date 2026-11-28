@@ -19,6 +19,8 @@ namespace Content.Server.Destructible.Thresholds.Behaviors;
 [DataDefinition]
 public sealed partial class WeightedSpawnEntityBehavior : IThresholdBehavior
 {
+    private static readonly EntProtoId TemporaryEntityForTimedDespawnSpawnersId = "TemporaryEntityForTimedDespawnSpawners";
+
     /// <summary>
     /// A table of entities with assigned weights to randomly pick from
     /// </summary>
@@ -64,13 +66,13 @@ public sealed partial class WeightedSpawnEntityBehavior : IThresholdBehavior
         if (SpawnAfter != 0)
         {
             // if it fails to get the spawner, this won't ever work so just return
-            if (!system.PrototypeManager.TryIndex("TemporaryEntityForTimedDespawnSpawners", out var tempSpawnerProto))
+            if (!system.PrototypeManager.TryIndex(TemporaryEntityForTimedDespawnSpawnersId, out var tempSpawnerProto))
                 return;
 
             // spawn the spawner, assign it a lifetime, and assign the entity that it will spawn when despawned
             for (var i = 0; i < amountToSpawn; i++)
             {
-                var spawner = system.EntityManager.SpawnEntity(tempSpawnerProto.ID, position.Offset(GetRandomVector()));
+                var spawner = system.EntityManager.Spawn(tempSpawnerProto.ID, position.Offset(GetRandomVector()));
                 system.EntityManager.EnsureComponent<TimedDespawnComponent>(spawner, out var timedDespawnComponent);
                 timedDespawnComponent.Lifetime = SpawnAfter;
                 system.EntityManager.EnsureComponent<SpawnOnDespawnComponent>(spawner, out var spawnOnDespawnComponent);
@@ -82,7 +84,7 @@ public sealed partial class WeightedSpawnEntityBehavior : IThresholdBehavior
             // directly spawn the desired entities
             for (var i = 0; i < amountToSpawn; i++)
             {
-                system.EntityManager.SpawnEntity(entity, position.Offset(GetRandomVector()));
+                system.EntityManager.Spawn(entity, position.Offset(GetRandomVector()));
             }
         }
     }

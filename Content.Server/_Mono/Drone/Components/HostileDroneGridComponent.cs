@@ -16,7 +16,7 @@ public sealed partial class HostileDroneGridComponent : Component
     /// Whether initial equipment presence has been recorded for this drone grid.
     /// </summary>
     [DataField]
-    public bool Initialized;
+    public new bool Initialized;
 
     [DataField]
     public bool HadAi;

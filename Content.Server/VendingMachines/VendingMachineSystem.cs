@@ -314,7 +314,7 @@ namespace Content.Server.VendingMachines
             if (string.IsNullOrEmpty(entry.ID))
                 return false;
 
-            if (!TryComp<TransformComponent>(vendComponent.Owner, out var transformComp))
+            if (!TryComp(uid, out TransformComponent? transformComp))
                 return false;
 
             // Start Ejecting, and prevent users from ordering while anim playing
@@ -462,7 +462,7 @@ namespace Content.Server.VendingMachines
 
             if (vendComponent.EjectRandomCounter < 1)
             {
-                _audioSystem.PlayPvs(_audioSystem.GetSound(vendComponent.SoundDeny), uid);
+                _audioSystem.PlayPvs(_audioSystem.ResolveSound(vendComponent.SoundDeny), uid);
                 _popupSystem.PopupEntity(Loc.GetString("vending-machine-component-try-eject-access-abused"), uid, PopupType.MediumCaution);
                 return;
             }
@@ -533,7 +533,7 @@ namespace Content.Server.VendingMachines
                 spawnCoordinates = spawnCoordinates.Offset(offset);
             }
 
-            var ent = Spawn(vendComponent.NextItemToEject, spawnCoordinates);
+            var ent = SpawnAttachedTo(vendComponent.NextItemToEject, spawnCoordinates);
 
             // Mono: Track vending machine purchases for pricing modifications
             // Only track if this was a paid purchase (not a random eject or force eject)

@@ -26,7 +26,6 @@ public partial class ShuttleNavControl
     private readonly List<Wh40kRadarTagLayout.Tag> _wh40kTags = new();
     private readonly List<Wh40kTagDraw> _wh40kTagDraws = new();
     private readonly List<Wh40kTagText> _wh40kTagLines = new();
-    private readonly List<Wh40kTagText> _wh40kTagAbove = new();
     private readonly Dictionary<string, int> _wh40kTagKeyCounts = new();
 
     private readonly List<Wh40kRadarTagLayout.Tag> _wh40kShownTags = new();
@@ -44,15 +43,11 @@ public partial class ShuttleNavControl
     {
         public int FirstLine;
         public int LineCount;
-        public int FirstAbove;
-        public int AboveCount;
         public float HeadTextWidth;
         public bool Always;
         public bool Keyed;
         public bool Full;
         public float Alpha;
-        public Action<DrawingHandleScreen, Vector2>? DrawHeadExtra;
-        public Action<DrawingHandleScreen, Vector2>? DrawAlone;
     }
 
     private void Wh40kBeginTag(Vector2 anchor, Vector2 position, int priority = 0, bool always = false, int? key = null)
@@ -67,7 +62,6 @@ public partial class ShuttleNavControl
         _wh40kTagDraws.Add(new Wh40kTagDraw
         {
             FirstLine = _wh40kTagLines.Count,
-            FirstAbove = _wh40kTagAbove.Count,
             Always = always,
             Keyed = key != null,
             Full = true,
@@ -305,7 +299,6 @@ public partial class ShuttleNavControl
         _wh40kTags.Clear();
         _wh40kTagDraws.Clear();
         _wh40kTagLines.Clear();
-        _wh40kTagAbove.Clear();
     }
 
     private bool Wh40kOnScope(Vector2 point)
@@ -346,23 +339,7 @@ public partial class ShuttleNavControl
         {
             var line = _wh40kTagLines[draw.FirstLine + i];
             handle.DrawString(Font, at, line.Text, line.Scale, Wh40kFade(line.Color, draw.Alpha));
-            if (i == 0)
-                draw.DrawHeadExtra?.Invoke(handle, at + new Vector2(draw.HeadTextWidth, 0f));
-
             at.Y += line.Size.Y;
         }
-
-        if (draw.Full)
-        {
-            var above = origin;
-            for (var i = 0; i < draw.AboveCount; i++)
-            {
-                var line = _wh40kTagAbove[draw.FirstAbove + i];
-                above.Y -= line.Size.Y;
-                handle.DrawString(Font, above, line.Text, line.Scale, Wh40kFade(line.Color, draw.Alpha));
-            }
-        }
-
-        draw.DrawAlone?.Invoke(handle, origin);
     }
 }

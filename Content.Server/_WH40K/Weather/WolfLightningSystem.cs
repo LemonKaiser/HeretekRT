@@ -181,7 +181,7 @@ public sealed partial class WolfLightningSystem : EntitySystem
     public void Strike(EntityCoordinates coords, WolfWeatherLightning lightning, Filter filter)
     {
         if (lightning.Bolt is { } bolt)
-            Spawn(bolt, coords);
+            SpawnAttachedTo(bolt, coords);
 
         if (lightning.NearSound is { } sound)
             _audio.PlayStatic(sound, filter, coords, true);

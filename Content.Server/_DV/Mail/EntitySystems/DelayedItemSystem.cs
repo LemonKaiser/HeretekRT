@@ -26,7 +26,7 @@ namespace Content.Server._DV.Mail.EntitySystems
         /// </summary>
         private void OnRemovedFromContainer(EntityUid uid, DelayedItemComponent component, ContainerModifiedMessage args)
         {
-            Spawn(component.Item, Transform(uid).Coordinates);
+            SpawnAttachedTo(component.Item, Transform(uid).Coordinates);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Content.Server._DV.Mail.EntitySystems
         /// </summary>
         private void OnHandEquipped(EntityUid uid, DelayedItemComponent component, EquippedHandEvent args)
         {
-            EntityManager.DeleteEntity(uid);
+            Del(uid);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Content.Server._DV.Mail.EntitySystems
         /// </summary>
         private void OnDropAttempt(EntityUid uid, DelayedItemComponent component, DropAttemptEvent args)
         {
-            EntityManager.DeleteEntity(uid);
+            Del(uid);
         }
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace Content.Server._DV.Mail.EntitySystems
         /// </summary>
         private void OnDamageChanged(EntityUid uid, DelayedItemComponent component, DamageChangedEvent args)
         {
-            Spawn(component.Item, Transform(uid).Coordinates);
-            EntityManager.DeleteEntity(uid);
+            SpawnAttachedTo(component.Item, Transform(uid).Coordinates);
+            Del(uid);
         }
     }
 }

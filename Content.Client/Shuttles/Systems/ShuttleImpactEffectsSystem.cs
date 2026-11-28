@@ -23,7 +23,7 @@ public sealed class ShuttleImpactEffectsSystem : EntitySystem
             if (!entityCoordinates.IsValid(EntityManager))
                 continue;
 
-            Spawn(SparkEffectPrototype, entityCoordinates);
+            SpawnAttachedTo(SparkEffectPrototype, entityCoordinates);
         }
     }
 }

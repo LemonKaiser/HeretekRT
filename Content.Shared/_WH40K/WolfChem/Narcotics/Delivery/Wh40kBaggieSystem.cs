@@ -20,7 +20,7 @@ namespace Content.Shared._WH40K.WolfChem.Narcotics.Delivery;
 /// Keeps anything but the baggie's listed powders out of it, and handles its solids: a click puts one in, using the
 /// baggie in hand takes the last one out, and examining it lists them.
 /// </summary>
-public sealed class Wh40kBaggieSystem : EntitySystem
+public sealed partial class Wh40kBaggieSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _prototype = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

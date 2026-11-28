@@ -5,7 +5,7 @@ namespace Content.Shared._Forge.Barks;
 /// <summary>
 ///     Describes a set of short sounds used to accompany in-character speech.
 /// </summary>
-[Prototype("bark")]
+[Prototype]
 public sealed partial class BarkPrototype : IPrototype
 {
     [IdDataField]

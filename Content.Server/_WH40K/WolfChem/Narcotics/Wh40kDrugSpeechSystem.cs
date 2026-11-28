@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// cannabinoids fill and lose the thread, empathogens stretch and soften, and psychedelics swap words around.
 /// Supports both Latin and Cyrillic speech.
 /// </summary>
-public sealed class Wh40kDrugSpeechSystem : EntitySystem
+public sealed partial class Wh40kDrugSpeechSystem : EntitySystem
 {
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private Wh40kIntoxicationSystem _intoxication = default!;

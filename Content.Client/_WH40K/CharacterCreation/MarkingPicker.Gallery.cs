@@ -136,7 +136,7 @@ public sealed partial class MarkingPicker
 
     private void PopulateGallerySide()
     {
-        GalleryRows.DisposeAllChildren();
+        GalleryRows.RemoveAllChildren();
         _galleryRowPreviews.Clear();
         _galleryChips.Clear();
         var group = new ButtonGroup();
@@ -183,8 +183,8 @@ public sealed partial class MarkingPicker
 
     private void PopulateGalleryDetails()
     {
-        GalleryColors.DisposeAllChildren();
-        GallerySample.DisposeAllChildren();
+        GalleryColors.RemoveAllChildren();
+        GallerySample.RemoveAllChildren();
         _galleryDetailPreview = null;
         _galleryGlowCheckBox = null;
         if (_gallerySelection == null || !GetMarkings(_selectedMarkingCategory).TryGetValue(_gallerySelection, out var prototype))

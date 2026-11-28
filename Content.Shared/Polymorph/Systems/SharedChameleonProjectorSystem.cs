@@ -148,7 +148,7 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
 
         var xform = Transform(uid);
         _xform.SetLocalRotationNoLerp(uid, 0, xform);
-        xform.NoLocalRotation = !xform.NoLocalRotation;
+        _xform.SetNoLocalRotation(uid, !xform.NoLocalRotation, xform);
         args.Handled = true;
     }
 
@@ -253,7 +253,7 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
         }
 
         var xform = Transform(ent);
-        xform.NoLocalRotation = false;
+        _xform.SetNoLocalRotation(ent.Owner, false, xform);
         _xform.Unanchor(ent, xform);
 
         Del(ent.Comp.Disguise);
@@ -296,16 +296,38 @@ public abstract partial class SharedChameleonProjectorSystem : EntitySystem
     /// </summary>
     protected bool GetSrcComp<T>(ChameleonDisguiseComponent comp, [NotNullWhen(true)] out T? src) where T : Component, new()
     {
-        if (TryComp(comp.SourceEntity, out src))
+        if (GetSrcEntity<T>(comp, out var entity))
+        {
+            src = entity.Comp;
             return true;
+        }
 
-        if (comp.SourceProto is not { } protoId)
-            return false;
+        src = null;
+        return false;
+    }
 
-        if (!_proto.TryIndex<EntityPrototype>(protoId, out var proto))
-            return false;
+    /// <summary>
+    /// Try to get a single component and its owner entity (or <see cref="EntityUid.Invalid"/> if sourced from a prototype)
+    /// from the source entity/prototype.
+    /// </summary>
+    protected bool GetSrcEntity<T>(ChameleonDisguiseComponent comp, out Entity<T> src) where T : Component, new()
+    {
+        if (TryComp(comp.SourceEntity, out T? entityComp))
+        {
+            src = (comp.SourceEntity, entityComp);
+            return true;
+        }
 
-        return proto.TryGetComponent(out src, EntityManager.ComponentFactory);
+        if (comp.SourceProto is { } protoId &&
+            _proto.TryIndex<EntityPrototype>(protoId, out var proto) &&
+            proto.TryComp(out T? protoComp, EntityManager.ComponentFactory))
+        {
+            src = (EntityUid.Invalid, protoComp);
+            return true;
+        }
+
+        src = default;
+        return false;
     }
 }
 

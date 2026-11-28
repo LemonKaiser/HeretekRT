@@ -19,7 +19,7 @@ namespace Content.Client._WH40K.Act1;
 /// Draws presentation cues received from the server. It is intentionally non-modal, so the Escape menu keeps its
 /// normal behaviour during Act I.
 /// </summary>
-public sealed class Act1ProloguePresentationController : UIController,
+public sealed partial class Act1ProloguePresentationController : UIController,
     IOnStateEntered<LobbyState>,
     IOnStateExited<LobbyState>,
     IOnStateEntered<GameplayState>,
@@ -79,7 +79,6 @@ public sealed class Act1ProloguePresentationController : UIController,
             return;
 
         _control.Orphan();
-        _control.Dispose();
         _control = null;
     }
 

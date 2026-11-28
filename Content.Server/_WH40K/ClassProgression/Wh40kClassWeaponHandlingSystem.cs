@@ -14,7 +14,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// Applies the fixed, non-stacking movement and moving-shot costs of the WH40K weapon categories. Class skills
 /// can only compensate these two independently named penalties through the public query methods below.
 /// </summary>
-public sealed class Wh40kClassWeaponHandlingSystem : EntitySystem
+public sealed partial class Wh40kClassWeaponHandlingSystem : EntitySystem
 {
     public static readonly TimeSpan ShotPenaltyDuration = TimeSpan.FromSeconds(0.4);
 

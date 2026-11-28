@@ -42,12 +42,12 @@ public sealed partial class Wh40kChassisPanelSystem
 
     private static readonly HashSet<string> VitalSlots = new() { "brain", "posbrain", "pump", "heart" };
 
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly MobThresholdSystem _thresholds = default!;
-    [Dependency] private readonly PowerCellSystem _powerCell = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly Wh40kRadCollectorSystem _radCollector = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private MobThresholdSystem _thresholds = default!;
+    [Dependency] private PowerCellSystem _powerCell = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private Wh40kRadCollectorSystem _radCollector = default!;
 
     public Wh40kChassisPanelState BuildState(EntityUid body)
     {

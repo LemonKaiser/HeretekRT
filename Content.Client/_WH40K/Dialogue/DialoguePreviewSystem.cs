@@ -20,7 +20,7 @@ namespace Content.Client._WH40K.Dialogue;
 /// Creates isolated local entities for dialogue portraits so scene-mode previews do not depend on live PVS, lighting or
 /// mutable UI state.
 /// </summary>
-public sealed class DialoguePreviewSystem : EntitySystem
+public sealed partial class DialoguePreviewSystem : EntitySystem
 {
     private const SlotFlags PreviewVisualSlotFlags =
         SlotFlags.HEAD
@@ -42,13 +42,13 @@ public sealed class DialoguePreviewSystem : EntitySystem
         | SlotFlags.HELMETCOVER
         | SlotFlags.HELMETATTACHMENT;
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly ClientClothingSystem _clothing = default!;
-    [Dependency] private readonly ClientInventorySystem _inventory = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoid = default!;
-    [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly ItemSystem _item = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private ClientClothingSystem _clothing = default!;
+    [Dependency] private ClientInventorySystem _inventory = default!;
+    [Dependency] private HumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private AppearanceSystem _appearance = default!;
+    [Dependency] private ItemSystem _item = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public EntityUid? TryCreatePreview(EntityUid source)
     {
@@ -223,7 +223,7 @@ public sealed class DialoguePreviewSystem : EntitySystem
             // Dialogue previews are local snapshots; apply profile scale directly instead of changing common humanoid code.
             var width = humanoid.Width <= 0.005f ? 1.0f : humanoid.Width;
             var height = humanoid.Height <= 0.005f ? 1.0f : humanoid.Height;
-            sprite.Scale = new Vector2(width, height);
+            _sprite.SetScale((uid, sprite), new Vector2(width, height));
         }
 
         var ev = new AfterAutoHandleStateEvent(default!);
@@ -238,7 +238,7 @@ public sealed class DialoguePreviewSystem : EntitySystem
         // Portraits must ignore map lighting; otherwise equipment layers disappear in dark/FOV-heavy scenes.
         for (var i = 0; i < sprite.AllLayers.Count(); i++)
         {
-            if (!sprite.TryGetLayer(i, out var layer)
+            if (!_sprite.TryGetLayer((uid, sprite), i, out var layer, false)
                 || layer.CopyToShaderParameters != null
                 || layer.ShaderPrototype == "DisplacedStencilDraw")
             {
@@ -258,7 +258,7 @@ public sealed class DialoguePreviewSystem : EntitySystem
 
         for (var i = 0; i < sprite.AllLayers.Count(); i++)
         {
-            if (!sprite.TryGetLayer(i, out var layer))
+            if (!_sprite.TryGetLayer((uid, sprite), i, out var layer, false))
                 continue;
 
             if (layer.CopyToShaderParameters != null)
@@ -273,7 +273,7 @@ public sealed class DialoguePreviewSystem : EntitySystem
 
         foreach (var index in copyLayerIndices.OrderDescending())
         {
-            sprite.RemoveLayer(index);
+            _sprite.RemoveLayer((uid, sprite), index);
         }
 
         if (!TryComp(uid, out InventorySlotsComponent? inventorySlots))

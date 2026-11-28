@@ -29,7 +29,7 @@ namespace Content.Server._WH40K.Activities;
 /// reinforcement. Any violation terminates the one instance and lets the director clean up only
 /// entities marked with its id.
 /// </summary>
-public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
+public sealed partial class KoronusActivityHostileExecutorSystem : EntitySystem
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(0.25);
     private const int AnchorSpawnAttempts = 24;
@@ -110,8 +110,8 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
 
         args.Handled = true;
         if (!IsLivingAttachedPlayer(args.User) ||
-            !TryComp<TransformComponent>(args.User, out var userTransform) ||
-            !TryComp<TransformComponent>(uid, out var anchorTransform) ||
+            !TryComp(args.User, out TransformComponent? userTransform) ||
+            !TryComp(uid, out TransformComponent? anchorTransform) ||
             userTransform.MapID != anchorTransform.MapID)
         {
             return;
@@ -162,7 +162,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
         }
 
         var spawned = new List<EntityUid>();
-        var anchor = Spawn(anchorPrototype, anchorCoordinates);
+        var anchor = SpawnAttachedTo(anchorPrototype, anchorCoordinates);
         spawned.Add(anchor);
         if (!_contentAudit.TryValidateEntity(anchor, out _) ||
             !_safety.TryValidate(new KoronusActivityTarget(
@@ -189,7 +189,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
                 return;
             }
 
-            var hostile = Spawn(hostilePrototype, hostileCoordinates);
+            var hostile = SpawnAttachedTo(hostilePrototype, hostileCoordinates);
             spawned.Add(hostile);
             if (!_contentAudit.TryPrepareHostile(hostile, out _))
             {
@@ -226,7 +226,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
     private void MonitorThreat(KoronusActivityRuntimeInstance instance, KoronusActivityTemplatePrototype template)
     {
         if (instance.Objective is not { } anchor || !Exists(anchor) ||
-            !TryComp<TransformComponent>(anchor, out var anchorTransform))
+            !TryComp(anchor, out TransformComponent? anchorTransform))
         {
             TerminateThreat(instance.Id, KoronusActivityTerminalReason.OwnedEntityMissing);
             return;
@@ -328,7 +328,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform))
+                !TryComp(player, out TransformComponent? transform))
             {
                 continue;
             }
@@ -385,7 +385,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform) ||
+                !TryComp(player, out TransformComponent? transform) ||
                 transform.MapID != mapId)
             {
                 continue;
@@ -466,7 +466,7 @@ public sealed class KoronusActivityHostileExecutorSystem : EntitySystem
 
     private bool IsHostilePositionSafe(EntityUid hostile, KoronusActivityHostileComponent component)
     {
-        if (!TryComp<TransformComponent>(hostile, out var transform) ||
+        if (!TryComp(hostile, out TransformComponent? transform) ||
             transform.MapID != component.MapId ||
             transform.GridUid != component.AllowedGrid)
         {

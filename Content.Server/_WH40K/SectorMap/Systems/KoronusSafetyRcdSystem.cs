@@ -8,7 +8,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// <summary>
 /// RCD edits bypass ConstructionSystem, so they need their own authoritative safe-sector gate.
 /// </summary>
-public sealed class KoronusSafetyRcdSystem : EntitySystem
+public sealed partial class KoronusSafetyRcdSystem : EntitySystem
 {
     [Dependency] private KoronusSafetyPolicySystem _safety = default!;
 

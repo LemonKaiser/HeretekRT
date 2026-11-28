@@ -77,7 +77,7 @@ public sealed partial class SharedWH40KBarricadePlacementSystem : EntitySystem
             QueueDel(ent.Owner);
         }
 
-        var barricade = Spawn(placement.EntityType, snappedCoords);
+        var barricade = SpawnAttachedTo(placement.EntityType, snappedCoords);
         _transform.SetLocalRotation(barricade, placementDirection.ToAngle());
 
         args.Handled = true;

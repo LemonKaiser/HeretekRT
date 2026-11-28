@@ -550,7 +550,7 @@ public sealed partial class ChatUIController : UIController
     {
         bubble.OnDied -= SpeechBubbleDied;
         bubble.OnContentSizeChanged -= SpeechBubbleContentSizeChanged;
-        bubble.Dispose();
+        bubble.Orphan();
 
         if (!_activeSpeechBubbles.TryGetValue(entityUid, out var list))
             return;

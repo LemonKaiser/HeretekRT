@@ -355,7 +355,7 @@ public sealed partial class Wh40kAugmentBedSystem : EntitySystem
         Unlock(bed, patient);
         _audio.Stop(operation.Audio);
         _audio.PlayPvs(bed.Comp.ToolSound, bed);
-        Spawn("EffectSparks", Transform(bed).Coordinates);
+        SpawnAttachedTo("EffectSparks", Transform(bed).Coordinates);
         _popup.PopupEntity(Loc.GetString("wh40k-augment-bed-complete"), bed, patient);
         bed.Comp.ReopenFor = patient;
         bed.Comp.Deadline = _timing.CurTime + CompletionEffectTime;

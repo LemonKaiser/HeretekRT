@@ -80,11 +80,17 @@ namespace Content.Client.ContextMenu.UI
 
         internal void AddSection(string title) => _menuBody.AddSection(title);
 
-        protected override void Dispose(bool disposing)
+        internal void RemoveFromTree()
         {
-            MenuBody.OnChildRemoved -= ctrl => _uiController.OnRemoveElement(this, ctrl);
+            Close();
+            MenuBody.RemoveAllChildren();
+            Orphan();
             ParentElement = null;
-            base.Dispose(disposing);
+        }
+
+        internal void OnElementKeyBindDown(ContextMenuElement element, GUIBoundKeyEventArgs args)
+        {
+            _uiController.OnContextKeyEvent?.Invoke(element, args);
         }
 
         protected override void EnteredTree()

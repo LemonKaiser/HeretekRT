@@ -14,7 +14,7 @@ namespace Content.Server._WH40K.Dialogue;
 /// Resolves a player's ID card for dialogue scripts and changes only the requested access tags.
 /// It never removes a card from a PDA or a hand; the hand-off scene will be handled separately.
 /// </summary>
-public sealed class DialogueAccessSystem : EntitySystem
+public sealed partial class DialogueAccessSystem : EntitySystem
 {
     [Dependency] private AccessSystem _access = default!;
     [Dependency] private InventorySystem _inventory = default!;

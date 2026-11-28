@@ -99,7 +99,7 @@ public sealed partial class HitscanDiffractSystem : EntitySystem
         }
 
         // Spawn entity
-        var newHitscan = Spawn(prototypeToSpawn.Value, fromCoordinates);
+        var newHitscan = SpawnAttachedTo(prototypeToSpawn.Value, fromCoordinates);
 
         // Fire
         var diffractedTraceEvent = new HitscanTraceEvent

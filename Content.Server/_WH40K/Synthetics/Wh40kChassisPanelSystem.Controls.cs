@@ -50,16 +50,16 @@ public sealed partial class Wh40kChassisPanelSystem
     private static readonly SoundSpecifier OverclockSound = new SoundPathSpecifier("/Audio/Machines/beep.ogg");
     private static readonly SoundSpecifier SparkSound = new SoundCollectionSpecifier("sparks");
 
-    [Dependency] private readonly AudioSystem _audio = default!;
-    [Dependency] private readonly BatterySystem _battery = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly SharedJitteringSystem _jitter = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
-    [Dependency] private readonly TemperatureSystem _temperature = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private AudioSystem _audio = default!;
+    [Dependency] private BatterySystem _battery = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private SharedJitteringSystem _jitter = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private StatusEffectsSystem _statusEffects = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     private void OnIsolateMessage(Entity<Wh40kChassisComponent> ent, ref Wh40kChassisIsolatePartMessage args)
     {

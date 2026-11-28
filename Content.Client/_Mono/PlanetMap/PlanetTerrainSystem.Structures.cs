@@ -192,7 +192,7 @@ public sealed partial class PlanetTerrainSystem
         var layer = cache.Structures;
         const int size = StructureRegionSize;
 
-        layer.ScanRator ??= _mapSystem.GetAllTilesEnumerator(cache.MapUid, grid);
+        layer.ScanRator ??= _mapSystem.GetAllTiles(cache.MapUid, grid);
 
         // After repeated restarts, stop slicing so the scan is guaranteed to finish.
         var budget = layer.ScanRestarts >= MaxScanRestarts ? int.MaxValue : ScanTilesPerFrame;
@@ -267,7 +267,7 @@ public sealed partial class PlanetTerrainSystem
 
         // Inset so neighbouring regions' tiles aren't included.
         var box = new Box2(origin + new Vector2(0.01f, 0.01f), origin + new Vector2(size - 0.01f, size - 0.01f));
-        var rator = _mapSystem.GetLocalTilesEnumerator(cache.MapUid, grid, box);
+        var rator = _mapSystem.GetLocalTilesIntersecting(cache.MapUid, grid, box);
 
         while (rator.MoveNext(out var tileRef))
         {

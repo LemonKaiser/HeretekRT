@@ -4,7 +4,7 @@ using Robust.Shared.Network;
 
 namespace Content.Client._WH40K.Factions;
 
-public sealed class FactionLobbySystem : EntitySystem
+public sealed partial class FactionLobbySystem : EntitySystem
 {
     [Dependency] private IClientNetManager _net = default!;
     public Wh40kFactionUiSnapshot? Snapshot { get; private set; }

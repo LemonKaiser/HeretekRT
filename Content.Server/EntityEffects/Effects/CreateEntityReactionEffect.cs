@@ -34,7 +34,7 @@ public sealed partial class CreateEntityReactionEffect : EntityEffect
 
         for (var i = 0; i < quantity; i++)
         {
-            var uid = args.EntityManager.SpawnEntity(Entity, transformSystem.GetMapCoordinates(args.TargetEntity, xform: transform));
+            var uid = args.EntityManager.Spawn(Entity, transformSystem.GetMapCoordinates(args.TargetEntity, xform: transform));
             transformSystem.AttachToGridOrMap(uid);
 
             // TODO figure out how to properly spawn inside of containers

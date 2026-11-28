@@ -5,7 +5,7 @@ namespace Content.Shared._WH40K.SectorMap.Prototypes;
 /// <summary>
 /// A fixed warp corridor between two systems on the Koronus sector map.
 /// </summary>
-[Prototype("koronusRoute")]
+[Prototype]
 public sealed partial class KoronusRoutePrototype : IPrototype
 {
     [IdDataField]

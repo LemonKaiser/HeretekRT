@@ -10,7 +10,7 @@ namespace Content.Server._WH40K.WolfChem.Purity;
 /// Moves each graded reaction's optimal temperature by up to its <see cref="Wh40kReactionPurityPrototype.Drift"/> at
 /// round start, so last round's numbers are only close.
 /// </summary>
-public sealed class Wh40kPurityDriftSystem : EntitySystem
+public sealed partial class Wh40kPurityDriftSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private IRobustRandom _random = default!;

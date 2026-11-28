@@ -4,6 +4,7 @@ using Content.Shared.Maps;
 using Content.Shared.Procedural;
 using Content.Shared.Procedural.PostGeneration;
 using Content.Shared.Storage;
+using Robust.Shared.Random;
 
 namespace Content.Server.Procedural.DungeonJob;
 
@@ -12,7 +13,7 @@ public sealed partial class DungeonJob
     /// <summary>
     /// <see cref="InternalWindowDunGen"/>
     /// </summary>
-    private async Task PostGen(InternalWindowDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, Random random)
+    private async Task PostGen(InternalWindowDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, IRobustRandom random)
     {
         if (!data.Tiles.TryGetValue(DungeonDataKey.FallbackTile, out var tileProto) ||
             !data.SpawnGroups.TryGetValue(DungeonDataKey.Window, out var windowGroup))
@@ -90,7 +91,7 @@ public sealed partial class DungeonJob
                     var gridPos = _maps.GridTileToLocal(_gridUid, _grid, tile);
                     _maps.SetTile(_gridUid, _grid, tile, _tile.GetVariantTile((ContentTileDefinition) tileDef, random));
 
-                    _entManager.SpawnEntities(gridPos, EntitySpawnCollection.GetSpawns(window.Entries, random));
+                    _entManager.SpawnEntitiesAttachedTo(gridPos, EntitySpawnCollection.GetSpawnsIncludingEmptyEntries(window.Entries, random));
                 }
 
                 if (validTiles.Count > 0)

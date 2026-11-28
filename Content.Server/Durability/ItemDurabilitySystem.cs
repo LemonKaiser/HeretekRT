@@ -20,8 +20,8 @@ namespace Content.Server.Durability;
 /// </summary>
 public sealed partial class ItemDurabilitySystem : SharedItemDurabilitySystem
 {
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedArmorPlateSystem _plates = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedArmorPlateSystem _plates = default!;
 
     public override void Initialize()
     {

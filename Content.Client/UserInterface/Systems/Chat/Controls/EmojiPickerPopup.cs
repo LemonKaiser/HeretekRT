@@ -32,9 +32,9 @@ public sealed partial class EmojiPickerPopup : Popup
     private static readonly Color BorderColor = Color.FromHex("#B6975499");
     private static readonly Color HeaderTextColor = Color.FromHex("#E5C879");
     private static readonly Color PreviewTextColor = Color.FromHex("#DFD7C3");
-    [Dependency] private readonly IResourceCache _resources = default!;
-    [Dependency] private readonly IConfigurationManager _config = default!;
-    [Dependency] private readonly ChatEmojiCatalog _catalog = default!;
+    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private IConfigurationManager _config = default!;
+    [Dependency] private ChatEmojiCatalog _catalog = default!;
 
     private readonly Dictionary<ChatEmojiCategory, Button> _categoryButtons = new();
     private readonly BoxContainer _categoryBox;
@@ -213,7 +213,6 @@ public sealed partial class EmojiPickerPopup : Popup
         _toggleFavoriteButton.OnPressed += _ => TogglePreviewFavorite();
         previewBar.AddChild(_toggleFavoriteButton);
 
-        _catalog.Changed += OnCatalogChanged;
         OnPopupOpen += HandlePopupOpen;
         EnsureCatalogue();
         SelectCategory(GetDefaultCategory());
@@ -529,20 +528,16 @@ public sealed partial class EmojiPickerPopup : Popup
     protected override void EnteredTree()
     {
         base.EnteredTree();
+        _catalog.Changed += OnCatalogChanged;
+        OnCatalogChanged();
         UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().RegisterFloatingPanel(this);
     }
 
     protected override void ExitedTree()
     {
         UserInterfaceManager.GetUIController<Wh40kInterfaceUIController>().UnregisterFloatingPanel(this);
+        _catalog.Changed -= OnCatalogChanged;
         base.ExitedTree();
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-        if (disposing)
-            _catalog.Changed -= OnCatalogChanged;
     }
 
     private enum PickerView : byte

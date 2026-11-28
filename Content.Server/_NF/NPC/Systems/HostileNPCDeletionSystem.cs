@@ -49,7 +49,7 @@ public sealed partial class HostileNPCDeletionSystem : EntitySystem
             {
                 _audio.PlayPredicted(protectedGrid.HostileMobKillSound, xform.Coordinates, null);
                 _sharedBodySystem.GibBody(uid);
-                Spawn("Ash", xform.Coordinates);
+                SpawnAttachedTo("Ash", xform.Coordinates);
                 _popup.PopupCoordinates(Loc.GetString("admin-smite-turned-ash-other", ("name", uid)), xform.Coordinates, PopupType.LargeCaution);
                 QueueDel(uid);
             }

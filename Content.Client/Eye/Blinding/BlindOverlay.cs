@@ -12,6 +12,9 @@ namespace Content.Client.Eye.Blinding
 {
     public sealed partial class BlindOverlay : Overlay
     {
+        private static readonly ProtoId<ShaderPrototype> GreyscaleFullscreenShaderId = "GreyscaleFullscreen";
+        private static readonly ProtoId<ShaderPrototype> CircleMaskShaderId = "CircleMask";
+
         [Dependency] private IPrototypeManager _prototypeManager = default!;
         [Dependency] private IPlayerManager _playerManager = default!;
         [Dependency] private IEntityManager _entityManager = default!;
@@ -27,8 +30,8 @@ namespace Content.Client.Eye.Blinding
         public BlindOverlay()
         {
             IoCManager.InjectDependencies(this);
-            _greyscaleShader = _prototypeManager.Index<ShaderPrototype>("GreyscaleFullscreen").InstanceUnique();
-            _circleMaskShader = _prototypeManager.Index<ShaderPrototype>("CircleMask").InstanceUnique();
+            _greyscaleShader = _prototypeManager.Index(GreyscaleFullscreenShaderId).InstanceUnique();
+            _circleMaskShader = _prototypeManager.Index(CircleMaskShaderId).InstanceUnique();
         }
         protected override bool BeforeDraw(in OverlayDrawArgs args)
         {

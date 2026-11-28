@@ -3,7 +3,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.Administration.Mute;
 
-public sealed class WH40KMuteSystem : EntitySystem
+public sealed partial class WH40KMuteSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
 

@@ -10,7 +10,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// <summary>
 /// Draws the shared red danger area outside the system edge when the viewer enters its warning area.
 /// </summary>
-public sealed class KoronusSystemBoundaryOverlay : Overlay
+public sealed partial class KoronusSystemBoundaryOverlay : Overlay
 {
     [Dependency] private IEntityManager _entities = default!;
     private readonly Vector2[] _outlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];

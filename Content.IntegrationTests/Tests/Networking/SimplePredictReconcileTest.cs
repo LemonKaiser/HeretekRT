@@ -27,7 +27,7 @@ namespace Content.IntegrationTests.Tests.Networking
     // the tick where the server *should* have, but did not, acknowledge the state change.
     // Finally, we run two events inside the prediction area to ensure reconciling does for incremental stuff.
     [TestFixture]
-    public sealed class SimplePredictReconcileTest
+    public sealed partial class SimplePredictReconcileTest
     {
         [Test]
         public async Task Test()
@@ -57,7 +57,7 @@ namespace Content.IntegrationTests.Tests.Networking
             {
                 // Spawn dummy component entity.
                 sMapSys.CreateMap(out var map);
-                serverEnt = sEntityManager.SpawnEntity(null, new MapCoordinates(new Vector2(0, 0), map));
+                serverEnt = sEntityManager.Spawn(null, new MapCoordinates(new Vector2(0, 0), map));
                 serverComponent = sEntityManager.AddComponent<PredictionTestComponent>(serverEnt);
             });
 
@@ -389,7 +389,7 @@ namespace Content.IntegrationTests.Tests.Networking
             await pair.CleanReturnAsync();
         }
 
-        public sealed class PredictionTestEntitySystem : EntitySystem
+        public sealed partial class PredictionTestEntitySystem : EntitySystem
         {
             public bool Allow { get; set; } = true;
 
@@ -410,7 +410,7 @@ namespace Content.IntegrationTests.Tests.Networking
             {
                 var uid = GetEntity(message.Uid);
 
-                var component = EntityManager.GetComponent<PredictionTestComponent>(uid);
+                var component = Comp<PredictionTestComponent>(uid);
                 var old = component.Foo;
                 if (Allow)
                 {

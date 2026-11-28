@@ -72,7 +72,7 @@ public sealed partial class CargoSystem
         if (!TryGetBountyFromId(owner, args.BountyId, out var bounty))
             return;
 
-        var label = Spawn(component.BountyLabelId, Transform(uid).Coordinates);
+        var label = SpawnAttachedTo(component.BountyLabelId, Transform(uid).Coordinates);
         component.NextPrintTime = _timing.CurTime + component.PrintDelay;
         SetupBountyLabel(label, owner, bounty.Value);
         _audio.PlayPvs(component.PrintSound, uid);

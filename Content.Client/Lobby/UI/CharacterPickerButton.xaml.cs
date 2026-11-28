@@ -20,9 +20,11 @@ namespace Content.Client.Lobby.UI;
 [GenerateTypedNameReferences]
 public sealed partial class CharacterPickerButton : ContainerButton
 {
-    private IEntityManager _entManager;
+    private readonly IEntityManager _entManager;
+    private readonly IPrototypeManager _prototypeManager;
+    private readonly ICharacterProfile _profile;
 
-    private EntityUid _previewDummy;
+    private EntityUid? _previewDummy;
 
     /// <summary>
     /// Invoked if we should delete the attached character
@@ -39,20 +41,15 @@ public sealed partial class CharacterPickerButton : ContainerButton
     {
         RobustXamlLoader.Load(this);
         _entManager = entityManager;
+        _prototypeManager = prototypeManager;
+        _profile = profile;
         AddStyleClass(StyleClassButton);
         ToggleMode = true;
         Group = group;
         var description = profile.Name;
 
-        if (profile is not HumanoidCharacterProfile humanoid)
+        if (profile is HumanoidCharacterProfile humanoid)
         {
-            _previewDummy = entityManager.SpawnEntity(prototypeManager.Index<SpeciesPrototype>(SharedHumanoidAppearanceSystem.DefaultSpecies).DollPrototype, MapCoordinates.Nullspace);
-        }
-        else
-        {
-            _previewDummy = UserInterfaceManager.GetUIController<LobbyUIController>()
-                .LoadProfileEntity(humanoid, null, true);
-
             var highPriorityJob = humanoid.JobPriorities.SingleOrDefault(p => p.Value == JobPriority.High).Key;
             if (highPriorityJob != default)
             {
@@ -65,7 +62,6 @@ public sealed partial class CharacterPickerButton : ContainerButton
         Pressed = isSelected;
         DeleteButton.Visible = canDelete && !isSelected;
 
-        View.SetEntity(_previewDummy);
         DescriptionLabel.Text = description;
 
         ConfirmDeleteButton.OnPressed += _ =>
@@ -82,13 +78,21 @@ public sealed partial class CharacterPickerButton : ContainerButton
         };
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        base.Dispose(disposing);
-        if (!disposing)
-            return;
+        base.EnteredTree();
 
+        _previewDummy = _profile is HumanoidCharacterProfile humanoid
+            ? UserInterfaceManager.GetUIController<LobbyUIController>().LoadProfileEntity(humanoid, null, true)
+            : _entManager.Spawn(_prototypeManager.Index(SharedHumanoidAppearanceSystem.DefaultSpecies).DollPrototype, MapCoordinates.Nullspace);
+        View.SetEntity(_previewDummy);
+    }
+
+    protected override void ExitedTree()
+    {
+        View.SetEntity(null);
         _entManager.DeleteEntity(_previewDummy);
-        _previewDummy = default;
+        _previewDummy = null;
+        base.ExitedTree();
     }
 }

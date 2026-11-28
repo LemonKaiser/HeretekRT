@@ -9,7 +9,7 @@ namespace Content.Client._WH40K.Augments.Combat;
 /// <summary>
 /// Brief quarter-second static tear glitch when cycling Tapetum ocular bands.
 /// </summary>
-public sealed class Wh40kThermalGlitchOverlay : Overlay
+public sealed partial class Wh40kThermalGlitchOverlay : Overlay
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IGameTiming _timing = default!;

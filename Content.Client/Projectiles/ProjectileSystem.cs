@@ -11,6 +11,7 @@ namespace Content.Client.Projectiles;
 public sealed partial class ProjectileSystem : SharedProjectileSystem
 {
     [Dependency] private AnimationPlayerSystem _player = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {
@@ -25,13 +26,13 @@ public sealed partial class ProjectileSystem : SharedProjectileSystem
         if (Deleted(coords.EntityId))
             return;
 
-        var ent = Spawn(ev.Prototype, coords);
+        var ent = SpawnAttachedTo(ev.Prototype, coords);
 
         if (TryComp<SpriteComponent>(ent, out var sprite))
         {
             sprite[EffectLayers.Unshaded].AutoAnimated = false;
-            sprite.LayerMapTryGet(EffectLayers.Unshaded, out var layer);
-            var state = sprite.LayerGetState(layer);
+            _sprite.LayerMapTryGet((ent, sprite), EffectLayers.Unshaded, out var layer, false);
+            var state = _sprite.LayerGetRsiState((ent, sprite), layer);
             var lifetime = 0.5f;
 
             if (TryComp<TimedDespawnComponent>(ent, out var despawn))

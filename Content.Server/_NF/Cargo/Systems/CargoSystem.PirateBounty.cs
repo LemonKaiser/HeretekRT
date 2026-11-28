@@ -75,13 +75,13 @@ public sealed partial class CargoSystem
 
         if (bountyPrototype.SpawnChest)
         {
-            var chest = Spawn(component.BountyCrateId, Transform(uid).Coordinates);
+            var chest = SpawnAttachedTo(component.BountyCrateId, Transform(uid).Coordinates);
             SetupPirateBountyChest(chest, bountyData, bountyPrototype);
             _audio.PlayPvs(component.SpawnChestSound, uid);
         }
         else
         {
-            var label = Spawn(component.BountyLabelId, Transform(uid).Coordinates);
+            var label = SpawnAttachedTo(component.BountyLabelId, Transform(uid).Coordinates);
             SetupPirateBountyManifest(label, bountyData, bountyPrototype);
             _audio.PlayPvs(component.PrintSound, uid);
         }

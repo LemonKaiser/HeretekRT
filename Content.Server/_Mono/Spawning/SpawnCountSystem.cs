@@ -37,7 +37,7 @@ public sealed partial class SpawnCountSystem : EntitySystem
         var bound = 1;
         var stackCount = count;
 
-        if (entProto.TryGetComponent<StackComponent>(out var stack))
+        if (entProto.TryComp<StackComponent>(out var stack, Factory))
         {
             stackCount = stack.Count * count;
             var stackPrototype = _proto.Index<StackPrototype>(stack.StackTypeId);
@@ -54,7 +54,7 @@ public sealed partial class SpawnCountSystem : EntitySystem
 
     private void SpawnEntity(string? prototype, EntityCoordinates coordinates, int stackCount)
     {
-        var ent = Spawn(prototype, coordinates);
+        var ent = SpawnAttachedTo(prototype, coordinates);
 
         if (TryComp<StackComponent>(ent, out var stack))
             _stack.SetCount(ent, stackCount, stack);

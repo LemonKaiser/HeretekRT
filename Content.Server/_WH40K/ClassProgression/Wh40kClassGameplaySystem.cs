@@ -58,6 +58,7 @@ using Content.Shared._WH40K.ClassProgression;
 using Content.Shared._WH40K.SectorMap.Prototypes;
 using Content.Shared._White.BackStab;
 using Content.Shared.FixedPoint;
+using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -73,7 +74,7 @@ namespace Content.Server._WH40K.ClassProgression;
 /// Executes body-local class mechanics. Every entry point resolves an immutable active effect and repeats
 /// equipment, target, range, line-of-sight, cooldown, mob-state and Safeguard checks.
 /// </summary>
-public sealed class Wh40kClassGameplaySystem : EntitySystem
+public sealed partial class Wh40kClassGameplaySystem : EntitySystem
 {
     private const float MaximumPassiveBonus = 0.5f;
     private const float MaximumDamageReduction = 0.75f;
@@ -82,6 +83,9 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
     private static readonly ProtoId<TagPrototype> HackableTag = "Wh40kClassHackable";
     private static readonly ProtoId<TagPrototype> MedicalNodeTag = "Wh40kMedicalNode";
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageType = "Poison";
+    private static readonly ProtoId<DamageTypePrototype> PiercingDamageType = "Piercing";
+    private static readonly ProtoId<DamageTypePrototype> StructuralDamageType = "Structural";
+    private static readonly SoundSpecifier ConfirmSound = new SoundPathSpecifier("/Audio/Machines/high_tech_confirm.ogg");
     private static readonly ProtoId<TagPrototype> PoisonConsumableTag = "Wh40kSkillPoison";
     private static readonly ProtoId<TagPrototype> SkillToolTag = "Wh40kSkillTool";
     private static readonly ProtoId<TagPrototype> CommandBeaconConsumableTag = "Wh40kCommandBeaconConsumable";
@@ -814,7 +818,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         {
             _stamina.TakeStaminaDamage(target, Math.Clamp(effect.Magnitude, 10, 60), source: ent.Owner);
         }
-        else if (_prototypes.TryIndex<DamageTypePrototype>("Piercing", out var piercing))
+        else if (_prototypes.TryIndex(PiercingDamageType, out var piercing))
         {
             _damageable.TryChangeDamage(
                 target,
@@ -1162,7 +1166,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
     {
         if (!TryComp<DamageableComponent>(target, out var damageable) ||
             damageable.TotalDamage <= 0 ||
-            !_prototypes.TryIndex<DamageTypePrototype>("Structural", out var structural))
+            !_prototypes.TryIndex(StructuralDamageType, out var structural))
         {
             return false;
         }
@@ -1826,7 +1830,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
             return;
         }
 
-        _audio.PlayGlobal("/Audio/Machines/high_tech_confirm.ogg", session);
+        _audio.PlayGlobal(ConfirmSound, session);
     }
 
     private void OnMove(Entity<Wh40kClassRuntimeProfileComponent> ent, ref MoveEvent args)
@@ -2114,7 +2118,7 @@ public sealed class Wh40kClassGameplaySystem : EntitySystem
         if (!consumable.IsValid())
             return false;
 
-        var beacon = Spawn(CommandBeaconPrototype, Transform(ent).Coordinates);
+        var beacon = SpawnAttachedTo(CommandBeaconPrototype, Transform(ent).Coordinates);
         var runtime = EnsureComp<Wh40kClassCommandBeaconComponent>(beacon);
         runtime.Source = ent.Owner;
         runtime.ExpiresAt = _timing.CurTime + effect.Duration;

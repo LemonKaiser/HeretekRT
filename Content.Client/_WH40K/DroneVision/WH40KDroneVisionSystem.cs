@@ -8,9 +8,9 @@ namespace Content.Client._WH40K.DroneVision;
 
 public sealed partial class WH40KDroneVisionSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly ISharedPlayerManager _playerManager = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private ISharedPlayerManager _playerManager = default!;
 
     private WH40KDroneVisionOverlay _overlay = default!;
 

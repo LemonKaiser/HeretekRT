@@ -58,7 +58,7 @@ public sealed partial class Wh40kQuestProgressSystem
             var sources = _subjectSources.Where(x => Exists(x) && Comp<Wh40kQuestSubjectSourceComponent>(x).Prototype.Id == key.Item2 &&
                 Comp<Wh40kQuestSubjectSourceComponent>(x).CaseKey == sub.Objective.Target.CaseKey).Take(2).ToArray();
             if (sources.Length != 1) continue;
-            var subject = Spawn(key.Item2, Transform(sources[0]).Coordinates);
+            var subject = SpawnAttachedTo(key.Item2, Transform(sources[0]).Coordinates);
             var marker = Comp<Wh40kQuestSubjectComponent>(subject);
             marker.QuestId = sub.Quest; marker.Generation = _sessions.Generation;
             _subjects[key] = subject;

@@ -175,7 +175,7 @@ namespace Content.Server.Explosion.EntitySystems
             if (!coords.IsValid(EntityManager))
                 return;
 
-            Spawn(component.Proto, coords);
+            SpawnAttachedTo(component.Proto, coords);
         }
 
         private void HandleExplodeTrigger(EntityUid uid, ExplodeOnTriggerComponent component, TriggerEvent args)
@@ -192,7 +192,7 @@ namespace Content.Server.Explosion.EntitySystems
 
         private void HandleDeleteTrigger(EntityUid uid, DeleteOnTriggerComponent component, TriggerEvent args)
         {
-            EntityManager.QueueDeleteEntity(uid);
+            QueueDel(uid);
             args.Handled = true;
         }
 
@@ -249,7 +249,7 @@ namespace Content.Server.Explosion.EntitySystems
 
             // Gets location of the implant
             var ownerXform = Transform(uid);
-            var pos = ownerXform.MapPosition;
+            var pos = _transformSystem.GetMapCoordinates(uid, ownerXform);
             var x = (int) pos.X;
             var y = (int) pos.Y;
             var posText = $"({x}, {y})";

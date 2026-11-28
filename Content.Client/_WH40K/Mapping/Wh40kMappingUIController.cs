@@ -29,15 +29,15 @@ namespace Content.Client._WH40K.Mapping;
 
 public sealed partial class Wh40kMappingUIController : UIController, IOnStateChanged<GameplayState>
 {
-    [Dependency] private readonly IPlacementManager _placement = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly ILocalizationManager _localization = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly ITileDefinitionManager _tiles = default!;
-    [Dependency] private readonly IResourceCache _resources = default!;
-    [Dependency] private readonly IClientAdminManager _admin = default!;
-    [Dependency] private readonly IInputManager _input = default!;
-    [Dependency] private readonly IComponentFactory _componentFactory = default!;
+    [Dependency] private IPlacementManager _placement = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
+    [Dependency] private ILocalizationManager _localization = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private ITileDefinitionManager _tiles = default!;
+    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private IClientAdminManager _admin = default!;
+    [Dependency] private IInputManager _input = default!;
+    [Dependency] private IComponentFactory _componentFactory = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
     [UISystemDependency] private readonly SpriteSystem _sprites = default!;
     [UISystemDependency] private readonly AppearanceSystem _appearance = default!;
@@ -103,8 +103,6 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
     {
         CommandBinds.Unregister<Wh40kMappingUIController>();
         CloseWindows();
-        _entities?.Dispose();
-        _tileWindow?.Dispose();
         _entities = null;
         _tileWindow = null;
     }
@@ -232,11 +230,11 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
             _placement.Clear();
     }
 
-    private static string TileName(ITileDefinition tile)
+    private string TileName(ITileDefinition tile)
     {
         if (string.IsNullOrWhiteSpace(tile.Name))
             return tile.ID;
-        return Loc.TryGetString(tile.Name, out var name) ? name : tile.Name;
+        return _localization.TryGetString(tile.Name, out var name) ? name : tile.Name;
     }
 
     private Texture? TileIcon(ITileDefinition tile)

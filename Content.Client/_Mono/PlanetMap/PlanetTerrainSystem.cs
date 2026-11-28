@@ -781,7 +781,7 @@ public sealed partial class PlanetTerrainSystem : EntitySystem
 
         var factory = EntityManager.ComponentFactory;
 
-        if (proto.TryGetComponent<PlanetMapColorComponent>(out var overrides, factory))
+        if (proto.TryComp<PlanetMapColorComponent>(out var overrides, factory))
         {
             if (overrides.Hidden)
                 return default;
@@ -807,7 +807,7 @@ public sealed partial class PlanetTerrainSystem : EntitySystem
         {
             // GetPrototypeIcon returns a bare Texture for entities with an icon components like liquids,
             // which tells us nothing about where its pixels live. Resolve the icon's RSI state ourselves instead.
-            icon = proto.TryGetComponent<IconComponent>(out var iconComp, factory)
+            icon = proto.TryComp<IconComponent>(out var iconComp, factory)
                 ? _sprite.GetState(iconComp.Icon)
                 : _sprite.GetPrototypeIcon(proto);
         }
@@ -827,7 +827,7 @@ public sealed partial class PlanetTerrainSystem : EntitySystem
         var color = AverageImage(path, new Box2i(0, 0, state.Size.X, state.Size.Y), out var coverage);
 
         // Many sprites are greyscale and tinted in YAML, so apply the sprite colour.
-        if (proto.TryGetComponent<SpriteComponent>(out var spriteComp, factory))
+        if (proto.TryComp<SpriteComponent>(out var spriteComp, factory))
         {
             var tint = spriteComp.Color;
             color.R = (byte) Math.Clamp(color.R * tint.R, 0f, 255f);

@@ -8,10 +8,10 @@ namespace Content.Client._WH40K.Visuals.SeeOverLayer;
 /// <summary>
 /// Keeps client-only draw-depth overrides in sync with the local player.
 /// </summary>
-public sealed class SeeOverLayerSystem : EntitySystem
+public sealed partial class SeeOverLayerSystem : EntitySystem
 {
-    [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly SpriteSystem _sprites = default!;
+    [Dependency] private IPlayerManager _player = default!;
+    [Dependency] private SpriteSystem _sprites = default!;
 
     public override void Initialize()
     {

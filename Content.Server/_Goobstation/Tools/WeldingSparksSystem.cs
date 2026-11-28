@@ -12,10 +12,10 @@ using Robust.Shared.Map;
 
 namespace Content.Server._Goobstation.Tools;
 
-public sealed class WeldingSparksSystem : EntitySystem
+public sealed partial class WeldingSparksSystem : EntitySystem
 {
-    [Dependency] private readonly ToolSystem _toolSystem = default!;
-    [Dependency] private readonly ParticleSpawnSystem _particles = default!;
+    [Dependency] private ToolSystem _toolSystem = default!;
+    [Dependency] private ParticleSpawnSystem _particles = default!;
 
     public override void Initialize()
     {
@@ -45,7 +45,7 @@ public sealed class WeldingSparksSystem : EntitySystem
 
     private void SpawnEffect(Entity<WeldingSparksComponent> ent, ref UseToolEvent args, DoAfterId id, EntityCoordinates spawnLoc)
     {
-        var effect = Spawn(ent.Comp.EffectProto, spawnLoc);
+        var effect = SpawnAttachedTo(ent.Comp.EffectProto, spawnLoc);
         ent.Comp.SpawnedEffects.Add(id, effect);
 
         if (args.Target is { } target)

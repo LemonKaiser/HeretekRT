@@ -2212,7 +2212,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         return _transform.ToCoordinates(new MapCoordinates(worldPosition, mapOrigin.MapId));
     }
 
-    public class BlipData
+    public sealed class BlipData
     {
         public bool IsOutsideRadarCircle { get; set; }
         public Vector2 UiPosition { get; set; }
@@ -2228,17 +2228,17 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var shields = EntManager.AllEntityQueryEnumerator<ShipShieldVisualsComponent, FixturesComponent, TransformComponent>();
         while (shields.MoveNext(out var uid, out var visuals, out var fixtures, out var xform))
         {
-            if (!EntManager.TryGetComponent<TransformComponent>(xform.GridUid, out var parentXform))
+            if (xform.GridUid is not { } gridUid || !EntManager.TryGetComponent<TransformComponent>(gridUid, out var parentXform))
                 continue;
 
             if (xform.MapID != consoleXform.MapID)
                 continue;
 
             // Don't draw shields when in FTL
-            if (EntManager.HasComponent<FTLComponent>(parentXform.Owner))
+            if (EntManager.HasComponent<FTLComponent>(gridUid))
                 continue;
 
-            var detectionLevel = _consoleEntity == null ? DetectionLevel.Detected : GetGridDetected(parentXform.Owner);
+            var detectionLevel = _consoleEntity == null ? DetectionLevel.Detected : GetGridDetected(gridUid);
             if (detectionLevel != DetectionLevel.Detected)
                 continue;
 
@@ -2252,19 +2252,20 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             var count = chain.Count;
             var verticies = chain.Vertices;
 
-            var center = _transform.WithEntityId(xform.Coordinates, xform.GridUid.Value).Position;
+            var center = _transform.WithEntityId(xform.Coordinates, gridUid).Position;
+            var parentMatrix = _transform.GetWorldMatrix(parentXform);
 
             // CreateLoop appends the first vertex after the final one, so iterating to Count
             // includes the closing segment as well.
             for (var i = 0; i < count; i++)
             {
                 var v1 = Vector2.Add(center, verticies[i]);
-                v1 = Vector2.Transform(v1, parentXform.WorldMatrix); // transform to world matrix
+                v1 = Vector2.Transform(v1, parentMatrix); // transform to world matrix
                 v1 = Vector2.Transform(v1, matrix); // get back to local matrix for drawing
                 v1.Y = -v1.Y;
                 v1 = ScalePosition(v1);
                 var v2 = Vector2.Add(center, verticies[i + 1]);
-                v2 = Vector2.Transform(v2, parentXform.WorldMatrix);
+                v2 = Vector2.Transform(v2, parentMatrix);
                 v2 = Vector2.Transform(v2, matrix);
                 v2.Y = -v2.Y;
                 v2 = ScalePosition(v2);

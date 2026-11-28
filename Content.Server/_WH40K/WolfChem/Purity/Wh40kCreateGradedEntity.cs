@@ -1,5 +1,6 @@
 using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reaction;
 using Content.Shared.EntityEffects;
 using Robust.Shared.Prototypes;
@@ -29,7 +30,7 @@ public sealed partial class Wh40kCreateGradedEntity : EntityEffect
     {
         var entMan = args.EntityManager;
         var transform = entMan.System<SharedTransformSystem>();
-        var solutions = entMan.System<SolutionContainerSystem>();
+        var solutions = entMan.System<SharedSolutionContainerSystem>();
         var grade = entMan.System<ChemicalReactionSystem>().Wh40kLastReactionGrade;
         var coords = transform.GetMapCoordinates(args.TargetEntity);
 
@@ -39,7 +40,7 @@ public sealed partial class Wh40kCreateGradedEntity : EntityEffect
 
         for (var i = 0; i < count; i++)
         {
-            var uid = entMan.SpawnEntity(Entity, coords);
+            var uid = entMan.Spawn(Entity, coords);
             transform.AttachToGridOrMap(uid);
 
             if (grade >= Solution.StandardPurityThreshold)

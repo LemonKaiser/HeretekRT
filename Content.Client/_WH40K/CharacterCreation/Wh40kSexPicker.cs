@@ -29,7 +29,7 @@ public sealed class Wh40kSexPicker : BoxContainer
 
     public void SetOptions(IEnumerable<Sex> options, Sex selected)
     {
-        DisposeAllChildren();
+        RemoveAllChildren();
         var group = new ButtonGroup();
         var font = Wh40kOnboardingTypography.Text(IoCManager.Resolve<IResourceCache>(), 18);
         foreach (var option in options)

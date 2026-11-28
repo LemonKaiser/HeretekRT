@@ -38,7 +38,7 @@ public sealed partial class FactionCaptureWindow : FancyWindow
 
         while (_cards.Count > state.Sites.Length)
         {
-            _cards[^1].Dispose();
+            _cards[^1].Orphan();
             _cards.RemoveAt(_cards.Count - 1);
         }
 

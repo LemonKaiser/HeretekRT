@@ -13,7 +13,7 @@ namespace Content.Client._WH40K.SectorMap;
 /// Registers the decorative orbital-space layer and maintains a shadowless client-side light at
 /// each projected star position. It never creates server entities, physics bodies, grids or targets.
 /// </summary>
-public sealed class KoronusCelestialParallaxOverlaySystem : EntitySystem
+public sealed partial class KoronusCelestialParallaxOverlaySystem : EntitySystem
 {
     private const float CoronaRadiusMultiplier = 1.9f;
 

@@ -314,11 +314,11 @@ public sealed partial class BodyRejuvenateSystem : EntitySystem
         if (!parentEntity.Valid || TerminatingOrDeleted(parentEntity))
             return null;
 
-        if (!TryComp<TransformComponent>(parentEntity, out var parentTransform))
+        if (!TryComp(parentEntity, out TransformComponent? parentTransform))
             return null;
 
         // Spawn the new part
-        var newPart = Spawn(partPrototype, parentTransform.Coordinates);
+        var newPart = SpawnAttachedTo(partPrototype, parentTransform.Coordinates);
 
         if (!TryComp<BodyPartComponent>(newPart, out var partComponent))
         {
@@ -350,7 +350,7 @@ public sealed partial class BodyRejuvenateSystem : EntitySystem
         if (!TryComp<BodyPartComponent>(partEntity, out var partComponent))
             return;
 
-        if (!TryComp<TransformComponent>(partEntity, out var partTransform))
+        if (!TryComp(partEntity, out TransformComponent? partTransform))
             return;
 
         foreach (var (organSlotId, organPrototype) in requiredOrgans)
@@ -367,7 +367,7 @@ public sealed partial class BodyRejuvenateSystem : EntitySystem
             _bodySystem.TryCreateOrganSlot(partEntity, organSlotId, out var slot, partComponent);
 
             // Spawn and attach the missing organ
-            var newOrgan = Spawn(organPrototype, partTransform.Coordinates);
+            var newOrgan = SpawnAttachedTo(organPrototype, partTransform.Coordinates);
             if (TryComp<OrganComponent>(newOrgan, out var organComponent))
             {
                 if (!_bodySystem.InsertOrgan(partEntity, newOrgan, organSlotId, partComponent, organComponent))

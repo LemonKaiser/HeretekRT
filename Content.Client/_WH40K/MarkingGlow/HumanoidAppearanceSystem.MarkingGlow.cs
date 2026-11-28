@@ -18,9 +18,10 @@ public sealed partial class HumanoidAppearanceSystem
         return MarkingGlowEnabled && Wh40kMarkingGlowRules.Glows(humanoid.MarkingGlow, marking);
     }
 
-    private void ApplyMarkingGlow(SpriteComponent sprite, string layerId)
+    private void ApplyMarkingGlow(Entity<SpriteComponent> sprite, string layerId)
     {
-        if (!sprite.LayerMapTryGet(layerId, out var index) || !sprite.TryGetLayer(index, out var layer))
+        if (!_sprite.LayerMapTryGet((sprite.Owner, sprite.Comp), layerId, out var index, false)
+            || !_sprite.TryGetLayer((sprite.Owner, sprite.Comp), index, out var layer, false))
             return;
 
         var shader = layer.ShaderPrototype;
@@ -28,19 +29,21 @@ public sealed partial class HumanoidAppearanceSystem
             return;
 
         var glow = shader == Displaced.Id ? DisplacedGlow.Id : UnshadedShaderName;
-        sprite.LayerSetShader(index, glow);
+        sprite.Comp.LayerSetShader(index, glow);
     }
 
-    private void ApplyEyeGlow(HumanoidAppearanceComponent humanoid, SpriteComponent sprite)
+    private void ApplyEyeGlow(Entity<HumanoidAppearanceComponent, SpriteComponent> entity)
     {
-        var index = sprite.LayerMapReserveBlank(HumanoidVisualLayers.Eyes);
+        var (uid, humanoid, sprite) = entity;
+        var index = _sprite.LayerMapReserve((uid, sprite), HumanoidVisualLayers.Eyes);
         if (MarkingGlowEnabled && humanoid.MarkingGlow.Contains(Wh40kMarkingGlowRules.Eyes))
         {
             sprite.LayerSetShader(index, UnshadedShaderName);
             return;
         }
 
-        if (sprite.TryGetLayer(index, out var layer) && layer.ShaderPrototype == UnshadedShaderName)
+        if (_sprite.TryGetLayer((uid, sprite), index, out var layer, false)
+            && layer.ShaderPrototype == UnshadedShaderName)
             sprite.LayerSetShader(index, null, null);
     }
 }

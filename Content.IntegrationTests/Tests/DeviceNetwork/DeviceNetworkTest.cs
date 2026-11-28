@@ -74,7 +74,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
 
             await server.WaitAssertion(() =>
             {
-                device1 = entityManager.SpawnEntity("DummyNetworkDevice", MapCoordinates.Nullspace);
+                device1 = entityManager.Spawn("DummyNetworkDevice", MapCoordinates.Nullspace);
 
                 Assert.That(entityManager.TryGetComponent(device1, out networkComponent1), Is.True);
                 Assert.Multiple(() =>
@@ -83,7 +83,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
                     Assert.That(networkComponent1.Address, Is.Not.EqualTo(string.Empty));
                 });
 
-                device2 = entityManager.SpawnEntity("DummyNetworkDevice", MapCoordinates.Nullspace);
+                device2 = entityManager.Spawn("DummyNetworkDevice", MapCoordinates.Nullspace);
 
                 Assert.That(entityManager.TryGetComponent(device2, out networkComponent2), Is.True);
                 Assert.Multiple(() =>
@@ -136,7 +136,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
 
             await server.WaitAssertion(() =>
             {
-                device1 = entityManager.SpawnEntity("WirelessNetworkDeviceDummy", coordinates);
+                device1 = entityManager.SpawnAttachedTo("WirelessNetworkDeviceDummy", coordinates);
 
                 Assert.Multiple(() =>
                 {
@@ -149,7 +149,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
                     Assert.That(networkComponent1.Address, Is.Not.EqualTo(string.Empty));
                 });
 
-                device2 = entityManager.SpawnEntity("WirelessNetworkDeviceDummy", new MapCoordinates(new Vector2(0, 50), testMap.MapId));
+                device2 = entityManager.Spawn("WirelessNetworkDeviceDummy", new MapCoordinates(new Vector2(0, 50), testMap.MapId));
 
                 Assert.That(entityManager.TryGetComponent(device2, out networkComponent2), Is.True);
                 Assert.Multiple(() =>
@@ -225,7 +225,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
 
             await server.WaitAssertion(() =>
             {
-                device1 = entityManager.SpawnEntity("DummyWiredNetworkDevice", coordinates);
+                device1 = entityManager.SpawnAttachedTo("DummyWiredNetworkDevice", coordinates);
 
                 Assert.Multiple(() =>
                 {
@@ -238,7 +238,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
                     Assert.That(networkComponent1.Address, Is.Not.EqualTo(string.Empty));
                 });
 
-                device2 = entityManager.SpawnEntity("DummyWiredNetworkDevice", coordinates);
+                device2 = entityManager.SpawnAttachedTo("DummyWiredNetworkDevice", coordinates);
 
                 Assert.That(entityManager.TryGetComponent(device2, out networkComponent2), Is.True);
                 Assert.Multiple(() =>
@@ -259,7 +259,7 @@ namespace Content.IntegrationTests.Tests.DeviceNetwork
             {
                 //CollectionAssert.AreNotEqual(deviceNetTestSystem.LastPayload, payload);
 
-                entityManager.SpawnEntity("CableApcExtension", coordinates);
+                entityManager.SpawnAttachedTo("CableApcExtension", coordinates);
 
                 deviceNetSystem.QueuePacket(device1, networkComponent2.Address, payload, networkComponent2.ReceiveFrequency.Value);
             });

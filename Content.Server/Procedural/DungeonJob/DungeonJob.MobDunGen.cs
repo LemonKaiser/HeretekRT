@@ -16,13 +16,13 @@ public sealed partial class DungeonJob
     private async Task PostGen(
         MobsDunGen gen,
         Dungeon dungeon,
-        Random random)
+        IRobustRandom random)
     {
         var availableRooms = new ValueList<DungeonRoom>();
         availableRooms.AddRange(dungeon.Rooms);
         var availableTiles = new ValueList<Vector2i>(dungeon.AllTiles);
 
-        var entities = EntitySpawnCollection.GetSpawns(gen.Groups, random);
+        var entities = EntitySpawnCollection.GetSpawnsIncludingEmptyEntries(gen.Groups, random);
         var count = random.Next(gen.MinCount, gen.MaxCount + 1);
         var npcs = _entManager.System<NPCSystem>();
 

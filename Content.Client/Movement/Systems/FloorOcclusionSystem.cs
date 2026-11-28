@@ -9,6 +9,8 @@ namespace Content.Client.Movement.Systems;
 
 public sealed partial class FloorOcclusionSystem : SharedFloorOcclusionSystem
 {
+    private static readonly ProtoId<ShaderPrototype> HorizontalCutShaderId = "HorizontalCut";
+
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SpriteSystem _sprite = default!;
 
@@ -52,7 +54,7 @@ public sealed partial class FloorOcclusionSystem : SharedFloorOcclusionSystem
 
         if (enabled)
         {
-            var shader = _proto.Index<ShaderPrototype>("HorizontalCut").Instance();
+            var shader = _proto.Index(HorizontalCutShaderId).Instance();
             _sprite.SetPostShader(sprite, new SpriteComponent.PostShaderArgs(ContentPostShaderIds.FloorOcclusion, shader)
             {
                 Before = ContentPostShaderIds.BeforeOutlines,

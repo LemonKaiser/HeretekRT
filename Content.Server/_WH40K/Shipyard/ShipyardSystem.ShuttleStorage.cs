@@ -12,7 +12,7 @@ public sealed partial class ShipyardSystem
 {
     public void RemoveStoredShuttleRegistrations(EntityUid grid)
     {
-        var deeds = EntityManager.AllEntityQueryEnumerator<ShuttleDeedComponent>();
+        var deeds = AllEntityQuery<ShuttleDeedComponent>();
         var cards = new List<EntityUid>();
         while (deeds.MoveNext(out var entity, out var deed))
         {

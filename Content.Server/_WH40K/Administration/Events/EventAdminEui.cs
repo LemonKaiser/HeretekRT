@@ -7,7 +7,7 @@ using Content.Shared.Eui;
 
 namespace Content.Server._WH40K.Administration.Events;
 
-public sealed class EventAdminEui : BaseEui
+public sealed partial class EventAdminEui : BaseEui
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IAdminManager _admins = default!;

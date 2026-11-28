@@ -14,7 +14,7 @@ namespace Content.Client.Localization;
 /// The confirmation is intentionally kept in a client system so the UI controller
 /// does not need to depend on the entity-system network subscription API.
 /// </summary>
-public sealed class LocalizationCultureHandshakeSystem : EntitySystem
+public sealed partial class LocalizationCultureHandshakeSystem : EntitySystem
 {
     private static readonly object RegistrationSync = new();
     private static readonly Dictionary<INetManager, LocalizationCultureHandshakeSystem> Instances =

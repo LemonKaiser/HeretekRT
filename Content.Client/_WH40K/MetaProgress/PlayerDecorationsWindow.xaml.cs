@@ -31,9 +31,9 @@ public sealed partial class PlayerDecorationsWindow : FancyWindow
     private static readonly Color SelectedCardBackground = Color.FromHex("#392B1C");
     private static readonly Color PreviewBackground = Color.FromHex("#100D0A");
 
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IResourceCache _resources = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IResourceCache _resources = default!;
 
     private readonly List<WH40KDecorationEntry> _entries = new();
     private readonly Dictionary<WH40KMetaDecorationCategory, string> _selected = new();

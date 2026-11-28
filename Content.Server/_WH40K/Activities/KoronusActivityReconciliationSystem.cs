@@ -7,7 +7,7 @@ namespace Content.Server._WH40K.Activities;
 /// interrupted materialization, cold-map teardown, or round cleanup. It does not restore maps or
 /// instances; an unknown instance is always removed through the director's exact ownership path.
 /// </summary>
-public sealed class KoronusActivityReconciliationSystem : EntitySystem
+public sealed partial class KoronusActivityReconciliationSystem : EntitySystem
 {
     private static readonly TimeSpan ReconciliationInterval = TimeSpan.FromSeconds(10);
 

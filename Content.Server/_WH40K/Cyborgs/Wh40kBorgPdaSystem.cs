@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Cyborgs;
 /// <summary>
 /// Names a cyborg's built-in PDA after the cyborg and forwards cartridge notifications to its chat.
 /// </summary>
-public sealed class Wh40kBorgPdaSystem : EntitySystem
+public sealed partial class Wh40kBorgPdaSystem : EntitySystem
 {
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private PdaSystem _pda = default!;

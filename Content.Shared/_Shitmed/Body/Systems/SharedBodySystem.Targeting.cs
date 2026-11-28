@@ -30,6 +30,8 @@ namespace Content.Shared.Body.Systems;
 
 public partial class SharedBodySystem
 {
+    private static readonly ProtoId<DamageModifierSetPrototype> PartDamageId = "PartDamage";
+
     [Dependency] private INetManager _net = default!;
     [Dependency] private BlockingSystem _blocking = default!;
     [Dependency] private MobStateSystem _mobState = default!;
@@ -201,7 +203,7 @@ public partial class SharedBodySystem
                 _inventory.RelayEvent((body, inventory), ref args);
         }
 
-        if (Prototypes.TryIndex<DamageModifierSetPrototype>("PartDamage", out var partModifierSet))
+        if (Prototypes.TryIndex(PartDamageId, out var partModifierSet))
             args.Damage = DamageSpecifier.ApplyModifierSet(args.Damage, partModifierSet);
 
         args.Damage *= GetPartDamageModifier(partEnt.Comp.PartType);

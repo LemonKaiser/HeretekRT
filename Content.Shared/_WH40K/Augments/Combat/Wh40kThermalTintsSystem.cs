@@ -10,7 +10,7 @@ namespace Content.Shared._WH40K.Augments.Combat;
 /// <summary>
 /// Cycles <see cref="Wh40kThermalTintsComponent"/> optics through thermal and night-vision bands.
 /// </summary>
-public sealed class Wh40kThermalTintsSystem : EntitySystem
+public sealed partial class Wh40kThermalTintsSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

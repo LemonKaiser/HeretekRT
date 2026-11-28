@@ -269,7 +269,7 @@ public sealed partial class ShuttleSystem
         }
 
         // Check if the shuttle is in an expedition
-        if (TryComp<TransformComponent>(shuttleUid, out var xform) &&
+        if (TryComp(shuttleUid, out TransformComponent? xform) &&
             xform.MapUid != null &&
             HasComp<SalvageExpeditionComponent>(xform.MapUid))
         {
@@ -414,7 +414,7 @@ public sealed partial class ShuttleSystem
         if (!TrySetupFTL(shuttleUid, component, out var hyperspace))
             return;
 
-        SetupFTL(hyperspace, startupTime, hyperspaceTime, priorityTag);
+        SetupFTL(shuttleUid, hyperspace, startupTime, hyperspaceTime, priorityTag);
 
         if (TryComp<DockingComponent>(target, out var dock) && dock.Docked && dock.DockedWith != null)
         {
@@ -442,7 +442,7 @@ public sealed partial class ShuttleSystem
     /// <summary>
     /// Sets up the FTL component with startup and travel times and priority tag.
     /// </summary>
-    private void SetupFTL(FTLComponent hyperspace, float? startupTime, float? hyperspaceTime, string? priorityTag)
+    private void SetupFTL(EntityUid uid, FTLComponent hyperspace, float? startupTime, float? hyperspaceTime, string? priorityTag)
     {
         startupTime ??= DefaultStartupTime;
         hyperspaceTime ??= DefaultTravelTime;
@@ -454,7 +454,7 @@ public sealed partial class ShuttleSystem
             TimeSpan.FromSeconds(hyperspace.StartupTime));
         hyperspace.PriorityTag = priorityTag;
 
-        _console.RefreshShuttleConsoles(hyperspace.Owner);
+        _console.RefreshShuttleConsoles(uid);
     }
 
     /// <summary>
@@ -1605,7 +1605,7 @@ public sealed partial class ShuttleSystem
         LeaveNoFTLBehind((entity.Owner, xform), oldGridMatrix, oldMapUid);
 
         // Reset rotation so they always face the same direction.
-        xform.LocalRotation = Angle.Zero;
+        _transform.SetLocalRotation(entity.Owner, Angle.Zero, xform);
         _index += width + Buffer;
 
         // Frontier: rollover coordinates

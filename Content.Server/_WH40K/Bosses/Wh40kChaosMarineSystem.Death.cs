@@ -47,8 +47,8 @@ public sealed partial class Wh40kChaosMarineSystem
                         break;
                     }
             }
-            Spawn("Ash", coordinates);
-            Spawn("CrateWh40kChaosMarineSpoils", loot);
+            SpawnAttachedTo("Ash", coordinates);
+            SpawnAttachedTo("CrateWh40kChaosMarineSpoils", loot);
             QueueDel(uid);
             return;
         }

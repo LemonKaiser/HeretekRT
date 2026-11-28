@@ -143,7 +143,7 @@ namespace Content.Server.Spawners.EntitySystems
 
         private EntityUid SpawnRandomLoot(EntProtoId prototype, EntityCoordinates coordinates)
         {
-            var spawned = EntityManager.SpawnEntity(prototype, coordinates);
+            var spawned = SpawnAttachedTo(prototype, coordinates);
             RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
             return spawned;
         }

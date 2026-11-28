@@ -145,7 +145,7 @@ public sealed partial class CardSystem : EntitySystem
         {
             return SpawnInContainerOrDrop(prototype, container.Owner, container.ID);
         }
-        return Spawn(prototype, Transform(uid).Coordinates);
+        return SpawnAttachedTo(prototype, Transform(uid).Coordinates);
     }
 
     // Frontier: hacky misuse of the activation verb, but allows us a separate way to draw cards without needing additional buttons and event fiddling

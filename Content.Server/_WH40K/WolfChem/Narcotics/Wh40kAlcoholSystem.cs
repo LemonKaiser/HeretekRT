@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Drunkenness that follows the alcohol in the blood: each metabolism tick holds the drunk timer at the units left
 /// times a strength, so a body sobers up as the alcohol clears instead of on a timer of its own.
 /// </summary>
-public sealed class Wh40kAlcoholSystem : EntitySystem
+public sealed partial class Wh40kAlcoholSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private StatusEffectsSystem _status = default!;

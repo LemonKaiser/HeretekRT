@@ -32,6 +32,7 @@ public sealed partial class GuidebookSystem : EntitySystem
     [Dependency] private RgbLightControllerSystem _rgbLightControllerSystem = default!;
     [Dependency] private SharedPointLightSystem _pointLightSystem = default!;
     [Dependency] private TagSystem _tags = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public event Action<List<ProtoId<GuideEntryPrototype>>,
         List<ProtoId<GuideEntryPrototype>>?,
@@ -110,8 +111,9 @@ public sealed partial class GuidebookSystem : EntitySystem
         {
             Act = () =>
             {
-                if (Transform(uid).LocalRotation != Angle.Zero)
-                    Transform(uid).LocalRotation -= Angle.FromDegrees(90);
+                var xform = Transform(uid);
+                if (xform.LocalRotation != Angle.Zero)
+                    _transform.SetLocalRotation(uid, xform.LocalRotation - Angle.FromDegrees(90), xform);
             },
             Text = Loc.GetString("guidebook-monkey-unspin"),
             Priority = -9999,
@@ -142,7 +144,8 @@ public sealed partial class GuidebookSystem : EntitySystem
 
     private void OnGuidebookControlsTestActivateInWorld(EntityUid uid, GuidebookControlsTestComponent component, ActivateInWorldEvent args)
     {
-        Transform(uid).LocalRotation += Angle.FromDegrees(90);
+        var xform = Transform(uid);
+        _transform.SetLocalRotation(uid, xform.LocalRotation + Angle.FromDegrees(90), xform);
     }
 
     private void OnGuidebookControlsTestInteractHand(EntityUid uid, GuidebookControlsTestComponent component, InteractHandEvent args)

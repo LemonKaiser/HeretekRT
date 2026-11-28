@@ -183,7 +183,7 @@ public sealed partial class MarkingPicker : Control
     private void SetupCategoryButtons()
     {
         CMarkingCategoryButton.Clear();
-        CategoryTiles.DisposeAllChildren();
+        CategoryTiles.RemoveAllChildren();
 
         var validCategories = new List<MarkingCategories>();
         for (var i = 0; i < _markingCategories.Count; i++)
@@ -480,7 +480,7 @@ public sealed partial class MarkingPicker : Control
 
         var stateNames = GetMarkingStateNames(prototype);
         _currentMarkingColors.Clear();
-        CMarkingColors.DisposeAllChildren();
+        CMarkingColors.RemoveAllChildren();
         for (int i = 0; i < prototype.Sprites.Count; i++)
         {
             var colorContainer = new BoxContainer

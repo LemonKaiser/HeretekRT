@@ -29,7 +29,7 @@ namespace Content.Server._WH40K.Activities;
 /// player ship, map, reward or player role. A disposable activity grid is explicitly marked and
 /// is evacuated before deletion.
 /// </summary>
-public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivityDirectorComponent>
+public sealed partial class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivityDirectorComponent>
 {
     private static readonly TimeSpan DayProfileDuration = TimeSpan.FromHours(24);
     private static readonly TimeSpan MinimumLifetime = TimeSpan.FromMinutes(10);
@@ -186,7 +186,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
 
             var dossier = CreateDossier(instance, template, null);
             if (currentMap != null && viewerPosition != null && instance.Objective is { } objective &&
-                TryComp<TransformComponent>(objective, out var transform) && transform.MapID == currentMap)
+                TryComp(objective, out TransformComponent? transform) && transform.MapID == currentMap)
                 dossier.LocalSignalOffset = _transform.ToMapCoordinates(transform.Coordinates).Position - viewerPosition.Value;
             dossiers.Add(dossier);
         }
@@ -1063,7 +1063,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
 
     internal void EvacuateAttachedPlayers(EntityUid grid)
     {
-        if (!TryComp<TransformComponent>(grid, out var gridTransform))
+        if (!TryComp(grid, out TransformComponent? gridTransform))
             return;
 
         var gridPosition = _transform.ToMapCoordinates(gridTransform.Coordinates);
@@ -1088,7 +1088,7 @@ public sealed class KoronusActivityDirectorSystem : GameRuleSystem<KoronusActivi
 
         foreach (var player in players)
         {
-            if (!TryComp<TransformComponent>(player, out var transform) || transform.GridUid != grid)
+            if (!TryComp(player, out TransformComponent? transform) || transform.GridUid != grid)
                 continue;
             if (TryComp<BuckleComponent>(player, out var buckle) && buckle.Buckled)
                 _buckle.Unbuckle((player, buckle), null);

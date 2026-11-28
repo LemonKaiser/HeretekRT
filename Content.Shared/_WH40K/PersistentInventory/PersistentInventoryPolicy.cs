@@ -5,7 +5,7 @@ namespace Content.Shared._WH40K.PersistentInventory;
 /// <summary>
 /// The server applies the policy to the complete physical item tree. The owner's role and profile are not policy inputs.
 /// </summary>
-[Prototype("persistentInventoryPolicy")]
+[Prototype]
 public sealed partial class PersistentInventoryPolicyPrototype : IPrototype
 {
     [IdDataField]

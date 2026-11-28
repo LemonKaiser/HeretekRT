@@ -27,7 +27,7 @@ namespace Content.Server._WH40K.Activities;
 /// ghost role. The first living player who lawfully reaches its map merely makes its one root
 /// objective available.
 /// </summary>
-public sealed class KoronusActivityMaterializationSystem : EntitySystem
+public sealed partial class KoronusActivityMaterializationSystem : EntitySystem
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(1);
     private const int SpawnAttempts = 24;
@@ -150,7 +150,7 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
             return;
         }
 
-        var root = Spawn(prototype, coordinates);
+        var root = SpawnAttachedTo(prototype, coordinates);
         if (!_contentAudit.TryValidateEntity(root, out _))
         {
             QueueDel(root);
@@ -196,7 +196,7 @@ public sealed class KoronusActivityMaterializationSystem : EntitySystem
         {
             if (session.AttachedEntity is not { Valid: true } player ||
                 !IsLivingAttachedPlayer(player) ||
-                !TryComp<TransformComponent>(player, out var transform))
+                !TryComp(player, out TransformComponent? transform))
             {
                 continue;
             }

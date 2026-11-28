@@ -4,6 +4,7 @@ using Content.Client.Resources;
 using Content.Client._WH40K.Dialogue;
 using Content.Client._WH40K.UserInterface;
 using Content.Shared._WH40K.Dialogue;
+using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -1141,11 +1142,12 @@ public sealed class DialogueOverlay : LayoutContainer
             if (sprite == null)
                 return;
 
+            var sprites = EntMan.System<SpriteSystem>();
             List<int>? displacementLayers = null;
 
             for (var i = 0; i < sprite.AllLayers.Count(); i++)
             {
-                if (!sprite.TryGetLayer(i, out var layer)
+                if (!sprites.TryGetLayer((uid, sprite), i, out var layer, false)
                     || layer.ShaderPrototype == "unshaded")
                 {
                     continue;
@@ -1172,7 +1174,7 @@ public sealed class DialogueOverlay : LayoutContainer
 
             for (var i = displacementLayers.Count - 1; i >= 0; i--)
             {
-                sprite.RemoveLayer(displacementLayers[i]);
+                sprites.RemoveLayer((uid, sprite), displacementLayers[i]);
             }
         }
     }
@@ -1350,7 +1352,7 @@ public sealed class DialogueOverlay : LayoutContainer
     {
         foreach (var button in _choiceButtons)
         {
-            button.Dispose();
+            button.Orphan();
         }
 
         _choiceButtons.Clear();

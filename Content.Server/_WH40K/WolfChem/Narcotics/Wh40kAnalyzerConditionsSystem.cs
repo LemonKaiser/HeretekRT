@@ -17,7 +17,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Builds the health analyzer's conditions readout: drug levels and the reagents raising them, status effects a
 /// reagent, high, crash or withdrawal is holding, crashes, and dependence, each with what clears it.
 /// </summary>
-public sealed class Wh40kAnalyzerConditionsSystem : EntitySystem
+public sealed partial class Wh40kAnalyzerConditionsSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _proto = default!;

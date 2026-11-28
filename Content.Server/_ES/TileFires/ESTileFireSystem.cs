@@ -22,15 +22,15 @@ namespace Content.Server._ES.TileFires;
 ///     Server-side logic for tile fire growth logic, e.g. stages, requiring oxygen, etc.
 ///     Also spawning logic.
 /// </summary>
-public sealed class ESTileFireSystem : ESSharedTileFireSystem
+public sealed partial class ESTileFireSystem : ESSharedTileFireSystem
 {
-    [Dependency] private readonly AtmosphereSystem _atmos = default!;
-    [Dependency] private readonly FlammableSystem _flammable = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly KoronusSafetyPolicySystem _koronusSafety = default!;
-    [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private AtmosphereSystem _atmos = default!;
+    [Dependency] private FlammableSystem _flammable = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private KoronusSafetyPolicySystem _koronusSafety = default!;
+    [Dependency] private IPrototypeManager _prototypes = default!;
 
     private static EntProtoId _stage1Fire = "ESTileFire";
 
@@ -124,8 +124,7 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
         Dictionary<EntityCoordinates, float> weights = new(args.NeighborFreeTiles.Count);
         foreach (var neighbor in args.NeighborFreeTiles)
         {
-            // not updating the spreader api to get rid of this .owner sorry too many breakchanges for me
-            var grid = neighbor.Grid.Owner;
+            var grid = neighbor.Tile.GridUid;
             if (!TryComp<GridAtmosphereComponent>(grid, out var gridComp))
                 continue;
 
@@ -166,7 +165,7 @@ public sealed class ESTileFireSystem : ESSharedTileFireSystem
                 return;
 
             var coords = _random.PickAndTake(weights);
-            Spawn(ent.Comp.Prototype, coords);
+            SpawnAttachedTo(ent.Comp.Prototype, coords);
 
             _flammable.AdjustFireStacks(ent, _random.NextFloat(0.25f, 1.25f) * -ent.Comp.FirestacksRemoveOnSpread, flammable);
             args.Updates--;

@@ -17,7 +17,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Any item or movable structure holding a priced Narcotics reagent gets marked with the Wh40kNarcotic tag and
 /// Wh40kNarcoticMarks contraband/tax/stock components, and loses them once emptied.
 /// </summary>
-public sealed class Wh40kNarcoticGoodsSystem : EntitySystem
+public sealed partial class Wh40kNarcoticGoodsSystem : EntitySystem
 {
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IPrototypeManager _prototype = default!;

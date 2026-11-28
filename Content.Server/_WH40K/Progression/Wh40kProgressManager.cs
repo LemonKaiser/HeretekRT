@@ -14,7 +14,7 @@ namespace Content.Server._WH40K.Progression;
 /// <summary>
 /// Owns the connected-account progression cache and the server-authoritative spend entry point.
 /// </summary>
-public sealed class Wh40kProgressManager
+public sealed partial class Wh40kProgressManager
 {
     [Dependency] private IServerDbManager _db = default!;
     [Dependency] private IEntityManager _entities = default!;

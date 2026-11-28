@@ -11,7 +11,7 @@ namespace Content.Server._WH40K.Augments.Combat;
 /// Grants a body with <see cref="Wh40kIatricMonitorComponent"/> a silent self-scan action
 /// opening the standard Health Analyzer UI on itself.
 /// </summary>
-public sealed class Wh40kIatricMonitorSystem : EntitySystem
+public sealed partial class Wh40kIatricMonitorSystem : EntitySystem
 {
     [Dependency] private HealthAnalyzerSystem _analyzer = default!;
     [Dependency] private SharedActionsSystem _actions = default!;

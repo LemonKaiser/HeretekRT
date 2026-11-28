@@ -2,6 +2,7 @@ using System.Text;
 using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Shared._WH40K.WolfChem.Purity;
 using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
@@ -12,11 +13,11 @@ namespace Content.Server._WH40K.WolfChem.Purity;
 /// <summary>
 /// Reports reagent grades when a <see cref="Wh40kPurityTesterComponent"/> is used on something.
 /// </summary>
-public sealed class Wh40kPurityTesterSystem : EntitySystem
+public sealed partial class Wh40kPurityTesterSystem : EntitySystem
 {
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
-    [Dependency] private SolutionContainerSystem _solutions = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
     public override void Initialize()
     {

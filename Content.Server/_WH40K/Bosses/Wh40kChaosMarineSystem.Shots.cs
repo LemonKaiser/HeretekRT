@@ -332,7 +332,7 @@ public sealed partial class Wh40kChaosMarineSystem
     private EntityUid Effect(EntityUid uid, Wh40kChaosMarineComponent state, Vector2 point, MarineEffect kind,
         float radius, float duration)
     {
-        var entity = Spawn(kind == MarineEffect.Summon ? "Wh40kMarineSummonCircle" : "Wh40kMarineEffect", Coordinates(state, point));
+        var entity = SpawnAttachedTo(kind == MarineEffect.Summon ? "Wh40kMarineSummonCircle" : "Wh40kMarineEffect", Coordinates(state, point));
         var effect = Comp<Wh40kMarineEffectComponent>(entity);
         effect.Kind = kind;
         effect.Boss = uid;

@@ -222,7 +222,7 @@ public sealed partial class ShuttleStorageSystem
 
     private bool HasLiveShip(Guid id)
     {
-        var ships = EntityManager.AllEntityQueryEnumerator<ShuttleStorageTransferComponent>();
+        var ships = AllEntityQuery<ShuttleStorageTransferComponent>();
         while (ships.MoveNext(out _, out var marker))
         {
             if (marker.Id == id)

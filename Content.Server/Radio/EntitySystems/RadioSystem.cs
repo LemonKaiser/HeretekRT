@@ -12,7 +12,6 @@ using Content.Shared.Database;
 using Content.Shared._EinsteinEngines.Language;
 using Content.Shared._EinsteinEngines.Language.Systems;
 using Content.Shared.Radio;
-using Content.Shared.Radio.Components;
 using Content.Shared.Speech;
 using Content.Shared.TTS;
 using Content.Shared.Ghost; // Nuclear-14
@@ -84,10 +83,9 @@ public sealed partial class RadioSystem : EntitySystem
         if (TryComp(uid, out ActorComponent? actor))
         {
             // Einstein Engines - Languages begin
-            var listener = component.Owner;
             var msg = args.OriginalChatMsg;
 
-            if (listener != null && !_language.CanUnderstand(listener, args.Language.ID))
+            if (!_language.CanUnderstand(uid, args.Language.ID))
                 msg = args.LanguageObfuscatedChatMsg;
 
             var recipient = actor.PlayerSession.Channel;

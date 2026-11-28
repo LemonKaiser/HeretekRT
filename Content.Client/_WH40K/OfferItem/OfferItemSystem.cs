@@ -9,10 +9,10 @@ namespace Content.Client._WH40K.OfferItem;
 /// <summary>
 /// Presents offer and accept verbs. The server owns every state transition and transfer.
 /// </summary>
-public sealed class OfferItemSystem : EntitySystem
+public sealed partial class OfferItemSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlayManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IOverlayManager _overlayManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private OfferItemCursorOverlay? _cursorOverlay;
 

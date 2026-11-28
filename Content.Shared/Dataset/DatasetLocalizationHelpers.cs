@@ -11,7 +11,7 @@ public static class DatasetLocalizationHelpers
         if (TryGetLocalizedEntry(dataset.ID, index + 1, out var localizedValue))
             return localizedValue;
 
-        return Loc.TryGetString(value, out localizedValue)
+        return IoCManager.Resolve<ILocalizationManager>().TryGetString(value, out localizedValue)
             ? localizedValue
             : value;
     }
@@ -19,7 +19,7 @@ public static class DatasetLocalizationHelpers
     public static bool TryGetLocalizedEntry(string datasetId, int oneBasedIndex, out string localizedValue)
     {
         var locId = $"{NormalizeDatasetId(datasetId)}-dataset-{oneBasedIndex}";
-        var found = Loc.TryGetString(locId, out var value);
+        var found = IoCManager.Resolve<ILocalizationManager>().TryGetString(locId, out var value);
         localizedValue = value ?? string.Empty;
         return found;
     }

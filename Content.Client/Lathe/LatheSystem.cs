@@ -13,6 +13,7 @@ public sealed partial class LatheSystem : SharedLatheSystem
 {
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private SharedWh40kFabricationSiloSystem _fabricationSilo = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
 
     public override void Initialize()
     {
@@ -29,25 +30,25 @@ public sealed partial class LatheSystem : SharedLatheSystem
         // Lathe specific stuff
         if (_appearance.TryGetData<bool>(uid, LatheVisuals.IsRunning, out var isRunning, args.Component))
         {
-            if (args.Sprite.LayerMapTryGet(LatheVisualLayers.IsRunning, out var runningLayer) &&
+            if (_sprite.LayerMapTryGet((uid, args.Sprite), LatheVisualLayers.IsRunning, out var runningLayer, false) &&
                 component.RunningState != null &&
                 component.IdleState != null)
             {
                 var state = isRunning ? component.RunningState : component.IdleState;
-                args.Sprite.LayerSetState(runningLayer, state);
+                _sprite.LayerSetRsiState((uid, args.Sprite), runningLayer, state);
             }
         }
 
         if (_appearance.TryGetData<bool>(uid, PowerDeviceVisuals.Powered, out var powered, args.Component) &&
-            args.Sprite.LayerMapTryGet(PowerDeviceVisualLayers.Powered, out var powerLayer))
+            _sprite.LayerMapTryGet((uid, args.Sprite), PowerDeviceVisualLayers.Powered, out var powerLayer, false))
         {
-            args.Sprite.LayerSetVisible(powerLayer, powered);
+            _sprite.LayerSetVisible((uid, args.Sprite), powerLayer, powered);
 
             if (component.UnlitIdleState != null &&
                 component.UnlitRunningState != null)
             {
                 var state = isRunning ? component.UnlitRunningState : component.UnlitIdleState;
-                args.Sprite.LayerSetState(powerLayer, state);
+                _sprite.LayerSetRsiState((uid, args.Sprite), powerLayer, state);
             }
         }
     }

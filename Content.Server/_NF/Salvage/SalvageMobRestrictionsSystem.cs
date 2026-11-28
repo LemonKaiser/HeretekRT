@@ -48,7 +48,7 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
     private void OnInit(EntityUid uid, NFSalvageMobRestrictionsComponent component, ComponentInit args)
     {
         var gridUid = Transform(uid).ParentUid;
-        if (!EntityManager.EntityExists(gridUid))
+        if (!Exists(gridUid))
         {
             // Give up, we were spawned improperly
             return;
@@ -134,7 +134,7 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
             EntityManager.AddComponents(uid, component.AddComponentsReturnGrid);
             EntityManager.RemoveComponents(uid, component.RemoveComponentsReturnGrid);
 
-            if (!EntityManager.TryGetComponent(uid, out ActorComponent? actor))
+            if (!TryComp(uid, out ActorComponent? actor))
                 return;
 
             if (actor.PlayerSession.AttachedEntity == null)
@@ -148,7 +148,7 @@ public sealed partial class SalvageMobRestrictionsSystem : EntitySystem
             EntityManager.AddComponents(uid, component.AddComponentsLeaveGrid);
             EntityManager.RemoveComponents(uid, component.RemoveComponentsLeaveGrid);
 
-            if (!EntityManager.TryGetComponent(uid, out ActorComponent? actor))
+            if (!TryComp(uid, out ActorComponent? actor))
                 return;
 
             if (actor.PlayerSession.AttachedEntity == null)

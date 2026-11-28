@@ -51,7 +51,7 @@ public sealed partial class RandomEntityPopulatorSystem : BaseWorldSystem
                     if (proto is null)
                         continue;
 
-                    var spawned = Spawn(proto, coords);
+                    var spawned = SpawnAttachedTo(proto, coords);
                     RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
                 }
                 placeables.Clear();

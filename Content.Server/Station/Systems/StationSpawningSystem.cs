@@ -152,7 +152,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         if (prototype?.JobEntity != null)
         {
             DebugTools.Assert(entity is null);
-            var jobEntity = EntityManager.SpawnEntity(prototype.JobEntity, coordinates);
+            var jobEntity = SpawnAttachedTo(prototype.JobEntity, coordinates);
             MakeSentientCommand.MakeSentient(jobEntity, EntityManager);
 
             // Make sure custom names get handled, what is gameticker control flow whoopy.
@@ -186,7 +186,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         if (!_prototypeManager.TryIndex<SpeciesPrototype>(speciesId, out var species))
             throw new ArgumentException($"Invalid species prototype was used: {speciesId}");
 
-        entity ??= Spawn(species.Prototype, coordinates);
+        entity ??= SpawnAttachedTo(species.Prototype, coordinates);
 
         if (_randomizeCharacters)
         {

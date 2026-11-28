@@ -11,7 +11,7 @@ namespace Content.Client._WH40K.WolfChem.Narcotics;
 /// Chat seen through the local player's high, on their screen only: psychedelics colour each word and jumble a few;
 /// opioids grey speech out, empathogens warm it and cannabinoids tint it green.
 /// </summary>
-public sealed class Wh40kDrugChatSystem : EntitySystem
+public sealed partial class Wh40kDrugChatSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _player = default!;
     [Dependency] private Wh40kIntoxicationSystem _intoxication = default!;

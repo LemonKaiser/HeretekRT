@@ -7,7 +7,7 @@ namespace Content.Shared._WH40K.CharacterCreation;
 ///     A selectable portrait for the introductory character creator.
 ///     The prototype owns both rendered variants, so content can add or remove portraits without client code changes.
 /// </summary>
-[Prototype("wh40kPortrait")]
+[Prototype]
 public sealed partial class Wh40kPortraitPrototype : IPrototype
 {
     [IdDataField]

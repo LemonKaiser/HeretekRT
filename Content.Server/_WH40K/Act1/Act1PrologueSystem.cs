@@ -42,7 +42,7 @@ namespace Content.Server._WH40K.Act1;
 /// Owns the shared Act I map, remote player corridors and narrative state. The client only receives presentation
 /// cues; every progression gate remains server authoritative.
 /// </summary>
-public sealed class Act1PrologueSystem : EntitySystem
+public sealed partial class Act1PrologueSystem : EntitySystem
 {
     public const string CorridorPath = "/Maps/_WH40K/Act1/act1_prologue.yml";
 
@@ -372,7 +372,7 @@ public sealed class Act1PrologueSystem : EntitySystem
         runtime.PostPrologueProfile = profile;
         runtime.PostPrologueJob = postPrologueJob;
         runtime.CompletionTask = null;
-        runtime.Echo = Spawn(EchoPrototype, instance.EchoAnchor);
+        runtime.Echo = SpawnAttachedTo(EchoPrototype, instance.EchoAnchor);
         _meta.SetEntityName(runtime.Echo, "Эхо");
 
         EquipWandererGear(mob);
@@ -607,13 +607,13 @@ public sealed class Act1PrologueSystem : EntitySystem
 
         var index = runtime.NextVisionIndex++;
         var coordinates = runtime.VisionAnchors[index];
-        var vision = Spawn(VisionPrototype, coordinates);
+        var vision = SpawnAttachedTo(VisionPrototype, coordinates);
         // A vision has no attached player mind. Do not show the inherited SSD "Zzz" icon above it.
         RemComp<SSDIndicatorComponent>(vision);
         _humanoid.CloneAppearance(mob, vision);
         EquipVision(vision, coordinates, VisionOutfits[index % VisionOutfits.Length]);
         _meta.SetEntityName(vision, VisionNames[index % VisionNames.Length]);
-        Spawn(VisionManifestationPrototype, coordinates);
+        SpawnAttachedTo(VisionManifestationPrototype, coordinates);
         runtime.CurrentVision = vision;
     }
 
@@ -843,7 +843,7 @@ public sealed class Act1PrologueSystem : EntitySystem
         if (prototype == null)
             return;
 
-        var item = Spawn(prototype, coordinates);
+        var item = SpawnAttachedTo(prototype, coordinates);
         if (!_inventory.TryEquip(vision, item, slot, silent: true, force: true))
             QueueDel(item);
     }

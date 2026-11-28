@@ -32,7 +32,7 @@ public sealed partial class MobReplacementRuleSystem : GameRuleSystem<MobReplace
             var coordinates = entity.Coordinates;
             Del(entity.Entity);
 
-            Spawn(component.Proto, coordinates);
+            SpawnAttachedTo(component.Proto, coordinates);
         }
     }
 }

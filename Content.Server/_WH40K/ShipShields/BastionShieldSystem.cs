@@ -13,7 +13,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.ShipShields;
 
-public sealed class BastionShieldSystem : EntitySystem
+public sealed partial class BastionShieldSystem : EntitySystem
 {
     private static readonly TimeSpan ImpactInterval = TimeSpan.FromMilliseconds(50);
 

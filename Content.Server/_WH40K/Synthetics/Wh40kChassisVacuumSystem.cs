@@ -10,10 +10,10 @@ namespace Content.Server._WH40K.Synthetics;
 /// Ensures a cybernetic/IPC chassis on a vacuum or near-vacuum tile loses heat toward cosmic background temperature
 /// just like in open space, closing the exploit where unsuited synthetics walked across breached decks at room temp.
 /// </summary>
-public sealed class Wh40kChassisVacuumSystem : EntitySystem
+public sealed partial class Wh40kChassisVacuumSystem : EntitySystem
 {
-    [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
-    [Dependency] private readonly TemperatureSystem _temperature = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private TemperatureSystem _temperature = default!;
 
     private static readonly GasMixture Space = GasMixture.SpaceGas;
 

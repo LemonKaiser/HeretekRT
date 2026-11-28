@@ -172,7 +172,7 @@ public sealed partial class EventAdminSystem
             case EventAdminAction.GiveItem:
                 for (var i = 0; i < request.Number; i++)
                 {
-                    var item = Spawn(request.Text.Trim(), Transform(uid).Coordinates);
+                    var item = SpawnAttachedTo(request.Text.Trim(), Transform(uid).Coordinates);
                     if (HasComp<HandsComponent>(uid)) _hands.TryPickupAnyHand(uid, item, checkActionBlocker: false);
                 }
                 return true;

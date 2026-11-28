@@ -15,10 +15,10 @@ internal static class Wh40kAugmentInfo
             .SelectMany(prototype => Wh40kAugmentCatalog.Zones(prototype, factory).Select(zone => (prototype, zone)));
     }
 
-    public static string Describe(EntityPrototype prototype)
+    public static string Describe(EntityPrototype prototype, IComponentFactory factory)
     {
-        if (prototype.TryGetComponent<Wh40kProstheticComponent>(out var prosthetic)
-            && prototype.TryGetComponent<BodyPartComponent>(out var part))
+        if (prototype.TryComp<Wh40kProstheticComponent>(out var prosthetic, factory)
+            && prototype.TryComp<BodyPartComponent>(out var part, factory))
         {
             var walking = part.PartType is BodyPartType.Leg or BodyPartType.Foot;
             var result = Loc.GetString(walking ? "wh40k-augment-info-leg" : "wh40k-augment-info-arm", ("percent", prosthetic.BonusPercent));
@@ -27,7 +27,7 @@ internal static class Wh40kAugmentInfo
             return result;
         }
 
-        if (prototype.TryGetComponent<OrganComponent>(out var organ)
+        if (prototype.TryComp<OrganComponent>(out var organ, factory)
             && organ.SlotId is Wh40kAugmentCatalog.LeftEye or Wh40kAugmentCatalog.RightEye)
         {
             return Loc.GetString(organ.OnAdd?.ContainsKey("ShowHealthBars") == true

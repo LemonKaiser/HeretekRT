@@ -14,7 +14,7 @@ public sealed partial class DungeonJob
     /// <summary>
     /// <see cref="WormCorridorDunGen"/>
     /// </summary>
-    private async Task PostGen(WormCorridorDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, Random random)
+    private async Task PostGen(WormCorridorDunGen gen, DungeonData data, Dungeon dungeon, HashSet<Vector2i> reservedTiles, IRobustRandom random)
     {
         if (!data.Tiles.TryGetValue(DungeonDataKey.FallbackTile, out var tileProto) || !_prototype.TryIndex(tileProto, out var tileDef))
         {
@@ -44,6 +44,7 @@ public sealed partial class DungeonJob
         // For simplicity we'll go through each entrance randomly and generate worms from it
         // then as a final step we will connect all of their networks.
         random.Shuffle(networks);
+        var minAngleChange = -gen.MaxAngleChange;
 
         for (var i = 0; i < gen.Count; i++)
         {
@@ -59,7 +60,8 @@ public sealed partial class DungeonJob
             for (var x = remainingLength; x >= 0; x--)
             {
                 position += angle.ToVec();
-                angle += random.NextAngle(-gen.MaxAngleChange, gen.MaxAngleChange);
+                // Use a double draw to preserve the established path for this seed.
+                angle += minAngleChange + (gen.MaxAngleChange - minAngleChange) * random.NextDouble();
                 var roundedPos = position.Floored();
 
                 // Check if the tile doesn't overlap something it shouldn't

@@ -141,13 +141,15 @@ public partial class ShuttleNavControl
 
     private void Wh40kFlyTo(Vector2 position)
     {
-        if (!EntManager.TryGetComponent<TransformComponent>(_consoleEntity, out var console) || console.MapID == MapId.Nullspace)
+        if (_consoleEntity is not { } consoleUid
+            || !EntManager.TryGetComponent<TransformComponent>(consoleUid, out var console)
+            || console.MapID == MapId.Nullspace)
             return;
 
         Wh40kSendWaypointMessage(new ShuttleConsoleAutopilotPositionMessage
         {
             Coordinates = new MapCoordinates(position, console.MapID),
-            Angle = _transform.GetWorldRotation(console.GridUid ?? console.Owner),
+            Angle = _transform.GetWorldRotation(console.GridUid ?? consoleUid),
         });
     }
 

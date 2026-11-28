@@ -86,7 +86,7 @@ public sealed partial class CargoSystem
                 .Where(item => HasComp<CargoOrderConsoleComponent>(item) &&
                                TryResolveCargoDomain(item, out var domain) &&
                                domain.Owner == owner)
-                .Select(item => EntityManager.GetNetEntity(item))
+                .Select(item => GetNetEntity(item))
                 .ToList();
 
             if (consoleUidList.Count == 0)

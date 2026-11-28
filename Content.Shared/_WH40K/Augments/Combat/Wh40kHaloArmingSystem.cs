@@ -8,7 +8,7 @@ namespace Content.Shared._WH40K.Augments.Combat;
 /// <summary>
 /// Holds a wearer motionless inside the Corona protective shield while the ring of orbs arms.
 /// </summary>
-public sealed class Wh40kHaloArmingSystem : EntitySystem
+public sealed partial class Wh40kHaloArmingSystem : EntitySystem
 {
     [Dependency] private ActionBlockerSystem _blocker = default!;
     [Dependency] private PullingSystem _pulling = default!;

@@ -17,11 +17,11 @@ public sealed partial class CryosaveCommand : LocalizedCommands
     internal const string DefaultReason = "";
     internal const bool AlwaysForce = true;
 
-    [Dependency] private readonly IPlayerLocator _locator = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IAdminAuthorizationManager _authorization = default!;
+    [Dependency] private IPlayerLocator _locator = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IAdminAuthorizationManager _authorization = default!;
 
     public override string Command => "cryosave";
 

@@ -16,7 +16,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Round-long dependence: doses fill a meter per family, tolerance speeds up the come-down, and a dependent body that
 /// goes without for long enough falls into withdrawal until it is high on the family again. Withdrawal never kills.
 /// </summary>
-public sealed class Wh40kDependenceSystem : EntitySystem
+public sealed partial class Wh40kDependenceSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -91,7 +91,7 @@ public sealed class Wh40kDependenceSystem : EntitySystem
         if (gear == null)
             return;
 
-        var item = Spawn(gear, Transform(uid).Coordinates);
+        var item = SpawnAttachedTo(gear, Transform(uid).Coordinates);
         _hands.TryPickupAnyHand(uid, item, checkActionBlocker: false);
     }
 

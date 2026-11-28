@@ -133,7 +133,7 @@ public sealed partial class BatteryDrinkerSystem : EntitySystem
         if (sourceComp != null && sourceComp.DrinkSound != null){
             _popup.PopupEntity(Loc.GetString("ipc-recharge-tip"), drinker, drinker, PopupType.SmallCaution);
             _audio.PlayPvs(sourceComp.DrinkSound, source);
-            Spawn("EffectSparks", Transform(source).Coordinates);
+            SpawnAttachedTo("EffectSparks", Transform(source).Coordinates);
         }
     }
 

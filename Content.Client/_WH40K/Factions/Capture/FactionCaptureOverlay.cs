@@ -7,7 +7,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.Factions.Capture;
 
-public sealed class FactionCaptureOverlaySystem : EntitySystem
+public sealed partial class FactionCaptureOverlaySystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlays = default!;
     [Dependency] private IPlayerManager _players = default!;

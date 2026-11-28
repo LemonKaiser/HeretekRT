@@ -9,7 +9,7 @@ namespace Content.Shared._WH40K.Biotype;
 /// Defines the body prototype and component delta applied when converting a spawned humanoid
 /// to a specific <see cref="Wh40kBiotype"/>.
 /// </summary>
-[Prototype("wh40kBiotype")]
+[Prototype]
 public sealed partial class Wh40kBiotypePrototype : IPrototype
 {
     [IdDataField]

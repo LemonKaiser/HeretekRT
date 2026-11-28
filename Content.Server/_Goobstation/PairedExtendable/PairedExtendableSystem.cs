@@ -12,10 +12,10 @@ using Content.Shared.Popups;
 
 namespace Content.Server._Goobstation.PairedExtendable;
 
-public sealed class PairedExtendableSystem : EntitySystem
+public sealed partial class PairedExtendableSystem : EntitySystem
 {
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
 
     /// <summary>
     /// Tries to extend or retract an extendable out from the user.
@@ -37,7 +37,7 @@ public sealed class PairedExtendableSystem : EntitySystem
             return true;
         }
 
-        newExtendable = Spawn(protoId, Transform(user).Coordinates);
+        newExtendable = SpawnAttachedTo(protoId, Transform(user).Coordinates);
         if (!_hands.TryPickup(user, newExtendable.Value, hand.Name))
         {
             Del(newExtendable);

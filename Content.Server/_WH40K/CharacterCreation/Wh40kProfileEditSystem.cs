@@ -13,11 +13,11 @@ namespace Content.Server._WH40K.CharacterCreation;
 /// <summary>
 /// Authoritative gate for changes made from the character personalization interface.
 /// </summary>
-public sealed class Wh40kProfileEditSystem : EntitySystem
+public sealed partial class Wh40kProfileEditSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _configuration = default!;
-    [Dependency] private readonly IAdminManager _admins = default!;
-    [Dependency] private readonly JobWhitelistManager _whitelists = default!;
+    [Dependency] private IConfigurationManager _configuration = default!;
+    [Dependency] private IAdminManager _admins = default!;
+    [Dependency] private JobWhitelistManager _whitelists = default!;
 
     public Wh40kProfileEditMode Mode =>
         Wh40kProfileEditPolicy.ParseMode(_configuration.GetCVar(CCVars.Wh40kProfileEditMode));

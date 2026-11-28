@@ -22,7 +22,7 @@ namespace Content.Replay.Menu;
 /// <summary>
 /// Main menu screen for selecting and loading replays.
 /// </summary>
-public sealed class ReplayMainScreen : State
+public sealed partial class ReplayMainScreen : State
 {
     [Dependency] private IResourceManager _resMan = default!;
     [Dependency] private IComponentFactory _factory = default!;
@@ -263,7 +263,7 @@ public sealed class ReplayMainScreen : State
         }
         catch (Exception ex)
         {
-            Logger.Error($"Failed to load replay info. Exception: {ex}");
+            IoCManager.Resolve<ILogManager>().RootSawmill.Error($"Failed to load replay info. Exception: {ex}");
             SelectReplay(null);
             return;
         }
@@ -272,8 +272,8 @@ public sealed class ReplayMainScreen : State
 
     protected override void Shutdown()
     {
-        _mainMenuControl.Dispose();
-        _selectWindow?.Dispose();
+        _mainMenuControl.Orphan();
+        _selectWindow?.Orphan();
     }
 
     private void OptionsButtonPressed(BaseButton.ButtonEventArgs args)

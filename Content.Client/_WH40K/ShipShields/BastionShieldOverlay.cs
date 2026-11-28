@@ -12,7 +12,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client._WH40K.ShipShields;
 
-public sealed class BastionShieldOverlay : Overlay
+public sealed partial class BastionShieldOverlay : Overlay
 {
     private const float Extent = 1f;
     private static readonly ProtoId<ShaderPrototype> Shader = "WH40KBastionShield";

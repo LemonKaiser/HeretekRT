@@ -56,7 +56,7 @@ public sealed partial class PuddleSystem
             if (puddleSolution.Volume == FixedPoint2.Zero)
             {
                 // Spawn a *sparkle*
-                Spawn("PuddleSparkle", xformQuery.GetComponent(uid).Coordinates);
+                SpawnAttachedTo("PuddleSparkle", xformQuery.GetComponent(uid).Coordinates);
                 QueueDel(uid);
             }
 

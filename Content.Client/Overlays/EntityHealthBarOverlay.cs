@@ -29,6 +29,7 @@ public sealed class EntityHealthBarOverlay : Overlay
     private readonly MobThresholdSystem _mobThresholdSystem;
     private readonly StatusIconSystem _statusIconSystem;
     private readonly ProgressColorSystem _progressColor;
+    private readonly SpriteSystem _sprite;
 
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowFOV;
@@ -44,6 +45,7 @@ public sealed class EntityHealthBarOverlay : Overlay
         _mobThresholdSystem = _entManager.System<MobThresholdSystem>();
         _statusIconSystem = _entManager.System<StatusIconSystem>();
         _progressColor = _entManager.System<ProgressColorSystem>();
+        _sprite = _entManager.System<SpriteSystem>();
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -79,7 +81,7 @@ public sealed class EntityHealthBarOverlay : Overlay
             // sprite scale here as well so health bars follow custom-sized bodies (for example,
             // Astartes) instead of falling back to the default 1x1 bounds.
             var statusIconBounds = _entManager.GetComponentOrNull<StatusIconComponent>(uid)?.Bounds;
-            var bounds = statusIconBounds?.Scale(spriteComponent.Scale) ?? spriteComponent.Bounds;
+            var bounds = statusIconBounds?.Scale(spriteComponent.Scale) ?? _sprite.GetLocalBounds((uid, spriteComponent));
             var worldPos = _transform.GetWorldPosition(xform, xformQuery);
 
             if (!bounds.Translated(worldPos).Intersects(args.WorldAABB))

@@ -107,7 +107,7 @@ public sealed partial class PrybarProstheticsSystem : EntitySystem
             }
         }
 
-        var newPart = Spawn(partProtoId, new EntityCoordinates(parentEntity, Vector2.Zero));
+        var newPart = SpawnAttachedTo(partProtoId, new EntityCoordinates(parentEntity, Vector2.Zero));
 
         if (!TryComp(newPart, out BodyPartComponent? newPartComp))
         {

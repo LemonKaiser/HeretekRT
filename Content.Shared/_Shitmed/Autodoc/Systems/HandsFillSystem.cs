@@ -28,7 +28,7 @@ public sealed partial class HandsFillSystem : EntitySystem
             if (fill is not {} id)
                 continue;
 
-            var uid = Spawn(id, coords);
+            var uid = SpawnAttachedTo(id, coords);
             if (!_hands.TryPickup(ent, uid, name, animate: false, handsComp: hands))
             {
                 Log.Error($"Entity {ToPrettyString(ent)} couldn't pick up item {id} into its '{name}' hand!");

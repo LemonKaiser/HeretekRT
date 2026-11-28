@@ -13,7 +13,7 @@ namespace Content.Client._WH40K.Act1;
 /// Keeps the entire HUD out of a prologue participant's view. Escape remains handled by the normal UI because this
 /// controller neither captures input nor opens a modal control.
 /// </summary>
-public sealed class Act1PrologueHudController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
+public sealed partial class Act1PrologueHudController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private ISharedPlayerManager _players = default!;

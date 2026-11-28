@@ -37,8 +37,8 @@ public abstract partial class SharedInteractionSystem
             HasComp<GhostComponent>(performer) || HasComp<VirtualItemComponent>(targetUid))
             return;
 
-        if (!TryComp<MetaDataComponent>(performer, out var performerMeta) || performerMeta.EntityPaused ||
-            !TryComp<MetaDataComponent>(targetUid, out var targetMeta) || targetMeta.EntityPaused ||
+        if (!TryComp(performer, out MetaDataComponent? performerMeta) || performerMeta.EntityPaused ||
+            !TryComp(targetUid, out MetaDataComponent? targetMeta) || targetMeta.EntityPaused ||
             performerMeta.VisibilityMask != targetMeta.VisibilityMask ||
             performerMeta.CreationTick == _gameTiming.CurTick || targetMeta.CreationTick == _gameTiming.CurTick)
             return;

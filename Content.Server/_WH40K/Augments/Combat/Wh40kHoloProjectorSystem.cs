@@ -21,7 +21,7 @@ using Robust.Shared.Random;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kHoloProjectorSystem : EntitySystem
+public sealed partial class Wh40kHoloProjectorSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -176,7 +176,7 @@ public sealed class Wh40kHoloProjectorSystem : EntitySystem
         if (!_map.TryGetTileRef(grid, gridComp, tile, out var tileRef) || _turf.IsSpace(tileRef))
             return false;
 
-        var anchored = _map.GetAnchoredEntitiesEnumerator(grid, gridComp, tile);
+        var anchored = _map.GetAnchoredEntities(grid, gridComp, tile);
         while (anchored.MoveNext(out var anchoredUid))
         {
             if (_doorQuery.HasComp(anchoredUid) || _airtightQuery.HasComp(anchoredUid))

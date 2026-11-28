@@ -14,9 +14,9 @@ namespace Content.Shared._WH40K.CharacterCreation;
 /// The same component is replicated to the client so predicted melee and projectile feedback use
 /// the exact calculation that the server validates.
 /// </summary>
-public sealed class Wh40kCharacterStatsSystem : EntitySystem
+public sealed partial class Wh40kCharacterStatsSystem : EntitySystem
 {
-    [Dependency] private readonly SharedPersonalShieldSystem _personalShield = default!;
+    [Dependency] private SharedPersonalShieldSystem _personalShield = default!;
 
     public override void Initialize()
     {

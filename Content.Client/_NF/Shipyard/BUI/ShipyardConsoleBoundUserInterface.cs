@@ -76,9 +76,9 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 
         if (!disposing) return;
 
-        _menu?.Dispose();
+        _menu?.Orphan();
+        _menu = null;
         _previewWindow?.Close();
-        _previewWindow?.Dispose();
         _previewWindow = null;
     }
 
@@ -124,7 +124,6 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             return;
         }
 
-        _previewWindow?.Dispose();
         _previewWindow = Wh40kShipPreviewWindow.Open(vessel);
     }
 }

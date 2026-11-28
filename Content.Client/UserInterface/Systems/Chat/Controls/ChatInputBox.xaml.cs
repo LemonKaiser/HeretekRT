@@ -149,11 +149,4 @@ public class ChatInputBox : PanelContainer
             (false, false) => Loc.GetString("hud-chatbox-info-unbound")
         };
     }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-        if (disposing)
-            EmojiButton.OnEmojiPicked -= InsertEmoji;
-    }
 }

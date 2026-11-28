@@ -11,9 +11,11 @@ namespace Content.Client.Lobby.UI;
 /// Repaints the portion of the active lobby image behind the drawer through a small
 /// blur shader. This is the UI-safe equivalent of CSS backdrop-filter.
 /// </summary>
-public sealed class LobbyDrawerBlurBackdrop : Control
+public sealed partial class LobbyDrawerBlurBackdrop : Control
 {
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    private static readonly ProtoId<ShaderPrototype> BlurShaderId = "HeretekLobbyDrawerBlur";
+
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
 
     private readonly ShaderInstance _blurShader;
 
@@ -24,7 +26,7 @@ public sealed class LobbyDrawerBlurBackdrop : Control
     public LobbyDrawerBlurBackdrop()
     {
         IoCManager.InjectDependencies(this);
-        _blurShader = _prototypeManager.Index<ShaderPrototype>("HeretekLobbyDrawerBlur").Instance();
+        _blurShader = _prototypeManager.Index(BlurShaderId).Instance();
         MouseFilter = MouseFilterMode.Ignore;
     }
 

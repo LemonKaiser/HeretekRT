@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Activities;
 /// Central hard-reject policy for future activity executors. It intentionally fails closed: an
 /// unknown map, system, grid or movement state is never an eligible activity target.
 /// </summary>
-public sealed class ActivitySafetyGuard : EntitySystem
+public sealed partial class ActivitySafetyGuard : EntitySystem
 {
     private const KoronusSafetyRule ProtectedAreaRules =
         KoronusSafetyRule.PlayerDamage |
@@ -27,7 +27,7 @@ public sealed class ActivitySafetyGuard : EntitySystem
     public bool IsGuardianSafe(EntityUid guardian, string systemId, MapId mapId, Vector2 center,
         float leashRadius, EntityUid activityGrid, EntityUid? surfaceTerrain = null)
     {
-        if (!TryComp<TransformComponent>(guardian, out var transform) || transform.MapID != mapId ||
+        if (!TryComp(guardian, out TransformComponent? transform) || transform.MapID != mapId ||
             transform.GridUid is { } grid && grid != activityGrid && grid != surfaceTerrain)
             return false;
         var position = _transform.ToMapCoordinates(transform.Coordinates).Position;

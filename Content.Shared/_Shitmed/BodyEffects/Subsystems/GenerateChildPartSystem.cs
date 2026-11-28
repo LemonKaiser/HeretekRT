@@ -53,7 +53,7 @@ public sealed partial class GenerateChildPartSystem : EntitySystem
                 }
             }
 
-            var childPart = Spawn(component.Id, new EntityCoordinates(partComp.Body.Value, Vector2.Zero));
+            var childPart = SpawnAttachedTo(component.Id, new EntityCoordinates(partComp.Body.Value, Vector2.Zero));
 
             if (!TryComp(childPart, out BodyPartComponent? childPartComp))
                 return;

@@ -40,7 +40,7 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
 
     public void ShowShot(EntityUid gun, EntityUid? holder, Angle angle, bool compact)
     {
-        if (!TryComp<TransformComponent>(gun, out var gunTransform) || gunTransform.MapID == MapId.Nullspace)
+        if (!TryComp(gun, out TransformComponent? gunTransform) || gunTransform.MapID == MapId.Nullspace)
             return;
 
         var now = _timing.CurTime;
@@ -138,7 +138,7 @@ public sealed partial class WH40KBallisticMuzzleSystem : EntitySystem
         var bounds = new ContactShadowProjectedBounds();
 
         if (holder is { } carrier && _hands.GetHeldVisualLayers(carrier, gun) is { } layers &&
-            TryComp<SpriteComponent>(carrier, out var carrierSprite) && TryComp<TransformComponent>(carrier, out var carrierTransform))
+            TryComp<SpriteComponent>(carrier, out var carrierSprite) && TryComp(carrier, out TransformComponent? carrierTransform))
         {
             var (position, rotation) = _transform.GetWorldPositionRotation(carrierTransform);
             var screenAngle = (rotation + eye).Reduced().FlipPositive();

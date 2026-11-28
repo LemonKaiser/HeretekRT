@@ -67,7 +67,7 @@ public sealed partial class InfoUIController : UIController, IOnStateEntered<Lob
         if (_infoWindow == null)
             return;
 
-        _infoWindow.Dispose();
+        _infoWindow.Orphan();
         _infoWindow = null;
     }
 

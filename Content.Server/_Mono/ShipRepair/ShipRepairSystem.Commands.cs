@@ -76,7 +76,7 @@ public sealed partial class ShipRepairSystem
                 }
 
                 var protoId = data.EntityPalette[spec.ProtoIndex];
-                var spawned = Spawn(protoId, coords);
+                var spawned = SpawnAttachedTo(protoId, coords);
                 _transform.SetLocalRotation(spawned, spec.Rotation);
                 spec.OriginalEntity = GetNetEntity(spawned);
             }

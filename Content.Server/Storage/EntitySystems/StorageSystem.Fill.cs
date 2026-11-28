@@ -48,7 +48,7 @@ public sealed partial class StorageSystem
         var items = new List<Entity<ItemComponent>>();
         foreach (var spawnPrototype in spawnItems)
         {
-            var ent = Spawn(spawnPrototype, coordinates);
+            var ent = SpawnAttachedTo(spawnPrototype, coordinates);
             if (randomizeDurability)
                 RaiseLocalEvent(ent, new RandomLootSpawnedEvent());
 
@@ -107,7 +107,7 @@ public sealed partial class StorageSystem
             // No, you are not allowed to fill a container with entity spawners.
             DebugTools.Assert(!_prototype.Index<EntityPrototype>(item)
                 .HasComponent(typeof(RandomSpawnerComponent)));
-            var ent = Spawn(item, coordinates);
+            var ent = SpawnAttachedTo(item, coordinates);
 
             // Frontier: handle humanoid spawner cases
             if (TryComp<RandomHumanoidSpawnerComponent>(ent, out var spawner))

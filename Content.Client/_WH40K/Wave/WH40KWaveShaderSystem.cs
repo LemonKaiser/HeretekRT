@@ -9,7 +9,7 @@ namespace Content.Client._WH40K.Wave;
 /// <summary>
 /// Applies a lightweight vertex wave shader to cloaks, flags and similar soft sprites.
 /// </summary>
-public sealed class WH40KWaveShaderSystem : EntitySystem
+public sealed partial class WH40KWaveShaderSystem : EntitySystem
 {
     private static readonly ProtoId<ShaderPrototype> ShaderId = "WH40KWave";
 

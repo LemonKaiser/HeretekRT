@@ -10,7 +10,7 @@ namespace Content.Client._WH40K.Factions;
 /// Binds account membership and applications to a catalogue. Each surface supplies its own views.
 /// </summary>
 [Virtual]
-public class FactionCatalog : BoxContainer
+public partial class FactionCatalog : BoxContainer
 {
     [Dependency] private IPrototypeManager _prototypes = default!;
     private Wh40kFactionUiSnapshot? _snapshot;
@@ -83,7 +83,7 @@ public class FactionCatalog : BoxContainer
 
     private void OpenDetails(CompanyPrototype faction)
     {
-        _details?.Dispose();
+        _details?.Close();
         _detailsId = faction.ID;
         _details = CreateProfile(faction);
         _details.ActionPressed += () => Act(faction.ID);
@@ -111,12 +111,10 @@ public class FactionCatalog : BoxContainer
         _details.UpdateRelations(_snapshot?.Relations ?? []);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void ExitedTree()
     {
-        if (disposing)
-        {
-            _details?.Dispose();
-        }
-        base.Dispose(disposing);
+        _details?.Close();
+        _details = null;
+        base.ExitedTree();
     }
 }

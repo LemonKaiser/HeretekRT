@@ -34,6 +34,12 @@ public sealed partial class GuideEntityEmbed : BoxContainer, IDocumentTag
     private readonly ExamineSystem _examineSystem;
     private readonly GuidebookSystem _guidebookSystem;
 
+    private string? _prototype;
+    private bool _showPrototypeCaption;
+    private bool _addGuidebookTag;
+    private bool _runMapInit;
+    private EntityUid? _preview;
+
     public bool Interactive;
 
     public Entity<SpriteComponent>? Sprite => View.Entity == null || View.Sprite == null
@@ -60,11 +66,8 @@ public sealed partial class GuideEntityEmbed : BoxContainer, IDocumentTag
     {
         Interactive = interactive;
 
-        var ent = _entityManager.SpawnEntity(proto, MapCoordinates.Nullspace);
-        View.SetEntity(ent);
-
-        if (caption)
-            Caption.Text = _entityManager.GetComponent<MetaDataComponent>(ent).EntityName;
+        _prototype = proto;
+        _showPrototypeCaption = caption;
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
@@ -123,30 +126,47 @@ public sealed partial class GuideEntityEmbed : BoxContainer, IDocumentTag
         }
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        base.Dispose(disposing);
+        base.EnteredTree();
 
-        if (Sprite is not null)
-            _entityManager.DeleteEntity(Sprite);
+        if (_prototype == null)
+            return;
+
+        var ent = _entityManager.Spawn(_prototype, MapCoordinates.Nullspace);
+        _preview = ent;
+        if (_addGuidebookTag)
+            _tagSystem.AddTag(ent, GuidebookSystem.GuideEmbedTag);
+        View.SetEntity(ent);
+
+        var metadata = _entityManager.GetComponent<MetaDataComponent>(ent);
+        if (_showPrototypeCaption)
+            Caption.Text = metadata.EntityName;
+
+        if (_runMapInit)
+            _entityManager.RunMapInit(ent, metadata);
+    }
+
+    protected override void ExitedTree()
+    {
+        View.SetEntity(null);
+        _entityManager.DeleteEntity(_preview);
+        _preview = null;
+        base.ExitedTree();
     }
 
     public bool TryParseTag(Dictionary<string, string> args, [NotNullWhen(true)] out Control? control)
     {
         if (!args.TryGetValue("Entity", out var proto))
         {
-            Logger.Error("Entity embed tag is missing entity prototype argument");
+            IoCManager.Resolve<ILogManager>().RootSawmill.Error("Entity embed tag is missing entity prototype argument");
             control = null;
             return false;
         }
 
-        var ent = _entityManager.SpawnEntity(proto, MapCoordinates.Nullspace);
-
-        _tagSystem.AddTag(ent, GuidebookSystem.GuideEmbedTag);
-        View.SetEntity(ent);
-
-        if (!args.TryGetValue("Caption", out var caption))
-            caption = _entityManager.GetComponent<MetaDataComponent>(ent).EntityName;
+        _prototype = proto;
+        _addGuidebookTag = true;
+        _showPrototypeCaption = !args.TryGetValue("Caption", out var caption);
 
         if (!string.IsNullOrEmpty(caption))
             Caption.Text = caption;
@@ -181,8 +201,7 @@ public sealed partial class GuideEntityEmbed : BoxContainer, IDocumentTag
         }
 
         // By default, we will map-initialize guidebook entities.
-        if (!args.TryGetValue("Init", out var mapInit) || !bool.Parse(mapInit))
-            _entityManager.RunMapInit(ent, _entityManager.GetComponent<MetaDataComponent>(ent));
+        _runMapInit = !args.TryGetValue("Init", out var mapInit) || !bool.Parse(mapInit);
 
         control = this;
         return true;

@@ -118,6 +118,6 @@ public sealed partial class CardDeckSystem : EntitySystem
         {
             return SpawnInContainerOrDrop(prototype, container.Owner, container.ID);
         }
-        return Spawn(prototype, Transform(uid).Coordinates);
+        return SpawnAttachedTo(prototype, Transform(uid).Coordinates);
     }
 }

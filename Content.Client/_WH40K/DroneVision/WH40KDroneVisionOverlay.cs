@@ -11,14 +11,15 @@ using Robust.Shared.Map;
 
 namespace Content.Client._WH40K.DroneVision;
 
-public sealed class WH40KDroneVisionOverlay : Overlay
+public sealed partial class WH40KDroneVisionOverlay : Overlay
 {
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
 
     private readonly TransformSystem _transform;
     private readonly StealthSystem _stealth;
     private readonly ContainerSystem _container;
+    private readonly SpriteSystem _sprite;
     private readonly List<DroneVisionRenderEntry> _entries = [];
 
     public override bool RequestScreenTexture => true;
@@ -30,6 +31,7 @@ public sealed class WH40KDroneVisionOverlay : Overlay
         _container = _entityManager.System<ContainerSystem>();
         _transform = _entityManager.System<TransformSystem>();
         _stealth = _entityManager.System<StealthSystem>();
+        _sprite = _entityManager.System<SpriteSystem>();
         ZIndex = -1;
     }
 
@@ -76,9 +78,9 @@ public sealed class WH40KDroneVisionOverlay : Overlay
             return;
 
         var originalColor = sprite.Color;
-        sprite.Color = Color.Black;
-        sprite.Render(handle, eyeRotation, _transform.GetWorldRotation(transform), position: _transform.GetWorldPosition(transform));
-        sprite.Color = originalColor;
+        _sprite.SetColor((uid, sprite), Color.Black);
+        _sprite.RenderSprite((uid, sprite), handle, eyeRotation, _transform.GetWorldRotation(transform), _transform.GetWorldPosition(transform));
+        _sprite.SetColor((uid, sprite), originalColor);
     }
 
     private bool CanSee(EntityUid uid, SpriteComponent sprite)

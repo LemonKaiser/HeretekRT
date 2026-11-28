@@ -54,6 +54,7 @@ namespace Content.Server.Administration.Commands
                     return;
                 }
 
+                var xformSystem = _entManager.System<SharedTransformSystem>();
                 var currentMap = _entManager.GetComponent<TransformComponent>(playerEntity).MapID;
                 var currentGrid = _entManager.GetComponent<TransformComponent>(playerEntity).GridUid;
 
@@ -63,8 +64,8 @@ namespace Content.Server.Administration.Commands
                         // Sort so that warp points on the same grid/map are first.
                         // So if you have two maps loaded with the same warp points,
                         // it will prefer the warp points on the map you're currently on.
-                        var aGrid = a.GetGridUid(_entManager);
-                        var bGrid = b.GetGridUid(_entManager);
+                        var aGrid = xformSystem.GetGrid(a);
+                        var bGrid = xformSystem.GetGrid(b);
 
                         if (aGrid == bGrid)
                         {
@@ -81,8 +82,8 @@ namespace Content.Server.Administration.Commands
                             return 1;
                         }
 
-                        var mapA = a.GetMapId(_entManager);
-                        var mapB = a.GetMapId(_entManager);
+                        var mapA = xformSystem.GetMapId(a);
+                        var mapB = xformSystem.GetMapId(b);
 
                         if (mapA == mapB)
                         {
@@ -118,8 +119,7 @@ namespace Content.Server.Administration.Commands
                 }
 
                 var xform = _entManager.GetComponent<TransformComponent>(playerEntity);
-                var xformSystem = _entManager.System<SharedTransformSystem>();
-                xform.Coordinates = coords;
+                xformSystem.SetCoordinates(playerEntity, xform, coords);
                 xformSystem.AttachToGridOrMap(playerEntity, xform);
                 if (_entManager.TryGetComponent(playerEntity, out PhysicsComponent? physics))
                 {

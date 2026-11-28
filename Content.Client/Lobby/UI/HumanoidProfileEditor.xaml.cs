@@ -423,7 +423,7 @@ namespace Content.Client.Lobby.UI
 
             HeightSlider.OnValueChanged += args =>
             {
-                SetHeight((float)args.Value);
+                SetCharacterHeight((float)args.Value);
             };
 
             HeightResetButton.OnPressed += _ =>
@@ -437,7 +437,7 @@ namespace Content.Client.Lobby.UI
 
             WidthSlider.OnValueChanged += args =>
             {
-                SetWidth((float)args.Value);
+                SetCharacterWidth((float)args.Value);
             };
 
             WidthResetButton.OnPressed += _ =>
@@ -613,7 +613,6 @@ namespace Content.Client.Lobby.UI
                 _extendedDescription.OnShareOocFlavorTextChanged -= OnShareOocFlavorTextChange;
                 _extendedDescription.OnShareLinksFlavorTextChanged -= OnShareLinksFlavorTextChange;
                 _extendedDescription.OnSharePreferencesFlavorTextChanged -= OnSharePreferencesFlavorTextChange;
-                _extendedDescription.Dispose();
                 _extendedDescription = null;
                 _extendedDescriptionTab = null;
                 UpdateProfilePreviewSidebar(TabContainer.CurrentTab);
@@ -640,7 +639,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void RefreshTraits()
         {
-            TraitsList.DisposeAllChildren();
+            TraitsList.RemoveAllChildren();
 
             EnforceSpeciesTraitRestrictions();
 
@@ -1182,7 +1181,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void RefreshLoadouts()
         {
-            _loadoutWindow?.Dispose();
+            _loadoutWindow?.Orphan();
         }
 
         /// <summary>
@@ -1311,7 +1310,7 @@ namespace Content.Client.Lobby.UI
                 _entManager.DeleteEntity(entity);
 
             _savedItemEntities.Clear();
-            _savedItemsList.DisposeAllChildren();
+            _savedItemsList.RemoveAllChildren();
 
             var previews = new List<(PersistentProfileItem Item, EntityUid Entity)>();
             foreach (var item in Profile?.Items ?? [])
@@ -1445,7 +1444,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void RefreshJobs()
         {
-            JobList.DisposeAllChildren();
+            JobList.RemoveAllChildren();
             _jobCategories.Clear();
             _jobPriorities.Clear();
             var firstCategory = true;
@@ -1541,7 +1540,7 @@ namespace Content.Client.Lobby.UI
                         VerticalAlignment = VAlignment.Center
                     };
                     var jobIcon = _prototypeManager.Index(job.Icon);
-                    icon.Texture = jobIcon.Icon.Frame0();
+                    icon.Texture = _entManager.System<SpriteSystem>().Frame0(jobIcon.Icon);
                     selector.Setup(items, job.LocalizedName, 200, job.LocalizedDescription, icon, job.Guides);
 
                     if (!_requirements.IsAllowed(job, Profile, out var reason))
@@ -1631,7 +1630,7 @@ namespace Content.Client.Lobby.UI
 
         private void OpenLoadout(JobPrototype? jobProto, RoleLoadout roleLoadout, RoleLoadoutPrototype roleLoadoutProto)
         {
-            _loadoutWindow?.Dispose();
+            _loadoutWindow?.Orphan();
             _loadoutWindow = null;
             var collection = IoCManager.Instance;
 
@@ -1879,31 +1878,10 @@ namespace Content.Client.Lobby.UI
             ReloadProfilePreview();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                FilePopup.Dispose();
-                DisposeMarkingGlow();
-            }
-            base.Dispose(disposing);
-            if (!disposing)
-                return;
-
-            _loadoutWindow?.Dispose();
-            _loadoutWindow = null;
-
-            // Mono start
-            foreach (var entity in _savedItemEntities)
-                _entManager.DeleteEntity(entity);
-
-            _savedItemEntities.Clear();
-            // Mono end
-        }
-
         protected override void EnteredTree()
         {
             base.EnteredTree();
+            SubscribeMarkingGlow();
             ReloadPreview();
             _factionLobbySystem = _entManager.System<FactionLobbySystem>();
             _factionLobbySystem.Updated += OnFactionStateUpdated;
@@ -1912,6 +1890,20 @@ namespace Content.Client.Lobby.UI
 
         protected override void ExitedTree()
         {
+            FilePopup.Close();
+            FilePopup.Orphan();
+            UnsubscribeMarkingGlow();
+            _loadoutWindow?.Orphan();
+            _loadoutWindow = null;
+            JobOverride = null;
+
+            // Mono start
+            foreach (var entity in _savedItemEntities)
+                _entManager.DeleteEntity(entity);
+
+            _savedItemEntities.Clear();
+            // Mono end
+
             // Systems are already unregistered when a disconnect unloads the lobby screen.
             if (_factionLobbySystem != null)
                 _factionLobbySystem.Updated -= OnFactionStateUpdated;
@@ -2043,7 +2035,7 @@ namespace Content.Client.Lobby.UI
             SetDirty();
         }
 
-        private void SetHeight(float newHeight)
+        private void SetCharacterHeight(float newHeight)
         {
             if (IsWh40kAppearanceEditingLocked || Profile == null || Profile.Appearance.Height == newHeight)
                 return;
@@ -2055,11 +2047,11 @@ namespace Content.Client.Lobby.UI
 
         private void ResetHeight()
         {
-            SetHeight(1.0f);
+            SetCharacterHeight(1.0f);
             UpdateHeightControls();
         }
 
-        private void SetWidth(float newWidth)
+        private void SetCharacterWidth(float newWidth)
         {
             if (IsWh40kAppearanceEditingLocked || Profile == null || Profile.Appearance.Width == newWidth)
                 return;
@@ -2071,7 +2063,7 @@ namespace Content.Client.Lobby.UI
 
         private void ResetWidth()
         {
-            SetWidth(1.0f);
+            SetCharacterWidth(1.0f);
             UpdateWidthControls();
         }
 

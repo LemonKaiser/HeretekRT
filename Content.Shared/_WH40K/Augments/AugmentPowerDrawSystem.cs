@@ -5,12 +5,12 @@ using Content.Shared._Shitmed.Body.Organ;
 
 namespace Content.Shared._WH40K.Augments;
 
-public sealed class AugmentPowerDrawSystem : EntitySystem
+public sealed partial class AugmentPowerDrawSystem : EntitySystem
 {
-    [Dependency] private readonly AugmentSystem _augment = default!;
-    [Dependency] private readonly ItemToggleSystem _toggle = default!;
-    [Dependency] private readonly SharedAugmentPowerCellSystem _power = default!;
-    [Dependency] private readonly SharedPowerCellSystem _powerCell = default!;
+    [Dependency] private AugmentSystem _augment = default!;
+    [Dependency] private ItemToggleSystem _toggle = default!;
+    [Dependency] private SharedAugmentPowerCellSystem _power = default!;
+    [Dependency] private SharedPowerCellSystem _powerCell = default!;
 
     public override void Initialize()
     {

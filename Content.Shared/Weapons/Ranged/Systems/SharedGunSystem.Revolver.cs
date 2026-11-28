@@ -241,7 +241,7 @@ public partial class SharedGunSystem
             return false;
 
         // If it's a speedloader try to get ammo from it.
-        if (EntityManager.HasComponent<SpeedLoaderComponent>(uid))
+        if (HasComp<SpeedLoaderComponent>(uid))
         {
             var freeSlots = 0;
 
@@ -528,7 +528,7 @@ public partial class SharedGunSystem
                     if (chamber == true)
                     {
                         // Pretend it's always been there.
-                        ent = Spawn(component.FillPrototype, args.Coordinates);
+                        ent = SpawnAttachedTo(component.FillPrototype, args.Coordinates);
 
                         if (!_netManager.IsClient)
                         {
@@ -552,7 +552,7 @@ public partial class SharedGunSystem
                     // Mark cartridge as spent and if it's caseless delete from the chamber slot.
                     SetCartridgeSpent(ent.Value, cartridge, true);
                     RemComp<TimedDespawnComponent>(ent.Value); // Mono: Keep the casing until it is ejected.
-                    var spawned = Spawn(cartridge.Prototype, args.Coordinates);
+                    var spawned = SpawnAttachedTo(cartridge.Prototype, args.Coordinates);
                     args.Ammo.Add((spawned, EnsureComp<AmmoComponent>(spawned)));
 
                     if (cartridge.DeleteOnSpawn)
@@ -598,7 +598,7 @@ public partial class SharedGunSystem
                     EntityUid? ent = component.AmmoSlots[index]!;
                     if (ent == null)
                     {
-                        ent = Spawn(component.FillPrototype, args.Coordinates);
+                        ent = SpawnAttachedTo(component.FillPrototype, args.Coordinates);
 
                         if (!_netManager.IsClient)
                         {

@@ -53,18 +53,9 @@ public partial class ChatBox : UIWidget
         ChatInput.FilterButton.Popup.OnNewHighlights += OnNewHighlights;
 
         _controller = UserInterfaceManager.GetUIController<ChatUIController>();
-        _controller.MessageAdded += OnMessageAdded;
-        _controller.HighlightsUpdated += OnHighlightsUpdated;
-        _controller.AutoFillUpdated += OnAutoFillUpdated;
-        _controller.TabsChanged += OnTabsChanged;
-        _controller.RegisterChat(this);
-
-        ChatInput.FilterButton.Popup.SetActiveChannels(_controller.ActiveTab.Channels);
-
         // WD EDIT START
         _cfg = IoCManager.Resolve<IConfigurationManager>();
         _coalescence = _cfg.GetCVar(CCVars.CoalesceIdenticalMessages); // i am uncomfortable calling repopulate on chatbox in its ctor, even though it worked in testing i'll still err on the side of caution
-        _cfg.OnValueChanged(CCVars.CoalesceIdenticalMessages, UpdateCoalescence, false); // eplicitly false to underline the above comment
         // WD EDIT END
     }
 
@@ -77,7 +68,7 @@ public partial class ChatBox : UIWidget
 
     private void OnMessageAdded(ChatMessage msg)
     {
-        Logger.DebugS("chat", $"{msg.Channel}: {msg.Message}");
+        IoCManager.Resolve<ILogManager>().GetSawmill("chat").Debug($"{msg.Channel}: {msg.Message}");
         AppendMessage(msg, playAudio: true);
     }
 
@@ -89,7 +80,7 @@ public partial class ChatBox : UIWidget
         }
 
         if (playAudio && msg is { Read: false, AudioPath: { } })
-            _entManager.System<AudioSystem>().PlayGlobal(msg.AudioPath, Filter.Local(), false, AudioParams.Default.WithVolume(msg.AudioVolume));
+            _entManager.System<AudioSystem>().PlayGlobal(new ResolvedPathSpecifier(msg.AudioPath), Filter.Local(), false, AudioParams.Default.WithVolume(msg.AudioVolume));
 
         msg.Read = true;
 
@@ -278,24 +269,27 @@ public partial class ChatBox : UIWidget
         _controller.NotifyChatFocus(false);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        base.Dispose(disposing);
+        base.EnteredTree();
+        _controller.MessageAdded += OnMessageAdded;
+        _controller.HighlightsUpdated += OnHighlightsUpdated;
+        _controller.AutoFillUpdated += OnAutoFillUpdated;
+        _controller.TabsChanged += OnTabsChanged;
+        _controller.RegisterChat(this);
 
-        if (!disposing) return;
+        ChatInput.FilterButton.Popup.SetActiveChannels(_controller.ActiveTab.Channels);
+        _cfg.OnValueChanged(CCVars.CoalesceIdenticalMessages, UpdateCoalescence, true);
+    }
+
+    protected override void ExitedTree()
+    {
         _controller.MessageAdded -= OnMessageAdded;
         _controller.HighlightsUpdated -= OnHighlightsUpdated;
         _controller.AutoFillUpdated -= OnAutoFillUpdated;
         _controller.TabsChanged -= OnTabsChanged;
         _controller.UnregisterChat(this);
-        ChatInput.Input.OnTextEntered -= OnTextEntered;
-        ChatInput.Input.OnKeyBindDown -= OnInputKeyBindDown;
-        ChatInput.Input.OnTextChanged -= OnTextChanged;
-        ChatInput.Input.OnFocusEnter -= OnFocusEnter;
-        ChatInput.Input.OnFocusExit -= OnFocusExit;
-        ChatInput.ChannelSelector.OnChannelSelect -= OnChannelSelect;
-        ChatInput.FilterButton.Popup.OnChannelFilter -= OnChannelFilter;
-        ChatInput.FilterButton.Popup.OnNewHighlights -= OnNewHighlights;
-        _cfg.UnsubValueChanged(CCVars.CoalesceIdenticalMessages, UpdateCoalescence); // WD EDIT
+        _cfg.UnsubValueChanged(CCVars.CoalesceIdenticalMessages, UpdateCoalescence);
+        base.ExitedTree();
     }
 }

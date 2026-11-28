@@ -114,7 +114,7 @@ public sealed partial class MerchantWindow : DefaultWindow
         if (!rebuild)
             return;
 
-        OffersContainer.DisposeAllChildren();
+        OffersContainer.RemoveAllChildren();
         _offerControls.Clear();
 
         var sprites = _entityManager.EntitySysManager.GetEntitySystem<SpriteSystem>();

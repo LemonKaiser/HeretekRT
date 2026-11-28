@@ -17,12 +17,12 @@ namespace Content.Shared._FinalHorizon.Guns.AlternateGun;
 
 public sealed partial class AlternateGunSystem : EntitySystem
 {
-    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
-    [Dependency] private readonly SharedGunSystem _gunSystem = default!;
-    [Dependency] private readonly SharedHandsSystem _handSystem = default!;
-    [Dependency] private readonly SharedAudioSystem _sound = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private SharedGunSystem _gunSystem = default!;
+    [Dependency] private SharedHandsSystem _handSystem = default!;
+    [Dependency] private SharedAudioSystem _sound = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     public override void Initialize()
     {
         base.Initialize();

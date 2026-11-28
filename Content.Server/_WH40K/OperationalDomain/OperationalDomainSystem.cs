@@ -17,7 +17,7 @@ namespace Content.Server._WH40K.OperationalDomain;
 /// Stations retain their own identity; independent vessel grids only qualify through a vessel marker,
 /// <see cref="VesselComponent"/>, or <see cref="ShipOwnershipComponent"/>.
 /// </summary>
-public sealed class OperationalDomainSystem : EntitySystem
+public sealed partial class OperationalDomainSystem : EntitySystem
 {
     [Dependency] private StationSystem _station = default!;
     [Dependency] private IPlayerManager _players = default!;
@@ -52,7 +52,7 @@ public sealed class OperationalDomainSystem : EntitySystem
     public bool TryResolveOperationalDomain(EntityUid entity, out OperationalDomainData domain)
     {
         domain = default;
-        if (!IsLiveEntity(entity) || !TryComp<TransformComponent>(entity, out var transform))
+        if (!IsLiveEntity(entity) || !TryComp(entity, out TransformComponent? transform))
             return false;
 
         // A station entity itself may be a destination or a stored owner, even though it is not
@@ -152,6 +152,6 @@ public sealed class OperationalDomainSystem : EntitySystem
 
     private bool IsLiveEntity(EntityUid entity)
     {
-        return entity != EntityUid.Invalid && EntityManager.EntityExists(entity) && !TerminatingOrDeleted(entity);
+        return entity != EntityUid.Invalid && Exists(entity) && !TerminatingOrDeleted(entity);
     }
 }

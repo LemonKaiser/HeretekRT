@@ -13,7 +13,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kOpticalCamoSystem : EntitySystem
+public sealed partial class Wh40kOpticalCamoSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

@@ -11,13 +11,13 @@ namespace Content.Client._WH40K.OfferItem;
 /// <summary>
 /// Displays Arcane's offer reticle while the local player has an active item offer.
 /// </summary>
-public sealed class OfferItemCursorOverlay : Overlay
+public sealed partial class OfferItemCursorOverlay : Overlay
 {
     private readonly OfferItemSystem _offerItem;
 
-    [Dependency] private readonly IInputManager _input = default!;
-    [Dependency] private readonly IEntityManager _entityManager = default!;
-    [Dependency] private readonly IEyeManager _eye = default!;
+    [Dependency] private IInputManager _input = default!;
+    [Dependency] private IEntityManager _entityManager = default!;
+    [Dependency] private IEyeManager _eye = default!;
 
     private readonly Texture _reticle;
 

@@ -20,6 +20,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System.Linq;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Shared.Flash;
 
@@ -202,8 +203,8 @@ public abstract partial class SharedFlashSystem : EntitySystem
         foreach (var entity in _entSet)
         {
             // TODO: Use RandomPredicted https://github.com/space-wizards/RobustToolbox/pull/5849
-            var rand = new System.Random((int)_timing.CurTick.Value + GetNetEntity(entity).Id);
-            if (!rand.Prob(probability))
+            var rand = SharedRandomExtensions.CreateSeeded((int)_timing.CurTick.Value + GetNetEntity(entity).Id);
+            if (!(rand.NextDouble() < probability))
                 continue;
 
             // Is the entity affected by the flash either through status effects or by taking damage?

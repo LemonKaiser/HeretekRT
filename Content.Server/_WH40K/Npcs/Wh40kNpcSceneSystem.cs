@@ -62,7 +62,7 @@ public sealed partial class Wh40kNpcSceneSystem : EntitySystem
         if (comp.Cuffs is { } cuffsProto && !HasComp<ActorComponent>(uid) &&
             TryComp<CuffableComponent>(uid, out var cuffable) && cuffable.CuffedHandCount == 0)
         {
-            var cuffs = Spawn(cuffsProto, xform.Coordinates);
+            var cuffs = SpawnAttachedTo(cuffsProto, xform.Coordinates);
             if (!_cuffs.TryAddNewCuffs(uid, uid, cuffs, cuffable))
                 QueueDel(cuffs);
         }
@@ -217,7 +217,7 @@ public sealed partial class Wh40kNpcSceneSystem : EntitySystem
     {
         return TryGetTile(Transform(source).Coordinates, out var tile) && tile == seatTile &&
                _prototypes.TryIndex<EntityPrototype>(prototype, out var proto) &&
-               proto.TryGetComponent<Wh40kNpcSceneComponent>(out var scene, EntityManager.ComponentFactory) &&
+               proto.TryComp<Wh40kNpcSceneComponent>(out var scene, EntityManager.ComponentFactory) &&
                ShouldBuckleTo(scene, position);
     }
 }

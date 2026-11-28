@@ -95,7 +95,7 @@ public sealed partial class ChaosDungeonSystem
     {
         if (!TryComp<ChaosDungeonBossSpawnComponent>(instance.Comp.BossSpawn, out var marker))
             return;
-        var boss = Spawn(marker.Prototype, Transform(instance.Comp.BossSpawn).Coordinates);
+        var boss = SpawnAttachedTo(marker.Prototype, Transform(instance.Comp.BossSpawn).Coordinates);
         instance.Comp.Boss = boss;
         if (TryComp<Wh40kBossArenaComponent>(boss, out var arena) && arena.Anchor is { } anchor)
         {

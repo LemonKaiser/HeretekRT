@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Progression;
 /// <summary>
 /// Owns active party snapshots and short-lived invitations. Persistent mutations remain in the DB manager.
 /// </summary>
-public sealed class Wh40kPartyManager
+public sealed partial class Wh40kPartyManager
 {
     public const int MaximumMembers = 5;
     public static readonly TimeSpan PartyLifetime = TimeSpan.FromDays(7);

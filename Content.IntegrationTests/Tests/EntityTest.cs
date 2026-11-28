@@ -485,7 +485,7 @@ namespace Content.IntegrationTests.Tests
         {
             try
             {
-                return entManager.SpawnEntity(protoName, coordinates, registry);
+                return entManager.Spawn(protoName, coordinates, registry);
             }
             catch (Exception e)
             {
@@ -504,7 +504,7 @@ namespace Content.IntegrationTests.Tests
         {
             try
             {
-                return entManager.SpawnEntity(protoName, coordinates, registry);
+                return entManager.SpawnAttachedTo(protoName, coordinates, registry);
             }
             catch (Exception e)
             {

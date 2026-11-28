@@ -19,17 +19,17 @@ namespace Content.Server._WH40K.Synthetics;
 /// keeps the player alive and conscious, slows movement to 25%, and powers only one arm
 /// (switchable via right-click verb with a 3-second cooldown).
 /// </summary>
-public sealed class Wh40kLowPowerSystem : SharedWh40kSyntheticsSystem
+public sealed partial class Wh40kLowPowerSystem : SharedWh40kSyntheticsSystem
 {
     public static readonly TimeSpan SwitchCooldown = TimeSpan.FromSeconds(3);
     private static readonly TimeSpan SweepInterval = TimeSpan.FromSeconds(0.5);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SiliconChargeSystem _siliconCharge = default!;
-    [Dependency] private readonly Wh40kChassisIsolationSystem _isolation = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SiliconChargeSystem _siliconCharge = default!;
+    [Dependency] private Wh40kChassisIsolationSystem _isolation = default!;
 
     private TimeSpan _nextSweep;
 

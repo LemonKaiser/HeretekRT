@@ -8,7 +8,7 @@ namespace Content.Server._WH40K.Activities;
 /// Releases finite physical cargo after a successful expedition or closed warp breach.
 /// Recovered cargo uses ordinary storage, with no activity ownership or automatic payout.
 /// </summary>
-public sealed class KoronusActivitySalvageSystem : EntitySystem
+public sealed partial class KoronusActivitySalvageSystem : EntitySystem
 {
     [Dependency] private SharedEntityStorageSystem _storage = default!;
 
@@ -17,10 +17,10 @@ public sealed class KoronusActivitySalvageSystem : EntitySystem
     {
         if (profile == KoronusActivitySalvageProfile.None)
             return null;
-        var crate = Spawn($"KoronusSalvage{profile}", coordinates);
+        var crate = SpawnAttachedTo($"KoronusSalvage{profile}", coordinates);
         if (risk == KoronusActivityRisk.High)
         {
-            var rare = Spawn("MaterialDiamond1", coordinates);
+            var rare = SpawnAttachedTo("MaterialDiamond1", coordinates);
             if (!_storage.Insert(rare, crate))
                 QueueDel(rare);
         }

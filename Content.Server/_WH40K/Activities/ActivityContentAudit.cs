@@ -26,7 +26,7 @@ namespace Content.Server._WH40K.Activities;
 /// Fail-closed component audit used by future map/entity loaders. It is intentionally separate
 /// from activity selection so an external map cannot bypass the RT no-ghost rule after selection.
 /// </summary>
-public sealed class ActivityContentAudit : EntitySystem
+public sealed partial class ActivityContentAudit : EntitySystem
 {
     [Dependency] private TagSystem _tags = default!;
 

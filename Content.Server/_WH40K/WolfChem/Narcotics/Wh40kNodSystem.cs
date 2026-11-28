@@ -15,7 +15,7 @@ namespace Content.Server._WH40K.WolfChem.Narcotics;
 /// Nodding off on a heavy opioid high: every so often the eyes shut for a few seconds while the body stays up and
 /// conscious, drifting at a crawl. The client closes the screen and muffles sound; others sometimes see it in chat.
 /// </summary>
-public sealed class Wh40kNodSystem : EntitySystem
+public sealed partial class Wh40kNodSystem : EntitySystem
 {
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private IGameTiming _timing = default!;

@@ -10,6 +10,8 @@ namespace Content.IntegrationTests.Tests._Shitmed.Body;
 [TestFixture]
 public sealed class SpeciesBUiTest
 {
+    private static readonly EntProtoId BaseMobSpeciesTestId = "BaseMobSpeciesTest";
+
     [TestPrototypes]
     private const string Prototypes = @"
 - type: entity
@@ -40,16 +42,16 @@ public sealed class SpeciesBUiTest
         {
             var bUiSys = server.System<SharedUserInterfaceSystem>();
 
-            Assert.That(proto.TryIndex("BaseMobSpeciesTest", out var baseEnt), Is.True);
+            Assert.That(proto.TryIndex(BaseMobSpeciesTestId, out var baseEnt), Is.True);
             Assert.That(baseEnt, Is.Not.Null);
-            Assert.That(baseEnt.TryGetComponent<UserInterfaceComponent>(out var bUiBase, factoryComp), Is.True);
+            Assert.That(baseEnt.TryComp<UserInterfaceComponent>(out var bUiBase, factoryComp), Is.True);
             Assert.That(bUiBase, Is.Not.Null);
             var baseKeys = GetInterfaces(bUiBase).Keys.ToArray();
 
             foreach (var species in proto.EnumeratePrototypes<SpeciesPrototype>())
             {
                 var ent = proto.Index(species.Prototype);
-                Assert.That(ent.TryGetComponent<UserInterfaceComponent>(out var bUi, factoryComp), Is.True);
+                Assert.That(ent.TryComp<UserInterfaceComponent>(out var bUi, factoryComp), Is.True);
                 Assert.That(bUi, Is.Not.Null);
                 var states = GetInterfaces(bUiBase);
                 foreach (var key in baseKeys)

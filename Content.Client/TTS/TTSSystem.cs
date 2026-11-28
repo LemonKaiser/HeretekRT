@@ -13,11 +13,11 @@ namespace Content.Client.TTS;
 /// <summary>
 /// Receives generated OGG data and plays it from the speaking entity or globally for previews.
 /// </summary>
-public sealed class TTSSystem : EntitySystem
+public sealed partial class TTSSystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IResourceManager _resources = default!;
-    [Dependency] private readonly AudioSystem _audio = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IResourceManager _resources = default!;
+    [Dependency] private AudioSystem _audio = default!;
 
     private readonly MemoryContentRoot _contentRoot = new();
     private readonly Queue<PlayTTSEvent> _radioQueue = new();

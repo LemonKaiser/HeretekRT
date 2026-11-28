@@ -6,7 +6,7 @@ using Robust.Shared.Timing;
 using System.Linq;
 
 namespace Content.Shared._Shitmed.BodyEffects;
-public partial class BodyPartEffectSystem : EntitySystem
+public sealed partial class BodyPartEffectSystem : EntitySystem
 {
     [Dependency] private IComponentFactory _compFactory = default!;
     [Dependency] private ISerializationManager _serManager = default!;
@@ -73,7 +73,7 @@ public partial class BodyPartEffectSystem : EntitySystem
                 continue;
 
             var newComp = (Component) _serManager.CreateCopy(comp.Component, notNullableOverride: true);
-            EntityManager.AddComponent(body, newComp, true);
+            AddComp(body, newComp, true);
 
             effectComp.Active[key] = comp;
         }

@@ -12,6 +12,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Shared.Clumsy;
 
@@ -101,13 +102,13 @@ public sealed partial class ClumsySystem : EntitySystem
             return;
 
         // This event is called in shared, thats why it has all the extra prediction stuff.
-        var rand = new System.Random((int)_timing.CurTick.Value);
+        var rand = SharedRandomExtensions.CreateSeeded((int)_timing.CurTick.Value);
 
         // If someone is putting you on the table, always get past the guard.
         // goob station fix some bonks
         if (!_cfg.GetCVar(CCVars.GameTableBonk)
             || args.PuttingOnTable !=ent.Owner
-            || !rand.Prob(ent.Comp.ClumsyDefaultCheck))
+            || !(rand.NextDouble() < ent.Comp.ClumsyDefaultCheck))
             return;
 
         HitHeadClumsy(ent, args.BeingClimbedOn);

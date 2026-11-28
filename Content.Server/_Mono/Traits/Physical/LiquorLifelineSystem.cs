@@ -36,7 +36,7 @@ public sealed partial class LiquorLifelineSystem : EntitySystem
                 _body.RemoveOrgan(old);
                 QueueDel(old);
 
-                var spawn = Spawn("OrganDwarfLiver", Transform(part).Coordinates);
+                var spawn = SpawnAttachedTo("OrganDwarfLiver", Transform(part).Coordinates);
                 if (TryComp(spawn, out OrganComponent? organ))
                 {
                     _body.InsertOrgan(part, spawn, "liver", null, organ);

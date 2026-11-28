@@ -84,18 +84,20 @@ namespace Content.Client.ContextMenu.UI
 
             _setup = false;
 
-            Close();
             RootMenu.OnPopupHide -= Close;
-            RootMenu.Dispose();
+            Close();
+            RootMenu.RemoveFromTree();
+            Menus.Clear();
             RootMenu = default!;
         }
 
         /// <summary>
-        ///     Close and clear the root menu. This will also dispose any sub-menus.
+        ///     Close and clear the root menu. This also closes and removes any sub-menus.
         /// </summary>
         public void Close()
         {
-            RootMenu.MenuBody.DisposeAllChildren();
+            CloseSubMenus(RootMenu);
+            RootMenu.MenuBody.RemoveAllChildren();
             CancelOpen?.Cancel();
             CancelClose?.Cancel();
             OnContextClosed?.Invoke();
@@ -111,7 +113,7 @@ namespace Content.Client.ContextMenu.UI
         /// </remarks>
         public void CloseSubMenus(ContextMenuPopup? menu)
         {
-            if (menu == null || !menu.Visible)
+            if (menu == null || !Menus.Contains(menu))
                 return;
 
             while (Menus.TryPeek(out var subMenu) && subMenu != menu)
@@ -127,11 +129,12 @@ namespace Content.Client.ContextMenu.UI
         /// <summary>
         ///     Start a timer to open this element's sub-menu.
         /// </summary>
-        private void OnMouseEntered(ContextMenuElement element)
+        private void OnMouseEntered(GUIMouseHoverEventArgs args)
         {
+            var element = (ContextMenuElement) args.SourceControl;
             if (!Menus.TryPeek(out var topMenu))
             {
-                Logger.Error("Context Menu: Mouse entered menu without any open menus?");
+                LogManager.RootSawmill.Error("Context Menu: Mouse entered menu without any open menus?");
                 return;
             }
 
@@ -153,8 +156,9 @@ namespace Content.Client.ContextMenu.UI
         /// <remarks>
         ///     Note that this timer will be aborted when entering the actual sub-menu itself.
         /// </remarks>
-        private void OnMouseExited(ContextMenuElement element)
+        private void OnMouseExited(GUIMouseHoverEventArgs args)
         {
+            var element = (ContextMenuElement) args.SourceControl;
             CancelOpen?.Cancel();
 
             if (element.SubMenu == null)
@@ -164,11 +168,6 @@ namespace Content.Client.ContextMenu.UI
             CancelClose = new();
             Timer.Spawn(HoverDelay, () => CloseSubMenus(element.ParentMenu), CancelClose.Token);
             OnContextMouseExited?.Invoke(element);
-        }
-
-        private void OnKeyBindDown(ContextMenuElement element, GUIBoundKeyEventArgs args)
-        {
-            OnContextKeyEvent?.Invoke(element, args);
         }
 
         /// <summary>
@@ -181,7 +180,7 @@ namespace Content.Client.ContextMenu.UI
         {
             if (!Menus.TryPeek(out var topMenu))
             {
-                Logger.Error("Context Menu: Attempting to open sub menu without any open menus?");
+                LogManager.RootSawmill.Error("Context Menu: Attempting to open sub menu without any open menus?");
                 return;
             }
 
@@ -189,8 +188,8 @@ namespace Content.Client.ContextMenu.UI
             if (element.SubMenu == topMenu)
                 return;
 
-            // Was the parent menu closed or disposed before an open timer completed?
-            if (element.Disposed || element.ParentMenu == null || !element.ParentMenu.Visible)
+            // Was the parent menu closed or removed before an open timer completed?
+            if (element.ParentMenu == null || !element.ParentMenu.Visible)
                 return;
 
             // Close any currently open sub-menus up to this element's parent menu.
@@ -221,9 +220,8 @@ namespace Content.Client.ContextMenu.UI
         /// </summary>
         public void AddElement(ContextMenuPopup menu, ContextMenuElement element)
         {
-            element.OnMouseEntered += _ => OnMouseEntered(element);
-            element.OnMouseExited += _ => OnMouseExited(element);
-            element.OnKeyBindDown += args => OnKeyBindDown(element, args);
+            element.OnMouseEntered += OnMouseEntered;
+            element.OnMouseExited += OnMouseExited;
             element.ParentMenu = menu;
             menu.MenuBody.AddChild(element);
             menu.InvalidateMeasure();
@@ -237,9 +235,10 @@ namespace Content.Client.ContextMenu.UI
             if (control is not ContextMenuElement element)
                 return;
 
-            element.OnMouseEntered -= _ => OnMouseEntered(element);
-            element.OnMouseExited -= _ => OnMouseExited(element);
-            element.OnKeyBindDown -= args => OnKeyBindDown(element, args);
+            element.OnMouseEntered -= OnMouseEntered;
+            element.OnMouseExited -= OnMouseExited;
+            element.RemoveSubMenu();
+            element.ParentMenu = null;
 
             menu.InvalidateMeasure();
         }

@@ -38,7 +38,7 @@ public sealed class ShuttleHangarBoundUserInterface(EntityUid owner, Enum key) :
         {
             _window.OnTransfer -= SendRequest;
             _window.OnClose -= Close;
-            _window.Dispose();
+            _window.Close();
             _window = null;
             _snapshot = null;
         }

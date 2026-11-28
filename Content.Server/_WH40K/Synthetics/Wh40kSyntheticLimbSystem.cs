@@ -27,7 +27,7 @@ namespace Content.Server._WH40K.Synthetics;
 ///   with <see cref="Wh40kLooseCouplingComponent"/> (move ×0.7, DoAfter ×1.5).
 /// - Tightening with cable coils (5 passes with remaining count popup) or welding seats the coupling.
 /// </summary>
-public sealed class Wh40kSyntheticLimbSystem : SharedWh40kSyntheticsSystem
+public sealed partial class Wh40kSyntheticLimbSystem : SharedWh40kSyntheticsSystem
 {
     private static readonly TimeSpan ReattachDelay = TimeSpan.FromSeconds(4);
     private static readonly TimeSpan CableRepairDelay = TimeSpan.FromSeconds(1.5);
@@ -38,18 +38,18 @@ public sealed class Wh40kSyntheticLimbSystem : SharedWh40kSyntheticsSystem
     private static readonly SoundSpecifier ReattachSound = new SoundPathSpecifier("/Audio/Items/ratchet.ogg");
     private static readonly SoundSpecifier TightenSound = new SoundPathSpecifier("/Audio/Items/wirecutter.ogg");
 
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedStackSystem _stacks = default!;
-    [Dependency] private readonly TagSystem _tags = default!;
-    [Dependency] private readonly SharedToolSystem _tools = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly Wh40kChassisIsolationSystem _isolation = default!;
-    [Dependency] private readonly Wh40kAugmentBedSystem _augmentBed = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedStackSystem _stacks = default!;
+    [Dependency] private TagSystem _tags = default!;
+    [Dependency] private SharedToolSystem _tools = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private Wh40kChassisIsolationSystem _isolation = default!;
+    [Dependency] private Wh40kAugmentBedSystem _augmentBed = default!;
 
     public override void Initialize()
     {

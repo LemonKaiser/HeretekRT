@@ -80,8 +80,8 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
             {
                 // just fail the repair if it doesn't have the comp
                 if (!_proto.TryIndex(repairData.EntityPalette[spec.ProtoIndex], out var entProto)
-                    || !entProto.TryGetComponent<ShipRepairableComponent>(out var repairable, Factory)
-                    || entProto.TryGetComponent<ShipRepairableRestrictComponent>(out var entRestrict, Factory)
+                    || !entProto.TryComp<ShipRepairableComponent>(out var repairable, Factory)
+                    || entProto.TryComp<ShipRepairableRestrictComponent>(out var entRestrict, Factory)
                         && _whitelist.IsWhitelistFail(entRestrict.ToolWhitelist, ent)
                 )
                     continue;
@@ -206,7 +206,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
             if (_net.IsClient && _timing.IsFirstTimePredicted)
             {
                 // needed so it doesn't fall off if in space
-                var effect = Spawn(tool.Comp.ConstructEffect, new EntityCoordinates(grid, Vector2.Zero));
+                var effect = SpawnAttachedTo(tool.Comp.ConstructEffect, new EntityCoordinates(grid, Vector2.Zero));
                 _parent.SetForceParent(effect, new EntityCoordinates(grid, _map.TileCenterToVector(grid, tileIndices)));
             }
         }
@@ -261,7 +261,7 @@ public abstract partial class SharedShipRepairSystem : EntitySystem
                 var protoId = repairData.EntityPalette[spec.ProtoIndex];
                 var coords = new EntityCoordinates(targetGrid, spec.LocalPosition);
 
-                var spawned = Spawn(protoId, coords);
+                var spawned = SpawnAttachedTo(protoId, coords);
                 _transform.SetLocalRotation(spawned, spec.Rotation);
 
                 spec.OriginalEntity = GetNetEntity(spawned);

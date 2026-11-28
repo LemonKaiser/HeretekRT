@@ -21,10 +21,12 @@ public sealed class EntityPainter
     private readonly Image _errorImage;
 
     private readonly IEntityManager _sEntityManager;
+    private readonly SpriteSystem _spriteSystem;
 
     public EntityPainter(ClientIntegrationInstance client, ServerIntegrationInstance server)
     {
         _resManager = client.ResolveDependency<IResourceManager>();
+        _spriteSystem = client.ResolveDependency<IEntityManager>().System<SpriteSystem>();
 
         _sEntityManager = server.ResolveDependency<IEntityManager>();
 
@@ -57,14 +59,14 @@ public sealed class EntityPainter
         }
 
         var worldRotation = xformSystem.GetWorldRotation(entity.Owner);
-        foreach (var layer in entity.Sprite.AllLayers)
+        foreach (var layer in entity.Sprite.LayerData)
         {
             if (!layer.Visible)
             {
                 continue;
             }
 
-            if (!layer.RsiState.IsValid)
+            if (!layer.State.IsValid)
             {
                 continue;
             }
@@ -72,7 +74,7 @@ public sealed class EntityPainter
             var rsi = layer.ActualRsi;
             Image image;
 
-            if (rsi == null || !rsi.TryGetState(layer.RsiState, out var state))
+            if (rsi == null || !rsi.TryGetState(layer.State, out var state))
             {
                 image = _errorImage;
             }
@@ -91,7 +93,7 @@ public sealed class EntityPainter
 
             image = image.CloneAs<Rgba32>();
 
-            static (int, int, int, int) GetRsiFrame(RSI? rsi, Image image, EntityData entity, ISpriteLayer layer, int direction)
+            static (int, int, int, int) GetRsiFrame(RSI? rsi, Image image, SpriteSystem spriteSystem, SpriteComponent.Layer layer, int direction)
             {
                 if (rsi is null)
                     return (0, 0, EyeManager.PixelsPerMeter, EyeManager.PixelsPerMeter);
@@ -99,32 +101,33 @@ public sealed class EntityPainter
                 var statesX = image.Width / rsi.Size.X;
                 var statesY = image.Height / rsi.Size.Y;
                 var stateCount = statesX * statesY;
-                var frames = stateCount / entity.Sprite.GetLayerDirectionCount(layer);
+                var frames = stateCount / spriteSystem.LayerGetDirectionCount(layer);
                 var target = direction * frames;
                 var targetY = target / statesX;
                 var targetX = target % statesY;
                 return (targetX * rsi.Size.X, targetY * rsi.Size.Y, rsi.Size.X, rsi.Size.Y);
             }
 
-            var dir = entity.Sprite.GetLayerDirectionCount(layer) switch
+            var dirCount = _spriteSystem.LayerGetDirectionCount(layer);
+            var dir = dirCount switch
             {
                 0 => 0,
                 _ => (int) layer.EffectiveDirection(worldRotation)
             };
 
-            var (x, y, width, height) = GetRsiFrame(rsi, image, entity, layer, dir);
+            var (x, y, width, height) = GetRsiFrame(rsi, image, _spriteSystem, layer, dir);
 
             var rect = new Rectangle(x, y, width, height);
             if (!new Rectangle(Point.Empty, image.Size).Contains(rect))
             {
-                Console.WriteLine($"Invalid layer {rsi!.Path}/{layer.RsiState.Name}.png for entity {_sEntityManager.ToPrettyString(entity.Owner)} at ({entity.X}, {entity.Y})");
+                Console.WriteLine($"Invalid layer {rsi!.Path}/{layer.State.Name}.png for entity {_sEntityManager.ToPrettyString(entity.Owner)} at ({entity.X}, {entity.Y})");
                 return;
             }
 
             image.Mutate(o => o.Crop(rect));
 
             var spriteRotation = 0f;
-            if (!entity.Sprite.NoRotation && !entity.Sprite.SnapCardinals && entity.Sprite.GetLayerDirectionCount(layer) == 1)
+            if (!entity.Sprite.NoRotation && !entity.Sprite.SnapCardinals && dirCount == 1)
             {
                 spriteRotation = (float) worldRotation.Degrees;
             }

@@ -166,7 +166,7 @@ public sealed partial class Wh40kGroundCoverSystem
 
     private bool IsOpenWater(Entity<MapGridComponent, RoofComponent?> grid, Vector2i tile)
     {
-        var anchored = _map.GetAnchoredEntitiesEnumerator(grid.Owner, grid.Comp1, tile);
+        var anchored = _map.GetAnchoredEntities(grid.Owner, grid.Comp1, tile);
         while (anchored.MoveNext(out var entity))
         {
             if (HasComp<WaterEntryParticleComponent>(entity.Value))

@@ -5,9 +5,9 @@ using Content.Shared.PowerCell;
 
 namespace Content.Shared._WH40K.Synthetics;
 
-public abstract class SharedWh40kSyntheticsSystem : EntitySystem
+public abstract partial class SharedWh40kSyntheticsSystem : EntitySystem
 {
-    [Dependency] private readonly SharedWh40kBiotypeSystem _biotype = default!;
+    [Dependency] private SharedWh40kBiotypeSystem _biotype = default!;
 
     /// <summary>
     /// True for humanoid Cybernetic (Mechanicus) and IPC chassis bodies (excluding borgs/drones).

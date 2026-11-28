@@ -61,18 +61,13 @@ namespace Content.Client.LateJoin
 
             Contents.AddChild(_base);
 
-            _jobRequirements.Updated += RebuildUI;
-            RebuildUI();
-
             SelectedId += x =>
             {
                 var (station, jobId) = x;
-                Logger.InfoS("latejoin", $"Late joining as ID: {jobId}");
+                IoCManager.Resolve<ILogManager>().GetSawmill("latejoin").Info($"Late joining as ID: {jobId}");
                 _consoleHost.ExecuteCommand($"joingame {CommandParsing.Escape(jobId)} {station}");
                 Close();
             };
-
-            _gameTicker.LobbyJobsAvailableUpdated += JobsAvailableUpdated;
         }
 
         private void RebuildUI()
@@ -83,7 +78,7 @@ namespace Content.Client.LateJoin
             _jobCategories.Clear();
 
             if (!_gameTicker.DisallowedLateJoin && _gameTicker.StationNames.Count == 0)
-                Logger.Warning("No stations exist, nothing to display in late-join GUI");
+                IoCManager.Resolve<ILogManager>().RootSawmill.Warning("No stations exist, nothing to display in late-join GUI");
 
             foreach (var (id, name) in _gameTicker.StationNames)
             {
@@ -321,17 +316,19 @@ namespace Content.Client.LateJoin
             }
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void EnteredTree()
         {
-            base.Dispose(disposing);
+            base.EnteredTree();
+            _jobRequirements.Updated += RebuildUI;
+            _gameTicker.LobbyJobsAvailableUpdated += JobsAvailableUpdated;
+            RebuildUI();
+        }
 
-            if (disposing)
-            {
-                _jobRequirements.Updated -= RebuildUI;
-                _gameTicker.LobbyJobsAvailableUpdated -= JobsAvailableUpdated;
-                _jobButtons.Clear();
-                _jobCategories.Clear();
-            }
+        protected override void ExitedTree()
+        {
+            _jobRequirements.Updated -= RebuildUI;
+            _gameTicker.LobbyJobsAvailableUpdated -= JobsAvailableUpdated;
+            base.ExitedTree();
         }
     }
 

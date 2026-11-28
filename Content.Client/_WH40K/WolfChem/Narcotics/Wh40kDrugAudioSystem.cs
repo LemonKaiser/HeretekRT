@@ -11,7 +11,7 @@ namespace Content.Client._WH40K.WolfChem.Narcotics;
 /// The world heard through the local player's high: world sounds take the family's reverb and pitch, and while a nod
 /// shuts the eyes, world sounds are muffled as if through a wall.
 /// </summary>
-public sealed class Wh40kDrugAudioSystem : EntitySystem
+public sealed partial class Wh40kDrugAudioSystem : EntitySystem
 {
     [Dependency] private AudioEffectSystem _effects = default!;
     [Dependency] private IPlayerManager _player = default!;

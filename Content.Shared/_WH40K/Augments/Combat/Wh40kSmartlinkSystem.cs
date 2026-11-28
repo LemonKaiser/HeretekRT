@@ -17,7 +17,7 @@ namespace Content.Shared._WH40K.Augments.Combat;
 /// Compensates recoil and boosts projectile speed for guns held in a smartlinked hand,
 /// and scrambles the link during EMP interference.
 /// </summary>
-public sealed class Wh40kSmartlinkSystem : EntitySystem
+public sealed partial class Wh40kSmartlinkSystem : EntitySystem
 {
     [Dependency] private SharedBodySystem _body = default!;
     [Dependency] private SharedHandsSystem _hands = default!;

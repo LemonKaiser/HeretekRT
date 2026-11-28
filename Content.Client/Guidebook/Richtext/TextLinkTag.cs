@@ -60,7 +60,7 @@ public sealed class TextLinkTag : IMarkupTag
             handler.HandleClick(link);
             return;
         }
-        Logger.Warning($"Warning! No valid ILinkClickHandler found.");
+        IoCManager.Resolve<ILogManager>().RootSawmill.Warning($"Warning! No valid ILinkClickHandler found.");
     }
 }
 

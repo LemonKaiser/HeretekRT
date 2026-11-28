@@ -145,8 +145,10 @@ public static class EntitySpawnCollection
         return spawned;
     }
 
-    public static List<string?> GetSpawns(IEnumerable<EntitySpawnEntry> entries,
-        System.Random random)
+    /// <summary>
+    /// Rolls spawn entries and retains any empty slots selected by the roll.
+    /// </summary>
+    public static List<string?> GetSpawnsIncludingEmptyEntries(IEnumerable<EntitySpawnEntry> entries, IRobustRandom random)
     {
         var spawned = new List<string?>();
         var ungrouped = CollectOrGroups(entries, out var orGroupedSpawns);
@@ -155,7 +157,7 @@ public static class EntitySpawnCollection
         {
             // Check random spawn
             // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (entry.SpawnProbability != 1f && !random.Prob(entry.SpawnProbability))
+            if (entry.SpawnProbability != 1f && !(random.NextDouble() < entry.SpawnProbability))
                 continue;
 
             var amount = (int) entry.GetAmount(random);
@@ -194,20 +196,6 @@ public static class EntitySpawnCollection
         }
 
         return spawned;
-    }
-
-    public static double GetAmount(this EntitySpawnEntry entry, System.Random random, bool getAverage = false)
-    {
-        // Max amount is less or equal than amount, so just return the amount
-        if (entry.MaxAmount <= entry.Amount)
-            return entry.Amount;
-
-        // If we want the average, just calculate the expected amount
-        if (getAverage)
-            return (entry.Amount + entry.MaxAmount) / 2.0;
-
-        // Otherwise get a random value in between
-        return random.Next(entry.Amount, entry.MaxAmount);
     }
 
     /// <summary>

@@ -17,7 +17,7 @@ namespace Content.Client.UserInterface.Systems.Localization;
 /// made by this controller is the persisted cvar after the player confirms the restart prompt.
 /// </summary>
 [UsedImplicitly]
-public sealed class LocalizationUIController : UIController
+public sealed partial class LocalizationUIController : UIController
 {
     [Dependency] private IConfigurationManager _config = default!;
 

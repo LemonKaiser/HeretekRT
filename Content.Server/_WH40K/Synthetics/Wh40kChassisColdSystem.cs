@@ -12,7 +12,7 @@ namespace Content.Server._WH40K.Synthetics;
 /// Freezes cybernetic/IPC servos below <see cref="StiffTemperature"/>: progressively slows movement
 /// and seizes the chassis (knockdown + jitter while remaining conscious) below <see cref="SeizeTemperature"/>.
 /// </summary>
-public sealed class Wh40kChassisColdSystem : EntitySystem
+public sealed partial class Wh40kChassisColdSystem : EntitySystem
 {
     public const float StiffTemperature = 180f;
     public const float SeizeTemperature = 90f;
@@ -22,11 +22,11 @@ public sealed class Wh40kChassisColdSystem : EntitySystem
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan SeizeKnockdown = TimeSpan.FromSeconds(1.5);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedJitteringSystem _jitter = default!;
-    [Dependency] private readonly MobStateSystem _mobState = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
-    [Dependency] private readonly SharedStunSystem _stun = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private SharedJitteringSystem _jitter = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
 
     private TimeSpan _nextPoll;
 

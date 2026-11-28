@@ -61,7 +61,7 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
 
     private void OnToggleFTLLockRequest(List<NetEntity> dockEntities, bool enabled)
     {
-        Logger.DebugS("shuttle", $"ShuttleConsoleBUI: Sending FTL lock request with enabled={enabled}, entities={string.Join(", ", dockEntities)}");
+        IoCManager.Resolve<ILogManager>().GetSawmill("shuttle").Debug($"ShuttleConsoleBUI: Sending FTL lock request with enabled={enabled}, entities={string.Join(", ", dockEntities)}");
         SendMessage(new ToggleFTLLockRequestMessage(dockEntities, enabled));
     }
 
@@ -146,16 +146,6 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         {
             TargetGrid = targetGrid,
         });
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-
-        if (disposing)
-        {
-            _window?.Dispose();
-        }
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

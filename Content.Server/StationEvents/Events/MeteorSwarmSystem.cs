@@ -66,7 +66,7 @@ public sealed partial class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmCompon
 
             var angle = component.NonDirectional
                 ? RobustRandom.NextAngle()
-                : new Random(uid.Id).NextAngle();
+                : SharedRandomExtensions.CreateSeeded(uid.Id).NextAngle();
 
             var offset = angle.RotateVec(new Vector2((maximumDistance - minimumDistance) * RobustRandom.NextFloat() + minimumDistance, 0));
 

@@ -42,7 +42,7 @@ public sealed class DeviceLinkingTest
             using (Assert.EnterMultipleScope())
             {
                 var proto = protoMan.Index(protoKey);
-                Assert.That(proto.TryGetComponent<DeviceLinkSinkComponent>(out var protoSinkComp, compFact));
+                Assert.That(proto.TryComp<DeviceLinkSinkComponent>(out var protoSinkComp, compFact));
 
                 foreach (var port in protoSinkComp!.Ports)
                 {
@@ -53,12 +53,12 @@ public sealed class DeviceLinkingTest
                     var coord = new EntityCoordinates(grid.Owner, 0, 0);
 
                     // Spawn the sink entity
-                    var sinkEnt = server.EntMan.SpawnEntity(proto.ID, coord);
+                    var sinkEnt = server.EntMan.SpawnAttachedTo(proto.ID, coord);
                     // Get the actual sink component, since the one we got from the prototype isn't initialized.
                     var sinkComp = server.EntMan.GetComponent<DeviceLinkSinkComponent>(sinkEnt);
 
                     // Spawn the tester
-                    var sourceEnt = server.EntMan.SpawnEntity(PortTesterProtoId, coord);
+                    var sourceEnt = server.EntMan.SpawnAttachedTo(PortTesterProtoId, coord);
                     var sourceComp = server.EntMan.GetComponent<DeviceLinkSourceComponent>(sourceEnt);
 
                     // Create a link from the tester's output to the target port on the sink

@@ -48,7 +48,7 @@ public sealed partial class MeleeWeaponSystem
         if (user != weapon && TryPlayWeaponMotion(user, weapon, userXform.Coordinates, localPos, angle, animation))
             return;
 
-        var animationUid = Spawn(animation, userXform.Coordinates);
+        var animationUid = SpawnAttachedTo(animation, userXform.Coordinates);
 
         if (!TryComp<SpriteComponent>(animationUid, out var sprite)
             || !TryComp<WeaponArcVisualsComponent>(animationUid, out var arcComponent))
@@ -64,7 +64,7 @@ public sealed partial class MeleeWeaponSystem
         {
             if (user != weapon
                 && TryComp(weapon, out SpriteComponent? weaponSpriteComponent))
-                sprite.CopyFrom(weaponSpriteComponent);
+                _meleeSprites.CopySprite((weapon, weaponSpriteComponent), (animationUid, sprite));
 
             spriteRotation = meleeWeaponComponent.WideAnimationRotation;
 
@@ -74,7 +74,7 @@ public sealed partial class MeleeWeaponSystem
             // This is presentation only. Combat cooldowns and weapon data stay untouched.
             animationLength = Math.Clamp(0.6f / Math.Max(GetAttackRate(weapon, user, meleeWeaponComponent), 0.1f), 0.08f, 0.6f);
         }
-        sprite.Rotation = localPos.ToWorldAngle();
+        _meleeSprites.SetRotation((animationUid, sprite), localPos.ToWorldAngle());
         var xform = _xformQuery.GetComponent(animationUid);
         TrackUserComponent track;
 
@@ -132,7 +132,7 @@ public sealed partial class MeleeWeaponSystem
             : melee.WideAnimationRotation;
 
         // Reuse the local arc entity and follow logic already used for wide attacks.
-        var effect = Spawn("WeaponArcSlash", origin);
+        var effect = SpawnAttachedTo("WeaponArcSlash", origin);
         var sprite = Comp<SpriteComponent>(effect);
         var target = (effect, sprite);
         _meleeSprites.CopySprite((weapon, art), target);
@@ -257,7 +257,7 @@ public sealed partial class MeleeWeaponSystem
     {
         var startOffset = Vector2.Zero;
         var endOffset = sprite.Comp.Rotation.RotateVec(new Vector2(0f, -offset * 1.2f));
-        sprite.Comp.Rotation += spriteRotation;
+        _meleeSprites.SetRotation((sprite.Owner, sprite.Comp), sprite.Comp.Rotation + spriteRotation);
 
         return new Animation()
         {

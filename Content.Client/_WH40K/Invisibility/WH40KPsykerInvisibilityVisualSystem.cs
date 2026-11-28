@@ -11,12 +11,13 @@ namespace Content.Client._WH40K.Invisibility;
 /// <summary>
 /// Applies an opacity shader only to a humanoid's body and markings, leaving equipped clothing visible.
 /// </summary>
-public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
+public sealed partial class WH40KPsykerInvisibilityVisualSystem : EntitySystem
 {
     private static readonly ProtoId<ShaderPrototype> ShaderPrototype = "WH40KPsykerInvisibility";
 
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly MarkingManager _marking = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private MarkingManager _marking = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
     private readonly Dictionary<EntityUid, ShaderInstance> _shaders = new();
     private readonly Dictionary<EntityUid, Dictionary<HumanoidVisualLayers, LayerShaderState>> _baseLayerShaders = new();
     private readonly Dictionary<EntityUid, Dictionary<string, LayerShaderState>> _markingLayerShaders = new();
@@ -68,11 +69,11 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
         var baseLayerShaders = GetBaseLayerShaders(uid);
         foreach (var layerKey in humanoid.BaseLayers.Keys)
         {
-            if (sprite.LayerMapTryGet(layerKey, out var index))
-                ApplyLayerShader(sprite, index, layerKey, shader, baseLayerShaders);
+            if (_sprite.LayerMapTryGet((uid, sprite), layerKey, out var index, false))
+                ApplyLayerShader((uid, sprite), index, layerKey, shader, baseLayerShaders);
         }
 
-        ApplyMarkingShader(sprite, humanoid, shader, GetMarkingLayerShaders(uid));
+        ApplyMarkingShader((uid, sprite), humanoid, shader, GetMarkingLayerShaders(uid));
     }
 
     private void RemoveShader(EntityUid uid)
@@ -86,7 +87,7 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
             {
                 foreach (var (layerKey, previousShader) in baseLayerShaders)
                 {
-                    if (sprite.LayerMapTryGet(layerKey, out var index))
+                    if (_sprite.LayerMapTryGet((uid, sprite), layerKey, out var index, false))
                         RestoreLayerShader(sprite, index, previousShader);
                 }
             }
@@ -95,7 +96,7 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
             {
                 foreach (var (layerKey, previousShader) in markingLayerShaders)
                 {
-                    if (sprite.LayerMapTryGet(layerKey, out var index))
+                    if (_sprite.LayerMapTryGet((uid, sprite), layerKey, out var index, false))
                         RestoreLayerShader(sprite, index, previousShader);
                 }
             }
@@ -106,7 +107,7 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
     }
 
     private void ApplyMarkingShader(
-        SpriteComponent sprite,
+        Entity<SpriteComponent> sprite,
         HumanoidAppearanceComponent humanoid,
         ShaderInstance shader,
         Dictionary<string, LayerShaderState> previousShaders)
@@ -124,7 +125,7 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
                         continue;
 
                     var layerKey = $"{marking.MarkingId}-{rsi.RsiState}";
-                    if (sprite.LayerMapTryGet(layerKey, out var index))
+                    if (_sprite.LayerMapTryGet((sprite.Owner, sprite.Comp), layerKey, out var index, false))
                         ApplyLayerShader(sprite, index, layerKey, shader, previousShaders);
                 }
             }
@@ -147,20 +148,20 @@ public sealed class WH40KPsykerInvisibilityVisualSystem : EntitySystem
         return shaders;
     }
 
-    private static void ApplyLayerShader<TKey>(
-        SpriteComponent sprite,
+    private void ApplyLayerShader<TKey>(
+        Entity<SpriteComponent> sprite,
         int index,
         TKey layerKey,
         ShaderInstance shader,
         Dictionary<TKey, LayerShaderState> previousShaders) where TKey : notnull
     {
-        if (!sprite.TryGetLayer(index, out var layer))
+        if (!_sprite.TryGetLayer((sprite.Owner, sprite.Comp), index, out var layer, false))
             return;
 
         if (!previousShaders.TryGetValue(layerKey, out _) || layer.Shader != shader)
         {
             previousShaders[layerKey] = new LayerShaderState(layer.Shader, layer.ShaderPrototype);
-            sprite.LayerSetShader(index, shader, ShaderPrototype.Id);
+            sprite.Comp.LayerSetShader(index, shader, ShaderPrototype.Id);
         }
     }
 

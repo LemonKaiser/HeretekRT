@@ -11,9 +11,9 @@ namespace Content.Client._WH40K.Merchant;
 [GenerateTypedNameReferences]
 public sealed partial class Wh40kMedicalWindow : DefaultWindow
 {
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IPlayerManager _players = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IPlayerManager _players = default!;
 
     private Wh40kMedicalQuoteMessage? _quote;
     private TimeSpan _cooldownAt;

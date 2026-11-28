@@ -54,7 +54,7 @@ public sealed partial class Wh40kAmbientNpcSystem : EntitySystem
         if (source.Body is {} body && !TerminatingOrDeleted(body)) return;
         if (!_config.GetCVar(CCVars.Wh40kAmbientNpcsEnabled) ||
             !_prototypes.TryIndex(source.Prototype, out var proto) ||
-            !proto.TryGetComponent<Wh40kAmbientNpcComponent>(out var ambient, EntityManager.ComponentFactory) ||
+            !proto.TryComp<Wh40kAmbientNpcComponent>(out var ambient, EntityManager.ComponentFactory) ||
             !_prototypes.TryIndex(ambient.Profile, out var profile) || profile.Kind == Wh40kNpcKind.Special ||
             profile.RequiresUniqueAnchor || Disabled(profile.Department)) return;
         var count = 0;

@@ -34,7 +34,7 @@ public sealed partial class BorgModuleExtrasSystem : EntitySystem
         foreach (var name in ent.Comp.Components.Keys)
         {
             var reg = _compFactory.GetRegistration(name);
-            if (!EntityManager.HasComponent(args.ChassisEnt, reg.Type))
+            if (!HasComp(args.ChassisEnt, reg.Type))
                 ent.Comp.AppliedComponents.Add(name);
         }
 
@@ -52,7 +52,7 @@ public sealed partial class BorgModuleExtrasSystem : EntitySystem
         foreach (var name in ent.Comp.AppliedComponents)
         {
             var reg = _compFactory.GetRegistration(name);
-            EntityManager.RemoveComponent(args.ChassisEnt, reg.Type);
+            RemComp(args.ChassisEnt, reg.Type);
         }
 
         ent.Comp.AppliedComponents.Clear();

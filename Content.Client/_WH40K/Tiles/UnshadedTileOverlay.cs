@@ -51,7 +51,7 @@ public sealed partial class UnshadedTileOverlay : Overlay
         {
             worldHandle.SetTransform(_transformSystem.GetWorldMatrix(grid.Owner));
 
-            var tiles = _mapSystem.GetTilesEnumerator(grid.Owner, grid, args.WorldBounds);
+            var tiles = _mapSystem.GetTilesIntersecting(grid.Owner, grid, args.WorldBounds);
             while (tiles.MoveNext(out var tileRef))
             {
                 if (_tileDefinitions[tileRef.Tile.TypeId] is not ContentTileDefinition { Unshaded: true })

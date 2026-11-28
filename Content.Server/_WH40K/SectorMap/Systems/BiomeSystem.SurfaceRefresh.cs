@@ -48,7 +48,7 @@ public sealed partial class BiomeSystem
         chunks.UnionWith(terrain.Comp1.ModifiedTiles.Keys);
         chunks.UnionWith(terrain.Comp1.LoadedEntities.Keys);
         chunks.UnionWith(terrain.Comp1.LoadedDecals.Keys);
-        var tiles = _mapSystem.GetAllTilesEnumerator(terrain, terrain.Comp2);
+        var tiles = _mapSystem.GetAllTiles(terrain, terrain.Comp2);
         while (tiles.MoveNext(out var tile))
         {
             if (tile is { } turf)

@@ -32,7 +32,7 @@ namespace Content.Server._WH40K.WolfChem.Neuroware;
 /// Neuroware: data sticks load drug programs into a cybernetic/synthetic host, programs feed the shared intoxication
 /// levels at the stick's integrity, damaged builds glitch, and the cybernetic HUD shows running program faults.
 /// </summary>
-public sealed class Wh40kNeurowareSystem : EntitySystem
+public sealed partial class Wh40kNeurowareSystem : EntitySystem
 {
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _proto = default!;

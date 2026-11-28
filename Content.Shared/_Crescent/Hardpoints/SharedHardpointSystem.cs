@@ -15,7 +15,8 @@ namespace Content.Shared._Crescent.Hardpoints;
 /// <summary>
 /// This handles...
 /// </summary>
-public class SharedHardpointSystem : EntitySystem
+[Virtual]
+public partial class SharedHardpointSystem : EntitySystem
 {
     [Dependency] private SharedTransformSystem _transformSystem = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;

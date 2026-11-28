@@ -29,7 +29,6 @@ using Robust.Shared.Audio;
 using Content.Server.Lightning;
 using Content.Shared.Item;
 using Content.Shared.Kitchen;
-using Content.Shared.Kitchen.Components;
 using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Tag;
@@ -147,7 +146,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void OnActiveMicrowaveRemove(Entity<ActiveMicrowaveComponent> ent, ref EntRemovedFromContainerMessage args)
         {
-            EntityManager.RemoveComponentDeferred<ActivelyMicrowavedComponent>(args.Entity);
+            RemCompDeferred<ActivelyMicrowavedComponent>(args.Entity);
         }
 
         // Stop items from transforming through constructiongraphs while being microwaved.
@@ -601,7 +600,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
                 if (_tag.HasTag(item, PlasticTag) && (component.CanHeat || component.CanIrradiate)) // Frontier: add && !component.DisableRuiningPlastic
                 {
-                    var junk = Spawn(component.BadRecipeEntityId, Transform(uid).Coordinates);
+                    var junk = SpawnAttachedTo(component.BadRecipeEntityId, Transform(uid).Coordinates);
                     _container.Insert(junk, component.Storage);
                     Del(item);
                     continue;
@@ -753,7 +752,7 @@ namespace Content.Server.Kitchen.EntitySystems
                         // Frontier: ResultCount - support multiple results per recipe
                         for (var r = 0; r < active.PortionedRecipe.Item1.ResultCount; r++)
                         {
-                            Spawn(active.PortionedRecipe.Item1.Result, coords);
+                            SpawnAttachedTo(active.PortionedRecipe.Item1.Result, coords);
                         }
                         // End Frontier
                     }
@@ -798,7 +797,7 @@ namespace Content.Server.Kitchen.EntitySystems
             if (!HasContents(ent.Comp) || HasComp<ActiveMicrowaveComponent>(ent))
                 return;
 
-            _container.Remove(EntityManager.GetEntity(args.EntityID), ent.Comp.Storage);
+            _container.Remove(GetEntity(args.EntityID), ent.Comp.Storage);
             UpdateUserInterfaceState(ent, ent.Comp);
         }
 

@@ -83,7 +83,7 @@ public abstract partial class SharedGunSystem
             if (_netManager.IsClient)
                 return;
 
-            var ammoEntity = Spawn(proto, Transform(entity).Coordinates);
+            var ammoEntity = SpawnAttachedTo(proto, Transform(entity).Coordinates);
             ammo.Entities.Add(ammoEntity);
             Containers.Insert(ammoEntity, ammo.Container);
             UpdateBallisticAppearance(entity.Owner, ammo);

@@ -64,7 +64,7 @@ public sealed partial class DeadStartupButtonSystem : SharedDeadStartupButtonSys
 
         _audio.PlayPvs(comp.BuzzSound, uid, AudioHelpers.WithVariation(0.05f, _robustRandom));
         _popup.PopupEntity(Loc.GetString("dead-startup-system-reboot-failed", ("target", MetaData(uid).EntityName)), uid);
-        Spawn("EffectSparks", Transform(uid).Coordinates);
+        SpawnAttachedTo("EffectSparks", Transform(uid).Coordinates);
     }
 
     private void OnElectrocuted(EntityUid uid, DeadStartupButtonComponent comp, ElectrocutedEvent args)

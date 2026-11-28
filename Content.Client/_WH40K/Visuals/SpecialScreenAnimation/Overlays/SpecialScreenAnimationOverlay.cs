@@ -15,16 +15,16 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._WH40K.Visuals.SpecialScreenAnimation.Overlays;
 
-public sealed class SpecialScreenAnimationOverlay : Overlay
+public sealed partial class SpecialScreenAnimationOverlay : Overlay
 {
     private const int MaximumQueuedAnimations = 8;
 
-    [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly IResourceCache _resources = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IClyde _clyde = default!;
-    [Dependency] private readonly IConfigurationManager _config = default!;
-    [Dependency] private readonly IUserInterfaceManager _ui = default!;
+    [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private IResourceCache _resources = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IClyde _clyde = default!;
+    [Dependency] private IConfigurationManager _config = default!;
+    [Dependency] private IUserInterfaceManager _ui = default!;
 
     private readonly Queue<SpecialScreenAnimationData> _queue = new();
     private ActiveAnimation? _active;

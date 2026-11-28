@@ -72,8 +72,8 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
         _rgbSkinColorSelector.OnColorChanged += _ => UpdateSkinColorFromControls();
         SkinToneSlider.OnValueChanged += _ => UpdateSkinColorFromControls();
-        HeightSlider.OnValueChanged += _ => SetHeight(HeightSlider.Value);
-        WidthSlider.OnValueChanged += _ => SetWidth(WidthSlider.Value);
+        HeightSlider.OnValueChanged += _ => SetCharacterHeight(HeightSlider.Value);
+        WidthSlider.OnValueChanged += _ => SetCharacterWidth(WidthSlider.Value);
 
         AgeEdit.OnTextChanged += args =>
         {
@@ -474,7 +474,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         UpdateProfile(profile => profile.WithSpawnPriorityPreference(priority));
     }
 
-    private void SetHeight(float height)
+    private void SetCharacterHeight(float height)
     {
         if (_loadingControls)
             return;
@@ -482,7 +482,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         UpdateProfile(profile => profile.WithCharacterAppearance(profile.Appearance.WithHeight(height)));
     }
 
-    private void SetWidth(float width)
+    private void SetCharacterWidth(float width)
     {
         if (_loadingControls)
             return;

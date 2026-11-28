@@ -23,11 +23,4 @@ public sealed class AdminLogLabel : RichTextLabel
     {
         Separator.Visible = Visible;
     }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-
-        OnVisibilityChanged -= VisibilityChanged;
-    }
 }

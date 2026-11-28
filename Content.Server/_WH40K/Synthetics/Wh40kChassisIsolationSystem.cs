@@ -11,12 +11,12 @@ namespace Content.Server._WH40K.Synthetics;
 /// Isolates or restores cybernetic chassis limbs from the chassis panel (and tracks low-power arm cuts
 /// separately so user-isolated arms stay isolated when power returns).
 /// </summary>
-public sealed class Wh40kChassisIsolationSystem : EntitySystem
+public sealed partial class Wh40kChassisIsolationSystem : EntitySystem
 {
     private static readonly TimeSpan SweepInterval = TimeSpan.FromSeconds(1);
 
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
 
     private TimeSpan _nextSweep;
 

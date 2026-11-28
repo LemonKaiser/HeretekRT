@@ -23,7 +23,7 @@ namespace Content.Server._WH40K.Augments.Combat;
 /// grants side-appropriate actions, folds items in/out of the matching hand, preserves battery charge while stowed,
 /// retracts and locks out on EMP, and supports Q-key retraction.
 /// </summary>
-public sealed class Wh40kDeployableImplantSystem : EntitySystem
+public sealed partial class Wh40kDeployableImplantSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -144,7 +144,7 @@ public sealed class Wh40kDeployableImplantSystem : EntitySystem
 
     private bool TryStowEntityItem(EntityUid hostUid, EntityUid item)
     {
-        foreach (var implant in EntityManager.GetComponents<Wh40kDeployableImplantComponent>(hostUid))
+        foreach (var implant in AllComps<Wh40kDeployableImplantComponent>(hostUid))
         {
             if (implant.Deployed != item)
                 continue;
@@ -208,10 +208,10 @@ public sealed class Wh40kDeployableImplantSystem : EntitySystem
         battery = null;
         rate = 0f;
         if (implant.Items.Count == 0 || !_prototypes.TryIndex(implant.Items[0], out var item) ||
-            !item.TryGetComponent(out battery, _componentFactory))
+            !item.TryComp(out battery, _componentFactory))
             return false;
 
-        if (item.TryGetComponent<BatterySelfRechargerComponent>(out var recharger, _componentFactory))
+        if (item.TryComp<BatterySelfRechargerComponent>(out var recharger, _componentFactory))
             rate = recharger.AutoRechargeRate;
 
         return true;

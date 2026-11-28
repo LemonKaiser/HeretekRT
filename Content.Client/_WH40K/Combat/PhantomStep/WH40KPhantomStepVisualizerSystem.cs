@@ -20,6 +20,8 @@ namespace Content.Client._WH40K.Combat.PhantomStep;
 public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
 {
     private static readonly ProtoId<ShaderPrototype> Shader = "WH40KPhantomAfterimage";
+    private static readonly ProtoId<ParticleEffectPrototype> GloomEffect = "HrtPhantomStepGloom";
+    private static readonly ProtoId<ParticleEffectPrototype> WarpRiftBurstEffect = "HrtWarpRiftBurst";
     private static readonly Color TrailTint = Color.FromHex("#B5F4FF");
 
     [Dependency] private AnimationPlayerSystem _animations = default!;
@@ -65,12 +67,12 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         // The network event is sent only after TryTriggerDodge has found a valid end point and consumed a charge.
         // Bursts use the start/end coordinates carried by that same event instead of the mover's interpolated centre.
         _particles.SpawnEffect(
-            "HrtPhantomStepGloom",
+            GloomEffect,
             startMap,
             new ParticleSpawnParameters(Intensity: 0.75f));
         Timer.Spawn(TimeSpan.FromSeconds(duration), () =>
             _particles.SpawnEffect(
-                "HrtWarpRiftBurst",
+                WarpRiftBurstEffect,
                 endMap,
                 new ParticleSpawnParameters(Intensity: 0.85f)));
 
@@ -107,7 +109,7 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         if (!Exists(source) || !TryComp(source, out SpriteComponent? sourceSprite))
             return;
 
-        var clone = Spawn("clientsideclone", _transform.ToCoordinates(position));
+        var clone = SpawnAttachedTo("clientsideclone", _transform.ToCoordinates(position));
         var cloneSprite = EnsureComp<SpriteComponent>(clone);
 
         _sprite.CopySprite((source, sourceSprite), (clone, cloneSprite));

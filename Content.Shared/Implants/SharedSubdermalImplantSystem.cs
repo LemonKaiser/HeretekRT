@@ -110,7 +110,7 @@ public abstract partial class SharedSubdermalImplantSystem : EntitySystem
     public EntityUid? AddImplant(EntityUid uid, String implantId)
     {
         var coords = Transform(uid).Coordinates;
-        var ent = Spawn(implantId, coords);
+        var ent = SpawnAttachedTo(implantId, coords);
 
         if (TryComp<SubdermalImplantComponent>(ent, out var implant))
         {

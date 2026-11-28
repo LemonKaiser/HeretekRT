@@ -40,8 +40,8 @@ public sealed partial class MagicSystem : SharedMagicSystem
         var perfXForm = Transform(ev.Performer);
         var targetXForm = Transform(ev.Target);
 
-        Spawn(ev.Effect, perfXForm.Coordinates);
-        Spawn(ev.Effect, targetXForm.Coordinates);
+        SpawnAttachedTo(ev.Effect, perfXForm.Coordinates);
+        SpawnAttachedTo(ev.Effect, targetXForm.Coordinates);
     }
 
     protected override void OnTeleportSpell(TeleportSpellEvent ev)
@@ -56,8 +56,8 @@ public sealed partial class MagicSystem : SharedMagicSystem
         if (!ev.Handled || ev.Effect is not { } effect)
             return;
 
-        Spawn(effect, departure);
-        Spawn(effect, arrival);
+        SpawnAttachedTo(effect, departure);
+        SpawnAttachedTo(effect, arrival);
     }
 
     protected override void OnRandomGlobalSpawnSpell(RandomGlobalSpawnSpellEvent ev)

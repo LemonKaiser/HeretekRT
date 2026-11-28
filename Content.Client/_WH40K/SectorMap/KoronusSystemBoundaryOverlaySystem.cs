@@ -2,7 +2,7 @@ using Robust.Client.Graphics;
 
 namespace Content.Client._WH40K.SectorMap;
 
-public sealed class KoronusSystemBoundaryOverlaySystem : EntitySystem
+public sealed partial class KoronusSystemBoundaryOverlaySystem : EntitySystem
 {
     [Dependency] private IOverlayManager _overlays = default!;
 

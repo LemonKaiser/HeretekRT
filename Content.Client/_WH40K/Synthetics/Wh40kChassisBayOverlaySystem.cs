@@ -8,11 +8,11 @@ using Robust.Shared.Configuration;
 namespace Content.Client._WH40K.Synthetics;
 
 [UsedImplicitly]
-public sealed class Wh40kChassisBayOverlaySystem : EntitySystem
+public sealed partial class Wh40kChassisBayOverlaySystem : EntitySystem
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IOverlayManager _overlays = default!;
-    [Dependency] private readonly IPlayerManager _player = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IOverlayManager _overlays = default!;
+    [Dependency] private IPlayerManager _player = default!;
 
     private Wh40kChassisBayOverlay _overlay = default!;
     private bool _added;

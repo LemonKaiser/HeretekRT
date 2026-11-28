@@ -44,6 +44,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
     private readonly EntityLookupSystem _lookup;
     private readonly SharedPhysicsSystem _physics;
     private readonly SharedTransformSystem _transform;
+    private readonly SpriteSystem _sprites;
     private readonly ShaderInstance _bloomShader;
     private readonly ShaderInstance _shader;
     private readonly ShaderInstance _hazeShader;
@@ -74,6 +75,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         _lookup = _entities.System<EntityLookupSystem>();
         _physics = _entities.System<SharedPhysicsSystem>();
         _transform = _entities.System<SharedTransformSystem>();
+        _sprites = _entities.System<SpriteSystem>();
         _bloomShader = _prototypes.Index(BloomShader).InstanceUnique();
         _shader = _prototypes.Index(Shader).InstanceUnique();
         _hazeShader = _prototypes.Index(HazeShader).InstanceUnique();
@@ -136,7 +138,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
 
             var profile = effects.Profile;
             if (light.Radius < Math.Max(0f, effects.MinLightRadius ?? GetMinLightRadius(profile)) ||
-                !TryGetEmitterLayer(sprite, effects, out var layerIndex) ||
+                !TryGetEmitterLayer((visualUid, sprite), effects, out var layerIndex) ||
                 sprite[layerIndex] is not SpriteComponent.Layer { Visible: true } layer ||
                 layer.Blank ||
                 layer.CopyToShaderParameters != null)
@@ -599,25 +601,25 @@ public sealed partial class LightSourceGlowOverlay : Overlay
         return mountDirection * MathF.Cos(halfCircleAngle) + perpendicular * MathF.Sin(halfCircleAngle);
     }
 
-    private static bool TryGetEmitterLayer(
-        SpriteComponent sprite,
+    private bool TryGetEmitterLayer(
+        Entity<SpriteComponent> sprite,
         WH40KLightEffectsComponent effects,
         out int layerIndex)
     {
         switch (effects.EmitterLayer)
         {
             case WH40KLightEmitterLayer.PoweredGlow:
-                return sprite.LayerMapTryGet(PoweredLightLayers.Glow, out layerIndex);
+                return _sprites.LayerMapTryGet((sprite.Owner, sprite.Comp), PoweredLightLayers.Glow, out layerIndex, false);
             case WH40KLightEmitterLayer.ToggleableLight:
-                return sprite.LayerMapTryGet("light", out layerIndex);
+                return _sprites.LayerMapTryGet((sprite.Owner, sprite.Comp), "light", out layerIndex, false);
             case WH40KLightEmitterLayer.Fire:
-                if (sprite.LayerMapTryGet(FireVisualLayers.Fire, out layerIndex))
+                if (_sprites.LayerMapTryGet((sprite.Owner, sprite.Comp), FireVisualLayers.Fire, out layerIndex, false))
                     return true;
-                return TryGetTopmostUnshadedLayer(sprite, out layerIndex);
+                return TryGetTopmostUnshadedLayer(sprite.Comp, out layerIndex);
             case WH40KLightEmitterLayer.TopmostUnshaded:
-                return TryGetTopmostUnshadedLayer(sprite, out layerIndex);
+                return TryGetTopmostUnshadedLayer(sprite.Comp, out layerIndex);
             case WH40KLightEmitterLayer.Custom when effects.CustomLayer != null:
-                return sprite.LayerMapTryGet(effects.CustomLayer, out layerIndex);
+                return _sprites.LayerMapTryGet((sprite.Owner, sprite.Comp), effects.CustomLayer, out layerIndex, false);
             default:
                 layerIndex = default;
                 return false;

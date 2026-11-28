@@ -9,7 +9,7 @@ namespace Content.Shared._WH40K.SectorMap;
 /// Temporary distortion composed with ordinary eye damage and vision correction.
 /// The existing vision overlay also honors the player's reduced-motion setting.
 /// </summary>
-public sealed class KoronusWarpVertigoSystem : EntitySystem
+public sealed partial class KoronusWarpVertigoSystem : EntitySystem
 {
     public static readonly ProtoId<StatusEffectPrototype> EffectId = "KoronusWarpVertigo";
 

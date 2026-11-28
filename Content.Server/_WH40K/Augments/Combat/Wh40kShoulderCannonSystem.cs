@@ -15,7 +15,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Augments.Combat;
 
-public sealed class Wh40kShoulderCannonSystem : EntitySystem
+public sealed partial class Wh40kShoulderCannonSystem : EntitySystem
 {
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -156,7 +156,7 @@ public sealed class Wh40kShoulderCannonSystem : EntitySystem
         if (direction.LengthSquared() < 0.01f)
             direction = _transform.GetWorldRotation(ent).ToWorldVec();
 
-        var bolt = Spawn(ent.Comp.Bolt, Transform(ent).Coordinates);
+        var bolt = SpawnAttachedTo(ent.Comp.Bolt, Transform(ent).Coordinates);
         _gun.ShootProjectile(bolt, direction, _physics.GetMapLinearVelocity(ent), ent, ent, ent.Comp.BoltSpeed);
         _audio.PlayPvs(ent.Comp.FireSound, ent);
 

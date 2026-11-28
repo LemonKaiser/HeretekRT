@@ -16,13 +16,13 @@ namespace Content.Server._WH40K.DirectionalEmote;
 
 public sealed partial class WH40KDirectionalEmoteSystem : EntitySystem
 {
-    [Dependency] private readonly IChatManager _chatManager = default!;
-    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly ExamineSystemShared _examine = default!;
-    [Dependency] private readonly IAdminLogManager _adminLog = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly WH40KPlayerCultureManager _playerCulture = default!;
+    [Dependency] private IChatManager _chatManager = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private ExamineSystemShared _examine = default!;
+    [Dependency] private IAdminLogManager _adminLog = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private WH40KPlayerCultureManager _playerCulture = default!;
 
     private int _maxEmoteLength = 256;
     private float _maxEmoteDistance = 2.3f;

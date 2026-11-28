@@ -224,11 +224,11 @@ public partial class RCDSystem : EntitySystem
         // Try to start the do after
         // <Mono>
         var gridData = mapGridData.Value;
-        var effect = Spawn(effectPrototype, new EntityCoordinates(gridData.GridUid, Vector2.Zero));
+        var effect = SpawnAttachedTo(effectPrototype, new EntityCoordinates(gridData.GridUid, Vector2.Zero));
         _transform.SetParent(effect, gridData.GridUid);
         _transform.SetLocalPositionNoLerp(effect, gridData.Position + new Vector2(0.5f, 0.5f));
         // </Mono>
-        var ev = new RCDDoAfterEvent(GetNetCoordinates(mapGridData.Value.Location), component.ConstructionDirection, component.ProtoId, cost, EntityManager.GetNetEntity(effect));
+        var ev = new RCDDoAfterEvent(GetNetCoordinates(mapGridData.Value.Location), component.ConstructionDirection, component.ProtoId, cost, GetNetEntity(effect));
 
         var doAfterArgs = new DoAfterArgs(EntityManager, user, delay*component.DelayMultiplier, ev, uid, target: args.Target, used: uid) // Mono - add delay multiplier.
         {
@@ -275,7 +275,7 @@ public partial class RCDSystem : EntitySystem
     private void OnDoAfter(EntityUid uid, RCDComponent component, RCDDoAfterEvent args)
     {
         if (args.Cancelled && _net.IsServer)
-            QueueDel(EntityManager.GetEntity(args.Effect));
+            QueueDel(GetEntity(args.Effect));
 
         if (args.Handled || args.Cancelled || !_timing.IsFirstTimePredicted)
             return;
@@ -581,18 +581,18 @@ public partial class RCDSystem : EntitySystem
                 break;
 
             case RcdMode.ConstructObject:
-                var ent = Spawn(component.CachedPrototype.Prototype, _mapSystem.GridTileToLocal(mapGridData.GridUid, mapGridData.Component, mapGridData.Position));
+                var ent = SpawnAttachedTo(component.CachedPrototype.Prototype, _mapSystem.GridTileToLocal(mapGridData.GridUid, mapGridData.Component, mapGridData.Position));
 
                 switch (component.CachedPrototype.Rotation)
                 {
                     case RcdRotation.Fixed:
-                        Transform(ent).LocalRotation = Angle.Zero;
+                        _transform.SetLocalRotation(ent, Angle.Zero);
                         break;
                     case RcdRotation.Camera:
-                        Transform(ent).LocalRotation = Transform(uid).LocalRotation;
+                        _transform.SetLocalRotation(ent, Transform(uid).LocalRotation);
                         break;
                     case RcdRotation.User:
-                        Transform(ent).LocalRotation = direction.ToAngle();
+                        _transform.SetLocalRotation(ent, direction.ToAngle());
                         break;
                 }
 

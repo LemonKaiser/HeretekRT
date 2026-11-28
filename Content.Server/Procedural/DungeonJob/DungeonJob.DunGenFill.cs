@@ -20,7 +20,7 @@ public sealed partial class DungeonJob
         }
 
         var roomTiles = new HashSet<Vector2i>();
-        var tiles = _maps.GetAllTilesEnumerator(_gridUid, _grid);
+        var tiles = _maps.GetAllTiles(_gridUid, _grid);
 
         while (tiles.MoveNext(out var tileRef))
         {
@@ -36,7 +36,7 @@ public sealed partial class DungeonJob
                 continue;
 
             var gridPos = _maps.GridTileToLocal(_gridUid, _grid, tile);
-            _entManager.SpawnEntity(fillEnt, gridPos);
+            _entManager.SpawnAttachedTo(fillEnt, gridPos);
 
             roomTiles.Add(tile);
 

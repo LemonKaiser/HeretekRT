@@ -371,7 +371,7 @@ public sealed partial class SalvageSystem
         foreach (var reward in comp.Rewards)
         {
             // Keep the reward parented to the owner's grid while it is travelling through FTL.
-            Spawn(reward, Transform(_random.Pick(palletList)).Coordinates);
+            SpawnAttachedTo(reward, Transform(_random.Pick(palletList)).Coordinates);
         }
     }
 

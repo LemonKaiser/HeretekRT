@@ -29,7 +29,7 @@ public sealed partial class EmpSystem : SharedEmpSystem
             if (Timing.CurTime > comp.TargetTime)
             {
                 comp.TargetTime = Timing.CurTime + _random.NextFloat(0.8f, 1.2f) * comp.EffectCooldown;
-                Spawn(EmpDisabledEffectPrototype, transform.Coordinates);
+                SpawnAttachedTo(EmpDisabledEffectPrototype, transform.Coordinates);
             }
         }
     }

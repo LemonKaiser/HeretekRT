@@ -208,7 +208,7 @@ public sealed partial class CardStackSystem : EntitySystem
         var spawnedEntities = new List<EntityUid>();
         foreach (var id in comp.InitialContent)
         {
-            var ent = Spawn(id, coordinates);
+            var ent = SpawnAttachedTo(id, coordinates);
             spawnedEntities.Add(ent);
             if (TryInsertCard(uid, ent, comp))
                 continue;

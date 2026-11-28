@@ -21,7 +21,7 @@ public sealed partial class HitscanRadarSystem : EntitySystem
     {
         var shooter = ev.Shooter ?? ev.Gun; // If "there is no shooter" then the shooter is a gun
         var shooterCoords = new EntityCoordinates(shooter, Vector2.Zero);
-        var radarEntity = Spawn(null, shooterCoords);
+        var radarEntity = SpawnAttachedTo(null, shooterCoords);
         var radarComponent = EnsureComp<HitscanRadarComponent>(radarEntity);
         var startPos = _transform.ToMapCoordinates(ev.FromCoordinates).Position;
         var endPos = startPos + ev.ShotDirection.Normalized() * ev.DistanceTried;

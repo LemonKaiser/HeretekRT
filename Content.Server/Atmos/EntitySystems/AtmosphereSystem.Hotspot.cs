@@ -102,7 +102,7 @@ namespace Content.Server.Atmos.EntitySystems
                 // A few details on the audio parameters for fire.
                 // The greater the fire state, the lesser the pitch variation.
                 // The greater the fire state, the greater the volume.
-                _audio.PlayPvs(HotspotSound, coordinates, AudioParams.Default.WithVariation(0.15f/tile.Hotspot.State).WithVolume(-5f + 5f * tile.Hotspot.State));
+                _audio.PlayPvs(new ResolvedPathSpecifier(HotspotSound), coordinates, AudioParams.Default.WithVariation(0.15f/tile.Hotspot.State).WithVolume(-5f + 5f * tile.Hotspot.State));
             }
 
             if (_hotspotSoundCooldown > HotspotSoundCooldownCycles)
@@ -172,7 +172,7 @@ namespace Content.Server.Atmos.EntitySystems
             if (tile.PuddleSolutionFlammability > 0 && oxygen >= 2f &&
                 exposedTemperature > 673.15f - 25f * Math.Min(tile.PuddleSolutionFlammability, 4))
             {
-                _tileFires.TryDoTileFire(new EntityCoordinates(gridAtmosphere.Owner, tile.GridIndices + new System.Numerics.Vector2(0.5f)), sparkSourceUid);
+                _tileFires.TryDoTileFire(new EntityCoordinates(tile.GridIndex, tile.GridIndices + new System.Numerics.Vector2(0.5f)), sparkSourceUid);
             }
 
             // If a hotspot already exists on this tile, just strengthen it and return early.

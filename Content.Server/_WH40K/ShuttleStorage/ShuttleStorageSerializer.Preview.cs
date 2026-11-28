@@ -28,7 +28,7 @@ public sealed partial class ShuttleStorageSerializer
         {
             var type = prototype.Components.ContainsKey("Door") ? ShuttleStorageCell.Door :
                 prototype.Components.ContainsKey("Window") ? ShuttleStorageCell.Window :
-                prototype.TryGetComponent<TagComponent>(out var tags, _factory) && _previewTags.HasTag(tags, "Wall")
+                prototype.TryComp<TagComponent>(out var tags, _factory) && _previewTags.HasTag(tags, "Wall")
                     ? ShuttleStorageCell.Wall : ShuttleStorageCell.Empty;
             if (type != ShuttleStorageCell.Empty)
                 _previewTypes[prototype.ID] = type;

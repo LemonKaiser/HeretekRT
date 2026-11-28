@@ -21,7 +21,7 @@ public sealed class SpawnOnDespawnSystem : EntitySystem
         // Mono start - multiple entity spawning
             for (int i = 0; i <= comp.Count; i++)
             {
-                Spawn(comp.Prototype, xform.Coordinates);
+                SpawnAttachedTo(comp.Prototype, xform.Coordinates);
             }
         // End mono
     }

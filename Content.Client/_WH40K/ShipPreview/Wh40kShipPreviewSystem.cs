@@ -148,7 +148,7 @@ public sealed partial class Wh40kShipPreviewSystem : EntitySystem
             (int) MathF.Round(bounds.Height / tileSize));
 
         var tiles = 0;
-        var enumerator = _map.GetAllTilesEnumerator(grid.Value.Owner, grid.Value.Comp);
+        var enumerator = _map.GetAllTiles(grid.Value.Owner, grid.Value.Comp);
         while (enumerator.MoveNext(out _))
             tiles++;
 

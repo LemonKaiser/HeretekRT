@@ -6,11 +6,11 @@ using Content.Shared._Shitmed.Body.Organ;
 
 namespace Content.Shared._WH40K.Augments;
 
-public sealed class AugmentActionSystem : EntitySystem
+public sealed partial class AugmentActionSystem : EntitySystem
 {
-    [Dependency] private readonly AugmentSystem _augment = default!;
-    [Dependency] private readonly ItemToggleSystem _toggle = default!;
-    [Dependency] private readonly SharedActionsSystem _actions = default!;
+    [Dependency] private AugmentSystem _augment = default!;
+    [Dependency] private ItemToggleSystem _toggle = default!;
+    [Dependency] private SharedActionsSystem _actions = default!;
 
     public override void Initialize()
     {

@@ -13,7 +13,7 @@ namespace Content.Client._Mono.Shipyard;
 /// <summary>
 /// This handles spawning client-side grid and getting data from it.
 /// </summary>
-public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
+public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 {
     [Dependency] private MapSystem _map = default!;
     [Dependency] private MapLoaderSystem _loader = default!;
@@ -49,7 +49,7 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
 
     private void RestorePreviewSprite(Entity<MetaDataComponent> entity, MapId mapId)
     {
-        if (!EntityManager.IsClientSide(entity, entity.Comp) || Transform(entity).MapID != mapId ||
+        if (!IsClientSide(entity, entity.Comp) || Transform(entity).MapID != mapId ||
             !TryComp<SpriteComponent>(entity, out var sprite) || (sprite.LayerData.Count != 0 && sprite.BaseRSI != null))
             return;
 
@@ -63,7 +63,7 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
         // A visualizer can add a layer during ComponentInit even though the base RSI is still missing.
 
         // I hate RobustToolbox.
-        EntityManager.CopyComponent(entity, entity, sprite, entity.Comp);
+        CopyComp(entity, entity, sprite, entity.Comp);
     }
 
     public FormattedMessage GetGridData()

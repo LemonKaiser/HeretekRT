@@ -29,7 +29,7 @@ public sealed partial class Wh40kChaosMarineSystem
 
         // Native grenades: real flight, fuse, hiss, spreading occluders and 30-second cleanup.
         // Smoke has no Opaque collision fixture, so the boss's wall-aware targeting sees through it.
-        var grenade = Spawn("SmokeGrenade", Transform(uid).Coordinates);
+        var grenade = SpawnAttachedTo("SmokeGrenade", Transform(uid).Coordinates);
         if (Vector2.DistanceSquared(origin, point) > .01f)
             _throwing.TryThrow(grenade, Coordinates(state, point), 6, user: uid,
                 pushbackRatio: 0, compensateFriction: true, recoil: false);

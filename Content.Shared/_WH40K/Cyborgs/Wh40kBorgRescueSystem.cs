@@ -12,7 +12,7 @@ namespace Content.Shared._WH40K.Cyborgs;
 /// <summary>
 /// Allows a cyborg to buckle nearby patients onto its chassis strap for transport and evacuation.
 /// </summary>
-public sealed class Wh40kBorgRescueSystem : EntitySystem
+public sealed partial class Wh40kBorgRescueSystem : EntitySystem
 {
     [Dependency] private SharedBuckleSystem _buckle = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;

@@ -46,7 +46,7 @@ public sealed class CargoTest
                     if (Ignored.Contains(proto.ID))
                         continue;
 
-                    var ent = entManager.SpawnEntity(proto.Product, testMap.MapCoords);
+                    var ent = entManager.Spawn(proto.Product, testMap.MapCoords);
                     var price = pricing.GetPrice(ent);
 
                     Assert.That(price, Is.AtMost(proto.Cost), $"Found arbitrage on {proto.ID} cargo product! Cost is {proto.Cost} but sell is {price}!");
@@ -81,7 +81,7 @@ public sealed class CargoTest
             {
                 foreach (var proto in protoManager.EnumeratePrototypes<CargoProductPrototype>())
                 {
-                    var ent = entManager.SpawnEntity(proto.Product, new MapCoordinates(Vector2.Zero, mapId));
+                    var ent = entManager.Spawn(proto.Product, new MapCoordinates(Vector2.Zero, mapId));
 
                     foreach (var bounty in bounties)
                     {
@@ -120,9 +120,9 @@ public sealed class CargoTest
             foreach (var proto in protoIds)
             {
                 // Sanity check
-                Assert.That(proto.TryGetComponent<StaticPriceComponent>(out var staticPriceComp, compFact), Is.True);
+                Assert.That(proto.TryComp<StaticPriceComponent>(out var staticPriceComp, compFact), Is.True);
 
-                if (proto.TryGetComponent<StackPriceComponent>(out var stackPriceComp, compFact) && stackPriceComp.Price > 0)
+                if (proto.TryComp<StackPriceComponent>(out var stackPriceComp, compFact) && stackPriceComp.Price > 0)
                 {
                     Assert.That(staticPriceComp.Price, Is.EqualTo(0),
                         $"The prototype {proto} has a StackPriceComponent and StaticPriceComponent whose values are not compatible with each other.");
@@ -171,13 +171,13 @@ public sealed class CargoTest
             var sliceableEntityProtos = protoManager.EnumeratePrototypes<EntityPrototype>()
                 .Where(p => !p.Abstract)
                 .Where(p => !pair.IsTestPrototype(p))
-                .Where(p => p.TryGetComponent<SliceableFoodComponent>(out _, componentFactory))
+                .Where(p => p.TryComp<SliceableFoodComponent>(out _, componentFactory))
                 .Select(p => p.ID)
                 .ToList();
 
             foreach (var proto in sliceableEntityProtos)
             {
-                var ent = entManager.SpawnEntity(proto, coord);
+                var ent = entManager.SpawnAttachedTo(proto, coord);
                 var sliceable = entManager.GetComponent<SliceableFoodComponent>(ent);
 
                 // Check each bounty
@@ -191,7 +191,7 @@ public sealed class CargoTest
                             continue;
 
                         // Spawn a slice
-                        var slice = entManager.SpawnEntity(sliceable.Slice, coord);
+                        var slice = entManager.SpawnAttachedTo(sliceable.Slice, coord);
 
                         // See if the slice also counts for this bounty entry
                         if (!cargo.IsValidBountyEntry(slice, entry))
@@ -245,7 +245,7 @@ public sealed class CargoTest
         {
             var priceSystem = entManager.System<PricingSystem>();
 
-            var ent = entManager.SpawnEntity("StackEnt", MapCoordinates.Nullspace);
+            var ent = entManager.Spawn("StackEnt", MapCoordinates.Nullspace);
             var price = priceSystem.GetPrice(ent);
             Assert.That(price, Is.EqualTo(100.0));
         });

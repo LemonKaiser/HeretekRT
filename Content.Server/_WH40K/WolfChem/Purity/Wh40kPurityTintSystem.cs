@@ -5,16 +5,16 @@ using Content.Shared.Chemistry.EntitySystems;
 namespace Content.Server._WH40K.WolfChem.Purity;
 
 /// <summary>Keeps <see cref="Wh40kPurityTintVisuals.Tinted"/> in step with the grade of a <see cref="Wh40kPurityTintComponent"/>'s reagent.</summary>
-public sealed class Wh40kPurityTintSystem : EntitySystem
+public sealed partial class Wh40kPurityTintSystem : EntitySystem
 {
     [Dependency] private SharedAppearanceSystem _appearance = default!;
-    [Dependency] private SolutionContainerSystem _solutions = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<Wh40kPurityTintComponent, MapInitEvent>(OnMapInit,
-            after: new[] { typeof(SolutionContainerSystem), typeof(Wh40kSolutionPuritySystem) });
+            after: new[] { typeof(SharedSolutionContainerSystem), typeof(Wh40kSolutionPuritySystem) });
         SubscribeLocalEvent<Wh40kPurityTintComponent, SolutionContainerChangedEvent>(OnSolutionChanged);
     }
 

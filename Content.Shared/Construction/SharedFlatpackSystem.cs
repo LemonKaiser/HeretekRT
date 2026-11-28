@@ -36,6 +36,7 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedToolSystem _tool = default!;
     [Dependency] private AnchorableSystem _anchorable = default!; // Mono
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -88,7 +89,7 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
         }
 
         if (!PrototypeManager.Resolve(comp.Entity, out var proto) ||
-            !proto.TryGetComponent<FixturesComponent>(out var fixture, EntityManager.ComponentFactory))
+            !proto.TryComp<FixturesComponent>(out var fixture, EntityManager.ComponentFactory))
         {
             return;
         }
@@ -104,9 +105,9 @@ public abstract partial class SharedFlatpackSystem : EntitySystem
 
         if (_net.IsServer)
         {
-            var spawn = Spawn(flatpackEntity, _map.GridTileToLocal(grid, gridComp, buildPos));
+            var spawn = SpawnAttachedTo(flatpackEntity, _map.GridTileToLocal(grid, gridComp, buildPos));
             if (TryComp(spawn, out TransformComponent? spawnXform)) // Frontier: rotatable flatpacks
-                spawnXform.LocalRotation = xform.LocalRotation.GetCardinalDir().ToAngle(); // Frontier: rotatable flatpacks
+                _transform.SetLocalRotation(spawn, xform.LocalRotation.GetCardinalDir().ToAngle(), spawnXform); // Frontier: rotatable flatpacks
             _adminLogger.Add(LogType.Construction,
                 LogImpact.Low,
                 $"{ToPrettyString(args.User):player} unpacked {ToPrettyString(spawn):entity} at {xform.Coordinates} from {ToPrettyString(uid):entity}");

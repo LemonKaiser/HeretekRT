@@ -119,14 +119,14 @@ public class DeltaPressureBenchmark
                     var isPerimeter = x == 0 || x == length - 1 || y == 0 || y == height - 1;
                     if (isPerimeter)
                     {
-                        _entMan.SpawnEntity(_wallProtoId, coords);
+                        _entMan.SpawnAttachedTo(_wallProtoId, coords);
                         continue;
                     }
 
                     // Spawn windows only on the middle row, spanning interior (excluding side walls)
                     if (y == midY)
                     {
-                        _entMan.SpawnEntity(_windowProtoId, coords);
+                        _entMan.SpawnAttachedTo(_windowProtoId, coords);
                     }
                 }
             }

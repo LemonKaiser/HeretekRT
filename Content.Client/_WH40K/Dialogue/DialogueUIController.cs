@@ -22,7 +22,7 @@ using AudioComponent = Robust.Shared.Audio.Components.AudioComponent;
 
 namespace Content.Client._WH40K.Dialogue;
 
-public sealed class DialogueUIController : UIController,
+public sealed partial class DialogueUIController : UIController,
     IOnStateEntered<GameplayState>,
     IOnStateExited<GameplayState>,
     IOnSystemChanged<DialogueInputLockSystem>
@@ -121,7 +121,6 @@ public sealed class DialogueUIController : UIController,
             _overlay.ChoiceSelected -= OnChoiceSelected;
             _overlay.CancelPressed -= OnCancelPressed;
             _overlay.Orphan();
-            _overlay.Dispose();
             _overlay = null;
         }
     }

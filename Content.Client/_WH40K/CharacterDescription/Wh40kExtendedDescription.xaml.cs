@@ -18,7 +18,7 @@ namespace Content.Client._WH40K.CharacterDescription;
 [GenerateTypedNameReferences]
 public sealed partial class Wh40kExtendedDescription : Control
 {
-    [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private IConfigurationManager _config = default!;
 
     private bool _settingProfile;
     private readonly Action<bool> _onSectionConfigurationChanged;
@@ -44,18 +44,6 @@ public sealed partial class Wh40kExtendedDescription : Control
         _onSectionConfigurationChanged = _ => UpdateSectionVisibility();
         _onLengthConfigurationChanged = _ => UpdateCharacterCounters();
 
-        _config.OnValueChanged(CCVars.FlavorTraitsEnabled, _onSectionConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.FlavorOocEnabled, _onSectionConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.FlavorLinksEnabled, _onSectionConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.FlavorGyrEnabled, _onSectionConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.CharacterDescriptionLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.OocFlavorTextLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.FlavorTagsLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.FlavorLinksLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.GreenPreferencesLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.YellowPreferencesLength, _onLengthConfigurationChanged, true);
-        _config.OnValueChanged(CCVars.RedPreferencesLength, _onLengthConfigurationChanged, true);
-
         AppearanceInput.Placeholder = new Rope.Leaf(Loc.GetString("flavor-text-placeholder"));
         CharacterInput.Placeholder = new Rope.Leaf(Loc.GetString("character-flavor-text-placeholder"));
         OocInput.Placeholder = new Rope.Leaf(Loc.GetString("ooc-flavor-text-placeholder"));
@@ -73,9 +61,9 @@ public sealed partial class Wh40kExtendedDescription : Control
         RedInput.OnTextChanged += _ => OnTextChanged(RedInput, OnRedFlavorTextChanged);
         TagsInput.OnTextChanged += _ => OnTextChanged(TagsInput, OnTagsFlavorTextChanged);
         LinksInput.OnTextChanged += _ => OnTextChanged(LinksInput, OnLinksFlavorTextChanged);
-        ShareOocCheck.OnToggled += args => OnVisibilityChanged(args.Pressed, OnShareOocFlavorTextChanged);
-        ShareLinksCheck.OnToggled += args => OnVisibilityChanged(args.Pressed, OnShareLinksFlavorTextChanged);
-        SharePreferencesCheck.OnToggled += args => OnVisibilityChanged(args.Pressed, OnSharePreferencesFlavorTextChanged);
+        ShareOocCheck.OnToggled += args => OnShareVisibilityChanged(args.Pressed, OnShareOocFlavorTextChanged);
+        ShareLinksCheck.OnToggled += args => OnShareVisibilityChanged(args.Pressed, OnShareLinksFlavorTextChanged);
+        SharePreferencesCheck.OnToggled += args => OnShareVisibilityChanged(args.Pressed, OnSharePreferencesFlavorTextChanged);
 
         Wh40kPersonalizationTheme.Apply(this);
         DescriptionSpriteStage.PanelOverride = Wh40kInterfaceTheme.PreviewStage(12);
@@ -113,6 +101,7 @@ public sealed partial class Wh40kExtendedDescription : Control
         SetPreviewText(PreviewGreen, string.Empty, "detail-examinable-empty-green");
         SetPreviewText(PreviewYellow, string.Empty, "detail-examinable-empty-yellow");
         SetPreviewText(PreviewRed, string.Empty, "detail-examinable-empty-red");
+        UpdateSectionVisibility();
         UpdateCharacterCounters();
     }
 
@@ -184,7 +173,7 @@ public sealed partial class Wh40kExtendedDescription : Control
         UpdateCharacterCounters();
     }
 
-    private void OnVisibilityChanged(bool share, Action<bool>? callback)
+    private void OnShareVisibilityChanged(bool share, Action<bool>? callback)
     {
         if (_settingProfile)
             return;
@@ -340,23 +329,39 @@ public sealed partial class Wh40kExtendedDescription : Control
         label.SetMessage(FormattedMessage.FromMarkupPermissive(sanitized), Wh40kDescriptionMarkupTags.Basic);
     }
 
-    protected override void Dispose(bool disposing)
+    protected override void EnteredTree()
     {
-        if (disposing)
-        {
-            _config.UnsubValueChanged(CCVars.FlavorTraitsEnabled, _onSectionConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.FlavorOocEnabled, _onSectionConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.FlavorLinksEnabled, _onSectionConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.FlavorGyrEnabled, _onSectionConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.CharacterDescriptionLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.OocFlavorTextLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.FlavorTagsLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.FlavorLinksLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.GreenPreferencesLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.YellowPreferencesLength, _onLengthConfigurationChanged);
-            _config.UnsubValueChanged(CCVars.RedPreferencesLength, _onLengthConfigurationChanged);
-        }
+        base.EnteredTree();
 
-        base.Dispose(disposing);
+        _config.OnValueChanged(CCVars.FlavorTraitsEnabled, _onSectionConfigurationChanged);
+        _config.OnValueChanged(CCVars.FlavorOocEnabled, _onSectionConfigurationChanged);
+        _config.OnValueChanged(CCVars.FlavorLinksEnabled, _onSectionConfigurationChanged);
+        _config.OnValueChanged(CCVars.FlavorGyrEnabled, _onSectionConfigurationChanged);
+        _config.OnValueChanged(CCVars.CharacterDescriptionLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.OocFlavorTextLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.FlavorTagsLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.FlavorLinksLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.GreenPreferencesLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.YellowPreferencesLength, _onLengthConfigurationChanged);
+        _config.OnValueChanged(CCVars.RedPreferencesLength, _onLengthConfigurationChanged);
+        UpdateSectionVisibility();
+        UpdateCharacterCounters();
+    }
+
+    protected override void ExitedTree()
+    {
+        _config.UnsubValueChanged(CCVars.FlavorTraitsEnabled, _onSectionConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.FlavorOocEnabled, _onSectionConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.FlavorLinksEnabled, _onSectionConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.FlavorGyrEnabled, _onSectionConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.CharacterDescriptionLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.OocFlavorTextLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.FlavorTagsLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.FlavorLinksLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.GreenPreferencesLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.YellowPreferencesLength, _onLengthConfigurationChanged);
+        _config.UnsubValueChanged(CCVars.RedPreferencesLength, _onLengthConfigurationChanged);
+
+        base.ExitedTree();
     }
 }

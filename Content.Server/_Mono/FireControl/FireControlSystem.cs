@@ -533,7 +533,7 @@ public sealed partial class FireControlSystem : EntitySystem
         var weaponXform = Transform(weapon);
         var weaponCoords = _xform.GetMapCoordinates(weaponXform);
         var weaponPos = weaponCoords.Position;
-        var targetCoords = coords.ToMap(EntityManager, _xform);
+        var targetCoords = _xform.ToMapCoordinates(coords);
         var targetPos = targetCoords.Position;
 
         // Calculate direction
@@ -601,7 +601,7 @@ public sealed partial class FireControlSystem : EntitySystem
     {
         var weaponXform = Transform(weapon);
         var weaponCoordinates = _xform.GetMapCoordinates(weaponXform);
-        var targetCoordinatesOnMap = targetCoordinates.ToMap(EntityManager, _xform);
+        var targetCoordinatesOnMap = _xform.ToMapCoordinates(targetCoordinates);
 
         if (weaponCoordinates.MapId != targetCoordinatesOnMap.MapId)
             return false;

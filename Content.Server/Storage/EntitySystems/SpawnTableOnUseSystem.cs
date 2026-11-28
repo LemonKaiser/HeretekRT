@@ -37,7 +37,7 @@ public sealed partial class SpawnTableOnUseSystem : EntitySystem
 
         foreach (var id in spawns)
         {
-            var spawned = Spawn(id, coords);
+            var spawned = SpawnAttachedTo(id, coords);
             RaiseLocalEvent(spawned, new RandomLootSpawnedEvent());
             _adminLogger.Add(LogType.EntitySpawn, LogImpact.Low, $"{ToPrettyString(args.User):user} used {ToPrettyString(ent):spawner} which spawned {ToPrettyString(spawned)}");
             _hands.PickupOrDrop(args.User, spawned);

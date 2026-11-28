@@ -174,7 +174,7 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         if (!TryComp<ActorComponent>(player, out var actor))
             return;
 
-        if (_prototypeManager.TryIndex(args.BoxProto, out var proto) && proto.TryGetComponent<SafetyDepositBoxComponent>(out var boxComponent, _componentFactory))
+        if (_prototypeManager.TryIndex(args.BoxProto, out var proto) && proto.TryComp<SafetyDepositBoxComponent>(out var boxComponent, _componentFactory))
         {
             cost = boxComponent.Cost;
             prototypeId = proto;
@@ -233,7 +233,7 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
     public int GetBoxCost(EntProtoId boxProto)
     {
         if (_prototypeManager.TryIndex(boxProto, out var proto) &&
-            proto.TryGetComponent<SafetyDepositBoxComponent>(out var boxComponent, _componentFactory))
+            proto.TryComp<SafetyDepositBoxComponent>(out var boxComponent, _componentFactory))
             return boxComponent.Cost;
         else
             return 0;
@@ -258,7 +258,7 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         var box = await _dbManager.PurchaseSafetyDepositBox(userId, characterIndex, characterName, prototypeId.ID);
 
         // Spawn the physical box
-        var boxEntity = Spawn(prototypeId.ID, Transform(player).Coordinates);
+        var boxEntity = SpawnAttachedTo(prototypeId.ID, Transform(player).Coordinates);
         var boxComp = EnsureComp<SafetyDepositBoxComponent>(boxEntity);
 
         boxComp.BoxId = box.BoxId;
@@ -496,7 +496,7 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
         // Spawn a new empty physical box
         string prototypeId = box.ProtoId;
 
-        var boxEntity = Spawn(prototypeId, Transform(player).Coordinates);
+        var boxEntity = SpawnAttachedTo(prototypeId, Transform(player).Coordinates);
         var boxComp = EnsureComp<SafetyDepositBoxComponent>(boxEntity);
         boxComp.BoxId = newBox.BoxId;
         boxComp.OwnerId = userId;
@@ -574,7 +574,7 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
 
             // Spawn the physical box (use stored box size to determine prototype);
 
-            var boxEntity = Spawn(box.ProtoId, Transform(player).Coordinates);
+            var boxEntity = SpawnAttachedTo(box.ProtoId, Transform(player).Coordinates);
             var boxComp = EnsureComp<SafetyDepositBoxComponent>(boxEntity);
             boxComp.BoxId = box.BoxId;
             boxComp.OwnerId = userId;

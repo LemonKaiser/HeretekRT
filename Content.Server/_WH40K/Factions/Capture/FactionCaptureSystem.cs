@@ -18,7 +18,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._WH40K.Factions.Capture;
 
-public sealed class FactionCaptureSystem : EntitySystem
+public sealed partial class FactionCaptureSystem : EntitySystem
 {
     [Dependency] private BankSystem _bank = default!;
     [Dependency] private CompanyManager _companies = default!;
@@ -254,7 +254,7 @@ public sealed class FactionCaptureSystem : EntitySystem
     private bool IsInstalled(Site site)
     {
         var (uid, _) = site.Point;
-        return site.Grid != null && TryComp<TransformComponent>(uid, out var xform) && xform.Anchored &&
+        return site.Grid != null && TryComp(uid, out TransformComponent? xform) && xform.Anchored &&
                xform.MapID == site.Map && xform.GridUid == site.Grid && xform.LocalPosition == site.LocalPosition;
     }
 

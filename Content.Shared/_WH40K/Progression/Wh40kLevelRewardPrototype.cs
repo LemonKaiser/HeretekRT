@@ -5,7 +5,7 @@ namespace Content.Shared._WH40K.Progression;
 /// <summary>
 /// Additional persistent rewards granted when an account reaches a configured level.
 /// </summary>
-[Prototype("wh40kLevelReward")]
+[Prototype]
 public sealed partial class Wh40kLevelRewardPrototype : IPrototype
 {
     [IdDataField]

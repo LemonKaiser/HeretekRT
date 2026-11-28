@@ -3,7 +3,7 @@ using Robust.Client.GameObjects;
 
 namespace Content.Client._WH40K.Augments.Combat;
 
-public sealed class Wh40kHoloDecoyVisualsSystem : EntitySystem
+public sealed partial class Wh40kHoloDecoyVisualsSystem : EntitySystem
 {
     [Dependency] private SpriteSystem _sprite = default!;
 

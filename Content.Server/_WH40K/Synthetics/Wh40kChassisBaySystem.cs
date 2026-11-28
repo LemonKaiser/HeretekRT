@@ -34,7 +34,7 @@ namespace Content.Server._WH40K.Synthetics;
 /// - While open: movement ×0.8, incoming damage amplified (exposed plating), and organs or power cells
 ///   can be pulled/installed by hand (2s / 4s self) bypassing <c>cell_slot</c> lock.
 /// </summary>
-public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
+public sealed partial class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
 {
     private static readonly TimeSpan BayDelay = TimeSpan.FromSeconds(3);
     private static readonly TimeSpan ComponentDelay = TimeSpan.FromSeconds(2);
@@ -43,22 +43,22 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
     private static readonly SoundSpecifier BaySound = new SoundPathSpecifier("/Audio/Items/ratchet.ogg");
     private static readonly SoundSpecifier ComponentSound = new SoundPathSpecifier("/Audio/Items/crowbar.ogg");
 
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly Wh40kAugmentBedSystem _augmentBed = default!;
-    [Dependency] private readonly SharedBodySystem _body = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
-    [Dependency] private readonly Wh40kSyntheticLimbSystem _limbs = default!;
-    [Dependency] private readonly Wh40kLowPowerSystem _lowPower = default!;
-    [Dependency] private readonly Wh40kChassisPanelSystem _panel = default!;
-    [Dependency] private readonly Wh40kRadCollectorSystem _radCollector = default!;
-    [Dependency] private readonly MovementSpeedModifierSystem _movement = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SiliconChargeSystem _siliconCharge = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private Wh40kAugmentBedSystem _augmentBed = default!;
+    [Dependency] private SharedBodySystem _body = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private Wh40kSyntheticLimbSystem _limbs = default!;
+    [Dependency] private Wh40kLowPowerSystem _lowPower = default!;
+    [Dependency] private Wh40kChassisPanelSystem _panel = default!;
+    [Dependency] private Wh40kRadCollectorSystem _radCollector = default!;
+    [Dependency] private MovementSpeedModifierSystem _movement = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SiliconChargeSystem _siliconCharge = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private EntityWhitelistSystem _whitelist = default!;
 
     public override void Initialize()
     {

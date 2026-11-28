@@ -113,7 +113,7 @@ public sealed partial class MicrowaveSystem : EntitySystem
 
             if (_tag.HasTag(item, "Plastic") && (component.CanHeat || component.CanIrradiate))
             {
-                var junk = Spawn(component.BadRecipeEntityId, Transform(uid).Coordinates);
+                var junk = SpawnAttachedTo(component.BadRecipeEntityId, Transform(uid).Coordinates);
                 _container.Insert(junk, component.Storage);
                 Del(item);
                 continue;

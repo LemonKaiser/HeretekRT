@@ -23,17 +23,17 @@ namespace Content.Client.Particles;
 /// </summary>
 public sealed partial class ParticleSystem : EntitySystem
 {
-    [Dependency] private readonly IOverlayManager _overlay = default!;
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly IEyeManager _eye = default!;
-    [Dependency] private readonly IResourceCache _resource = default!;
-    [Dependency] private readonly SpriteSystem _sprite = default!;
-    [Dependency] private readonly SharedMapSystem _maps = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
-    [Dependency] private readonly OccluderSystem _occluders = default!;
+    [Dependency] private IOverlayManager _overlay = default!;
+    [Dependency] private IPrototypeManager _proto = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private IConfigurationManager _cfg = default!;
+    [Dependency] private IEyeManager _eye = default!;
+    [Dependency] private IResourceCache _resource = default!;
+    [Dependency] private SpriteSystem _sprite = default!;
+    [Dependency] private SharedMapSystem _maps = default!;
+    [Dependency] private TurfSystem _turf = default!;
+    [Dependency] private OccluderSystem _occluders = default!;
 
     private readonly List<ActiveEmitter> _emitters = new();
     private readonly List<ActiveEmitter> _emissionOrder = new();

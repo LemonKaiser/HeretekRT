@@ -14,7 +14,7 @@ namespace Content.Client._WH40K.Factions;
 [GenerateTypedNameReferences]
 public sealed partial class LobbyFactionCard : PanelContainer, IFactionCatalogCard
 {
-    public Control Root => this;
+    Control IFactionCatalogCard.Root => this;
     public event Action? DetailsPressed;
     public event Action? ActionPressed;
 

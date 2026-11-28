@@ -360,9 +360,9 @@ namespace Content.Server.Cargo.Systems
             if (!component.AllowedGroups.Contains(product.Group))
                 return;
 
-            var data = GetOrderData(EntityManager.GetNetEntity(uid), args, product, GenerateOrderId(orderDatabase));
+            var data = GetOrderData(GetNetEntity(uid), args, product, GenerateOrderId(orderDatabase));
 
-            if (!TryAddOrder(orderDatabase.Owner, data, orderDatabase))
+            if (!TryAddOrder(dbUid!.Value, data, orderDatabase))
             {
                 PlayDenySound(uid, component);
                 return;
@@ -412,7 +412,7 @@ namespace Content.Server.Cargo.Systems
 
                 // Frontier - we only want to see orders made on the same computer, so filter them out
                 var filteredOrders = orderDatabase.Orders
-                    .Where(order => order.Computer == EntityManager.GetNetEntity(uid)).ToList();
+                    .Where(order => order.Computer == GetNetEntity(uid)).ToList();
 
                 var state = new CargoConsoleInterfaceState(
                     MetaData(user).EntityName,
@@ -581,13 +581,13 @@ namespace Content.Server.Cargo.Systems
         private bool FulfillOrder(CargoOrderData order, EntityCoordinates spawn, string? paperProto)
         {
             // Create the item itself
-            var item = Spawn(order.ProductId, spawn);
+            var item = SpawnAttachedTo(order.ProductId, spawn);
 
             // Ensure the item doesn't start anchored
             _transformSystem.Unanchor(item, Transform(item));
 
             // Create a sheet of paper to write the order details on
-            var printed = EntityManager.SpawnEntity(paperProto, spawn);
+            var printed = SpawnAttachedTo(paperProto, spawn);
             if (TryComp<PaperComponent>(printed, out var paper))
             {
                 // fill in the order data

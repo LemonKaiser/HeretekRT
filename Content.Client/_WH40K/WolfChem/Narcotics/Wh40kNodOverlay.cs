@@ -8,7 +8,7 @@ namespace Content.Client._WH40K.WolfChem.Narcotics;
 /// Eyelids for an opioid nod: the local player's view closes from the top and bottom, with soft edges, and snaps open
 /// when the nod ends. A neuroware host dims into standby instead.
 /// </summary>
-public sealed class Wh40kNodOverlay : Overlay
+public sealed partial class Wh40kNodOverlay : Overlay
 {
     [Dependency] private IEntityManager _entities = default!;
     [Dependency] private IPlayerManager _player = default!;

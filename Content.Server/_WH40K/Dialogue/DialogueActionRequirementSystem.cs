@@ -7,7 +7,7 @@ namespace Content.Server._WH40K.Dialogue;
 /// Verifies dialogue actions that must succeed before a choice is allowed to change the world.
 /// The checks are intentionally side-effect free so a failed choice can play its refusal branch.
 /// </summary>
-public sealed class DialogueActionRequirementSystem : EntitySystem
+public sealed partial class DialogueActionRequirementSystem : EntitySystem
 {
     [Dependency] private DialogueAccessSystem _access = default!;
     [Dependency] private DialogueItemSystem _items = default!;

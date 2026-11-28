@@ -9,10 +9,10 @@ using Robust.Shared.Map.Components;
 namespace Content.Server._WH40K.VendingMachines.Commands;
 
 [AdminCommand(AdminFlags.Admin)]
-public sealed class AutoVendingRestockCommand : IConsoleCommand
+public sealed partial class AutoVendingRestockCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IEntitySystemManager _systems = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IEntitySystemManager _systems = default!;
 
     public string Command => "autovend_restock";
     public string Description => "Queues vending machines for an automatic-style restock.";
@@ -85,10 +85,10 @@ public sealed class AutoVendingRestockCommand : IConsoleCommand
 }
 
 [AdminCommand(AdminFlags.Admin)]
-public sealed class AutoVendingRestockToggleCommand : IConsoleCommand
+public sealed partial class AutoVendingRestockToggleCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
-    [Dependency] private readonly IEntitySystemManager _systems = default!;
+    [Dependency] private IEntityManager _entities = default!;
+    [Dependency] private IEntitySystemManager _systems = default!;
 
     public string Command => "autovend_schedule";
     public string Description => "Enables or disables scheduled vending restock on a grid.";

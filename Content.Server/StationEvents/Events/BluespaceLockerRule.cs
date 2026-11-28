@@ -12,6 +12,7 @@ namespace Content.Server.StationEvents.Events;
 public sealed partial class BluespaceLockerRule : StationEventSystem<BluespaceLockerRuleComponent>
 {
     [Dependency] private BluespaceLockerSystem _bluespaceLocker = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     protected override void Started(EntityUid uid, BluespaceLockerRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
@@ -30,7 +31,7 @@ public sealed partial class BluespaceLockerRule : StationEventSystem<BluespaceLo
         {
             if (HasComp<AccessReaderComponent>(potentialLink) ||
                 HasComp<BluespaceLockerComponent>(potentialLink) ||
-                !HasComp<StationMemberComponent>(potentialLink.ToCoordinates().GetGridUid(EntityManager)))
+                !HasComp<StationMemberComponent>(_transform.GetGrid(potentialLink.ToCoordinates())))
                 continue;
 
             var comp = AddComp<BluespaceLockerComponent>(potentialLink);

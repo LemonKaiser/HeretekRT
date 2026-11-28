@@ -17,7 +17,7 @@ namespace Content.Server._WH40K.Cyborgs;
 /// Reopens abandoned ghost-role AI cores every 5 seconds, releases any borgs left bound to the departed AI,
 /// and renames ghost-role AI players from their character's Borg loadout name when configured.
 /// </summary>
-public sealed class Wh40kAiCoreGhostRoleSystem : EntitySystem
+public sealed partial class Wh40kAiCoreGhostRoleSystem : EntitySystem
 {
     private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(5);
     private static readonly string AiLoadout = LoadoutSystem.GetJobPrototype("Borg");

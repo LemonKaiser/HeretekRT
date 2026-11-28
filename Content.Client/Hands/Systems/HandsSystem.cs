@@ -177,28 +177,28 @@ namespace Content.Client.Hands.Systems
             {
                 // use item in hand
                 // it will always be attack_self() in my heart.
-                EntityManager.RaisePredictiveEvent(new RequestUseInHandEvent());
+                RaisePredictiveEvent(new RequestUseInHandEvent());
                 return;
             }
 
             if (pressedHand != hands.ActiveHand && pressedEntity == null)
             {
                 // change active hand
-                EntityManager.RaisePredictiveEvent(new RequestSetHandEvent(handName));
+                RaisePredictiveEvent(new RequestSetHandEvent(handName));
                 return;
             }
 
             if (pressedHand != hands.ActiveHand && pressedEntity != null && activeEntity != null)
             {
                 // use active item on held item
-                EntityManager.RaisePredictiveEvent(new RequestHandInteractUsingEvent(pressedHand.Name));
+                RaisePredictiveEvent(new RequestHandInteractUsingEvent(pressedHand.Name));
                 return;
             }
 
             if (pressedHand != hands.ActiveHand && pressedEntity != null && activeEntity == null)
             {
                 // move the item to the active hand
-                EntityManager.RaisePredictiveEvent(new RequestMoveHandItemEvent(pressedHand.Name));
+                RaisePredictiveEvent(new RequestMoveHandItemEvent(pressedHand.Name));
             }
         }
 
@@ -208,7 +208,7 @@ namespace Content.Client.Hands.Systems
         /// </summary>
         public void UIHandActivate(string handName)
         {
-            EntityManager.RaisePredictiveEvent(new RequestActivateInHandEvent(handName));
+            RaisePredictiveEvent(new RequestActivateInHandEvent(handName));
         }
 
         public void UIInventoryExamine(string handName)
@@ -263,7 +263,7 @@ namespace Content.Client.Hands.Systems
             if (component.RevealedLayers.TryGetValue(location, out var revealedLayers))
             {
                 foreach (var key in revealedLayers)
-                    sprite.RemoveLayer(key);
+                    _sprite.RemoveLayer((uid, sprite), key);
 
                 revealedLayers.Clear();
             }
@@ -399,12 +399,12 @@ namespace Content.Client.Hands.Systems
 
                 //Add displacement maps
                 if (hand.Location == HandLocation.Left && handComp.LeftHandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.LeftHandDisplacement, sprite, index, key, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.LeftHandDisplacement, (uid, sprite), index, key, revealedLayers);
                 else if (hand.Location == HandLocation.Right && handComp.RightHandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.RightHandDisplacement, sprite, index, key, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.RightHandDisplacement, (uid, sprite), index, key, revealedLayers);
                 //Fallback to default displacement map
                 else if (handComp.HandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.HandDisplacement, sprite, index, key, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.HandDisplacement, (uid, sprite), index, key, revealedLayers);
             }
 
             RaiseLocalEvent(held, new HeldVisualsUpdatedEvent(uid, revealedLayers), true);

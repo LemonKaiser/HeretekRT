@@ -49,7 +49,6 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
 
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IInputManager _inputs = default!;
-    private SharedMapSystem Maps => _entManager.System<SharedMapSystem>();
     [Dependency] private IEntityManager _entManager = default!; // Frontier
     private readonly DetectionSystem _detection; // Mono
     private readonly PlanetTerrainSystem _planetTerrain; // Mono

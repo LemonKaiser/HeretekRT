@@ -6,7 +6,7 @@ using Robust.Shared.Map.Components;
 
 namespace Content.Shared._Mono.Shipyard;
 
-public abstract class SharedShipyardPreviewSystem : EntitySystem
+public abstract partial class SharedShipyardPreviewSystem : EntitySystem
 {
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedMindSystem _mind = default!;

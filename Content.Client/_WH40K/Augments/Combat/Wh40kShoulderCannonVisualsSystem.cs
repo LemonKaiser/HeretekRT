@@ -4,7 +4,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._WH40K.Augments.Combat;
 
-public sealed class Wh40kShoulderCannonVisualsSystem : EntitySystem
+public sealed partial class Wh40kShoulderCannonVisualsSystem : EntitySystem
 {
     [Dependency] private SpriteSystem _sprite = default!;
 

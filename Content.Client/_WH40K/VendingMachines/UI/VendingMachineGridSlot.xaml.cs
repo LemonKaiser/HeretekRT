@@ -171,7 +171,7 @@ public sealed partial class VendingMachineGridSlot : PanelContainer
     {
         var itemName = prototype.Name;
 
-        if (prototype.TryGetComponent<LabelComponent>(out var label, _componentFactory) &&
+        if (prototype.TryComp<LabelComponent>(out var label, _componentFactory) &&
             !string.IsNullOrWhiteSpace(label.CurrentLabel))
         {
             var labelText = _loc.TryGetString(label.CurrentLabel, out var localized)

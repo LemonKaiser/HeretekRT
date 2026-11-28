@@ -29,5 +29,13 @@ public sealed class Wh40kTransitBoundUserInterface(EntityUid owner, Enum key) : 
     protected override void UpdateState(BoundUserInterfaceState state)
     { base.UpdateState(state); if (state is Wh40kTransitState transit) { Snapshot = transit; _map?.UpdateState(transit.Sector); } }
     protected override void Dispose(bool disposing)
-    { base.Dispose(disposing); if (disposing) _window?.Dispose(); }
+    {
+        base.Dispose(disposing);
+        if (disposing && _window != null)
+        {
+            _window.OnClose -= Close;
+            _window.Close();
+            _window = null;
+        }
+    }
 }

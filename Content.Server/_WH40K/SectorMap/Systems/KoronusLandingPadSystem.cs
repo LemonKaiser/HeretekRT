@@ -21,7 +21,7 @@ namespace Content.Server._WH40K.SectorMap.Systems;
 /// Resolves authored landing-pad entities into runtime pads. Resolution is performed only when a
 /// console state or planetary transfer needs it, avoiding a per-frame scan of every placed tile.
 /// </summary>
-public sealed class KoronusLandingPadSystem : EntitySystem
+public sealed partial class KoronusLandingPadSystem : EntitySystem
 {
     private static readonly Vector2i[] CardinalDirections =
     {
@@ -64,13 +64,13 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         IReadOnlySet<EntityUid>? authoredBaseGrids = null)
     {
         if (!TryComp<MapGridComponent>(terrainGrid, out var grid) ||
-            !TryComp<TransformComponent>(terrainGrid, out var terrainTransform))
+            !TryComp(terrainGrid, out TransformComponent? terrainTransform))
             return new List<KoronusLandingPadRuntime>();
 
         var tiles = new Dictionary<Vector2i, EntityUid>();
         // Preloaded planet surfaces are paused until somebody lands. Landing targets must still be
         // discoverable while the shuttle is in orbit, so these scans deliberately include paused entities.
-        var tileQuery = EntityManager.AllEntityQueryEnumerator<KoronusLandingPadComponent, TransformComponent>();
+        var tileQuery = AllEntityQuery<KoronusLandingPadComponent, TransformComponent>();
         while (tileQuery.MoveNext(out var uid, out _, out var transform))
         {
             if (!TryGetTileOnTerrain(
@@ -89,7 +89,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
             return new List<KoronusLandingPadRuntime>();
 
         var consoles = new List<(EntityUid Uid, Vector2i Tile, KoronusLandingPadConsoleComponent Component)>();
-        var consoleQuery = EntityManager.AllEntityQueryEnumerator<KoronusLandingPadConsoleComponent, TransformComponent>();
+        var consoleQuery = AllEntityQuery<KoronusLandingPadConsoleComponent, TransformComponent>();
         while (consoleQuery.MoveNext(out var uid, out var component, out var transform))
         {
             if (!TryGetTileOnTerrain(
@@ -363,7 +363,7 @@ public sealed class KoronusLandingPadSystem : EntitySystem
         foreach (var (reservationKey, shuttle) in rule.LandingReservations)
         {
             if (!reservationKey.EndsWith(suffix, StringComparison.Ordinal) ||
-                !TryComp<TransformComponent>(shuttle, out var transform) ||
+                !TryComp(shuttle, out TransformComponent? transform) ||
                 transform.MapID != Transform(pad.Console).MapID)
                 continue;
 

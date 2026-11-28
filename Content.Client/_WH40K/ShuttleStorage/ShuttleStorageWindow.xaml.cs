@@ -69,7 +69,7 @@ public sealed partial class ShuttleStorageWindow : FancyWindow
         {
             CancelConfirmation();
             _listSignature = signature;
-            ShipsList.DisposeAllChildren();
+            ShipsList.RemoveAllChildren();
             _rows.Clear();
             if (!snapshot.Ships.Any(ship => ship.Entity == SelectedShip))
             {

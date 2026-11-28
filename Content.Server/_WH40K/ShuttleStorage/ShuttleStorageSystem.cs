@@ -232,7 +232,7 @@ public sealed partial class ShuttleStorageSystem : EntitySystem
 
     private void Publish()
     {
-        var consoles = EntityManager.AllEntityQueryEnumerator<ShuttleStorageComponent>();
+        var consoles = AllEntityQuery<ShuttleStorageComponent>();
         while (consoles.MoveNext(out var console, out _))
         {
             foreach (var actor in _ui.GetActors(console, ShuttleStorageUiKey.Key).ToArray())
@@ -262,7 +262,7 @@ public sealed partial class ShuttleStorageSystem : EntitySystem
         if (Facility(console, out var station, out _))
         {
             stationName = Name(station);
-            var owned = EntityManager.AllEntityQueryEnumerator<ShipOwnershipComponent>();
+            var owned = AllEntityQuery<ShipOwnershipComponent>();
             while (owned.MoveNext(out var grid, out var ownership))
             {
                 if (ownership.OwnerUserId != owner || !_shipyard.TryGetStationBerth(grid, out var berthStation, out _) || berthStation != station)

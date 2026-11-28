@@ -222,7 +222,7 @@ namespace Content.Client.Construction.UI
             recipesList.Clear();
 
             var recipesGrid = _constructionView.RecipesGrid;
-            recipesGrid.DisposeAllChildren();
+            recipesGrid.RemoveAllChildren();
             _recipeButtons.Clear();
 
             _constructionView.RecipesGridScrollContainer.Visible = _constructionView.GridViewButtonPressed;

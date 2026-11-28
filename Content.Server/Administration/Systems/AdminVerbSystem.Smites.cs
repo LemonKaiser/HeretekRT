@@ -57,12 +57,15 @@ using Robust.Shared.Audio.Systems; // Frontier
 using Robust.Shared.Audio; // Frontier
 using Content.Server._NF.Speech.Components; // Frontier
 using Content.Shared.Damage.Prototypes; // Frontier
-using Content.Shared.Bed.Sleep; // Frontier
+using Content.Shared.Bed.Sleep;
+using Robust.Shared.Prototypes; // Frontier
 
 namespace Content.Server.Administration.Systems;
 
 public sealed partial class AdminVerbSystem
 {
+    private static readonly ProtoId<DamageTypePrototype> BluntId = "Blunt";
+
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private BloodstreamSystem _bloodstreamSystem = default!;
     [Dependency] private BodySystem _bodySystem = default!;
@@ -94,7 +97,7 @@ public sealed partial class AdminVerbSystem
     // All smite verbs have names so invokeverb works.
     private void AddSmiteVerbs(GetVerbsEvent<Verb> args)
     {
-        if (!EntityManager.TryGetComponent(args.User, out ActorComponent? actor))
+        if (!TryComp(args.User, out ActorComponent? actor))
             return;
 
         var player = actor.PlayerSession;
@@ -165,7 +168,7 @@ public sealed partial class AdminVerbSystem
                 _popupSystem.PopupCoordinates(
                     Loc.GetString("admin-smite-chess-others", ("name", args.Target)), xform.Coordinates,
                     Filter.PvsExcept(args.Target), true, PopupType.MediumCaution);
-                var board = Spawn("ChessBoard", xform.Coordinates);
+                var board = SpawnAttachedTo("ChessBoard", xform.Coordinates);
                 var session = _tabletopSystem.EnsureSession(Comp<TabletopGameComponent>(board));
                 _transformSystem.SetMapCoordinates(args.Target, session.Position);
                 _transformSystem.SetWorldRotationNoLerp((args.Target, xform), Angle.Zero);
@@ -568,7 +571,7 @@ public sealed partial class AdminVerbSystem
                 Icon = new SpriteSpecifier.Rsi(new ("/Textures/Clothing/Head/Hats/catears.rsi"), "icon"),
                 Act = () =>
                 {
-                    var ears = Spawn("ClothingHeadHatCatEars", Transform(args.Target).Coordinates);
+                    var ears = SpawnAttachedTo("ClothingHeadHatCatEars", Transform(args.Target).Coordinates);
                     EnsureComp<UnremoveableComponent>(ears);
                     _inventorySystem.TryUnequip(args.Target, "head", true, true, false, inventory);
                     _inventorySystem.TryEquip(args.Target, ears, "head", true, true, false, inventory);
@@ -657,8 +660,8 @@ public sealed partial class AdminVerbSystem
             Icon = new SpriteSpecifier.Rsi(new ("/Textures/Objects/Materials/materials.rsi"), "ash"),
             Act = () =>
             {
-                EntityManager.QueueDeleteEntity(args.Target);
-                Spawn("Ash", Transform(args.Target).Coordinates);
+                QueueDel(args.Target);
+                SpawnAttachedTo("Ash", Transform(args.Target).Coordinates);
                 _popupSystem.PopupEntity(Loc.GetString("admin-smite-turned-ash-other", ("name", args.Target)), args.Target, PopupType.LargeCaution);
             },
             Impact = LogImpact.Extreme,
@@ -743,7 +746,7 @@ public sealed partial class AdminVerbSystem
             Act = () =>
             {
                 var xform = Transform(args.Target);
-                var locker = Spawn("ClosetMaintenance", xform.Coordinates);
+                var locker = SpawnAttachedTo("ClosetMaintenance", xform.Coordinates);
                 if (TryComp<EntityStorageComponent>(locker, out var storage))
                 {
                     _entityStorageSystem.ToggleOpen(args.Target, locker, storage);
@@ -977,7 +980,7 @@ public sealed partial class AdminVerbSystem
                 if (hand != null)
                 {
                     _handsSystem.TryDrop(args.Target, hand);
-                    var club = EntityManager.SpawnNextToOrDrop("CavemanClubCursed", args.Target);
+                    var club = SpawnNextToOrDrop("CavemanClubCursed", args.Target);
                     if (club.Valid &&
                         !_handsSystem.TryPickupAnyHand(args.Target, club, false))
                     {
@@ -985,7 +988,7 @@ public sealed partial class AdminVerbSystem
                     }
                 }
 
-                if (_prototypeManager.TryIndex<DamageTypePrototype>("Blunt", out var bluntProto))
+                if (_prototypeManager.TryIndex(BluntId, out var bluntProto))
                 {
                     var bluntDamage = new DamageSpecifier(bluntProto, 10);
                     _damageable.TryChangeDamage(args.Target, bluntDamage, true);

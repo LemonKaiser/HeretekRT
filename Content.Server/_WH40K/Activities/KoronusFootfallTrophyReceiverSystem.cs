@@ -19,7 +19,7 @@ namespace Content.Server._WH40K.Activities;
 /// a closed catalogue, deletes only the accepted root, and cannot issue money, spawn a reward,
 /// modify a bank account, or operate outside the actual Footfall map.
 /// </summary>
-public sealed class KoronusFootfallTrophyReceiverSystem : EntitySystem
+public sealed partial class KoronusFootfallTrophyReceiverSystem : EntitySystem
 {
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private KoronusSectorRuleSystem _sector = default!;

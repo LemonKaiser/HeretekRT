@@ -139,7 +139,7 @@ namespace Content.Server.Atmos.Piping.EntitySystems
             {
                 if (!Exists(device) ||
                     !TryComp<AtmosDeviceComponent>(device, out var liveComponent) ||
-                    !TryComp<TransformComponent>(device, out var transform))
+                    !TryComp(device, out TransformComponent? transform))
                 {
                     _joinedDevices.Remove(device);
                     continue;

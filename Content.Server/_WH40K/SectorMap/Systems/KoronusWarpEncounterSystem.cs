@@ -38,7 +38,7 @@ using Content.Shared._WH40K.Activities;
 
 namespace Content.Server._WH40K.SectorMap.Systems;
 
-public sealed class KoronusWarpEncounterSystem : EntitySystem
+public sealed partial class KoronusWarpEncounterSystem : EntitySystem
 {
     [Dependency] private KoronusSectorRuleSystem _sector = default!;
     [Dependency] private IRobustRandom _random = default!;
@@ -108,7 +108,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
             {
                 foreach (var owned in encounter.OwnedEntities)
                     if (TryComp<MobStateComponent>(owned, out _) &&
-                        TryComp<TransformComponent>(owned, out var transform) && transform.GridUid != shuttle)
+                        TryComp(owned, out TransformComponent? transform) && transform.GridUid != shuttle)
                     {
                         encounter.LostBoarder = true;
                         QueueDel(owned);
@@ -160,7 +160,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
                 RaiseLocalEvent(new KoronusActivityPresentationChangedEvent());
                 continue;
             }
-            var rift = Spawn("KoronusWarpRift", new EntityCoordinates(shuttle, position));
+            var rift = SpawnAttachedTo("KoronusWarpRift", new EntityCoordinates(shuttle, position));
             EnsureComp<KoronusWarpRiftComponent>(rift).Shuttle = shuttle;
             encounter.Rift = rift;
             encounter.OwnedEntities.Add(rift);
@@ -213,7 +213,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
         }
         if (TryComp<MapGridComponent>(shuttle, out var grid) && TryFindDeckPosition(shuttle, grid, out var position))
         {
-            var relay = Spawn("KoronusWarpFieldRelay", new EntityCoordinates(shuttle, position));
+            var relay = SpawnAttachedTo("KoronusWarpFieldRelay", new EntityCoordinates(shuttle, position));
             EnsureComp<KoronusWarpRiftComponent>(relay).Shuttle = shuttle;
             encounter.Rift = relay;
             encounter.OwnedEntities.Add(relay);
@@ -226,7 +226,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
         {
             if (!TryFindDeckPosition(shuttle, grid, out var position))
                 break;
-            var hostile = Spawn(prototype, new EntityCoordinates(shuttle, position));
+            var hostile = SpawnAttachedTo(prototype, new EntityCoordinates(shuttle, position));
             if (!_audit.TryPrepareHostile(hostile, out _))
             {
                 QueueDel(hostile);
@@ -265,7 +265,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
     {
         position = default;
         var count = 0;
-        var tiles = _maps.GetAllTilesEnumerator(shuttle, grid);
+        var tiles = _maps.GetAllTiles(shuttle, grid);
         while (tiles.MoveNext(out var tile))
         {
             if (tile == null || tile.Value.Tile.IsEmpty || _turf.IsSpace(tile.Value) ||
@@ -283,7 +283,7 @@ public sealed class KoronusWarpEncounterSystem : EntitySystem
         {
             if (session.AttachedEntity is { } player && !HasComp<GhostComponent>(player) &&
                 TryComp<MobStateComponent>(player, out var state) && state.CurrentState == MobState.Alive &&
-                TryComp<TransformComponent>(player, out var transform) && transform.GridUid == shuttle)
+                TryComp(player, out TransformComponent? transform) && transform.GridUid == shuttle)
                 yield return player;
         }
     }
