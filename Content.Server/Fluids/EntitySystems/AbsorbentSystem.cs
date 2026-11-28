@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._WH40K.BloodTrail;
 using Content.Server.Particles;
 using Content.Server.Popups;
 using Content.Shared.Chemistry.Components;
@@ -31,6 +32,7 @@ public sealed partial class AbsorbentSystem : SharedAbsorbentSystem
     [Dependency] private UseDelaySystem _useDelay = default!;
     [Dependency] private MapSystem _mapSystem = default!;
     [Dependency] private ParticleSpawnSystem _particles = default!;
+    [Dependency] private Wh40kBloodStainSystem _bloodStains = default!;
 
     private static readonly ProtoId<ReagentPrototype> Water = "Water"; // Frontier
     private static readonly ProtoId<ReagentPrototype> Holywater = "Holywater"; // Frontier
@@ -103,11 +105,46 @@ public sealed partial class AbsorbentSystem : SharedAbsorbentSystem
 
     private void OnAfterInteract(EntityUid uid, AbsorbentComponent component, AfterInteractEvent args)
     {
-        if (!args.CanReach || args.Handled || args.Target == null)
+        if (!args.CanReach || args.Handled)
             return;
+
+        if (args.Target == null)
+        {
+            if (TryMopBloodTrailFloor(args.User, args.Used, component, args.ClickLocation))
+                args.Handled = true;
+            return;
+        }
 
         Mop(args.User, args.Target.Value, args.Used, component);
         args.Handled = true;
+    }
+
+    private bool TryMopBloodTrailFloor(EntityUid user, EntityUid used, AbsorbentComponent absorber, Robust.Shared.Map.EntityCoordinates location)
+    {
+        if (_transform.GetGrid(location) is not { } gridUid || !TryComp(gridUid, out MapGridComponent? grid))
+            return false;
+
+        if (!_solutionContainerSystem.TryGetSolution(used, AbsorbentComponent.SolutionName, out var absorberSoln))
+            return false;
+
+        var solution = absorberSoln.Value.Comp.Solution;
+        var absorbents = _puddleSystem.GetAbsorbentReagents(solution);
+        if (solution.GetTotalPrototypeQuantity(absorbents) <= FixedPoint2.Zero)
+            return false;
+
+        if (TryComp<UseDelayComponent>(used, out var useDelay) && _useDelay.IsDelayed((used, useDelay)))
+            return true;
+
+        var tile = _mapSystem.GetTileRef(gridUid, grid, location);
+        _bloodStains.CleanTile(gridUid, tile.GridIndices);
+        _audio.PlayPvs(absorber.PickupSound, location);
+        if (useDelay != null)
+            _useDelay.TryResetDelay((used, useDelay));
+
+        var userXform = Transform(user);
+        var localPos = Vector2.Transform(_transform.ToMapCoordinates(location).Position, _transform.GetInvWorldMatrix(userXform));
+        _melee.DoLunge(user, used, Angle.Zero, userXform.LocalRotation.RotateVec(localPos), null, false);
+        return true;
     }
 
     public void Mop(EntityUid user, EntityUid target, EntityUid used, AbsorbentComponent component)
@@ -320,7 +357,10 @@ public sealed partial class AbsorbentSystem : SharedAbsorbentSystem
             var tileRef = _mapSystem.GetTileRef(gridUid.Value, mapGrid, transform.Coordinates);
             _puddleSystem.DoTileReactions(tileRef, absorberSplit);
             if (puddleSplit.Volume > 0)
+            {
                 _particles.CleanGroundParticles(tileRef, mapGrid);
+                _bloodStains.CleanTile(gridUid.Value, tileRef.GridIndices);
+            }
         }
 
         _solutionContainerSystem.AddSolution(puddle.Solution.Value, absorberSplit);

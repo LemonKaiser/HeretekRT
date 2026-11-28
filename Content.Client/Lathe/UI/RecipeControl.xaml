@@ -12,7 +12,11 @@
                 VerticalAlignment="Center"
                 MinSize="32 32"
                 />
-            <Label Name="RecipeName" HorizontalExpand="True" />
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="3">
+                <Label Name="RecipeName" HorizontalExpand="True" ClipText="True" />
+                <Label Name="AvailabilityLabel" StyleClasses="LabelSubText" HorizontalExpand="True" ClipText="True" />
+            </BoxContainer>
+            <Label Text="+" StyleClasses="LabelHeading" VerticalAlignment="Center" Margin="6 0" />
         </BoxContainer>
     </Button>
 </Control>

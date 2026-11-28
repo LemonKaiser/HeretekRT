@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from Sojourn Station at commit https://github.com/sojourn-13/sojourn-station/commit/c4d39bd4efea1cf25a61a39474b3835ade953bcd.",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "nightmare",
+      "directions": 4
+    },
+    {
+      "name": "nightmare_dead"
+    }
+  ]
+}

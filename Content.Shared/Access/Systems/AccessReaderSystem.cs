@@ -109,7 +109,8 @@ public sealed partial class AccessReaderSystem : EntitySystem
     /// <param name="user">The entity that wants access.</param>
     /// <param name="target">The entity to search for an access reader</param>
     /// <param name="reader">Optional reader from the target entity</param>
-    public bool IsAllowed(EntityUid user, EntityUid target, AccessReaderComponent? reader = null)
+    /// <param name="logAccess">Whether to record successful access.</param>
+    public bool IsAllowed(EntityUid user, EntityUid target, AccessReaderComponent? reader = null, bool logAccess = true)
     {
         if (!Resolve(target, ref reader, false))
             return true;
@@ -124,7 +125,7 @@ public sealed partial class AccessReaderSystem : EntitySystem
         if (!IsAllowed(access, stationKeys, target, reader))
             return false;
 
-        if (!_tag.HasTag(user, PreventAccessLoggingTag))
+        if (logAccess && !_tag.HasTag(user, PreventAccessLoggingTag))
             LogAccess((target, reader), user);
 
         return true;

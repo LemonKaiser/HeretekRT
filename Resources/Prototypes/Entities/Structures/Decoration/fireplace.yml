@@ -49,3 +49,7 @@
   - type: Construction # Frontier
     graph: FiresGraph # Frontier
     node: FireplaceNode # Frontier
+  - type: EntityRadiusHeater
+    radius: 3
+    thermalEnergy: 25000
+    limit: 311

@@ -20,6 +20,7 @@ public sealed partial class RadarConsoleWindow : FancyWindow,
         IFFDetailedToggle.OnToggled += args => RadarScreen.ShowIFFDetailed = args.Pressed;
         MainTabs.SetTabTitle(0, Loc.GetString("radar-console-window-title"));
         MainTabs.SetTabTitle(1, Loc.GetString("shuttle-console-sensors-tab"));
+        RadarScreen.Wh40kEnableWaypoints(RadarConsoleUiKey.Key, canFly: false);
     }
 
     public void UpdateState(NavInterfaceState scc)

@@ -1,0 +1,24 @@
+- type: constructionGraph
+  id: Wh40kBaggie
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: baggie
+      steps:
+      - material: Plastic
+        amount: 1
+        doAfter: 2
+  - node: baggie
+    entity: Wh40kBaggie
+
+- type: construction
+  name: wh40k-construction-baggie-name
+  id: Wh40kBaggie
+  graph: Wh40kBaggie
+  startNode: start
+  targetNode: baggie
+  category: construction-category-misc
+  description: wh40k-construction-baggie-desc
+  icon: { sprite: _WH40K/WolfChem/Narcotics/Objects/baggie.rsi, state: icon }
+  objectType: Item

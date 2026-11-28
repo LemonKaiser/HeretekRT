@@ -1,3 +1,4 @@
+using Content.Server._WH40K.LockableButtons;
 using Content.Shared.DeviceLinking.Components;
 using Content.Shared.Interaction;
 using Robust.Shared.Audio;
@@ -28,6 +29,14 @@ public sealed partial class SignalSwitchSystem : EntitySystem
     {
         if (args.Handled || !args.Complex)
             return;
+
+        var attempt = new Wh40kSwitchPressAttemptEvent(args.User);
+        RaiseLocalEvent(uid, ref attempt);
+        if (attempt.Cancelled)
+        {
+            args.Handled = attempt.Handled;
+            return;
+        }
 
         comp.State = !comp.State;
         _deviceLink.InvokePort(uid, comp.State ? comp.OnPort : comp.OffPort);

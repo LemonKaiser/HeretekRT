@@ -1,0 +1,20 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                xmlns:fuel="clr-namespace:Content.Client._WH40K.ShipFuel"
+                xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                HorizontalExpand="True">
+    <PanelContainer.PanelOverride>
+        <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#79603D" BackgroundColor="#1B160F"/>
+    </PanelContainer.PanelOverride>
+    <BoxContainer Orientation="Vertical" Margin="7 4" SeparationOverride="2">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+            <Label Text="{Loc 'wh40k-ship-fuel-label'}" FontColorOverride="#E1C17E" HorizontalExpand="True"/>
+            <Label Name="Readout" StyleClasses="LabelSubText" Align="Right"/>
+        </BoxContainer>
+        <fuel:Wh40kShipFuelScale Name="Scale" MinHeight="11"/>
+        <GridContainer Columns="3">
+            <Label Text="0" StyleClasses="LabelSubText" HorizontalExpand="True"/>
+            <Label Text="50" StyleClasses="LabelSubText" HorizontalExpand="True" Align="Center"/>
+            <Label Text="100" StyleClasses="LabelSubText" HorizontalExpand="True" Align="Right"/>
+        </GridContainer>
+    </BoxContainer>
+</PanelContainer>

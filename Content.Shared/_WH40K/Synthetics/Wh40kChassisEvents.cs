@@ -6,6 +6,8 @@ namespace Content.Shared._WH40K.Synthetics;
 
 public sealed partial class Wh40kOpenChassisPanelActionEvent : InstantActionEvent;
 
+public sealed partial class Wh40kToggleOverclockActionEvent : InstantActionEvent;
+
 [Serializable, NetSerializable]
 public sealed partial class Wh40kChassisPanelLinkDoAfterEvent : SimpleDoAfterEvent;
 

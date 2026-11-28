@@ -82,6 +82,7 @@ namespace Content.Server.Chemistry.EntitySystems
             var state = new ChemMasterBoundUserInterfaceState(
                 chemMaster.Mode, chemMaster.SortingType, BuildInputContainerInfo(inputContainer), BuildOutputContainerInfo(outputContainer),
                 bufferReagents, bufferCurrentVolume, chemMaster.PillType, chemMaster.PillDosageLimit, updateLabel, chemMaster.DrawSource);
+            state.Wh40kBufferPurity = bufferSolution.Purity;
 
             _userInterfaceSystem.SetUiState(owner, ChemMasterUiKey.Key, state);
         }
@@ -164,14 +165,17 @@ namespace Content.Server.Chemistry.EntitySystems
             if (fromBuffer) // Buffer to container
             {
                 amount = FixedPoint2.Min(amount, containerSolution.AvailableVolume);
+                var wh40kGrade = bufferSolution.GetPurity(id.Prototype);
                 amount = bufferSolution.RemoveReagent(id, amount, preserveOrder: true);
-                _solutionContainerSystem.TryAddReagent(containerSoln.Value, id, amount, out var _);
+                containerSolution.AddReagent(id, amount, wh40kGrade);
+                _solutionContainerSystem.UpdateChemicals(containerSoln.Value);
             }
             else // Container to buffer
             {
                 amount = FixedPoint2.Min(amount, containerSolution.GetReagentQuantity(id));
+                var wh40kGrade = containerSolution.GetPurity(id.Prototype);
                 _solutionContainerSystem.RemoveReagent(containerSoln.Value, id, amount);
-                bufferSolution.AddReagent(id, amount);
+                bufferSolution.AddReagent(id, amount, wh40kGrade);
             }
 
             UpdateUiState(chemMaster, updateLabel: true);
@@ -416,6 +420,7 @@ namespace Content.Server.Chemistry.EntitySystems
         {
             return new ContainerInfo(name, solution.Volume, solution.MaxVolume)
             {
+                Purity = solution.Purity,
                 Reagents = solution.Contents
             };
         }

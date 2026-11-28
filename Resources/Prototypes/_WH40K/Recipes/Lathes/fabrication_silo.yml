@@ -1,0 +1,9 @@
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: Wh40kPartsSiloMachineCircuitboard
+  result: Wh40kPartsSiloMachineCircuitboard
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: Wh40kChemicalSiloMachineCircuitboard
+  result: Wh40kChemicalSiloMachineCircuitboard

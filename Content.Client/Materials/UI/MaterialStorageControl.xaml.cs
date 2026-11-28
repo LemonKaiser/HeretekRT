@@ -50,6 +50,7 @@ public sealed partial class MaterialStorageControl : ScrollContainer
 
         var canEject = materialStorage.CanEjectStoredMaterials;
         var mats = _materialStorage.GetStoredMaterials((_owner.Value, materialStorage));
+        SiloLinkedLabel.Visible = _entityManager.TryGetComponent<OreSiloClientComponent>(_owner.Value, out var client) && client.Silo != null;
 
         if (_currentMaterials.Equals(mats))
             return;
@@ -94,6 +95,5 @@ public sealed partial class MaterialStorageControl : ScrollContainer
 
         _currentMaterials = mats;
         NoMatsLabel.Visible = MaterialList.ChildCount == 1;
-        SiloLinkedLabel.Visible = _entityManager.TryGetComponent<OreSiloClientComponent>(_owner.Value, out var client) && client.Silo != null;
     }
 }

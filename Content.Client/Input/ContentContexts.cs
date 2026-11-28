@@ -57,6 +57,10 @@ namespace Content.Client.Input
             human.AddFunction(EngineKeyFunctions.MoveLeft);
             human.AddFunction(EngineKeyFunctions.MoveRight);
             human.AddFunction(EngineKeyFunctions.Walk);
+            human.AddFunction(Content.Shared._WH40K.TurnInPlace.Wh40kTurnInPlaceKeys.Wh40kTurnInPlace);
+            human.AddFunction(Content.Shared._WH40K.CancelInteractions.Wh40kCancelInteractionKeys.Wh40kCancelInteractions);
+            human.AddFunction(Content.Shared._WH40K.HandSelect.Wh40kHandSelectKeys.Wh40kSelectLeftHand);
+            human.AddFunction(Content.Shared._WH40K.HandSelect.Wh40kHandSelectKeys.Wh40kSelectRightHand);
             human.AddFunction(ContentKeyFunctions.SwapHands);
             human.AddFunction(ContentKeyFunctions.SwapHandsPrevious); // Frontier
             human.AddFunction(ContentKeyFunctions.Drop);

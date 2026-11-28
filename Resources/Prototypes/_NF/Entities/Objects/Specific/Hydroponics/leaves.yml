@@ -62,6 +62,9 @@
   - type: Construction
     graph: smokeableGroundTobaccoShrooms
     node: ground
+  - type: Tag
+    tags:
+      - Wh40kBaggable
 
 - type: entity
   parent: ShroomsDried

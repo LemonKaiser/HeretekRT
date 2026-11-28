@@ -23,6 +23,7 @@ using Content.Server._Mono.Store.Components;
 using Content.Shared._Mono.Store; // Mono
 using Content.Server._Mono.Store; // Mono
 using Content.Server._Mono.Cargo; // Mono
+using Content.Server._WH40K.WolfChem.Narcotics;
 using Content.Server.Radio.EntitySystems; // Mono
 using Content.Shared.Popups; // Mono
 
@@ -83,7 +84,7 @@ public sealed partial class CargoSystem
         }
     }
 
-    private void UpdatePalletConsoleInterface(Entity<CargoPalletConsoleComponent> uid) // Frontier: EntityUid<Entity
+    private void UpdatePalletConsoleInterface(Entity<CargoPalletConsoleComponent> uid, EntityUid? viewer = null) // Frontier: EntityUid<Entity
     {
         if (Transform(uid).GridUid is not { Valid: true } gridUid)
         {
@@ -118,6 +119,20 @@ public sealed partial class CargoSystem
         if (TryComp<MarketModifierComponent>(uid, out var marketModifier) && !marketModifier.Buy)
             otherMultiplier = marketModifier.Mod;
 
+        if (viewer != null && toSell.Count > 0)
+        {
+            var allGoods = new HashSet<EntityUid>(toSell);
+            foreach (var ent in toSell)
+            {
+                if (TryComp<ContainerManagerComponent>(ent, out var containerManager))
+                    GatherContainedEntities(ent, containerManager, allGoods);
+            }
+
+            var appraisal = new Wh40kPalletAppraisalEvent(uid.Owner, gridUid, viewer.Value, allGoods, otherMultiplier);
+            RaiseLocalEvent(ref appraisal);
+            amount = Math.Max(0, amount - appraisal.Cut);
+        }
+
         _uiSystem.SetUiState(uid.Owner,
             CargoPalletConsoleUiKey.Sale, // Frontier: uid<uid.Owner
             new CargoPalletConsoleInterfaceState((int)amount, toSell.Count, true, tradeCrateMultiplier, otherMultiplier));
@@ -127,7 +142,7 @@ public sealed partial class CargoSystem
     private void OnPalletUIOpen(EntityUid uid, CargoPalletConsoleComponent component, BoundUIOpenedEvent args)
     {
         _palletMarketStates.Remove(uid);
-        UpdatePalletConsoleInterface((uid, component)); // Frontier: EntityUid<Entity
+        UpdatePalletConsoleInterface((uid, component), args.Actor); // Frontier: EntityUid<Entity
     }
 
     /// <summary>
@@ -141,7 +156,7 @@ public sealed partial class CargoSystem
     private void OnPalletAppraise(EntityUid uid, CargoPalletConsoleComponent component, CargoPalletAppraiseMessage args)
     {
         _palletMarketStates.Remove(uid);
-        UpdatePalletConsoleInterface((uid, component)); // Frontier: EntityUid<Entity
+        UpdatePalletConsoleInterface((uid, component), args.Actor); // Frontier: EntityUid<Entity
     }
 
     private void OnCargoShuttleConsoleStartup(EntityUid uid, CargoShuttleConsoleComponent component, ComponentStartup args)
@@ -309,7 +324,7 @@ public sealed partial class CargoSystem
 
     #region Station
 
-    private bool SellPallets(Entity<CargoPalletConsoleComponent> consoleUid, EntityUid gridUid, out double amount, out double noMultiplierAmount, out double blackMarketTaxAmount, out double frontierTaxAmount, out double nfsdTaxAmount, out double medicalTaxAmount, out List<CurrencyInjection> currencyInjections) // Frontier: first arg to Entity, add noMultiplierAmount
+    private bool SellPallets(Entity<CargoPalletConsoleComponent> consoleUid, EntityUid gridUid, out double amount, out double noMultiplierAmount, out double blackMarketTaxAmount, out double frontierTaxAmount, out double nfsdTaxAmount, out double medicalTaxAmount, out List<CurrencyInjection> currencyInjections, EntityUid? seller = null) // Frontier: first arg to Entity, add noMultiplierAmount
     {
         GetPalletGoods(consoleUid, gridUid, out var toSell, out amount, out noMultiplierAmount, out blackMarketTaxAmount, out frontierTaxAmount, out nfsdTaxAmount, out medicalTaxAmount, out currencyInjections); // Frontier: add noMultiplierAmount
 
@@ -335,6 +350,11 @@ public sealed partial class CargoSystem
 
         if (!SendSoldAlert(consoleUid, allEntsToDelete)) // Mono: sell snitching
             return false;
+
+        var saleMod = TryComp<MarketModifierComponent>(consoleUid, out var mod) && !mod.Buy ? mod.Mod : 1.0;
+        var heatSale = new Wh40kPalletSaleEvent(consoleUid.Owner, gridUid, seller, allEntsToDelete, saleMod);
+        RaiseLocalEvent(ref heatSale);
+        amount = Math.Max(0, amount - heatSale.Cut);
 
         var ev = new EntitySoldEvent(toSell, gridUid); // Mono: moved here so refused sales dont count as sold
         RaiseLocalEvent(ref ev);
@@ -602,7 +622,7 @@ public sealed partial class CargoSystem
             return;
         }
 
-        if (!SellPallets((uid, component), gridUid, out var price, out var noMultiplierPrice, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount, out var currencyInjections)) // Frontier: convert first arg to Entity, add noMultiplierPrice
+        if (!SellPallets((uid, component), gridUid, out var price, out var noMultiplierPrice, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount, out var currencyInjections, args.Actor)) // Frontier: convert first arg to Entity, add noMultiplierPrice
             return;
 
         price += noMultiplierPrice;

@@ -31,6 +31,11 @@ public sealed partial class OreSiloMenu : FancyWindow
 
     public void Update(OreSiloBuiState state)
     {
+        UpdateClientList(ClientList, state);
+    }
+
+    public static void UpdateClientList(ItemList ClientList, OreSiloBuiState state)
+    {
         var items = new List<ItemList.Item>();
         var orderedClients = state.Clients.OrderBy(t => t.Item3).ThenBy(t => t.Item1.Id);
         foreach (var (ent, _, _) in orderedClients)

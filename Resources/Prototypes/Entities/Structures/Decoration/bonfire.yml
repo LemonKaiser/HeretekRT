@@ -35,6 +35,9 @@
     graph: FiresGraph # Frontier
     node: BonfireNode # Frontier
   - type: EntityRadiusHeater # Mono
+    radius: 3.5
+    thermalEnergy: 30000
+    limit: 311
 
 - type: entity
   id: LegionnaireBonfire

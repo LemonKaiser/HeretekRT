@@ -137,6 +137,8 @@
     - id: WristwatchGold
     - !type:NestedSelector
       tableId: RingTableCommon
+    - !type:NestedSelector
+      tableId: Wh40kNeurowareStickLoot
 
 - type: entityTable
   id: SalvageTreasureRare

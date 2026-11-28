@@ -39,14 +39,6 @@ public sealed partial class CameraRecoilSystem : SharedCameraRecoilSystem
 
         recoil *= _intensity;
 
-        // Use really bad math to "dampen" kicks when we're already kicked.
-        var existing = component.CurrentKick.Length();
-        var dampen = existing / KickMagnitudeMax;
-        component.CurrentKick += recoil * (1 - dampen);
-
-        if (component.CurrentKick.Length() > KickMagnitudeMax)
-            component.CurrentKick = component.CurrentKick.Normalized() * KickMagnitudeMax;
-
-        component.LastKickTime = 0;
+        Wh40kKickCamera(uid, component, recoil);
     }
 }

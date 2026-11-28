@@ -1,0 +1,26 @@
+# Market markers copied onto any item holding street drugs and onto written illegal neuroware sticks.
+- type: entity
+  id: Wh40kNarcoticMarks
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Contraband
+    severity: Class3Chem
+    turnInValues:
+      FederationMilitaryCredit: 0
+  - type: ItemTax
+    taxAccounts:
+      Medical: -0.05
+      nfsd: -0.1
+      BlackMarket: 0.25
+  - type: Wh40kNarcoticStock
+
+# The radar blip of a ship's stockpile, put on its largest lot while the ship holds enough.
+- type: entity
+  id: Wh40kNarcoticSignature
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RadarBlip
+    radarColor: "#b23ad6"
+    scale: 1.5
+    shape: hexagon
+    visibleFromOtherGrids: true

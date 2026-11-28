@@ -28,6 +28,7 @@ namespace Content.Client.Shuttles.Systems
             shuttle.AddFunction(ContentKeyFunctions.ShuttleRotateLeft);
             shuttle.AddFunction(ContentKeyFunctions.ShuttleRotateRight);
             shuttle.AddFunction(ContentKeyFunctions.ShuttleBrake);
+            shuttle.AddFunction(Content.Shared._WH40K.ShipFacing.Wh40kShipFacingKeys.Wh40kShuttleFaceCursor);
         }
 
         public override void Shutdown()

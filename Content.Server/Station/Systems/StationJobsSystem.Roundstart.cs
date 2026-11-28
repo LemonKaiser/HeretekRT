@@ -1,6 +1,6 @@
 using System.Linq;
 using Content.Server.Administration.Managers;
-using Content.Server.Players.PlayTimeTracking;
+using Content.Server.GameTicking.Events;
 using Content.Server.Station.Components;
 using Content.Server.Station.Events;
 using Content.Shared.Players.PlayTimeTracking;
@@ -19,7 +19,6 @@ public sealed partial class StationJobsSystem
 {
     [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IBanManager _banManager = default!;
-    [Dependency] private PlayTimeTrackingSystem _playTime = default!; // Frontier
 
     private Dictionary<int, HashSet<string>> _jobsByWeight = default!;
     private List<int> _orderedWeights = default!;
@@ -293,7 +292,8 @@ public sealed partial class StationJobsSystem
             }
 
             var profile = profiles[player];
-            if (profile.PreferenceUnavailable != PreferenceUnavailableMode.SpawnAsOverflow)
+            if (profile.PreferenceUnavailable != PreferenceUnavailableMode.SpawnAsOverflow ||
+                !_player.TryGetSessionById(player, out var session))
             {
                 assignedJobs.Add(player, (null, EntityUid.Invalid));
                 continue;
@@ -301,44 +301,31 @@ public sealed partial class StationJobsSystem
 
             _random.Shuffle(givenStations);
 
-            // Frontier: get player session
-            _player.TryGetSessionById(player, out var nfSession);
-            // End Frontier
-
+            var roleBans = _banManager.GetJobBans(player);
             foreach (var station in givenStations)
             {
-                // Pick a random overflow job from that station
                 var overflows = GetOverflowJobs(station).ToList();
                 _random.Shuffle(overflows);
 
-                // Frontier: check job requirements on overflow jobs
-                bool nfJobAssigned = false;
                 foreach (var overflowJob in overflows)
                 {
-                    if (nfSession != null && _playTime.IsAllowed(nfSession, overflowJob))
-                    {
-                        assignedJobs.Add(player, (overflowJob, station));
-                        nfJobAssigned = true;
-                        break;
-                    }
-                }
-                // No need to look at other stations, we have a job.
-                if (nfJobAssigned)
-                {
+                    if (roleBans?.Contains(overflowJob) == true)
+                        continue;
+
+                    var ev = new IsJobAllowedEvent(session, overflowJob);
+                    RaiseLocalEvent(ref ev);
+                    if (ev.Cancelled)
+                        continue;
+
+                    assignedJobs.Add(player, (overflowJob, station));
                     break;
                 }
-                // End Frontier
 
-                // Frontier: commented out the implementation below
-                // // Stations with no overflow slots should simply get skipped over.
-                // if (overflows.Count == 0)
-                //     continue;
-
-                // // If the overflow exists, put them in as it.
-                // assignedJobs.Add(player, (overflows[0], givenStations[0]));
-                // break;
-                // End Frontier
+                if (assignedJobs.ContainsKey(player))
+                    break;
             }
+
+            assignedJobs.TryAdd(player, (null, EntityUid.Invalid));
         }
     }
 

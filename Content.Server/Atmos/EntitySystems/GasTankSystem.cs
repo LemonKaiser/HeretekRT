@@ -99,7 +99,7 @@ namespace Content.Server.Atmos.EntitySystems
                 if (comp.CheckUser)
                 {
                     comp.CheckUser = false;
-                    if (Transform(uid).ParentUid != comp.User)
+                    if (Transform(uid).ParentUid != comp.User && !InUsersSuit(uid, comp.User))
                     {
                         DisconnectFromInternals(gasTank);
                         continue;

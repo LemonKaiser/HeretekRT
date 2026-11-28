@@ -1,0 +1,9 @@
+- type: shader
+  id: Wh40kHeatHaze
+  kind: source
+  path: "/Textures/_WH40K/Shaders/heat_haze.swsl"
+
+- type: shader
+  id: Wh40kHeatHazeMask
+  kind: source
+  path: "/Textures/_WH40K/Shaders/heat_haze_mask.swsl"

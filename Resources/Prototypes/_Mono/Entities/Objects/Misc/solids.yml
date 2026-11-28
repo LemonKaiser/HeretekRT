@@ -9,6 +9,9 @@
     state: icon
   - type: Item
     size: Tiny
+  - type: Tag
+    tags:
+    - Wh40kBaggable
   - type: StaticPrice
     price: 10000 # worth a lot but expensive to make
   - type: Food

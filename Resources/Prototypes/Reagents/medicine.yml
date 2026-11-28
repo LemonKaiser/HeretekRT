@@ -15,6 +15,7 @@
       - !type:Drunk
         slurSpeech: false
         boozePower: 20
+        perUnitInBlood: 1.9
 
 - type: reagent
   id: Dylovene
@@ -28,6 +29,9 @@
     Medicine:
       metabolismRate: 0.2 # Mono
       effects:
+      - !type:Wh40kClearIntoxication
+        family: Combat
+        amount: 2
       - !type:HealthChange
         damage:
           types:
@@ -1561,7 +1565,13 @@
         component: SeeingRainbows
         type: Add
         time: 8
-        refresh: false
+        refresh: true
+      - !type:Wh40kClearIntoxication
+        family: Empathogen
+        amount: 2
+      - !type:Wh40kClearIntoxication
+        family: Cannabinoid
+        amount: 2
       - !type:GenericStatusEffect
         key: Jitter
         time: 2.0
@@ -1618,6 +1628,12 @@
   metabolisms:
     Medicine:
       effects:
+      - !type:Wh40kClearIntoxication
+        family: Stimulant
+        amount: 2
+      - !type:Wh40kClearIntoxication
+        family: Psychedelic
+        amount: 2
       - !type:Emote
         emote: Yawn
         showInChat: true
@@ -1627,7 +1643,7 @@
         component: Drowsiness
         time: 4
         type: Add
-        refresh: false
+        refresh: true
       - !type:GenericStatusEffect
         key: Jitter
         time: 4.0

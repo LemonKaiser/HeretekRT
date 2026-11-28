@@ -1,0 +1,447 @@
+# Drug profiles. Level is in effective units (units x grade x perUnit). The first tier is the light phase, the last
+# the overdose, and any between are heavy; the screen look and a popup mark each step.
+
+- type: wh40kDrugProfile
+  id: Wh40kCocaine
+  family: Stimulant
+  decay: 0.01
+  rushGain: 3
+  overdoseHalfLife: 120
+  dependenceGain: 0.015
+  tiers:
+  - min: 1
+    speed: 1.1
+    overlay: 0.35
+    effects:
+    - !type:Wh40kStaminaChange
+      amount: -2
+    - !type:PopupMessage
+      probability: 0.05
+      messages: [ wh40k-drug-popup-cocaine-1, wh40k-drug-popup-cocaine-2, wh40k-drug-popup-cocaine-3 ]
+  - min: 8
+    speed: 1.1
+    overlay: 0.6
+    effects:
+    - !type:Wh40kStaminaChange
+      amount: -2
+    - !type:PopupMessage
+      probability: 0.08
+      visualType: SmallCaution
+      messages: [ wh40k-drug-popup-anxious-1, wh40k-drug-popup-anxious-2 ]
+  - min: 16
+    overlay: 0.9
+    effects:
+    - !type:Jitter
+      amplitude: 1
+      frequency: 10
+    - !type:Wh40kStrainHeart
+      amount: 0.1
+    - !type:HealthChange
+      damage:
+        types:
+          Asphyxiation: 1
+  crash:
+    after: 30
+    duration: 45
+    perSecondAbove: 0.25
+    speed: 0.9
+    statusEffects:
+    - key: Drowsiness
+      component: Drowsiness
+    stamina: 1
+  neuroware:
+    program: wh40k-neuroware-whiteline
+    banner: wh40k-neuroware-whiteline-banner
+    faults: [ wh40k-neuroware-whiteline-fault-1, wh40k-neuroware-whiteline-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kCrack
+  family: Stimulant
+  decay: 0.02
+  rushGain: 2
+  overdoseHalfLife: 120
+  dependenceGain: 0.045
+  tiers:
+  - min: 1
+    speed: 1.15
+    overlay: 0.45
+    effects:
+    - !type:Wh40kStaminaChange
+      amount: -3
+    - !type:PopupMessage
+      probability: 0.05
+      messages: [ wh40k-drug-popup-cocaine-1, wh40k-drug-popup-cocaine-2, wh40k-drug-popup-cocaine-3 ]
+  - min: 6
+    speed: 1.15
+    overlay: 0.7
+    effects:
+    - !type:Wh40kStaminaChange
+      amount: -3
+    - !type:PopupMessage
+      probability: 0.1
+      visualType: SmallCaution
+      messages: [ wh40k-drug-popup-anxious-1, wh40k-drug-popup-anxious-2 ]
+  - min: 12
+    overlay: 1
+    effects:
+    - !type:Jitter
+      amplitude: 1
+      frequency: 10
+    - !type:Wh40kStrainHeart
+      amount: 0.15
+    - !type:HealthChange
+      damage:
+        types:
+          Asphyxiation: 1.5
+  crash:
+    after: 15
+    duration: 60
+    perSecondAbove: 0.5
+    speed: 0.85
+    overlay: 0.7
+    statusEffects:
+    - key: Drowsiness
+      component: Drowsiness
+    stamina: 2
+  neuroware:
+    program: wh40k-neuroware-whiteline
+    banner: wh40k-neuroware-whiteline-banner
+    faults: [ wh40k-neuroware-whiteline-fault-1, wh40k-neuroware-whiteline-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kOpium
+  family: Opioid
+  decay: 0.01
+  rushGain: 1.5
+  overdoseHalfLife: 120
+  dependenceGain: 0.01
+  tiers:
+  - min: 1
+    speed: 0.95
+    overlay: 0.35
+    effects:
+    - !type:PopupMessage
+      probability: 0.04
+      messages: [ wh40k-drug-popup-calm-1, wh40k-drug-popup-calm-2, wh40k-drug-popup-calm-3 ]
+  - min: 10
+    speed: 0.9
+    overlay: 0.6
+  - min: 20
+    speed: 0.8
+    overlay: 0.9
+    statusEffects:
+    - key: Drowsiness
+      component: Drowsiness
+    effects:
+    - !type:HealthChange
+      damage:
+        types:
+          Asphyxiation: 1
+  crash:
+    after: 60
+    duration: 45
+    speed: 0.95
+    effects:
+    - !type:PopupMessage
+      probability: 0.04
+      messages: [ wh40k-drug-popup-comedown-1, wh40k-drug-popup-comedown-2 ]
+  neuroware:
+    program: wh40k-neuroware-null-loop
+    banner: wh40k-neuroware-null-loop-banner
+    faults: [ wh40k-neuroware-null-loop-fault-1, wh40k-neuroware-null-loop-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kHeroin
+  family: Opioid
+  decay: 0.01
+  rushGain: 3
+  overdoseHalfLife: 120
+  dependenceGain: 0.03
+  tiers:
+  - min: 1
+    speed: 0.85
+    overlay: 0.5
+    effects:
+    - !type:PopupMessage
+      probability: 0.05
+      messages: [ wh40k-drug-popup-euphoria-1, wh40k-drug-popup-euphoria-2, wh40k-drug-popup-euphoria-3 ]
+  - min: 8
+    speed: 0.75
+    overlay: 0.75
+    traits: [ IgnoreDamageSlowdown ]
+  - min: 14
+    speed: 0.7
+    overlay: 1
+    statusEffects:
+    - key: Drowsiness
+      component: Drowsiness
+    effects:
+    - !type:GenericStatusEffect
+      probability: 0.15
+      key: ForcedSleep
+      component: ForcedSleeping
+      time: 4
+    - !type:HealthChange
+      damage:
+        types:
+          Asphyxiation: 1
+  crash:
+    after: 30
+    duration: 90
+    perSecondAbove: 0.3
+    speed: 0.9
+    stamina: 1
+    effects:
+    - !type:PopupMessage
+      probability: 0.04
+      messages: [ wh40k-drug-popup-comedown-1, wh40k-drug-popup-comedown-2 ]
+  neuroware:
+    program: wh40k-neuroware-null-loop
+    banner: wh40k-neuroware-null-loop-banner
+    faults: [ wh40k-neuroware-null-loop-fault-1, wh40k-neuroware-null-loop-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kCrystal
+  family: Stimulant
+  decay: 0.01
+  overdoseHalfLife: 120
+  dependenceGain: 0.02
+  tiers:
+  - min: 1
+    speed: 1.25
+    overlay: 0.4
+  - min: 8
+    speed: 1.25
+    overlay: 0.6
+    traits: [ StunResistance, StaminaCritResistance, IgnoreDamageSlowdown ]
+  - min: 15
+    speed: 1.25
+    overlay: 0.8
+    traits: [ StunResistance, StaminaCritResistance, IgnoreDamageSlowdown ]
+  crash:
+    after: 60
+    duration: 120
+    perSecondAbove: 0.5
+    speed: 0.8
+    overlay: 0.7
+    statusEffects:
+    - key: Drowsiness
+      component: Drowsiness
+    stamina: 2
+  neuroware:
+    amount: 10
+    program: wh40k-neuroware-burst
+    banner: wh40k-neuroware-burst-banner
+    faults: [ wh40k-neuroware-burst-fault-1, wh40k-neuroware-burst-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kRedline
+  family: Combat
+  decay: 0.02
+  overdoseHalfLife: 120
+  dependenceGain: 0.02
+  tiers:
+  - min: 1
+    speed: 1.15
+    overlay: 0.6
+    traits: [ IgnoreDamageSlowdown ]
+    effects:
+    - !type:Wh40kStrainHeart
+      amount: 0.02
+    - !type:Jitter
+      amplitude: 3
+  - min: 7
+    speed: 1.3
+    overlay: 0.75
+    traits: [ StunResistance, IgnoreDamageSlowdown ]
+    effects:
+    - !type:Wh40kStrainHeart
+      amount: 0.05
+    - !type:Jitter
+      amplitude: 5
+  - min: 12
+    speed: 1.3
+    overlay: 0.9
+    traits: [ StunResistance, IgnoreDamageSlowdown ]
+    effects:
+    - !type:Wh40kStrainHeart
+      amount: 0.5
+    - !type:Jitter
+  crash:
+    after: 5
+    duration: 60
+    perSecondAbove: 0.5
+    maxDuration: 180
+    speed: 0.5
+    overlay: 0.8
+    collapse: 10
+    stamina: 5
+    staminaCap: 0.8
+  neuroware:
+    amount: 10
+    program: wh40k-neuroware-redline
+    banner: wh40k-neuroware-redline-banner
+    faults: [ wh40k-neuroware-redline-fault-1, wh40k-neuroware-redline-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kAnvil
+  family: Combat
+  decay: 0.02
+  overdoseHalfLife: 120
+  dependenceGain: 0.02
+  tiers:
+  - min: 1
+    speed: 0.85
+    overlay: 0.5
+    traits: [ Damper, HideDamage ]
+  - min: 7
+    speed: 0.85
+    overlay: 0.7
+    traits: [ Damper, StaminaCritResistance, HideDamage ]
+  - min: 12
+    speed: 0.85
+    overlay: 0.9
+    traits: [ Damper, StaminaCritResistance, HideDamage ]
+    effects:
+    - !type:Wh40kStrainHeart
+      amount: 0.15
+    - !type:HealthChange
+      damage:
+        types:
+          Poison: 1
+  crash:
+    after: 5
+    duration: 45
+    perSecondAbove: 0.25
+    maxDuration: 120
+    speed: 0.9
+    overlay: 0.6
+  neuroware:
+    amount: 10
+    program: wh40k-neuroware-damper
+    banner: wh40k-neuroware-damper-banner
+    faults: [ wh40k-neuroware-damper-fault-1, wh40k-neuroware-damper-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kChorus
+  family: Psychedelic
+  decay: 0.01
+  rushGain: 2
+  overdoseHalfLife: 120
+  dependenceGain: 0.005
+  tiers:
+  - min: 1
+    overlay: 0.4
+    hallucinationChance: 0.05
+    hallucinations: [ Whisper, Echo ]
+  - min: 6
+    overlay: 0.65
+    hallucinationChance: 0.08
+    hallucinations: [ Whisper, Echo, Glimpse, Phantom ]
+  - min: 12
+    overlay: 0.9
+    hallucinationChance: 0.12
+    hallucinations: [ Glimpse, Phantom, Echo, Whisper ]
+    statusEffects:
+    - key: Stutter
+      component: ScrambledAccent
+    effects:
+    - !type:Drunk
+      boozePower: 2
+      slurSpeech: false
+    - !type:GenericStatusEffect
+      probability: 0.05
+      key: Pacified
+      component: Pacified
+      time: 5
+  neuroware:
+    amount: 10
+    program: wh40k-neuroware-choir
+    banner: wh40k-neuroware-choir-banner
+    faults: [ wh40k-neuroware-choir-fault-1, wh40k-neuroware-choir-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kHalo
+  family: Empathogen
+  decay: 0.01
+  rushGain: 2
+  overdoseHalfLife: 120
+  dependenceGain: 0.01
+  tiers:
+  - min: 1
+    overlay: 0.45
+    effects:
+    - !type:AdjustTemperature
+      amount: 400
+    - !type:PopupMessage
+      probability: 0.05
+      messages: [ wh40k-drug-popup-halo-1, wh40k-drug-popup-halo-2, wh40k-drug-popup-halo-3 ]
+    - !type:Emote
+      probability: 0.02
+      emote: Laugh
+      showInChat: true
+  - min: 10
+    overlay: 0.75
+    effects:
+    - !type:AdjustTemperature
+      amount: 1000
+    - !type:PopupMessage
+      probability: 0.06
+      messages: [ wh40k-drug-popup-halo-1, wh40k-drug-popup-halo-2, wh40k-drug-popup-halo-3 ]
+    - !type:Emote
+      probability: 0.03
+      emote: Laugh
+      showInChat: true
+  - min: 18
+    overlay: 1
+    effects:
+    - !type:AdjustTemperature
+      amount: 4000
+  crash:
+    after: 60
+    duration: 60
+    perSecondAbove: 0.2
+    overlay: 0.6
+    stamina: 1
+    effects:
+    - !type:PopupMessage
+      probability: 0.06
+      messages: [ wh40k-drug-popup-halo-crash-1, wh40k-drug-popup-halo-crash-2, wh40k-drug-popup-halo-crash-3 ]
+  neuroware:
+    amount: 10
+    program: wh40k-neuroware-halo
+    banner: wh40k-neuroware-halo-banner
+    faults: [ wh40k-neuroware-halo-fault-1, wh40k-neuroware-halo-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kCannabis
+  family: Cannabinoid
+  legal: true
+  decay: 0.02
+  overdoseHalfLife: 120
+  dependenceGain: 0.003
+  tiers:
+  - min: 1
+    overlay: 0.35
+  - min: 8
+    overlay: 0.55
+  - min: 15
+    overlay: 0.7
+    speed: 0.9
+  neuroware:
+    amount: 14
+    program: wh40k-neuroware-idle
+    banner: wh40k-neuroware-idle-banner
+    faults: [ wh40k-neuroware-idle-fault-1, wh40k-neuroware-idle-fault-2 ]
+
+- type: wh40kDrugProfile
+  id: Wh40kNicotine
+  family: Nicotine
+  decay: 0.01
+  overdoseHalfLife: 120
+  dependenceGain: 0.01
+  tiers:
+  - min: 1
+    effects:
+    - !type:Wh40kStaminaChange
+      amount: -0.5

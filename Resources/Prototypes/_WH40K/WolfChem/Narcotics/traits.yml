@@ -1,0 +1,57 @@
+# Start the round already dependent on a drug family, with a first fix in hand.
+
+- type: trait
+  id: Wh40kDependentStimulant
+  name: trait-wh40k-dependent-stimulant-name
+  description: trait-wh40k-dependent-stimulant-desc
+  category: Physical
+  cost: -3
+  components:
+  - type: Wh40kDependentStimulant
+    gear: Wh40kBaggieCocaineCut
+    hostGear: Wh40kNeurowareStickWhitelineCopy
+
+- type: trait
+  id: Wh40kDependentOpioid
+  name: trait-wh40k-dependent-opioid-name
+  description: trait-wh40k-dependent-opioid-desc
+  category: Physical
+  cost: -3
+  components:
+  - type: Wh40kDependentOpioid
+    gear: Wh40kBaggieHeroinCut
+    hostGear: Wh40kNeurowareStickNullLoopCopy
+
+- type: trait
+  id: Wh40kDependentEmpathogen
+  name: trait-wh40k-dependent-empathogen-name
+  description: trait-wh40k-dependent-empathogen-desc
+  category: Physical
+  cost: -2
+  components:
+  - type: Wh40kDependentEmpathogen
+    gear: Wh40kVialHaloCut
+    hostGear: Wh40kNeurowareStickHaloCopy
+
+- type: trait
+  id: Wh40kDependentCannabinoid
+  name: trait-wh40k-dependent-cannabinoid-name
+  description: trait-wh40k-dependent-cannabinoid-desc
+  category: Physical
+  cost: -1
+  components:
+  - type: Wh40kDependentCannabinoid
+    gear: Joint
+    hostGear: Wh40kNeurowareStickIdleCopy
+
+- type: trait
+  id: Wh40kDependentNicotine
+  name: trait-wh40k-dependent-nicotine-name
+  description: trait-wh40k-dependent-nicotine-desc
+  category: Physical
+  cost: -1
+  traitGear: CigPackGreen
+  biotypeBlacklist:
+  - Cybernetic
+  components:
+  - type: Wh40kDependentNicotine

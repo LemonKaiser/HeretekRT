@@ -1,0 +1,70 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:access="clr-namespace:Content.Client._WH40K.ShipAccess"
+              xmlns:shippa="clr-namespace:Content.Client._WH40K.ShipPa.UI"
+              xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+              Orientation="Horizontal" SeparationOverride="12" Margin="12">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="1.55"
+                  MinWidth="390" SeparationOverride="8">
+        <PanelContainer>
+            <PanelContainer.PanelOverride>
+                <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#79603D" BackgroundColor="#1B160F"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Vertical" Margin="10 7" SeparationOverride="4">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+                    <Label Text="{Loc 'wh40k-ship-access-title'}" FontColorOverride="#E1C17E" HorizontalExpand="True"/>
+                    <Label Name="ShipProtection" Align="Right"/>
+                </BoxContainer>
+                <Label Name="Registration" ClipText="True" FontColorOverride="#BEB19A"/>
+                <Label Name="AccessHint" ClipText="True" FontColorOverride="#BEB19A"/>
+                <GridContainer Columns="2" HSeparationOverride="6">
+                    <Button Name="ProtectShip" Text="{Loc 'wh40k-ship-access-protect-all'}" MinHeight="32"
+                            HorizontalExpand="True" StyleClasses="ButtonSquare"/>
+                    <Button Name="RestoreShip" Text="{Loc 'wh40k-ship-access-restore-all'}" MinHeight="32"
+                            HorizontalExpand="True" StyleClasses="ButtonSquare"/>
+                </GridContainer>
+            </BoxContainer>
+        </PanelContainer>
+        <PanelContainer VerticalExpand="True">
+            <PanelContainer.PanelOverride>
+                <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#79603D" BackgroundColor="#1B160F"/>
+            </PanelContainer.PanelOverride>
+            <BoxContainer Orientation="Vertical" Margin="7" SeparationOverride="6">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <Label Text="{Loc 'wh40k-ship-access-diagram'}" HorizontalExpand="True" FontColorOverride="#E1C17E"/>
+                    <Button Name="FitMap" Text="{Loc 'wh40k-ship-access-fit'}" StyleClasses="ButtonSquare"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                    <OptionButton Name="DoorPicker" HorizontalExpand="True" MinHeight="32" Filterable="True"/>
+                    <Button Name="DoorAction" StyleClasses="ButtonSquare" MinHeight="32"/>
+                </BoxContainer>
+                <Label Name="DoorStatus" HorizontalExpand="True" ClipText="True"/>
+                <PanelContainer VerticalExpand="True">
+                    <access:Wh40kShipDoorMap Name="DoorMap" MinHeight="190" ToolTip="{Loc 'wh40k-ship-access-map-controls'}"/>
+                    <Label Name="MapHint" HorizontalAlignment="Center" VerticalAlignment="Center" FontColorOverride="#BEB19A"/>
+                </PanelContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+                    <Label Text="{Loc 'wh40k-ship-access-door-protected'}" FontColorOverride="#E1AD53"/>
+                    <Label Text="{Loc 'wh40k-ship-access-door-normal'}" FontColorOverride="#80B5BE"/>
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" MinWidth="350" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" Margin="0 0 4 0">
+            <shippa:Wh40kShipAlarmPanel Name="VoxPanel"/>
+            <PanelContainer Name="GuestPanel">
+                <PanelContainer.PanelOverride>
+                    <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#79603D" BackgroundColor="#1B160F"/>
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="10 7" SeparationOverride="6">
+                    <Label Text="{Loc 'wh40k-ship-access-guests'}" FontColorOverride="#E1C17E"/>
+                    <CheckBox Name="OwnerGrants" Text="{Loc 'wh40k-ship-access-owner-grants'}"
+                              ToolTip="{Loc 'wh40k-ship-access-owner-grants-tooltip'}"/>
+                    <BoxContainer Name="GuestList" Orientation="Vertical" SeparationOverride="4"/>
+                    <Label Text="{Loc 'wh40k-ship-access-nearby'}" FontColorOverride="#E1C17E" Margin="0 4 0 0"/>
+                    <BoxContainer Name="NearbyList" Orientation="Vertical" SeparationOverride="4"/>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </ScrollContainer>
+</BoxContainer>

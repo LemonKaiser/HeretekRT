@@ -131,19 +131,7 @@ namespace Content.Server.Preferences.Managers
                 return;
             }
 
-            var session = _playerManager.GetSessionById(userId);
-            prefsData.Prefs!.Characters.TryGetValue(message.Slot, out var existingProfile);
-            if (!Wh40kProfileEdits.TryPrepareProfileUpdate(
-                    session,
-                    existingProfile,
-                    message.Profile,
-                    out var preparedProfile))
-            {
-                _sawmill.Warning($"User {userId} tried to modify a WH40K character profile while profile editing is locked.");
-                return;
-            }
-
-            await SetProfile(userId, message.Slot, preparedProfile, false);
+            await SetProfile(userId, message.Slot, message.Profile, authoritative: false);
         }
 
         private async void HandleCompleteWh40kOnboardingMessage(MsgCompleteWh40kOnboarding message)
@@ -391,6 +379,13 @@ namespace Content.Server.Preferences.Managers
 
             var curPrefs = prefsData.Prefs!;
             var session = _playerManager.GetSessionById(userId);
+
+            if (!authoritative && !Wh40kProfileEdits.TryPrepareProfileUpdate(
+                    session, curPrefs.Characters.GetValueOrDefault(slot), profile, out profile))
+            {
+                _sawmill.Warning($"User {userId} tried to modify a WH40K character profile while profile editing is locked.");
+                return;
+            }
 
             profile.EnsureValid(session, _dependencies);
             if (profile is HumanoidCharacterProfile factionProfile)

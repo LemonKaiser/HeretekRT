@@ -1,3 +1,4 @@
+using Content.Server._WH40K.BloodTrail;
 using Content.Server.Decals;
 using Content.Shared.Chemistry.Reaction;
 using Content.Shared.Chemistry.Reagent;
@@ -53,6 +54,8 @@ public sealed partial class CleanDecalsReaction : ITileReaction
             decalSystem.RemoveDecal(tile.GridUid, decal.Index, decalGrid);
             amount += CleanCost;
         }
+
+        entityManager.System<Wh40kBloodStainSystem>().CleanTile(tile.GridUid, tile.GridIndices);
 
         return amount;
     }

@@ -3,6 +3,7 @@ using Content.Shared.Lathe;
 using Content.Shared.Power;
 using Content.Client.Power;
 using Content.Client.Storage.Components;
+using Content.Shared._WH40K.Lathe;
 using Content.Shared.Research.Prototypes;
 using Content.Shared.Stacks;
 
@@ -11,6 +12,7 @@ namespace Content.Client.Lathe;
 public sealed partial class LatheSystem : SharedLatheSystem
 {
     [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedWh40kFabricationSiloSystem _fabricationSilo = default!;
 
     public override void Initialize()
     {
@@ -65,7 +67,7 @@ public sealed partial class LatheSystem : SharedLatheSystem
             var processedEntities = 0;
             foreach (var conEnt in storage.Contents.ContainedEntities)
             {
-                if (MetaData(conEnt).EntityPrototype?.ID != entity.Id)
+                if (!_fabricationSilo.IsRecipePart(conEnt, entity))
                     continue;
 
                 _stackQuery.TryComp(conEnt, out var stack);

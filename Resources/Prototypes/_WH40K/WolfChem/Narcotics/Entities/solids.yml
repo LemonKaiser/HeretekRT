@@ -1,0 +1,197 @@
+# Solid drugs and zip baggies.
+
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: Wh40kBaseSolid
+  components:
+  - type: Item
+    size: Tiny
+  - type: Food
+  - type: FlavorProfile
+    flavors:
+    - bitter
+  - type: Extractable
+    grindableSolutionName: food
+  - type: ExaminableSolution
+    solution: food
+  - type: Tag
+    tags:
+    - Smokable
+    - Wh40kBaggable
+
+- type: entity
+  abstract: true
+  parent: [ Wh40kBaseSolid, Wh40kNarcoticMarks ]
+  id: Wh40kBaseDrugSolid
+  components:
+  - type: Tag
+    tags:
+    - Smokable
+    - Wh40kNarcotic
+    - Wh40kBaggable
+
+- type: entity
+  parent: Wh40kBaseDrugSolid
+  id: Wh40kCrackRock
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/solids.rsi
+    state: crack
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: Wh40kCrack
+          Quantity: 5
+
+- type: entity
+  parent: Wh40kBaseDrugSolid
+  id: Wh40kCrystalShard
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/solids.rsi
+    layers:
+    - state: crystal
+      map: [ "enum.Wh40kPurityTintVisuals.Tinted" ]
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: Desoxyephedrine
+          Quantity: 5
+  - type: Wh40kPurityTint
+    reagent: Desoxyephedrine
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.Wh40kPurityTintVisuals.Tinted:
+        enum.Wh40kPurityTintVisuals.Tinted:
+          True: { color: "#5c9cff" }
+          False: { color: "#ffffff" }
+
+- type: entity
+  parent: Wh40kBaseDrugSolid
+  id: Wh40kOpiumResin
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/solids.rsi
+    state: resin
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: Wh40kOpium
+          Quantity: 5
+
+- type: entity
+  parent: Wh40kBaseSolid
+  id: Wh40kHashBrick
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/solids.rsi
+    state: hash
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 30
+        reagents:
+        - ReagentId: THC
+          Quantity: 30
+  - type: Construction
+    graph: Wh40kHash
+    node: brick
+  - type: StaticPrice
+    price: 450
+
+- type: entity
+  parent: BaseStorageItem
+  id: Wh40kBaggie
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/baggie.rsi
+    layers:
+    - state: icon
+    - state: solid-0
+      map: [ "enum.StorageFillLayers.Fill" ]
+    - state: fill-1
+      map: [ "enum.SolutionContainerLayers.Fill" ]
+      visible: false
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    maxFillLevels: 2
+    fillBaseName: fill-
+  - type: Storage
+    grid:
+    - 0,0,1,1
+    maxItemSize: Small
+    openOnActivate: false
+    clickInsert: false
+    whitelist:
+      tags:
+      - Wh40kBaggable
+  - type: StorageFillVisualizer
+    maxFillLevels: 4
+    fillBaseName: solid
+  - type: SolutionContainerManager
+    solutions:
+      baggie:
+        maxVol: 10
+  - type: RefillableSolution
+    solution: baggie
+  - type: DrainableSolution
+    solution: baggie
+  - type: ExaminableSolution
+    solution: baggie
+  - type: SolutionItemStatus
+    solution: baggie
+  - type: SolutionTransfer
+    transferAmount: 5
+    minTransferAmount: 1
+    maxTransferAmount: 10
+  - type: Construction
+    graph: Wh40kBaggie
+    node: baggie
+  - type: Extractable
+    grindableSolutionName: baggie
+  - type: Wh40kBaggie
+    reagents:
+    - Wh40kCocaine
+    - Wh40kHeroin
+    - Desoxyephedrine
+    - Ephedrine
+
+- type: entity
+  parent: [ Wh40kBaggie, Wh40kNarcoticMarks ]
+  id: Wh40kBaggieCocaine
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      baggie:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kCocaine
+          Quantity: 10
+  - type: Tag
+    tags:
+    - Wh40kNarcotic
+
+- type: entity
+  parent: [ Wh40kBaggie, Wh40kNarcoticMarks ]
+  id: Wh40kBaggieHeroin
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      baggie:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kHeroin
+          Quantity: 10
+  - type: Tag
+    tags:
+    - Wh40kNarcotic

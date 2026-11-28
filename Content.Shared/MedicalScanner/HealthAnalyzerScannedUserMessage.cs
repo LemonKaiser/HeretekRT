@@ -1,5 +1,6 @@
 using Content.Shared._Shitmed.Targeting; // Shitmed Change
 using Content.Shared._WH40K.Augments;
+using Content.Shared._WH40K.WolfChem.Narcotics;
 using Content.Shared.Damage;
 using Robust.Shared.Serialization;
 
@@ -24,8 +25,9 @@ public sealed class HealthAnalyzerScannedUserMessage : BoundUserInterfaceMessage
     public bool? Unrevivable;
     public bool? Uncloneable; // Frontier
     public List<Wh40kScannedAugment>? InstalledAugments;
+    public Wh40kAnalyzerConditions? Conditions;
 
-    public HealthAnalyzerScannedUserMessage(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? uncloneable, Dictionary<TargetBodyPart, TargetIntegrity>? body, NetEntity? part = null, TargetBodyPart? lastDamagedPart = null, TargetBodyPart? selectedBodyPart = null, DamageSpecifier? partDamage = null, List<Wh40kScannedAugment>? installedAugments = null) // Shitmed Change
+    public HealthAnalyzerScannedUserMessage(NetEntity? targetEntity, float temperature, float bloodLevel, bool? scanMode, bool? bleeding, bool? unrevivable, bool? uncloneable, Dictionary<TargetBodyPart, TargetIntegrity>? body, NetEntity? part = null, TargetBodyPart? lastDamagedPart = null, TargetBodyPart? selectedBodyPart = null, DamageSpecifier? partDamage = null, List<Wh40kScannedAugment>? installedAugments = null, Wh40kAnalyzerConditions? conditions = null) // Shitmed Change
     {
         TargetEntity = targetEntity;
         Temperature = temperature;
@@ -40,6 +42,7 @@ public sealed class HealthAnalyzerScannedUserMessage : BoundUserInterfaceMessage
         Unrevivable = unrevivable;
         Uncloneable = uncloneable; // Frontier
         InstalledAugments = installedAugments;
+        Conditions = conditions;
     }
 }
 

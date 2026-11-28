@@ -352,11 +352,15 @@ public sealed partial class StorageUIController : UIController, IOnSystemChanged
                     window.Reclaim(dragLoc, control);
                 }
             }
+            else if (targetStorage == null)
+            {
+                DropStoredStorageOutside(targetControl, dragEnt, sourceStorage);
+            }
 
             targetStorage?.FlagDirty();
         }
         // If we just clicked, then take it out of the bag.
-        else
+        else if (!TryOpenStoredStorage(control.Entity, sourceStorage))
         {
             EntityManager.RaisePredictiveEvent(new StorageInteractWithItemEvent(
                 EntityManager.GetNetEntity(control.Entity),

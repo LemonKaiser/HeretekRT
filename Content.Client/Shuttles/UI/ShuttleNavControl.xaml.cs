@@ -414,9 +414,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _radarModeButtons.AddChild(_radarRotationButton);
         _radarModeButtons.AddChild(_radarAnchorButton);
         _radarModeButtons.AddChild(_radarResetButton);
+        AddWh40kAllNamesButton(_radarModeButtons);
 
         parent.AddChild(_radarModeButtons);
         LayoutContainer.SetAnchorAndMarginPreset(_radarModeButtons, LayoutContainer.LayoutPreset.BottomLeft, margin: 10);
+        AddWh40kWaypointControls(parent);
     }
 
     private void ApplyRadarModeDefaults()
@@ -453,10 +455,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         Azimuth,
         Rotation,
         Anchor,
-        Reset
+        Reset,
+        Wh40kAllNames,
     }
 
-    public sealed class RadarModeButton : BaseButton
+    public sealed partial class RadarModeButton : BaseButton
     {
         private readonly RadarModeButtonIcon _icon;
 
@@ -552,6 +555,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                         handle.DrawLine(left, right, iconColor);
                         break;
                     }
+                case RadarModeButtonIcon.Wh40kAllNames:
+                    Wh40kDrawAllNames(handle, center, radius, Color.Lime.WithAlpha(0.95f));
+                    break;
                 default:
                     break;
             }
@@ -587,6 +593,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
     {
+        if (Wh40kTryPickWaypoint(args))
+            return;
+
         if (IsRightMouseFunction(args.Function))
         {
             PlanetSelectionCleared?.Invoke();
@@ -638,6 +647,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
     protected override void KeyBindUp(GUIBoundKeyEventArgs args)
     {
+        if (Wh40kTrySwallowPickRelease(args))
+            return;
+
         if (IsRightMouseFunction(args.Function))
         {
             _rightMousePanning = false;
@@ -700,6 +712,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        Wh40kUpdateWaypoints();
 
         _updateAccumulator += args.DeltaSeconds;
 
@@ -948,7 +961,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var coordEnt = _coordinates.Value.EntityId;
         var coordEntRot = _transform.GetWorldRotation(coordEnt);
         if (_angleFollow && EntManager.TryGetComponent<TransformComponent>(coordEnt, out var coordXform))
-            _rotation = coordEntRot;
+            _rotation = Wh40kFacingRotation(coordEntRot);
         else
             _rotation = Angle.Zero;
 
@@ -1022,6 +1035,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // world-to-view matrix as grids, IFF contacts and docking ports.
         DrawCelestialNavigation(handle, worldToView);
         DrawAsteroidFields(handle, xform.MapID, worldToView, observerPosition);
+        DrawWh40kWaypoints(handle, worldToView, xform.MapUid);
+        DrawWh40kDistressSignals(handle, worldToView, xform.MapID);
 
         // Draw our grid in detail
         if (ourGridId.HasValue && ourGrid != null && fixturesQuery.HasComponent(ourGridId.Value))
@@ -1048,6 +1063,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
         _visibleGridsSet.Clear();
         _targetableGridsSet.Clear();
+
+        var tagCursor = Wh40kTagCursor;
+        var tagHoverRadius = Wh40kTagHoverRadius * UIScale;
 
         // Draw other grids... differently
         foreach (var grid in _grids)
@@ -1135,7 +1153,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 var uiX = uiXCentre * uiXOffset / uiDistance;
                 var uiY = uiYCentre * uiYOffset / uiDistance;
 
-                var isOutsideRadarCircle = uiDistance > Math.Abs(uiX) && uiDistance > Math.Abs(uiY);
+                var isOutsideRadarCircle = !Wh40kOnScope(uiPosition * UIScale);
                 if (isOutsideRadarCircle)
                 {
                     // 0.95f for offsetting the icons slightly away from edge of radar so it doesnt clip.
@@ -1147,15 +1165,12 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                     );
                 }
 
-                var scaledMousePosition = GetMouseCoordinatesFromCenter().Position * UIScale;
-                var isMouseOver = Vector2.Distance(scaledMousePosition, uiPosition * UIScale) < 30f;
-
-                // Distant stations that are not player controlled ships
-                var isDistantPOI = iff != null || (iff == null || (iff.Flags & IFFFlags.IsPlayerShuttle) == 0x0);
+                var isMouseOver = tagCursor is { } pointer &&
+                    Vector2.DistanceSquared(pointer, uiPosition * UIScale) <= tagHoverRadius * tagHoverRadius;
 
                 var distance = Vector2.Distance(gridMapPos, mapPos.Position);
 
-                if (!isOutsideRadarCircle || isDistantPOI || isMouseOver)
+                if (!isOutsideRadarCircle || isMouseOver)
                 {
                     // Shows decimal when distance is < 50m, otherwise pointless to show it.
                     var displayedDistance = distance < 50f ? $"{distance:0.0}" : distance < 1000 ? $"{distance:0}" : $"{distance / 1000:0.0}k";
@@ -1224,33 +1239,25 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                         ? labelText[(lineBreak + 1)..]
                         : Loc.GetString("shuttle-console-company-unknown");
 
-                    // Draw main ship label with company color if available
-                    handle.DrawString(Font, (uiPosition + labelOffset) * UIScale, mainLabel, UIScale * 0.9f, displayColor);
+                    Wh40kBeginTag(
+                        uiPosition * UIScale,
+                        (uiPosition + labelOffset) * UIScale,
+                        isMouseOver ? 3 : isPlayerShuttle ? 2 : 1,
+                        always: distance <= Wh40kTagCloseRange,
+                        key: gUid.Id);
+                    Wh40kTagLine(handle, mainLabel, UIScale * 0.9f, displayColor);
 
-                    // Mono start - draw main stack of info
                     if (shouldDrawDetailedIFF)
                     {
-                        var companyLabelOffset = new Vector2(
-                            labelOffset.X,
-                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y
-                        );
-                        handle.DrawString(Font, (uiPosition + companyLabelOffset) * UIScale, companyLabel, UIScale * 0.7f, displayColor);
-
-                        var coordOffset = new Vector2(
-                            labelOffset.X,
-                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y);
-                        handle.DrawString(Font, (uiPosition + coordOffset) * UIScale, coordsText, 0.7f * UIScale, displayColor);
-
-                        var trackIdOffset = new Vector2(
-                            labelOffset.X,
-                            labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y + handle.GetDimensions(Font, companyLabel, 0.7f).Y + handle.GetDimensions(Font, coordsText, 0.7f).Y);
+                        Wh40kTagLine(handle, companyLabel, UIScale * 0.7f, displayColor);
+                        Wh40kTagLine(handle, coordsText, UIScale * 0.7f, displayColor);
                         if (iff != null)
-                            handle.DrawString(Font, (uiPosition + trackIdOffset) * UIScale, trackIdText, 0.7f * UIScale, displayColor);
+                            Wh40kTagLine(handle, trackIdText, UIScale * 0.7f, displayColor);
                     }
-                    // Mono end
                 }
 
-                NfAddBlipToList(_tempBlipDataList, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, labelColor, hideLabel ? default : gUid); // Frontier code
+                if (isOutsideRadarCircle || !Wh40kQueueContactIcon(gUid, uiPosition, curGridToView, labelColor, hideLabel || blipOnly))
+                    NfAddBlipToList(_tempBlipDataList, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, labelColor, hideLabel ? default : gUid); // Frontier code
                 // End Frontier: IFF drawing functions
             }
 
@@ -1273,6 +1280,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // list render repeatedly, which was quadratic in the number of visible grids.
         if (ShowMarkers)
             NfDrawBlips(handle, _tempBlipDataList);
+        Wh40kDrawContactIcons(handle, ShowMarkers);
 
         // If we've set the controlling console, and it's on a different grid
         // to the shuttle itself, then draw an additional marker to help the
@@ -1389,6 +1397,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         DrawBssNavigation(handle, xform.MapID, ourGridId, worldToView);
         DrawKoronusBoundary(handle, xform.MapID, observerPosition, worldToView);
         RadarLockOverlay.Draw(handle, _radarLockState, worldToView, UIScale);
+        Wh40kDrawTags(handle, tagCursor);
+        DrawWh40kCoordinateReadout(handle);
         #endregion
     }
 
@@ -2165,7 +2175,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
                 labeled.Add(state.LabelName);
                 var labelDimensions = handle.GetDimensions(Font, state.LabelName, 0.9f);
-                handle.DrawString(Font, (uiPosition / UIScale - labelDimensions / 2) * UIScale, state.LabelName, UIScale * 0.9f, _dockLabelColor);
+                Wh40kBeginTag(uiPosition, (uiPosition / UIScale - labelDimensions / 2) * UIScale);
+                Wh40kTagLine(handle, state.LabelName, UIScale * 0.9f, _dockLabelColor);
             }
             // End Frontier
         }

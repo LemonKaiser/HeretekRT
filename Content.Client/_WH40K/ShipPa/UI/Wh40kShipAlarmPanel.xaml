@@ -1,0 +1,44 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+              Orientation="Vertical" HorizontalExpand="True">
+    <PanelContainer>
+        <PanelContainer.PanelOverride>
+            <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#79603D" BackgroundColor="#1B160F"/>
+        </PanelContainer.PanelOverride>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="10 7" SeparationOverride="8">
+            <Label Text="{Loc 'wh40k-shuttle-console-ship-alarms-label'}" FontColorOverride="#E1C17E"/>
+            <BoxContainer Orientation="Vertical" SeparationOverride="3">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <Label Text="{Loc 'wh40k-shuttle-console-ship-condition'}" FontColorOverride="#BEB19A"
+                           HorizontalExpand="True"/>
+                    <Label Name="ConditionLabel" Text="—" Align="Right" FontColorOverride="#E1C17E"/>
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <Label Name="SpeakersCaption" Text="{Loc 'wh40k-shuttle-console-ship-speakers'}"
+                           FontColorOverride="#BEB19A" HorizontalExpand="True" ClipText="True"/>
+                    <Label Name="SpeakersLabel" Text="—" Align="Right" FontColorOverride="#E9E1D0"/>
+                </BoxContainer>
+            </BoxContainer>
+            <GridContainer Name="CodeContainer" Columns="2" HSeparationOverride="5" VSeparationOverride="5"/>
+            <BoxContainer Orientation="Vertical" SeparationOverride="5">
+                <Button Name="GeneralQuartersButton" Text="{Loc 'wh40k-shuttle-console-ship-general-quarters-sound'}"
+                        StyleClasses="ButtonSquare" MinHeight="32"/>
+                <Button Name="DistressButton" Text="{Loc 'wh40k-shuttle-console-ship-distress-send'}"
+                        ToolTip="{Loc 'wh40k-shuttle-console-ship-distress-tooltip'}"
+                        StyleClasses="ButtonSquare" MinHeight="32"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                <Label Text="{Loc 'wh40k-shuttle-console-ship-volume'}" FontColorOverride="#BEB19A"/>
+                <Slider Name="VolumeSlider" MinValue="20" MaxValue="100" Rounded="True" Value="100"
+                        HorizontalExpand="True" VerticalAlignment="Center"/>
+                <Label Name="VolumeLabel" Text="100%" MinWidth="44" Align="Right" FontColorOverride="#E9E1D0"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                <LineEdit Name="AnnounceEdit" PlaceHolder="{Loc 'wh40k-shuttle-console-ship-announce-placeholder'}"
+                          HorizontalExpand="True"/>
+                <Button Name="AnnounceButton" Text="{Loc 'wh40k-shuttle-console-ship-announce'}"
+                        StyleClasses="ButtonSquare" MinHeight="32"/>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</BoxContainer>

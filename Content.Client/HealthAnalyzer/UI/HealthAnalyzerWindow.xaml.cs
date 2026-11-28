@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._WH40K.UserInterface;
 using System.Numerics;
 using Content.Client.Message;
 using Content.Shared.Atmos;
@@ -54,6 +55,7 @@ namespace Content.Client.HealthAnalyzer.UI
         public HealthAnalyzerWindow()
         {
             RobustXamlLoader.Load(this);
+            Wh40kWindowViewport.ClampInitialSize(this, UserInterfaceManager.RootControl.Size);
 
             var dependencies = IoCManager.Instance!;
             _entityManager = dependencies.Resolve<IEntityManager>();
@@ -124,6 +126,7 @@ namespace Content.Client.HealthAnalyzer.UI
                 || !_entityManager.TryGetComponent<DamageableComponent>(_target, out var damageable))
             {
                 NoPatientDataText.Visible = true;
+                GroupsContainer.RemoveAllChildren();
                 return;
             }
 
@@ -257,6 +260,7 @@ namespace Content.Client.HealthAnalyzer.UI
 
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
             DrawInstalledCybernetics(msg.InstalledAugments);
+            DrawWh40kConditions(msg);
         }
         // Shitmed Change End
         private static string GetStatus(MobState mobState)

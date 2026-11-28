@@ -1,0 +1,60 @@
+// Heat haze. Redraws the screen through a rising noise field, displaced as far as the heat mask allows, so the world
+// seen through hot air shimmers.
+
+light_mode unshaded;
+
+uniform sampler2D SCREEN_TEXTURE;
+uniform sampler2D heat_mask;         // Heat in the red channel, 0 to 1, stretched over the whole viewport.
+uniform highp vec2 noise_origin;     // Fragment (0, 0) in world tiles along the screen's axes, wrapped every 1024 tiles.
+uniform highp float tiles_per_pixel;
+uniform highp float strength;        // Peak displacement, in fragment pixels.
+
+// Two octaves: cycles per tile, and tiles per second they rise at. Frequencies stay multiples of 0.25 so the
+// overlay's 1024 tile wrap of noise_origin lands on the lattice repeat below.
+const highp float coarseFrequency = 1.25;
+const highp float coarseSpeed = 0.5;
+const highp float fineFrequency = 2.75;
+const highp float fineSpeed = 1.1;
+
+// Lattice gradient in -1..1, repeating every 256 cells. Hash without sine, after Dave Hoskins.
+highp vec2 hazeGradient(highp vec2 cell) {
+    highp vec3 p = fract(mod(cell, 256.0).xyx * vec3(0.1031, 0.1030, 0.0973));
+    p += dot(p, p.yzx + 33.33);
+    return fract((p.xx + p.yz) * p.zy) * 2.0 - 1.0;
+}
+
+// Gradient noise, roughly -0.7 to 0.7.
+highp float hazeNoise(highp vec2 p) {
+    highp vec2 cell = floor(p);
+    highp vec2 f = p - cell;
+    highp vec2 u = f * f * (3.0 - 2.0 * f);
+
+    highp float a = dot(hazeGradient(cell), f);
+    highp float b = dot(hazeGradient(cell + vec2(1.0, 0.0)), f - vec2(1.0, 0.0));
+    highp float c = dot(hazeGradient(cell + vec2(0.0, 1.0)), f - vec2(0.0, 1.0));
+    highp float d = dot(hazeGradient(cell + vec2(1.0, 1.0)), f - vec2(1.0, 1.0));
+
+    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+}
+
+void fragment() {
+    highp float heat = min(zTextureSpec(heat_mask, FRAGCOORD.xy * SCREEN_PIXEL_SIZE).r, 1.0);
+    highp vec2 offset = vec2(0.0);
+
+    if (heat > 0.004) {
+        highp vec2 p = noise_origin + FRAGCOORD.xy * tiles_per_pixel;
+
+        // Sliding the lattice down moves the pattern up the screen. Wrapped at the lattice repeat to keep precision.
+        highp vec2 coarse = p * coarseFrequency - vec2(0.0, mod(TIME * coarseSpeed * coarseFrequency, 256.0));
+        highp vec2 fine = p * fineFrequency - vec2(0.0, mod(TIME * fineSpeed * fineFrequency, 256.0));
+
+        // Mostly sideways, across the rising air.
+        offset.x = hazeNoise(coarse) * 0.65 + hazeNoise(fine) * 0.35;
+        offset.y = (hazeNoise(coarse + vec2(71.0, 37.0)) * 0.65 + hazeNoise(fine + vec2(113.0, 59.0)) * 0.35) * 0.5;
+
+        // 1.4 stretches the noise's usual range out to about -1..1.
+        offset *= strength * heat * 1.4;
+    }
+
+    COLOR = zTextureSpec(SCREEN_TEXTURE, (FRAGCOORD.xy + offset) * SCREEN_PIXEL_SIZE);
+}

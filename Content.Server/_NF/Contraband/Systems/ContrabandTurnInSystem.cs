@@ -3,6 +3,7 @@ using Content.Server.Cargo.Components;
 using Content.Server.Cargo.Systems;
 using Content.Server.Stack;
 using Content.Server._WH40K.OperationalDomain;
+using Content.Server._WH40K.WolfChem.Narcotics;
 using Content.Shared._NF.Contraband;
 using Content.Shared._NF.Contraband.BUI;
 using Content.Shared._NF.Contraband.Components;
@@ -32,6 +33,7 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private GeneticDatabaseSystem _geneticDatabase = default!; // Mono
+    [Dependency] private Wh40kNarcoticGoodsSystem _wh40kNarcoticGoods = default!;
 
     private EntityQuery<MobStateComponent> _mobQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -139,6 +141,7 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
     {
         amount = 0;
         toSell = new HashSet<EntityUid>();
+        var narcoticPool = 0.0;
 
         foreach (var (palletUid, _) in GetContrabandPallets(gridUid))
         {
@@ -171,6 +174,7 @@ public sealed partial class ContrabandTurnInSystem : SharedContrabandTurnInSyste
                     if (TryComp<StackComponent>(ent, out var stackcomp))
                         value *= stackcomp.Count;
                     // Mono End
+                    value = _wh40kNarcoticGoods.TurnIn(ent, value, ref narcoticPool, toSell);
                     if (value <= 0)
                         continue;
                     amount += value;

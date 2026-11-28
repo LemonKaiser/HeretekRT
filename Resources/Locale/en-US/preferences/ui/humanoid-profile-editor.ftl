@@ -90,3 +90,4 @@ trait-category-quirks = Quirks
 # Mono
 trait-category-physical = Physical
 humanoid-profile-editor-custom-species-label = Custom species name
+humanoid-profile-editor-custom-species-whitelist = Editing requires membership in the server whitelist.

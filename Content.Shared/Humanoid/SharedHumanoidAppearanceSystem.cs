@@ -193,6 +193,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
 
         targetHumanoid.CustomBaseLayers = new(sourceHumanoid.CustomBaseLayers);
         targetHumanoid.MarkingSet = new(sourceHumanoid.MarkingSet);
+        targetHumanoid.MarkingGlow = new(sourceHumanoid.MarkingGlow);
 
         targetHumanoid.Gender = sourceHumanoid.Gender;
         if (TryComp<GrammarComponent>(target, out var grammar))
@@ -482,6 +483,7 @@ public abstract partial class SharedHumanoidAppearanceSystem : EntitySystem
         }
 
         EnsureDefaultMarkings(uid, humanoid);
+        humanoid.MarkingGlow = ProfileMarkingGlow(profile);
         SetBarkVoice(uid, profile.BarkVoice, humanoid);
         SetTTSVoice(uid, profile.Voice, humanoid);
 

@@ -215,6 +215,8 @@ public sealed partial class JobWhitelistManager : IPostInjectInit
         return whitelist;
     }
 
+    public bool IsOnManualWhitelist(NetUserId player) => _globalWhitelists.GetValueOrDefault(player);
+
     public async void RemoveGlobalWhitelist(NetUserId player)
     {
         await TryRemoveGlobalWhitelistAsync(player);
@@ -242,7 +244,7 @@ public sealed partial class JobWhitelistManager : IPostInjectInit
     {
         var msg = new MsgWhitelist
         {
-            Whitelisted = _globalWhitelists.GetValueOrDefault(player.UserId)
+            Whitelisted = IsOnManualWhitelist(player.UserId)
         };
 
         _net.ServerSendMessage(msg, player.Channel);

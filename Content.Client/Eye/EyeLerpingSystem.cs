@@ -160,7 +160,7 @@ public sealed partial class EyeLerpingSystem : EntitySystem
         // If we can move then tie our eye to our inputs (these also get lerped so it should be fine).
         if (Resolve(uid, ref mover, false))
         {
-            return -_mover.GetParentGridAngle(mover);
+            return Wh40kFacingRotation(uid, -_mover.GetParentGridAngle(mover));
         }
 
         // if not tied to a mover then lock it to map / grid

@@ -155,6 +155,10 @@
     inHandsOnly: false
     key: enum.SpaceHeaterUiKey.Key
   - type: SpaceHeater
+  - type: EntityRadiusHeater
+    radius: 2
+    thermalEnergy: 12000
+    limit: 311
   - type: GasThermoMachine
     temperatureTolerance: 0.2
     atmospheric: true

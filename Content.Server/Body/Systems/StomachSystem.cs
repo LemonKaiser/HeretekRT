@@ -62,8 +62,9 @@ namespace Content.Server.Body.Systems
                             if (reagent.Quantity > delta.ReagentQuantity.Quantity)
                                 reagent = new(reagent.Reagent, delta.ReagentQuantity.Quantity);
 
+                            var wh40kGrade = stomachSolution.GetPurity(reagent.Reagent.Prototype);
                             stomachSolution.RemoveReagent(reagent);
-                            transferSolution.AddReagent(reagent);
+                            transferSolution.AddReagent(reagent.Reagent, reagent.Quantity, wh40kGrade);
                         }
 
                         queue.Add(delta);

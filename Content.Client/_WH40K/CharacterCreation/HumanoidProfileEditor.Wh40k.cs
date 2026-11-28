@@ -5,6 +5,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface.Controls;
 using Content.Client.Humanoid;
+using Content.Shared.Preferences;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -17,6 +18,28 @@ public sealed partial class HumanoidProfileEditor
     private bool _appearancePreviewPending;
     private float _appearancePreviewElapsed;
     private bool _personalizationLayoutPending;
+
+    internal void RefreshCustomSpeciesNamePermission()
+    {
+        var whitelisted = _requirements.IsWhitelisted();
+        CustomSpeciesNameEdit.Editable = whitelisted && !IsWh40kAppearanceEditingLocked;
+        CustomSpeciesNameEdit.ToolTip = whitelisted ? null : Loc.GetString("humanoid-profile-editor-custom-species-whitelist");
+
+        if (CustomSpeciesNameEdit.Editable || Profile is not { } profile)
+            return;
+
+        var savedName = CharacterSlot is { } slot &&
+                        _preferencesManager.Preferences?.Characters.GetValueOrDefault(slot) is HumanoidCharacterProfile saved
+            ? saved.CustomSpeciesName
+            : string.Empty;
+
+        if (profile.CustomSpeciesName == savedName)
+            return;
+
+        Profile = profile.WithCustomSpeciesName(savedName);
+        UpdateCustomSpeciesNameEdit();
+        SetDirty();
+    }
 
     protected override void FrameUpdate(FrameEventArgs args)
     {

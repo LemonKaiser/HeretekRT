@@ -3,6 +3,7 @@
 
 using Content.Shared._Mono.FireControl;
 using Content.Shared._Mono.Sensors;
+using Content.Shared._WH40K.ShipCombat;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Shared.Map;
@@ -98,6 +99,19 @@ public sealed class FireControlConsoleBoundUserInterface : BoundUserInterface
     {
         // Send an empty weapon list to indicate this is just a cursor update, not a firing action
         SendMessage(new FireControlConsoleFireMessage(new List<NetEntity>(), coordinates));
+
+        if (_window == null)
+            return;
+
+        var selected = new List<NetEntity>();
+        foreach (var button in _window.WeaponsList)
+        {
+            if (button.Value.Pressed)
+                selected.Add(button.Key);
+        }
+
+        if (selected.Count > 0)
+            SendMessage(new Wh40kTurretAimMessage(selected, coordinates));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

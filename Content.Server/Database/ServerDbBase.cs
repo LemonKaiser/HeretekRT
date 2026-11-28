@@ -301,11 +301,29 @@ namespace Content.Server.Database
             var speechStyle = wh40kData is { ValueKind: JsonValueKind.Object } data &&
                               data.TryGetProperty("SpeechStyle", out var savedStyle)
                 ? savedStyle.Deserialize<Wh40kSpeechStyle>() : default;
+            var markingGlow = wh40kData is { ValueKind: JsonValueKind.Object } glowData &&
+                              glowData.TryGetProperty("MarkingGlow", out var savedGlow)
+                ? Content.Shared._WH40K.MarkingGlow.Wh40kMarkingGlowRules.FromStored(savedGlow.GetString())
+                : new List<string>();
 
             // Validate height and width to prevent sprite scale errors
             // Database migration set default values to 0f for existing profiles
             var height = profile.Height <= 0.005f ? 1.0f : profile.Height;
             var width = profile.Width <= 0.005f ? 1.0f : profile.Width;
+
+            var hairName = profile.HairName;
+            var facialHairName = profile.FacialHairName;
+            var facialHairColor = profile.FacialHairColor;
+            if (profile.Species == "Astartes" && hairName == "AstartesHairSpaceWolf")
+            {
+                if (facialHairName == HairStyles.DefaultFacialHairStyle)
+                {
+                    facialHairName = hairName;
+                    facialHairColor = profile.HairColor;
+                }
+
+                hairName = HairStyles.DefaultHairStyle;
+            }
 
             return new HumanoidCharacterProfile(
                 profile.CharacterName,
@@ -317,10 +335,10 @@ namespace Content.Server.Database
                 balance,
                 new HumanoidCharacterAppearance
                 (
-                    profile.HairName,
+                    hairName,
                     Color.FromHex(profile.HairColor),
-                    profile.FacialHairName,
-                    Color.FromHex(profile.FacialHairColor),
+                    facialHairName,
+                    Color.FromHex(facialHairColor),
                     Color.FromHex(profile.EyeColor),
                     Color.FromHex(profile.SkinColor),
                     markings,
@@ -339,6 +357,7 @@ namespace Content.Server.Database
                 .WithVoice(voice)
                 .WithBarkVoice(barkVoice)
                 .WithSpeechStyle(speechStyle)
+                .WithMarkingGlowList(markingGlow)
                 .WithOocFlavorText(profile.OocFlavorText)
                 .WithCharacterFlavorText(profile.CharacterFlavorText)
                 .WithGreenFlavorText(profile.GreenFlavorText)
@@ -397,6 +416,9 @@ namespace Content.Server.Database
             profile.Company = humanoid.Company;
             var wh40kData = JsonSerializer.SerializeToNode(humanoid.Wh40kBuild.Validated())!.AsObject();
             wh40kData["SpeechStyle"] = JsonSerializer.SerializeToNode(humanoid.SpeechStyle.Validated());
+            var markingGlowStored = Content.Shared._WH40K.MarkingGlow.Wh40kMarkingGlowRules.ToStored(humanoid.MarkingGlow);
+            if (!string.IsNullOrEmpty(markingGlowStored))
+                wh40kData["MarkingGlow"] = markingGlowStored;
             profile.Wh40kBuild = JsonSerializer.SerializeToDocument(wh40kData);
 
             profile.Jobs.Clear();

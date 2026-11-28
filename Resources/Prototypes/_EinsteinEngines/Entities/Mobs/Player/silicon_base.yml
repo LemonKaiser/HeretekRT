@@ -299,11 +299,12 @@
     - Stutter
     - SeeingRainbows
     - Electrocution
-    # - Drunk
+    - Drunk
     - SlurredSpeech
     - PressureImmunity
     - Muted
-    # - ForcedSleep
+    - ForcedSleep
+    - Drowsiness
     - TemporaryBlindness
     - Pacified
     # - PsionicsDisabled

@@ -45,8 +45,8 @@
 
 - type: marking
   id: AstartesHairSpaceWolf
-  bodyPart: Hair
-  markingCategory: Hair
+  bodyPart: FacialHair
+  markingCategory: FacialHair
   speciesRestriction: [Astartes]
   sprites:
   - sprite: _WH40K/Mobs/Customization/astartes_grooming.rsi

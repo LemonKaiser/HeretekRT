@@ -51,8 +51,16 @@
                 <heritage:Wh40kToggleSwitch Name="ShowHeldItemCheckBox" Text="{Loc 'ui-options-show-held-item'}" />
                 <ui:OptionSlider Name="InHandInteractionParticleScaleSlider" Title="{Loc 'ui-options-inhand-interaction-particle-scale'}" />
                 <heritage:Wh40kToggleSwitch Name="ShowCombatModeIndicatorsCheckBox" Text="{Loc 'ui-options-show-combat-mode-indicators'}" />
+                <heritage:Wh40kToggleSwitch Name="CombatFaceCursorCheckBox" Text="{Loc 'wh40k-options-combat-face-cursor'}" />
+                <heritage:Wh40kToggleSwitch Name="CameraDefaultNorthCheckBox" Text="{Loc 'wh40k-options-camera-default-north'}" />
+                <Label Text="{Loc 'wh40k-options-general-radar'}"
+                       StyleClasses="Wh40kSectionHeading"/>
+                <heritage:Wh40kToggleSwitch Name="Wh40kRadarSmartTagsCheckBox" Text="{Loc 'ui-options-wh40k-radar-smart-tags'}" />
+                <heritage:Wh40kToggleSwitch Name="Wh40kRadarIconsOnlyCheckBox" Text="{Loc 'ui-options-wh40k-radar-icons-only'}" />
+                <heritage:Wh40kToggleSwitch Name="Wh40kRadarHoverRevealCheckBox" Text="{Loc 'ui-options-wh40k-radar-hover-reveal'}" />
                 <Label Text="{Loc 'ui-options-general-storage'}"
                        StyleClasses="Wh40kSectionHeading"/>
+                <heritage:Wh40kToggleSwitch Name="WornStorageClickOpensCheckBox" Text="{Loc 'wh40k-options-worn-storage-click-opens'}" />
                 <ui:OptionDropDown Name="DropDownDurabilityBarVisibility" Title="{Loc 'ui-options-durability-bar-visibility'}" />
                 <ui:OptionDropDown Name="DropDownDurabilityBarColor" Title="{Loc 'ui-options-durability-bar-color'}" />
                 <heritage:Wh40kToggleSwitch Name="OpaqueStorageWindowCheckBox" Text="{Loc 'ui-options-opaque-storage-window'}" />

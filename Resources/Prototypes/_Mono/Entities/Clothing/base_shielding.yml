@@ -42,6 +42,7 @@
   id: ClothingOuterHardsuitBaseNoPlateholder
   name: base hardsuit no plateholder
   components:
+  - type: Wh40kSuitTankStorage
   - type: ItemDurability
     maxDurability: 630
   - type: PressureProtection

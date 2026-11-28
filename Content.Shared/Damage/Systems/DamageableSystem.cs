@@ -220,11 +220,17 @@ namespace Content.Shared.Damage
             }
 
             var before = new BeforeDamageChangedEvent(damage, origin, targetPart, //Shitmed Change
-                false, originFlag, tool); // Mono: originFlag, shield-breaking ammunition
+                false, originFlag, tool) // Mono: originFlag, shield-breaking ammunition
+            {
+                IgnoreResistances = ignoreResistances,
+                InterruptsDoAfters = interruptsDoAfters,
+                ArmorPenetration = armorPenetration,
+                PartMultiplier = partMultiplier,
+            };
             RaiseLocalEvent(uid.Value, ref before);
 
             if (before.Cancelled)
-                return null;
+                return before.Applied;
 
             var started = new DamageChangeStartedEvent();
             RaiseLocalEvent(uid.Value, ref started);
@@ -526,6 +532,12 @@ namespace Content.Shared.Damage
         DamageOriginFlag? OriginFlag = null,
         EntityUid? Tool = null) : IInventoryRelayEvent // Mono: early shield interception
     {
+        public bool IgnoreResistances;
+        public bool InterruptsDoAfters;
+        public float ArmorPenetration;
+        public float? PartMultiplier;
+        public DamageSpecifier? Applied;
+
         public SlotFlags TargetSlots => ~SlotFlags.POCKET;
     }
 

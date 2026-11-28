@@ -190,6 +190,9 @@ public sealed partial class ExplosionSystem
         if (EntityManager.IsQueuedForDeletion(uid))
             return false;
 
+        if (Wh40kArmorHoldsFloor(uid))
+            return true;
+
         if (!_physicsQuery.TryGetComponent(uid, out var physics))
             return false;
 

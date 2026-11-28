@@ -23,13 +23,13 @@ public sealed partial class DockObject : PanelContainer
     {
         var dockLabel = new Label()
         {
-            Text = "external airlock",
+            Text = Loc.GetString("wh40k-shuttle-console-external-airlock"),
             HorizontalAlignment = HAlignment.Center,
         };
         
         var viewButton = new Button()
         {
-            Text = Loc.GetString("View"),
+            Text = Loc.GetString("shuttle-console-view"),
         };
 
         viewButton.OnPressed += args =>

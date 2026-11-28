@@ -157,6 +157,8 @@ public abstract partial class SharedBuckleSystem
     {
         if (args.OtherEntity == component.BuckledTo && component.DontCollide)
             args.Cancelled = true;
+        else if (Wh40kSeatIgnoresCollision(component, ref args))
+            args.Cancelled = true;
     }
 
     private void OnBuckleDownAttempt(EntityUid uid, BuckleComponent component, DownAttemptEvent args)

@@ -1,0 +1,25 @@
+# Neuroware sticks as random loot in maintenance and salvage treasure.
+- type: entityTable
+  id: Wh40kNeurowareStickLoot
+  table: !type:GroupSelector
+    children:
+    - id: Wh40kNeurowareStick
+      weight: 6
+    - !type:GroupSelector
+      weight: 3
+      children:
+      - id: Wh40kNeurowareStickWhitelineCopy
+      - id: Wh40kNeurowareStickNullLoopCopy
+      - id: Wh40kNeurowareStickBurstCopy
+      - id: Wh40kNeurowareStickIdleCopy
+    - !type:GroupSelector
+      weight: 1
+      children:
+      - id: Wh40kNeurowareStickWhiteline
+      - id: Wh40kNeurowareStickNullLoop
+      - id: Wh40kNeurowareStickBurst
+      - id: Wh40kNeurowareStickRedline
+      - id: Wh40kNeurowareStickDamper
+      - id: Wh40kNeurowareStickChoir
+      - id: Wh40kNeurowareStickHalo
+      - id: Wh40kNeurowareStickIdle

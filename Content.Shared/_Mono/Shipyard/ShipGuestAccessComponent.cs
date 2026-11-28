@@ -8,6 +8,10 @@ namespace Content.Shared._Mono.Shipyard;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class ShipGuestAccessComponent : Component
 {
+    /// <summary>Whether guest credentials must be issued by the ship owner.</summary>
+    [DataField]
+    public bool OwnerGrantsOnly;
+
     /// <summary>
     /// Set of ID card EntityUids that have been granted guest access to this ship.
     /// </summary>

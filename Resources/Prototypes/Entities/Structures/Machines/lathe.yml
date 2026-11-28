@@ -18,6 +18,7 @@
         layer:
         - MachineLayer
   - type: Lathe
+  - type: Wh40kFabricationSiloClient
   - type: MaterialStorage
     whitelist: # Frontier
       tags: # Frontier

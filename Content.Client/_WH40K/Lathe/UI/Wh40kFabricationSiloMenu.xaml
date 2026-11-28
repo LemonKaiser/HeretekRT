@@ -1,0 +1,26 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    Title="{Loc 'fabrication-silo-title'}" MinSize="560 480" SetSize="660 680">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8">
+        <Label Name="KindLabel" StyleClasses="LabelHeading" FontColorOverride="#E1C17E" />
+        <RichTextLabel Name="HintLabel" />
+        <Label Text="{Loc 'fabrication-silo-machines'}" StyleClasses="LabelKeyText" FontColorOverride="#E1C17E" />
+        <PanelContainer VerticalExpand="True" SizeFlagsStretchRatio="2" MinHeight="120">
+            <PanelContainer.PanelOverride>
+                <graphics:StyleBoxFlat BorderThickness="1" BorderColor="#56452D" BackgroundColor="#100D0A" />
+            </PanelContainer.PanelOverride>
+            <ItemList Name="ClientList" SelectMode="Button" VerticalExpand="True" />
+            <RichTextLabel Name="NoClientsLabel" Margin="8" Visible="False" />
+        </PanelContainer>
+        <Label Name="StockLabel" StyleClasses="LabelHeading" FontColorOverride="#E1C17E" />
+        <BoxContainer Name="SlotRow" Orientation="Horizontal" SeparationOverride="8" Visible="False">
+            <Label Name="SlotLabel" HorizontalExpand="True" ClipText="True" VerticalAlignment="Center" />
+            <Button Name="SlotButton" MinWidth="100" />
+        </BoxContainer>
+        <LineEdit Name="SearchBar" PlaceHolder="{Loc 'fabrication-silo-search'}" />
+        <ScrollContainer VerticalExpand="True" SizeFlagsStretchRatio="3" HScrollEnabled="False" RectClipContent="True" MinHeight="160">
+            <BoxContainer Name="StockList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
+        </ScrollContainer>
+    </BoxContainer>
+</controls:FancyWindow>

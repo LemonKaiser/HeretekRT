@@ -1,7 +1,8 @@
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Access.Components;
-using Content.Shared.Doors;
+using Content.Shared.Doors.Components;
+using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Popups;
@@ -33,7 +34,7 @@ public sealed partial class ShipAccessReaderSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<ShipAccessReaderComponent, StorageOpenAttemptEvent>(OnStorageOpenAttempt);
-        SubscribeLocalEvent<ShipAccessReaderComponent, BeforeDoorOpenedEvent>(OnBeforeDoorOpened);
+        SubscribeLocalEvent<ShipAccessReaderComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<ShipAccessReaderComponent, LockToggleAttemptEvent>(OnLockToggleAttempt);
     }
 
@@ -53,18 +54,27 @@ public sealed partial class ShipAccessReaderSystem : EntitySystem
         }
     }
 
-    private void OnBeforeDoorOpened(EntityUid uid, ShipAccessReaderComponent component, ref BeforeDoorOpenedEvent args)
+    internal bool RequiresDoorClearance(EntityUid uid)
     {
-        if (!component.Enabled)
-            return;
+        return TryComp<ShipAccessReaderComponent>(uid, out var reader) && reader.Enabled &&
+            Transform(uid).GridUid is { } grid && HasComp<ShuttleDeedComponent>(grid);
+    }
 
-        if (args.User == null)
-            return;
+    internal bool HasDoorClearance(EntityUid uid, EntityUid user)
+    {
+        return !TryComp<ShipAccessReaderComponent>(uid, out var reader) || HasShipAccess(user, uid, reader, silent: true);
+    }
 
-        if (!HasShipAccess(args.User.Value, uid, component, false))
-        {
-            args.Cancel();
-        }
+    internal void PopupDoorClearanceDenied(EntityUid uid, EntityUid user)
+    {
+        if (TryComp<ShipAccessReaderComponent>(uid, out var reader) && reader.ShowDeniedPopup)
+            _popup.PopupEntity(Loc.GetString(reader.DeniedMessage), uid, user);
+    }
+
+    private void OnExamined(Entity<ShipAccessReaderComponent> ent, ref ExaminedEvent args)
+    {
+        if (args.IsInDetailsRange && HasComp<DoorComponent>(ent) && RequiresDoorClearance(ent))
+            args.PushMarkup(Loc.GetString("wh40k-ship-access-door-examine"));
     }
 
     private void OnLockToggleAttempt(EntityUid uid, ShipAccessReaderComponent component, ref LockToggleAttemptEvent args)

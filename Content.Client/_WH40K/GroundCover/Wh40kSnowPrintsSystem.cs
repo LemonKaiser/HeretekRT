@@ -45,11 +45,12 @@ public sealed partial class Wh40kSnowPrintsSystem : EntitySystem
     private const string ShoesSlot = "shoes";
 
     private readonly Dictionary<EntityUid, Dictionary<Vector2i, List<Wh40kSnowPrint>>> _prints = new();
-    private readonly Queue<Wh40kSnowPrint> _order = new();
+    private readonly LinkedList<Wh40kSnowPrint> _order = new();
     private readonly Dictionary<EntityUid, (EntityUid Grid, Vector2 Position, bool Right)> _walkers = new();
     private readonly List<EntityUid> _stale = new();
-    private readonly List<Vector2i> _bare = new();
-    private int _seenVersion = -1;
+    private readonly Dictionary<EntityUid, HashSet<Vector2i>> _changedChunks = new();
+    private readonly HashSet<EntityUid> _forgottenGrids = new();
+    private readonly List<Vector2i> _recheckTiles = new();
 
     /// <summary>Prints laid and not yet gone.</summary>
     public int PrintCount { get; private set; }
@@ -60,12 +61,17 @@ public sealed partial class Wh40kSnowPrintsSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        _cover.SnowChunkChanged += OnSnowChunkChanged;
+        _cover.SnowGridForgotten += OnSnowGridForgotten;
+        SubscribeLocalEvent<GridRemovalEvent>(OnGridRemoved);
         _overlay.AddOverlay(new Wh40kSnowPrintsOverlay(this));
     }
 
     public override void Shutdown()
     {
         base.Shutdown();
+        _cover.SnowChunkChanged -= OnSnowChunkChanged;
+        _cover.SnowGridForgotten -= OnSnowGridForgotten;
         _overlay.RemoveOverlay<Wh40kSnowPrintsOverlay>();
         Clear();
     }
@@ -76,6 +82,8 @@ public sealed partial class Wh40kSnowPrintsSystem : EntitySystem
         _prints.Clear();
         _order.Clear();
         _walkers.Clear();
+        _changedChunks.Clear();
+        _forgottenGrids.Clear();
         PrintCount = 0;
     }
 
@@ -96,20 +104,16 @@ public sealed partial class Wh40kSnowPrintsSystem : EntitySystem
     {
         base.FrameUpdate(frameTime);
 
-        if (_cover.Version != _seenVersion)
-        {
-            _seenVersion = _cover.Version;
-            Recheck();
-        }
+        RecheckChangedSnow();
 
         var now = _timing.CurTime;
-        while (_order.TryPeek(out var oldest) && (oldest.Gone || now - oldest.Laid > Lifetime || PrintCount > MaxPrints))
-        {
-            _order.Dequeue();
-            Remove(oldest);
-        }
+        while (_order.First is { } oldest && now - oldest.Value.Laid > Lifetime)
+            Remove(oldest.Value);
 
-        Walk();
+        if (_cover.HasKnownSnow)
+            Walk();
+        else
+            _walkers.Clear();
     }
 
     /// <summary>Lays a print for every mob that walked a step on snow cover since last frame.</summary>
@@ -180,84 +184,119 @@ public sealed partial class Wh40kSnowPrintsSystem : EntitySystem
 
         if (!tiles.TryGetValue(tile, out var list))
         {
-            list = new List<Wh40kSnowPrint>();
+            list = new List<Wh40kSnowPrint>(MaxPerTile);
             tiles[tile] = list;
         }
 
         if (list.Count >= MaxPerTile)
-        {
-            list[0].Gone = true;
-            list.RemoveAt(0);
-            PrintCount--;
-        }
+            Remove(list[0]);
 
         var print = new Wh40kSnowPrint(grid, tile, position, rotation, kind, _timing.CurTime, depth);
         list.Add(print);
-        _order.Enqueue(print);
+        print.OrderNode = _order.AddLast(print);
         PrintCount++;
+        if (PrintCount > MaxPrints && _order.First is { } oldest)
+            Remove(oldest.Value);
+
         return print;
     }
 
-    /// <summary>Drops prints whose snow is gone or has been filled in, after a snow update.</summary>
-    private void Recheck()
+    private void OnSnowChunkChanged(NetEntity net, Vector2i chunk)
     {
-        _stale.Clear();
-        foreach (var (grid, tiles) in _prints)
+        if (PrintCount == 0 || !TryGetEntity(net, out var grid) || !_prints.ContainsKey(grid.Value) || _forgottenGrids.Contains(grid.Value))
+            return;
+
+        if (!_changedChunks.TryGetValue(grid.Value, out var chunks))
+            _changedChunks.Add(grid.Value, chunks = new HashSet<Vector2i>());
+        chunks.Add(chunk);
+    }
+
+    private void OnSnowGridForgotten(NetEntity net)
+    {
+        if (TryGetEntity(net, out var grid) && _prints.ContainsKey(grid.Value))
+            _forgottenGrids.Add(grid.Value);
+    }
+
+    private void RecheckChangedSnow()
+    {
+        // A frame can receive several chunk updates. Use the last depth, as when rechecking the whole cover.
+        foreach (var grid in _forgottenGrids)
+            RecheckGrid(grid, null);
+        foreach (var (grid, chunks) in _changedChunks)
         {
-            if (TerminatingOrDeleted(grid))
-            {
-                _stale.Add(grid);
-                continue;
-            }
-
-            _bare.Clear();
-            foreach (var (tile, list) in tiles)
-            {
-                var depth = _cover.GetDepth(grid, tile);
-                for (var i = list.Count - 1; i >= 0; i--)
-                {
-                    var print = list[i];
-                    print.Filled = Math.Clamp((depth - print.Depth) / (float) FillUnits, 0f, 1f);
-                    print.Thickness = Thickness(print.Depth, depth);
-                    if (depth > 0 && print.Filled < 1f)
-                        continue;
-
-                    print.Gone = true;
-                    list.RemoveAt(i);
-                    PrintCount--;
-                }
-
-                if (list.Count == 0)
-                    _bare.Add(tile);
-            }
-
-            foreach (var tile in _bare)
-            {
-                tiles.Remove(tile);
-            }
+            if (!_forgottenGrids.Contains(grid))
+                RecheckGrid(grid, chunks);
         }
 
-        foreach (var grid in _stale)
+        _changedChunks.Clear();
+        _forgottenGrids.Clear();
+    }
+
+    private void RecheckGrid(EntityUid grid, HashSet<Vector2i>? chunks)
+    {
+        if (!_prints.TryGetValue(grid, out var tiles))
+            return;
+
+        if (chunks != null && chunks.Count * Wh40kSnowCover.ChunkArea < tiles.Count)
         {
-            foreach (var list in _prints[grid].Values)
+            foreach (var chunk in chunks)
             {
-                foreach (var print in list)
+                for (var i = 0; i < Wh40kSnowCover.ChunkArea; i++)
                 {
-                    print.Gone = true;
-                    PrintCount--;
+                    var tile = Wh40kSnowCover.TileAt(chunk, i);
+                    if (tiles.TryGetValue(tile, out var prints))
+                        RecheckTile(grid, tile, prints);
                 }
             }
 
-            _prints.Remove(grid);
+            return;
+        }
+
+        _recheckTiles.Clear();
+        foreach (var tile in tiles.Keys)
+        {
+            if (chunks == null || chunks.Contains(Wh40kSnowCover.ChunkOf(tile)))
+                _recheckTiles.Add(tile);
+        }
+
+        foreach (var tile in _recheckTiles)
+            RecheckTile(grid, tile, tiles[tile]);
+    }
+
+    private void RecheckTile(EntityUid grid, Vector2i tile, List<Wh40kSnowPrint> prints)
+    {
+        var depth = _cover.GetDepth(grid, tile);
+        for (var i = prints.Count - 1; i >= 0; i--)
+        {
+            var print = prints[i];
+            print.Filled = Math.Clamp((depth - print.Depth) / (float) FillUnits, 0f, 1f);
+            print.Thickness = Thickness(print.Depth, depth);
+            if (depth == 0 || print.Filled >= 1f)
+                Remove(print);
+        }
+    }
+
+    private void OnGridRemoved(GridRemovalEvent ev)
+    {
+        var grid = ev.EntityUid;
+        _changedChunks.Remove(grid);
+        _forgottenGrids.Remove(grid);
+        if (!_prints.Remove(grid, out var tiles))
+            return;
+
+        foreach (var prints in tiles.Values)
+        {
+            foreach (var print in prints)
+            {
+                _order.Remove(print.OrderNode);
+                PrintCount--;
+            }
         }
     }
 
     private void Remove(Wh40kSnowPrint print)
     {
-        if (print.Gone)
-            return;
-
-        print.Gone = true;
+        _order.Remove(print.OrderNode);
         PrintCount--;
         if (!_prints.TryGetValue(print.Grid, out var tiles) || !tiles.TryGetValue(print.Tile, out var list))
             return;
@@ -299,5 +338,5 @@ public sealed class Wh40kSnowPrint(EntityUid grid, Vector2i tile, Vector2 positi
     /// <summary>How much of its snow is left, 1 to 0, as melt thins the cover.</summary>
     public float Thickness = 1f;
 
-    public bool Gone;
+    internal LinkedListNode<Wh40kSnowPrint> OrderNode = default!;
 }

@@ -8,6 +8,7 @@ using Content.Shared._Mono.Detection;
 using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.BUI;
 using Content.Shared._WH40K.ChaosDungeon;
+using Content.Shared._WH40K.ShipFuel;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
@@ -77,6 +78,8 @@ public sealed partial class NavScreen : BoxContainer
     public event Action<string, string?>? PlanetaryLandingRequest;
     public event Action? PlanetaryLaunchRequest;
 
+    public void SetFuelReading(Wh40kShipFuelReading reading) => FuelGauge.SetReading(reading);
+
     public NavScreen()
     {
         RobustXamlLoader.Load(this);
@@ -123,6 +126,7 @@ public sealed partial class NavScreen : BoxContainer
         MarkersToggle.Pressed = NavRadar.ShowMarkers; // Mono
 
         NfInitialize(); // Frontier Initialization for the NavScreen
+        Wh40kEnableWaypoints();
     }
 
     private void SetNavigationMode(bool bssMode)

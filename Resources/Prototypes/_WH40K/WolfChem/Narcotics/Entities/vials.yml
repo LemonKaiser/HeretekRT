@@ -1,0 +1,129 @@
+# Small sealable vials for liquid drugs and naloxone.
+
+- type: entity
+  parent: BaseChemistryEmptyVial
+  id: Wh40kVial
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/vial.rsi
+    layers:
+    - state: icon_open
+      map: [ "enum.OpenableVisuals.Layer" ]
+    - state: fill-1
+      map: [ "enum.SolutionContainerLayers.Fill" ]
+      visible: false
+  - type: GenericVisualizer
+    visuals:
+      enum.OpenableVisuals.Opened:
+        enum.OpenableVisuals.Layer:
+          True: { state: icon_open }
+          False: { state: icon }
+  - type: SolutionContainerVisuals
+    maxFillLevels: 3
+    fillBaseName: fill-
+    inHandsMaxFillLevels: 0
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+  - type: SolutionTransfer
+    maxTransferAmount: 10
+  - type: Construction
+    graph: Wh40kVial
+    node: vial
+  - type: Openable
+    opened: true
+    closeable: true
+    sound:
+      collection: bottleOpenSounds
+    closeSound:
+      collection: bottleCloseSounds
+
+- type: entity
+  abstract: true
+  parent: [ Wh40kVial, Wh40kNarcoticMarks ]
+  id: Wh40kVialNarcoticBase
+  components:
+  - type: Openable
+    opened: false
+  - type: Tag
+    tags:
+    - CentrifugeCompatible
+    - Wh40kNarcotic
+
+- type: entity
+  parent: Wh40kVialNarcoticBase
+  id: Wh40kVialRedline
+  suffix: Redline
+  components:
+  - type: Label
+    currentLabel: wh40k-reagent-name-redline
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kRedline
+          Quantity: 10
+
+- type: entity
+  parent: Wh40kVialNarcoticBase
+  id: Wh40kVialAnvil
+  suffix: Anvil
+  components:
+  - type: Label
+    currentLabel: wh40k-reagent-name-anvil
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kAnvil
+          Quantity: 10
+
+- type: entity
+  parent: Wh40kVialNarcoticBase
+  id: Wh40kVialChorus
+  suffix: Chorus
+  components:
+  - type: Label
+    currentLabel: wh40k-reagent-name-chorus
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kChorus
+          Quantity: 10
+
+- type: entity
+  parent: Wh40kVialNarcoticBase
+  id: Wh40kVialHalo
+  suffix: Halo
+  components:
+  - type: Label
+    currentLabel: wh40k-reagent-name-halo
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kHalo
+          Quantity: 10
+
+- type: entity
+  parent: Wh40kVial
+  id: Wh40kVialNaloxone
+  suffix: Naloxone
+  components:
+  - type: Openable
+    opened: false
+  - type: Label
+    currentLabel: wh40k-reagent-name-naloxone
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 10
+        reagents:
+        - ReagentId: Wh40kNaloxone
+          Quantity: 10

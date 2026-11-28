@@ -1,0 +1,46 @@
+# Street stock: cut to a low grade so a chemist's own pure product is worth more.
+
+- type: entity
+  parent: Wh40kBaggieCocaine
+  id: Wh40kBaggieCocaineCut
+  components:
+  - type: Wh40kSolutionPurity
+    solution: baggie
+    reagents:
+      Wh40kCocaine: 0.55
+
+- type: entity
+  parent: Wh40kBaggieHeroin
+  id: Wh40kBaggieHeroinCut
+  components:
+  - type: Wh40kSolutionPurity
+    solution: baggie
+    reagents:
+      Wh40kHeroin: 0.5
+
+- type: entity
+  parent: Wh40kCrackRock
+  id: Wh40kCrackRockCut
+  components:
+  - type: Wh40kSolutionPurity
+    solution: food
+    reagents:
+      Wh40kCrack: 0.5
+
+- type: entity
+  parent: Wh40kCrystalShard
+  id: Wh40kCrystalShardCut
+  components:
+  - type: Wh40kSolutionPurity
+    solution: food
+    reagents:
+      Desoxyephedrine: 0.5
+
+- type: entity
+  parent: Wh40kVialHalo
+  id: Wh40kVialHaloCut
+  components:
+  - type: Wh40kSolutionPurity
+    solution: beaker
+    reagents:
+      Wh40kHalo: 0.5

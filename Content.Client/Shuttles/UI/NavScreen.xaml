@@ -3,6 +3,7 @@
               VerticalExpand="True"
               xmlns:controls="https://spacestation14.io"
               xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
+              xmlns:fuel="clr-namespace:Content.Client._WH40K.ShipFuel"
               xmlns:controls1="clr-namespace:Content.Client.UserInterface.Controls"
               xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
                 <!-- Mono - wrap -->
@@ -120,7 +121,7 @@
                         </controls:PanelContainer.PanelOverride>
                         <controls:BoxContainer Orientation="Horizontal" Margin="2 2 2 2">
                             <controls:Button Name="NavSubModeButton"
-                                             Text="NAV"
+                                             Text="{controls:Loc 'wh40k-shuttle-console-nav-tab'}"
                                              TextAlign="Center"
                                              StyleClasses="ButtonSquare"
                                              ToggleMode="True"
@@ -186,6 +187,7 @@
                     </controls:GridContainer>
                     </controls:PanelContainer>
                     </controls:PanelContainer>
+                    <fuel:Wh40kShipFuelGauge Name="FuelGauge" Margin="4 3 4 4"/>
                     <controls:BoxContainer Name="NavModeControls"
                                            Orientation="Vertical"
                                            HorizontalExpand="True">

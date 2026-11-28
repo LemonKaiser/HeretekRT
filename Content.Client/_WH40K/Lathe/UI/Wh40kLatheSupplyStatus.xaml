@@ -1,0 +1,8 @@
+<BoxContainer xmlns="https://spacestation14.io"
+              Orientation="Vertical"
+              HorizontalExpand="True"
+              Margin="5 0 5 5">
+    <Label Name="PartsSiloStatus" StyleClasses="LabelSubText" ClipText="True" />
+    <Label Name="ChemicalSiloStatus" StyleClasses="LabelSubText" ClipText="True" />
+    <RichTextLabel Text="{Loc 'lathe-menu-silo-link-hint'}" StyleClasses="LabelSubText" />
+</BoxContainer>

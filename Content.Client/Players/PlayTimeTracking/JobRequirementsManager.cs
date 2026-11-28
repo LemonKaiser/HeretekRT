@@ -54,6 +54,7 @@ public sealed partial class JobRequirementsManager : ISharedPlaytimeManager
             _roles.Clear();
             _jobWhitelists.Clear();
             _roleBans.Clear();
+            _whitelisted = false;
         }
     }
 

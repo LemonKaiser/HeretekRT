@@ -29,8 +29,14 @@
                           ToolTip="{Loc 'wh40k-options-contact-shadows-tooltip'}" />
                 <heritage:Wh40kToggleSwitch Name="PuddleReflectionsCheckBox" Text="{Loc 'wh40k-options-puddle-reflections'}"
                           ToolTip="{Loc 'wh40k-options-puddle-reflections-tooltip'}" />
+                <heritage:Wh40kToggleSwitch Name="BloodTrailsCheckBox" Text="{Loc 'wh40k-options-blood-trails'}"
+                          ToolTip="{Loc 'wh40k-options-blood-trails-tooltip'}" />
                 <heritage:Wh40kToggleSwitch Name="ShockwaveCheckBox" Text="{Loc 'wh40k-options-shockwave'}" />
                 <ui:OptionSlider Name="ShockwaveStrengthSlider" Title="{Loc 'wh40k-options-shockwave-strength'}" />
+                <heritage:Wh40kToggleSwitch Name="HeatHazeCheckBox" Text="{Loc 'wh40k-options-heat-haze'}" />
+                <ui:OptionSlider Name="HeatHazeStrengthSlider" Title="{Loc 'wh40k-options-heat-haze-strength'}" />
+                <heritage:Wh40kToggleSwitch Name="WarmthOverlayCheckBox" Text="{Loc 'wh40k-options-warmth-overlay'}"
+                          ToolTip="{Loc 'wh40k-options-warmth-overlay-tooltip'}" />
                 <ui:OptionDropDown Name="DropDownWeatherQuality" Title="{Loc 'wh40k-options-weather-quality'}" />
 
                 <!-- Interface -->

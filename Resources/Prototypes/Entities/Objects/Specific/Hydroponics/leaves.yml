@@ -37,6 +37,9 @@
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/tobacco.rsi
     state: dried
+  - type: Tag
+    tags:
+      - Wh40kBaggable
 
 - type: entity
   name: ground cannabis
@@ -63,6 +66,7 @@
   - type: Tag
     tags:
       - Smokable
+      - Wh40kBaggable
   - type: Item
     size: Tiny
     
@@ -249,5 +253,6 @@
   - type: Tag
     tags:
       - Smokable
+      - Wh40kBaggable
   - type: Item
     size: Tiny

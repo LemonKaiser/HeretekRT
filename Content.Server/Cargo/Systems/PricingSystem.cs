@@ -126,7 +126,7 @@ public sealed partial class PricingSystem : EntitySystem
                     continue;
 
                 // TODO check ReagentData for price information?
-                price += (float) quantity * reagentProto.PricePerUnit;
+                price += (float) quantity * reagentProto.PricePerUnit * solution.GetPriceFactor(reagent.Prototype);
             }
         }
 
@@ -145,7 +145,7 @@ public sealed partial class PricingSystem : EntitySystem
                     continue;
 
                 // TODO check ReagentData for price information?
-                price += (float) quantity * reagentProto.PricePerUnit;
+                price += (float) quantity * reagentProto.PricePerUnit * prototype.GetPriceFactor(reagent.Prototype);
             }
         }
 

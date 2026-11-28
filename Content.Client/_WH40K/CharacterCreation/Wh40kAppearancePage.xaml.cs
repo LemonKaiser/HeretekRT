@@ -168,6 +168,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         OnResized += UpdateAppearanceLayout;
 
         RefreshSpecies();
+        InitializeMarkingGlow();
         SelectSection(Wh40kAppearanceSection.Portraits);
     }
 
@@ -236,6 +237,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
         SpeechStylePicker.SetData(_draft.Profile.SpeechStyle);
         UpdateHairPickers();
         UpdateMarkings();
+        UpdateMarkingGlow();
         OnboardingFlavorText.CFlavorTextInput.TextRope = new Rope.Leaf(_draft.Profile.FlavorText);
         UpdateFlavorTextCharacterCount();
     }
@@ -352,6 +354,7 @@ public sealed partial class Wh40kAppearancePage : BoxContainer
 
         HairStylePicker.UpdateData(hair, _draft.Profile.Species, 1, _draft.Profile.Sex);
         FacialHairPicker.UpdateData(facialHair, _draft.Profile.Species, 1, _draft.Profile.Sex);
+        UpdateHairGlow();
     }
 
     private void UpdateMarkings()

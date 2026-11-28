@@ -187,6 +187,9 @@ public abstract partial class SharedGasTankSystem : EntitySystem
             }
         }
 
+        if (TryGetSuitWearerInternals(ent, out internalsUid, out internalsComp))
+            return true;
+
         return false;
     }
 

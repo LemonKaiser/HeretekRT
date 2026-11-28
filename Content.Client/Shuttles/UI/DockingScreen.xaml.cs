@@ -164,7 +164,7 @@ public sealed partial class DockingScreen : BoxContainer
                 continue;
 
             // Use the pressed button state to update indicators
-            lockIndicator.Text = enabled ? "LOCKED" : "UNLOCKED";
+            lockIndicator.Text = Loc.GetString(enabled ? "wh40k-shuttle-console-ftl-locked" : "wh40k-shuttle-console-ftl-unlocked");
             lockIndicator.FontColorOverride = enabled ? Color.Red : Color.Green;
         }
     }
@@ -346,7 +346,7 @@ public sealed partial class DockingScreen : BoxContainer
             }
 
             // Update the lock indicator
-            lockIndicator.Text = isLocked ? "LOCKED" : "UNLOCKED";
+            lockIndicator.Text = Loc.GetString(isLocked ? "wh40k-shuttle-console-ftl-locked" : "wh40k-shuttle-console-ftl-unlocked");
             lockIndicator.FontColorOverride = isLocked ? Color.Red : Color.Green;
         }
     }
@@ -400,6 +400,8 @@ public sealed partial class DockingScreen : BoxContainer
             var textLabel = new Label
             {
                 Text = dockText.ToString(),
+                ClipText = true,
+                ToolTip = dockText.ToString(),
                 HorizontalExpand = true,
                 Margin = new Thickness(4f, 0f),
             };
@@ -422,7 +424,7 @@ public sealed partial class DockingScreen : BoxContainer
                 // Add a lock icon/indicator for the connected grid
                 var lockIndicator = new Label
                 {
-                    Text = isLocked ? "LOCKED" : "UNLOCKED",
+                    Text = Loc.GetString(isLocked ? "wh40k-shuttle-console-ftl-locked" : "wh40k-shuttle-console-ftl-unlocked"),
                     HorizontalAlignment = Control.HAlignment.Right,
                     VerticalAlignment = Control.VAlignment.Center,
                     Margin = new Thickness(2f, 0f),

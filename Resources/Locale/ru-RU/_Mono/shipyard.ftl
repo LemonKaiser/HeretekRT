@@ -1,5 +1,5 @@
 shipyard-direction-message = Ваш {$shipName} находится примерно в {$distance} метрах на {$direction}!
-ship-access-denied = Вам нужен акт на корабль, чтобы получить доступ.
+ship-access-denied = Требуется судовой допуск.
 shipyard-console-capital-limited = Вы не можете иметь больше одного активного капитального судна!
 
 shipyard-console-denied = Вы не можете приобрести этот шаттл в данный момент.

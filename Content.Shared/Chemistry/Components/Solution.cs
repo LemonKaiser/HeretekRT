@@ -15,7 +15,7 @@ namespace Content.Shared.Chemistry.Components
     /// </summary>
     [Serializable, NetSerializable]
     [DataDefinition]
-    public sealed partial class Solution : IEnumerable<ReagentQuantity>, ISerializationHooks
+    public sealed partial class Solution : IEnumerable<ReagentQuantity>, ISerializationHooks, IRobustCloneable<Solution>
     {
         // This is a list because it is actually faster to add and remove reagents from
         // a list than a dictionary, though contains-reagent checks are slightly slower,
@@ -177,12 +177,13 @@ namespace Content.Shared.Chemistry.Components
             _heatCapacity = solution._heatCapacity;
             _heatCapacityDirty = solution._heatCapacityDirty;
             _heatCapacityUpdateCounter = solution._heatCapacityUpdateCounter;
+            Wh40kCopyPurityFrom(solution);
             ValidateSolution();
         }
 
         public Solution Clone()
         {
-            return new Solution(this);
+            return new Solution(this) { Name = Name, CanReact = CanReact };
         }
 
         [AssertionMethod]
@@ -367,6 +368,7 @@ namespace Content.Shared.Chemistry.Components
                 return;
             }
 
+            Wh40kBlendAddedPurity(id.Prototype, quantity);
             Volume += quantity;
             _heatCapacityDirty |= dirtyHeatCap;
             for (var i = 0; i < Contents.Count; i++)
@@ -472,6 +474,7 @@ namespace Content.Shared.Chemistry.Components
                 }
             }
 
+            Wh40kPrunePurity();
             _heatCapacityDirty = true;
             ValidateSolution();
         }
@@ -544,6 +547,7 @@ namespace Content.Shared.Chemistry.Components
                 Volume -= splitQuantity;
                 removedQuantity += splitQuantity;
             }
+            Wh40kPrunePurity();
             ValidateSolution();
 
             return removedQuantity;
@@ -574,6 +578,7 @@ namespace Content.Shared.Chemistry.Components
         public void RemoveAllSolution()
         {
             Contents.Clear();
+            Purity = null;
             Volume = FixedPoint2.Zero;
             _heatCapacityDirty = false;
             _heatCapacity = 0;
@@ -584,6 +589,7 @@ namespace Content.Shared.Chemistry.Components
         /// </summary>
         public Solution SplitSolutionWithout(FixedPoint2 toTake, params string[] excludedPrototypes)
         {
+            var wh40kPurity = Wh40kSnapshotPurity();
             // First remove the blacklisted prototypes
             List<ReagentQuantity> excluded = new();
             foreach (var id in excludedPrototypes)
@@ -608,6 +614,7 @@ namespace Content.Shared.Chemistry.Components
                 AddReagent(reagent);
             }
 
+            Wh40kRestorePurity(wh40kPurity, sol);
             return sol;
         }
 
@@ -616,6 +623,7 @@ namespace Content.Shared.Chemistry.Components
         /// </summary>
         public Solution SplitSolutionWithOnly(FixedPoint2 toTake, params string[] includedPrototypes)
         {
+            var wh40kPurity = Wh40kSnapshotPurity();
             // First remove the non-included prototypes
             List<ReagentQuantity> excluded = new();
             for (var i = Contents.Count - 1; i >= 0; i--)
@@ -636,6 +644,7 @@ namespace Content.Shared.Chemistry.Components
                 AddReagent(reagent);
             }
 
+            Wh40kRestorePurity(wh40kPurity, sol);
             return sol;
         }
 
@@ -701,6 +710,7 @@ namespace Content.Shared.Chemistry.Components
             _heatCapacityDirty = true;
             newSolution._heatCapacityDirty = true;
 
+            Wh40kSplitPurity(newSolution);
             ValidateSolution();
             newSolution.ValidateSolution();
 
@@ -720,6 +730,7 @@ namespace Content.Shared.Chemistry.Components
                 return new Solution();
 
             var origVol = Volume;
+            var wh40kPurity = Wh40kSnapshotPurity();
             Solution newSolution = new Solution(Contents.Count) { Temperature = Temperature };
 
             for (var i = Contents.Count - 1; i >= 0; i--) // iterate backwards because of remove swap.
@@ -758,6 +769,7 @@ namespace Content.Shared.Chemistry.Components
             }
             newSolution._heatCapacityDirty = true;
 
+            Wh40kRestorePurity(wh40kPurity, newSolution);
             ValidateSolution();
             newSolution.ValidateSolution();
 
@@ -776,6 +788,7 @@ namespace Content.Shared.Chemistry.Components
                 return new Solution();
 
             var origVol = Volume;
+            var wh40kPurity = Wh40kSnapshotPurity();
             Solution newSolution = new Solution(Contents.Count) { Temperature = Temperature };
 
             for (var i = Contents.Count - 1; i >= 0; i--) // iterate backwards because of remove swap.
@@ -818,6 +831,7 @@ namespace Content.Shared.Chemistry.Components
             }
             newSolution._heatCapacityDirty = true;
 
+            Wh40kRestorePurity(wh40kPurity, newSolution);
             ValidateSolution();
             newSolution.ValidateSolution();
 
@@ -872,6 +886,7 @@ namespace Content.Shared.Chemistry.Components
             DebugTools.Assert(remaining >= 0);
             DebugTools.Assert(remaining == 0 || Volume == FixedPoint2.Zero);
 
+            Wh40kPrunePurity();
             _heatCapacityDirty = true;
             ValidateSolution();
         }
@@ -881,6 +896,7 @@ namespace Content.Shared.Chemistry.Components
             if (otherSolution.Volume <= FixedPoint2.Zero)
                 return;
 
+            Wh40kBlendPurityFrom(otherSolution);
             Volume += otherSolution.Volume;
 
             var closeTemps = MathHelper.CloseTo(otherSolution.Temperature, Temperature);
@@ -1036,6 +1052,7 @@ namespace Content.Shared.Chemistry.Components
         public void SetContents(IEnumerable<ReagentQuantity> reagents, bool setMaxVol = false)
         {
             Volume = 0;
+            var wh40kPurity = Purity;
             RemoveAllSolution();
             _heatCapacityDirty = true;
             Contents = new(reagents);
@@ -1043,6 +1060,9 @@ namespace Content.Shared.Chemistry.Components
             {
                 Volume += reagent.Quantity;
             }
+
+            Purity = wh40kPurity;
+            Wh40kPrunePurity();
 
             if (setMaxVol)
                 MaxVolume = Volume;

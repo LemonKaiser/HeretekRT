@@ -50,6 +50,7 @@ public sealed partial class SingleMarkingPicker : BoxContainer
             Tiles.SetDisabled(value);
             foreach (var palette in PaletteContainer.Children.OfType<Wh40kColorPalette>())
                 palette.SetDisabled(value);
+            UpdateGlowDisabled();
         }
     }
 

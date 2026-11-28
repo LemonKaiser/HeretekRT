@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.WolfChem.Purity;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Chemistry;
@@ -296,6 +297,7 @@ namespace Content.Client.Chemistry.UI
                 var reagentId = reagent;
                 _prototypeManager.TryIndex(reagentId.Prototype, out ReagentPrototype? proto);
                 var name = proto?.LocalizedName ?? Loc.GetString("chem-master-window-unknown-reagent-text");
+                name = Wh40kPurityText.Name(name, state.Wh40kBufferPurity, reagentId.Prototype);
                 var reagentColor = proto?.SubstanceColor ?? default(Color);
                 reagentList.Add(new (reagentId, name, reagentColor, quantity));
             }
@@ -375,6 +377,7 @@ namespace Content.Client.Chemistry.UI
                 {
                     _prototypeManager.TryIndex(reagent.Reagent.Prototype, out ReagentPrototype? proto);
                     var name = proto?.LocalizedName ?? Loc.GetString("chem-master-window-unknown-reagent-text");
+                    name = Wh40kPurityText.Name(name, info.Purity, reagent.Reagent.Prototype);
                     var reagentColor = proto?.SubstanceColor ?? default(Color);
 
                     control.Children.Add(BuildReagentRow(reagentColor, rowCount++, name, reagent.Reagent, reagent.Quantity, false, addReagentButtons));

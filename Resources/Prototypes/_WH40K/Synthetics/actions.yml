@@ -11,3 +11,22 @@
       sprite: Interface/Actions/actions_borg.rsi
       state: diagnosis-module
     event: !type:Wh40kOpenChassisPanelActionEvent
+
+- type: entity
+  id: ActionWh40kChassisOverclock
+  name: Servo overclock
+  description: Toggle servo overclock. It increases movement speed by 25%, drains the battery faster, and heats up the chassis.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    itemIconStyle: NoItem
+    checkCanInteract: false
+    useDelay: 1
+    temporary: true
+    icon:
+      sprite: _WH40K/Interface/Actions/chassis_overclock.rsi
+      state: off
+    iconOn:
+      sprite: _WH40K/Interface/Actions/chassis_overclock.rsi
+      state: icon
+    event: !type:Wh40kToggleOverclockActionEvent

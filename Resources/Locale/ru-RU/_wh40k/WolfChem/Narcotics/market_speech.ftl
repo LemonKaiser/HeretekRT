@@ -1,0 +1,34 @@
+wh40k-narcotics-buyer-appraise-cold = Скупщик осматривает товар и кивает.
+wh40k-narcotics-buyer-appraise-near = Скупщик медленно кивает. Ещё немного — и по округе пойдут слухи.
+wh40k-narcotics-buyer-appraise-warm = Скупщик косится на дверь. О такой партии заговорят, и полную цену дать не выйдет.
+wh40k-narcotics-buyer-appraise-hot = Скупщик нервно поглядывает на выход. Сейчас уйдёт за бесценок, а таможня узнает ваше имя.
+wh40k-narcotics-buyer-sold-cold = Скупщик молча забирает товар.
+wh40k-narcotics-buyer-sold-near = Скупщик забирает товар и советует не появляться здесь слишком скоро.
+wh40k-narcotics-buyer-sold-warm = Скупщик отсчитывает меньше обычного и торопит вас уйти. Люди начинают болтать.
+wh40k-narcotics-buyer-sold-hot = Скупщик платит с урезкой и прячет глаза. Вас слишком хорошо запомнили.
+wh40k-narcotics-buyer-sold-wanted = Скупщик платит с урезкой и отводит взгляд. Кто-то уже сдал ваше имя таможне.
+
+wh40k-narcotics-tip-goods = наркотики
+wh40k-narcotics-tip-cold = Наводка: на объекте { $place } сбыли { $goods }. Кто продавец — неизвестно.
+wh40k-narcotics-tip-warm = Наводка: на объекте { $place } сбыли { $goods }. Говорят, продавец летает на судне класса { $ship }.
+wh40k-narcotics-tip-hot = Наводка: крупная партия ({ $goods }) сбыта на объекте { $place }. Продавец: { $who }, судно класса { $ship }.
+wh40k-narcotics-tip-hot-on-foot = Наводка: крупная партия ({ $goods }) сбыта на объекте { $place }. Продавец: { $who }.
+wh40k-narcotics-tip-who = { $species }
+wh40k-narcotics-tip-who-dressed = { $species } в { $clothing }
+wh40k-narcotics-tip-who-unknown = неизвестный, которого никто не смог описать
+
+wh40k-drug-speech-filler-1 = э-э
+wh40k-drug-speech-filler-2 = типа
+wh40k-drug-speech-filler-3 = ну
+wh40k-drug-speech-filler-4 = понимаешь
+wh40k-drug-speech-tail-1 = чувак
+wh40k-drug-speech-tail-2 = или типа того
+wh40k-drug-speech-tail-3 = дружище
+wh40k-drug-speech-forget-1 = ага.
+wh40k-drug-speech-forget-2 = стоп, о чём я?
+wh40k-drug-speech-forget-3 = да забей.
+wh40k-drug-speech-forget-4 = куда это я вёл?
+wh40k-drug-speech-gush-1 = Как же это прекрасно~
+wh40k-drug-speech-gush-2 = Вокруг так тепло~
+wh40k-drug-speech-gush-3 = Вы все такие классные, знаете об этом?
+wh40k-drug-speech-gush-4 = Это просто потрясающе!

@@ -1,0 +1,136 @@
+- type: entity
+  id: BaseWh40kHorrorMob
+  parent: SimpleSpaceMobBase
+  abstract: true
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: MeleeWeapon
+    hidden: true
+    animation: WeaponArcClaw
+
+- type: entity
+  id: CitadelRPMobDerelictHorror
+  parent: BaseWh40kHorrorMob
+  components:
+  - type: Sprite
+    sprite: _WH40K/Fauna/Mobs/CitadelRP/derelict_horror.rsi
+    scale: 1.1, 1.1
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: horror
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: horror
+      Dead:
+        Base: horror_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      180: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.2
+    baseSprintSpeed: 3.2
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/_WH40K/Fauna/CitadelRP/drone_attack.ogg
+    damage:
+      types:
+        Slash: 24
+  - type: PointLight
+    radius: 2
+    energy: 1
+    color: "#4fa8ff"
+
+- type: entity
+  id: DS13MobBrute
+  parent: BaseWh40kHorrorMob
+  components:
+  - type: Sprite
+    sprite: _WH40K/Fauna/Mobs/DS13/brute.rsi
+    layers:
+    - state: brute_l_leg
+    - state: brute_r_leg
+    - state: brute_chest
+    - state: brute_head
+    - state: brute_l_arm
+    - state: brute_r_arm
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      260: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.7
+    baseSprintSpeed: 2.7
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/_WH40K/Fauna/DS13/brute/brute_attack_1.ogg
+    attackRate: 0.8
+    animation: WeaponArcSmash
+    damage:
+      types:
+        Blunt: 32
+
+- type: entity
+  id: SojournMobNightmareStalker
+  parent: BaseWh40kHorrorMob
+  components:
+  - type: Sprite
+    sprite: _WH40K/Fauna/Mobs/Sojourn/nightmare.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: nightmare
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: nightmare
+      Dead:
+        Base: nightmare_dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      115: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4.2
+    baseSprintSpeed: 4.2
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/bite.ogg
+    animation: WeaponArcBite
+    damage:
+      types:
+        Piercing: 20
+
+- type: entity
+  id: ShiptestMobWendigo
+  parent: BaseWh40kHorrorMob
+  components:
+  - type: Sprite
+    sprite: _WH40K/Fauna/Mobs/Shiptest/wendigo.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base"]
+      state: wendigo
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: wendigo
+      Dead:
+        Base: dead
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      210: Dead
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 3.5
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/demon_attack1.ogg
+    damage:
+      types:
+        Slash: 28

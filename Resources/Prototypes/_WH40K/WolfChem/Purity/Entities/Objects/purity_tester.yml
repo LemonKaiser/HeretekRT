@@ -1,0 +1,13 @@
+- type: entity
+  parent: BaseItem
+  id: Wh40kPurityTester
+  components:
+  - type: Sprite
+    sprite: Objects/Specific/Medical/mouth_swab.rsi
+    state: icon
+    color: "#c8e070"
+  - type: Item
+    size: Tiny
+  - type: Wh40kPurityTester
+  - type: StaticPrice
+    price: 120

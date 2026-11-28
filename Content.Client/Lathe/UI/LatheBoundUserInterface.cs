@@ -1,3 +1,4 @@
+using Content.Shared._WH40K.Lathe;
 using Content.Shared.Lathe;
 using Content.Shared.Research.Components;
 using JetBrains.Annotations;
@@ -35,6 +36,7 @@ namespace Content.Client.Lathe.UI
             _menu.OnLoopCheckboxPressed += (loop) => SendMessage(new LatheSetLoopingMessage(loop));
             _menu.OnSkipCheckboxPressed += (skip) => SendMessage(new LatheSetSkipMessage(skip));
             _menu.OnRecipeCancelled += (index) => SendMessage(new LatheRecipeCancelMessage(index));
+            _menu.OnRecipeAmountChanged += (index, amount) => SendMessage(new Wh40kLatheRecipeAmountMessage(index, amount));
             // </Mono>
         }
 
@@ -45,6 +47,7 @@ namespace Content.Client.Lathe.UI
             switch (state)
             {
                 case LatheUpdateState msg:
+                    _menu?.SetSupplyState(msg);
                     if (_menu != null)
                         _menu.Recipes = msg.Recipes;
                     _menu?.PopulateRecipes();

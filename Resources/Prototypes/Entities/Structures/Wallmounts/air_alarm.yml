@@ -7,6 +7,8 @@
     snap:
     - Wallmount
   components:
+  - type: Wh40kShipPaSpeaker
+    fallback: true
   - type: StationAiWhitelist
   - type: WallMount
   - type: ApcPowerReceiver

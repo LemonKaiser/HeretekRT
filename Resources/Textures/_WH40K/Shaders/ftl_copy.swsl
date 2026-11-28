@@ -1,0 +1,7 @@
+// Lighting is live while the layers below the world draw, so a default-shader copy would be dimmed by the light map.
+light_mode unshaded;
+blend_mode none;
+
+void fragment() {
+    COLOR = zTexture(UV);
+}

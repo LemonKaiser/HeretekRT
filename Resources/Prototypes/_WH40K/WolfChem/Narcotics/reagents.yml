@@ -1,0 +1,241 @@
+# Street drugs and opioid reversal agent. Each drug's high lives in its wh40kDrugProfile (profiles.yml).
+
+- type: reagent
+  id: Wh40kCocaAlkaloid
+  name: wh40k-reagent-name-coca-alkaloid
+  group: Narcotics
+  desc: wh40k-reagent-desc-coca-alkaloid
+  physicalDesc: reagent-physical-desc-pungent
+  flavor: bitter
+  color: "#7a8f4a"
+  pricePerUnit: 8
+  metabolisms:
+    Narcotic:
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kCocaine
+        perUnit: 0.2
+
+- type: reagent
+  id: Wh40kCocaine
+  name: wh40k-reagent-name-cocaine
+  group: Narcotics
+  desc: wh40k-reagent-desc-cocaine
+  physicalDesc: reagent-physical-desc-powdery
+  flavor: bitter
+  color: "#f4f4f0"
+  pricePerUnit: 1000
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kCocaine
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kCrack
+  name: wh40k-reagent-name-crack
+  group: Narcotics
+  desc: wh40k-reagent-desc-crack
+  physicalDesc: reagent-physical-desc-crystalline
+  flavor: bitter
+  color: "#e8dcc0"
+  pricePerUnit: 1300
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.02
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kCrack
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kOpium
+  name: wh40k-reagent-name-opium
+  group: Narcotics
+  desc: wh40k-reagent-desc-opium
+  physicalDesc: reagent-physical-desc-sticky
+  flavor: bitter
+  color: "#4a2a14"
+  pricePerUnit: 250
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kOpium
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kHeroin
+  name: wh40k-reagent-name-heroin
+  group: Narcotics
+  desc: wh40k-reagent-desc-heroin
+  physicalDesc: reagent-physical-desc-powdery
+  flavor: bitter
+  color: "#c9b79c"
+  pricePerUnit: 630
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kHeroin
+        perUnit: 1
+      - !type:Wh40kSedation
+        profile: Wh40kHeroin
+        sedationPerUnit: 0.045
+
+- type: reagent
+  id: Wh40kRedlineBase
+  name: wh40k-reagent-name-redline-base
+  group: Narcotics
+  desc: wh40k-reagent-desc-redline-base
+  physicalDesc: reagent-physical-desc-oily
+  flavor: bitter
+  color: "#7a1d1d"
+  pricePerUnit: 40
+
+- type: reagent
+  id: Wh40kRedline
+  name: wh40k-reagent-name-redline
+  group: Narcotics
+  desc: wh40k-reagent-desc-redline
+  physicalDesc: reagent-physical-desc-glowing
+  flavor: bitter
+  color: "#e0202a"
+  pricePerUnit: 770
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.02
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kRedline
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kAnvilBase
+  name: wh40k-reagent-name-anvil-base
+  group: Narcotics
+  desc: wh40k-reagent-desc-anvil-base
+  physicalDesc: reagent-physical-desc-metallic
+  flavor: metallic
+  color: "#5b6470"
+  pricePerUnit: 40
+
+- type: reagent
+  id: Wh40kAnvil
+  name: wh40k-reagent-name-anvil
+  group: Narcotics
+  desc: wh40k-reagent-desc-anvil
+  physicalDesc: reagent-physical-desc-ferrous
+  flavor: metallic
+  color: "#38404a"
+  pricePerUnit: 770
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.02
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kAnvil
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kLatticeResidue
+  name: wh40k-reagent-name-lattice-residue
+  group: Toxins
+  desc: wh40k-reagent-desc-lattice-residue
+  physicalDesc: reagent-physical-desc-glowing
+  flavor: metallic
+  color: "#b040e0"
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Radiation: 0.5
+
+- type: reagent
+  id: Wh40kChorusBase
+  name: wh40k-reagent-name-chorus-base
+  group: Narcotics
+  desc: wh40k-reagent-desc-chorus-base
+  physicalDesc: reagent-physical-desc-shiny
+  flavor: bitter
+  color: "#7d4fb8"
+  pricePerUnit: 50
+
+- type: reagent
+  id: Wh40kChorus
+  name: wh40k-reagent-name-chorus
+  group: Narcotics
+  desc: wh40k-reagent-desc-chorus
+  physicalDesc: reagent-physical-desc-shiny
+  flavor: chalky
+  color: "#c79cff"
+  pricePerUnit: 1050
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kChorus
+        perUnit: 1
+
+- type: reagent
+  id: Wh40kHaloBase
+  name: wh40k-reagent-name-halo-base
+  group: Narcotics
+  desc: wh40k-reagent-desc-halo-base
+  physicalDesc: reagent-physical-desc-syrupy
+  flavor: sweet
+  color: "#d9b86a"
+  pricePerUnit: 40
+
+- type: reagent
+  id: Wh40kHalo
+  name: wh40k-reagent-name-halo
+  group: Narcotics
+  desc: wh40k-reagent-desc-halo
+  physicalDesc: reagent-physical-desc-soothing
+  flavor: sweet
+  color: "#ffe28a"
+  pricePerUnit: 740
+  metabolisms:
+    Narcotic:
+      metabolismRate: 0.01
+      effects:
+      - !type:Wh40kDose
+        profile: Wh40kHalo
+        perUnit: 1
+
+# Opioid antagonist for reversing heroin, opium and fentanyl overdoses.
+- type: reagent
+  id: Wh40kNaloxone
+  name: wh40k-reagent-name-naloxone
+  group: Medicine
+  desc: wh40k-reagent-desc-naloxone
+  physicalDesc: reagent-physical-desc-clear
+  flavor: bitter
+  color: "#7dd3fc"
+  metabolisms:
+    Medicine:
+      metabolismRate: 0.5
+      effects:
+      - !type:Wh40kClearIntoxication
+        family: Opioid
+        amount: 4
+      - !type:GenericStatusEffect
+        key: Drowsiness
+        time: 6
+        type: Remove
+      - !type:GenericStatusEffect
+        key: ForcedSleep
+        time: 4
+        type: Remove
+      - !type:HealthChange
+        damage:
+          types:
+            Asphyxiation: -2

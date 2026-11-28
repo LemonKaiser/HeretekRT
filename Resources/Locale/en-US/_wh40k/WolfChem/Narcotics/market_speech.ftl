@@ -1,0 +1,34 @@
+wh40k-narcotics-buyer-appraise-cold = The buyer looks it over and nods.
+wh40k-narcotics-buyer-appraise-near = The buyer looks it over and nods, slowly. Not much more than this before people talk.
+wh40k-narcotics-buyer-appraise-warm = The buyer looks it over, then at the door. This much gets talked about, and it won't all fetch full price.
+wh40k-narcotics-buyer-appraise-hot = The buyer keeps glancing at the door. Sell this now and it goes cheap, and customs will have your name.
+wh40k-narcotics-buyer-sold-cold = The buyer takes it without a word.
+wh40k-narcotics-buyer-sold-near = The buyer takes it and tells you not to come back too soon.
+wh40k-narcotics-buyer-sold-warm = The buyer pays short and hurries you out. People are starting to talk.
+wh40k-narcotics-buyer-sold-hot = The buyer pays short and won't meet your eye. People got a good look at you.
+wh40k-narcotics-buyer-sold-wanted = The buyer pays short and won't meet your eye. Someone has given customs your name.
+
+wh40k-narcotics-tip-goods = narcotics
+wh40k-narcotics-tip-cold = Tip-off: { $goods } changed hands at { $place }. No word on who.
+wh40k-narcotics-tip-warm = Tip-off: { $goods } changed hands at { $place }. The seller is said to fly { INDEFINITE($ship) } { $ship }-class ship.
+wh40k-narcotics-tip-hot = Tip-off: a lot of { $goods } changed hands at { $place }. The seller: { $who }, flying { INDEFINITE($ship) } { $ship }-class ship.
+wh40k-narcotics-tip-hot-on-foot = Tip-off: a lot of { $goods } changed hands at { $place }. The seller: { $who }.
+wh40k-narcotics-tip-who = { INDEFINITE($species) } { $species }
+wh40k-narcotics-tip-who-dressed = { INDEFINITE($species) } { $species } in { INDEFINITE($clothing) } { $clothing }
+wh40k-narcotics-tip-who-unknown = someone nobody could describe
+
+wh40k-drug-speech-filler-1 = uh
+wh40k-drug-speech-filler-2 = like
+wh40k-drug-speech-filler-3 = um
+wh40k-drug-speech-filler-4 = y'know
+wh40k-drug-speech-tail-1 = man
+wh40k-drug-speech-tail-2 = or whatever
+wh40k-drug-speech-tail-3 = dude
+wh40k-drug-speech-forget-1 = yeah.
+wh40k-drug-speech-forget-2 = wait, what?
+wh40k-drug-speech-forget-3 = never mind.
+wh40k-drug-speech-forget-4 = where was I going with that?
+wh40k-drug-speech-gush-1 = I love this~
+wh40k-drug-speech-gush-2 = Everything's so warm~
+wh40k-drug-speech-gush-3 = You're all so great, you know that?
+wh40k-drug-speech-gush-4 = This is amazing!

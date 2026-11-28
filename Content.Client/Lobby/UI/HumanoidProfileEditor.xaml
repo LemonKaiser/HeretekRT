@@ -48,7 +48,7 @@
                                             </BoxContainer>
                                         </GridContainer>
                                         <Label Text="{Loc 'humanoid-profile-editor-custom-species-label'}"/>
-                                        <LineEdit Name="CustomSpeciesNameEdit" HorizontalExpand="True"/>
+                                        <LineEdit Name="CustomSpeciesNameEdit" Editable="False" HorizontalExpand="True"/>
                                         <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}"/>
                                         <OptionButton Name="SpawnPriorityButton" HorizontalExpand="True"/>
                                     </BoxContainer>

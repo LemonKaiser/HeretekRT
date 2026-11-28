@@ -478,7 +478,9 @@ public sealed partial class StationJobsSystem : EntitySystem
         if (!pickOverflows)
             return null;
 
-        var overflows = GetOverflowJobs(station);
+        var overflows = GetOverflowJobs(station)
+            .Where(job => disallowedJobs?.Contains(job) != true)
+            .ToList();
         if (overflows.Count == 0)
             return null;
 

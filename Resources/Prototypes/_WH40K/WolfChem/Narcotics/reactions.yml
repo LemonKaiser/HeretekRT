@@ -1,0 +1,313 @@
+# Drug chemistry and graded reactions. Each wh40kReactionPurity entry shares its reaction ID.
+
+- type: reaction
+  id: Wh40kCocaine
+  minTemp: 310
+  reactants:
+    Wh40kCocaAlkaloid:
+      amount: 3
+    SodiumCarbonate:
+      amount: 1
+    Acetone:
+      amount: 1
+  products:
+    Wh40kCocaine: 3
+
+- type: wh40kReactionPurity
+  id: Wh40kCocaine
+  optimalTemp: 330
+  tolerance: 40
+  drift: 8
+
+- type: reaction
+  id: Wh40kCrackRock
+  minTemp: 370
+  reactants:
+    Wh40kCocaine:
+      amount: 5
+    SodiumCarbonate:
+      amount: 1
+    Water:
+      amount: 1
+  effects:
+  - !type:Wh40kCreateGradedEntity
+    entity: Wh40kCrackRock
+
+- type: wh40kReactionPurity
+  id: Wh40kCrackRock
+  optimalTemp: 385
+  tolerance: 30
+  drift: 8
+
+- type: reaction
+  id: Wh40kHeroin
+  minTemp: 330
+  reactants:
+    Wh40kOpium:
+      amount: 2
+    Vinegar:
+      amount: 1
+    Ammonia:
+      amount: 1
+  products:
+    Wh40kHeroin: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kHeroin
+  optimalTemp: 350
+  tolerance: 30
+  drift: 8
+
+- type: reaction
+  id: Wh40kOpiumResin
+  maxTemp: 270
+  reactants:
+    Wh40kOpium:
+      amount: 5
+    Water:
+      amount: 1
+      catalyst: true
+  effects:
+  - !type:Wh40kCreateGradedEntity
+    entity: Wh40kOpiumResin
+
+- type: wh40kReactionPurity
+  id: Wh40kOpiumResin
+  optimalTemp: 250
+  tolerance: 30
+  drift: 8
+
+- type: wh40kReactionPurity
+  id: Desoxyephedrine
+  optimalTemp: 385
+  tolerance: 30
+  drift: 8
+
+- type: reaction
+  id: Wh40kCrystalShard
+  maxTemp: 240
+  reactants:
+    Desoxyephedrine:
+      amount: 5
+    Acetone:
+      amount: 1
+      catalyst: true
+  effects:
+  - !type:Wh40kCreateGradedEntity
+    entity: Wh40kCrystalShard
+
+- type: wh40kReactionPurity
+  id: Wh40kCrystalShard
+  optimalTemp: 220
+  tolerance: 25
+  drift: 8
+
+- type: reaction
+  id: Wh40kRedlineBase
+  minTemp: 340
+  reactants:
+    Ephedrine:
+      amount: 1
+    Phosphorus:
+      amount: 1
+    Plasma:
+      amount: 1
+  products:
+    Wh40kRedlineBase: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kRedlineBase
+  optimalTemp: 360
+  tolerance: 25
+  drift: 8
+
+- type: reaction
+  id: Wh40kRedline
+  reactants:
+    Wh40kRedlineBase:
+      amount: 2
+    Epinephrine:
+      amount: 1
+    Iron:
+      amount: 1
+  products:
+    Wh40kRedline: 3
+
+- type: wh40kReactionPurity
+  id: Wh40kRedline
+  optimalTemp: 300
+  tolerance: 20
+  drift: 8
+
+- type: reaction
+  id: Wh40kAnvilBase
+  minTemp: 320
+  reactants:
+    Bicaridine:
+      amount: 1
+    Silicon:
+      amount: 1
+    Lithium:
+      amount: 1
+  products:
+    Wh40kAnvilBase: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kAnvilBase
+  optimalTemp: 340
+  tolerance: 25
+  drift: 8
+
+- type: reaction
+  id: Wh40kAnvil
+  reactants:
+    Wh40kAnvilBase:
+      amount: 2
+    Tricordrazine:
+      amount: 1
+    Mercury:
+      amount: 1
+  products:
+    Wh40kAnvil: 3
+
+- type: wh40kReactionPurity
+  id: Wh40kAnvil
+  optimalTemp: 290
+  tolerance: 20
+  drift: 8
+
+- type: reaction
+  id: Wh40kHaloBase
+  minTemp: 300
+  reactants:
+    Happiness:
+      amount: 1
+    Oil:
+      amount: 1
+    Potassium:
+      amount: 1
+  products:
+    Wh40kHaloBase: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kHaloBase
+  optimalTemp: 310
+  tolerance: 30
+  drift: 8
+
+- type: reaction
+  id: Wh40kHalo
+  reactants:
+    Wh40kHaloBase:
+      amount: 2
+    Ammonia:
+      amount: 1
+    Copper:
+      amount: 1
+  products:
+    Wh40kHalo: 3
+
+- type: wh40kReactionPurity
+  id: Wh40kHalo
+  optimalTemp: 340
+  tolerance: 20
+  drift: 8
+
+# Craftable warp-tainted precursor for Chorus so it is fully synthesizable in Koronus.
+- type: reaction
+  id: Wh40kLatticeResidue
+  minTemp: 360
+  reactants:
+    Plasma:
+      amount: 1
+    MindbreakerToxin:
+      amount: 1
+    Uranium:
+      amount: 1
+  products:
+    Wh40kLatticeResidue: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kLatticeResidue
+  optimalTemp: 390
+  tolerance: 30
+  drift: 8
+
+- type: reaction
+  id: Wh40kChorusBase
+  maxTemp: 290
+  reactants:
+    Wh40kLatticeResidue:
+      amount: 1
+    SpaceDrugs:
+      amount: 1
+    Ethanol:
+      amount: 1
+  products:
+    Wh40kChorusBase: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kChorusBase
+  optimalTemp: 270
+  tolerance: 25
+  drift: 8
+
+- type: reaction
+  id: Wh40kChorus
+  reactants:
+    Wh40kChorusBase:
+      amount: 2
+    MindbreakerToxin:
+      amount: 1
+    Iodine:
+      amount: 1
+  products:
+    Wh40kChorus: 3
+
+- type: wh40kReactionPurity
+  id: Wh40kChorus
+  optimalTemp: 310
+  tolerance: 20
+  drift: 8
+
+# Cutting: flour stretches a powder a unit for a unit and halves its grade.
+- type: reaction
+  id: Wh40kCutCocaine
+  reactants:
+    Wh40kCocaine:
+      amount: 1
+    Flour:
+      amount: 1
+  products:
+    Wh40kCocaine: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kCutCocaine
+  fillers: [ Flour ]
+
+- type: reaction
+  id: Wh40kCutHeroin
+  reactants:
+    Wh40kHeroin:
+      amount: 1
+    Flour:
+      amount: 1
+  products:
+    Wh40kHeroin: 2
+
+- type: wh40kReactionPurity
+  id: Wh40kCutHeroin
+  fillers: [ Flour ]
+
+# Opioid reversal agent synthesis.
+- type: reaction
+  id: Wh40kNaloxone
+  reactants:
+    Dylovene:
+      amount: 1
+    Epinephrine:
+      amount: 1
+    Carbon:
+      amount: 1
+  products:
+    Wh40kNaloxone: 2

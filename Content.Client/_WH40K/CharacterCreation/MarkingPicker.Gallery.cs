@@ -151,7 +151,10 @@ public sealed partial class MarkingPicker
                     continue;
 
                 var name = new RichTextLabel { HorizontalExpand = true, VerticalAlignment = VAlignment.Center, MouseFilter = MouseFilterMode.Ignore };
-                name.SetMessage(FormattedMessage.FromUnformatted(GetMarkingName(prototype)));
+                var displayName = IsGlowing?.Invoke(marking.MarkingId) == true
+                    ? $"{GetMarkingName(prototype)} ✦"
+                    : GetMarkingName(prototype);
+                name.SetMessage(FormattedMessage.FromUnformatted(displayName));
                 var preview = Tiles.CreateMarkingPreview(prototype.Sprites, true, 27);
                 preview.SetWidth = 27;
                 preview.SetColors(marking.MarkingColors);
@@ -183,6 +186,7 @@ public sealed partial class MarkingPicker
         GalleryColors.DisposeAllChildren();
         GallerySample.DisposeAllChildren();
         _galleryDetailPreview = null;
+        _galleryGlowCheckBox = null;
         if (_gallerySelection == null || !GetMarkings(_selectedMarkingCategory).TryGetValue(_gallerySelection, out var prototype))
         {
             GalleryDetails.Visible = false;
@@ -200,6 +204,20 @@ public sealed partial class MarkingPicker
         GallerySample.AddChild(_galleryDetailPreview);
         _galleryApply.Visible = !applied;
         _galleryUp.Visible = _galleryDown.Visible = _galleryActionSpacer.Visible = _galleryRemove.Visible = applied;
+
+        if (applied && prototype.Shader == null && IsGlowing != null)
+        {
+            var markingId = prototype.ID;
+            _galleryGlowCheckBox = new CheckBox
+            {
+                Text = Loc.GetString("wh40k-marking-glow-toggle"),
+                ToolTip = Loc.GetString("wh40k-marking-glow-tooltip"),
+                Pressed = IsGlowing(markingId),
+                Disabled = EditingDisabled,
+            };
+            _galleryGlowCheckBox.OnToggled += args => OnGlowChanged?.Invoke(markingId, args.Pressed);
+            GalleryColors.AddChild(_galleryGlowCheckBox);
+        }
 
         if (!prototype.ForcedColoring)
         {
@@ -228,6 +246,8 @@ public sealed partial class MarkingPicker
         _galleryRemove.Disabled = EditingDisabled || index < 0;
         foreach (var palette in GalleryColors.Children.OfType<Wh40kColorPalette>())
             palette.SetDisabled(EditingDisabled);
+        if (_galleryGlowCheckBox != null)
+            _galleryGlowCheckBox.Disabled = EditingDisabled;
     }
 
     private void SetGalleryColor(MarkingPrototype prototype, int layer, Color color)

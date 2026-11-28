@@ -41,6 +41,7 @@ namespace Content.Client.Construction.UI
         event EventHandler<bool> BuildButtonToggled;
         event EventHandler<bool> EraseButtonToggled;
         event EventHandler ClearAllGhosts;
+        event EventHandler<int> CraftRepeatPressed;
 
         void ClearRecipeInfo();
         void SetRecipeInfo(string name, string description, Texture iconTexture, bool isItem, bool isFavorite);
@@ -114,6 +115,7 @@ namespace Content.Client.Construction.UI
             EraseButton.OnToggled += args => EraseButtonToggled?.Invoke(this, args.Pressed);
 
             FavoriteButton.OnPressed += args => RecipeFavorited?.Invoke(this, EventArgs.Empty);
+            CraftRepeat.OnRepeat += count => CraftRepeatPressed?.Invoke(this, count);
 
             MenuGridViewButton.OnToggled += _ =>
                 PopulateRecipes?.Invoke(this, (SearchBar.Text, Categories[OptionCategories.SelectedId]));
@@ -125,6 +127,7 @@ namespace Content.Client.Construction.UI
         public event EventHandler? RecipeFavorited;
         public event EventHandler<bool>? BuildButtonToggled;
         public event EventHandler<bool>? EraseButtonToggled;
+        public event EventHandler<int>? CraftRepeatPressed;
 
         public void ResetPlacement()
         {
@@ -137,6 +140,7 @@ namespace Content.Client.Construction.UI
         {
             BuildButton.Disabled = false;
             BuildButton.Text = Loc.GetString(isItem ? "construction-menu-place-ghost" : "construction-menu-craft");
+            CraftRepeat.Visible = !isItem;
             TargetName.SetMessage(name);
             TargetDesc.SetMessage(description);
             TargetTexture.Texture = iconTexture;
@@ -152,6 +156,7 @@ namespace Content.Client.Construction.UI
             TargetDesc.SetMessage(string.Empty);
             TargetTexture.Texture = null;
             FavoriteButton.Visible = false;
+            CraftRepeat.Visible = false;
             RecipeStepList.Clear();
         }
     }

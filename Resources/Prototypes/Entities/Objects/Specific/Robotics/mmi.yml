@@ -108,6 +108,7 @@
     - type: Organ
       slotId: posbrain
     - type: Brain
+    - type: Wh40kNeurowareHost
     - type: BlockMovement
     - type: Examiner
     - type: BorgBrain

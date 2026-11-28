@@ -39,9 +39,26 @@
   - type: HeldSpeedModifier
   - type: Item
     size: Ginormous
+  - type: Wh40kSuitTankStorage
+  - type: Storage
+    grid:
+    - 0,0,1,1
+    maxItemSize: Normal
+    whitelist:
+      components:
+      - GasTank
+    blacklist:
+      components:
+      - Jetpack
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:Container {}
+      storagebase: !type:Container
+        ents: []
   - type: GroupExamine
   - type: Tag
     tags:

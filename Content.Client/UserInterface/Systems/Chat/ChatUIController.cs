@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Administration.Managers;
 using Content.Client._WH40K.Administration.Mute;
+using Content.Client._WH40K.WolfChem.Narcotics;
 using Content.Client.Chat;
 using Content.Client.Chat.Managers;
 using Content.Client.Chat.TypingIndicator;
@@ -75,6 +76,7 @@ public sealed partial class ChatUIController : UIController
     [UISystemDependency] private readonly MindSystem? _mindSystem = default!;
     [UISystemDependency] private readonly RoleCodewordSystem? _roleCodewordSystem = default!;
     [UISystemDependency] private readonly WH40KMuteSystem? _muteSystem = default;
+    [UISystemDependency] private readonly Wh40kDrugChatSystem? _wh40kDrugChat = default;
 
     [ValidatePrototypeId<ColorPalettePrototype>]
     private const string ChatNamePalette = "ChatNames";
@@ -1010,6 +1012,8 @@ public sealed partial class ChatUIController : UIController
         {
             msg.WrappedMessage = SharedChatSystem.InjectTagAroundString(msg, highlight, "color", _highlightsColor);
         }
+
+        _wh40kDrugChat?.Distort(msg);
 
         // Log all incoming chat to repopulate when filter is un-toggled
         if (!msg.HideChat)

@@ -1,0 +1,35 @@
+- type: wh40kShipAlertCode
+  id: Wh40kShipCodeGreen
+  name: wh40k-ship-alert-code-green
+  description: wh40k-ship-alert-code-green-desc
+  announcement: wh40k-ship-alert-code-green-announcement
+  color: "#3fe05a"
+  order: 0
+  sound: /Audio/Announcements/attention.ogg
+
+- type: wh40kShipAlertCode
+  id: Wh40kShipCodeYellow
+  name: wh40k-ship-alert-code-yellow
+  description: wh40k-ship-alert-code-yellow-desc
+  announcement: wh40k-ship-alert-code-yellow-announcement
+  color: "#ffd23f"
+  order: 1
+  sound: /Audio/Misc/bluealert.ogg
+
+- type: wh40kShipAlertCode
+  id: Wh40kShipCodeRed
+  name: wh40k-ship-alert-code-red
+  description: wh40k-ship-alert-code-red-desc
+  announcement: wh40k-ship-alert-code-red-announcement
+  color: "#ff3030"
+  order: 2
+  sound: /Audio/Misc/redalert.ogg
+
+- type: wh40kShipAlertCode
+  id: Wh40kShipCodeBlack
+  name: wh40k-ship-alert-code-black
+  description: wh40k-ship-alert-code-black-desc
+  announcement: wh40k-ship-alert-code-black-announcement
+  color: "#d0d0d0"
+  order: 3
+  sound: /Audio/Announcements/war.ogg

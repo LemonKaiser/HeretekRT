@@ -282,6 +282,7 @@ namespace Content.Shared.Preferences
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
             SpeechStyle = other.SpeechStyle;
+            MarkingGlow = new(other.MarkingGlow);
             OocFlavorText = other.OocFlavorText;
             CharacterFlavorText = other.CharacterFlavorText;
             GreenFlavorText = other.GreenFlavorText;
@@ -320,6 +321,7 @@ namespace Content.Shared.Preferences
             Voice = other.Voice;
             BarkVoice = other.BarkVoice;
             SpeechStyle = other.SpeechStyle;
+            MarkingGlow = new(other.MarkingGlow);
             OocFlavorText = other.OocFlavorText;
             CharacterFlavorText = other.CharacterFlavorText;
             GreenFlavorText = other.GreenFlavorText;
@@ -753,6 +755,7 @@ namespace Content.Shared.Preferences
             if (Voice != other.Voice) return false;
             if (BarkVoice != other.BarkVoice) return false;
             if (SpeechStyle != other.SpeechStyle) return false;
+            if (!MarkingGlowEqual(other)) return false;
             if (!Wh40kBuild.Equals(other.Wh40kBuild)) return false;
             if (!_jobPriorities.SequenceEqual(other._jobPriorities)) return false;
             if (!_antagPreferences.SequenceEqual(other._antagPreferences)) return false;
@@ -948,6 +951,7 @@ namespace Content.Shared.Preferences
             BarkVoice = barkVoice;
             Wh40kBuild = Wh40kBuild.Validated();
             SpeechStyle = SpeechStyle.Validated();
+            EnsureMarkingGlowValid();
 
             // Check if the company exists, if not set to "None"
             if (!string.IsNullOrEmpty(Company) &&
@@ -1083,6 +1087,8 @@ namespace Content.Shared.Preferences
             hashCode.Add(Voice);
             hashCode.Add(BarkVoice);
             hashCode.Add(SpeechStyle);
+            foreach (var glow in MarkingGlow)
+                hashCode.Add(glow);
             hashCode.Add(Appearance);
             hashCode.Add(BankBalance); // Frontier
             // Mono start

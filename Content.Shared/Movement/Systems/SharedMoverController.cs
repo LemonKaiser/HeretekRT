@@ -190,6 +190,8 @@ public abstract partial class SharedMoverController : VirtualController
         if (!XformQuery.TryComp(entity.Owner, out var xform))
             return;
 
+        Wh40kTrackGrid(uid, xform);
+
         RelayTargetQuery.TryComp(uid, out var relayTarget);
         var relaySource = relayTarget?.Source;
 
@@ -310,10 +312,16 @@ public abstract partial class SharedMoverController : VirtualController
             friction = Math.Min(friction, accel);
         friction = Math.Max(friction, _minDamping);
         var minimumFrictionSpeed = moveSpeedComponent?.MinimumFrictionSpeed ?? MovementSpeedModifierComponent.DefaultMinimumFrictionSpeed;
+        var wh40kFrame = Wh40kGridFrame(uid, xform);
+        if (!weightless && !inAirHelpless)
+            wh40kFrame = Vector2.Zero;
+        velocity -= wh40kFrame;
         Friction(minimumFrictionSpeed, frameTime, friction, ref velocity);
 
         if (!weightless || touching)
             Accelerate(ref velocity, in wishDir, accel, frameTime);
+
+        velocity += wh40kFrame;
 
         SetWishDir((uid, mover), wishDir);
 

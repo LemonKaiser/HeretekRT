@@ -96,6 +96,7 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
         var button = new SlotButton(data);
         button.Pressed += ItemPressed;
         button.StoragePressed += StoragePressed;
+        button.Unpressed += OnWornStorageSlotUnpressed;
         button.Hover += SlotButtonHovered;
 
         return button;
@@ -279,6 +280,9 @@ public sealed partial class InventoryUIController : UIController, IOnStateEntere
 
         if (args.Function == EngineKeyFunctions.UIClick)
         {
+            if (TryHoldWornStorageClick(args, control))
+                return;
+
             _inventorySystem.UIInventoryActivate(control.SlotName);
             args.Handle();
             return;

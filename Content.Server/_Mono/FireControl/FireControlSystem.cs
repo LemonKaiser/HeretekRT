@@ -551,6 +551,9 @@ public sealed partial class FireControlSystem : EntitySystem
         if (!CanFireInDirection(weapon, weaponPos, direction, targetPos, weaponXform.MapID) && !fireControlComponent.IgnoreLos)
             return false;
 
+        if (_fireRotateQuery.HasComp(weapon) && !_wh40kTraverse.TryLay(weapon, coords, direction))
+            return false;
+
         // Set the cooldown for next firing
         comp.NextFire = _timing.CurTime + TimeSpan.FromSeconds(comp.FireCooldown);
 
@@ -640,9 +643,10 @@ public sealed partial class FireControlSystem : EntitySystem
         var weaponTransform = Transform(weapon);
         var weaponGridUid = weaponTransform.GridUid;
 
-        // Calculate distance to target (capped at maximum distance)
+        // Calculate distance to target (capped at maximum distance and own grid bounds)
         var targetDistance = Vector2.Distance(weaponPos, targetPos);
         var rayDistance = Math.Min(targetDistance, maxDistance);
+        rayDistance = Math.Min(rayDistance, Wh40kGridReach(weaponTransform));
 
         // Initialize ray collision
         var ray = new CollisionRay(weaponPos, direction, collisionMask: (int)(CollisionGroup.Opaque | CollisionGroup.Impassable));

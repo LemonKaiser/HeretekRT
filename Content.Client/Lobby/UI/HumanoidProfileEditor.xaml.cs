@@ -563,6 +563,7 @@ namespace Content.Client.Lobby.UI
             UpdateCompanyControls();
             IsDirty = false;
             InitializeWh40kLayout();
+            InitializeMarkingGlow();
         }
 
         /// <summary>
@@ -1247,6 +1248,7 @@ namespace Content.Client.Lobby.UI
             UpdateSaveButton();
             UpdateMarkings();
             UpdateHairPickers();
+            UpdateMarkingGlow();
             UpdateCMarkingsHair();
             UpdateCMarkingsFacialHair();
             UpdateCompanyControls();
@@ -1279,7 +1281,7 @@ namespace Content.Client.Lobby.UI
             var appearanceLocked = IsWh40kAppearanceEditingLocked;
 
             NameEdit.Editable = !appearanceLocked;
-            CustomSpeciesNameEdit.Editable = !appearanceLocked;
+            RefreshCustomSpeciesNamePermission();
             NameRandomize.Disabled = appearanceLocked;
             RandomizeEverythingButton.Disabled = appearanceLocked;
             ImportButton.Disabled = appearanceLocked;
@@ -1881,7 +1883,10 @@ namespace Content.Client.Lobby.UI
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 FilePopup.Dispose();
+                DisposeMarkingGlow();
+            }
             base.Dispose(disposing);
             if (!disposing)
                 return;
@@ -2026,7 +2031,10 @@ namespace Content.Client.Lobby.UI
 
         private void SetCustomSpeciesName(string name)
         {
-            Profile = Profile?.WithCustomSpeciesName(name);
+            if (!CustomSpeciesNameEdit.Editable || Profile is not { } profile || profile.CustomSpeciesName == name)
+                return;
+
+            Profile = profile.WithCustomSpeciesName(name);
             SetDirty();
         }
 
@@ -2321,6 +2329,7 @@ namespace Content.Client.Lobby.UI
                 facialHairMarking,
                 Profile.Species,
                 1, Profile.Sex);
+            UpdateHairGlow();
         }
 
         private void UpdateCMarkingsHair()
@@ -2495,7 +2504,7 @@ namespace Content.Client.Lobby.UI
                     .WithPersistentData(oldProfile.Flags, oldProfile.Components, oldProfile.Items); // Mono: no becoming God either
                 SetProfile(profile, CharacterSlot);
 
-                IsDirty = !profile.MemberwiseEquals(oldProfile);
+                IsDirty = Profile != null && !Profile.MemberwiseEquals(oldProfile);
             }
             catch (Exception exc)
             {

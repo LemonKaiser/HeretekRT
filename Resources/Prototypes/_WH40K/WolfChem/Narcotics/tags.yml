@@ -1,0 +1,7 @@
+# Street drugs a fence or contraband desk recognizes.
+- type: Tag
+  id: Wh40kNarcotic
+
+# Solid drugs a baggie holds.
+- type: Tag
+  id: Wh40kBaggable

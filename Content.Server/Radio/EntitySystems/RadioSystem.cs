@@ -184,9 +184,10 @@ public sealed partial class RadioSystem : EntitySystem
         else
             speech = _chat.GetSpeechVerb(messageSource, message);
 
-        var content = escapeMarkup
+        var rawContent = escapeMarkup
             ? FormattedMessage.EscapeText(message)
             : message;
+        var content = ChatSystem.ConvertCustomEmphasisToBBCode(rawContent);
 
         // Frontier: append frequency if the channel requests it
         string channelText;
@@ -220,7 +221,7 @@ public sealed partial class RadioSystem : EntitySystem
         var msg = new ChatMessage(ChatChannel.Radio, content, wrappedMessage, NetEntity.Invalid, null, senderJobIconId: senderJobIconId); // Einstein Engines - Language
 
         // Einstein Engines - Language begin
-        var obfuscated = _language.ObfuscateSpeech(content, language);
+        var obfuscated = ChatSystem.ConvertCustomEmphasisToBBCode(_language.ObfuscateSpeech(rawContent, language));
         var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, true);
         var notUdsMsg = new ChatMessage(ChatChannel.Radio, obfuscated, obfuscatedWrapped, NetEntity.Invalid, null, senderJobIconId: senderJobIconId);
         var ev = new RadioReceiveEvent(messageSource, channel, msg, notUdsMsg, language, radioSource);

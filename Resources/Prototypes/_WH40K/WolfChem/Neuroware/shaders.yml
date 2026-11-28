@@ -1,0 +1,4 @@
+- type: shader
+  id: Wh40kNeuroware
+  kind: source
+  path: "/Textures/_WH40K/WolfChem/Neuroware/Shaders/neuroware.swsl"

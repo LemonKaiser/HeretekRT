@@ -72,6 +72,9 @@ binds:
 - function: ShuttleBrake
   type: State
   key: Space
+- function: Wh40kShuttleFaceCursor
+  type: State
+  key: Shift
 - function: CameraRotateLeft
   type: State
   key: NumpadNum7

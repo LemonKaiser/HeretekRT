@@ -203,7 +203,7 @@ namespace Content.Server.NPC.Systems
                     continue;
 
                 var npcCoords = _transform.GetMapCoordinates(npcUid, npcTransform);
-                var hasNearbyPlayer = false;
+                var hasNearbyPlayer = EntityManager.System<Content.Server._WH40K.Waypoints.Wh40kWaypointSystem>().AutopilotEngaged(npcUid, htn);
 
                 var minDistance = htn.SleepPlayerCheckRangeOverride ?? _playerPauseDistance; // Mono
                 // Mono

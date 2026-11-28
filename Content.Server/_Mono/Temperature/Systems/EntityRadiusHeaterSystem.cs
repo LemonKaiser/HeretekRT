@@ -1,8 +1,11 @@
 using Content.Server._Mono.Temperature.Components;
+using Content.Server.Atmos.Portable;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
+using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.Piping.Portable.Components;
 using Content.Shared.IgnitionSource;
 using Content.Shared.Item.ItemToggle.Components;
 
@@ -13,6 +16,8 @@ namespace Content.Server._Mono.Temperature.Systems;
 /// </summary>
 public sealed partial class EntityRadiusHeaterSystem : EntitySystem
 {
+    public const float MaxRadius = 5f;
+
     [Dependency] private TemperatureSystem _temp = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
 
@@ -31,18 +36,10 @@ public sealed partial class EntityRadiusHeaterSystem : EntitySystem
 
         while (eqe.MoveNext(out var uid, out var comp))
         {
-            if (comp.RequireActivation && TryComp<IgnitionSourceComponent>(uid, out var ignite)
-                                       && !ignite.Ignited)
+            if (!IsActive(uid, comp))
                 continue;
 
-            if (comp.RequireActivation && TryComp<ItemToggleComponent>(uid, out var toggle)
-                                       && !toggle.Activated)
-                continue;
-
-            if (!this.IsPowered(uid, EntityManager))
-                continue;
-
-            var nearby = _lookup.GetEntitiesInRange<TemperatureComponent>(Transform(uid).Coordinates, comp.Radius);
+            var nearby = _lookup.GetEntitiesInRange<TemperatureComponent>(Transform(uid).Coordinates, comp.Radius, LookupFlags.Dynamic | LookupFlags.Sundries);
             var xform = Transform(uid);
             foreach (var ent in nearby)
             {
@@ -52,6 +49,29 @@ public sealed partial class EntityRadiusHeaterSystem : EntitySystem
 
 
         _updateTimer = TimeSpan.Zero;
+    }
+
+    /// <summary>
+    /// Whether a radiant heater is currently active: lit/toggled on, powered, and not set to cool.
+    /// </summary>
+    public bool IsActive(EntityUid uid, EntityRadiusHeaterComponent comp)
+    {
+        if (comp.RequireActivation && TryComp<IgnitionSourceComponent>(uid, out var ignite)
+                                   && !ignite.Ignited)
+            return false;
+
+        if (comp.RequireActivation && TryComp<ItemToggleComponent>(uid, out var toggle)
+                                   && !toggle.Activated)
+            return false;
+
+        if (comp.RequireActivation && TryComp<FlammableComponent>(uid, out var flammable)
+                                   && !flammable.OnFire)
+            return false;
+
+        if (TryComp<SpaceHeaterComponent>(uid, out var spaceHeater) && spaceHeater.Mode == SpaceHeaterMode.Cool)
+            return false;
+
+        return this.IsPowered(uid, EntityManager);
     }
 
     public float CalculateThermalEnergy(Entity<TemperatureComponent> ent,

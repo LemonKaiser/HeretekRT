@@ -1,0 +1,12 @@
+// One hot tile's blob for the heat haze mask. The overlay clears the mask to opaque black, so the add blend (source
+// times its alpha, plus destination times its alpha) sums overlapping blobs. The tile's heat is the draw colour's alpha.
+
+light_mode unshaded;
+blend_mode add;
+
+void fragment() {
+    // 0 at the tile's centre, 1 at the blob's rim.
+    highp float dist = length(UV2 - vec2(0.5)) * 2.0;
+
+    COLOR = vec4(vec3(1.0 - smoothstep(0.0, 1.0, dist)), 1.0);
+}

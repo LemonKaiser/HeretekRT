@@ -1,4 +1,5 @@
 using Content.Client._NF.Shipyard.UI;
+using Content.Client._WH40K.ShipPreview.UI;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared._NF.Shipyard.BUI;
 using Content.Shared._NF.Shipyard.Events;
@@ -10,6 +11,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 {
     private ShipyardConsoleMenu? _menu;
     private ShipyardRulesPopup? _rulesWindow;
+    private Wh40kShipPreviewWindow? _previewWindow;
     public int Balance { get; private set; }
 
     public int? ShipSellValue { get; private set; }
@@ -75,6 +77,9 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         if (!disposing) return;
 
         _menu?.Dispose();
+        _previewWindow?.Close();
+        _previewWindow?.Dispose();
+        _previewWindow = null;
     }
 
     private void ApproveOrder(ButtonEventArgs args)
@@ -112,6 +117,14 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         }
 
         var vessel = row.Vessel;
-        SendMessage(new ShipyardConsolePreviewMessage(vessel.ID));
+        if (_previewWindow is { IsOpen: true })
+        {
+            _previewWindow.SetVessel(vessel);
+            _previewWindow.MoveToFront();
+            return;
+        }
+
+        _previewWindow?.Dispose();
+        _previewWindow = Wh40kShipPreviewWindow.Open(vessel);
     }
 }

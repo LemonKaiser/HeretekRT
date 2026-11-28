@@ -1,0 +1,110 @@
+# Ways in: powder lines laid from a baggie, and a bong that works from the hand.
+
+- type: entity
+  id: Wh40kPowderLine
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    drawdepth: SmallObjects
+    sprite: _WH40K/WolfChem/Narcotics/Objects/powder_line.rsi
+    layers:
+    - state: line-2
+      map: [ "enum.SolutionContainerLayers.Fill" ]
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    maxFillLevels: 2
+    fillBaseName: line-
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: SolutionContainerManager
+    solutions:
+      line:
+        maxVol: 2.5
+  - type: ExaminableSolution
+    solution: line
+  - type: Wh40kPowderLine
+  - type: TimedDespawn
+    lifetime: 900
+
+- type: entity
+  parent: BaseItem
+  id: Wh40kBong
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Objects/bong.rsi
+    layers:
+    - state: icon
+    - state: fill-1
+      map: [ "enum.SolutionContainerLayers.Fill" ]
+      visible: false
+    - state: bowl
+      map: [ "bowl" ]
+      visible: false
+    - state: lit
+      map: [ "lit" ]
+      shader: unshaded
+      visible: false
+  - type: Item
+    size: Small
+    sprite: _WH40K/WolfChem/Narcotics/Objects/bong.rsi
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.Wh40kBongVisuals.Loaded:
+        bowl:
+          True: { visible: true }
+          False: { visible: false }
+      enum.Wh40kBongVisuals.Lit:
+        lit:
+          True: { visible: true }
+          False: { visible: false }
+  - type: SolutionContainerVisuals
+    maxFillLevels: 2
+    fillBaseName: fill-
+  - type: SolutionContainerManager
+    solutions:
+      water:
+        maxVol: 30
+  - type: RefillableSolution
+    solution: water
+  - type: DrainableSolution
+    solution: water
+  - type: ExaminableSolution
+    solution: water
+  - type: ContainerContainer
+    containers:
+      bowl: !type:ContainerSlot
+  - type: ItemSlots
+  - type: Wh40kBong
+    bowl:
+      name: wh40k-bong-bowl
+      whitelist:
+        tags:
+        - Smokable
+        - Wh40kBaggable
+      insertSound:
+        path: /Audio/Weapons/Guns/Empty/empty.ogg
+      ejectSound:
+        path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: Construction
+    graph: Wh40kBong
+    node: bong
+  - type: StaticPrice
+    price: 40
+
+- type: entity
+  parent: Wh40kBong
+  id: Wh40kBongFilled
+  suffix: Water
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      water:
+        maxVol: 30
+        reagents:
+        - ReagentId: Water
+          Quantity: 20

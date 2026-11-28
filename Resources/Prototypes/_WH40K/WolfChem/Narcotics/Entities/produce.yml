@@ -1,0 +1,102 @@
+# Drug crops. Seeds come from exotic seeds crates.
+
+- type: seed
+  id: Wh40kCoca
+  name: wh40k-seeds-coca-name
+  noun: seeds-noun-seeds
+  displayName: wh40k-seeds-coca-display-name
+  plantRsi: _WH40K/WolfChem/Narcotics/Hydroponics/coca.rsi
+  packetPrototype: Wh40kCocaSeeds
+  productPrototypes:
+  - Wh40kLeavesCoca
+  harvestRepeat: Repeat
+  lifespan: 60
+  maturation: 9
+  production: 10
+  yield: 2
+  potency: 20
+  growthStages: 3
+  waterConsumption: 0.5
+  idealLight: 9
+  idealHeat: 300
+  chemicals:
+    Wh40kCocaAlkaloid:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 10
+
+- type: entity
+  parent: SeedBase
+  id: Wh40kCocaSeeds
+  components:
+  - type: Seed
+    seedId: Wh40kCoca
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Hydroponics/coca.rsi
+
+- type: entity
+  parent: ProduceBase
+  id: Wh40kLeavesCoca
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Hydroponics/coca.rsi
+  - type: Produce
+    seedId: Wh40kCoca
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: Wh40kCocaAlkaloid
+          Quantity: 10
+  - type: Wh40kProducePurity
+
+- type: seed
+  id: Wh40kOpiumPoppy
+  name: wh40k-seeds-opium-poppy-name
+  noun: seeds-noun-seeds
+  displayName: wh40k-seeds-opium-poppy-display-name
+  plantRsi: _WH40K/WolfChem/Narcotics/Hydroponics/opium_poppy.rsi
+  packetPrototype: Wh40kOpiumPoppySeeds
+  productPrototypes:
+  - Wh40kOpiumPoppyPod
+  lifespan: 30
+  maturation: 12
+  production: 4
+  yield: 2
+  potency: 15
+  growthStages: 3
+  waterConsumption: 0.6
+  chemicals:
+    Wh40kOpium:
+      Min: 2
+      Max: 10
+      PotencyDivisor: 10
+
+- type: entity
+  parent: SeedBase
+  id: Wh40kOpiumPoppySeeds
+  components:
+  - type: Seed
+    seedId: Wh40kOpiumPoppy
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Hydroponics/opium_poppy.rsi
+
+- type: entity
+  parent: FoodProduceBase
+  id: Wh40kOpiumPoppyPod
+  components:
+  - type: Sprite
+    sprite: _WH40K/WolfChem/Narcotics/Hydroponics/opium_poppy.rsi
+  - type: FlavorProfile
+    flavors:
+    - bitter
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 15
+        reagents:
+        - ReagentId: Wh40kOpium
+          Quantity: 6
+  - type: Produce
+    seedId: Wh40kOpiumPoppy
+  - type: Wh40kProducePurity

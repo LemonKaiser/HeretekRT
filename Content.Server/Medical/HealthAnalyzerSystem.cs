@@ -26,6 +26,7 @@ using Content.Shared.Body.Systems;
 using Content.Shared._Shitmed.BodyEffects.Subsystems;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared._WH40K.Augments;
+using Content.Server._WH40K.WolfChem.Narcotics;
 using Content.Shared.Implants.Components;
 using System.Linq;
 
@@ -44,6 +45,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private SharedPopupSystem _popupSystem = default!;
     [Dependency] private IComponentFactory _componentFactory = default!;
+    [Dependency] private Wh40kAnalyzerConditionsSystem _wh40kConditions = default!;
 
     public override void Initialize()
     {
@@ -308,7 +310,8 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             lastDamagedPart,
             selectedBodyPart,
             partDamage,
-            installedAugments
+            installedAugments,
+            scanMode ? _wh40kConditions.Build(target) : null
         ));
     }
 

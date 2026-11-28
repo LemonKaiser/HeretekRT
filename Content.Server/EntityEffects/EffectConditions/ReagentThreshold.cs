@@ -34,7 +34,7 @@ public sealed partial class ReagentThreshold : EntityEffectCondition
 
             var quant = FixedPoint2.Zero;
             if (reagentArgs.Source != null)
-                quant = reagentArgs.Source.GetTotalPrototypeQuantity(reagent);
+                quant = reagentArgs.Source.GetEffectiveQuantity(reagent);
 
             return quant >= Min && quant <= Max;
         }

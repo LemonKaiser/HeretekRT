@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._Mono.Shipyard;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
@@ -41,6 +42,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
     [Dependency] protected SharedAppearanceSystem AppearanceSystem = default!;
     [Dependency] private OccluderSystem _occluder = default!;
     [Dependency] private AccessReaderSystem _accessReaderSystem = default!;
+    [Dependency] private ShipAccessReaderSystem _shipAccess = default!;
     [Dependency] private PryingSystem _pryingSystem = default!;
     [Dependency] protected SharedPopupSystem Popup = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
@@ -233,6 +235,13 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (args.Handled || !args.Complex || !door.ClickOpen)
             return;
 
+        // The deed and guest credentials for this opening are checked on the server.
+        if (_net.IsClient && door.State is (DoorState.Closed or DoorState.Denying) && _shipAccess.RequiresDoorClearance(uid))
+        {
+            args.Handled = true;
+            return;
+        }
+
         if (!TryToggleDoor(uid, door, args.User, predicted: true))
             _pryingSystem.TryPry(uid, args.User, out _);
 
@@ -343,7 +352,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (!CanOpen(uid, door, user, quiet))
             return false;
 
-        StartOpening(uid, door, user, predicted);
+        StartOpening(uid, door, user, predicted && (user == null || !_shipAccess.RequiresDoorClearance(uid)));
 
         return true;
     }
@@ -361,10 +370,23 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (ev.Cancelled)
             return false;
 
-        if (!HasAccess(uid, user, door))
+        var requiresClearance = user != null && _shipAccess.RequiresDoorClearance(uid);
+        if (requiresClearance && _net.IsClient)
+            return false;
+
+        // Only record a successful ID swipe when the additional clearance check passes too.
+        var hasClearance = !requiresClearance || user is { } actor && _shipAccess.HasDoorClearance(uid, actor);
+        var hasAccess = HasAccess(uid, user, door, logAccess: hasClearance);
+        if (!hasAccess || !hasClearance)
         {
             if (!quiet)
-                Deny(uid, door, user, predicted: true);
+            {
+                if (hasAccess && user is { } recipient)
+                    _shipAccess.PopupDoorClearanceDenied(uid, recipient);
+
+                Deny(uid, door, user, predicted: !requiresClearance);
+            }
+
             return false;
         }
 
@@ -653,7 +675,8 @@ public abstract partial class SharedDoorSystem : EntitySystem
     /// <summary>
     ///     Does the user have the permissions required to open this door?
     /// </summary>
-    public bool HasAccess(EntityUid uid, EntityUid? user = null, DoorComponent? door = null, AccessReaderComponent? access = null)
+    public bool HasAccess(EntityUid uid, EntityUid? user = null, DoorComponent? door = null, AccessReaderComponent? access = null,
+        bool logAccess = true)
     {
         // TODO network AccessComponent for predicting doors
 
@@ -678,9 +701,9 @@ public abstract partial class SharedDoorSystem : EntitySystem
         return AccessType switch
         {
             // Some game modes modify access rules.
-            AccessTypes.AllowAllIdExternal => !isExternal || _accessReaderSystem.IsAllowed(user.Value, uid, access),
+            AccessTypes.AllowAllIdExternal => !isExternal || _accessReaderSystem.IsAllowed(user.Value, uid, access, logAccess),
             AccessTypes.AllowAllNoExternal => !isExternal,
-            _ => _accessReaderSystem.IsAllowed(user.Value, uid, access)
+            _ => _accessReaderSystem.IsAllowed(user.Value, uid, access, logAccess)
         };
     }
 

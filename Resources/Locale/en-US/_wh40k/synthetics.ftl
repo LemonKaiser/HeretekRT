@@ -3,6 +3,9 @@
 ent-ActionWh40kChassisPanel = Chassis Diagnostics
     .desc = Open your internal cogitator chassis panel to inspect limbs, components, bay access, overclock, and reboot controls.
 
+ent-ActionWh40kChassisOverclock = Servo overclock
+    .desc = Toggle servo overclock. It increases movement speed by 25%, drains the battery faster, and heats up the chassis.
+
 ent-WH40KOrganRadCollector = radiation collector
     .desc = A shielded Mechanicus capacitor stack installed inside a cybernetic torso. Absorbs ambient radiation up to 300 rads; remove via the chassis bay to vent or weld to restore integrity.
 

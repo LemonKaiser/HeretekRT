@@ -36,5 +36,8 @@ public sealed partial class BotanySystem
             solutionContainer.MaxVolume += amount;
             solutionContainer.AddReagent(chem, amount);
         }
+
+        Wh40kGradeProduce(uid, solutionContainer, seed);
+        Wh40kMarkProduce(uid, solutionContainer);
     }
 }

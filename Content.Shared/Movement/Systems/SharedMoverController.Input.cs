@@ -216,7 +216,7 @@ namespace Content.Shared.Movement.Systems
             var diff = relativeRot - oldRelativeRot;
 
             // If we're going from a grid -> map then preserve the relative rotation so it's seamless if they go into space and back.
-            if (MapQuery.HasComp(relative) && MapGridQuery.HasComp(mover.RelativeEntity))
+            if (MapQuery.HasComp(relative) && !MapGridQuery.HasComp(relative) && MapGridQuery.HasComp(mover.RelativeEntity))
             {
                 mover.TargetRelativeRotation -= diff;
             }
@@ -225,6 +225,8 @@ namespace Content.Shared.Movement.Systems
             {
                 var targetDir = mover.TargetRelativeRotation - diff;
                 targetDir = targetDir.GetCardinalDir().ToAngle().Reduced();
+                if (_wh40kDefaultNorth.WantsNorth(uid))
+                    targetDir = Angle.Zero;
                 mover.TargetRelativeRotation = targetDir;
             }
 
@@ -304,6 +306,9 @@ namespace Content.Shared.Movement.Systems
 
         private void HandleDirChange(EntityUid entity, Direction dir, ushort subTick, bool state)
         {
+            if (Wh40kTryTurnInPlace(entity, dir, state))
+                return;
+
             // Relayed movement just uses the same keybinds given we're moving the relayed entity
             // the same as us.
 

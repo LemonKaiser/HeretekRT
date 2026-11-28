@@ -26,7 +26,7 @@ namespace Content.Shared.Lathe
         /// <summary>
         /// The lathe's construction queue
         /// </summary>
-        [DataField]
+        [ViewVariables]
         public List<LatheRecipeBatch> Queue = new(); // Frontier: LatheRecipePrototype<LatheRecipeBatch
 
         /// <summary>

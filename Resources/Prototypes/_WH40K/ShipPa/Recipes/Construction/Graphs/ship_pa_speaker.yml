@@ -1,0 +1,24 @@
+- type: constructionGraph
+  id: Wh40kShipPaSpeaker
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: speaker
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 2
+
+  - node: speaker
+    entity: Wh40kWallmountShipPaSpeaker
+    edges:
+    - to: start
+      completed:
+      - !type:GivePrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:DeleteEntity {}
+      steps:
+      - tool: Prying
+        doAfter: 2

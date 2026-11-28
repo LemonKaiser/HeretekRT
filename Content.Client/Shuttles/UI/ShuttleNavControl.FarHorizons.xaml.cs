@@ -63,11 +63,11 @@ public partial class ShuttleNavControl
 
             var uiXOffset = uiPosition.X - uiXCentre;
             var uiYOffset = uiPosition.Y - uiYCentre;
-            var uiDistance = (int)Math.Sqrt(Math.Pow(uiXOffset, 2) + Math.Pow(uiYOffset, 2));
-            var uiX = uiXCentre * uiXOffset / uiDistance;
-            var uiY = uiYCentre * uiYOffset / uiDistance;
+            var uiDistance = MathF.Sqrt(uiXOffset * uiXOffset + uiYOffset * uiYOffset);
+            if (uiDistance <= float.Epsilon)
+                uiDistance = 1f;
 
-            var isOutsideRadarCircle = uiDistance > Math.Abs(uiX) && uiDistance > Math.Abs(uiY);
+            var isOutsideRadarCircle = !Wh40kOnScope(uiPosition * UIScale);
             if (isOutsideRadarCircle)
             {
                 uiPosition = new Vector2(
@@ -78,6 +78,9 @@ public partial class ShuttleNavControl
 
             NfAddBlipToList(_beaconBlips, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, color);
 
+            if (isOutsideRadarCircle)
+                continue;
+
             var distance = Vector2.Distance(worldPos, mapPos.Position);
             var displayedDistance = distance < 50f ? $"{distance:0.0}" : distance < 1000 ? $"{distance:0}" : $"{distance / 1000:0.0}k";
 
@@ -85,21 +88,17 @@ public partial class ShuttleNavControl
             var mainLabel = lines[0];
 
             var labelOffset = new Vector2(blipSize, -handle.GetDimensions(Font, mainLabel, 0.9f).Y * 0.5f);
-            handle.DrawString(Font, (uiPosition + labelOffset) * UIScale, mainLabel, UIScale * 0.9f, color);
+            Wh40kBeginTag(uiPosition * UIScale, (uiPosition + labelOffset) * UIScale, always: true, key: uid.Id);
+            Wh40kTagLine(handle, mainLabel, UIScale * 0.9f, color);
 
             if (!ShowIFFDetailed)
                 continue;
 
-            var stackOffset = labelOffset.Y + handle.GetDimensions(Font, mainLabel, 0.9f).Y;
-
             if (lines.Length > 1)
-            {
-                handle.DrawString(Font, (uiPosition + new Vector2(labelOffset.X, stackOffset)) * UIScale, lines[1], UIScale * 0.7f, color);
-                stackOffset += handle.GetDimensions(Font, lines[1], 0.7f).Y;
-            }
+                Wh40kTagLine(handle, lines[1], UIScale * 0.7f, color);
 
             var coordsText = $"({worldPos.X:0.0}, {worldPos.Y:0.0})";
-            handle.DrawString(Font, (uiPosition + new Vector2(labelOffset.X, stackOffset)) * UIScale, coordsText, UIScale * 0.7f, color);
+            Wh40kTagLine(handle, coordsText, UIScale * 0.7f, color);
         }
 
         NfDrawBlips(handle, _beaconBlips);

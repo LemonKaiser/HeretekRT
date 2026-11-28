@@ -45,6 +45,7 @@
   - type: HideLayerClothing
     layers:
       Hair: HEAD
+      FacialHair: HEAD
   - type: SpeciesItemRestriction
     whitelist:
     - Astartes
@@ -113,6 +114,7 @@
   - type: HideLayerClothing
     layers:
       Hair: HEAD
+      FacialHair: HEAD
   - type: SpeciesItemRestriction
     whitelist:
     - Astartes
@@ -179,6 +181,7 @@
   - type: HideLayerClothing
     layers:
       Hair: HEAD
+      FacialHair: HEAD
   - type: SpeciesItemRestriction
     whitelist:
     - Astartes

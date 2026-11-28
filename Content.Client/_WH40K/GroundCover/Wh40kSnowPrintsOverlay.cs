@@ -51,10 +51,17 @@ public sealed partial class Wh40kSnowPrintsOverlay : Overlay
     protected override void Draw(in OverlayDrawArgs args)
     {
         var handle = args.WorldHandle;
+        var coverPrepared = false;
         foreach (var (grid, tiles) in _prints.Prints)
         {
             if (!_entMan.TryGetComponent(grid, out TransformComponent? xform) || xform.MapID != args.MapId)
                 continue;
+
+            if (!coverPrepared)
+            {
+                _cover.PrepareVesselCover(args.MapId, args.WorldAABB.Enlarged(2f));
+                coverPrepared = true;
+            }
 
             var (_, _, matrix, inverse) = _transform.GetWorldPositionRotationMatrixWithInv(grid);
             var bounds = inverse.TransformBox(args.WorldAABB).Enlarged(1f);

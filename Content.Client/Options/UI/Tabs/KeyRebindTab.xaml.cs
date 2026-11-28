@@ -169,6 +169,7 @@ namespace Content.Client.Options.UI.Tabs
             AddCheckBox("ui-options-hotkey-toggle-walk", _cfg.GetCVar(CCVars.ToggleWalk), HandleToggleWalk);
             AddButton(ContentKeyFunctions.ToggleStanding);
             AddCheckBox("ui-options-function-auto-get-up", _cfg.GetCVar(CCVars.AutoGetUp), HandleToggleAutoGetUp); // WD EDIT
+            AddButton(Content.Shared._WH40K.TurnInPlace.Wh40kTurnInPlaceKeys.Wh40kTurnInPlace);
             InitToggleWalk();
 
             AddHeader("ui-options-header-camera");
@@ -191,6 +192,9 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.ExamineEntity);
             AddButton(ContentKeyFunctions.SwapHands);
             AddButton(ContentKeyFunctions.SwapHandsPrevious); // Frontier
+            AddButton(Content.Shared._WH40K.HandSelect.Wh40kHandSelectKeys.Wh40kSelectLeftHand);
+            AddButton(Content.Shared._WH40K.HandSelect.Wh40kHandSelectKeys.Wh40kSelectRightHand);
+            AddButton(Content.Shared._WH40K.CancelInteractions.Wh40kCancelInteractionKeys.Wh40kCancelInteractions);
             AddButton(ContentKeyFunctions.MoveStoredItem);
             AddButton(ContentKeyFunctions.RotateStoredItem);
             AddButton(ContentKeyFunctions.SaveItemLocation);
@@ -298,6 +302,7 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.ShuttleRotateLeft);
             AddButton(ContentKeyFunctions.ShuttleRotateRight);
             AddButton(ContentKeyFunctions.ShuttleBrake);
+            AddButton(Content.Shared._WH40K.ShipFacing.Wh40kShipFacingKeys.Wh40kShuttleFaceCursor);
 
             AddHeader("ui-options-header-map-editor");
             AddButton(EngineKeyFunctions.EditorPlaceObject);

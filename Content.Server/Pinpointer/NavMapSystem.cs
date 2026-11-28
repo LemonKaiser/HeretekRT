@@ -72,6 +72,12 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
         RefreshGrid(ev.GridId, comp, Comp<MapGridComponent>(ev.GridId));
     }
 
+    public void EnsureGridMap(EntityUid grid)
+    {
+        if (!HasComp<NavMapComponent>(grid) && TryComp<MapGridComponent>(grid, out var mapGrid))
+            RefreshGrid(grid, AddComp<NavMapComponent>(grid), mapGrid);
+    }
+
     #region: Grid change event handling
 
     private void OnNavMapSplit(ref GridSplitEvent args)

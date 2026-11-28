@@ -138,6 +138,6 @@ public sealed partial class ShipyardSystem
         if (_vesselPricing.UsesMaterialMarket)
             return _vesselPricing.GetMaterialResaleValue(shuttle, equipmentRate, includeStock: true);
 
-        return (int) (_pricing.AppraiseGrid(shuttle, LacksPreserveOnSaleComp) * equipmentRate);
+        return (int) (_pricing.AppraiseGrid(shuttle, uid => LacksPreserveOnSaleComp(uid) && !Wh40kHoldsNarcotics(uid)) * equipmentRate);
     }
 }

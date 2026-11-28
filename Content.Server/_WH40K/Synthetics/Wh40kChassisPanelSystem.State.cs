@@ -6,6 +6,7 @@ using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared._WH40K.Augments;
 using Content.Shared._WH40K.Synthetics;
+using Content.Shared._WH40K.WolfChem.Neuroware;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Organ;
 using Content.Shared.Body.Part;
@@ -240,6 +241,9 @@ public sealed partial class Wh40kChassisPanelSystem
             if (shockDmg >= 15f)
                 faults.Add(new Wh40kCyberneticFault(TargetBodyPart.Torso, "wh40k-hud-fault-shock", shockDmg >= 50f ? Wh40kCyberneticSeverity.Crit : Wh40kCyberneticSeverity.Warn, "wh40k-hud-advice-shock"));
         }
+
+        var collectEv = new Wh40kCyberneticHudCollectEvent(faults);
+        RaiseLocalEvent(body, ref collectEv);
 
         faults.Sort((a, b) => b.Severity.CompareTo(a.Severity));
         if (faults.Count > Wh40kCyberneticHudComponent.MaxFaults)

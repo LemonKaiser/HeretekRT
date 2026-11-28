@@ -2,166 +2,81 @@
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:ui="clr-namespace:Content.Client.Materials.UI"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:wh40kl="clr-namespace:Content.Client._WH40K.Lathe.UI"
     Title="{Loc 'lathe-menu-title'}"
-    MinSize="550 450"
-    SetSize="750 500">
-    <BoxContainer
-        Orientation="Horizontal"
-        VerticalExpand="True"
-        HorizontalExpand="True"
-        SeparationOverride="5">
-        <!-- Left Col-->
-        <BoxContainer
-            VerticalExpand="True"
-            HorizontalExpand="True">
-            <BoxContainer
-                Orientation="Vertical"
-                VerticalExpand="False"
-                HorizontalExpand="True"
-                SeparationOverride="5">
-                <PanelContainer VerticalExpand="False">
-                    <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BackgroundColor="#100D0A" />
-                    </PanelContainer.PanelOverride>
-                    <controls:StripeBack MinSize="48 48">
-                <BoxContainer Orientation="Horizontal"
-                    HorizontalExpand="True"
-                    Margin="2 2 2 2">
-                    <LineEdit Name="SearchBar"
-                              PlaceHolder="{Loc 'lathe-menu-search-designs'}"
-                              MinSize="120 0" HorizontalExpand="True"/>
-                </BoxContainer>
-                    </controls:StripeBack>
-                </PanelContainer>
-                <PanelContainer VerticalExpand="False">
-                    <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
-                </PanelContainer.PanelOverride>
-                <BoxContainer Orientation="Horizontal"
-                              VerticalExpand="False"
-                              HorizontalExpand="True"
-                              Margin="2 2 2 2">
-                    <OptionButton
-                        Name="FilterOption"
-                        MinWidth="100"
-                        StyleClasses="ButtonSquare"
-                        VerticalExpand="False"
-                        HorizontalExpand="True"/>
-                </BoxContainer>
-                </PanelContainer>
-                <BoxContainer Orientation="Vertical"
-                    MinHeight="225"
-                    VerticalExpand="True"
-                    HorizontalExpand="True"
-                    SizeFlagsStretchRatio="4">
-                    <PanelContainer VerticalExpand="True">
-                        <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BorderThickness="3" BorderColor="#56452D" BackgroundColor="#100D0A"/>
-                        </PanelContainer.PanelOverride>
-                        <ScrollContainer VerticalExpand="True" HScrollEnabled="False" Margin="7 7 7 7">
-                            <BoxContainer
-                                Name="RecipeList"
-                                Orientation="Vertical"
-                                HorizontalExpand="True"
-                                VerticalExpand="True"
-                                RectClipContent="True">
-                            </BoxContainer>
-                        </ScrollContainer>
-                    </PanelContainer>
-                </BoxContainer>
-                <BoxContainer Orientation="Horizontal"
-                    HorizontalExpand="True">
-                    <Label Margin="8 0 8 0" Text="{Loc 'lathe-menu-amount'}" />
-                    <LineEdit
-                        Name="AmountLineEdit"
-                        PlaceHolder="0"
-                        Text="1"
-                        HorizontalExpand="True" />
-                </BoxContainer>
-                <!-- Mono -->
-                <BoxContainer Orientation="Horizontal"
-                    HorizontalExpand="True">
-                    <CheckBox Name="LoopCheckbox" HorizontalExpand="True" Text="{Loc 'lathe-menu-loop'}" />
-                    <CheckBox Name="SkipCheckbox" HorizontalExpand="True" Text="{Loc 'lathe-menu-skip'}" />
-                </BoxContainer>
-            </BoxContainer>
-        </BoxContainer>
-        <BoxContainer MinWidth="5"/>
-        <!-- Right Col-->
-        <BoxContainer
-            Orientation="Vertical"
-            VerticalExpand="True"
-            HorizontalExpand="True"
-            SeparationOverride="5">
-            <BoxContainer Orientation="Vertical" MinHeight="225">
-                <BoxContainer
-                    Orientation="Horizontal"
-                    Align="End"
-                    HorizontalExpand="True">
-                    <Button Name="ServerListButton" Access="Public" Text="{Loc 'lathe-menu-server-list'}"
-                            StyleClasses="ButtonSquare OpenRight" HorizontalExpand="False" Margin="0 0"/>
-                </BoxContainer>
-                <Label Text="{Loc 'lathe-menu-queue-title'}" Margin="5 5 5 5" HorizontalAlignment="Center"/>
-                <BoxContainer
-                    Name="FabricatingContainer"
-                    Orientation="Horizontal"
-                    HorizontalExpand="True"
-                    SizeFlagsStretchRatio="2">
-                    <PanelContainer
-                        VerticalExpand="True"
-                        HorizontalExpand="True"
-                        SizeFlagsStretchRatio="3">
-                        <PanelContainer.PanelOverride>
-                            <gfx:StyleBoxFlat BackgroundColor="#408040" />
-                        </PanelContainer.PanelOverride>
-                        <Label
-                            RectClipContent="False"
-                            HorizontalAlignment="Left"
-                            Margin="5 0 0 0"
-                            Text="{Loc 'lathe-menu-fabricating-message'}">
-                        </Label>
-                        <BoxContainer Name="FabricatingDisplayContainer"
-                                      HorizontalAlignment="Left"
-                                      Margin="100 0 0 0"/>
-                        <Label
-                            Name="NameLabel"
-                            RectClipContent="True"
-                            HorizontalAlignment="Left"
-                            Margin="130 0 0 0">
-                        </Label>
-                    </PanelContainer>
-                </BoxContainer>
-                <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-                    <controls:StripeBack MinSize="48 48">
-                    <BoxContainer
-                        Name="QueueList"
-                        Orientation="Vertical"
-                        HorizontalExpand="True"
-                        VerticalExpand="True"
-                        RectClipContent="True">
-                    </BoxContainer>
-                    </controls:StripeBack>
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer
-            VerticalExpand="True"
-            HorizontalExpand="True"
-            Orientation="Vertical">
-            <Label Text="{Loc 'lathe-menu-materials-title'}" Margin="5 5 5 5" HorizontalAlignment="Center"/>
-            <PanelContainer VerticalExpand="True">
+    MinSize="760 420"
+    SetSize="940 600">
+    <BoxContainer Orientation="Horizontal" VerticalExpand="True" HorizontalExpand="True" SeparationOverride="10" Margin="8">
+        <!-- Recipe browser -->
+        <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="5" SeparationOverride="6">
+            <Label Text="{Loc 'lathe-menu-recipes-title'}" StyleClasses="LabelHeading" FontColorOverride="#E1C17E" />
+            <PanelContainer>
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BorderThickness="9" BorderColor="#56452D" BackgroundColor="#100D0A"/>
+                    <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#56452D" BackgroundColor="#100D0A" />
                 </PanelContainer.PanelOverride>
-                <BoxContainer
-                    Orientation="Vertical"
-                    VerticalExpand="True"
-                    HorizontalExpand="True">
-                    <ui:MaterialStorageControl Name="MaterialsList" SizeFlagsStretchRatio="8"/>
+                <BoxContainer Orientation="Horizontal" Margin="6" SeparationOverride="6">
+                    <LineEdit Name="SearchBar" PlaceHolder="{Loc 'lathe-menu-search-designs'}" HorizontalExpand="True" />
+                    <OptionButton Name="FilterOption" MinWidth="145" StyleClasses="ButtonSquare" />
+                </BoxContainer>
+            </PanelContainer>
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" RectClipContent="True">
+                <BoxContainer Name="RecipeList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
+            </ScrollContainer>
+            <PanelContainer>
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#56452D" BackgroundColor="#100D0A" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="7" SeparationOverride="5">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="8">
+                        <Label Text="{Loc 'lathe-menu-amount'}" VerticalAlignment="Center" />
+                        <LineEdit Name="AmountLineEdit" Text="1" PlaceHolder="1" HorizontalExpand="True" />
+                        <Label Text="{Loc 'lathe-menu-quantity-hint'}" StyleClasses="LabelSubText" VerticalAlignment="Center" />
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="12">
+                        <CheckBox Name="LoopCheckbox" HorizontalExpand="True" Text="{Loc 'lathe-menu-loop'}" />
+                        <CheckBox Name="SkipCheckbox" HorizontalExpand="True" Text="{Loc 'lathe-menu-skip'}" />
+                    </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
         </BoxContainer>
+
+        <!-- Work queue and linked supplies -->
+        <BoxContainer Orientation="Vertical" VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="5" SeparationOverride="8">
+            <PanelContainer VerticalExpand="True" SizeFlagsStretchRatio="3">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#56452D" BackgroundColor="#100D0A" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="5">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                        <Label Text="{Loc 'lathe-menu-queue-title'}" StyleClasses="LabelHeading" FontColorOverride="#E1C17E" HorizontalExpand="True" VerticalAlignment="Center" />
+                        <Button Name="ServerListButton" Access="Public" Text="{Loc 'lathe-menu-server-list'}" StyleClasses="ButtonSquare" />
+                    </BoxContainer>
+                    <PanelContainer Name="FabricatingContainer" Visible="False">
+                        <PanelContainer.PanelOverride>
+                            <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#5C8A5C" BackgroundColor="#1B2A1E" />
+                        </PanelContainer.PanelOverride>
+                        <BoxContainer Orientation="Horizontal" Margin="7" SeparationOverride="8">
+                            <Label Text="{Loc 'lathe-menu-status-printing'}" StyleClasses="LabelHeading" VerticalAlignment="Center" />
+                            <BoxContainer Name="FabricatingDisplayContainer" MinSize="32 32" />
+                            <Label Name="NameLabel" ClipText="True" HorizontalExpand="True" VerticalAlignment="Center" />
+                        </BoxContainer>
+                    </PanelContainer>
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False" RectClipContent="True" MinHeight="100">
+                        <BoxContainer Name="QueueList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <PanelContainer VerticalExpand="True" SizeFlagsStretchRatio="2">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BorderThickness="1" BorderColor="#56452D" BackgroundColor="#100D0A" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" VerticalExpand="True" Margin="8" SeparationOverride="5">
+                    <Label Text="{Loc 'lathe-menu-supplies-title'}" StyleClasses="LabelHeading" FontColorOverride="#E1C17E" />
+                    <wh40kl:Wh40kLatheSupplyStatus Name="SupplyStatus" />
+                    <ui:MaterialStorageControl Name="MaterialsList" VerticalExpand="True" HorizontalExpand="True" />
+                </BoxContainer>
+            </PanelContainer>
         </BoxContainer>
-
     </BoxContainer>
-
 </controls:FancyWindow>

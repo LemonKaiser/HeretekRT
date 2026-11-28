@@ -169,6 +169,8 @@ namespace Content.Shared.Chemistry
 
         public List<ReagentQuantity>? Reagents { get; init; }
 
+        public Dictionary<string, float>? Purity { get; init; }
+
         public ContainerInfo(string displayName, FixedPoint2 currentVolume, FixedPoint2 maxVolume)
         {
             DisplayName = displayName;
@@ -200,6 +202,8 @@ namespace Content.Shared.Chemistry
         public readonly bool UpdateLabel;
 
         public readonly ChemMasterDrawSource DrawSource;
+
+        public Dictionary<string, float>? Wh40kBufferPurity { get; set; }
 
         public ChemMasterBoundUserInterfaceState(
             ChemMasterMode mode, ChemMasterSortingType sortingType, ContainerInfo? inputContainerInfo, ContainerInfo? outputContainerInfo,

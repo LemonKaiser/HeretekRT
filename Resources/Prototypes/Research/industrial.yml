@@ -299,6 +299,8 @@
   cost: 50000
   recipeUnlocks:
   - MaterialSiloMachineCircuitboard
+  - Wh40kPartsSiloMachineCircuitboard
+  - Wh40kChemicalSiloMachineCircuitboard
   technologyPrerequisites:
   - SuperParts
   position: -1, 6

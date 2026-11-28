@@ -43,6 +43,18 @@ internal sealed class Wh40kWindowViewport : ScrollContainer
         base.ExitedTree();
     }
 
+    internal static Vector2 AvailableSize(Vector2 rootSize)
+    {
+        return Vector2.Max(new Vector2(120), rootSize - new Vector2(40));
+    }
+
+    internal static void ClampInitialSize(FancyWindow window, Vector2 rootSize)
+    {
+        var available = AvailableSize(rootSize);
+        if (available.X >= window.MinWidth && available.Y >= window.MinHeight)
+            window.SetSize = Vector2.Min(window.SetSize, available);
+    }
+
     private void UpdateBounds()
     {
         if (_window.Parent is OSWindow)
@@ -50,7 +62,7 @@ internal sealed class Wh40kWindowViewport : ScrollContainer
             _window.MaxSize = new Vector2(float.PositiveInfinity);
             return;
         }
-        var available = Vector2.Max(new Vector2(120), UserInterfaceManager.RootControl.Size - new Vector2(40));
+        var available = AvailableSize(UserInterfaceManager.RootControl.Size);
         _window.MinSize = Vector2.Min(_minimum, available);
         _window.MaxSize = available;
         var requested = _window.SetSize;

@@ -19,6 +19,12 @@ public sealed class Wh40kSpeechStylePicker : BoxContainer
     private readonly OptionButton _font = new() { HorizontalExpand = true };
     internal readonly RichTextLabel Preview = new() { HorizontalAlignment = HAlignment.Left };
     public EyeColorPicker Eyes { get; } = new();
+    public CheckBox EyeGlowCheckBox { get; } = new()
+    {
+        Text = Loc.GetString("wh40k-marking-glow-eyes"),
+        ToolTip = Loc.GetString("wh40k-marking-glow-eyes-tooltip"),
+        Visible = false,
+    };
     private readonly BoxContainer _settings = new() { SeparationOverride = CardGap };
     private readonly PanelContainer _fontCard;
     private readonly PanelContainer _eyesCard;
@@ -39,6 +45,7 @@ public sealed class Wh40kSpeechStylePicker : BoxContainer
             _disabled = value;
             _font.Disabled = value;
             Eyes.Disabled = value;
+            EyeGlowCheckBox.Disabled = value;
             _bubbles.SetDisabled(value);
         }
     }
@@ -48,7 +55,7 @@ public sealed class Wh40kSpeechStylePicker : BoxContainer
         Orientation = LayoutOrientation.Vertical;
         SeparationOverride = CardGap;
         _fontCard = Card("wh40k-personalization-chat-font", _font, Preview);
-        _eyesCard = Card("wh40k-personalization-eye-color", Eyes);
+        _eyesCard = Card("wh40k-personalization-eye-color", Eyes, EyeGlowCheckBox);
         _settings.AddChild(_fontCard);
         _settings.AddChild(_eyesCard);
         AddChild(_settings);

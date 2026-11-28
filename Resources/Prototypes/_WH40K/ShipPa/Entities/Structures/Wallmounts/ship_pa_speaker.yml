@@ -1,0 +1,89 @@
+- type: entity
+  id: Wh40kWallmountShipPaSpeaker
+  name: ship vox-PA speaker
+  description: A ship-wide public address vox speaker. Carries bridge announcements and battle-station klaxons until smashed.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wallmount
+  components:
+  - type: WallMount
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: SmallObjects
+    sprite: _WH40K/ShipPa/Structures/Wallmounts/ship_speaker.rsi
+    offset: 0, -0.25
+    layers:
+    - state: base
+    - state: led_off
+      map: ["led"]
+      shader: unshaded
+    - state: cracked
+      map: ["damage"]
+      visible: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.Wh40kShipPaSpeakerVisuals.State:
+        led:
+          Unpowered: { state: led_off }
+          Idle: { state: led_idle }
+          Broadcasting: { state: led_active }
+          Damaged: { state: led_idle }
+          Broken: { state: led_off }
+        damage:
+          Unpowered: { visible: false }
+          Idle: { visible: false }
+          Broadcasting: { visible: false }
+          Damaged: { visible: true, state: cracked }
+          Broken: { visible: true, state: broken }
+  - type: Wh40kShipPaSpeaker
+  - type: ApcPowerReceiver
+    powerLoad: 15
+  - type: ExtensionCableReceiver
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 1
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+    - trigger:
+        !type:DamageTrigger
+        damage: 60
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Breakage" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+          params:
+            volume: -4
+  - type: Repairable
+    doAfterDelay: 5
+  - type: ShipRepairable
+    repairTime: 3
+    repairCost: 6
+  - type: Construction
+    graph: Wh40kShipPaSpeaker
+    node: speaker
+  - type: StaticPrice
+    price: 150

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._WH40K.Construction;
 using Content.Client._WH40K.UserInterface;
 using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Shared.Construction.Prototypes;
@@ -112,6 +113,7 @@ namespace Content.Client.Construction.UI
             };
 
             _constructionView.RecipeFavorited += (_, _) => OnViewFavoriteRecipe();
+            _constructionView.CraftRepeatPressed += (_, count) => OnCraftRepeat(count);
 
             PopulateCategories();
             OnViewPopulateRecipes(_constructionView, (string.Empty, string.Empty));
@@ -409,6 +411,12 @@ namespace Content.Client.Construction.UI
                 _placementManager.Clear();
 
             _constructionView.BuildButtonPressed = pressed;
+        }
+
+        private void OnCraftRepeat(int count)
+        {
+            if (_selected is { Type: ConstructionType.Item } recipe)
+                _entManager.System<Wh40kCraftRepeatSystem>().Request(recipe.ID, count);
         }
 
         private void UpdateGhostPlacement()

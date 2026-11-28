@@ -1,0 +1,19 @@
+- type: shader
+  id: Wh40kFtlDeparture
+  kind: source
+  path: "/Textures/_WH40K/Shaders/ftl_departure.swsl"
+
+- type: shader
+  id: Wh40kFtlMotion
+  kind: source
+  path: "/Textures/_WH40K/Shaders/ftl_motion.swsl"
+
+- type: shader
+  id: Wh40kFtlBackground
+  kind: source
+  path: "/Textures/_WH40K/Shaders/ftl_background.swsl"
+
+- type: shader
+  id: Wh40kFtlCopy
+  kind: source
+  path: "/Textures/_WH40K/Shaders/ftl_copy.swsl"

@@ -1,0 +1,10 @@
+# Blank data sticks print at the autolathe (ToolsStatic).
+- type: latheRecipe
+  id: Wh40kNeurowareStick
+  result: Wh40kNeurowareStick
+  categories:
+  - Tools
+  completetime: 2
+  materials:
+    Steel: 100
+    Plastic: 100

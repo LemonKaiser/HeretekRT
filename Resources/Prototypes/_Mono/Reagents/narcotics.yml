@@ -24,6 +24,9 @@
     Narcotic:
       metabolismRate: 1
       effects:
+      - !type:Wh40kDose
+        profile: Wh40kHeroin
+        perUnit: 1.5
       - !type:MovespeedModifier
         walkSpeedModifier: 0.40
         sprintSpeedModifier: 0.40
@@ -40,7 +43,8 @@
         component: SeeingRainbows
         type: Add
         time: 20
-        refresh: false
+        refresh: true
+        perUnitInBlood: 1
       - !type:Emote
         emote: Laugh
         showInChat: true

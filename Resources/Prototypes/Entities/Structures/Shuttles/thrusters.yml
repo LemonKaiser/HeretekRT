@@ -255,7 +255,12 @@
             collection: MetalBreak
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
-        - !type:ExplodeBehavior # Mono
+        - !type:PlaySoundBehavior
+          sound:
+            path: /Audio/Weapons/Guns/Gunshots/batrifle.ogg
+        - !type:Wh40kShrapnelBehavior
+          proto: PelletClusterLethal
+          count: 30
   - type: UpgradePowerDraw
     powerDrawMultiplier: 0.75
     scaling: Exponential
@@ -270,11 +275,6 @@
   - type: ShipRepairable
     repairTime: 6
     repairCost: 6
-  - type: Explosive
-    explosionType: ESWelderBomb
-    maxIntensity: 10
-    intensitySlope: 1
-    totalIntensity: 40
   - type: ESSparkOnHit
     prob: 0.4
     count: 3

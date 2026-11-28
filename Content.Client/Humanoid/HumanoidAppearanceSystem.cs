@@ -34,6 +34,7 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         ApplyMarkingSet(component, sprite);
 
         sprite[sprite.LayerMapReserveBlank(HumanoidVisualLayers.Eyes)].Color = component.EyeColor;
+        ApplyEyeGlow(component, sprite);
     }
 
     private static bool IsHidden(HumanoidAppearanceComponent humanoid, HumanoidVisualLayers layer)
@@ -204,6 +205,7 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
         DebugTools.Assert(IsClientSide(uid));
 
         humanoid.MarkingSet = markings;
+        humanoid.MarkingGlow = ProfileMarkingGlow(profile);
         humanoid.PermanentlyHidden = new HashSet<HumanoidVisualLayers>();
         humanoid.HiddenLayers = new Dictionary<HumanoidVisualLayers, SlotFlags>();
         humanoid.CustomBaseLayers = customBaseLayers;
@@ -328,6 +330,8 @@ public sealed partial class HumanoidAppearanceSystem : SharedHumanoidAppearanceS
 				sprite.LayerSetShader(layerId, markingPrototype.Shader);
 			}
 			// impstation edit end
+            if (MarkingGlows(humanoid, markingPrototype))
+                ApplyMarkingGlow(sprite, layerId);
             sprite.LayerSetVisible(layerId, visible);
 
             if (!visible || setting == null) // this is kinda implied

@@ -17,7 +17,8 @@ public sealed partial class RecipeControl : Control
 
         RecipeName.Text = latheSystem.GetRecipeName(recipe);
         RecipeDisplayContainer.AddChild(displayControl);
-        Button.Disabled = !canProduce;
+        AvailabilityLabel.Text = Loc.GetString(canProduce ? "lathe-menu-recipe-ready" : "lathe-menu-recipe-missing");
+        RecipeName.ToolTip = RecipeName.Text;
         TooltipTextSupplier = tooltipTextSupplier;
         Button.TooltipSupplier = SupplyTooltip;
 

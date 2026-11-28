@@ -191,6 +191,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             return;
         }
 
+        EntityManager.System<ShuttleConsoleLockSystem>().ClearShipAccessRefresh(uid, args.Actor);
         RemovePilot(args.Actor);
     }
 

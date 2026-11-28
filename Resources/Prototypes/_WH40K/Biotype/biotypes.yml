@@ -70,6 +70,7 @@
     popUp: "silicon-power-low"
   - type: SiliconDownOnDead
   - type: BatteryDrinker
+  - type: Wh40kNeurowareHost
   - type: DeadStartupButton
     sound:
       path: /Audio/_EinsteinEngines/Effects/Silicon/startup.ogg

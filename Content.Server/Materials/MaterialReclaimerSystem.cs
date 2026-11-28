@@ -85,7 +85,7 @@ public sealed partial class MaterialReclaimerSystem : SharedMaterialReclaimerSys
 
     private void OnInteractUsing(Entity<MaterialReclaimerComponent> entity, ref InteractUsingEvent args)
     {
-        if (args.Handled)
+        if (args.Handled || Wh40kIsPanelTool(entity, args.Used))
             return;
 
         // if we're trying to get a solution out of the reclaimer, don't destroy it

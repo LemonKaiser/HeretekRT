@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from DS13-2.0 at commit https://github.com/DS-13-Dev-Team/DS13-2.0/commit/4c8813536f72a1e2efafb661b62821bb62a5a514.",
+  "size": {
+    "x": 64,
+    "y": 64
+  },
+  "states": [
+    {
+      "name": "brute_l_leg",
+      "directions": 4
+    },
+    {
+      "name": "brute_r_leg",
+      "directions": 4
+    },
+    {
+      "name": "brute_chest",
+      "directions": 4
+    },
+    {
+      "name": "brute_head",
+      "directions": 4
+    },
+    {
+      "name": "brute_l_arm",
+      "directions": 4
+    },
+    {
+      "name": "brute_r_arm",
+      "directions": 4
+    }
+  ]
+}

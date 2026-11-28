@@ -1,0 +1,49 @@
+# Uplink chemicals tab: full-grade product and pristine combat sticks.
+
+- type: listing
+  id: Wh40kUplinkBaggieCocaine
+  productEntity: Wh40kBaggieCocaine
+  cost:
+    Telecrystal: 1
+  categories:
+  - UplinkChemicals
+
+- type: listing
+  id: Wh40kUplinkBaggieHeroin
+  productEntity: Wh40kBaggieHeroin
+  cost:
+    Telecrystal: 1
+  categories:
+  - UplinkChemicals
+
+- type: listing
+  id: Wh40kUplinkCrystalShard
+  productEntity: Wh40kCrystalShard
+  cost:
+    Telecrystal: 1
+  categories:
+  - UplinkChemicals
+
+- type: listing
+  id: Wh40kUplinkNeurowareRedline
+  productEntity: Wh40kNeurowareStickRedline
+  cost:
+    Telecrystal: 4
+  categories:
+  - UplinkChemicals
+
+- type: listing
+  id: Wh40kUplinkNeurowareDamper
+  productEntity: Wh40kNeurowareStickDamper
+  cost:
+    Telecrystal: 4
+  categories:
+  - UplinkChemicals
+
+- type: listing
+  id: Wh40kUplinkNeurowareChoir
+  productEntity: Wh40kNeurowareStickChoir
+  cost:
+    Telecrystal: 2
+  categories:
+  - UplinkChemicals

@@ -165,6 +165,7 @@ namespace Content.Shared.Chemistry.Reaction
             var solution = comp.Solution;
 
             var energy = reaction.ConserveEnergy ? solution.GetThermalEnergy(_prototypeManager) : 0;
+            var wh40kGrade = Wh40kReactionGrade(solution, reaction);
 
             //Remove reactants
             foreach (var reactant in reaction.Reactants)
@@ -182,6 +183,7 @@ namespace Content.Shared.Chemistry.Reaction
             {
                 products.Add(product.Key);
                 solution.AddReagent(product.Key, product.Value * unitReactions);
+                Wh40kGradeProduct(solution, product.Key, product.Value * unitReactions, wh40kGrade);
             }
 
             if (reaction.ConserveEnergy)

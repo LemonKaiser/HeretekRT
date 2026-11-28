@@ -1,4 +1,5 @@
 using Content.Server.Administration.Managers;
+using Content.Server.Players.JobWhitelist;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared._WH40K.CharacterCreation;
@@ -16,6 +17,7 @@ public sealed class Wh40kProfileEditSystem : EntitySystem
 {
     [Dependency] private readonly IConfigurationManager _configuration = default!;
     [Dependency] private readonly IAdminManager _admins = default!;
+    [Dependency] private readonly JobWhitelistManager _whitelists = default!;
 
     public Wh40kProfileEditMode Mode =>
         Wh40kProfileEditPolicy.ParseMode(_configuration.GetCVar(CCVars.Wh40kProfileEditMode));
@@ -31,8 +33,17 @@ public sealed class Wh40kProfileEditSystem : EntitySystem
     {
         preparedProfile = submittedProfile;
 
-        if (Mode == Wh40kProfileEditMode.Disabled || CanBypass(session))
+        if (!IsProfileMutationLocked(session))
+        {
+            if (submittedProfile is HumanoidCharacterProfile humanoid && !_whitelists.IsOnManualWhitelist(session.UserId))
+            {
+                var savedName = (existingProfile as HumanoidCharacterProfile)?.CustomSpeciesName ?? string.Empty;
+                if (humanoid.CustomSpeciesName != savedName)
+                    preparedProfile = humanoid.WithCustomSpeciesName(savedName);
+            }
+
             return true;
+        }
 
         if (Mode == Wh40kProfileEditMode.FullLocked ||
             existingProfile is not HumanoidCharacterProfile existingHumanoid ||

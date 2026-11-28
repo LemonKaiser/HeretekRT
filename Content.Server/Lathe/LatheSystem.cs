@@ -134,7 +134,10 @@ namespace Content.Server.Lathe
             while (query.MoveNext(out var uid, out var comp, out var lathe))
             {
                 if (lathe.CurrentRecipe == null)
+                {
+                    FinishProducing(uid, comp.BulkMaterialPrintMultiplier, lathe);
                     continue;
+                }
 
                 if (_timing.CurTime - comp.StartTime >= comp.ProductionLength)
                     FinishProducing(uid, comp.BulkMaterialPrintMultiplier, lathe); // Mono
@@ -243,12 +246,12 @@ namespace Content.Server.Lathe
                 return false;
 
             // Frontier: argument check
-            if (quantity <= 0)
+            if (quantity <= 0 || quantity > LatheRecipeBatch.MaxItemsRequested)
                 return false;
             // Frontier: argument check
 
-            // Mono - debt
-            if (!canDebt && !CanProduceEnd((uid, component), recipe, quantity)) // Frontier: 1<quantity
+            // Queued jobs wait for supplies; batch size and queue length are capped.
+            if ((!canDebt && !HasRecipe(uid, recipe, component)) || !CanQueue(component, recipe, quantity))
                 return false;
 
             // Frontier: queue up a batch
@@ -276,31 +279,20 @@ namespace Content.Server.Lathe
                 return false;
 
             // Frontier: handle batches
-            var batch = component.Queue.First();
+            var batchIndex = component.SkipBad
+                ? FindStartableBatch(uid, component)
+                : 0;
+            if (batchIndex < 0 || (!component.SkipBad && !CanProduce(uid, component.Queue[0].Recipe, 1, component)))
+                return false;
+
+            var batch = component.Queue[batchIndex];
             var actor = batch.Actor; // Mono: Adds actor
             var recipe = batch.Recipe;
             var multiplier = recipe.Result == null && recipe.ResultReagents == null
                 ? Math.Clamp(component.BulkMaterialPrintMultiplier, 1, Math.Max(1, batch.ItemsRequested - batch.ItemsPrinted))
                 : 1;
-            // <Mono> - resources now consumed as the production goes
-            var canProduce = CanProduce(uid, recipe, multiplier, component);
-            if (!canProduce && multiplier > 1)
-            {
+            if (multiplier > 1 && !CanProduce(uid, recipe, multiplier, component))
                 multiplier = 1;
-                canProduce = CanProduce(uid, recipe, multiplier, component);
-            }
-
-            if (!canProduce)
-            {
-                if (component.SkipBad)
-                {
-                    component.Queue.RemoveAt(0);
-                    if (component.Loop)
-                        component.Queue.Add(batch);
-                    UpdateUserInterfaceState(uid, component);
-                }
-                return false;
-            }
 
             if (!_materialMarket.ObserveLatheMultiplier(component.FinalMaterialUseMultiplier))
                 return false;
@@ -314,46 +306,19 @@ namespace Content.Server.Lathe
 
             foreach (var (reag, amount) in recipe.Reagents)
             {
-                if (component.ReagentOutputSlotId is not { } slotId)
-                    break;
-
-                if (!_container.TryGetContainer(uid, slotId, out var container) ||
-                    !_solution.TryGetDrainableSolution(container.ContainedEntities.First(), out var solEnt, out _))
-                    break;
-
-                _solution.SplitSolutionPerReagentWithOnly(solEnt.Value, amount, reag);
+                ConsumeRecipeReagent(uid, component, reag, amount * multiplier);
             }
 
-            if (TryComp<EntityStorageComponent>(uid, out var storage))
+            foreach (var (entity, amount) in recipe.Entities)
             {
-                foreach (var (entity, amount) in recipe.Entities)
-                {
-                    var counter = 0;
-                    foreach (var conEnt in storage.Contents.ContainedEntities)
-                    {
-                        if (MetaData(conEnt).EntityPrototype?.ID != entity.Id)
-                            continue;
-
-                        _stackQuery.TryComp(conEnt, out var stack);
-                        var count = stack?.Count ?? 1;
-
-                        if (count > amount)
-                            _stack.SetCount(conEnt, count - amount);
-                        if (count <= amount)
-                            QueueDel(conEnt);
-
-                        counter += count;
-                        if (counter >= amount)
-                            break;
-                    }
-                }
+                ConsumeRecipeEntities(uid, entity, amount * multiplier);
             }
 
             // </Mono>
 
             batch.ItemsPrinted += multiplier;
             if (batch.ItemsPrinted >= batch.ItemsRequested || batch.ItemsPrinted < 0) // Rollover sanity check
-                component.Queue.RemoveAt(0);
+                component.Queue.RemoveAt(batchIndex);
             // End Frontier
 
             var time = _reagentSpeed.ApplySpeed(uid, recipe.CompleteTime) * component.TimeMultiplier;
@@ -364,6 +329,7 @@ namespace Content.Server.Lathe
             lathe.Actor = GetEntity(actor);
             lathe.BulkMaterialPrintMultiplier = multiplier; // Mono
             component.CurrentRecipe = recipe;
+            component.PrintingBatch = batch.Index;
 
             var ev = new LatheStartPrintingEvent(recipe);
             RaiseLocalEvent(uid, ref ev);
@@ -469,9 +435,10 @@ namespace Content.Server.Lathe
             if (!Resolve(uid, ref component))
                 return;
 
-            var producing = component.CurrentRecipe ?? component.Queue.FirstOrDefault()?.Recipe; // Frontier: add ?.Recipe
+            var producing = component.CurrentRecipe;
 
             var state = new LatheUpdateState(GetAvailableRecipes(uid, component), component.Queue, producing, component.Loop, component.SkipBad); // Mono
+            FillSupplyState(uid, component, state);
             _uiSys.SetUiState(uid, LatheUiKey.Key, state);
         }
 
@@ -735,27 +702,9 @@ namespace Content.Server.Lathe
         // Mono
         public override bool CanProduce(EntityUid uid, LatheRecipePrototype recipe, int amount = 1, LatheComponent? component = null)
         {
-            if (!TryComp<EntityStorageComponent>(uid, out var storage) &&
-                recipe.Entities.Count != 0)
-                return false;
-
-            if (storage == null)
-                return base.CanProduce(uid, recipe, amount, component);
-
             foreach (var (entity, needed) in recipe.Entities)
             {
-                var processedEntities = 0;
-                foreach (var conEnt in storage.Contents.ContainedEntities)
-                {
-                    if (MetaData(conEnt).EntityPrototype?.ID != entity.Id)
-                        continue;
-
-                    _stackQuery.TryComp(conEnt, out var stack);
-
-                    processedEntities += stack?.Count ?? 1;
-                }
-
-                if (processedEntities < needed * amount)
+                if (CountStoredEntities(uid, entity) < needed * amount)
                     return false;
             }
 

@@ -113,7 +113,11 @@ public partial class NavMapControl : MapGridControl
         Pressed = true,
     };
 
-    public NavMapControl() : base(MinDisplayedRange, MaxDisplayedRange, DefaultDisplayedRange)
+    public NavMapControl() : this(true)
+    {
+    }
+
+    protected NavMapControl(bool showToolbar) : base(MinDisplayedRange, MaxDisplayedRange, DefaultDisplayedRange)
     {
         IoCManager.InjectDependencies(this);
 
@@ -125,6 +129,12 @@ public partial class NavMapControl : MapGridControl
         RectClipContent = true;
         HorizontalExpand = true;
         VerticalExpand = true;
+
+        if (!showToolbar)
+        {
+            _beacons.Pressed = false;
+            return;
+        }
 
         var topPanel = new PanelContainer()
         {

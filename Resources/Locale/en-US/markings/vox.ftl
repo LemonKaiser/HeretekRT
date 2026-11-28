@@ -62,10 +62,8 @@ marking-VoxTailDocked = Vox Tail (Vestigial)
 marking-VoxTailShortAnimated-vox_tail_small = Vox Tail (Short)
 marking-VoxTailShortAnimated = Vox Tail (Short, Animated)
 
-marking-VoxTailBig-vox_tail_big = Vox Tail (Big)
 marking-VoxTailBigAnimated = Vox Tail (Big, Animated)
 
-marking-VoxTailSpikes-vox_tail_spikes = Vox Tail (Spiked)
 marking-VoxTailSpikesAnimated = Vox Tail (Spiked, Animated)
 
 marking-VoxTailDockedAnimated-vox_tail_docked = Vox Tail (Vestigial)

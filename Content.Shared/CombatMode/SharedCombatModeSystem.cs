@@ -80,6 +80,9 @@ public abstract partial class SharedCombatModeSystem : EntitySystem
         if (!component.ToggleMouseRotator || IsNpc(entity) && !_mind.TryGetMind(entity, out _, out _))
             return;
 
+        if (value && !Wh40kFacesCursor(entity))
+            return;
+
         SetMouseRotatorComponents(entity, value);
     }
 

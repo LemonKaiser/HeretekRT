@@ -42,6 +42,7 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
         SubscribeLocalEvent<PdaComponent, AfterInteractEvent>(OnPdaAfterInteract);
         SubscribeLocalEvent<ShuttleConsoleLockComponent, AfterInteractUsingEvent>(OnAfterInteractUsing);
         SubscribeLocalEvent<ShuttleDeedComponent, ComponentInit>(OnShuttleDeedInit);
+        InitializeShipAccessPanel();
     }
 
     /// <summary>
@@ -162,7 +163,8 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
 
         // Add guest access verb for users without deed access when console is unlocked
         // This includes cyborgs (who don't have ID cards) and users with ID cards that don't have the correct deed
-        if (!effectiveLocked && (isCyborg || (hasIdOrVoucher && !HasDeedAccess(uid, args.User, component))))
+        if (!effectiveLocked && !GuestSelfGrantRestricted(Transform(uid).GridUid) &&
+            (isCyborg || (hasIdOrVoucher && !HasDeedAccess(uid, args.User, component))))
         {
             AlternativeVerb guestVerb = new()
             {
@@ -824,6 +826,12 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
         var gridUid = consoleTransform.GridUid.Value;
         // Log.Debug("TryGrantGuestAccess: Console {0} is on grid {1}", console, gridUid);
 
+        if (GuestSelfGrantRestricted(gridUid))
+        {
+            Popup.PopupEntity(Loc.GetString("wh40k-ship-access-owner-grant-denied"), console, user);
+            return;
+        }
+
         // Check if this is a ship with a deed
         if (!TryComp<ShuttleDeedComponent>(gridUid, out var shipDeed))
         {
@@ -1029,43 +1037,46 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
     /// <summary>
     /// Toggles ship access for all ship access readers on the grid
     /// </summary>
-    private void ToggleShipAccess(EntityUid consoleUid, bool enabled)
+    private bool ToggleShipAccess(EntityUid consoleUid, bool enabled)
     {
         // Get the grid the console is on
         var consoleTransform = Transform(consoleUid);
         if (consoleTransform.GridUid == null)
-            return;
+            return false;
 
         var gridUid = consoleTransform.GridUid.Value;
 
         // Get all entities on the grid using transform children
         var gridTransform = Transform(gridUid);
         var childEnumerator = gridTransform.ChildEnumerator;
+        var changed = false;
 
         while (childEnumerator.MoveNext(out var child))
         {
             if (TryComp<ShipAccessReaderComponent>(child, out var accessReader))
             {
-                accessReader.Enabled = enabled;
-                Dirty(child, accessReader);
+                changed |= SetShipReaderProtection(child, accessReader, enabled);
             }
         }
+
+        return changed;
     }
 
     /// <summary>
     /// Attempts to toggle ship access for the grid
     /// </summary>
-    private void TryToggleShipAccess(EntityUid consoleUid, EntityUid user, ShuttleConsoleLockComponent component, bool enable)
+    private bool TryToggleShipAccess(EntityUid consoleUid, EntityUid user, ShuttleConsoleLockComponent component, bool enable)
     {
-        // Only allow deed holders to toggle ship access
-        if (!HasDeedAccess(consoleUid, user, component))
+        // Only allow owners to change protection through an unlocked console.
+        if (!CanManageShipAccess(consoleUid, user, component))
         {
             Popup.PopupEntity(Loc.GetString("shuttle-console-access-denied"), consoleUid, user);
-            return;
+            return false;
         }
 
         // Toggle ship access
-        ToggleShipAccess(consoleUid, enable);
+        if (!ToggleShipAccess(consoleUid, enable))
+            return false;
 
         // Play sound and show popup
         _audio.PlayPvs(new SoundPathSpecifier("/Audio/Machines/id_swipe.ogg"), consoleUid);
@@ -1073,5 +1084,6 @@ public sealed partial class ShuttleConsoleLockSystem : SharedShuttleConsoleLockS
             ? Loc.GetString("shuttle-console-ship-access-enabled")
             : Loc.GetString("shuttle-console-ship-access-disabled");
         Popup.PopupEntity(message, consoleUid, user);
+        return true;
     }
 }

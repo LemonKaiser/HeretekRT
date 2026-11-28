@@ -9,6 +9,7 @@
   description: A special modular suit spaceproof cover designed for compact folding inside modular suit control.
   categories: [ HideSpawnMenu ]
   components:
+  - type: Wh40kSuitTankStorage
   - type: Appearance
   - type: Sprite
     sprite: _Goobstation/Clothing/OuterClothing/Modsuits/standard.rsi

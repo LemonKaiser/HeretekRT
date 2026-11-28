@@ -159,6 +159,7 @@
     species: Astartes
     hideLayersOnEquip:
     - Hair
+    - FacialHair
     - HeadTop
   - type: Icon
     sprite: _WH40K/Mobs/Species/Astartes/parts.rsi
@@ -243,6 +244,7 @@
     species: Astartes
     hideLayersOnEquip:
     - Hair
+    - FacialHair
     - HeadTop
   - type: Inventory
     speciesId: astartes

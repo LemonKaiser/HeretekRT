@@ -1,0 +1,17 @@
+- type: construction
+  name: ship vox-PA speaker
+  id: Wh40kShipPaSpeaker
+  graph: Wh40kShipPaSpeaker
+  startNode: start
+  targetNode: speaker
+  category: construction-category-structures
+  description: A ship-wide public address vox speaker. Carries bridge announcements and battle-station klaxons.
+  icon:
+    sprite: _WH40K/ShipPa/Structures/Wallmounts/ship_speaker.rsi
+    state: base
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true
+  conditions:
+  - !type:WallmountCondition {}

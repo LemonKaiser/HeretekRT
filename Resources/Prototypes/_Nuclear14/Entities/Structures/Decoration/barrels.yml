@@ -295,6 +295,10 @@
       endValue: 9.0
       property: Energy
       isLooped: true
+  - type: EntityRadiusHeater
+    radius: 2.5
+    thermalEnergy: 20000
+    limit: 311
 
 
 # Singular Closed

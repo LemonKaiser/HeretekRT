@@ -1,6 +1,6 @@
 shipyard-direction-message = Your {$shipName} is relatively located {$distance} meter(s) to the {$direction}!
 
-ship-access-denied = You need the ship's deed to access this.
+ship-access-denied = Ship clearance required.
 ship-voucher-cooldown-active = Voucher cooldown still active for {NATURALFIXED($remainingTime, 1)} minutes!
 
 voucher-current-redemptions = This voucher has [color=yellow]{$count}[/color] redemptions left.

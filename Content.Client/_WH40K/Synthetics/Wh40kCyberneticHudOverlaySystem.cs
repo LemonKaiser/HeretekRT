@@ -14,7 +14,7 @@ using Robust.Shared.Random;
 namespace Content.Client._WH40K.Synthetics;
 
 [UsedImplicitly]
-public sealed class Wh40kCyberneticHudOverlaySystem : EntitySystem
+public sealed partial class Wh40kCyberneticHudOverlaySystem : EntitySystem
 {
     private const string FaultSound = "/Audio/Machines/beep.ogg";
     private const string AlarmSound = "/Audio/Machines/beep.ogg";
@@ -94,6 +94,15 @@ public sealed class Wh40kCyberneticHudOverlaySystem : EntitySystem
         var standby = !dead && (hud.Critical || hud.Rebooting);
         var tier = Wh40kCyberneticHudHelper.ComputeTier(hud);
         var strain = Wh40kCyberneticHudHelper.ComputeStrain(hud);
+        var neuroware = Wh40kNeurowareIntensity(local);
+        if (neuroware > 0f)
+        {
+            strain = MathF.Max(strain, neuroware);
+            if (neuroware >= Wh40kNeurowareGlitchAt && tier < Wh40kCyberneticHudTier.Heavy)
+                tier = Wh40kCyberneticHudTier.Heavy;
+            else if (tier < Wh40kCyberneticHudTier.Moderate)
+                tier = Wh40kCyberneticHudTier.Moderate;
+        }
 
         _hud.Scale = _scale;
         BuildRows(hud, frameTime);

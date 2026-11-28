@@ -1,0 +1,8 @@
+# Printed at any lathe that carries the chemistry kit, so a chemist can check a batch without a dealer.
+- type: latheRecipe
+  id: Wh40kPurityTester
+  result: Wh40kPurityTester
+  completetime: 2
+  materials:
+    Plastic: 100
+    Glass: 50

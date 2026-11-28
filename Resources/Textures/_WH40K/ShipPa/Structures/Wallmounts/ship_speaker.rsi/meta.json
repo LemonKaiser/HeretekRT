@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "copyright": "Placeholder generated procedurally for Wolfgate",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "base",
+      "directions": 4
+    },
+    {
+      "name": "led_off",
+      "directions": 4
+    },
+    {
+      "name": "led_idle",
+      "directions": 4
+    },
+    {
+      "name": "led_active",
+      "directions": 4,
+      "delays": [
+        [
+          0.4,
+          0.4
+        ],
+        [
+          0.4,
+          0.4
+        ],
+        [
+          0.4,
+          0.4
+        ],
+        [
+          0.4,
+          0.4
+        ]
+      ]
+    },
+    {
+      "name": "cracked",
+      "directions": 4
+    },
+    {
+      "name": "broken",
+      "directions": 4
+    }
+  ]
+}

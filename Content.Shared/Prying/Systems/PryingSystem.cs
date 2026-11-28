@@ -9,6 +9,7 @@ using Content.Shared.Prying.Components;
 using Content.Shared.Timing;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Player;
 using Robust.Shared.Serialization;
 using PryUnpoweredComponent = Content.Shared.Prying.Components.PryUnpoweredComponent;
 
@@ -157,13 +158,16 @@ public sealed partial class PryingSystem : EntitySystem
             NeedHand = tool != user,
         };
 
-        if (tool != user && tool != null)
+        if (HasComp<ActorComponent>(user))
         {
-            _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user)} is using {ToPrettyString(tool.Value)} to pry {ToPrettyString(target)}");
-        }
-        else
-        {
-            _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user)} is prying {ToPrettyString(target)}");
+            if (tool != user && tool != null)
+            {
+                _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user)} is using {ToPrettyString(tool.Value)} to pry {ToPrettyString(target)}");
+            }
+            else
+            {
+                _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user)} is prying {ToPrettyString(target)}");
+            }
         }
         return _doAfterSystem.TryStartDoAfter(doAfterArgs, out id);
     }

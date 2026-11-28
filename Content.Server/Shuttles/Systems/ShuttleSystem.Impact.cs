@@ -475,7 +475,7 @@ public sealed partial class ShuttleSystem
                 continue;
             }
 
-            var direction = throwDirection * distanceFactor;
+            var direction = Wh40kCapImpactThrow(throwDirection * distanceFactor);
             _throwing.TryThrow(entity, direction, physics, xform, _projQuery, direction.Length(), playSound: false);
         }
 
@@ -677,7 +677,8 @@ public sealed partial class ShuttleSystem
             }
 
             _stuns.TryKnockdown(entity.Owner, knockdownTime, true);
-            _throwing.TryThrow(entity, direction, entity.Comp, Transform(entity), _projQuery, direction.Length(), playSound: false);
+            var cappedDirection = Wh40kCapImpactThrow(direction);
+            _throwing.TryThrow(entity, cappedDirection, entity.Comp, Transform(entity), _projQuery, cappedDirection.Length(), playSound: false);
         }
     }
 

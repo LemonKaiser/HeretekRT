@@ -87,12 +87,28 @@ public sealed partial class Wh40kChassisPanelSystem
         TryReboot(ent, args.Actor);
     }
 
+    private void OnOverclockAction(Entity<Wh40kChassisPanelActionsComponent> ent, ref Wh40kToggleOverclockActionEvent args)
+    {
+        if (args.Handled || !TryComp<Wh40kChassisComponent>(ent, out var chassis))
+            return;
+
+        args.Handled = SetOverclock(ent, !chassis.Overclocked, args.Performer);
+    }
+
     private void OnOverclockMessage(Entity<Wh40kChassisComponent> ent, ref Wh40kChassisOverclockMessage args)
     {
         if (!ValidatePanelControl(ent, args.Actor))
             return;
 
-        SetOverclock(ent, args.On, args.Actor);
+        var actionId = CompOrNull<Wh40kChassisPanelActionsComponent>(ent)?.OverclockAction;
+        if (_actions.TryGetActionData(actionId, out var action) && !_actions.ValidAction(action))
+        {
+            PushState(ent);
+            return;
+        }
+
+        if (SetOverclock(ent, args.On, args.Actor))
+            _actions.StartUseDelay(actionId);
     }
 
     private void OnInstallAugmentMessage(Entity<Wh40kChassisComponent> ent, ref Wh40kChassisInstallAugmentMessage args)
@@ -286,6 +302,7 @@ public sealed partial class Wh40kChassisPanelSystem
 
         chassis.Overclocked = on;
         Dirty(body, chassis);
+        _actions.SetToggled(CompOrNull<Wh40kChassisPanelActionsComponent>(body)?.OverclockAction, on);
 
         if (on)
             EnsureComp<Wh40kChassisOverclockComponent>(body).NextTick = _timing.CurTime + OverclockTick;

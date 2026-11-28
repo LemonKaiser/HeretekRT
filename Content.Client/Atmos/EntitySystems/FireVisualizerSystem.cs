@@ -28,6 +28,8 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
             component.LightEntity = null;
         }
 
+        RemoveFireUnderlay(uid);
+
         // Need LayerMapTryGet because Init fails if there's no existing sprite / appearancecomp
         // which means in some setups (most frequently no AppearanceComp) the layer never exists.
         if (TryComp<SpriteComponent>(uid, out var sprite) &&
@@ -47,6 +49,8 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         sprite.LayerSetShader(FireVisualLayers.Fire, "unshaded");
         if (component.Sprite != null)
             sprite.LayerSetRSI(FireVisualLayers.Fire, component.Sprite);
+        AddFireUnderlay(uid, component, sprite);
+        UnsnapFireLayers(uid, component, sprite);
 
         UpdateAppearance(uid, component, sprite, appearance);
     }
@@ -68,6 +72,7 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
         AppearanceSystem.TryGetData<int>(uid, FireVisuals.FireStacks, out var fireStacks, appearance);
         // ES END
         sprite.LayerSetVisible(index, onFire);
+        UpdateFireUnderlay(uid, component, sprite, onFire, fireStacks);
 
         if (!onFire)
         {
@@ -84,6 +89,9 @@ public sealed partial class FireVisualizerSystem : VisualizerSystem<FireVisualsC
             sprite.LayerSetState(index, component.AlternateState);
         else
             sprite.LayerSetState(index, component.NormalState);
+
+        if (LifeStage(uid) < EntityLifeStage.Initialized)
+            return;
 
         component.LightEntity ??= Spawn(null, new EntityCoordinates(uid, default));
         var light = EnsureComp<PointLightComponent>(component.LightEntity.Value);

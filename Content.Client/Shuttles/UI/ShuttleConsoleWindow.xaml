@@ -2,11 +2,12 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
                       xmlns:sector="clr-namespace:Content.Client._WH40K.SectorMap.UI"
+                      xmlns:shipaccess="clr-namespace:Content.Client._WH40K.ShipAccess"
                       xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:ui1="clr-namespace:Content.Client._Mono.Sensors.UI"
                       Title="{Loc 'shuttle-console-window-title'}"
                       SetSize="1280 850"
-                      MinSize="960 730">
+                      MinSize="960 640">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
         <PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 2">
             <PanelContainer.PanelOverride>
@@ -35,25 +36,31 @@
                     ToggleMode="True"
                     HorizontalExpand="True"
                     VerticalExpand="True"
-                    Text="NAV"
+                    Text="{Loc 'wh40k-shuttle-console-nav-tab'}"
                     StyleClasses="ButtonSquare"/>
             <Button Name="DockModeButton"
                     ToggleMode="True"
                     HorizontalExpand="True"
                     VerticalExpand="True"
-                    Text="DOCK"
+                    Text="{Loc 'wh40k-shuttle-console-docking-tab'}"
                     StyleClasses="ButtonSquare"/>
             <Button Name="SectorModeButton"
                     ToggleMode="True"
                     HorizontalExpand="True"
                     VerticalExpand="True"
-                    Text="SECTOR"
+                    Text="{Loc 'wh40k-shuttle-console-sector-tab'}"
                     StyleClasses="ButtonSquare"/>
             <Button Name="SensorsModeButton"
                     ToggleMode="True"
                     HorizontalExpand="True"
                     VerticalExpand="True"
                     Text="{Loc 'shuttle-console-sensors-tab'}"
+                    StyleClasses="ButtonSquare"/>
+            <Button Name="VoxModeButton"
+                    ToggleMode="True"
+                    HorizontalExpand="True"
+                    VerticalExpand="True"
+                    Text="{Loc 'wh40k-shuttle-console-vox-tab'}"
                     StyleClasses="ButtonSquare"/>
         </BoxContainer>
         </PanelContainer>
@@ -68,6 +75,7 @@
             <ui:DockingScreen Name="DockContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
             <sector:KoronusSectorMapControl Name="SectorContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
             <ui1:SensorsControl Name="SensorsContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
+            <shipaccess:Wh40kVoxAccessPanel Name="VoxContainer" Visible="False" HorizontalExpand="True" VerticalExpand="True"/>
         </BoxContainer>
         </BoxContainer>
             </PanelContainer>

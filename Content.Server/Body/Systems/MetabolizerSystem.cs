@@ -25,6 +25,7 @@ namespace Content.Server.Body.Systems
         [Dependency] private ISharedAdminLogManager _adminLogger = default!;
         [Dependency] private MobStateSystem _mobStateSystem = default!;
         [Dependency] private SharedSolutionContainerSystem _solutionContainerSystem = default!;
+        [Dependency] private Content.Server._WH40K.WolfChem.Purity.Wh40kPuritySystem _wh40kPurity = default!;
 
         private EntityQuery<OrganComponent> _organQuery;
         private EntityQuery<SolutionContainerManagerComponent> _solutionQuery;
@@ -178,12 +179,8 @@ namespace Content.Server.Body.Systems
                     if (!proto.Metabolisms.TryGetValue(group.Id, out var entry))
                         continue;
 
-                    var rate = entry.MetabolismRate * group.MetabolismRateModifier;
-
-                    // Remove $rate, as long as there's enough reagent there to actually remove that much
-                    mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
-
-                    float scale = (float) mostToRemove / (float) rate;
+                    mostToRemove = Wh40kGranularRate(ent, reagent.Prototype, group.Id, entry.MetabolismRate, group.MetabolismRateModifier, quantity, out var scale);
+                    scale *= solution.GetPurity(reagent.Prototype);
 
                     // if it's possible for them to be dead, and they are,
                     // then we shouldn't process any effects, but should probably
@@ -222,11 +219,16 @@ namespace Content.Server.Body.Systems
                 // remove a certain amount of reagent
                 if (mostToRemove > FixedPoint2.Zero)
                 {
+                    _wh40kPurity.ApplyImpurity(ent.Comp2?.Body ?? solutionEntityUid.Value, mostToRemove, solution.GetPurity(reagent.Prototype), proto.Group);
                     solution.RemoveReagent(reagent, mostToRemove);
                     // Frontier: do not count cryogenics chems against the reagent limit (to buff cryo meds)
                     if (!proto.Metabolisms.ContainsKey("Cryogenic"))
                         reagents++;
                     // End Frontier
+                }
+                else if (Wh40kTakeCarried() && !proto.Metabolisms.ContainsKey("Cryogenic"))
+                {
+                    reagents++;
                 }
             }
 

@@ -24,6 +24,7 @@ namespace Content.Server._WH40K.Synthetics;
 public sealed partial class Wh40kChassisPanelSystem : SharedWh40kSyntheticsSystem
 {
     public static readonly EntProtoId ActionId = "ActionWh40kChassisPanel";
+    private static readonly EntProtoId OverclockActionId = "ActionWh40kChassisOverclock";
     public const string BoundUserInterface = "Wh40kChassisPanelBoundUserInterface";
 
     private static readonly TimeSpan StateInterval = TimeSpan.FromSeconds(0.5);
@@ -51,6 +52,7 @@ public sealed partial class Wh40kChassisPanelSystem : SharedWh40kSyntheticsSyste
         SubscribeLocalEvent<HumanoidAppearanceComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<Wh40kBiotypeComponent, Wh40kBiotypeAppliedEvent>(OnBiotypeApplied);
         SubscribeLocalEvent<Wh40kChassisPanelActionsComponent, Wh40kOpenChassisPanelActionEvent>(OnOpenAction);
+        SubscribeLocalEvent<Wh40kChassisPanelActionsComponent, Wh40kToggleOverclockActionEvent>(OnOverclockAction);
         SubscribeLocalEvent<Wh40kChassisComponent, AfterInteractUsingEvent>(OnAfterInteractUsing);
         SubscribeLocalEvent<Wh40kChassisComponent, Wh40kChassisPanelLinkDoAfterEvent>(OnLinkDoAfter);
 
@@ -85,13 +87,20 @@ public sealed partial class Wh40kChassisPanelSystem : SharedWh40kSyntheticsSyste
 
     public void Grant(EntityUid body)
     {
-        EnsureComp<Wh40kChassisComponent>(body);
+        var chassis = EnsureComp<Wh40kChassisComponent>(body);
         EnsureComp<Wh40kCyberneticHudComponent>(body);
         var actions = EnsureComp<Wh40kChassisPanelActionsComponent>(body);
         if (actions.Action is not { } existing || !Exists(existing))
         {
             actions.Action = null;
             _actions.AddAction(body, ref actions.Action, ActionId);
+        }
+
+        if (actions.OverclockAction is not { } overclock || !Exists(overclock))
+        {
+            actions.OverclockAction = null;
+            _actions.AddAction(body, ref actions.OverclockAction, OverclockActionId);
+            _actions.SetToggled(actions.OverclockAction, chassis.Overclocked);
         }
 
         if (!_ui.HasUi(body, Wh40kChassisPanelUiKey.Key))
@@ -107,6 +116,7 @@ public sealed partial class Wh40kChassisPanelSystem : SharedWh40kSyntheticsSyste
         if (TryComp<Wh40kChassisPanelActionsComponent>(body, out var actions))
         {
             _actions.RemoveAction(body, actions.Action);
+            _actions.RemoveAction(body, actions.OverclockAction);
             RemComp<Wh40kChassisPanelActionsComponent>(body);
         }
 
@@ -310,6 +320,9 @@ public sealed partial class Wh40kChassisPanelActionsComponent : Component
 {
     [DataField]
     public EntityUid? Action;
+
+    [DataField]
+    public EntityUid? OverclockAction;
 
     public readonly HashSet<EntityUid> LinkedOperators = new();
 }

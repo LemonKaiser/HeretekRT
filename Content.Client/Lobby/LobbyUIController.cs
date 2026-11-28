@@ -137,6 +137,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         {
             _profileEditor.RefreshAntags();
             _profileEditor.RefreshJobs();
+            _profileEditor.RefreshCustomSpeciesNamePermission();
         }
     }
 

@@ -41,6 +41,7 @@ public static class Wh40kProfileEditPolicy
             .WithSex(original.Sex)
             .WithGender(original.Gender)
             .WithSpecies(original.Species)
+            .WithCustomSpeciesName(original.CustomSpeciesName)
             .WithSpeechStyle(original.SpeechStyle)
             .WithCharacterAppearance(new HumanoidCharacterAppearance(original.Appearance))
             .WithWh40kCharacterBuild(preservedBuild);

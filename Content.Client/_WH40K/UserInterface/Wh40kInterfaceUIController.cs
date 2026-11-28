@@ -46,7 +46,7 @@ public sealed class Wh40kInterfaceUIController : UIController
         control.AddStyleClass(Applied);
         if (control is RadialMenu)
             return;
-        var available = Vector2.Max(new Vector2(120), UIManager.RootControl.Size - new Vector2(40));
+        var available = Wh40kWindowViewport.AvailableSize(UIManager.RootControl.Size);
         if (control is FancyWindow large &&
             (large.DesiredSize.X > available.X || large.DesiredSize.Y > available.Y))
             large.ContentsContainer.AddChild(new Wh40kWindowViewport(large));

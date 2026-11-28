@@ -2,6 +2,9 @@ using Content.Client.Shuttles.UI;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Events;
 using Content.Shared._WH40K.SectorMap.Events;
+using Content.Shared._WH40K.ShipAccess;
+using Content.Shared._WH40K.ShipFuel;
+using Content.Shared._WH40K.ShipPa;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Shared.Log;
@@ -45,6 +48,13 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         _window.Sensors.OnEmcon += msg => SendMessage(msg);
         _window.Sensors.OnArc += msg => SendMessage(msg);
         _window.Sensors.OnDatalink += msg => SendMessage(msg);
+
+        _window.VoxPanel.CodeRequested += code => SendMessage(new Wh40kShipAlertCodeRequestMessage(code));
+        _window.VoxPanel.GeneralQuartersRequested += active => SendMessage(new Wh40kShipGeneralQuartersRequestMessage(active));
+        _window.VoxPanel.DistressRequested += active => SendMessage(new Wh40kShipDistressRequestMessage(active));
+        _window.VoxPanel.AnnounceRequested += text => SendMessage(new Wh40kShipPaAnnounceRequestMessage(text));
+        _window.VoxPanel.VolumeRequested += volume => SendMessage(new Wh40kShipPaVolumeRequestMessage(volume));
+        _window.VoxAccessPanel.AccessMessage += SendMessage;
 
         NfOpen(); // Frontier
     }
@@ -155,5 +165,15 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
             return;
 
         _window?.UpdateState(Owner, cState);
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+
+        if (message is Wh40kShipAccessSnapshot snapshot)
+            _window?.VoxAccessPanel.UpdateAccess(snapshot);
+        else if (message is Wh40kShipFuelMessage fuel)
+            _window?.SetFuelReading(fuel.Reading);
     }
 }

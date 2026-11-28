@@ -25,11 +25,18 @@ public sealed partial class Wh40kGroundCoverSystem : EntitySystem
     private readonly HashSet<NetEntity> _missing = new();
     private readonly List<NetEntity> _gone = new();
     private List<Entity<MapGridComponent>> _covers = new();
+    private readonly List<(Entity<MapGridComponent> Grid, Matrix3x2 Inverse)> _visibleVessels = new();
+    private MapId _vesselMap = MapId.Nullspace;
+    private Box2 _vesselView;
     private Wh40kGroundCoverOverlay _groundOverlay = default!;
     private TimeSpan _nextSweep;
 
     /// <summary>Goes up whenever snow cover changes, so the overlay knows to redraw its mask.</summary>
     public int Version { get; private set; }
+    public bool HasKnownSnow => _snow.Count > 0;
+
+    public event Action<NetEntity, Vector2i>? SnowChunkChanged;
+    public event Action<NetEntity>? SnowGridForgotten;
 
     public override void Initialize()
     {
@@ -63,6 +70,8 @@ public sealed partial class Wh40kGroundCoverSystem : EntitySystem
                 chunks[chunk.Index] = depths;
             else
                 chunks.Remove(chunk.Index);
+
+            SnowChunkChanged?.Invoke(message.Grid, chunk.Index);
         }
 
         if (chunks.Count == 0)
@@ -71,12 +80,44 @@ public sealed partial class Wh40kGroundCoverSystem : EntitySystem
         Version++;
     }
 
+    /// <summary>Collects potential vessel cover in the current viewport before testing individual prints.</summary>
+    public void PrepareVesselCover(MapId map, Box2 view)
+    {
+        _vesselMap = map;
+        _vesselView = view;
+        _visibleVessels.Clear();
+        _covers.Clear();
+        _map.FindGridsIntersecting(map, view.Enlarged(0.05f), ref _covers, approx: true);
+        foreach (var grid in _covers)
+        {
+            if (_wolfWeather.IsCoverGrid(grid.Owner))
+                _visibleVessels.Add((grid, _xform.GetInvWorldMatrix(grid.Owner)));
+        }
+    }
+
     /// <summary>
     /// Whether a point lies over a tile of a vessel, which keeps snow, footprints and tracks off the ground
     /// beneath it. Marks on the ground under a ship stay in memory and show again once it lifts.
     /// </summary>
     public bool IsUnderVessel(MapId map, Vector2 world)
     {
+        if (map == _vesselMap && _vesselView.Contains(world))
+        {
+            var possibleCover = false;
+            foreach (var (grid, inverse) in _visibleVessels)
+            {
+                if (!HasVesselTile(grid, Vector2.Transform(world, inverse)))
+                    continue;
+
+                possibleCover = true;
+                break;
+            }
+
+            if (!possibleCover)
+                return false;
+        }
+
+        // The exact query also checks grid fixtures. Keep it for points that may have cover.
         _covers.Clear();
         _map.FindGridsIntersecting(map, Box2.CenteredAround(world, new Vector2(0.1f)), ref _covers);
         foreach (var grid in _covers)
@@ -85,13 +126,18 @@ public sealed partial class Wh40kGroundCoverSystem : EntitySystem
                 continue;
 
             var local = Vector2.Transform(world, _xform.GetInvWorldMatrix(grid.Owner));
-            var size = grid.Comp.TileSize;
-            var index = new Vector2i((int) MathF.Floor(local.X / size), (int) MathF.Floor(local.Y / size));
-            if (_map.TryGetTileRef(grid.Owner, grid.Comp, index, out var tile) && !tile.Tile.IsEmpty)
+            if (HasVesselTile(grid, local))
                 return true;
         }
 
         return false;
+    }
+
+    private bool HasVesselTile(Entity<MapGridComponent> grid, Vector2 local)
+    {
+        var size = grid.Comp.TileSize;
+        var index = new Vector2i((int) MathF.Floor(local.X / size), (int) MathF.Floor(local.Y / size));
+        return _map.TryGetTileRef(grid.Owner, grid.Comp, index, out var tile) && !tile.Tile.IsEmpty;
     }
 
     /// <summary>Whether any snow cover is known on a grid.</summary>
@@ -147,6 +193,7 @@ public sealed partial class Wh40kGroundCoverSystem : EntitySystem
         {
             _snow.Remove(net);
             _missing.Remove(net);
+            SnowGridForgotten?.Invoke(net);
         }
 
         Version++;
