@@ -748,14 +748,14 @@ public sealed partial class Wh40kChassisPanelWindow : FancyWindow
 
     private static void Style(Label label, int size, Color colour, bool bold = false)
     {
-        label.FontOverride = Mono(size, bold);
+        label.FontOverride = Wh40kTerminalStyle.Mono(size, bold);
         label.FontColorOverride = colour;
     }
 
     private static void StyleButton(Button button)
     {
         button.StyleBoxOverride = Box(Panel, Border, 5f);
-        button.Label.FontOverride = Mono(11, true);
+        button.Label.FontOverride = Wh40kTerminalStyle.Mono(11, true);
         button.Label.FontColorOverride = Amber;
     }
 
