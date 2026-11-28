@@ -22,6 +22,10 @@ internal abstract class ChatFont : Font
     public override int GetLineHeight(float scale) => BaseFont.GetLineHeight(scale);
     public override CharMetrics? GetCharMetrics(Rune rune, float scale, bool fallback = true)
         => BaseFont.GetCharMetrics(rune, scale, fallback);
+
+    public override float DrawCharOutline(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
+        TextOutline outline, bool fallback = true)
+        => BaseFont.DrawCharOutline(handle, rune, baseline, scale, outline, fallback);
 }
 
 internal sealed class ChatImageFont : ChatFont
@@ -46,6 +50,12 @@ internal sealed class ChatImageFont : ChatFont
         var size = GetHeight(scale);
         return new CharMetrics(0, GetAscent(scale), size + (int) MathF.Ceiling(2 * scale), size, size);
     }
+
+    public override float DrawCharOutline(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
+        TextOutline outline, bool fallback = true)
+        => rune.Value == 0xFFFC
+            ? GetCharMetrics(rune, scale, fallback)?.Advance ?? 0
+            : base.DrawCharOutline(handle, rune, baseline, scale, outline, fallback);
 
     public override float DrawChar(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
         Color color, bool fallback = true)

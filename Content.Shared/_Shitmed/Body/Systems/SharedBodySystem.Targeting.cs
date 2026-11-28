@@ -449,7 +449,7 @@ public partial class SharedBodySystem
     {
         var damage = new DamageSpecifier()
         {
-            DamageDict = new Dictionary<string, FixedPoint2>()
+            DamageDict = new()
             {
                 { "Blunt", -part.SelfHealingAmount },
                 { "Slash", -part.SelfHealingAmount },

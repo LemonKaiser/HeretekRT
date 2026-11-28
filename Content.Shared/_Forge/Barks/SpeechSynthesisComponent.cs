@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 using Content.Shared._NF.Cloning;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Forge.Barks;
 
@@ -11,8 +11,8 @@ namespace Content.Shared._Forge.Barks;
 public sealed partial class SpeechSynthesisComponent : Component, ITransferredByCloning
 {
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<BarkPrototype>))]
-    public string? VoicePrototypeId { get; set; }
+    [DataField("voice")]
+    public ProtoId<BarkPrototype>? VoicePrototypeId { get; set; }
 
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("playbackSpeed")]

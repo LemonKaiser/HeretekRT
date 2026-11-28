@@ -6,8 +6,5 @@ namespace Content.Client._WH40K.SectorMap;
 public sealed partial class KoronusQuicksandVisualsComponent : Component
 {
     public ShaderInstance Shader = default!;
-    public bool ShaderApplied;
-    public bool OriginalShaderEvent;
-    public bool OriginalScreenTexture;
     public float Progress;
 }

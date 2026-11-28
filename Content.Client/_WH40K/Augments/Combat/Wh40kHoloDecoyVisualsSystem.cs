@@ -18,7 +18,7 @@ public sealed class Wh40kHoloDecoyVisualsSystem : EntitySystem
                 continue;
 
             _sprite.CopySprite((sourceUid, source), (uid, sprite));
-            sprite.PostShader = null;
+            _sprite.ClearPostShaders(sprite);
             _sprite.SetVisible((uid, sprite), true);
             decoy.Copied = true;
         }

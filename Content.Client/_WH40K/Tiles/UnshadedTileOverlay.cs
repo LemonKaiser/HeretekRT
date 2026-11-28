@@ -15,7 +15,6 @@ public sealed partial class UnshadedTileOverlay : Overlay
 {
     private static readonly ProtoId<ShaderPrototype> UnshadedShader = "unshaded";
 
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private ITileDefinitionManager _tileDefinitions = default!;
 
@@ -43,7 +42,7 @@ public sealed partial class UnshadedTileOverlay : Overlay
             return;
 
         _grids.Clear();
-        _mapManager.FindGridsIntersecting(args.MapId, args.WorldBounds, ref _grids, approx: true);
+        _mapSystem.FindGridsIntersecting(args.MapId, args.WorldBounds, ref _grids, approx: true);
 
         var worldHandle = args.WorldHandle;
         worldHandle.UseShader(_unshadedShader);

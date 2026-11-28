@@ -2,7 +2,7 @@ using Content.Client._Mono.Economy;
 using Content.Client.Power.Components;
 using Content.Client.UserInterface.Controls;
 using Content.Client.VendingMachines.UI;
-using Content.Shared._Mono.Economy.Component;
+using Content.Shared._Mono.Economy.Components;
 using Content.Shared._Mono.Traits.Physical;
 using Content.Shared._NF.Bank.Components;
 using Content.Shared._WH40K.VendingMachines;

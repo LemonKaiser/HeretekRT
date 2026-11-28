@@ -6,6 +6,7 @@ using Content.Client.Atmos.EntitySystems;
 using Content.Shared.Eye;
 using Content.Shared.Stealth.Components;
 using Robust.Client.GameObjects;
+using Content.Client.Graphics;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Prototypes;
@@ -16,6 +17,9 @@ namespace Content.Client._WH40K.Bosses;
 
 public sealed class Wh40kChaosMarineSystem : EntitySystem
 {
+    private const string PostShaderId = "wh40k-chaos-marine";
+
+    [Dependency] private SpriteSystem _sprites = default!;
     [Dependency] private IResourceCache _resources = default!;
     [Dependency] private IOverlayManager _overlays = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
@@ -183,7 +187,7 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
                     _deathShaders[uid] = deathShader = _prototypes.Index<ShaderPrototype>("Wh40kMarineDeath").InstanceUnique();
                 deathShader.SetParameter("BurnProgress", deathProgress);
                 // Keep the native flame independent of the armour's dissolve shader.
-                sprite.PostShader = null;
+                _sprites.RemovePostShader(sprite, PostShaderId);
                 sprite.LayerSetShader(0, deathShader);
                 continue;
             }
@@ -204,11 +208,17 @@ public sealed class Wh40kChaosMarineSystem : EntitySystem
                 shader.SetParameter("Transition", !dead && phaseTime >= 0 ? 1f : 0f);
                 shader.SetParameter("PhaseTime", MathF.Max(0, phaseTime));
                 shader.SetParameter("EffectTime", (float) now.TotalSeconds);
-                sprite.PostShader = shader;
+                if (!_sprites.HasPostShader(sprite, PostShaderId))
+                {
+                    _sprites.SetPostShader(sprite, new SpriteComponent.PostShaderArgs(PostShaderId, shader)
+                    {
+                        Before = ContentPostShaderIds.BeforeOutlines,
+                    });
+                }
             }
             else if (_shaders.Remove(uid, out var shader))
             {
-                sprite.PostShader = null;
+                _sprites.RemovePostShader(sprite, PostShaderId);
                 shader.Dispose();
             }
         }

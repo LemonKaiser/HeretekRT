@@ -11,8 +11,7 @@ namespace Content.Shared._WH40K.SectorMap;
 /// </summary>
 public sealed class KoronusWarpVertigoSystem : EntitySystem
 {
-    [ValidatePrototypeId<StatusEffectPrototype>]
-    public const string EffectId = "KoronusWarpVertigo";
+    public static readonly ProtoId<StatusEffectPrototype> EffectId = "KoronusWarpVertigo";
 
     [Dependency] private BlurryVisionSystem _vision = default!;
 

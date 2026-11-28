@@ -146,7 +146,7 @@ public sealed partial class ShuttleSystem
             var sweptBounds = currentBounds.Union(predictedBounds);
 
             _tunnelCandidates.Clear();
-            _mapManager.FindGridsIntersecting(xform.MapID, sweptBounds, ref _tunnelCandidates, approx: true, includeMap: false);
+            _mapSystem.FindGridsIntersecting(xform.MapID, sweptBounds, ref _tunnelCandidates, approx: true, includeMap: false);
             foreach (var candidate in _tunnelCandidates)
             {
                 if (candidate.Owner == uid || !HasComp<ShuttleComponent>(candidate.Owner) ||

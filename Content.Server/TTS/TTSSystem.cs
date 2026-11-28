@@ -86,13 +86,13 @@ public sealed partial class TTSSystem : EntitySystem
     {
         if (!_isEnabled ||
             args.Message.Length > MaxMessageChars ||
-            string.IsNullOrWhiteSpace(component.VoicePrototypeId))
+            component.VoicePrototypeId is not { } voice)
         {
             return;
         }
 
         var previous = _speechQueues.GetValueOrDefault(uid);
-        var current = ProcessSpokenMessage(previous, uid, component.VoicePrototypeId, args, _roundGeneration);
+        var current = ProcessSpokenMessage(previous, uid, voice.Id, args, _roundGeneration);
         _speechQueues[uid] = current;
 
         try

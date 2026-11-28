@@ -134,9 +134,9 @@ public sealed class Wh40kBaggieSystem : EntitySystem
             .Select(reagent => reagent.Reagent.Prototype)
             .Where(reagent => !allowed.Contains(reagent))
             .Distinct()
-            .Select(reagent => _prototype.TryIndex<ReagentPrototype>(reagent, out var proto)
+            .Select(reagent => _prototype.TryIndex(reagent, out var proto)
                 ? proto.LocalizedName
-                : reagent)
+                : reagent.Id)
             .ToList();
 
         return refused.Count == 0

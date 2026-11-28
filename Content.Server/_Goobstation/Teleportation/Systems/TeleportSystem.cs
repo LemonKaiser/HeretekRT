@@ -19,7 +19,6 @@ namespace Content.Server.Teleportation;
 
 public sealed partial class TeleportSystem : EntitySystem
 {
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedMapSystem _map = default!;
@@ -106,7 +105,7 @@ public sealed partial class TeleportSystem : EntitySystem
             targetCoords = entityCoords.Offset(_random.NextAngle().ToVec() * atRadius);
 
             // Prefer teleporting to grids
-            if (!_mapManager.TryFindGridAt(targetCoords, out var gridUid, out var grid))
+            if (!_map.TryFindGridAt(targetCoords, out var gridUid, out var grid))
             {
                 if (avoidSpace)
                     continue;

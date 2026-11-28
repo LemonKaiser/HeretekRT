@@ -78,8 +78,7 @@ public sealed partial class ChatUIController : UIController
     [UISystemDependency] private readonly WH40KMuteSystem? _muteSystem = default;
     [UISystemDependency] private readonly Wh40kDrugChatSystem? _wh40kDrugChat = default;
 
-    [ValidatePrototypeId<ColorPalettePrototype>]
-    private const string ChatNamePalette = "ChatNames";
+    private static readonly ProtoId<ColorPalettePrototype> ChatNamePalette = "ChatNames";
     private string[] _chatNameColors = default!;
     private bool _chatNameColorsEnabled;
 

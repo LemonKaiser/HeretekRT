@@ -112,7 +112,7 @@ public sealed class WH40KGhostDecorationSystem : EntitySystem
         }
         else
         {
-            var tint = Color.TryFromHex(decoration.GhostTintHex) ?? Color.White;
+            var tint = Color.FromHex(decoration.GhostTintHex, Color.White);
             _ghosts.SetGhostDecorationColor(ghost, tint);
         }
 
@@ -173,12 +173,13 @@ public sealed class WH40KGhostDecorationSystem : EntitySystem
     private bool IsDecoratableGhost(EntityUid uid)
     {
         return TryComp<MetaDataComponent>(uid, out var metadata) &&
-               metadata.EntityPrototype?.ID is GameTicker.ObserverPrototypeName or GameTicker.AdminObserverPrototypeName;
+               metadata.EntityPrototype is { } prototype &&
+               (prototype.ID == GameTicker.ObserverPrototypeName.Id || prototype.ID == GameTicker.AdminObserverPrototypeName.Id);
     }
 
     private bool IsAdminObserverGhost(EntityUid uid)
     {
         return TryComp<MetaDataComponent>(uid, out var metadata) &&
-               metadata.EntityPrototype?.ID == GameTicker.AdminObserverPrototypeName;
+               metadata.EntityPrototype?.ID == GameTicker.AdminObserverPrototypeName.Id;
     }
 }

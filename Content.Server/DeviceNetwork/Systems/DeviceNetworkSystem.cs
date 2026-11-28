@@ -156,8 +156,7 @@ namespace Content.Server.DeviceNetwork.Systems
         private void InitializeDevice(EntityUid uid, DeviceNetworkComponent device)
         {
             if (device.ReceiveFrequency == null
-                && device.ReceiveFrequencyId != null
-                && _protoMan.TryIndex<DeviceFrequencyPrototype>(device.ReceiveFrequencyId, out var receive))
+                && _protoMan.TryIndex(device.ReceiveFrequencyId, out var receive))
             {
                 if (IsDeviceConnected(uid, device))
                     SetReceiveFrequency(uid, receive.Frequency, device);
@@ -166,8 +165,7 @@ namespace Content.Server.DeviceNetwork.Systems
             }
 
             if (device.TransmitFrequency == null
-                && device.TransmitFrequencyId != null
-                && _protoMan.TryIndex<DeviceFrequencyPrototype>(device.TransmitFrequencyId, out var xmit))
+                && _protoMan.TryIndex(device.TransmitFrequencyId, out var xmit))
             {
                 device.TransmitFrequency = xmit.Frequency;
             }

@@ -59,10 +59,11 @@ public sealed partial class MaterialFuelSystem : EntitySystem
         if (!TryComp<PhysicalCompositionComponent>(uid, out var composition))
             return;
 
-        component.Material ??= composition.MaterialComposition.First().Key;
+        var material = component.Material ?? composition.MaterialComposition.First().Key;
+        component.Material = material;
         if (component.BaseMaterialComposition <= 0)
-            component.BaseMaterialComposition = composition.MaterialComposition[component.Material];
-        SetRemainingMaterial((uid, component), component.RemainingMaterial ?? composition.MaterialComposition[component.Material]);
+            component.BaseMaterialComposition = composition.MaterialComposition[material];
+        SetRemainingMaterial((uid, component), component.RemainingMaterial ?? composition.MaterialComposition[material]);
     }
 
     public override void Update(float frameTime)

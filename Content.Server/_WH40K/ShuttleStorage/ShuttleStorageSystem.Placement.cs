@@ -10,7 +10,6 @@ namespace Content.Server._WH40K.ShuttleStorage;
 
 public sealed partial class ShuttleStorageSystem
 {
-    [Dependency] private IMapManager _placementMaps = default!;
 
     private bool BerthStillValid(Transfer operation, DockingConfig config)
     {
@@ -28,7 +27,7 @@ public sealed partial class ShuttleStorageSystem
         var angle = config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId);
         var bounds = new Box2Rotated(grid.LocalAABB.Translated(coordinates.Position), angle, coordinates.Position);
         var grids = new List<Entity<MapGridComponent>>();
-        _placementMaps.FindGridsIntersecting(coordinates.MapId, bounds, ref grids, includeMap: false);
+        _maps.FindGridsIntersecting(coordinates.MapId, bounds, ref grids, includeMap: false);
         return grids.All(other => other.Owner == operation.Grid || other.Owner == facility) && FitsBerth(operation.Grid, config);
     }
 

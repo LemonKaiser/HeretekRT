@@ -4,7 +4,6 @@ using Content.Shared._WH40K.SectorMap.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
-using Robust.Shared.Map;
 
 namespace Content.Client._WH40K.SectorMap;
 
@@ -14,7 +13,6 @@ namespace Content.Client._WH40K.SectorMap;
 public sealed class KoronusSystemBoundaryOverlay : Overlay
 {
     [Dependency] private IEntityManager _entities = default!;
-    [Dependency] private IMapManager _maps = default!;
     private readonly Vector2[] _outlineVertices = new Vector2[KoronusSystemBoundaryRenderer.OutlineVertexCount];
     private readonly Vector2[] _dangerBandVertices = new Vector2[KoronusSystemBoundaryRenderer.DangerBandVertexCount];
 
@@ -27,9 +25,8 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
         if (args.Viewport.Eye is not { } eye ||
-            !_entities.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
+            !_entities.TryGetComponent<KoronusSystemBoundaryComponent>(args.MapUid, out var boundary))
         {
             return false;
         }
@@ -43,8 +40,7 @@ public sealed class KoronusSystemBoundaryOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
-        if (!_entities.TryGetComponent<KoronusSystemBoundaryComponent>(mapUid, out var boundary))
+        if (!_entities.TryGetComponent<KoronusSystemBoundaryComponent>(args.MapUid, out var boundary))
             return;
 
         var outerRadius = MathF.Max(

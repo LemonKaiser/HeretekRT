@@ -22,8 +22,7 @@ public abstract partial class SharedBorgSwitchableTypeSystem : EntitySystem
     [Dependency] protected IPrototypeManager Prototypes = default!;
     [Dependency] private InteractionPopupSystem _interactionPopup = default!;
 
-    [ValidatePrototypeId<EntityPrototype>]
-    public const string ActionId = "ActionSelectBorgType";
+    public static readonly EntProtoId ActionId = "ActionSelectBorgType";
 
     public override void Initialize()
     {
@@ -154,7 +153,7 @@ public abstract partial class SharedBorgSwitchableTypeSystem : EntitySystem
 
         if (TryComp(entity, out TTSComponent? tts))
         {
-            tts.VoicePrototypeId = prototype.VoicePrototypeId;
+            tts.VoicePrototypeId = prototype.VoicePrototypeId is { } voice ? new(voice) : null;
         }
     }
 }

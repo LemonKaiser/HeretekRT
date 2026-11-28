@@ -235,11 +235,7 @@ namespace Content.Client.Paper.UI
             }
 
             HeaderImage.ModulateSelfOverride = visuals.HeaderImageModulate;
-            HeaderImage.Margin = new Thickness(visuals.HeaderMargin.Left,
-                visuals.HeaderMargin.Top,
-                visuals.HeaderMargin.Right,
-                visuals.HeaderMargin.Bottom
-            );
+            HeaderImage.Margin = visuals.HeaderMargin;
 
 
             PaperContent.ModulateSelfOverride = visuals.ContentImageModulate;
@@ -261,11 +257,7 @@ namespace Content.Client.Paper.UI
                 _paperContentLineScale = visuals.ContentImageNumLines;
             }
 
-            PaperContent.Margin = new Thickness(
-                    visuals.ContentMargin.Left,
-                    visuals.ContentMargin.Top,
-                    visuals.ContentMargin.Right,
-                    visuals.ContentMargin.Bottom);
+            PaperContent.Margin = visuals.ContentMargin;
 
             if (visuals.MaxWritableArea != null)
             {

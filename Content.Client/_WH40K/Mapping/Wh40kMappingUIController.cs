@@ -37,7 +37,6 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
     [Dependency] private readonly IResourceCache _resources = default!;
     [Dependency] private readonly IClientAdminManager _admin = default!;
     [Dependency] private readonly IInputManager _input = default!;
-    [Dependency] private readonly IMapManager _maps = default!;
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
     [UISystemDependency] private readonly SandboxSystem _sandbox = default!;
     [UISystemDependency] private readonly SpriteSystem _sprites = default!;
@@ -415,9 +414,10 @@ public sealed partial class Wh40kMappingUIController : UIController, IOnStateCha
         {
             if (window.IsTile)
             {
+                var maps = EntityManager.System<SharedMapSystem>();
                 var map = EntityManager.System<SharedTransformSystem>().ToMapCoordinates(coordinates);
-                if (_maps.TryFindGridAt(map, out var gridUid, out var grid) &&
-                    EntityManager.System<SharedMapSystem>().TryGetTileRef(gridUid, grid, coordinates, out var tile))
+                if (maps.TryFindGridAt(map, out var gridUid, out var grid) &&
+                    maps.TryGetTileRef(gridUid, grid, coordinates, out var tile))
                     window.Catalog.Select(_tiles[tile.Tile.TypeId].ID);
             }
             else if (EntityManager.TryGetComponent(uid, out MetaDataComponent? metadata) &&

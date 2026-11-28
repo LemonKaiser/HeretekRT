@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 using Content.Shared._NF.Cloning;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.TTS;
 
@@ -11,6 +11,6 @@ namespace Content.Shared.TTS;
 public sealed partial class TTSComponent : Component, ITransferredByCloning
 {
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<TTSVoicePrototype>))]
-    public string? VoicePrototypeId { get; set; } = "TtsTechpriest";
+    [DataField("voice")]
+    public ProtoId<TTSVoicePrototype>? VoicePrototypeId { get; set; } = new("TtsTechpriest");
 }

@@ -76,7 +76,6 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
     };
 
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private MapLoaderSystem _mapLoader = default!;
     [Dependency] private PlanetSystem _planetMaps = default!;
@@ -409,7 +408,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         runtime.SystemId = systemId;
         runtime.TerrainGrid = terrainGrid;
         runtime.AuthoredBaseGrids.Clear();
-        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        foreach (var grid in _mapSystem.GetAllGrids(mapId))
         {
             if (grid.Owner != terrainGrid)
                 runtime.AuthoredBaseGrids.Add(grid.Owner);
@@ -762,7 +761,7 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
 
         var bounds = shuttle.LocalAABB.Translated(origin);
         var grids = new List<Entity<MapGridComponent>>();
-        _mapManager.FindGridsIntersecting(surfaceMap, bounds, ref grids, includeMap: false);
+        _mapSystem.FindGridsIntersecting(surfaceMap, bounds, ref grids, includeMap: false);
         return grids.All(grid => grid.Owner == terrainGrid ||
                                  grid.Owner == shuttleGrid ||
                                  padGrids.Contains(grid.Owner));

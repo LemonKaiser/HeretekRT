@@ -43,7 +43,6 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
     private const float ObjectPlacementPadding = 300f;
 
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private MapSystem _maps = default!;
     [Dependency] private MapLoaderSystem _mapLoader = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
@@ -685,7 +684,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
 
         if (!system.ShowSafetyBoundaries)
         {
-            foreach (var grid in _mapManager.GetAllGrids(Comp<MapComponent>(mapUid).MapId))
+            foreach (var grid in _maps.GetAllGrids(Comp<MapComponent>(mapUid).MapId))
             {
                 if (!TryComp<KoronusSafetyZoneComponent>(grid.Owner, out var zone) || !zone.ShowBoundary)
                     continue;
@@ -744,7 +743,7 @@ public sealed partial class KoronusSectorRuleSystem : GameRuleSystem<KoronusSect
             var position = GetCelestialBodyPosition(system, body, angle);
             var clear = true;
 
-            foreach (var grid in _mapManager.GetAllGrids(mapId))
+            foreach (var grid in _maps.GetAllGrids(mapId))
             {
                 var transform = Transform(grid.Owner);
                 var gridOrigin = _transform.GetWorldPosition(transform);

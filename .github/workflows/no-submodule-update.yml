@@ -17,5 +17,5 @@ jobs:
       - uses: actions/checkout@v7
       - name: Check approved engine revision
         env:
-          APPROVED_ENGINE_REVISION: 39acdd5d3b67e48044366ef0cdb1d1c3b41cc85e # v278.0.4
+          APPROVED_ENGINE_REVISION: d56b0d0bcf94c76bef7fc18625bf226607dca092 # v295.0.3
         run: test "$(git rev-parse HEAD:RobustToolbox)" = "$APPROVED_ENGINE_REVISION"

@@ -3,7 +3,6 @@ using Content.Shared._WH40K.SectorMap.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
-using Robust.Shared.Map;
 using Robust.Shared.Maths;
 
 namespace Content.Client._WH40K.SectorMap;
@@ -19,7 +18,6 @@ public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
     private const float EdgeMaxAlpha = 0.96f;
 
     [Dependency] private IEntityManager _entities = default!;
-    [Dependency] private IMapManager _maps = default!;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -30,9 +28,8 @@ public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
 
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
         if (args.Viewport.Eye is not { } eye ||
-            !_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(mapUid, out var boundary))
+            !_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(args.MapUid, out var boundary))
         {
             return false;
         }
@@ -42,8 +39,7 @@ public sealed class KoronusPlanetSurfaceBoundaryOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
-        if (!_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(mapUid, out var boundary))
+        if (!_entities.TryGetComponent<KoronusPlanetSurfaceBoundaryComponent>(args.MapUid, out var boundary))
             return;
 
         if (args.Viewport.Eye is not { } eye)

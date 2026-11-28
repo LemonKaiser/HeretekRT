@@ -44,8 +44,7 @@ namespace Content.Client.HealthAnalyzer.UI
         public event Action<TargetBodyPart?, EntityUid>? OnBodyPartSelected;
         private EntityUid _spriteViewEntity;
 
-        [ValidatePrototypeId<EntityPrototype>]
-        private readonly EntProtoId _bodyView = "AlertSpriteView";
+        private static readonly EntProtoId BodyView = "AlertSpriteView";
 
         private readonly Dictionary<TargetBodyPart, TextureButton> _bodyPartControls;
         private readonly Dictionary<TargetBodyPart, Texture> _lastHitTextures;
@@ -250,13 +249,12 @@ namespace Content.Client.HealthAnalyzer.UI
 
             // Damage Groups
 
-            var displayedDamageGroups = new Dictionary<string, FixedPoint2>();
-            displayedDamage.GetDamagePerGroup(_prototypes, displayedDamageGroups);
+            var displayedDamageGroups = displayedDamage.GetDamagePerGroup(_prototypes);
             var damageSortedGroups =
                 displayedDamageGroups.OrderByDescending(damage => damage.Value)
                     .ToDictionary(x => x.Key, x => x.Value);
 
-            IReadOnlyDictionary<string, FixedPoint2> damagePerType = displayedDamage.DamageDict;
+            var damagePerType = displayedDamage.DamageDict;
 
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
             DrawInstalledCybernetics(msg.InstalledAugments);
@@ -338,8 +336,8 @@ namespace Content.Client.HealthAnalyzer.UI
         }
 
         private void DrawDiagnosticGroups(
-            Dictionary<string, FixedPoint2> groups,
-            IReadOnlyDictionary<string, FixedPoint2> damageDict)
+            Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2> groups,
+            IReadOnlyDictionary<ProtoId<DamageTypePrototype>, FixedPoint2> damageDict)
         {
             GroupsContainer.RemoveAllChildren();
 
@@ -506,7 +504,7 @@ namespace Content.Client.HealthAnalyzer.UI
             if (!_entityManager.Deleted(_spriteViewEntity))
                 _entityManager.QueueDeleteEntity(_spriteViewEntity);
 
-            _spriteViewEntity = _entityManager.Spawn(_bodyView);
+            _spriteViewEntity = _entityManager.Spawn(BodyView);
 
             if (!_entityManager.TryGetComponent<SpriteComponent>(_spriteViewEntity, out var sprite))
                 return null;

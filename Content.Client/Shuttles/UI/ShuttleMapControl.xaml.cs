@@ -49,7 +49,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
 
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IInputManager _inputs = default!;
-    [Dependency] private IMapManager _mapManager = default!;
+    private SharedMapSystem Maps => _entManager.System<SharedMapSystem>();
     [Dependency] private IEntityManager _entManager = default!; // Frontier
     private readonly DetectionSystem _detection; // Mono
     private readonly PlanetTerrainSystem _planetTerrain; // Mono
@@ -173,7 +173,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
         {
             if (args.Function == EngineKeyFunctions.UIClick)
             {
-                var mapUid = _mapManager.GetMapEntityId(ViewingMap);
+                var mapUid = Maps.GetMapOrInvalid(ViewingMap);
 
                 var beaconsOnly = EntManager.TryGetComponent(mapUid, out FTLDestinationComponent? destComp) &&
                                   destComp.BeaconsOnly;
@@ -446,7 +446,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
 
         DrawParallax(handle);
 
-        var viewedMapUid = _mapManager.GetMapEntityId(ViewingMap);
+        var viewedMapUid = Maps.GetMapOrInvalid(ViewingMap);
         var matty = Matrix3Helpers.CreateInverseTransform(Offset, Angle.Zero);
         var realTime = _timing.RealTime;
         var viewBox = new Box2(Offset - WorldRangeVector, Offset + WorldRangeVector);

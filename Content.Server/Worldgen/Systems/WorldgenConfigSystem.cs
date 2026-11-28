@@ -23,7 +23,7 @@ public sealed partial class WorldgenConfigSystem : EntitySystem
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IConsoleHost _conHost = default!;
-    [Dependency] private IMapManager _map = default!;
+    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private ISerializationManager _ser = default!;
 
@@ -54,7 +54,7 @@ public sealed partial class WorldgenConfigSystem : EntitySystem
             return;
         }
 
-        var map = _map.GetMapEntityId(new MapId(mapInt));
+        var map = _map.GetMapOrInvalid(new MapId(mapInt));
 
         if (!_proto.TryIndex<WorldgenConfigPrototype>(args[1], out var proto))
         {
@@ -74,7 +74,7 @@ public sealed partial class WorldgenConfigSystem : EntitySystem
         if (_enabled == false)
             return;
 
-        var target = _map.GetMapEntityId(_gameTicker.DefaultMap);
+        var target = _map.GetMapOrInvalid(_gameTicker.DefaultMap);
         // Koronus owns its finite asteroid field and planetary maps. The ordinary infinite
         // generator would add a second field and keep its asteroids waiting for chunk loaders.
         if (HasComp<KoronusSystemMapComponent>(target))
@@ -88,4 +88,3 @@ public sealed partial class WorldgenConfigSystem : EntitySystem
         DebugTools.Assert(HasComp<WorldControllerComponent>(target));
     }
 }
-

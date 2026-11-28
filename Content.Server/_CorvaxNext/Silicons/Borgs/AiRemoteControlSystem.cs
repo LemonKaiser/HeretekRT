@@ -33,7 +33,7 @@ public sealed partial class AiRemoteControlSystem : SharedAiRemoteControlSystem
     [Dependency] private UserInterfaceSystem _userInterface = default!;
     [Dependency] private SharedTransformSystem _xformSystem = default!;
 
-    [Dependency] private IMapManager _map = default!; // Mono
+    [Dependency] private SharedMapSystem _map = default!; // Mono
     [Dependency] private Wh40kAiRemoteLinkSystem _aiLink = default!;
 
     public override void Initialize()

@@ -180,7 +180,7 @@ public sealed partial class LightSourceGlowOverlay : Overlay
                     outwardDirection = Vector2.Normalize(outwardDirection);
             }
 
-            var hazeShape = light.MaskPath != null
+            var hazeShape = light.LightMask != null
                 ? HazeShape.None
                 : geometry.LinearEmitter && outwardDirection != Vector2.Zero
                     ? HazeShape.Directional

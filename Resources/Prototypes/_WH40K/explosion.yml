@@ -20,7 +20,7 @@
   damagePerIntensity:
     types:
       Caustic: 10
-      Toxin: 5
+      Poison: 5
       Structural: 20
   tileBreakChance: [0]
   tileBreakIntensity: [0]
@@ -36,7 +36,7 @@
   damagePerIntensity:
     types:
       Caustic: 10
-      Toxin: 5
+      Poison: 5
       Structural: 160
   tileBreakChance: [0]
   tileBreakIntensity: [0]

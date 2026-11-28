@@ -22,7 +22,6 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
     private static readonly ProtoId<ShaderPrototype> FlatBodyShaderId = "KoronusCelestialTexture";
 
     [Dependency] private IEntityManager _entities = default!;
-    [Dependency] private IMapManager _maps = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IResourceCache _resources = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -48,16 +47,14 @@ public sealed class KoronusCelestialParallaxOverlay : Overlay
         if (args.MapId == MapId.Nullspace)
             return false;
 
-        var mapUid = _maps.GetMapEntityId(args.MapId);
-        return _entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(mapUid, out var visual) &&
+        return _entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(args.MapUid, out var visual) &&
                _prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system) &&
                system.SpaceMode == KoronusSpaceMode.Planetary;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var mapUid = _maps.GetMapEntityId(args.MapId);
-        if (!_entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(mapUid, out var visual) ||
+        if (!_entities.TryGetComponent<KoronusPlanetarySystemVisualComponent>(args.MapUid, out var visual) ||
             !_prototypes.TryIndex<KoronusSystemPrototype>(visual.SystemId, out var system) ||
             system.SpaceMode != KoronusSpaceMode.Planetary)
         {

@@ -49,7 +49,7 @@ internal sealed class Wh40kColorPopup : Popup
                 return;
 
             var hex = _hex.Text.Trim().TrimStart('#');
-            if (hex.Length == 6 && Color.TryFromHex($"#{hex}") is { } color)
+            if (hex.Length == 6 && Color.TryFromHex($"#{hex}", out var color))
                 SetExact(color, _hex);
         };
         FinishEditing(_hex);

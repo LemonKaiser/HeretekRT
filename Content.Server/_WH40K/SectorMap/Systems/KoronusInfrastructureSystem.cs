@@ -92,7 +92,7 @@ public sealed partial class KoronusInfrastructureSystem : EntitySystem
             args.Cancel();
     }
 
-    private void OnUiMessageAttempt(BoundUserInterfaceMessageAttempt args)
+    private void OnUiMessageAttempt(ref BoundUserInterfaceMessageAttempt args)
     {
         // A configurator's interface belongs to the handheld tool, not the machine it edits.
         // Keep copying/viewing its buffer available, but reject writes to either protected endpoint.

@@ -118,9 +118,9 @@ public sealed partial class WH40KPhantomStepVisualizerSystem : EntitySystem
         var baseColor = TrailTint.WithAlpha(baseAlpha);
         _sprite.SetColor((clone, cloneSprite), baseColor);
 
-        cloneSprite.PostShader = CreateShaderInstance(shaderPrototype, normalized, duration);
-        cloneSprite.GetScreenTexture = false;
-        cloneSprite.RaiseShaderEvent = false;
+        _sprite.ClearPostShaders(cloneSprite);
+        _sprite.SetPostShader(cloneSprite, new SpriteComponent.PostShaderArgs(
+            "wh40k-phantom-afterimage", CreateShaderInstance(shaderPrototype, normalized, duration)));
 
         var despawn = EnsureComp<TimedDespawnComponent>(clone);
         despawn.Lifetime = lifetime + 0.05f;

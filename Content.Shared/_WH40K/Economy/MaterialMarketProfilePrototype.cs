@@ -2,7 +2,6 @@ using System.IO;
 using System.Linq;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Dictionary;
 using Content.Shared.Materials;
 
 namespace Content.Shared._WH40K.Economy;
@@ -27,8 +26,8 @@ public sealed partial class MaterialMarketProfilePrototype : IPrototype, ISerial
     [DataField] public double DemandDiscountMinimum = 0.7;
     [DataField] public double DemandDiscountMaximum = 0.9;
     [DataField] public List<ProtoId<MaterialPrototype>> DemandMaterials = new();
-    [DataField(customTypeSerializer: typeof(PrototypeIdDictionarySerializer<double, MaterialPrototype>))]
-    public Dictionary<string, double> Prices = new();
+    [DataField]
+    public Dictionary<ProtoId<MaterialPrototype>, double> Prices = new();
 
     void ISerializationHooks.AfterDeserialization()
     {

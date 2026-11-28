@@ -56,7 +56,7 @@ namespace Content.Shared.Localizations
             if (!string.Equals(configuredCulture, _config.GetCVar(CVars.LocCultureName), StringComparison.Ordinal))
                 _config.SetCVar(CVars.LocCultureName, configuredCulture);
 
-            _loc.SetFallbackCluture(EnglishCulture);
+            _loc.SetFallbackCulture(EnglishCulture);
             var culture = _loc.SetDefaultCulture();
             EnsureCulturePrepared(culture);
         }

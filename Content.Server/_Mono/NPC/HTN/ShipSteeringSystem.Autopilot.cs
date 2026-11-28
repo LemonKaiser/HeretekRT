@@ -13,7 +13,6 @@ namespace Content.Server._Mono.NPC.HTN;
 
 public sealed partial class ShipSteeringSystem
 {
-    [Dependency] private SharedMapSystem _maps = default!;
 
     // Critically damped cascade: StoppingResponseTime ≈ 4 * VelocityResponseTime (ζ ≈ 1.0).
     private const float VelocityResponseTime = 0.14f;
@@ -764,7 +763,7 @@ public sealed partial class ShipSteeringSystem
                 continue;
 
             _turnCheckGrids.Clear();
-            _maps.FindGridsIntersecting(
+            _mapMan.FindGridsIntersecting(
                 mapId,
                 fixture.Shape,
                 pose,

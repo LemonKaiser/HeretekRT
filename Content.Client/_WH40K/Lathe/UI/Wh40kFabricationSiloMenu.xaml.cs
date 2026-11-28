@@ -140,9 +140,9 @@ public sealed partial class Wh40kFabricationSiloMenu : FancyWindow
                 continue;
             }
 
-            var name = _prototypes.TryIndex<ReagentPrototype>(reagent.Prototype, out var proto)
+            var name = _prototypes.TryIndex(reagent.Prototype, out var proto)
                 ? proto.LocalizedName
-                : reagent.Prototype;
+                : reagent.Prototype.Id;
             _nextStock.Add(new StockEntry(name, quantity, null, reagent.Prototype));
         }
     }
@@ -207,7 +207,7 @@ public sealed partial class Wh40kFabricationSiloMenu : FancyWindow
             StockList.AddChild(new Label { Text = Loc.GetString("fabrication-silo-empty"), StyleClasses = { "LabelSubText" } });
     }
 
-    private void AddReagentButtons(BoxContainer row, string reagent, bool canWithdraw)
+    private void AddReagentButtons(BoxContainer row, ProtoId<ReagentPrototype> reagent, bool canWithdraw)
     {
         foreach (var amount in WithdrawAmounts)
         {
@@ -250,6 +250,6 @@ public sealed partial class Wh40kFabricationSiloMenu : FancyWindow
             : Loc.GetString("fabrication-silo-reagent-stock", ("reagent", entry.Name), ("amount", entry.Amount.Float()));
     }
 
-    private readonly record struct StockEntry(string Name, FixedPoint2 Amount, NetEntity? Part, string? Reagent);
+    private readonly record struct StockEntry(string Name, FixedPoint2 Amount, NetEntity? Part, ProtoId<ReagentPrototype>? Reagent);
     private readonly record struct SlotState(string Name, FixedPoint2 Volume, FixedPoint2 MaxVolume);
 }

@@ -29,7 +29,6 @@ namespace Content.Server.Shuttles.Systems;
 
 public sealed partial class ShuttleConsoleSystem
 {
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private KoronusSectorResidencySystem _koronusResidency = default!;
     [Dependency] private KoronusActivityDirectorSystem _koronusActivities = default!;

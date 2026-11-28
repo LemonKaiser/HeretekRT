@@ -210,11 +210,8 @@ public static class WH40KDecorationMarkup
             return false;
 
         var trimmed = source.Trim();
-        if (Color.TryFromHex(trimmed) is { } hex)
-        {
-            color = hex;
+        if (Color.TryFromHex(trimmed, out color))
             return true;
-        }
 
         return Color.TryFromName(trimmed, out color);
     }

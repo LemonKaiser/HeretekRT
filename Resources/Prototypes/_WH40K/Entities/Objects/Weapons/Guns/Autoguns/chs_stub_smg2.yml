@@ -45,7 +45,7 @@
     sprintModifier: 0.98
   - type: PointLight
     enabled: false
-    mask: /Textures/Effects/LightMasks/cone.png
+    lightMask: ConeSingle
     autoRot: true
     radius: 6
     energy: 2.2

@@ -39,7 +39,6 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPlayerManager _players = default!;
     [Dependency] private IPrototypeManager _prototypes = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private SharedMapSystem _maps = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
@@ -149,7 +148,7 @@ public sealed class KoronusActivityGridOpportunityExecutorSystem : EntitySystem
         out EntityUid grid)
     {
         grid = EntityUid.Invalid;
-        var created = _mapManager.CreateGridEntity(context.TargetMap);
+        var created = _maps.CreateGridEntity(context.TargetMap);
         grid = created.Owner;
         spawned.Add(grid);
         AssignOwned(grid, instance.Id, KoronusActivityOwnedKind.Grid);

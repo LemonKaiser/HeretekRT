@@ -1,6 +1,6 @@
 using System.Numerics;
 using Content.Client._WH40K.Visuals.WorldEffects;
-using Content.Client.Interactable.Components;
+using Content.Client.Graphics;
 using Content.Shared._WH40K.SectorMap;
 using Content.Shared._WH40K.SectorMap.Components;
 using Robust.Client.GameObjects;
@@ -16,6 +16,10 @@ namespace Content.Client._WH40K.SectorMap;
 public sealed partial class KoronusQuicksandVisualsSystem : EntitySystem
 {
     private static readonly ProtoId<ShaderPrototype> ShaderId = "KoronusQuicksandSinking";
+
+    private const string PostShaderId = "koronus-quicksand";
+    private static readonly string[] BeforeSinking =
+        [..ContentPostShaderIds.AfterBaseEffects, ..ContentPostShaderIds.BeforeOutlines];
 
     [Dependency] private IPrototypeManager _prototypes = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -57,29 +61,20 @@ public sealed partial class KoronusQuicksandVisualsSystem : EntitySystem
         var progress = (float) Math.Clamp((now - sinking.EnteredAt) / KoronusQuicksandSystem.SinkDuration, 0, 1);
         visuals.Progress = progress * progress * (3f - 2f * progress);
 
-        // Hover outlines must not expose the submerged sprite or prevent the mask from starting.
-        if (sprite.PostShader != null && sprite.PostShader != visuals.Shader &&
-            TryComp<InteractionOutlineComponent>(uid, out var outline))
-            outline.OnMouseLeave(uid);
-
-        // The engine has one post-shader slot. Never reveal an invisible character or replace another effect.
-        if (sprite.PostShader != null)
-            return;
-
-        if (!visuals.ShaderApplied)
+        // Clip outlines together with the composed sprite.
+        if (!_sprites.HasPostShader(sprite, PostShaderId))
         {
-            visuals.OriginalShaderEvent = sprite.RaiseShaderEvent;
-            visuals.OriginalScreenTexture = sprite.GetScreenTexture;
-            visuals.ShaderApplied = true;
+            _sprites.SetPostShader(sprite, new SpriteComponent.PostShaderArgs(PostShaderId, visuals.Shader)
+            {
+                RaiseShaderEvent = true,
+                After = BeforeSinking,
+            });
         }
-        sprite.PostShader = visuals.Shader;
-        sprite.RaiseShaderEvent = true;
-        sprite.GetScreenTexture = false;
     }
 
     private void OnRender(Entity<KoronusQuicksandVisualsComponent> ent, ref BeforePostShaderRenderEvent args)
     {
-        if (args.Sprite.PostShader != ent.Comp.Shader || args.Viewport.Eye is not { } eye)
+        if (args.Id != PostShaderId || args.Viewport.Eye is not { } eye)
             return;
 
         var (position, rotation) = _transform.GetWorldPositionRotation(ent);
@@ -117,8 +112,8 @@ public sealed partial class KoronusQuicksandVisualsSystem : EntitySystem
         }
 
         // Parameters use the active viewport, so zoom, rotated cameras and differently sized mobs agree.
-        ent.Comp.Shader.SetParameter("SinkPixels", (bottom - top + 1f) * ent.Comp.Progress);
-        ent.Comp.Shader.SetParameter("SurfaceY", args.Viewport.Size.Y - bottom);
+        args.Shader.SetParameter("SinkPixels", (bottom - top + 1f) * ent.Comp.Progress);
+        args.Shader.SetParameter("SurfaceY", args.Viewport.Size.Y - bottom);
     }
 
     private void OnStopSinking(Entity<KoronusQuicksandSinkingComponent> ent, ref ComponentRemove args)
@@ -128,12 +123,7 @@ public sealed partial class KoronusQuicksandVisualsSystem : EntitySystem
 
     private void OnStopVisuals(Entity<KoronusQuicksandVisualsComponent> ent, ref ComponentShutdown args)
     {
-        if (TryComp<SpriteComponent>(ent, out var sprite) && sprite.PostShader == ent.Comp.Shader)
-        {
-            sprite.PostShader = null;
-            sprite.RaiseShaderEvent = ent.Comp.OriginalShaderEvent;
-            sprite.GetScreenTexture = ent.Comp.OriginalScreenTexture;
-        }
+        _sprites.RemovePostShader(ent.Owner, PostShaderId);
         ent.Comp.Shader?.Dispose();
     }
 }

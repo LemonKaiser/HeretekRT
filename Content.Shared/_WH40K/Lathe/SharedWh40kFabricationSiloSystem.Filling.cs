@@ -215,6 +215,7 @@ public abstract partial class SharedWh40kFabricationSiloSystem
             .Select(reagent => reagent.Reagent.Prototype)
             .Where(reagent => !IsAcceptedReagent(reagent))
             .Distinct()
+            .Select(reagent => reagent.Id)
             .ToList();
 
         if (refused.Count > 0)

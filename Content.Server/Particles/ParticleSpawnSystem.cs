@@ -16,7 +16,6 @@ public sealed class ParticleSpawnSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly SharedMapSystem _maps = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -70,7 +69,7 @@ public sealed class ParticleSpawnSystem : EntitySystem
         EntityUid? rateLimitSource = null,
         TimeSpan cooldown = default)
     {
-        if (coordinates.MapId == MapId.Nullspace || !_mapManager.MapExists(coordinates.MapId) || count <= 0 ||
+        if (coordinates.MapId == MapId.Nullspace || !_maps.MapExists(coordinates.MapId) || count <= 0 ||
             !_proto.Resolve(effect, out var prototype) ||
             !ParticleSpawnLimits.TryNormalize(parameters, out var normalized))
             return false;

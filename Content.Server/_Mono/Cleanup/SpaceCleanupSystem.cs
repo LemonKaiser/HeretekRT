@@ -13,11 +13,9 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Player;
-using System.Reflection;
 
 namespace Content.Server._Mono.Cleanup;
 
@@ -30,10 +28,8 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
     [Dependency] private IGameTiming _timing = default!;
-    private object? _manifold;
-    private MethodInfo? _testOverlap;
+    [Dependency] private FixtureSystem _fixtures = default!;
     [Dependency] private PricingSystem _pricing = default!;
-    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
@@ -47,11 +43,9 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
     private EntityQuery<CleanupPlayerProtectedComponent> _playerProtectedQuery;
     private EntityQuery<ContainerManagerComponent> _containerQuery;
     private EntityQuery<CleanupImmuneComponent> _immuneQuery;
-    private EntityQuery<FixturesComponent> _fixQuery;
     private EntityQuery<HTNComponent> _htnQuery;
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<MindContainerComponent> _mindQuery;
-    private EntityQuery<PhysicsComponent> _physQuery;
     private EntityQuery<PullableComponent> _pullableQuery;
 
     private List<(EntityCoordinates Coord, TimeSpan Time, float Radius, float Aggression)> _sweepQueue = new();
@@ -74,11 +68,9 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
         _playerProtectedQuery = GetEntityQuery<CleanupPlayerProtectedComponent>();
         _containerQuery = GetEntityQuery<ContainerManagerComponent>();
         _immuneQuery = GetEntityQuery<CleanupImmuneComponent>();
-        _fixQuery = GetEntityQuery<FixturesComponent>();
         _htnQuery = GetEntityQuery<HTNComponent>();
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _mindQuery = GetEntityQuery<MindContainerComponent>();
-        _physQuery = GetEntityQuery<PhysicsComponent>();
         _pullableQuery = GetEntityQuery<PullableComponent>();
 
         Subs.CVar(_cfg, MonoCVars.CleanupMaxGridDistance, val => _maxGridDistance = val, true);
@@ -86,15 +78,6 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
         Subs.CVar(_cfg, MonoCVars.SpaceCleanupMaxValue, val => _maxPrice = val, true);
         Subs.CVar(_cfg, MonoCVars.SpaceCleanupDuration,
             val => _cleanupDuration = TimeSpan.FromSeconds(Math.Max(0f, val)), true);
-
-        var manifoldType = typeof(SharedMapSystem).Assembly.GetType("Robust.Shared.Physics.Collision.IManifoldManager");
-        if (manifoldType != null)
-        {
-            _manifold = IoCManager.ResolveType(manifoldType);
-            var testOverlapMethod = manifoldType.GetMethod("TestOverlap");
-            if (testOverlapMethod != null)
-                _testOverlap = testOverlapMethod.MakeGenericMethod(typeof(IPhysShape), typeof(PhysShapeCircle));
-        }
     }
 
     protected override bool ShouldEntityCleanup(EntityUid uid)
@@ -194,24 +177,18 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
 
     private bool GetWallStuck(Entity<TransformComponent> ent)
     {
-        // This compatibility path reaches a Robust physics implementation detail. Fail closed if it changes.
-        if (_manifold == null || _testOverlap == null)
-            return false;
-
         if (ent.Comp.GridUid is not { } gridUid
             || ent.Comp.Anchored
             || ent.Comp.ParentUid != gridUid // ignore if not directly parented to grid
         )
             return false;
 
-        var xfB = new Transform(ent.Comp.LocalPosition, 0);
-        var shapeB = new PhysShapeCircle(0.001f);
-
         var contacts = _physics.GetContacts(ent.Owner);
         // it dies without this for some reason
         if (contacts == ContactEnumerator.Empty)
             return false;
 
+        var position = _transform.GetWorldPosition(ent.Comp);
         while (contacts.MoveNext(out var contact))
         {
             if (contact.FixtureA == null
@@ -235,21 +212,9 @@ public sealed partial class SpaceCleanupSystem : BaseCleanupSystem<PhysicsCompon
             var xform = isA ? contact.XformA : contact.XformB;
             var anch = isA ? contact.EntityA : contact.EntityB;
 
-            var xf = _physics.GetLocalPhysicsTransform(anch, xform);
-            var shape = fix.Shape;
-
-            try
-            {
-                if ((bool?)_testOverlap.Invoke(_manifold, [shape, 0, shapeB, 0, xf, xfB]) ?? false)
-                    return true;
-            }
-            catch (TargetInvocationException exception)
-            {
-                Log.Error($"Wall-stuck cleanup overlap check failed closed: {exception.InnerException ?? exception}");
-                _manifold = null;
-                _testOverlap = null;
-                return false;
-            }
+            var xf = _physics.GetPhysicsTransform(anch, xform);
+            if (_fixtures.TestPoint(fix.Shape, xf, position))
+                return true;
         }
 
         return false;

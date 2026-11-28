@@ -8,7 +8,7 @@ namespace Content.Shared._Mono.Shipyard;
 
 public abstract class SharedShipyardPreviewSystem : EntitySystem
 {
-    [Dependency] private IMapManager _mapManager = default!;
+    [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private SharedMindSystem _mind = default!;
 
     protected MapId _previewMap = MapId.Nullspace;
@@ -30,7 +30,7 @@ public abstract class SharedShipyardPreviewSystem : EntitySystem
 
     public bool CachePreviewMap()
     {
-        if (_previewMap != MapId.Nullspace && _mapManager.MapExists(_previewMap))
+        if (_previewMap != MapId.Nullspace && _map.MapExists(_previewMap))
             return true;
 
         _previewMap = MapId.Nullspace;

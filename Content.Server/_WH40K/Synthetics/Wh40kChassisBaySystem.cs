@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Server._EinsteinEngines.Silicon.Charge;
 using Content.Server._WH40K.Augments;
 using Content.Shared._EinsteinEngines.Silicon.Components;
@@ -86,7 +87,7 @@ public sealed class Wh40kChassisBaySystem : SharedWh40kSyntheticsSystem
 
         // Only amplify actual incoming damage (not healing).
         var amplified = new DamageSpecifier(args.Damage);
-        foreach (var key in new List<string>(amplified.DamageDict.Keys))
+        foreach (var key in amplified.DamageDict.Keys.ToArray())
         {
             if (amplified.DamageDict[key] > 0)
                 amplified.DamageDict[key] *= ent.Comp.BayOpenDamageMultiplier;

@@ -43,8 +43,8 @@ public sealed partial class NavScreen : BoxContainer
 
     [Dependency] private IEntityManager _entManager = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IPrototypeManager _prototypeManager = default!;
+    private readonly SharedMapSystem _map;
     private DetectionSystem _detection;
     private SharedAudioSystem _audio;
     private ShuttleSystem _shuttles;
@@ -84,6 +84,7 @@ public sealed partial class NavScreen : BoxContainer
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+        _map = _entManager.System<SharedMapSystem>();
         _detection = _entManager.System<DetectionSystem>();
         _audio = _entManager.System<SharedAudioSystem>();
         _shuttles = _entManager.System<ShuttleSystem>();
@@ -240,7 +241,7 @@ public sealed partial class NavScreen : BoxContainer
 
         var mapId = shuttleXform.MapID;
         _bssObjectMap = mapId;
-        var mapUid = _mapManager.GetMapEntityId(mapId);
+        var mapUid = _map.GetMapOrInvalid(mapId);
         var mapName = _entManager.TryGetComponent(mapUid, out MetaDataComponent? metadata) &&
                       !string.IsNullOrWhiteSpace(metadata.EntityName)
             ? metadata.EntityName
@@ -262,7 +263,7 @@ public sealed partial class NavScreen : BoxContainer
             HorizontalExpand = true,
         };
         var entries = new List<IMapObject>();
-        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        foreach (var grid in _map.GetAllGrids(mapId))
         {
             _entManager.TryGetComponent(grid.Owner, out IFFComponent? iff);
             var hideLabel = iff != null &&

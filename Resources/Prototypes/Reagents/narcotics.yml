@@ -18,9 +18,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -0.02
           types:
+            Blunt: 0
+            Slash: -0.01
+            Piercing: -0.01
             Heat: -0.01
             Shock: -0.01
             Cold: -0.01
@@ -92,9 +93,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -169,9 +171,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -242,9 +245,14 @@
           - !type:TotalDamage
             min: 70 # only heals when you're more dead than alive
           damage: # heals at the same rate as tricordrazine, doesn't heal poison because if you OD'd I'm not giving you a safety net
-            groups:
-              Burn: -1
-              Brute: -1
+            types:
+              Heat: -0.25
+              Shock: -0.25
+              Cold: -0.25
+              Caustic: -0.25
+              Blunt: -0.33
+              Slash: -0.33
+              Piercing: -0.34
 
 - type: reagent
   id: THC
@@ -272,9 +280,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -0.04
           types:
+            Blunt: -0.01
+            Slash: -0.01
+            Piercing: -0.02
             Heat: -0.02
             Shock: -0.02
             Cold: -0.02
@@ -309,9 +318,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -0.01
           types:
+            Blunt: 0
+            Slash: 0
+            Piercing: -0.01
             Heat: -0.01
             Shock: -0.01
             Cold: -0.01
@@ -334,9 +344,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -379,9 +390,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -409,9 +421,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -578,9 +591,10 @@
         - !type:OrganType # Goobstation - Yowie
           type: Yowie
         damage:
-          groups:
-            Brute: -1
           types:
+            Blunt: -0.33
+            Slash: -0.33
+            Piercing: -0.34
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5

@@ -57,8 +57,9 @@ public sealed class Wh40kAiOverwatchSystem : EntitySystem
         return eye;
     }
 
-    private void OnMessageAttempt(EntityUid uid, OverwatchConsoleComponent component, BoundUserInterfaceMessageAttempt args)
+    private void OnMessageAttempt(Entity<OverwatchConsoleComponent> ent, ref BoundUserInterfaceMessageAttempt args)
     {
+        var (uid, component) = ent;
         if (args.Message is not OverwatchViewCameraMessage || RemoteEye(args.Actor) is not { } eye)
             return;
 

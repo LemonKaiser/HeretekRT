@@ -59,7 +59,8 @@ using Content.Server._Mono.Detection;
 using Content.Server._WH40K.Shipyard;
 using Content.Server.Stack; // Mono
 using Content.Shared._Mono.Economy; // Mono
-using Content.Shared._Mono.Economy.Component; // Mono
+using Content.Shared._Mono.Economy.Components;
+using Content.Shared.Roles; // Mono
 
 namespace Content.Server._NF.Shipyard.Systems;
 

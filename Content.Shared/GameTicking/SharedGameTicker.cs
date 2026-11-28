@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -25,8 +26,7 @@ namespace Content.Shared.GameTicking
         // See ideally these would be pulled from the job definition or something.
         // But this is easier, and at least it isn't hardcoded.
         //TODO: Move these, they really belong in StationJobsSystem or a cvar.
-        [ValidatePrototypeId<JobPrototype>]
-        public const string FallbackOverflowJob = "Wanderer";
+        public static readonly ProtoId<JobPrototype> FallbackOverflowJob = "Wanderer";
 
         public const string FallbackOverflowJobName = "job-name-wanderer";
 
@@ -269,7 +269,7 @@ namespace Content.Shared.GameTicking
 
             public MobState EntMobState;
 
-            public Dictionary<string, FixedPoint2> DamagePerGroup;
+            public Dictionary<ProtoId<DamageGroupPrototype>, FixedPoint2> DamagePerGroup;
             #endregion
         }
 

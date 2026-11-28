@@ -41,7 +41,6 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private StandingStateSystem _standing = default!;
@@ -624,7 +623,7 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (candidate.MapId == MapId.Nullspace)
             return false;
 
-        if (!_mapManager.TryFindGridAt(candidate, out var gridUid, out var grid))
+        if (!_map.TryFindGridAt(candidate, out var gridUid, out var grid))
             return false;
 
         var tileIndices = _map.WorldToTile(gridUid, grid, candidate.Position);
@@ -649,7 +648,7 @@ public sealed partial class WH40KPhantomStepSystem : EntitySystem
         if (candidate.MapId == MapId.Nullspace)
             return false;
 
-        if (!_mapManager.TryFindGridAt(candidate, out var gridUid, out var grid))
+        if (!_map.TryFindGridAt(candidate, out var gridUid, out var grid))
             return false;
 
         var tileIndices = _map.WorldToTile(gridUid, grid, candidate.Position);

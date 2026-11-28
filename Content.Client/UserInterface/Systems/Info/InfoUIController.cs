@@ -27,8 +27,7 @@ public sealed partial class InfoUIController : UIController, IOnStateEntered<Lob
     private string? _pendingRulesCultureName;
     private ISawmill _sawmill = default!;
 
-    [ValidatePrototypeId<GuideEntryPrototype>]
-    private const string DefaultRuleset = "DefaultRuleset";
+    private static readonly ProtoId<GuideEntryPrototype> DefaultRuleset = "DefaultRuleset";
 
     public ProtoId<GuideEntryPrototype> RulesEntryId = DefaultRuleset;
 

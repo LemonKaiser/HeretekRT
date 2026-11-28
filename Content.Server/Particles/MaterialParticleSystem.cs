@@ -20,6 +20,7 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared._Shitmed.Targeting;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -279,9 +280,9 @@ public sealed class MaterialParticleSystem : EntitySystem
         return false;
     }
 
-    private static bool ContainsMaterial(IEnumerable<string> ids, string fragment)
+    private static bool ContainsMaterial(IEnumerable<ProtoId<MaterialPrototype>> ids, string fragment)
     {
-        return ids.Any(id => id.Contains(fragment, StringComparison.OrdinalIgnoreCase));
+        return ids.Any(id => id.Id.Contains(fragment, StringComparison.OrdinalIgnoreCase));
     }
 
     private MapCoordinates GetImpactCoordinates(EntityUid anchor, in DamageChangedEvent args)

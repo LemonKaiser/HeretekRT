@@ -1,3 +1,4 @@
+using Content.Client.Graphics;
 using Content.Shared._WH40K.Wave;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -13,6 +14,9 @@ public sealed class WH40KWaveShaderSystem : EntitySystem
     private static readonly ProtoId<ShaderPrototype> ShaderId = "WH40KWave";
 
     [Dependency] private IPrototypeManager _prototype = default!;
+    private const string PostShaderId = "wh40k-wave";
+
+    [Dependency] private SpriteSystem _sprites = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
     private readonly Dictionary<EntityUid, ShaderInstance> _shaderInstances = new();
@@ -33,7 +37,8 @@ public sealed class WH40KWaveShaderSystem : EntitySystem
     private void OnShutdown(Entity<WH40KWaveShaderComponent> ent, ref ComponentShutdown args)
     {
         ApplyShader(ent.Owner, null);
-        _shaderInstances.Remove(ent.Owner);
+        if (_shaderInstances.Remove(ent.Owner, out var shader))
+            shader.Dispose();
     }
 
     private void ApplyShader(Entity<SpriteComponent?> ent, ShaderInstance? instance)
@@ -41,17 +46,26 @@ public sealed class WH40KWaveShaderSystem : EntitySystem
         if (!Resolve(ent, ref ent.Comp, false))
             return;
 
-        ent.Comp.PostShader = instance;
-        ent.Comp.GetScreenTexture = false;
-        ent.Comp.RaiseShaderEvent = instance != null;
+        if (instance == null)
+        {
+            _sprites.RemovePostShader(ent.Comp, PostShaderId);
+            return;
+        }
+
+        _sprites.SetPostShader(ent.Comp, new SpriteComponent.PostShaderArgs(PostShaderId, instance)
+        {
+            RaiseShaderEvent = true,
+            Before = ContentPostShaderIds.BeforeOutlines,
+        });
     }
 
     private void OnBeforePostShaderRender(Entity<WH40KWaveShaderComponent> ent, ref BeforePostShaderRenderEvent args)
     {
-        EnsureResolvedWaveProfile(ent);
-
-        if (args.Sprite.PostShader is not { } shader)
+        if (args.Id != PostShaderId)
             return;
+
+        EnsureResolvedWaveProfile(ent);
+        var shader = args.Shader;
 
         shader.SetParameter("Speed", ent.Comp.Speed * ent.Comp.ResolvedSpeedMultiplier);
         shader.SetParameter("Dis", ent.Comp.Dis * ent.Comp.ResolvedDisMultiplier);

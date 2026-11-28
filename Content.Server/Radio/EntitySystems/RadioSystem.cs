@@ -100,12 +100,12 @@ public sealed partial class RadioSystem : EntitySystem
             if (uid != args.MessageSource &&
                 _netCfg.GetClientCVar(actor.PlayerSession.Channel, CCVars.LocalRadioTTSEnabled) &&
                 TryComp<TTSComponent>(args.MessageSource, out var tts) &&
-                !string.IsNullOrWhiteSpace(tts.VoicePrototypeId))
+                tts.VoicePrototypeId is { } voice)
             {
                 _tts.OnlyPlayerTTS(
                     uid,
                     args.OriginalChatMsg.Message,
-                    tts.VoicePrototypeId,
+                    voice.Id,
                     actor.PlayerSession,
                     isWhisper: false,
                     language: args.Language,

@@ -15,3 +15,5 @@ shipyard-preview-data-label = Ship data:
 shipyard-preview-tile-count = Tile count: {$count}
 
 shipyard-preview-exit = Exit preview
+vessel-sturnus-name = KSP Sturnus
+vessel-sturnus-desc = An escort carrier built from a salvage hull. The Sturnus carries hired fighter squadrons and uses light point defense and service equipment for long deployments.

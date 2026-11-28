@@ -72,7 +72,7 @@ public sealed partial class KoronusPlanetarySystem
         EnsureComp<PreventGridAnchorChangesComponent>(dungeon.Value);
         EnsureComp<PreventPilotComponent>(dungeon.Value);
         PrepareLandingClearance(map.Value, surface);
-        foreach (var grid in _mapManager.GetAllGrids(mapId))
+        foreach (var grid in _mapSystem.GetAllGrids(mapId))
         {
             if (grid.Owner == map.Value)
                 continue;

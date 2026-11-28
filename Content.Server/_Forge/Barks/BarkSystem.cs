@@ -30,8 +30,8 @@ public sealed class BarkSystem : EntitySystem
     private void OnEntitySpoke(EntityUid uid, SpeechSynthesisComponent component, EntitySpokeEvent args)
     {
         if (!_enabled ||
-            string.IsNullOrWhiteSpace(component.VoicePrototypeId) ||
-            !_prototype.TryIndex<BarkPrototype>(component.VoicePrototypeId, out var bark) ||
+            component.VoicePrototypeId is not { } voice ||
+            !_prototype.TryIndex(voice, out var bark) ||
             bark.SoundFiles.Count == 0)
         {
             return;

@@ -75,7 +75,13 @@ public sealed class DialogueTypewriterLabel : RichTextLabel
         public int VisibleCharacters { get; set; }
         private int _drawnCharacters;
 
-        public void BeginDraw() => _drawnCharacters = 0;
+        private int _outlinedCharacters;
+
+        public void BeginDraw()
+        {
+            _drawnCharacters = 0;
+            _outlinedCharacters = 0;
+        }
 
         public override int GetAscent(float scale) => Source.GetAscent(scale);
         public override int GetHeight(float scale) => Source.GetHeight(scale);
@@ -83,6 +89,15 @@ public sealed class DialogueTypewriterLabel : RichTextLabel
         public override int GetLineHeight(float scale) => Source.GetLineHeight(scale);
         public override CharMetrics? GetCharMetrics(Rune rune, float scale, bool fallback = true)
             => Source.GetCharMetrics(rune, scale, fallback);
+
+        public override float DrawCharOutline(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale,
+            TextOutline outline, bool fallback = true)
+        {
+            _outlinedCharacters += rune.Utf16SequenceLength;
+            return _outlinedCharacters <= VisibleCharacters
+                ? Source.DrawCharOutline(handle, rune, baseline, scale, outline, fallback)
+                : Source.GetCharMetrics(rune, scale, fallback)?.Advance ?? 0;
+        }
 
         public override float DrawChar(DrawingHandleBase handle, Rune rune, Vector2 baseline, float scale, Color color, bool fallback = true)
         {

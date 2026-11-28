@@ -1,6 +1,6 @@
 using Content.Shared._Mono.Grid;
 using Content.Shared._NF.Shipyard.Prototypes;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.List;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._NF.Shipyard.Components;
 
@@ -13,8 +13,8 @@ public sealed partial class ShipyardListingComponent : Component
     /// <summary>
     ///   All VesselPrototype IDs that should be listed in this shipyard console.
     /// </summary>
-    [ViewVariables, DataField(customTypeSerializer: typeof(PrototypeIdListSerializer<VesselPrototype>))]
-    public List<string> Shuttles = new();
+    [ViewVariables, DataField]
+    public List<ProtoId<VesselPrototype>> Shuttles = new();
 
     /// <summary>
     ///   Vessel groups to include alongside explicit shuttles.
@@ -27,12 +27,12 @@ public sealed partial class ShipyardListingComponent : Component
     ///   Vessels to hide from this catalog, even if included by a group or explicit listing.
     ///   Vouchers cannot override these exclusions.
     /// </summary>
-    [ViewVariables, DataField(customTypeSerializer: typeof(PrototypeIdListSerializer<VesselPrototype>))]
-    public List<string> ExcludedShuttles = new();
+    [ViewVariables, DataField]
+    public List<ProtoId<VesselPrototype>> ExcludedShuttles = new();
 
     /// <summary>
     ///   Grid modifiers to apply to ships bought from here.
     /// </summary>
-    [ViewVariables, DataField(customTypeSerializer: typeof(PrototypeIdListSerializer<GridModificationPrototype>))]
-    public List<string> Hullmods = new();
+    [ViewVariables, DataField]
+    public List<ProtoId<GridModificationPrototype>> Hullmods = new();
 }

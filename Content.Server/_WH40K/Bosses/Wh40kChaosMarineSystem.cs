@@ -173,7 +173,7 @@ public sealed partial class Wh40kChaosMarineSystem : EntitySystem
         {
             if (value <= 0)
                 continue;
-            var factor = type switch
+            var factor = type.Id switch
             {
                 "Blunt" or "Slash" or "Piercing" => .2f,
                 "Heat" => Wh40kChaosMarineCombat.HeatMultiplier(state.PhaseTwo, state.HeatStep),

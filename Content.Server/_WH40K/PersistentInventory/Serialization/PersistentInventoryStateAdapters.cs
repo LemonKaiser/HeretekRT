@@ -1466,7 +1466,7 @@ public sealed class DamageItemStateAdapter : IItemStateAdapter
         };
 
         var index = 0;
-        foreach (var (damageType, value) in damageable.Damage.DamageDict.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+        foreach (var (damageType, value) in damageable.Damage.DamageDict.OrderBy(pair => pair.Key.Id, StringComparer.Ordinal))
         {
             fields[$"{index}.type"] = damageType;
             fields[$"{index}.value"] = value.Value.ToString(CultureInfo.InvariantCulture);
@@ -1845,7 +1845,7 @@ public sealed class PaperItemStateAdapter : IItemStateAdapter
                     out var stampedName) ||
                 stampedName == null ||
                 !state.Fields.TryGetValue($"stamp.{index}.color", out var colorText) ||
-                Color.TryFromHex(colorText) is not { } color ||
+                !Color.TryFromHex(colorText, out var color) ||
                 !state.Fields.TryGetValue($"stamp.{index}.type", out var typeText) ||
                 !int.TryParse(typeText, NumberStyles.None, CultureInfo.InvariantCulture, out var rawType) ||
                 !Enum.IsDefined(typeof(StampType), rawType) ||
@@ -2017,12 +2017,12 @@ public sealed class RandomSpriteItemStateAdapter : IItemStateAdapter
             Color? color = null;
             if (hasColorText == "1")
             {
-                color = Color.TryFromHex(colorText);
-                if (color == null)
+                if (!Color.TryFromHex(colorText, out var parsed))
                 {
                     error = "Random sprite color is invalid.";
                     return false;
                 }
+                color = parsed;
             }
             else if (colorText != "-")
             {
@@ -2349,7 +2349,7 @@ public sealed class SolutionItemStateAdapter : IItemStateAdapter
                 solution.Contents.Count.ToString(CultureInfo.InvariantCulture);
 
             var reagents = solution.Contents
-                .OrderBy(reagent => reagent.Reagent.Prototype, StringComparer.Ordinal)
+                .OrderBy(reagent => reagent.Reagent.Prototype.Id, StringComparer.Ordinal)
                 .ToArray();
             for (var reagentIndex = 0; reagentIndex < reagents.Length; reagentIndex++)
             {
