@@ -88,6 +88,7 @@ public sealed partial class KoronusPlanetarySystem
     {
         var map = _maps.CreateMap(out mapId, runMapInit: false);
         _metaData.SetEntityName(map, name);
+        AddComp<KoronusPlanetaryLayerComponent>(map);
 
         var gravity = EnsureComp<GravityComponent>(map);
         gravity.Enabled = true;

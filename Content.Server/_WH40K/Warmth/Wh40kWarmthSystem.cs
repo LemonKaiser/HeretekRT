@@ -2,17 +2,19 @@ using Content.Server._Mono.Temperature.Components;
 using Content.Server._Mono.Temperature.Systems;
 using Content.Server._WH40K.SectorMap.Systems;
 using Content.Server.Atmos.EntitySystems;
-using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
 using Content.Shared._WH40K.Warmth;
+using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared._WH40K.SectorMap.Prototypes;
+using Content.Shared._WH40K.Synthetics;
 using Content.Shared._WH40K.Weather;
 using Content.Shared.Examine;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Temperature;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -50,7 +52,7 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
     private const float StrainRecoveryMargin = 0.1f;
     private const float SevereShare = 0.8f;
     private const float VacuumMoles = 0.5f;
-    private const float SteadyRate = 0.0005f;
+    private const float SteadyTemperatureRate = 0.05f;
     private const float RateSmoothing = 0.3f;
 
     private readonly HashSet<Entity<EntityRadiusHeaterComponent>> _fires = new();
@@ -138,6 +140,13 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
             dirty = true;
         }
 
+        var bodyCelsius = (int) MathF.Round(TemperatureHelpers.KelvinToCelsius(temperature.CurrentTemperature));
+        if (comp.BodyCelsius != bodyCelsius)
+        {
+            comp.BodyCelsius = bodyCelsius;
+            dirty = true;
+        }
+
         var open = _wolfWeather.TryGetOpenExposure(body, xform, out var wetting, out var wind);
         comp.WindChill = open && wind > 0f
             ? MathF.Min(1f + wind * _windChillPerSpeed, MathF.Max(1f, _windChillMax))
@@ -146,7 +155,7 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
         var nearFire = NearFire(xform);
         dirty |= UpdateWetness(comp, open, nearFire, wetting, seconds);
         dirty |= UpdateFeel(body, comp, temperature);
-        dirty |= UpdateGauge(body, comp, nearFire, seconds);
+        dirty |= UpdateGauge(body, comp, temperature.CurrentTemperature, nearFire, seconds);
 
         if (dirty && HasComp<ActorComponent>(body))
             Dirty(body, comp);
@@ -154,7 +163,7 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
 
     private void OnModifyTemperature(EntityUid uid, Wh40kWarmthComponent comp, ModifyChangedTemperatureEvent args)
     {
-        if (args.TemperatureDelta >= 0f)
+        if (args.AmbientTemperature == null || args.TemperatureDelta >= 0f)
             return;
 
         args.TemperatureDelta *= comp.WindChill * (1f + MathF.Max(0f, _wetCooling) * comp.Wetness);
@@ -229,13 +238,7 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
 
     private bool UpdateFeel(EntityUid body, Wh40kWarmthComponent comp, TemperatureComponent temperature)
     {
-        var coldLine = temperature.ParentColdDamageThreshold ?? temperature.ColdDamageThreshold;
-        var heatLine = temperature.ParentHeatDamageThreshold ?? temperature.HeatDamageThreshold;
-        var normal = TryComp(body, out ThermalRegulatorComponent? regulator)
-                     && regulator.NormalBodyTemperature > coldLine
-                     && regulator.NormalBodyTemperature < heatLine
-            ? regulator.NormalBodyTemperature
-            : (coldLine + heatLine) / 2f;
+        var (coldLine, normal, heatLine) = _temperature.GetThermalRange(body, temperature);
 
         var surface = temperature.CurrentTemperature;
         var cold = normal > coldLine ? MathF.Max(0f, (normal - surface) / (normal - coldLine)) : 0f;
@@ -335,20 +338,20 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
         return now - comp.PendingStrainSince >= StrainConfirmation ? candidate : Wh40kWarmthStrain.None;
     }
 
-    private bool UpdateGauge(EntityUid body, Wh40kWarmthComponent comp, bool nearFire, float seconds)
+    private bool UpdateGauge(EntityUid body, Wh40kWarmthComponent comp, float temperature, bool nearFire, float seconds)
     {
         if (!HasComp<ActorComponent>(body))
             return false;
 
         var raw = Math.Clamp(0.5f + (comp.HeatShare - comp.ColdShare) * 0.5f, 0f, 1f);
-        comp.GaugeRate = float.IsNaN(comp.LastGauge)
+        comp.TemperatureRate = float.IsNaN(comp.LastTemperature)
             ? 0f
-            : comp.GaugeRate + ((raw - comp.LastGauge) / seconds - comp.GaugeRate) * RateSmoothing;
-        comp.LastGauge = raw;
+            : comp.TemperatureRate + ((temperature - comp.LastTemperature) / seconds - comp.TemperatureRate) * RateSmoothing;
+        comp.LastTemperature = temperature;
 
-        var trend = comp.GaugeRate > SteadyRate
+        var trend = comp.TemperatureRate > SteadyTemperatureRate
             ? Wh40kWarmthTrend.Warming
-            : comp.GaugeRate < -SteadyRate ? Wh40kWarmthTrend.Cooling : Wh40kWarmthTrend.Steady;
+            : comp.TemperatureRate < -SteadyTemperatureRate ? Wh40kWarmthTrend.Cooling : Wh40kWarmthTrend.Steady;
         var gauge = (byte) (MathF.Round(raw * 20f) * 5f);
 
         if (comp.Gauge == gauge && comp.Trend == trend && comp.NearWarmth == nearFire)
@@ -365,7 +368,13 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
         if (!HasComp<ActorComponent>(body))
             return;
 
-        var id = strain == Wh40kWarmthStrain.Cold ? "wh40k-warmth-cold-start" : "wh40k-warmth-heat-start";
+        var id = (IsMechanical(body), strain) switch
+        {
+            (true, Wh40kWarmthStrain.Cold) => "wh40k-warmth-chassis-cold-start",
+            (true, _) => "wh40k-warmth-chassis-heat-start",
+            (false, Wh40kWarmthStrain.Cold) => "wh40k-warmth-cold-start",
+            _ => "wh40k-warmth-heat-start",
+        };
         _popup.PopupEntity(Loc.GetString(id), body, body, PopupType.MediumCaution);
         comp.NextSign = _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(15f, 25f));
         comp.NextVisibleSign = _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(45f, 75f));
@@ -373,7 +382,7 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
 
     private void Signs(EntityUid body, Wh40kWarmthComponent comp, Wh40kWarmthStrain strain)
     {
-        if (!HasComp<ActorComponent>(body))
+        if (!HasComp<ActorComponent>(body) || IsMechanical(body))
             return;
 
         var now = _timing.CurTime;
@@ -391,6 +400,12 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
         var othersKey = strain == Wh40kWarmthStrain.Cold ? "wh40k-warmth-shiver-others" : "wh40k-warmth-sweat-others";
         _popup.PopupEntity(Loc.GetString(othersKey, ("target", Identity.Entity(body, EntityManager))),
             body, Filter.PvsExcept(body), true);
+    }
+
+    private bool IsMechanical(EntityUid body)
+    {
+        return HasComp<Wh40kChassisComponent>(body) || HasComp<SiliconComponent>(body) ||
+               HasComp<BorgChassisComponent>(body);
     }
 
     private static int Quantize(float share) => (int) MathF.Round(share * 20f);

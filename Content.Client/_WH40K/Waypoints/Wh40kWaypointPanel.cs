@@ -27,7 +27,7 @@ public sealed class Wh40kWaypointPanel : PanelContainer
     private readonly Button _pick;
     private readonly Button _add;
     private readonly Button _fly;
-    private readonly Label _status;
+    private readonly RichTextLabel _status;
     private readonly Label _empty;
     private readonly BoxContainer _rows;
 
@@ -115,11 +115,9 @@ public sealed class Wh40kWaypointPanel : PanelContainer
             HorizontalExpand = true,
             StyleClasses = { "ButtonSquare" },
         };
-        _status = new Label
+        _status = new RichTextLabel
         {
             Name = "Wh40kWaypointStatus",
-            FontColorOverride = GoldColor,
-            ClipText = true,
             Visible = false,
         };
         _empty = new Label
@@ -182,6 +180,7 @@ public sealed class Wh40kWaypointPanel : PanelContainer
     {
         _xEdit.Text = $"{position.X:0.0}";
         _yEdit.Text = $"{position.Y:0.0}";
+        _status.Visible = false;
         CancelPick();
     }
 
@@ -301,7 +300,7 @@ public sealed class Wh40kWaypointPanel : PanelContainer
 
     private void ShowStatus(string text)
     {
-        _status.Text = text;
+        _status.SetMessage(text, GoldColor);
         _status.Visible = true;
     }
 }

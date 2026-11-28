@@ -6,11 +6,19 @@ public sealed class ModifyChangedTemperatureEvent : EntityEventArgs, IInventoryR
 {
     public SlotFlags TargetSlots { get; } = ~SlotFlags.POCKET;
 
+    /// <summary>Requested heat transfer in joules, after thermal protection modifiers.</summary>
     public float TemperatureDelta;
 
-    public ModifyChangedTemperatureEvent(float temperature)
+    /// <summary>Ambient temperature in kelvin when the transfer comes from the environment.</summary>
+    public readonly float? AmbientTemperature;
+
+    /// <summary>Maximum positive transfer in joules, applied after all modifiers.</summary>
+    public float MaximumHeating = float.PositiveInfinity;
+
+    public ModifyChangedTemperatureEvent(float temperature, float? ambientTemperature = null)
     {
         TemperatureDelta = temperature;
+        AmbientTemperature = ambientTemperature;
     }
 }
 

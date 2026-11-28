@@ -2,7 +2,7 @@ preset raw;
 light_mode unshaded;
 
 uniform highp float SinkPixels;
-uniform highp float SurfaceY;
+uniform highp vec2 SurfaceScreenY;
 varying highp vec4 VtxModulate;
 
 void vertex()
@@ -16,11 +16,11 @@ void vertex()
 
 void fragment()
 {
-    if (FRAGCOORD.y <= SurfaceY)
+    if (SCREEN_UV.y <= SurfaceScreenY.x)
         discard;
 
     highp vec4 body = zTexture(UV) * VtxModulate;
     // Feather only above the surface. Buried pixels are discarded, never translucent.
-    highp float aboveSand = smoothstep(SurfaceY, SurfaceY + 1.0, FRAGCOORD.y);
-    COLOR = vec4(body.rgb, body.a * aboveSand);
+    highp float aboveSand = smoothstep(SurfaceScreenY.x, SurfaceScreenY.y, SCREEN_UV.y);
+    COLOR = body * aboveSand;
 }

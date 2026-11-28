@@ -18,6 +18,10 @@ public sealed partial class Wh40kWarmthComponent : Component
     [DataField, AutoNetworkedField]
     public int? HereCelsius;
 
+    /// <summary>The measured body surface temperature in whole degrees Celsius.</summary>
+    [AutoNetworkedField]
+    public int BodyCelsius;
+
     [DataField, AutoNetworkedField]
     public Wh40kBodyFeel Feel = Wh40kBodyFeel.Comfortable;
 
@@ -52,10 +56,10 @@ public sealed partial class Wh40kWarmthComponent : Component
     public float HeatShare;
 
     [ViewVariables]
-    public float LastGauge = float.NaN;
+    public float LastTemperature = float.NaN;
 
     [ViewVariables]
-    public float GaugeRate;
+    public float TemperatureRate;
 
     [ViewVariables]
     public float WindChill = 1f;

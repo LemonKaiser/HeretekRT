@@ -42,7 +42,7 @@ public sealed class Wh40kChassisColdSystem : EntitySystem
         while (query.MoveNext(out var uid, out var chassis, out var temperature))
         {
             var slowdown = ComputeSlowdown(temperature.CurrentTemperature);
-            if (MathF.Abs(chassis.ColdSlowdown - slowdown) > 0.01f)
+            if (MathF.Abs(chassis.ColdSlowdown - slowdown) > 0.01f || slowdown == 0f && chassis.ColdSlowdown != 0f)
             {
                 chassis.ColdSlowdown = slowdown;
                 Dirty(uid, chassis);

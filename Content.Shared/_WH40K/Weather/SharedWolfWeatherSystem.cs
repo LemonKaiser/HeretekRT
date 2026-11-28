@@ -24,7 +24,7 @@ public abstract partial class SharedWolfWeatherSystem : EntitySystem
     [Dependency] private EntityQuery<BlockWeatherComponent> _blockQuery = default!;
     [Dependency] private EntityQuery<IsRoofComponent> _isRoofQuery = default!;
     [Dependency] private EntityQuery<ImplicitRoofComponent> _implicitRoofQuery = default!;
-    [Dependency] private EntityQuery<KoronusPlanetSurfaceBoundaryComponent> _planetSurfaceQuery = default!;
+    [Dependency] private EntityQuery<KoronusPlanetaryLayerComponent> _planetaryLayerQuery = default!;
     [Dependency] private EntityQuery<TransformComponent> _xformQuery = default!;
     [Dependency] private EntityQuery<CEZMapComponent> _zMapQuery = default!;
     [Dependency] private EntityQuery<CEZGroundLayerComponent> _groundLayerQuery = default!;
@@ -161,11 +161,14 @@ public abstract partial class SharedWolfWeatherSystem : EntitySystem
     }
 
     /// <summary>
-    /// Whether a map is open to the sky. Weather falls only on a surface: a map outside any z-network,
-    /// a ground layer, or the top level of a network.
+    /// Whether a map can have weather. Koronus planets use their registered terrain layer.
+    /// Other maps use their ground-layer marker or position in the z-network.
     /// </summary>
     public bool IsSurface(EntityUid map)
     {
+        if (_planetaryLayerQuery.TryComp(map, out var layer))
+            return layer.IsSurface;
+
         if (!_zMapQuery.TryComp(map, out var z))
             return true;
 
@@ -180,7 +183,8 @@ public abstract partial class SharedWolfWeatherSystem : EntitySystem
     {
         return _xformQuery.TryComp(grid, out var xform)
                && xform.MapUid is { } map
-               && _planetSurfaceQuery.HasComp(map);
+               && _planetaryLayerQuery.TryComp(map, out var layer)
+               && layer.IsSurface;
     }
 
     /// <summary>Whether a grid's tiles are always under cover on a planet surface, as a landed shuttle is.</summary>

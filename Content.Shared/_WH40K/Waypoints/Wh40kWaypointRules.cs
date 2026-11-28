@@ -22,12 +22,17 @@ public static class Wh40kWaypointRules
     public static bool TryParsePosition(string x, string y, out Vector2 position)
     {
         position = default;
-        if (!float.TryParse(x.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedX) ||
-            !float.TryParse(y.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedY))
+        if (!TryParseCoordinate(x, out var parsedX) || !TryParseCoordinate(y, out var parsedY))
             return false;
 
         position = new Vector2(parsedX, parsedY);
         return IsValidPosition(position);
+    }
+
+    private static bool TryParseCoordinate(string value, out float coordinate)
+    {
+        // The radar formats picked coordinates using the player's decimal separator.
+        return float.TryParse(value.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out coordinate);
     }
 
     public static string CleanName(string name)

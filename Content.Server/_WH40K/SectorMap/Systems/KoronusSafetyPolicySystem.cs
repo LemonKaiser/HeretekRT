@@ -799,8 +799,19 @@ public sealed class KoronusSafetyPolicySystem : EntitySystem
         Entity<TemperatureComponent> entity,
         ref ModifyChangedTemperatureEvent args)
     {
-        if (args.TemperatureDelta > 0f && HasRule(entity.Owner, KoronusSafetyRule.FireAndHighTemperature))
-            args.TemperatureDelta = 0f;
+        if (args.TemperatureDelta <= 0f || !HasRule(entity.Owner, KoronusSafetyRule.FireAndHighTemperature))
+            return;
+
+        // Let cold bodies equilibrate with room air without allowing heat above their normal range.
+        if (args.AmbientTemperature is not { } ambient)
+        {
+            args.MaximumHeating = 0f;
+            return;
+        }
+
+        var normal = _temperature.GetThermalRange(entity.Owner, entity.Comp).Normal;
+        var recoverable = MathF.Max(0f, MathF.Min(ambient, normal) - entity.Comp.CurrentTemperature);
+        args.MaximumHeating = MathF.Min(args.MaximumHeating, recoverable * _temperature.GetHeatCapacity(entity.Owner, entity.Comp));
     }
 
     private void SuppressProtectedIgnitionSources()

@@ -7,6 +7,7 @@ wh40k-options-warmth-overlay-tooltip = Отображать эффект ине�
 
 wh40k-warmth-hud-title = ТЕРМОАУСПЕКС
 wh40k-warmth-here = Здесь { $celsius }°C
+wh40k-warmth-body = Тело { $celsius }°C
 wh40k-warmth-here-vacuum = Здесь: вакуум
 wh40k-warmth-near = Рядом тепло
 wh40k-warmth-badge-damp = Влажно
@@ -21,6 +22,8 @@ wh40k-warmth-feel-hot = Жарко
 wh40k-warmth-feel-overheating = Перегрев
 
 wh40k-warmth-cold-start = Вы опасно переохлаждаетесь. Найдите источник тепла, укрытие или тёплую одежду.
+wh40k-warmth-chassis-cold-start = Шасси опасно переохлаждается. Переместитесь в более тёплое место.
+wh40k-warmth-chassis-heat-start = Шасси опасно перегревается. Переместитесь в более прохладное место.
 wh40k-warmth-heat-start = Температура тела слишком высокая. Охладитесь.
 wh40k-warmth-cold-sign-1 = Вас бьёт неудержимая дрожь.
 wh40k-warmth-cold-sign-2 = Пальцы онемели от холода.

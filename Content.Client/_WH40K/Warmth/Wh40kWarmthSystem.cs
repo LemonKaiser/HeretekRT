@@ -102,7 +102,8 @@ public sealed partial class Wh40kWarmthSystem : SharedWh40kWarmthSystem
         _hotAir = here >= Wh40kWarmthHud.HotAirThreshold - (_hotAir ? AirRecoveryMargin : 0);
         _damp = warmth.Wetness >= (_damp ? WetHideThreshold : WetShowThreshold);
 
-        if (here == null || _coldAir || _hotAir || _damp || warmth.Strain != Wh40kWarmthStrain.None)
+        var temperatureChanging = warmth.Feel != Wh40kBodyFeel.Comfortable && warmth.Trend != Wh40kWarmthTrend.Steady;
+        if (here == null || _coldAir || _hotAir || _damp || warmth.Strain != Wh40kWarmthStrain.None || temperatureChanging)
             _visibleFor = HideDelay;
 
         _hud.Visible = _visibleFor > 0f;

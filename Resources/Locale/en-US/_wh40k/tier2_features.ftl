@@ -7,6 +7,7 @@ wh40k-options-warmth-overlay-tooltip = Show frost or heat screen-edge effects wh
 
 wh40k-warmth-hud-title = THERMAL AUSPEX
 wh40k-warmth-here = Here { $celsius }°C
+wh40k-warmth-body = Body { $celsius }°C
 wh40k-warmth-here-vacuum = Here: vacuum
 wh40k-warmth-near = Near warmth
 wh40k-warmth-badge-damp = Damp
@@ -21,6 +22,8 @@ wh40k-warmth-feel-hot = Hot
 wh40k-warmth-feel-overheating = Overheating
 
 wh40k-warmth-cold-start = You're getting dangerously cold. Get warm: a fire, shelter, or a coat.
+wh40k-warmth-chassis-cold-start = Chassis temperature is falling dangerously low. Move somewhere warmer.
+wh40k-warmth-chassis-heat-start = Chassis temperature is rising dangerously high. Move somewhere cooler.
 wh40k-warmth-heat-start = Your body temperature is too high. Cool down.
 wh40k-warmth-cold-sign-1 = You shiver uncontrollably.
 wh40k-warmth-cold-sign-2 = Your fingers are numb with cold.

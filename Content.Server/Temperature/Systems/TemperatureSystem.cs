@@ -1,7 +1,6 @@
 using System.Linq;
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.EntitySystems;
-using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
@@ -43,6 +42,7 @@ public sealed partial class TemperatureSystem : EntitySystem
         SubscribeLocalEvent<TemperatureComponent, OnTemperatureChangeEvent>(EnqueueDamage);
         SubscribeLocalEvent<TemperatureComponent, AtmosExposedUpdateEvent>(OnAtmosExposedUpdate);
         SubscribeLocalEvent<TemperatureComponent, RejuvenateEvent>(OnRejuvenate);
+        SubscribeLocalEvent<TemperatureComponent, ComponentShutdown>(OnTemperatureShutdown);
         SubscribeLocalEvent<AlertsComponent, OnTemperatureChangeEvent>(ServerAlert);
         SubscribeLocalEvent<TemperatureProtectionComponent, InventoryRelayedEvent<ModifyChangedTemperatureEvent>>(
             OnTemperatureChangeAttempt);
@@ -120,7 +120,7 @@ public sealed partial class TemperatureSystem : EntitySystem
             return;
 
         float lastTemp = temperature.CurrentTemperature;
-        float delta = temperature.CurrentTemperature - temp;
+        float delta = temp - lastTemp;
         temperature.CurrentTemperature = temp;
         RaiseLocalEvent(uid, new OnTemperatureChangeEvent(temperature.CurrentTemperature, lastTemp, delta),
             true);
@@ -128,6 +128,12 @@ public sealed partial class TemperatureSystem : EntitySystem
 
     public void ChangeHeat(EntityUid uid, float heatAmount, bool ignoreHeatResistance = false,
         TemperatureComponent? temperature = null)
+    {
+        ChangeHeat(uid, heatAmount, ignoreHeatResistance, temperature, null);
+    }
+
+    private void ChangeHeat(EntityUid uid, float heatAmount, bool ignoreHeatResistance,
+        TemperatureComponent? temperature, float? ambientTemperature)
     {
         if (!Resolve(uid, ref temperature, false))
             return;
@@ -138,16 +144,12 @@ public sealed partial class TemperatureSystem : EntitySystem
 
         if (!ignoreHeatResistance)
         {
-            var ev = new ModifyChangedTemperatureEvent(heatAmount);
+            var ev = new ModifyChangedTemperatureEvent(heatAmount, ambientTemperature);
             RaiseLocalEvent(uid, ev);
-            heatAmount = ev.TemperatureDelta;
+            heatAmount = MathF.Min(ev.TemperatureDelta, ev.MaximumHeating);
         }
 
-        float lastTemp = temperature.CurrentTemperature;
-        temperature.CurrentTemperature += heatAmount / GetHeatCapacity(uid, temperature);
-        float delta = temperature.CurrentTemperature - lastTemp;
-
-        RaiseLocalEvent(uid, new OnTemperatureChangeEvent(temperature.CurrentTemperature, lastTemp, delta), true);
+        ForceChangeTemperature(uid, temperature.CurrentTemperature + heatAmount / GetHeatCapacity(uid, temperature), temperature);
     }
 
     private void OnAtmosExposedUpdate(EntityUid uid, TemperatureComponent temperature,
@@ -158,12 +160,8 @@ public sealed partial class TemperatureSystem : EntitySystem
         if (transform.MapUid == null)
             return;
 
-        var temperatureDelta = args.GasMixture.Temperature - temperature.CurrentTemperature;
         var airHeatCapacity = _atmosphere.GetHeatCapacity(args.GasMixture, false);
-        var heatCapacity = GetHeatCapacity(uid, temperature);
-        var heat = temperatureDelta * (airHeatCapacity * heatCapacity /
-                                       (airHeatCapacity + heatCapacity));
-        ChangeHeat(uid, heat * temperature.AtmosTemperatureTransferEfficiency, temperature: temperature);
+        ExchangeHeatWithEnvironment(uid, temperature, args.GasMixture.Temperature, airHeatCapacity);
     }
 
     public float GetHeatCapacity(EntityUid uid, TemperatureComponent? comp = null, PhysicsComponent? physics = null)
@@ -186,7 +184,7 @@ public sealed partial class TemperatureSystem : EntitySystem
 
     private void OnRejuvenate(EntityUid uid, TemperatureComponent comp, RejuvenateEvent args)
     {
-        ForceChangeTemperature(uid, Atmospherics.T20C, comp);
+        ForceChangeTemperature(uid, GetThermalRange(uid, comp).Normal, comp);
     }
 
     private void ServerAlert(EntityUid uid, AlertsComponent status, OnTemperatureChangeEvent args)
@@ -201,26 +199,18 @@ public sealed partial class TemperatureSystem : EntitySystem
             return;
         }
 
-        if (TryComp<ThermalRegulatorComponent>(uid, out var regulator) &&
-            regulator.NormalBodyTemperature > temperature.ColdDamageThreshold &&
-            regulator.NormalBodyTemperature < temperature.HeatDamageThreshold)
-        {
-            idealTemp = regulator.NormalBodyTemperature;
-        }
-        else
-        {
-            idealTemp = (temperature.ColdDamageThreshold + temperature.HeatDamageThreshold) / 2;
-        }
+        var range = GetThermalRange(uid, temperature);
+        idealTemp = range.Normal;
 
         if (args.CurrentTemperature <= idealTemp)
         {
             type = temperature.ColdAlert;
-            threshold = temperature.ColdDamageThreshold;
+            threshold = range.Cold;
         }
         else
         {
             type = temperature.HotAlert;
-            threshold = temperature.HeatDamageThreshold;
+            threshold = range.Hot;
         }
 
         // Calculates a scale where 1.0 is the ideal temperature and 0.0 is where temperature damage begins

@@ -35,13 +35,7 @@ public sealed class Wh40kChassisVacuumSystem : EntitySystem
         if (vacuum <= 0f)
             return;
 
-        var delta = Atmospherics.TCMB - temperature.CurrentTemperature;
         var spaceCapacity = _atmosphere.GetHeatCapacity(Space, false);
-        var bodyCapacity = _temperature.GetHeatCapacity(ent, temperature);
-        if (spaceCapacity + bodyCapacity <= 0f)
-            return;
-
-        var heat = delta * (spaceCapacity * bodyCapacity / (spaceCapacity + bodyCapacity));
-        _temperature.ChangeHeat(ent, heat * temperature.AtmosTemperatureTransferEfficiency * vacuum, temperature: temperature);
+        _temperature.ExchangeHeatWithEnvironment(ent, temperature, Atmospherics.TCMB, spaceCapacity, vacuum);
     }
 }

@@ -37,6 +37,7 @@ public sealed class Wh40kWarmthHud : PanelContainer
     private readonly StyleBoxFlat _accentStyle;
     private readonly Label _hereLabel;
     private readonly Label _feelLabel;
+    private readonly Label _bodyLabel;
     private readonly Label _metaBadge;
     private readonly Wh40kWarmthGauge _gauge;
 
@@ -157,7 +158,15 @@ public sealed class Wh40kWarmthHud : PanelContainer
             Visible = false,
             MouseFilter = MouseFilterMode.Ignore,
         };
+        _bodyLabel = new Label
+        {
+            FontOverride = monoFont,
+            FontColorOverride = ParchmentText,
+            VerticalAlignment = VAlignment.Center,
+            MouseFilter = MouseFilterMode.Ignore,
+        };
         feelRow.AddChild(_feelLabel);
+        feelRow.AddChild(_bodyLabel);
         feelRow.AddChild(_metaBadge);
         body.AddChild(feelRow);
 
@@ -189,6 +198,8 @@ public sealed class Wh40kWarmthHud : PanelContainer
         if (_feelLabel.Text != feelText)
             _feelLabel.Text = feelText;
         _feelLabel.FontColorOverride = feelColor;
+
+        _bodyLabel.Text = Loc.GetString("wh40k-warmth-body", ("celsius", comp.BodyCelsius));
 
         if (comp.NearWarmth)
         {

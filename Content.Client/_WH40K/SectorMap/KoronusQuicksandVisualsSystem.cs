@@ -112,8 +112,12 @@ public sealed partial class KoronusQuicksandVisualsSystem : EntitySystem
         }
 
         // Parameters use the active viewport, so zoom, rotated cameras and differently sized mobs agree.
-        args.Shader.SetParameter("SinkPixels", (bottom - top + 1f) * ent.Comp.Progress);
-        args.Shader.SetParameter("SurfaceY", args.Viewport.Size.Y - bottom);
+        var sinkPixels = (bottom - top + 1f) * ent.Comp.Progress;
+        var viewportHeight = args.Viewport.Size.Y;
+        // SCREEN_UV travels with the displaced quad. Shift the cut upwards by the same distance.
+        var cutY = viewportHeight - bottom + sinkPixels;
+        args.Shader.SetParameter("SinkPixels", sinkPixels);
+        args.Shader.SetParameter("SurfaceScreenY", new Vector2(cutY, cutY + 1f) / viewportHeight);
     }
 
     private void OnStopSinking(Entity<KoronusQuicksandSinkingComponent> ent, ref ComponentRemove args)

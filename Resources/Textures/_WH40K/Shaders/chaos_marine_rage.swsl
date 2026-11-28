@@ -23,22 +23,24 @@ void fragment()
     highp vec3 ember = vec3(1.0, 0.065, 0.012);
     highp vec3 crimson = vec3(0.82, 0.012, 0.095);
     // Preserve armor detail outside the transition; heat is a quiet tint, not a pulse.
-    highp vec3 colour = mix(base.rgb, ember, Rage * 0.08);
+    highp vec3 colour = mix(base.rgb, ember * base.a, Rage * 0.08);
     highp float build = smoothstep(0.15, 4.0, PhaseTime);
     highp float fade = 1.0 - smoothstep(4.65, 5.35, PhaseTime);
     highp float strength = Transition * build * fade;
     highp float release = exp(-pow((PhaseTime - 4.25) / 0.17, 2.0));
 
     // Broad moving light follows the original metal highlights instead of drawing a pattern over the armor.
-    highp float mist = noise21(UV2 * vec2(4.0, 6.0) + vec2(PhaseTime * 0.13, -PhaseTime * 0.42));
-    highp float flow = noise21(UV2 * vec2(9.0, 14.0) + vec2(3.0, -PhaseTime * 0.68));
+    // The original flow uses a top-left origin.
+    highp vec2 armourUv = vec2(UV2.x, 1.0 - UV2.y);
+    highp float mist = noise21(armourUv * vec2(4.0, 6.0) + vec2(PhaseTime * 0.13, -PhaseTime * 0.42));
+    highp float flow = noise21(armourUv * vec2(9.0, 14.0) + vec2(3.0, -PhaseTime * 0.68));
     highp float energy = smoothstep(0.27, 0.78, mist * 0.7 + flow * 0.3);
     highp float luminance = dot(base.rgb, vec3(0.2126, 0.7152, 0.0722));
     highp float metal = smoothstep(0.025, 0.38, luminance);
     highp float breath = 0.9 + 0.1 * sin(EffectTime * 2.6);
     highp vec3 lit = base.rgb * vec3(1.07, 0.90, 0.98);
-    lit += crimson * (0.09 + metal * 0.56) * (0.22 + energy * 0.78) * breath;
-    lit += vec3(0.95, 0.055, 0.16) * release * (0.08 + metal * 0.22);
+    lit += crimson * (0.09 + metal * 0.56) * (0.22 + energy * 0.78) * breath * base.a;
+    lit += vec3(0.95, 0.055, 0.16) * release * (0.08 + metal * 0.22) * base.a;
     colour = mix(colour, lit, strength);
     // Exact source alpha: no luminous outline, filled gaps or expanded silhouette.
     COLOR = vec4(colour, base.a);

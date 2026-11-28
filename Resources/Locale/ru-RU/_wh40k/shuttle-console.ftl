@@ -4,6 +4,8 @@ wh40k-shuttle-console-sector-tab = Сектор
 wh40k-shuttle-console-ftl-locked = Заблокирован
 wh40k-shuttle-console-ftl-unlocked = Разблокирован
 wh40k-shuttle-console-external-airlock = Внешний шлюз
+wh40k-shuttle-console-no-dock-ports = Нет стыковочных портов.
+wh40k-shuttle-console-dock-position = X { $x } · Y { $y }
 
 shuttle-console-maximum-speed = Максимальная скорость шаттла
 shuttle-console-signature-infrared = Тепловая сигнатура

@@ -1,71 +1,40 @@
 <controls:BoxContainer Visible="False"
-               HorizontalExpand="True"
-               VerticalExpand="True"
-               xmlns:controls="https://spacestation14.io"
-               xmlns:controls1="clr-namespace:Content.Client.UserInterface.Controls"
-               xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
-               xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
-    <ui:ShuttleDockControl Name="DockingControl"
-                       MouseFilter="Stop"
-                       VerticalAlignment="Stretch"
-                       VerticalExpand="True"
                        HorizontalExpand="True"
-                       Margin="5 4 10 5"/>
-    <controls:PanelContainer VerticalExpand="True"
-                             HorizontalExpand="False"
-                             MinWidth="286"
-                             MaxWidth="286"
-                             Margin="4 4 4 4">
+                       VerticalExpand="True"
+                       xmlns:controls="https://spacestation14.io"
+                       xmlns:controls1="clr-namespace:Content.Client.UserInterface.Controls"
+                       xmlns:ui="clr-namespace:Content.Client.Shuttles.UI"
+                       xmlns:graphics="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client">
+    <ui:ShuttleDockControl Name="DockingControl"
+                           MouseFilter="Stop"
+                           VerticalExpand="True"
+                           HorizontalExpand="True"
+                           Margin="5 4 10 5"/>
+    <controls:PanelContainer VerticalExpand="True" SetWidth="286" Margin="4">
         <controls:PanelContainer.PanelOverride>
-            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#75613D" BackgroundColor="#18140F"/>
+            <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
         </controls:PanelContainer.PanelOverride>
-        <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
-            <controls:PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
-            </controls:PanelContainer.PanelOverride>
-    <controls:ScrollContainer VerticalExpand="True"
-                              HorizontalExpand="True"
-                              HScrollEnabled="False">
-    <controls:BoxContainer Name="RightDisplayDock"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Center"
-                           MinWidth="256"
-                           MaxWidth="256"
-                           Align="Center"
-                           Margin="5 5 5 5"
-                           Orientation="Vertical"
-                           VerticalExpand="False">
-        <!-- FTL Lock Section -->
-        <controls1:StripeBack MinSize="48 48">
-            <controls:Label Text="{controls:Loc 'shuttle-console-ftl-lock'}" HorizontalAlignment="Center"/>
-        </controls1:StripeBack>
-        <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
-            <controls:PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
-            </controls:PanelContainer.PanelOverride>
-        <controls:BoxContainer Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5 5 5 5">
-            <controls:Button Name="FTLLockEnabledButton"
-                             Text="{controls:Loc 'shuttle-console-ftl-lock-enabled'}"
-                             ToggleMode="True"
-                             HorizontalExpand="True"
-                             StyleClasses="OpenRight"/>
-            <controls:Button Name="FTLLockDisabledButton"
-                             Text="{controls:Loc 'shuttle-console-ftl-lock-disabled'}"
-                             ToggleMode="True"
-                             HorizontalExpand="True"
-                             StyleClasses="OpenLeft"/>
-        </controls:BoxContainer>
-        </controls:PanelContainer>
+        <controls:BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="8">
+            <controls1:StripeBack MinHeight="32">
+                <controls:Label Text="{controls:Loc 'shuttle-console-ftl-lock'}" HorizontalAlignment="Center"/>
+            </controls1:StripeBack>
+            <controls:BoxContainer Orientation="Horizontal">
+                <controls:Button Name="FTLLockEnabledButton"
+                                 Text="{controls:Loc 'shuttle-console-ftl-lock-enabled'}"
+                                 ToggleMode="True"
+                                 HorizontalExpand="True"
+                                 StyleClasses="OpenRight"/>
+                <controls:Button Name="FTLLockDisabledButton"
+                                 Text="{controls:Loc 'shuttle-console-ftl-lock-disabled'}"
+                                 ToggleMode="True"
+                                 HorizontalExpand="True"
+                                 StyleClasses="OpenLeft"/>
+            </controls:BoxContainer>
 
-        <!-- Automatic docking Section -->
-        <controls1:StripeBack MinSize="48 48">
-            <controls:Label Text="{controls:Loc 'shuttle-console-auto-dock'}" HorizontalAlignment="Center"/>
-        </controls1:StripeBack>
-        <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
-            <controls:PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
-            </controls:PanelContainer.PanelOverride>
-            <controls:BoxContainer Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="5 5 5 5">
+            <controls1:StripeBack MinHeight="32">
+                <controls:Label Text="{controls:Loc 'shuttle-console-auto-dock'}" HorizontalAlignment="Center"/>
+            </controls1:StripeBack>
+            <controls:BoxContainer Orientation="Horizontal">
                 <controls:Button Name="AutoDockDisabledButton"
                                  Text="{controls:Loc 'shuttle-console-auto-dock-disabled'}"
                                  ToggleMode="True"
@@ -77,44 +46,22 @@
                                  HorizontalExpand="True"
                                  StyleClasses="OpenLeft"/>
             </controls:BoxContainer>
-        </controls:PanelContainer>
 
-        <!-- Docks Section -->
-        <controls1:StripeBack MinSize="48 48">
-            <controls:Label Text="{controls:Loc 'shuttle-console-docks-label'}" HorizontalAlignment="Center"/>
-        </controls1:StripeBack>
-        <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
-            <controls:PanelContainer.PanelOverride>
-                <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#18140F"/>
-            </controls:PanelContainer.PanelOverride>
-            <controls:BoxContainer Orientation="Vertical" HorizontalAlignment="Center" Margin="5 5 5 5">
-                <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
-                    <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
-                    </controls:PanelContainer.PanelOverride>
-        <controls:Button Name="UndockAllButton"
-                         Text="{controls:Loc 'shuttle-console-undock-all'}"
-                         Margin="5 5 5 5"
-                         StyleClasses="ButtonSquare"/>
-                </controls:PanelContainer>
-                <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="4 4 4 4">
-                    <controls:PanelContainer.PanelOverride>
-                        <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#79603D" BackgroundColor="#100D0A"/>
-                    </controls:PanelContainer.PanelOverride>
-            <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="1 1 1 1">
-                <controls:PanelContainer.PanelOverride>
-                    <graphics:StyleBoxFlat BorderThickness="2" BorderColor="#56452D" BackgroundColor="#050505"/>
-                </controls:PanelContainer.PanelOverride>
-        <controls:ScrollContainer VerticalExpand="True" HScrollEnabled="False"
-                                  ReturnMeasure="True"  Margin="2 2 2 2">
-            <controls:BoxContainer Name="DockPorts" Orientation="Vertical"/>
-        </controls:ScrollContainer>
-        </controls:PanelContainer>
-        </controls:PanelContainer>
-    </controls:BoxContainer>
-        </controls:PanelContainer>
-    </controls:BoxContainer>
-    </controls:ScrollContainer>
-    </controls:PanelContainer>
+            <controls1:StripeBack MinHeight="32">
+                <controls:Label Text="{controls:Loc 'shuttle-console-docks-label'}" HorizontalAlignment="Center"/>
+            </controls1:StripeBack>
+            <controls:Button Name="UndockAllButton"
+                             Text="{controls:Loc 'shuttle-console-undock-all'}"
+                             Disabled="True"
+                             StyleClasses="ButtonSquare"/>
+            <controls:Label Name="NoDockPorts"
+                            Text="{controls:Loc 'wh40k-shuttle-console-no-dock-ports'}"
+                            StyleClasses="LabelSubText"
+                            HorizontalAlignment="Center"
+                            Margin="0 6"/>
+            <controls:ScrollContainer Name="DockPortList" Visible="False" VerticalExpand="True" HScrollEnabled="False">
+                <controls:BoxContainer Name="DockPorts" Orientation="Vertical" SeparationOverride="4"/>
+            </controls:ScrollContainer>
+        </controls:BoxContainer>
     </controls:PanelContainer>
 </controls:BoxContainer>

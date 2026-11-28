@@ -403,6 +403,10 @@ public sealed partial class KoronusPlanetarySystem : EntitySystem
         if (!_maps.TryGetMap(mapId, out var mapUid))
             return;
 
+        var layer = EnsureComp<KoronusPlanetaryLayerComponent>(mapUid.Value);
+        layer.IsSurface = true;
+        Dirty(mapUid.Value, layer);
+
         var runtime = EnsureComp<KoronusPlanetSurfaceMapComponent>(mapUid.Value);
         runtime.SurfaceId = surfaceId;
         runtime.SystemId = systemId;
