@@ -10,8 +10,6 @@ namespace Content.IntegrationTests.Tests._Shitmed.Body;
 [TestFixture]
 public sealed class SpeciesBUiTest
 {
-    private static readonly EntProtoId BaseMobSpeciesTestId = "BaseMobSpeciesTest";
-
     [TestPrototypes]
     private const string Prototypes = @"
 - type: entity
@@ -42,7 +40,8 @@ public sealed class SpeciesBUiTest
         {
             var bUiSys = server.System<SharedUserInterfaceSystem>();
 
-            Assert.That(proto.TryIndex(BaseMobSpeciesTestId, out var baseEnt), Is.True);
+            EntProtoId baseMobSpeciesTestId = "BaseMobSpeciesTest";
+            Assert.That(proto.TryIndex(baseMobSpeciesTestId, out var baseEnt), Is.True);
             Assert.That(baseEnt, Is.Not.Null);
             Assert.That(baseEnt.TryComp<UserInterfaceComponent>(out var bUiBase, factoryComp), Is.True);
             Assert.That(bUiBase, Is.Not.Null);

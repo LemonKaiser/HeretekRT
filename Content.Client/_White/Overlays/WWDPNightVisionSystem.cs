@@ -3,11 +3,14 @@ using Content.Shared._White.Overlays;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Robust.Client.Graphics;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._White.Overlays;
 
 public sealed partial class WWDPNightVisionSystem : EquipmentHudSystem<WWDPNightVisionComponent>
 {
+    internal static readonly ProtoId<ShaderPrototype> ShaderId = "WWDPNightVision";
+
     [Dependency] private IOverlayManager _overlayMan = default!;
     [Dependency] private ILightManager _lightManager = default!;
 

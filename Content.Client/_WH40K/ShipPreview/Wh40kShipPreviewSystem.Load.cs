@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.DeviceLinking;
+using Robust.Client.GameObjects;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -50,7 +51,13 @@ public sealed partial class Wh40kShipPreviewSystem
                 return false;
 
             foreach (var uid in reader.Result.Entities)
+            {
                 RemComp<DeviceLinkSourceComponent>(uid);
+
+                // Deserialization fills sprite data after ComponentAdd. Re-add it before visualizers start.
+                if (TryComp<SpriteComponent>(uid, out var sprite))
+                    CopyComp(uid, uid, sprite);
+            }
 
             foreach (var uid in reader.Result.Orphans)
                 _xform.SetCoordinates(uid, new EntityCoordinates(handle.MapUid, Transform(uid).LocalPosition));

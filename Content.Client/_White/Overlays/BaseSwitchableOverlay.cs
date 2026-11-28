@@ -8,8 +8,6 @@ namespace Content.Client._White.Overlays;
 
 public sealed partial class BaseSwitchableOverlay<TComp> : Overlay where TComp : SwitchableVisionOverlayComponent
 {
-    private static readonly ProtoId<ShaderPrototype> WWDPNightVisionShaderId = "WWDPNightVision";
-
     [Dependency] private IPrototypeManager _prototype = default!;
 
     public override bool RequestScreenTexture => true;
@@ -24,7 +22,7 @@ public sealed partial class BaseSwitchableOverlay<TComp> : Overlay where TComp :
     public BaseSwitchableOverlay()
     {
         IoCManager.InjectDependencies(this);
-        _shader = _prototype.Index(WWDPNightVisionShaderId).InstanceUnique();
+        _shader = _prototype.Index(WWDPNightVisionSystem.ShaderId).InstanceUnique();
     }
 
     protected override void Draw(in OverlayDrawArgs args)

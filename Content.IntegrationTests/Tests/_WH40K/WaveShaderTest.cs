@@ -9,8 +9,6 @@ namespace Content.IntegrationTests.Tests._WH40K;
 
 public sealed class WaveShaderTest
 {
-    private static readonly ProtoId<ShaderPrototype> SelectionOutlineShader = "SelectionOutline";
-
     [Test]
     public async Task WaveShaderPreservesInteractionOutline()
     {
@@ -23,9 +21,10 @@ public sealed class WaveShaderTest
         await client.WaitAssertion(() =>
         {
             const string outlineId = "interaction-outline";
+            ProtoId<ShaderPrototype> selectionOutlineShader = "SelectionOutline";
             var uid = entities.Spawn();
             var sprite = entities.AddComponent<SpriteComponent>(uid);
-            var outline = prototypes.Index(SelectionOutlineShader).Instance();
+            var outline = prototypes.Index(selectionOutlineShader).Instance();
             sprites.SetPostShader(sprite, new SpriteComponent.PostShaderArgs(outlineId, outline));
 
             entities.AddComponent<WH40KWaveShaderComponent>(uid);
