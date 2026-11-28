@@ -3,3 +3,6 @@ ent-ClothingBeltChaosDynamite = chaos dynamite belt
 
 ent-ClothingBeltChaplainMeltaCharge = melta-charge belt
     .desc = A combat belt built around a melta-charge casing and chaplain wargear.
+
+ent-ActionWH40KArmExplosiveBelt = Arm explosive belt
+    .desc = Start the 10-second countdown. Once armed, the belt cannot be removed.

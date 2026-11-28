@@ -10,6 +10,8 @@ namespace Content.Shared._WH40K.Merchant;
 [RegisterComponent]
 public sealed partial class MerchantComponent : Component
 {
+    public const int MaxOffers = 128;
+
     [DataField("title")]
     public LocId Title = "wh40k-merchant-title";
 

@@ -3,3 +3,6 @@ ent-ClothingBeltChaosDynamite = пояс с динамитом Хаоса
 
 ent-ClothingBeltChaplainMeltaCharge = пояс с мельта-зарядом
     .desc = Боевой пояс на базе кожуха мельта-заряда и снаряжения священника.
+
+ent-ActionWH40KArmExplosiveBelt = Активировать пояс
+    .desc = Запускает отсчёт на 10 секунд. После активации пояс нельзя снять.

@@ -84,8 +84,8 @@ public static class Wh40kNpcPrototypeValidator
             !float.IsFinite(merchant.InteractionRange) || merchant.InteractionRange <= 0 || merchant.InteractionRange > 10 ||
             !float.IsFinite(merchant.LookAtRange) || merchant.LookAtRange < 0 || merchant.LookAtRange > 10)
             errors.Add(new("invalid-merchant-limits", "limits", "Merchant stock, interaction and return limits are invalid."));
-        if (merchant.Offers.Count is <= 0 or > 64)
-            errors.Add(new("invalid-stock-count", "offers", "Merchant requires 1–64 offers."));
+        if (merchant.Offers.Count is <= 0 or > MerchantComponent.MaxOffers)
+            errors.Add(new("invalid-stock-count", "offers", $"Merchant requires 1–{MerchantComponent.MaxOffers} offers."));
         var products = new HashSet<EntProtoId>();
         foreach (var offer in merchant.Offers)
         {

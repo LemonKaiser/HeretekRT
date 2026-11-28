@@ -24,6 +24,7 @@
     zeroVisible: false
   - type: Appearance
   - type: Item
+    sprite: _WH40K/Objects/Weapons/Guns/Ammunition/SpeedLoaders/11mm_speed_loader_inhands.rsi
     inhandVisuals:
       left:
       - state: inhand-left-mag
@@ -33,19 +34,12 @@
       - state: inhand-right-ammo
 
 - type: entity
-  parent: SpeedLoaderSerpenta
+  parent: SpeedLoaderGalvanic
   id: SpeedLoaderGalvanicEmpty
   suffix: WH40K, empty
   components:
   - type: BallisticAmmoProvider
     proto: null
-  - type: Sprite
-    sprite: _Mono/Objects/Weapons/Guns/Ammunition/SpeedLoaders/357_magnum/357_magnum_speed_loader.rsi
-    layers:
-      - state: base
-        map: [ "enum.GunVisualLayers.Base" ]
-      - state: base-6
-        map: [ "enum.GunVisualLayers.Mag" ]
   - type: Item
     inhandVisuals:
       left:

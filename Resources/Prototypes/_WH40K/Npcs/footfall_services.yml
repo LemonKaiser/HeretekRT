@@ -312,10 +312,6 @@
       price: 100
       minStock: 5
       maxStock: 9
-    - product: ClothingUniformJumpsuitImperialCitizen
-      price: 100
-      minStock: 8
-      maxStock: 8
     - product: ClothingOuterCoatImperialCitizen
       price: 100
       minStock: 3

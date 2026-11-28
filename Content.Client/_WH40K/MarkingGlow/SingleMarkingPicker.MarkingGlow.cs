@@ -20,6 +20,7 @@ public sealed partial class SingleMarkingPicker
             Text = Loc.GetString(textLocKey),
             ToolTip = Loc.GetString(tooltipLocKey),
             Visible = false,
+            HorizontalAlignment = HAlignment.Center,
             Margin = new Thickness(0, 4, 0, 0),
         };
         _glowCheckBox.OnToggled += args =>
@@ -27,7 +28,7 @@ public sealed partial class SingleMarkingPicker
             if (!_suppressGlowEvent)
                 OnGlowChanged?.Invoke(args.Pressed);
         };
-        AddChild(_glowCheckBox);
+        MarkingSelectorContainer.AddChild(_glowCheckBox);
     }
 
     public void SetGlowState(bool visible, bool pressed)

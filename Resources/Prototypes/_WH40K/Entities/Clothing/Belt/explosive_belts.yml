@@ -1,5 +1,22 @@
 - type: entity
   parent: ClothingBeltBase
+  id: ClothingBeltWH40KExplosiveBase
+  abstract: true
+  components:
+  - type: Item
+    size: Small
+  - type: Wh40kExplosiveBelt
+  - type: ExplodeOnTrigger
+  - type: ActionGrant
+    actions:
+    - ActionWH40KArmExplosiveBelt
+  - type: ItemActionGrant
+    actions:
+    - ActionWH40KArmExplosiveBelt
+    activeIfWorn: true
+
+- type: entity
+  parent: ClothingBeltWH40KExplosiveBase
   id: ClothingBeltChaosDynamite
   suffix: WH40K, Chaos
   components:
@@ -7,11 +24,15 @@
     sprite: _WH40K/Clothing/Belt/chaos_dynamite_belt.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/Belt/chaos_dynamite_belt.rsi
-  - type: Item
-    size: Small
+  - type: Explosive
+    explosionType: WH40KChaosDynamiteBelt
+    totalIntensity: 1200
+    intensitySlope: 12
+    maxIntensity: 45
+    canCreateVacuum: false
 
 - type: entity
-  parent: ClothingBeltBase
+  parent: ClothingBeltWH40KExplosiveBase
   id: ClothingBeltChaplainMeltaCharge
   suffix: WH40K, Imperium
   components:
@@ -19,5 +40,21 @@
     sprite: _WH40K/Clothing/Belt/chaplain_melta_belt.rsi
   - type: Clothing
     sprite: _WH40K/Clothing/Belt/chaplain_melta_belt.rsi
-  - type: Item
-    size: Small
+  - type: Explosive
+    explosionType: WH40KMeltaChargeBelt
+    totalIntensity: 1400
+    intensitySlope: 45
+    maxIntensity: 20
+    canCreateVacuum: false
+
+- type: entity
+  id: ActionWH40KArmExplosiveBelt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    charges: 1
+    itemIconStyle: BigAction
+    icon:
+      sprite: Actions/Implants/implants.rsi
+      state: explosive
+    event: !type:Wh40kArmExplosiveBeltEvent

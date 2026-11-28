@@ -33,10 +33,10 @@ public partial class ChatSystem
                 if (dict.TryGetValue(lowerWord, out var value))
                 {
                     // Begin DeltaV modification - Multiple emotes for the same words
-                    dict[lowerWord] = value.Add(emote);
-
-                    var errMsg = $"Duplicate of emote word {lowerWord}";
-                    Log.Warning(errMsg);
+                    if (value.Contains(emote))
+                        Log.Warning($"Duplicate trigger '{lowerWord}' in emote '{emote.ID}'.");
+                    else
+                        dict[lowerWord] = value.Add(emote);
 
                     continue;
                 }

@@ -45,7 +45,6 @@
     - suitStorage
   - type: Item
     size: Huge
-    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_cadia/grenade_cadia.rsi
     shape:
     - 0,0,4,2
   - type: Gun
@@ -61,6 +60,8 @@
     capacity: 1
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: Wieldable
+    unwieldOnUse: false
   - type: GunRequiresWield
 
 - type: entity
@@ -78,7 +79,6 @@
     - suitStorage
   - type: Item
     size: Huge
-    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_chs/grenade_chs.rsi
     shape:
     - 0,0,4,2
   - type: Gun
@@ -94,6 +94,8 @@
     capacity: 1
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: Wieldable
+    unwieldOnUse: false
   - type: GunRequiresWield
 
 - type: entity
@@ -122,6 +124,8 @@
     proto: CartridgeRocketHE
     capacity: 1
     count: 1
+  - type: Wieldable
+    unwieldOnUse: false
   - type: GunRequiresWield
 
 - type: entity
@@ -150,6 +154,8 @@
     proto: CartridgeRocketHE
     capacity: 1
     count: 1
+  - type: Wieldable
+    unwieldOnUse: false
   - type: GunRequiresWield
 
 - type: entity
@@ -169,6 +175,7 @@
     - suitStorage
   - type: Item
     size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_cadia/grenade_cadia.rsi
     shape:
     - 0,0,4,2
   - type: RevolverAmmoProvider
@@ -208,6 +215,7 @@
     - suitStorage
   - type: Item
     size: Huge
+    sprite: _WH40K/Objects/Weapons/Guns/Launcher/grenade_chs/grenade_chs.rsi
     shape:
     - 0,0,4,2
   - type: RevolverAmmoProvider

@@ -326,7 +326,7 @@ public sealed partial class MerchantSystem : EntitySystem
         component.Receipts.Clear();
 
         var candidates = component.Offers
-            .Take(64)
+            .Take(MerchantComponent.MaxOffers)
             .Where(offer => offer.Weight is > 0 and <= 10000
                            && offer.Price is > 0 and <= 1000000
                            && offer.MinStock is > 0 and <= 100
